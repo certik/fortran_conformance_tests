@@ -1,0 +1,390 @@
+import contextlib
+import collections
+import io
+from pathlib import Path
+import re
+import sys
+import tempfile
+import time
+import unittest
+from unittest.mock import patch
+
+import run_tests as runner
+
+
+class RunnerTests(unittest.TestCase):
+    def setUp(self):
+        self.directory = tempfile.TemporaryDirectory()
+        self.addCleanup(self.directory.cleanup)
+        self.root = Path(self.directory.name)
+        self.lf = runner.Compiler('lfortran', 'lfortran', 'f23')
+
+    def source(self, name, contents):
+        path = self.root / name
+        path.write_text(contents)
+        return str(path)
+
+    def invalid(self, result, codes=False):
+        source = 'subroutine s\n integer, save, save :: x ! {error C801 save}\nend subroutine\n'
+        with patch.object(runner, 'run', return_value=result):
+            return runner.check_invalid('C801_invalid.f90', source, 2, 'C801',
+                                        (1, 3), self.lf, runner.Metadata(), codes)
+
+    def test_canonical_ids(self):
+        self.assertEqual(runner.canonical_rule('C15121'), 'C15121')
+        self.assertEqual(runner.canonical_rule('S15_5_2_4'), 'S15.5.2.4')
+        self.assertEqual(runner.canonical_rule('S10_2_1_3_001'), 'S10.2.1.3-001')
+
+    def test_discovery_variants_and_repeatable_filters(self):
+        self.source('C1401_valid__unnamed.f90', 'end\n')
+        self.source('C601_valid.f90', 'end\n')
+        self.source('C601_valid_helper.f90', 'module helper\nend module\n')
+        self.source('S10_2_1_3_001_valid.f90', 'end\n')
+        found = runner.discover(str(self.root), ['C1401', 'S10.2.1.3'])
+        self.assertEqual([rule for _, rule, _ in found], ['C1401', 'S10.2.1.3-001'])
+        self.assertEqual(len(runner.discover(str(self.root))), 3)
+
+    def test_unmatched_filter_fails(self):
+        self.source('C601_valid.f90', 'end\n')
+        with self.assertRaises(runner.SuiteError):
+            runner.discover(str(self.root), ['C601', 'typo'])
+
+    def test_metadata(self):
+        path = self.source('S10_2_1_3_023_valid.f90', '''! rule: S10.2.1.3-023
+! covers: c-ptr-component
+! evidence: context-only
+! requires: coarray
+! images: 2
+program p
+end program
+''')
+        meta = runner.metadata(path, 'S10.2.1.3-023')
+        self.assertEqual(meta.facets, ['c-ptr-component'])
+        self.assertEqual(meta.evidence, 'context-only')
+        self.assertEqual(meta.images, 2)
+        self.assertTrue(meta.coarray)
+
+    def test_metadata_rejects_mismatched_rule(self):
+        path = self.source('C601_valid.f90', '! rule: C602\nend\n')
+        with self.assertRaises(runner.SuiteError):
+            runner.metadata(path, 'C601')
+
+    def test_metadata_rejects_unknown_profiles_and_duplicate_headers(self):
+        for headers in ('! profile: typo\n', '! rule: C601\n! rule: C601\n'):
+            path = self.source('C601_valid.f90', headers + 'end\n')
+            with self.assertRaises(runner.SuiteError):
+                runner.metadata(path, 'C601')
+
+    def test_catalogue_case_requires_declared_coverage(self):
+        path = self.source('S10_2_1_3_001_valid.f90', 'end\n')
+        with self.assertRaises(runner.SuiteError):
+            runner.metadata(path, 'S10.2.1.3-001')
+
+    def test_explicit_main_program_cases_are_isolated(self):
+        text = '''! rule: C1401
+! case: first
+program one
+end program wrong ! {error C1401 first}
+! case: second
+program two
+end program other ! {error C1401 second}
+'''
+        path = self.source('C1401_invalid.f90', text)
+        first, second = list(runner.isolated_cases(path, 'C1401'))
+        self.assertIn('program one', first[4])
+        self.assertNotIn('program two', first[4])
+        self.assertIn('program two', second[4])
+        self.assertNotIn('program one', second[4])
+        self.assertEqual(first[0], 4)
+        self.assertEqual(second[0], 7)
+        self.assertEqual(first[4].count('\n'), text.count('\n'))
+        self.assertEqual(second[4].count('\n'), text.count('\n'))
+
+    def test_legacy_isolation_keeps_shared_modules(self):
+        path = self.source('C801_invalid.f90', '''module helper
+ integer :: value
+end module
+subroutine a
+ use helper
+ integer, save, save :: x ! {error C801 a}
+end subroutine
+subroutine b
+ use helper
+ integer, save, save :: y ! {error C801 b}
+end subroutine
+''')
+        cases = list(runner.isolated_cases(path, 'C801'))
+        for case in cases:
+            self.assertIn('module helper', case[4])
+            self.assertEqual(case[4].count('use helper'), 1)
+        self.assertNotIn('subroutine b', cases[0][4])
+        self.assertNotIn('subroutine a', cases[1][4])
+
+    def test_duplicate_cases_and_missing_markers_fail(self):
+        for text in ('end\n', '''subroutine a
+ integer :: x ! {error C801 duplicate}
+ integer :: y ! {error C801 duplicate}
+end subroutine
+'''):
+            path = self.source('C801_invalid.f90', text)
+            with self.assertRaises(runner.SuiteError):
+                list(runner.isolated_cases(path, 'C801'))
+
+    def test_boundary_must_match_marker(self):
+        path = self.source('C801_invalid.f90', '''! case: a
+integer :: x ! {error C801 b}
+end
+''')
+        with self.assertRaises(runner.SuiteError):
+            list(runner.isolated_cases(path, 'C801'))
+
+    def test_fixed_form_uses_explicit_boundaries(self):
+        path = self.source('C1401_invalid.f', '''! case: wrong
+      program p
+      end program q ! {error C1401 wrong}
+''')
+        self.assertEqual(len(list(runner.isolated_cases(path, 'C1401'))), 1)
+
+    def test_old_and_new_diagnostic_formats(self):
+        text = '''case.f90:2-2:1-20: semantic error [C801]: repeated
+case.f90:3-3:1-20: semantic error [E0231] (F2023 C801, C815): repeated
+case.f90:4-4:1-20: semantic error [E0020] (F2023 S10.2.1.3-004): invalid
+case.f90:5-5:1-20: semantic warning [C801]: repeated
+'''
+        errors = runner.lfortran_errors(text)
+        self.assertEqual(errors[0].codes, {'C801'})
+        self.assertEqual(errors[1].codes, {'E0231', 'C801', 'C815'})
+        self.assertIn('S10.2.1.3-004', errors[2].codes)
+        self.assertEqual([error.first for error in errors], [2, 3, 4])
+
+    def test_diagnostic_range_can_cover_the_marked_line(self):
+        result = runner.ProcessResult(1, 'case.f90:1-3:1-20: syntax error [C801]: repeated')
+        self.assertEqual(self.invalid(result, True).outcome, 'pass')
+
+    def test_large_diagnostic_ranges_are_not_expanded(self):
+        errors = runner.lfortran_errors('case.f90:1-1000000000:1-20: syntax error: invalid')
+        self.assertEqual(len(errors), 1)
+        self.assertEqual(errors[0].last, 1000000000)
+
+    def test_successful_exit_does_not_count_as_rejection(self):
+        result = runner.ProcessResult(0, 'case.f90:2-2:1-20: semantic error [C801]: repeated')
+        self.assertEqual(self.invalid(result).outcome, 'fail')
+
+    def test_crash_after_expected_error_does_not_pass(self):
+        result = runner.ProcessResult(-11, 'case.f90:2-2:1-20: semantic error [C801]: repeated')
+        self.assertEqual(self.invalid(result).outcome, 'fail')
+
+    def test_shell_encoded_signal_does_not_pass(self):
+        result = runner.ProcessResult(139, 'case.f90:2-2:1-20: semantic error [C801]: repeated')
+        self.assertEqual(self.invalid(result).outcome, 'fail')
+
+    def test_internal_error_exit_one_does_not_pass(self):
+        result = runner.ProcessResult(1, 'case.f90:2-2:1-20: semantic error [C801]: repeated\n'
+                                      'LCOMPILERS_ASSERT failed')
+        self.assertEqual(self.invalid(result).outcome, 'fail')
+
+    def test_verifier_failure_is_not_a_language_diagnostic(self):
+        result = runner.ProcessResult(1, 'case.f90:2-2:1-20: ASR verify pass error [C801]: invalid IR')
+        self.assertEqual(self.invalid(result).outcome, 'fail')
+
+    def test_standard_reference_satisfies_codes_mode(self):
+        result = runner.ProcessResult(1, 'case.f90:2-2:1-20: semantic error [E1] (F2023 C801): repeated')
+        self.assertEqual(self.invalid(result, True).outcome, 'pass')
+
+    def test_isolated_cases_do_not_require_error_recovery(self):
+        result = runner.ProcessResult(1, 'case.f90:2-2:1-20: syntax error [C801]: repeated')
+        with patch.object(runner, 'run', return_value=result) as run:
+            runner.check_invalid('C801_invalid.f90', 'end\n', 2, 'C801',
+                                 (1, 3), self.lf, runner.Metadata())
+        self.assertNotIn('--continue-compilation', run.call_args[0][0])
+
+    def test_unrelated_rule_code_does_not_pass_codes_mode(self):
+        result = runner.ProcessResult(1, 'case.f90:2-2:1-20: semantic error [C815]: repeated')
+        self.assertEqual(self.invalid(result, True).outcome, 'fail')
+
+    def test_reference_locations(self):
+        text = 'case.f90:4:8:\n    4 | invalid\nError: invalid\ncase.f90:8:2: error: invalid\n'
+        self.assertEqual(runner.reference_error_lines(text), {4, 8})
+
+    def test_warning_location_is_not_reused_for_an_unlocated_error(self):
+        text = 'case.f90:4:8:\nWarning: unrelated\nError: driver failed without a location\n'
+        self.assertEqual(runner.reference_error_lines(text), set())
+
+    def test_unlocated_reference_failure_is_not_acceptance(self):
+        comp = runner.Compiler('flang', 'flang', 'f2018')
+        with patch.object(runner, 'run', return_value=runner.ProcessResult(1, 'fatal error: aborted')):
+            check = runner.check_invalid('C601_invalid.f90', 'end\n', 1, 'C601',
+                                         (1, 1), comp, runner.Metadata())
+        self.assertEqual(check.outcome, 'fail')
+        self.assertIn('without a located case diagnostic', check.note)
+
+    def test_explicit_reference_warning_can_corroborate_a_violation(self):
+        comp = runner.Compiler('flang', 'flang', 'f2018')
+        output = 'case.f90:2:16: portability: name too long [-Wlong-names]\n'
+        meta = runner.Metadata(reference_warnings=['long-names'])
+        with patch.object(runner, 'run', return_value=runner.ProcessResult(0, output)):
+            check = runner.check_invalid('C601_invalid.f90', 'end\n', 2, 'C601',
+                                         (1, 3), comp, meta)
+        self.assertEqual(check.outcome, 'pass')
+        self.assertEqual(runner.reference_label(check, 'invalid'), 'diagnoses')
+
+    def test_unrelated_or_unapproved_warning_does_not_corroborate_a_violation(self):
+        comp = runner.Compiler('flang', 'flang', 'f2018')
+        output = 'case.f90:2:16: portability: name too long [-Wlong-names]\n'
+        for allowed, bounds in (([], (1, 3)), (['unused-variable'], (1, 3)), (['long-names'], (4, 8))):
+            with patch.object(runner, 'run', return_value=runner.ProcessResult(0, output)):
+                check = runner.check_invalid('C601_invalid.f90', 'end\n', 2, 'C601',
+                                             bounds, comp, runner.Metadata(reference_warnings=allowed))
+            self.assertEqual(check.outcome, 'fail')
+
+    def test_reference_warning_policy_does_not_relax_lfortran(self):
+        output = 'case.f90:2:16: portability: name too long [-Wlong-names]\n'
+        with patch.object(runner, 'run', return_value=runner.ProcessResult(0, output)):
+            check = runner.check_invalid('C601_invalid.f90', 'end\n', 2, 'C601', (1, 3),
+                                         self.lf, runner.Metadata(reference_warnings=['long-names']))
+        self.assertEqual(check.outcome, 'fail')
+
+    def test_valid_exit_77_is_a_failure_not_an_implicit_skip(self):
+        with patch.object(runner, 'run', side_effect=[
+                runner.ProcessResult(0, ''), runner.ProcessResult(77, 'ERROR STOP 77')]):
+            check = runner.check_valid('C601_valid.f90', self.lf, runner.Metadata())
+        self.assertEqual(check.outcome, 'fail')
+
+    def test_optional_profile_can_explicitly_skip(self):
+        with patch.object(runner, 'run', side_effect=[
+                runner.ProcessResult(0, ''), runner.ProcessResult(77, 'STOP 77')]) as run:
+            check = runner.check_valid('case.f90', self.lf,
+                                       runner.Metadata(profiles=['iso10646']))
+        self.assertEqual(check.outcome, 'skip')
+        self.assertEqual(run.call_count, 2)
+
+    def test_failed_profile_is_not_a_success_shaped_skip(self):
+        with patch.object(runner, 'run', return_value=runner.ProcessResult(1, 'error: unsupported')):
+            check = runner.profile_check(self.lf, 'iso10646', 1)
+        self.assertEqual(check.outcome, 'fail')
+
+    def test_missing_launcher_does_not_pass_a_multi_image_case(self):
+        meta = runner.Metadata(coarray=True, images=2)
+        with patch.object(runner, 'run', return_value=runner.ProcessResult(0, '')) as run:
+            check = runner.check_valid('case.f90', self.lf, meta)
+        self.assertEqual(check.outcome, 'skip')
+        self.assertEqual(check.phase, 'launch')
+        self.assertEqual(run.call_count, 1)
+
+    def test_launcher_is_an_argument_vector_not_a_shell_command(self):
+        self.lf.launcher = ['launch', '-n', '{images}', '{exe}']
+        with patch.object(runner, 'run', return_value=runner.ProcessResult(0, '')) as run:
+            check = runner.check_valid('case.f90', self.lf, runner.Metadata(coarray=True, images=2))
+        self.assertEqual(check.outcome, 'pass')
+        self.assertEqual(run.call_args[0][0][:3], ['launch', '-n', '2'])
+
+    def test_timeout_is_bounded_and_reported(self):
+        start = time.monotonic()
+        result = runner.run([sys.executable, '-c', 'import time; time.sleep(30)'],
+                            str(self.root), timeout=0.05)
+        self.assertTrue(result.timed_out)
+        self.assertLess(time.monotonic() - start, 5)
+        self.assertEqual(runner.failure(result, 'execution').outcome, 'fail')
+
+    def test_missing_executable_is_a_harness_error(self):
+        check = runner.safely(runner.run, ['/nonexistent/conformance-compiler'], str(self.root), 1)
+        self.assertEqual(check.outcome, 'error')
+        self.assertEqual(runner.status('case', check, {'case'}), 'ERROR')
+
+    def test_skips_do_not_become_xpass(self):
+        self.assertEqual(runner.status('case', runner.Check('skip'), {'case'}), 'SKIP')
+
+    def test_xfail_update_preserves_unrun_skipped_and_error_entries(self):
+        path = self.source('xfail.txt', 'unrun  # old\nskipped  # old\nbroken  # old\nfixed  # old\n')
+        results = [
+            {'name': 'skipped', 'check': runner.Check('skip')},
+            {'name': 'broken', 'check': runner.Check('error')},
+            {'name': 'fixed', 'check': runner.Check('pass')},
+            {'name': 'new', 'check': runner.Check('fail', 'reason')},
+        ]
+        runner.update_xfail(path, results)
+        self.assertEqual(Path(path).read_text(),
+                         'broken  # old\nnew  # reason\nskipped  # old\nunrun  # old\n')
+
+    def test_reference_rejection_of_valid_program_is_not_agreement(self):
+        self.source('C601_valid.f90', 'end\n')
+        output = io.StringIO()
+        ref = runner.Compiler('gfortran', 'gfortran', 'f2023')
+        with patch.object(runner, 'HERE', str(self.root)), \
+                patch.object(sys, 'argv', ['run_tests.py', '--reference', 'gfortran']), \
+                patch.object(runner, 'compiler', side_effect=[self.lf, ref]), \
+                patch.object(runner, 'check_valid', side_effect=[
+                    runner.Check('pass'), runner.Check('fail', 'bad', 'compile')]), \
+                contextlib.redirect_stdout(output):
+            result = runner.main()
+        self.assertEqual(result, 0)
+        self.assertIn('agree with the test on 0/1 cases', output.getvalue())
+
+
+class CorpusTests(unittest.TestCase):
+    root = Path(__file__).resolve().parent
+
+    def test_all_catalogue_requirements_have_typed_case_coverage(self):
+        catalogue = (self.root.parent / 'doc/fortran_2023_S10_2_1_3.md').read_text()
+        entries = dict(re.findall(
+            r'^### (S10\.2\.1\.3-\d{3}):[^\n]*\n(.*?)(?=^### |^## |\Z)',
+            catalogue, re.M | re.S))
+        covered = collections.defaultdict(set)
+        for path, rule, kind in runner.discover(str(self.root), 'S10.2.1.3'):
+            self.assertEqual(kind, 'valid')
+            self.assertIn(rule, entries)
+            meta = runner.metadata(path, rule)
+            body = entries[rule]
+            expected = 'context-only' if '**Class:** Undefined result.' in body else (
+                'positive-control' if '**Class:** Restriction.' in body else 'effect')
+            self.assertEqual(meta.evidence, expected, path)
+            facets = set(re.findall(r'`([a-z0-9-]+)`',
+                                    body.split('**Facets:**', 1)[1].split('**Oracle', 1)[0]))
+            self.assertTrue(set(meta.facets) <= facets, path)
+            self.assertEqual(len(meta.facets), len(set(meta.facets)), path)
+            covered[rule].update(meta.facets)
+        self.assertEqual(set(covered), set(entries))
+        self.assertEqual(len(entries), 32)
+        pending = {}
+        for rule, body in entries.items():
+            facets = set(re.findall(r'`([a-z0-9-]+)`',
+                                    body.split('**Facets:**', 1)[1].split('**Oracle', 1)[0]))
+            if facets - covered[rule]:
+                pending[rule] = facets - covered[rule]
+        self.assertEqual(pending, {
+            'S10.2.1.3-002': {'lhs-affects-rhs', 'rhs-affects-lhs'},
+            'S10.2.1.3-004': {'unallocated-scalar-rhs'},
+            'S10.2.1.3-020': {'nondefault-kind-profile'},
+            'S10.2.1.3-021': {'replacement-profile'},
+            'S10.2.1.3-028': {'allocated-destination-unallocated-source'},
+        })
+
+    def test_name_length_boundaries_are_exact(self):
+        for path in (self.root / 'clause06').glob('C601_*.f90'):
+            lengths = {len(name) for name in re.findall(
+                r'\b(?:name|modu|type|part|proc|argu|prog)_123\w*', path.read_text())}
+            self.assertEqual(lengths, {64} if '_invalid' in path.name else {63}, path)
+
+    def test_all_invalid_cases_can_be_isolated(self):
+        for path, rule, kind in runner.discover(str(self.root)):
+            if kind == 'invalid':
+                isolated = list(runner.isolated_cases(path, rule))
+                self.assertEqual(len(isolated), len(runner.cases(path)), path)
+                for _, _, _, _, source in isolated:
+                    self.assertEqual(len(list(runner.MARK.finditer(source))), 1, path)
+
+    def test_numbered_rule_ids_exist_in_the_standard_inventory(self):
+        inventory = (self.root.parent / 'doc/fortran_2023_rules.txt').read_text()
+        ids = set(re.findall(r'^([RC]\d+)\b', inventory, re.M))
+        for path, rule, _ in runner.discover(str(self.root)):
+            if not rule.startswith('S'):
+                self.assertIn(rule, ids, path)
+
+    def test_new_sources_fit_reference_free_form_lines(self):
+        for path, _, _ in runner.discover(str(self.root), ['S10.2.1.3', 'C601', 'C1401']):
+            for line_number, line in enumerate(Path(path).read_text().splitlines(), 1):
+                self.assertLessEqual(len(line.split('!')[0]), 132, (path, line_number))
+
+
+if __name__ == '__main__':
+    unittest.main()

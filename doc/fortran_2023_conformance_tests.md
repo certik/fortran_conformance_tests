@@ -1,7 +1,8 @@
 # Fortran 2023 conformance test suite: design and plan
 
-Status: draft for discussion, second revision. Nothing in this document is
-implemented yet except the prototypes under `conformance_tests/`.
+Status: draft for discussion, with executable prototypes under `tests/`.
+The layout shown below is the proposed LFortran-tree layout; CMake
+integration and the compiler-side diagnostic catalogue remain planned.
 
 ## 1. Goal
 
@@ -36,27 +37,46 @@ Consequences:
 2. **Detection is required for every rule**, so "LFortran does not check this"
    is always a bug, never an accepted limitation. There is no "not applicable"
    for the invalid side, only "not implemented yet".
-3. **Only the valid tests need to run**, under LFortran and under the
-   reference compilers, because the reference compilers are the only check that
-   a "valid" program really is valid (5.1 shows how often this went wrong).
+3. **Conforming execution tests need to run**, under LFortran and under
+   reference compilers where supported. Reference agreement corroborates
+   source review; it does not prove validity or replace the standard.
+   Section 5.1 shows why both review and execution matter.
 
 ### 2.1 What is *not* an R/C rule
 
-Normative "shall" sentences in the body text (e.g. "the value of `dim` shall
-be in the range 1 to n"), semantics that the processor need not detect
-(11.1.7.5 iteration independence in DO CONCURRENT), and processor-dependent
-behaviour (Annex A). These have no rule numbers. Most are out of scope, but
-some of them are the errors users actually make, and every compiler
-diagnoses them; the most common is an argument whose type or kind does not
-match an explicit interface (15.5.2.4, normative text: "the actual argument
-shall have the same kind type parameters"). Those get a third category, `S`
-(semantic requirement), identified by the subclause: file
-`S15_5_2_4_invalid.f90`, marker `! {error S15.5.2.4 real4-to-real8}`. `S`
-files follow the same conventions and runner as `R`/`C` files; the only
-difference is that they are added selectively, by judgement, rather than
-enumerated from the standard. Runtime-failure `S` tests (a "must fail at run
-time" kind) are still a separate, later project. The prototype
-`clause15/S15_5_2_4_invalid.f90` has eight mixed-kind argument cases.
+Requirements also appear in prose, definitions, lists, and tables outside
+the numbered R/C items. These include program restrictions, specified
+execution effects, and qualifications on processor choices. They cannot
+all be represented by a compile-time rejection test, nor found by
+extracting only sentences containing "shall".
+
+The first executable `S` prototype selected mixed-kind argument mistakes.
+Its legacy file `clause15/S15_5_2_4_invalid.f90` and markers such as
+`! {error S15.5.2.4 real4-to-real8}` remain unchanged for compatibility
+with the current runner and xfail list. In the pinned J3/24-007 source,
+however, ordinary dummy argument type compatibility is in 15.5.2.5
+paragraph 2 and kind agreement is in paragraph 3.
+
+A systematic requirements catalogue is now prototyped in
+`doc/fortran_2023_S10_2_1_3.md` for intrinsic assignment. It gives each
+supplementary requirement a suite-owned identity such as
+`F2023:S10.2.1.3-001`, a summary, exact source anchors, named facets,
+and proposed test oracles. Source accounting is separate from executable
+coverage and compiler results. The source document, not the summary,
+remains authoritative.
+
+The first executable batch has 41 programs for all 32 catalogue IDs, with
+named facets and evidence classifications in their headers. The runner
+supports their extended IDs, independent file variants, optional processor
+profiles, and coarray execution requirements. The catalogue records which
+facets and reference executions remain unverified.
+
+S requirements are not subject to a mandatory valid/invalid pair. A
+specified runtime effect need not have an invalid counterpart, and a prose
+restriction does not by itself mandate a diagnostic or a runtime trap.
+The three restriction entries currently have positive controls; the
+undefined-result entry has explicitly context-only cases. Diagnostic-policy
+tests would need their obligations specified separately.
 
 ## 3. Layout
 
@@ -71,12 +91,17 @@ conformance_tests/
         C726_invalid.f90          many invalid cases, one program unit each
 ```
 
-**One valid file and one invalid file per rule.** The standard does not care
-about files, so modules that a test needs go into the same file before the
-program that uses them, and a rule that needs several program units simply has
-them. Only separate compilation itself (submodules in another file, `INCLUDE`
-lines, `bind(c)` with a C side) needs extra files; those are named
-`<RULE>_valid_<suffix>.*` and listed in the header (`! extra: ...`).
+**A primary valid/invalid pair per numbered rule, with independent cases
+where needed.** Modules needed by a program go into the same file before
+it. Additional executable cases use `<RULE>_valid__<variant>.f90`: for
+example, C1401 needs separate main programs for its allowed forms, and
+S10.2.1.3-008 separates ordinary character allocation from PDT support.
+Each is a separate result and xfail key.
+
+The double underscore distinguishes a case from the planned auxiliary
+sources for separate compilation, INCLUDE, or a C side. Those retain the
+names `<RULE>_valid_<suffix>.*`; auxiliary-source build support is not yet
+implemented in the prototype runner.
 
 The rule id is spelled as in the standard (`C726`, `C7100`, `C15121`), with
 no zero padding, so file names are greppable with the string used in the
@@ -87,22 +112,18 @@ the clause that defines them.
 
 ### 3.1 The valid file
 
-One program (plus modules if needed) that exercises the rule from every
-side: every alternative of a syntax rule, every item of a constraint's list,
-with and without every optional part, boundary cases (kind 1 and kind 8, rank
-0 and rank 7, empty lists), and each syntactic context in which the construct
-may appear. Results are checked with `if (...) error stop`; nothing is
-printed. Exit code 0 is the whole pass criterion, so any compiler can run the
-file without a driver. `clause11/R1123_valid.f90` is the model: all three
-`loop-control` alternatives, with and without the leading comma, with and
-without the step, with a full concurrent-locality.
+Conforming programs, plus modules if needed, collectively exercise the
+rule's facets: alternatives, list items, optional parts, supported kinds,
+rank boundaries, empty lists, and syntactic contexts. Results are checked
+with `if (...) error stop`; nothing is printed on success. Each executable
+case must exit 0. The catalogue cases also record any processor profile or
+image configuration needed before their result can be judged.
 
-Trade-off accepted: a single feature LFortran (or a reference compiler) lacks
-makes the whole valid file fail. `C726_valid.f90` needs a length-parameterized
-derived type, so all of C726's valid side is xfail until PDTs work, and the
-same file crashes flang 18's lowering. This is the intended pressure: the
-xfail reason names the feature, and features get ranked by how many rules
-they block. Splitting a valid file is not the answer.
+An aggregate rule result must still require all applicable cases, but one
+unsupported feature should not hide independently working facets. For
+example, S10.2.1.3-008's `__pdt` case can fail independently of its
+character-only case. Existing combined prototypes such as C726 are not
+automatically split by the runner.
 
 ### 3.2 The invalid file
 
@@ -124,17 +145,17 @@ module c801_public
 end module
 ```
 
-* **Each case is its own top-level program unit** (subroutine, function,
-  module, or block data; at most one main program). Scoping units are the
-  standard's own unit of isolation: a declaration the compiler drops while
-  recovering from case A cannot poison case B. The unit name doubles as the
-  case name.
+* **Each case is compiled independently.** New files use `! case: <case-id>`
+  boundaries around complete fixtures, which can include several supporting
+  units. Multiple main-program cases may coexist in the container file
+  because they are never submitted together.
 * **Each case violates the rule exactly once**, and the offending line carries
   `! {error <RULE> <case-id>}`. The case id is a short kebab-case word that
   survives renumbering of lines (it is what the xfail list refers to).
-* **Top-level `end` statements start in column 1 and nothing else does.**
-  The runner uses this to find case boundaries without parsing Fortran (it
-  needs them to judge reference compilers, see 4.2).
+* **Legacy free-form files use column-1 top-level `end` statements as
+  boundaries.** Unmarked helper units are retained. Other cases are blanked
+  out, preserving original line numbers. Fixed-form or missing-END cases
+  need explicit boundaries rather than a heuristic Fortran parser.
 * Everything else in the file is conforming. Cascade errors are the
   compiler's problem, not the test's, and are reported by the runner as a note
   rather than a failure (see 4.1).
@@ -230,8 +251,9 @@ with the result kind checked). The LFortran-side consequence is in 6.
 ### 3.4 Expected failures
 
 `expected_failures.txt` lists failing tests one per line, keyed
-`<RULE>_valid` or `<RULE>_invalid:<case-id>`, with the reason as a trailing
-comment. It is regenerated with `run_tests.py --update-xfail`; nobody edits
+`<RULE>_valid`, `<RULE>_valid__<variant>`, or `<RULE>_invalid:<case-id>`,
+with the reason as a trailing comment. It is regenerated with
+`run_tests.py --update-xfail`; nobody edits
 it by hand. An xfail that passes is reported as `XPASS` and fails the run, so
 a fix PR runs the update and commits the shrunken list. This separates the
 tests (which change rarely) from LFortran's status (which changes with every
@@ -244,40 +266,65 @@ maintained by hand, records per rule whether the valid and invalid files
 exist, `not_applicable` with a mandatory justification for the few rules
 that cannot have one side (the meta-rules `R401`–`R403`, pure "is a name"
 productions such as `R804 object-name is name`), and free-form notes. The
-coverage report counts a justified `not_applicable` as covered so that the
-report can reach 100 %.
+source-accounting report can classify these entries as accounted for, but
+must show them separately from implemented, executed, and passing tests.
+The current runner's `--coverage` output is a case inventory, not that
+future completeness report.
+
+The proposed S catalogue in 2.1 requires a richer representation: source
+anchors, facets, applicability, test mode, and explicit oracles, with
+source accounting kept distinct from exercised and passing coverage.
+Its Markdown prototype is currently the single authored definition;
+an eventual structured manifest should generate that view rather than
+duplicate the definitions by hand.
 
 ## 4. Runner
 
-`conformance_tests/run_tests.py` (prototype committed).
+The standalone prototype is `tests/run_tests.py`; its CLI and case-header
+formats are documented in `tests/README.md`.
 
 ### 4.1 LFortran
 
 Valid file: `lfortran --std=f23 <file> -o exe` must succeed and `exe` must
-exit 0. Nothing else is passed on the command line, by design (see 6).
+exit 0. The exceptions are explicit source-form/coarray flags and the
+execution prerequisites recorded in a case's metadata, not options that
+relax language rules.
 
-Invalid file: one invocation,
-`lfortran --std=f23 --semantics-only --continue-compilation --error-format short <file>`.
-Each marked line is a separate test case and passes iff at least one *error*
-(not warning) is reported on that line; with `--codes`, that error must
-carry the rule's code. Errors on unmarked lines are printed as a note (they
-are cascades from error recovery, and a measure of its quality) but do not
-fail anything: with error recovery in the loop, a "no extra errors"
-criterion cannot be met and would only hide the per-case signal.
+Each invalid case is submitted separately using
+`lfortran --std=f23 --semantics-only --error-format short <isolated-file>`.
+It passes only with an unsuccessful compiler exit and a non-internal error
+whose source range includes the marked line. Compiler crashes, timeouts,
+and ASR-verifier failures do not count as successful diagnostics.
+`--continue-compilation` is not passed: recovery is not needed to discover
+the next case. Other errors are retained as notes, not substituted for the
+marked diagnostic.
 
-The `short` format (`file:L1-L2:C1-C2: <stage> error [CODE]: message`) is
-parsed rather than the human format.
+The `short` format is parsed rather than the human format. With `--codes`,
+the expected rule must be present either in a legacy `[C801]` field or in
+the proposed `[E0231] (F2023 C801)` standard-reference field.
+
+Each process has a configurable timeout, defaulting to 30 seconds.
+Unavailable optional profiles and absent multi-image launchers produce
+explicit skips, never passes. A profile probe's own compilation failure
+is a failure rather than evidence that the profile is absent. Full
+diagnostics and configuration can be saved with `--report`.
 
 ### 4.2 Reference compilers
 
-`--reference gfortran --reference flang-new-18` (repeatable) runs the same
-files through each reference compiler, with `-std=f2018` (gfortran 13 and
-flang 18 have no `f2023` option). For a valid file the reference must compile
-and run it. For an invalid case the reference "rejects" it if it reports any
-error inside the case's program unit; the exact line is not compared, because
-compilers legitimately differ on it (for an assumed-length function result,
-gfortran and flang point at the `function` statement, LFortran at the
-declaration of the result).
+`--reference gfortran --reference flang` (repeatable) runs the same isolated
+cases through each reference compiler. The default probes `f2023`, then
+`f2018`, and reports the actual version and mode; `--reference-std` can
+override the selection. F2018-mode rejection of an F2023-only construct
+does not establish that a fixture is invalid.
+
+A valid case must compile and run. An invalid case normally needs a
+nonzero exit and an error within the selected case, not necessarily on
+LFortran's chosen line. For specifically identified nonconformance
+diagnostics, a case may also allow a reference warning code: C601 permits
+Flang's `[-Wlong-names]` portability diagnostic. This is shown as
+`diagnoses`, not `rejects`, and does not relax LFortran's required error
+severity. Arbitrary warnings and unlocated compiler failures do not
+corroborate a case.
 
 Reference results never decide pass or fail for LFortran. They are printed
 next to every case and summarised, so that the authoring rule can be applied:
@@ -285,10 +332,11 @@ next to every case and summarised, so that the authoring rule can be applied:
 | gfortran | flang | meaning |
 | --- | --- | --- |
 | agree with the test | agree with the test | likely correct; commit |
-| one agrees | one disagrees | re-read the rule; either the test is wrong or one compiler has a gap. Record which in the header comment |
-| disagree | disagree | probably the test is wrong; if after review it is still believed right, say why in the header and expect to be challenged |
+| one agrees | one disagrees | re-read the rule; either the test is wrong or one compiler has a gap. Record the discrepancy in the header or catalogue snapshot |
+| disagree | disagree | probably the test is wrong; if source review still supports it, record the rationale and the lack of reference validation explicitly |
 
-On the 40 prototype cases both references agree with the test on 29. The 11
+In the original 40-case snapshot, both references agreed with the test on
+29. The 11
 disagreements are all reference-compiler gaps: flang 18 misses four of the
 five duplicate-attribute cases of C801 and two of C815, a mixed
 function/subroutine generic (C1514) and two format-comma cases (C1302);
@@ -296,7 +344,9 @@ gfortran 13 misses the repeated-slash format case and rejects the
 `R1123_valid` file because it has no DO CONCURRENT locality specs at all.
 The disagreements are worth recording per case (a `! references:` line in
 the header, or the manifest) because they are exactly the cases a reviewer
-must look at.
+must look at. The later intrinsic-assignment snapshot, including its
+unvalidated and multi-image cases, is recorded in
+`doc/fortran_2023_S10_2_1_3.md`, section 8.
 
 ### 4.3 Integration with the existing suites and CI
 
@@ -311,7 +361,7 @@ change without touching a thousand reference files. CI runs
 `run_tests.py --reference gfortran --reference flang-new-18 --codes` once
 and fails on `FAIL` and on `XPASS`.
 
-## 5. Findings from prototyping
+## 5. Findings from the initial prototypes
 
 Nine rules, 17 files, 46 invalid cases and 8 valid programs, chosen to be
 awkward: a constraint with a five-item list of permitted contexts (C726),
@@ -319,9 +369,9 @@ generic distinguishability (C1514), an exception list on format syntax
 (C1302), two near-duplicate attribute constraints (C801 vs C815), a syntax
 rule with three alternatives (R1123), a plain type constraint (C1121), a
 kind-existence constraint (C722) and the mixed-kind argument requirement
-(S15.5.2.4). LFortran on current `main`: 20 pass, 34 fail. In detail:
+(S15.5.2.4). The original LFortran snapshot had 20 pass and 34 fail. In detail:
 
-| rule | LFortran today |
+| rule | LFortran in the original snapshot |
 | --- | --- |
 | C726 | valid file fails (no PDT LEN parameters); 3 of 6 cases detected, two of those by the ASR verifier with an internal message, one as a *syntax* error because `allocate(character(*) :: s)` does not parse; module- and internal-function assumed-length results not detected |
 | C801 | 1 of 5 detected (`dimension` twice); `allocatable`, `intent`, `parameter`, `public` twice all accepted |
@@ -497,10 +547,9 @@ question is whether each invalid case isolates the rule it claims to.
    site-specific message; the code is what users search for.)
 6. Should `run_tests.py` also drive future runtime-failure `S` tests, or is
    that a job for `integration_tests/` with `FAIL`?
-7. Which `S` requirements to include from the start? Proposed minimum:
-   argument type/kind/rank agreement with an explicit interface (15.5.2.4),
-   intrinsic argument type/kind requirements (16.9), and pointer/target
-   type agreement in pointer assignment (10.2.2.3).
+7. Which `S` subclauses should follow the intrinsic-assignment catalogue
+   in 2.1? Proposed next: ordinary dummy argument restrictions (15.5.2.5)
+   and intrinsic argument requirements (16.9).
 8. Kind subset: is dropping `real(16)`/`complex(16)` from the default subset
    right, given LFortran has `real(16)` but no `complex(16)`? (Proposed: yes;
    the `merge(real128, ...)` idiom covers it where it matters.)
