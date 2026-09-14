@@ -70,6 +70,20 @@ deliberately stricter gate. The pinned PDF census includes unprocessed
 sections, so they cannot disappear from the denominator. Detailed
 table/list subdivisions and independent visual review remain necessary.
 
+Even a section containing only already-numbered R/C items needs an explicit
+reviewed catalogue for final closure. Catalogue review is bound to the
+catalogue contents and the corresponding source census, including fine
+subdivisions and their dispositions:
+
+```
+tests/run_tests.py --record-catalogue-review SECTION \
+    --review-rationale 'Original source and every scoped unit independently reviewed.'
+```
+
+Changing those inputs makes the catalogue review stale. This source-review
+operation is separate from fixture approval and cannot be combined with an
+xfail update. It does not ratify the entire PDF census.
+
 Every compiler and executable invocation has a 30-second timeout,
 configurable with `--timeout`. A timeout terminates the invocation's process
 group. Compilation crashes and ASR-verifier failures are failures, not

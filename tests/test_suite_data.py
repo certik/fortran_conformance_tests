@@ -74,6 +74,7 @@ class CatalogueTests(unittest.TestCase):
         self.save()
         case = SimpleNamespace(name='syntax', rule='R601', kind='valid', meta=Metadata(facets=['one']))
         self.registry().validate_cases([case])
+
     def test_unclassified_paragraph_is_an_error(self):
         self.a['accounting'] = self.a['accounting'][1:]
         self.save()
@@ -146,6 +147,50 @@ class CatalogueTests(unittest.TestCase):
         self.source['sections']['1.4'] = {'units': {'p1': {'kind': 'paragraph'}}}
         self.save()
         self.assertEqual(self.registry().source_review_state, 'stale')
+
+    def test_numbered_only_sections_do_not_bypass_catalogue_review(self):
+        self.source['sections'] = {
+            '1.1': self.source['sections']['1.1'],
+            '1.4': {'units': {'R602': {'kind': 'numbered-item'}}},
+        }
+        self.index['catalogues'] = ['a.json']
+        self.save()
+        (self.root / 'rules.txt').write_text('R601 test-rule\nR602 other-rule\n')
+        self.index['source_inventory_review'] = dict(
+            state='reviewed', fingerprint=hashlib.sha256((self.root / 'source.json').read_bytes()).hexdigest(),
+            rationale='Reviewed synthetic source census.')
+        self.save()
+        registry = self.registry()
+        registry.record_catalogue_review('1.1', 'Reviewed all local units.')
+        audit = registry.audit(self.cases())
+        self.assertEqual(audit['unresolved_base_units'], 0)
+        self.assertEqual(audit['catalogue_reviews'], {'1.1': 'reviewed'})
+        self.assertEqual(audit['sections_without_catalogues'], ['1.4'])
+        self.assertFalse(audit['complete_source'])
+
+    def test_catalogue_review_is_bound_to_subdivisions_and_accounting(self):
+        self.a['subunits'] = {'p1': ['p1.remaining']}
+        self.a['accounting'].append(dict(unit='p1.remaining', disposition='unresolved',
+                                         rationale='Not yet extracted.'))
+        self.save()
+        registry = self.registry()
+        registry.record_catalogue_review('1.1', 'Reviewed the explicit remaining source gap.')
+        self.assertEqual(self.registry().catalogue_review_state('1.1'), 'reviewed')
+        registry.catalogues['1.1'].pop('subunits')
+        registry.catalogues['1.1']['accounting'] = [
+            item for item in registry.catalogues['1.1']['accounting'] if item['unit'] != 'p1.remaining']
+        self.assertEqual(registry.catalogue_review_state('1.1'), 'stale')
+
+    def test_catalogue_review_is_bound_to_source_census_content(self):
+        registry = self.registry()
+        registry.record_catalogue_review('1.1', 'Reviewed the source and definitions.')
+        registry.sections['1.1']['units']['p1']['sha256'] = 'f' * 64
+        self.assertEqual(registry.catalogue_review_state('1.1'), 'stale')
+
+    def test_unfingerprinted_catalogue_review_is_not_current(self):
+        self.a['review_state'] = 'reviewed'
+        self.save()
+        self.assertEqual(self.registry().catalogue_review_state('1.1'), 'stale')
 
     def test_missing_numbered_rule_is_not_hidden_by_census(self):
         (self.root / 'rules.txt').write_text('R601 test-rule\nC601 missing-rule\n')

@@ -171,6 +171,22 @@ class FixtureTests(unittest.TestCase):
             result = runner.check_fixture(self.fixture(), self.compiler)
         self.assertEqual(result.outcome, 'pass')
 
+    def test_located_manifest_rejection_requests_short_diagnostics(self):
+        self.data.pop('link')
+        self.data['expect'] = dict(
+            phase='compile', step='source', outcome='reject',
+            diagnostic=dict(file='source.f', line=2))
+
+        def process(command, cwd, timeout, stdin=None):
+            index = command.index('--error-format')
+            self.assertEqual(command[index + 1], 'short')
+            source = Path(cwd) / 'source.f'
+            return runner.ProcessResult(1, f'{source}:2-2:7-12: syntax error: Invalid source form\n')
+
+        with patch.object(runner, 'run', side_effect=process):
+            result = runner.check_fixture(self.fixture(), self.compiler)
+        self.assertEqual(result.outcome, 'pass')
+
     def test_runtime_negative_is_not_generic_any_failure(self):
         self.data['expect']['outcome'] = 'reject'
         with self.assertRaises(SuiteError):

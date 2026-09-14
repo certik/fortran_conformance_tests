@@ -612,7 +612,7 @@ def check_fixture(fixture, comp, cc='cc', timeout=30, codes=False):
             if step.language == 'fortran':
                 flags = comp.flags(source, meta, step.form)
                 if comp.family == 'lfortran':
-                    flags.append('--separate-compilation')
+                    flags += ['--separate-compilation', '--error-format', 'short']
                 command = [comp.command] + flags + ['-c', source, '-o', str(output)]
             else:
                 command = [cc, '-std=c11', '-c', source, '-o', str(output)]
@@ -875,6 +875,8 @@ def main():
     ap.add_argument('--allow-unreviewed', action='store_true', help='collect draft observations; never permitted with --update-xfail')
     ap.add_argument('--no-skips', action='store_true', help='require actual results from every selected compiler')
     ap.add_argument('--record-review', metavar='FIXTURE', help='explicitly adjudicate a fixture without running compilers')
+    ap.add_argument('--record-catalogue-review', metavar='SECTION',
+                    help='record a content-bound source/catalogue review without running compilers')
     ap.add_argument('--review-state', choices=['source-reviewed', 'reference-validated', 'unreviewed', 'disputed', 'needs-oracle'])
     ap.add_argument('--review-rationale')
     ap.add_argument('--review-source', action='append', default=[])
@@ -888,16 +890,21 @@ def main():
         ap.error('--codes applies to the LFortran target, not a reference-only run')
     if a.require_complete_source and not a.audit:
         ap.error('--require-complete-source must be used with --audit')
-    if sum(bool(value) for value in (a.record_review, a.audit, a.list)) > 1:
-        ap.error('--record-review, --audit, and --list are separate operations')
-    if a.update_xfail and (a.record_review or a.audit or a.list):
+    if sum(bool(value) for value in (a.record_review, a.record_catalogue_review, a.audit, a.list)) > 1:
+        ap.error('--record-review, --record-catalogue-review, --audit, and --list are separate operations')
+    if a.update_xfail and (a.record_review or a.record_catalogue_review or a.audit or a.list):
         ap.error('--update-xfail is a separate execution operation')
     if a.update_xfail and (a.allow_unreviewed or a.reference_only):
         ap.error('--update-xfail is only for approved LFortran fixtures')
     if a.record_review and (not a.review_state or not a.review_rationale):
         ap.error('--record-review needs --review-state and --review-rationale')
-    if not a.record_review and (a.review_state or a.review_rationale or a.review_source or a.review_report):
-        ap.error('review options require --record-review')
+    if a.record_catalogue_review and not a.review_rationale:
+        ap.error('--record-catalogue-review needs --review-rationale')
+    if a.record_catalogue_review and (a.review_state or a.review_source or a.review_report):
+        ap.error('fixture review options do not apply to a catalogue review')
+    if not (a.record_review or a.record_catalogue_review) and (
+            a.review_state or a.review_rationale or a.review_source or a.review_report):
+        ap.error('review options require a review operation')
     xfail_path = os.path.join(HERE, 'expected_failures.txt')
     xfail = set() if a.reference_only else {line.split('#')[0].strip() for line in read_xfail(xfail_path)}
     try:
@@ -915,6 +922,10 @@ def main():
                 fingerprints[case.review_key] = case.fingerprint(registry)
         for key, fingerprint in fingerprints.items():
             reviews[key] = registry.review(key, fingerprint, review_groups[key])
+        if a.record_catalogue_review:
+            registry.record_catalogue_review(a.record_catalogue_review, a.review_rationale)
+            print('Recorded content-bound catalogue review:', a.record_catalogue_review)
+            return 0
         if a.record_review:
             record_fixture_review(registry, all_cases, a.record_review, a.review_state,
                                   a.review_rationale, a.review_source, a.review_report)

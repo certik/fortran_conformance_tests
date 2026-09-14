@@ -1,0 +1,354 @@
+{
+  "schema_version": 1,
+  "section": "6.2.5",
+  "review_state": "reviewed",
+  "subunits": {
+    "p2": [
+      "p2.nonblank",
+      "p2.unique",
+      "p2.leading-zeros",
+      "p2.label-values",
+      "p2.processor-limit"
+    ],
+    "p3": [
+      "p3.label-permission",
+      "p3.use-restriction",
+      "p3.b1",
+      "p3.b2",
+      "p3.b3"
+    ]
+  },
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "definition",
+      "rationale": "Introduces a label as an identifier for one statement. The grammar, identity rules, and three permitted uses below supply the testable requirements; this introduction does not need another S identifier."
+    },
+    {
+      "unit": "R611",
+      "disposition": "requirements",
+      "requirements": [
+        "R611"
+      ]
+    },
+    {
+      "unit": "C603",
+      "disposition": "requirements",
+      "requirements": [
+        "C603"
+      ]
+    },
+    {
+      "unit": "p2",
+      "disposition": "structural",
+      "rationale": "The five sentences are accounted for individually: statement content, scope uniqueness, zero-prefix identity, accepted label values, and the processor's count-limit permission."
+    },
+    {
+      "unit": "p2.nonblank",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.2.5-001"
+      ]
+    },
+    {
+      "unit": "p2.unique",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.2.5-002"
+      ]
+    },
+    {
+      "unit": "p2.leading-zeros",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.2.5-003"
+      ]
+    },
+    {
+      "unit": "p2.label-values",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.2.5-004"
+      ]
+    },
+    {
+      "unit": "p2.processor-limit",
+      "disposition": "permission",
+      "requirements": [
+        "S6.2.5-004"
+      ],
+      "rationale": "A processor may cap the number of distinct labels in a program unit. Acceptance of any individual label value does not require simultaneous accommodation of all 99999 labels."
+    },
+    {
+      "unit": "note-unnumbered",
+      "disposition": "informative",
+      "rationale": "Illustrates the upper label value and equivalent zero-prefixed spellings. It adds neither a requirement nor a new exception."
+    },
+    {
+      "unit": "p3",
+      "disposition": "structural",
+      "rationale": "Separate the permission and its two exceptions, the exhaustive list of uses, and each of the three list items."
+    },
+    {
+      "unit": "p3.label-permission",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.2.5-005"
+      ]
+    },
+    {
+      "unit": "p3.use-restriction",
+      "disposition": "definition",
+      "requirements": [
+        "S6.2.5-005",
+        "S6.2.5-006",
+        "S6.2.5-007",
+        "S6.2.5-008"
+      ],
+      "rationale": "The ensuing list is exhaustive, not an assertion that every labeled statement can be referenced. S6.2.5-005 admits unused labels, while S6.2.5-006 through -008 retain the conditions on the three uses. Other branch, FORMAT, and DO restrictions remain dependencies, not additional local S requirements."
+    },
+    {
+      "unit": "p3.b1",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.2.5-006"
+      ]
+    },
+    {
+      "unit": "p3.b2",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.2.5-007"
+      ]
+    },
+    {
+      "unit": "p3.b3",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.2.5-008"
+      ]
+    }
+  ],
+  "requirements": [
+    {
+      "id": "R611",
+      "title": "Label tokens contain one through five decimal digits",
+      "source": "6.2.5 R611; J3/24-007 PDF p70 (printed p56).",
+      "source_units": [
+        "R611"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "A label token has one to five digits, inclusive. Its grammar admits neither a sign nor the decimal point, exponent, or kind suffix of a numeric literal. The length limit applies to the spelling, including leading zeros, and to references as well as definitions. C603 separately excludes spellings containing only zeros.",
+      "facets": [
+        "one-to-five-digits",
+        "all-decimal-digits",
+        "six-digit-definition",
+        "zero-padded-overlength-definition",
+        "zero-padded-overlength-reference",
+        "nondigit-reference"
+      ],
+      "pending": {},
+      "oracle": "Execute a control with every permitted digit and each permitted length. Isolate six-digit definitions, including 000001 whose value would otherwise be valid. Overlength references to existing labels use six-digit zero-padded spellings in GO TO, FMT=, and label-DO contexts. Nondigit GO TO operands have an existing label 10 as their repaired target. Separate repaired programs compile and check their results.",
+      "oracle_limitation": "An absent GO TO operand would primarily test the enclosing statement syntax, and an out-of-range reference with no possible conforming target could also fail scope resolution; neither is used as the lexical oracle. Required means a detection/reporting capability under 4.2 p2(3), not a universal requirement to reject extensions. Negative fixtures use the suite's strict rejection contract.",
+      "dependencies": "6.1.3 (digits); 4.1.2 p2 and 4.2 p2(3); 6.2.5 C603; R1159, R1215/C1232, R1121/C1137 for the otherwise legal reference contexts."
+    },
+    {
+      "id": "C603",
+      "title": "A label has a nonzero digit",
+      "source": "6.2.5 C603 (R611); J3/24-007 PDF p70.",
+      "source_units": [
+        "C603"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "Every occurrence of a label includes at least one nonzero digit. Zeros are allowed elsewhere, including before the nonzero digit. This associated constraint applies wherever R611 is used, not just to a statement's defining label.",
+      "facets": [
+        "nonzero-at-each-position",
+        "all-zero-definition",
+        "nonzero-branch-reference",
+        "nonzero-format-reference",
+        "nonzero-do-reference"
+      ],
+      "pending": {},
+      "oracle": "Test a single nonzero digit in each of the five positions of a five-digit label. Independently reject all-zero definitions of lengths one through five on unused CONTINUE statements. Minimal controls replace the final zero with one in separate scopes. Conforming branch, FORMAT, and DO references exercise padded nonzero label operands and check their effects.",
+      "oracle_limitation": "All-zero references cannot name a conforming definition; their rejection could instead be caused by a missing target. These are deliberately not used as isolated C603 negatives. The reference-position facets are positive controls, not evidence that a zero operand is diagnosed. Detection/reporting, rather than mandatory error severity, follows from 4.2.",
+      "dependencies": "4.1.2 p2 (associated constraints apply at every use of the syntax term); 4.2 p2(3); R611; C1232 and C1137."
+    },
+    {
+      "id": "S6.2.5-001",
+      "title": "A label belongs to a nonblank statement",
+      "source": "6.2.5 p2, first sentence; J3/24-007 PDF p70.",
+      "source_units": [
+        "p2.nonblank"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "When a statement is labeled, the statement itself contains a nonblank character. A label does not supply the missing statement, and trailing commentary does not turn an empty statement into a nonblank one.",
+      "facets": [
+        "nonblank-executable",
+        "nonblank-nonexecutable",
+        "blank-statement",
+        "comment-only-statement"
+      ],
+      "pending": {},
+      "oracle": "Use conforming labeled executable and declaration statements as positive controls. Out-of-band manifests isolate an unused label followed by a newline, and an unused label followed only by commentary. Their minimally repaired controls insert CONTINUE; no unresolved branch reference is introduced.",
+      "oracle_limitation": "The diagnostic classification is based on disallowed source form in Clause 6 and 4.2 p2(5), not merely the word 'shall'. The standard requires detection/reporting capability, not error severity or rejection. Warning-only extension handling must be distinguished from silent acceptance in observations; the runner's reject verdict alone is not proof of nonconformance.",
+      "dependencies": "4.1.2 p3; 4.2 p2(5); 6.3.1; 6.3.2.3 (comments do not affect interpretation); 6.3.2.5 (termination)."
+    },
+    {
+      "id": "S6.2.5-002",
+      "title": "Labels identify distinct statements within their scope",
+      "source": "6.2.5 p2, second sentence, interpreted with 19.1 p2 and 19.3.1 p1/p3.",
+      "source_units": [
+        "p2.unique"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "Two statements in one label scope cannot have the same label. Statement labels are local identifiers of class (1), with inclusive scope: nested BLOCK scoping units do not create independent label namespaces. Separate nonblock scopes can reuse a label. The leading-zero equivalence in S6.2.5-003 also applies to this uniqueness restriction.",
+      "facets": [
+        "distinct-labels",
+        "independent-scopes",
+        "duplicate-spelling",
+        "duplicate-leading-zeros",
+        "enclosing-block-scope",
+        "sibling-block-scopes"
+      ],
+      "pending": {},
+      "oracle": "Conforming controls use distinct labels within an inclusive scope and reuse one spelling in a main program, its internal subprogram, and an external subprogram. Isolate repeated labels, zero-prefixed duplicates, a duplicate between a host and its BLOCK, and a duplicate in sibling BLOCK constructs. All offending labels are on unused CONTINUE statements: no branch legality or target lookup can mask the uniqueness test.",
+      "oracle_limitation": "Required diagnostics follow from the explicit Clause 19 scope rules and 4.2 p2(6), not from treating every prose restriction as a numbered constraint. The suite tests rejection; a diagnosed extension remains distinguishable from an undiagnosed violation.",
+      "dependencies": "3.83 (inclusive scope); 3.120 (scoping unit); 19.1 p2; 19.3.1 p1(1)/p3; 4.2 p2(6); 6.2.5 p2 leading-zero equivalence."
+    },
+    {
+      "id": "S6.2.5-003",
+      "title": "Zero prefixes do not change label identity",
+      "source": "6.2.5 p2, third sentence.",
+      "source_units": [
+        "p2.leading-zeros"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Within the permitted one-to-five-digit spelling, inserting or removing leading zeros does not change which statement a label identifies. The resulting identity is decimal, not an octal-literal interpretation. Nonleading digits remain significant.",
+      "facets": [
+        "padded-definition",
+        "padded-reference",
+        "decimal-identity"
+      ],
+      "pending": {},
+      "oracle": "Branch with an unpadded reference to a padded definition and vice versa. Distinct labels 8, 10, and 100 have different effects; using 010 must select 10 rather than 8 or 100. All paths end in explicit checks or ERROR STOP, without relying on source order to conceal a wrong target.",
+      "dependencies": "R611 and C603 bound the permitted spellings; 11.2 supplies legal branch contexts. Duplicate equivalent definitions are tested under S6.2.5-002, not used as an additional effect oracle."
+    },
+    {
+      "id": "S6.2.5-004",
+      "title": "Every individual label value is available",
+      "source": "6.2.5 p2, fourth and fifth sentences.",
+      "source_units": [
+        "p2.label-values",
+        "p2.processor-limit"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "There are 99999 distinct permissible labels, corresponding to values 1 through 99999, and a processor accepts any one of them as a label. This is independent of a permitted limit on how many distinct labels occur in a single program unit.",
+      "facets": [
+        "range-endpoints",
+        "decimal-width-boundaries",
+        "beyond-signed-16-bit",
+        "beyond-unsigned-16-bit"
+      ],
+      "pending": {},
+      "oracle": "Execute a small chain using 1, 99999, both sides of every decimal-width transition, and 32767/32768 and 65535/65536. Each branch skips an ERROR STOP, so mere fallthrough cannot pass. These large values occur as labels, never as default-integer literal expressions. Assert the exact number of visited targets.",
+      "oracle_limitation": "This finite boundary sample does not claim exhaustive execution of all 99999 values. It uses fourteen labels, not a stress test demanding all possible labels simultaneously. A documented processor complexity limit must be reviewed separately.",
+      "dependencies": "R611; C603; 4.2 p2(1), including implementation size/complexity limits."
+    },
+    {
+      "id": "S6.2.5-005",
+      "title": "Complete statements may be labeled subject to source-form exceptions",
+      "source": "6.2.5 p3, introductory sentence, including its two exceptions.",
+      "source_units": [
+        "p3.label-permission",
+        "p3.use-restriction"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "A statement can start with a label unless it is part of another statement or follows a semicolon on the same line in fixed form. The latter exception does not prohibit labels after a semicolon in free form. Eligible nonexecutable statements and program boundary statements may also have unused labels; being labeled does not make a statement a branch target or a FORMAT or DO terminal statement. Label references are limited to the three uses in S6.2.5-006 through -008.",
+      "facets": [
+        "executable-statement",
+        "nonexecutable-statement",
+        "program-boundaries",
+        "free-semicolon",
+        "fixed-initial-statement",
+        "fixed-semicolon-exclusion",
+        "embedded-statement-exclusion"
+      ],
+      "pending": {},
+      "oracle": "Run controls with unused declaration and PROGRAM/END PROGRAM labels, executable labels, a free-form label after a semicolon, and an ordinary single-line IF whose action is not independently labeled. Diagnose a label inserted before that embedded action. A byte-preserved fixed-form pair keeps every line at 72 characters: a first statement labeled in columns 1-5 is valid; a second statement labeled after a semicolon is not. The fixed-form negative is repaired by deleting only the second label.",
+      "oracle_limitation": "The exclusions are source-form restrictions, diagnosed under 4.2 p2(5), corroborated by 4.1.4 p1 and 6.3.3.5 p1. They are not tests of branching to declarations or entering constructs. Required detection/reporting does not require every processor to reject an extension with an error. The isolated fixed-semicolon manifest explicitly allows the reference diagnostic code misc-source-extensions on its source, since that portability diagnostic reports the forbidden label placement. This is not a blanket allowance for arbitrary warnings or a change to the LFortran diagnostic contract.",
+      "dependencies": "4.1.4 p1; 4.2 p2(5); 6.3.2.2 and 6.3.2.5/6; 6.3.3.1/4/5. Other labeled constructs are legal only subject to their own statement and scope rules."
+    },
+    {
+      "id": "S6.2.5-006",
+      "title": "A branch label selects its permitted destination",
+      "source": "6.2.5 p3, first bullet, with 11.2.",
+      "source_units": [
+        "p3.b1",
+        "p3.use-restriction"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A label on a branch target statement identifies a possible destination of a branch. This applies only to the statement classes and control-flow contexts allowed by 11.2 and the construct rules; a branch remains within the same inclusive scope. Merely attaching a label to another statement does not make that statement a legal destination.",
+      "facets": [
+        "forward-branch",
+        "backward-branch"
+      ],
+      "pending": {},
+      "oracle": "A forward branch skips ERROR STOP and reaches a labeled assignment. A bounded backward branch to a labeled assignment changes a counter exactly three times. Every target is an action statement in the same scope, outside any construct-entry ambiguity.",
+      "oracle_limitation": "These are assertions about conforming execution, not a demand to diagnose every forbidden branch or trap it at runtime.",
+      "dependencies": "11.2.1 and 11.2.2; 3.83; 19.1 and 19.3.1."
+    },
+    {
+      "id": "S6.2.5-007",
+      "title": "A FORMAT label selects a data-transfer format",
+      "source": "6.2.5 p3, second bullet, with 12.6 and 13.2.1.",
+      "source_units": [
+        "p3.b2",
+        "p3.use-restriction"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A FORMAT statement's label identifies that statement as a format specification for data transfer. A label-valued FMT= specifier refers to a FORMAT statement in the same inclusive scope; neither an arbitrary labeled executable statement nor a label in another scope satisfies this premise.",
+      "facets": [
+        "output-format",
+        "input-format",
+        "distinct-formats"
+      ],
+      "pending": {},
+      "oracle": "Use two labeled FORMAT statements for internal output and compare complete character records with distinct exact strings. Read an internal record with a labeled integer format and check the resulting integer. No external device behavior or list-directed spacing is part of the oracle.",
+      "dependencies": "12.6.2.2 R1215/C1232; 13.2.1 R1301/C1301. Their independent diagnostic obligations are not reauthored here."
+    },
+    {
+      "id": "S6.2.5-008",
+      "title": "A label can identify a DO construct's terminal statement",
+      "source": "6.2.5 p3, third bullet, with 11.1.7.",
+      "source_units": [
+        "p3.b3",
+        "p3.use-restriction"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For the forms of DO that specify a terminal label, that label identifies the matching terminal statement. This is not a requirement that every DO be labeled, and it does not license the deleted nonblock or shared-termination DO forms.",
+      "facets": [
+        "continue-terminal",
+        "end-do-terminal"
+      ],
+      "pending": {},
+      "oracle": "Run independent integer-counted loops ending at labeled CONTINUE and labeled END DO statements. Check the exact accumulated sum and final loop-variable value. Do not branch into a loop, share a terminal statement, or use an arbitrary action statement as the terminal.",
+      "oracle_limitation": "Label-DO is obsolescent but remains permitted. An obsolescence diagnostic does not make the conforming execution invalid. Rejection of a malformed terminal is not inferred from this effect requirement.",
+      "dependencies": "11.1.7.2 R1121, R1133, R1134, C1135-C1137; 11.1.7.4 execution rules."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_6_2_5.md"
+  },
+  "review_fingerprint": "9b48b39ac4a344bbb56204bcd8e0cd043eaf0c878301564afd4dc376acdf8529",
+  "review_rationale": "Independent source-first review of J3/24-007 PDF page 70 and referenced source-form, control-flow, and Clause 19 inclusive-scope rules checked all six base units and ten subdivisions. Premises, exceptions, the processor-limit permission, diagnostic obligations, and branch/FORMAT/DO use distinctions were retained."
+}

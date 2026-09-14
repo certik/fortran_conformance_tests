@@ -1,4 +1,5 @@
 ! rule: C601
+! covers: length-64
 ! reference-warnings: long-names
 ! Each offending name is exactly 64 characters and occurs only once.
 ! case: variable

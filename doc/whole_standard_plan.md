@@ -211,6 +211,12 @@ before publishing a report or updating a baseline. This check cannot detect
 every uncommitted compiler change that retains the same version string, so
 do not test against an installation another process is actively rebuilding.
 
+Catalogue source reviews are also content-bound. Final source closure
+requires an explicit reviewed catalogue for every content-bearing section,
+including sections consisting only of numbered rules. Removing a fine
+subdivision or changing its disposition invalidates the catalogue review;
+it cannot silently reduce the unresolved-unit count under an old approval.
+
 ## 7. Calibration results and remaining limits
 
 The multi-file C bridge, byte-preserved fixed-form/EOF pair, and external
@@ -240,11 +246,25 @@ header discovery and the remaining IEEE/profile families should be
 calibrated when their work units are reached; the basic C bridge does not
 claim to cover those interfaces.
 
-## 8. Immediate next batch
+## 8. Rollout progress and next batch
 
-Review and commit this infrastructure checkpoint, then open the fresh
-coordinator session. First ratify the extraction/census conventions and
-review the outstanding assignment catalogue questions. Next assign two
-small, disjoint source work units using the protocol above. Use their
-results to calibrate model routing and review throughput before scheduling
-the broader waves. Do not begin by generating thousands of `.f90` files.
+`doc/rollout_progress.json` records reviewed batch checkpoints. The first
+implementation batch covers 6.2.2 and 6.2.5, using separate author
+worktrees and an independent source-first reviewer. The coordinator
+continued in the existing session, while authors and reviewers received
+fresh bounded contexts. No large factory or per-agent model override was
+used, so this is not an A/B model benchmark.
+
+The preliminary census audit verified global bookkeeping and sampled
+twelve PDF pages. It did not ratify the whole census. It exposed a
+numbered-only closure loophole and missing content binding for catalogue
+reviews; both now have regression coverage. The subsequent fixture review
+also found and repaired a short-diagnostic-format omission in manifest
+rejection tests. See `doc/source_audits/`.
+
+After the first reviewed checkpoint, the next queued source units are
+6.2.3 (Constants) and 6.2.4 (Operators). Keep their scopes disjoint and
+review the actual source, especially any restated syntax and dependencies.
+The outstanding assignment/census questions remain explicit. Compare
+model routing on bounded packets before widening concurrency; do not
+jump from this batch to thousands of unreviewed programs.

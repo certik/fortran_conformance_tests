@@ -160,13 +160,14 @@ class Registry:
             raise SuiteError('numbered-rule inventory differs from the pinned PDF census')
         self.legacy = self.index.get('legacy_requirements', {})
         self.catalogues = {}
+        self.catalogue_paths = {}
         self.requirements = {}
         self.requirement_sections = {}
         self.accounting = {}
         for filename in strings(self.index['catalogues'], 'catalogues', nonempty=True):
             catalogue = read_json(safe_path(self.root, filename))
             fields(catalogue, ('schema_version', 'section', 'requirements', 'accounting'),
-                   ('subunits', 'render', 'review_state'), filename)
+                   ('subunits', 'render', 'review_state', 'review_fingerprint', 'review_rationale'), filename)
             section = catalogue['section']
             if section not in self.sections or section in self.catalogues:
                 raise SuiteError(f'{filename}: unknown or duplicate source section {section}')
@@ -175,6 +176,7 @@ class Registry:
             if catalogue.get('review_state', 'draft') not in ('draft', 'reviewed'):
                 raise SuiteError(f'{filename}: invalid catalogue review state')
             self.catalogues[section] = catalogue
+            self.catalogue_paths[section] = safe_path(self.root, filename)
             for requirement in catalogue['requirements']:
                 self._requirement(requirement, section)
         for section, catalogue in self.catalogues.items():
@@ -251,6 +253,32 @@ class Registry:
                 if unit not in accounting or requirement['id'] not in accounting[unit].get('requirements', []):
                     raise SuiteError(f"{requirement['id']}: source anchor {unit} is not mapped back to the requirement")
         self.accounting[section] = accounting
+
+    def catalogue_fingerprint(self, section):
+        if section not in self.catalogues:
+            raise SuiteError(f'unknown catalogue section {section}')
+        content = {key: value for key, value in self.catalogues[section].items()
+                   if key not in ('review_state', 'review_fingerprint', 'review_rationale')}
+        material = dict(standard=self.standard, source_section=self.sections[section], catalogue=content)
+        return hashlib.sha256(json.dumps(material, sort_keys=True).encode()).hexdigest()
+
+    def catalogue_review_state(self, section):
+        catalogue = self.catalogues[section]
+        state = catalogue.get('review_state', 'draft')
+        if state == 'reviewed':
+            if (catalogue.get('review_fingerprint') != self.catalogue_fingerprint(section)
+                    or not isinstance(catalogue.get('review_rationale'), str)
+                    or not catalogue['review_rationale'].strip()):
+                return 'stale'
+        return state
+
+    def record_catalogue_review(self, section, rationale):
+        string(rationale, 'catalogue review rationale')
+        fingerprint = self.catalogue_fingerprint(section)
+        catalogue = self.catalogues[section]
+        catalogue.update(review_state='reviewed', review_fingerprint=fingerprint,
+                         review_rationale=rationale)
+        write_json(self.catalogue_paths[section], catalogue)
 
     def _review_record(self, name, record):
         fields(record, ('state', 'rationale', 'sources', 'fingerprint'), ('references',), f'review {name}')
@@ -377,6 +405,7 @@ class Registry:
         fine = [(unit, record) for section, records in self.accounting.items()
                 for unit, record in records.items() if unit not in self.sections[section]['units']]
         unresolved_fine = sum(record['disposition'] == 'unresolved' for _, record in fine)
+        catalogue_reviews = {section: self.catalogue_review_state(section) for section in self.catalogues}
         return dict(
             sections=len(self.sections), base_source_units=total, accounted_base_units=accounted,
             unresolved_base_units=unresolved, detailed_catalogues=len(self.catalogues),
@@ -385,8 +414,10 @@ class Registry:
             pending_facets=sum(len(item['pending']) for item in self.requirements.values()),
             fine_source_units=len(fine), unresolved_fine_units=unresolved_fine,
             source_inventory_review=self.source_review_state,
-            complete_source=self.source_review_state == 'reviewed' and unresolved == 0 and unresolved_fine == 0 and all(
-                item.get('review_state') == 'reviewed' for item in self.catalogues.values()))
+            catalogue_reviews=catalogue_reviews,
+            complete_source=self.source_review_state == 'reviewed' and unresolved == 0
+            and unresolved_fine == 0 and not sections_without_catalogues
+            and all(state == 'reviewed' for state in catalogue_reviews.values()))
 
     def render(self, write=False):
         errors = []

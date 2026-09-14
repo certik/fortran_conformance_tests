@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "section": "6.2.2",
+  "review_state": "reviewed",
+  "requirements": [
+    {
+      "id": "R603",
+      "title": "A name begins with a letter and has an alphanumeric suffix",
+      "source": "6.2.2 R603 (PDF page 68, printed page 54, line 14).",
+      "source_units": [
+        "R603"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "A name starts with a Fortran letter, followed by zero or more Fortran letters, decimal digits, or underscores. Digits and underscores are allowed after, but not instead of, the initial letter. Special characters are not name characters. C601 separately limits the total length.",
+      "facets": [
+        "single-letter",
+        "letter-suffix",
+        "digit-suffix",
+        "embedded-underscore",
+        "consecutive-underscores",
+        "trailing-underscore",
+        "initial-letter",
+        "alphanumeric-suffix"
+      ],
+      "pending": {},
+      "oracle": "Conforming programs must compile and execute their integer self-checks. The single-letter cases exercise an empty suffix; the longer spellings exercise every upper-case and lower-case letter and every decimal digit in suffix positions. Underscore controls check embedded, consecutive, and trailing occurrences. Isolated declarations violate either the initial-letter condition or the suffix character class; each has a minimal conforming repair. Under 4.2 p2(3), these syntax violations require diagnostic capability, not a particular severity, rule number, or refusal to compile.",
+      "oracle_limitation": "These are free-form name-token cases, not tests of fixed-form blank handling, continuation, keyword use, or case equivalence. The runner requires LFortran to reject with a diagnostic at the marker; this is its diagnostic-testing convention, not an additional R603 obligation. Reference results must distinguish a missing diagnostic from acceptance with a relevant diagnostic.",
+      "dependencies": "4.1.1 p1 defines optional repetition. 6.1.1 p2/R601, 6.1.2 p1-p3, 6.1.3 p1-p3, and 6.1.4/R602 define the character classes (PDF page 67). 4.1.3/R402 applies name syntax to assumed xyz-name rules. 4.2 p2(3) establishes diagnostic capability; the non-FORMAT format-specification exception in 4.2 p3 is inapplicable to these declarations."
+    },
+    {
+      "id": "C601",
+      "title": "A name has at most 63 characters",
+      "source": "6.2.2 C601 (PDF page 68, printed page 54, line 15), associated with R603.",
+      "source_units": [
+        "C601"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "The total length of a name cannot exceed 63 characters. As a constraint on R603, the limit applies wherever name syntax is used, including the assumed xyz-name forms; it is not limited to variable declarations.",
+      "facets": [
+        "length-63",
+        "distinct-final-character",
+        "module",
+        "type",
+        "component",
+        "procedure",
+        "dummy",
+        "program",
+        "length-64"
+      ],
+      "pending": {},
+      "oracle": "Preserve C601_valid and its eight existing facets: the boundary-length names must compile and execute all existing checks, including separately valued names differing only in character 63. Preserve the seven C601_invalid execution IDs and their single-occurrence 64-character names. Each isolated violation must be diagnosed. The invalid container claims only length-64, which is true of every contained case; its different entity contexts are not all credited to each case.",
+      "oracle_limitation": "The standard requires diagnostic capability rather than fatal rejection. The existing reference allowance for the long-names warning is retained, so a relevant portability diagnostic can corroborate C601 even if compilation succeeds. The runner's stronger LFortran rejection convention and the existing valid fixture's effect evidence classification are unchanged.",
+      "dependencies": "4.1.2 p2 makes a syntax-associated constraint part of that syntax term at every occurrence. 4.1.3/R402 defines assumed xyz-name syntax. 4.2 p2(3) requires detection/reporting capability for numbered constraints. R603 supplies the character grammar; 5.5.1 p1 and 6.2.2 p1 describe uses of names without adding a separate length obligation."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "definition",
+      "rationale": "PDF page 68, printed page 54, lines 12-13: describes representative entities identified by names, consistently with 5.5.1 p1. It adds neither a separate restriction nor an exhaustive list of required contexts, so no S6.2.2 entry is allocated."
+    },
+    {
+      "unit": "R603",
+      "disposition": "requirements",
+      "requirements": [
+        "R603"
+      ]
+    },
+    {
+      "unit": "C601",
+      "disposition": "requirements",
+      "requirements": [
+        "C601"
+      ]
+    },
+    {
+      "unit": "note1",
+      "disposition": "informative",
+      "rationale": "PDF page 68, printed page 54, NOTE 1: examples illustrate suffix digits and single, consecutive, and trailing underscores already admitted by R603. The examples are not independent obligations."
+    },
+    {
+      "unit": "note2",
+      "disposition": "informative",
+      "rationale": "PDF page 69, printed page 55, NOTE 2 before 6.2.3: explains the terminology distinction between a syntactic name and a context-dependent identifier. It does not impose name syntax on every kind of identifier."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_6_2_2.md"
+  },
+  "review_fingerprint": "450fff74fa89502d8fb24031d7283823bd728773bf7116bc2739c27afb30b483",
+  "review_rationale": "Independent source-first review of J3/24-007 PDF pages 68-69 checked p1, R603, C601, and both notes, including the cross-page second note. R/C partitioning, source dispositions, and named facets were found sound; no additional S obligation was inferred from notes."
+}
