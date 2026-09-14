@@ -1,7 +1,7 @@
+! profile: absent-real-kind-seven
 ! C722 (R714) The value of kind-param shall specify an approximation method
 ! that exists on the processor.
-! Kind 7 is used as the nonexistent kind: no known compiler has real kind 7
-! (flang has 2 and 3, gfortran and flang have 10; 7 is free everywhere).
+! The profile establishes that kind 7 is absent before these cases are compiled.
 subroutine c722_digit_string()
     implicit none
     real :: r

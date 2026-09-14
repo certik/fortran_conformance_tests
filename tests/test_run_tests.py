@@ -7,7 +7,7 @@ import sys
 import tempfile
 import time
 import unittest
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 import run_tests as runner
 
@@ -297,10 +297,10 @@ case.f90:5-5:1-20: semantic warning [C801]: repeated
     def test_xfail_update_preserves_unrun_skipped_and_error_entries(self):
         path = self.source('xfail.txt', 'unrun  # old\nskipped  # old\nbroken  # old\nfixed  # old\n')
         results = [
-            {'name': 'skipped', 'check': runner.Check('skip')},
-            {'name': 'broken', 'check': runner.Check('error')},
-            {'name': 'fixed', 'check': runner.Check('pass')},
-            {'name': 'new', 'check': runner.Check('fail', 'reason')},
+            {'name': 'skipped', 'check': runner.Check('skip'), 'review': runner.Review('source-reviewed')},
+            {'name': 'broken', 'check': runner.Check('error'), 'review': runner.Review('source-reviewed')},
+            {'name': 'fixed', 'check': runner.Check('pass'), 'review': runner.Review('source-reviewed')},
+            {'name': 'new', 'check': runner.Check('fail', 'reason'), 'review': runner.Review('source-reviewed')},
         ]
         runner.update_xfail(path, results)
         self.assertEqual(Path(path).read_text(),
@@ -310,7 +310,12 @@ case.f90:5-5:1-20: semantic warning [C801]: repeated
         self.source('C601_valid.f90', 'end\n')
         output = io.StringIO()
         ref = runner.Compiler('gfortran', 'gfortran', 'f2023')
+        registry = Mock()
+        registry.legacy = {}
+        registry.fingerprint.return_value = '0' * 64
+        registry.review.return_value = runner.Review('source-reviewed')
         with patch.object(runner, 'HERE', str(self.root)), \
+                patch.object(runner, 'Registry', return_value=registry), \
                 patch.object(sys, 'argv', ['run_tests.py', '--reference', 'gfortran']), \
                 patch.object(runner, 'compiler', side_effect=[self.lf, ref]), \
                 patch.object(runner, 'check_valid', side_effect=[
@@ -320,44 +325,76 @@ case.f90:5-5:1-20: semantic warning [C801]: repeated
         self.assertEqual(result, 0)
         self.assertIn('agree with the test on 0/1 cases', output.getvalue())
 
+    def test_full_source_gate_cannot_be_silently_ignored(self):
+        with patch.object(sys, 'argv', ['run_tests.py', '--require-complete-source']), \
+                contextlib.redirect_stderr(io.StringIO()):
+            with self.assertRaises(SystemExit) as error:
+                runner.main()
+        self.assertEqual(error.exception.code, 2)
+
+    def test_draft_mode_cannot_update_the_baseline(self):
+        with patch.object(sys, 'argv', ['run_tests.py', '--allow-unreviewed', '--update-xfail']), \
+                contextlib.redirect_stderr(io.StringIO()):
+            with self.assertRaises(SystemExit) as error:
+                runner.main()
+        self.assertEqual(error.exception.code, 2)
+
+    def test_caf_wrapper_queries_the_actual_gnu_compiler(self):
+        responses = [
+            runner.ProcessResult(0, '\nOpenCoarrays Coarray Fortran Compiler Wrapper (caf version test)\n'),
+            runner.ProcessResult(0, '/toolchain/mpifort -fcoarray=lib ${@} /runtime/libcaf_mpi.a\n'),
+            runner.ProcessResult(0, 'GNU Fortran (GCC) 14.4.0\n'),
+        ]
+        with patch.object(runner, 'run', side_effect=responses) as run:
+            comp = runner.compiler('caf', False, 'f2018', [], 1)
+        self.assertEqual(comp.family, 'gfortran')
+        self.assertEqual(comp.wrapper, 'opencoarrays')
+        self.assertIn('14.4.0', comp.version)
+        self.assertEqual(run.call_args[0][0], ['/toolchain/mpifort', '--version'])
+        self.assertNotIn('-fcoarray=single', comp.flags('source.f90', runner.Metadata(coarray=True)))
+
+    def test_binary_stdin_and_output_are_not_normalized(self):
+        payload = b'\xff\r\n\x00'
+        result = runner.run([sys.executable, '-c',
+                             'import sys; sys.stdout.buffer.write(sys.stdin.buffer.read())'],
+                            str(self.root), stdin=payload)
+        self.assertEqual(result.stdout_bytes, payload)
+
+    def test_snapshot_detects_input_and_compiler_changes(self):
+        case = Mock()
+        case.review_key = 'fixture'
+        case.fingerprint.return_value = 'b' * 64
+        old = runner.Compiler('lfortran', 'lfortran', 'f23', version='old')
+        new = runner.Compiler('lfortran', 'lfortran', 'f23', version='new')
+        with patch.object(runner, 'Registry'), patch.object(runner, 'compiler', return_value=new):
+            errors = runner.confirm_snapshot([old], [case], {'fixture': 'a' * 64})
+        self.assertTrue(any('inputs or requirement changed' in error for error in errors))
+        self.assertTrue(any('compiler version changed' in error for error in errors))
+
+    def test_provisional_report_cannot_approve_a_fixture(self):
+        registry = Mock()
+        registry.requirements = {}
+        registry.legacy = {}
+        case = Mock()
+        case.review_key = 'fixture'
+        case.rule = 'C601'
+        case.fingerprint.return_value = 'a' * 64
+        report = self.source('report.json', '{"run_errors": ["compiler changed"]}')
+        with self.assertRaisesRegex(runner.SuiteError, 'provisional'):
+            runner.record_fixture_review(registry, [case], 'fixture', 'reference-validated',
+                                         'Reviewed.', [], report)
+        registry.record_review.assert_not_called()
+
 
 class CorpusTests(unittest.TestCase):
     root = Path(__file__).resolve().parent
 
     def test_all_catalogue_requirements_have_typed_case_coverage(self):
-        catalogue = (self.root.parent / 'doc/fortran_2023_S10_2_1_3.md').read_text()
-        entries = dict(re.findall(
-            r'^### (S10\.2\.1\.3-\d{3}):[^\n]*\n(.*?)(?=^### |^## |\Z)',
-            catalogue, re.M | re.S))
-        covered = collections.defaultdict(set)
-        for path, rule, kind in runner.discover(str(self.root), 'S10.2.1.3'):
-            self.assertEqual(kind, 'valid')
-            self.assertIn(rule, entries)
-            meta = runner.metadata(path, rule)
-            body = entries[rule]
-            expected = 'context-only' if '**Class:** Undefined result.' in body else (
-                'positive-control' if '**Class:** Restriction.' in body else 'effect')
-            self.assertEqual(meta.evidence, expected, path)
-            facets = set(re.findall(r'`([a-z0-9-]+)`',
-                                    body.split('**Facets:**', 1)[1].split('**Oracle', 1)[0]))
-            self.assertTrue(set(meta.facets) <= facets, path)
-            self.assertEqual(len(meta.facets), len(set(meta.facets)), path)
-            covered[rule].update(meta.facets)
-        self.assertEqual(set(covered), set(entries))
-        self.assertEqual(len(entries), 32)
-        pending = {}
-        for rule, body in entries.items():
-            facets = set(re.findall(r'`([a-z0-9-]+)`',
-                                    body.split('**Facets:**', 1)[1].split('**Oracle', 1)[0]))
-            if facets - covered[rule]:
-                pending[rule] = facets - covered[rule]
-        self.assertEqual(pending, {
-            'S10.2.1.3-002': {'lhs-affects-rhs', 'rhs-affects-lhs'},
-            'S10.2.1.3-004': {'unallocated-scalar-rhs'},
-            'S10.2.1.3-020': {'nondefault-kind-profile'},
-            'S10.2.1.3-021': {'replacement-profile'},
-            'S10.2.1.3-028': {'allocated-destination-unallocated-source'},
-        })
+        registry = runner.Registry()
+        cases = runner.collect_cases(str(self.root), registry)
+        covered = registry.validate_cases(cases)
+        self.assertEqual(set(covered), set(registry.requirements))
+        registry.render()
 
     def test_name_length_boundaries_are_exact(self):
         for path in (self.root / 'clause06').glob('C601_*.f90'):
@@ -380,8 +417,10 @@ class CorpusTests(unittest.TestCase):
             if not rule.startswith('S'):
                 self.assertIn(rule, ids, path)
 
-    def test_new_sources_fit_reference_free_form_lines(self):
-        for path, _, _ in runner.discover(str(self.root), ['S10.2.1.3', 'C601', 'C1401']):
+    def test_legacy_sources_fit_reference_free_form_lines(self):
+        for path, _, _ in runner.discover(str(self.root)):
+            if not path.endswith('.f90'):
+                continue
             for line_number, line in enumerate(Path(path).read_text().splitlines(), 1):
                 self.assertLessEqual(len(line.split('!')[0]), 132, (path, line_number))
 

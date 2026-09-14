@@ -2,7 +2,7 @@
 subroutine c1121_real()
     implicit none
     real :: x
-    do x = 1.0, 3.0   ! {error C1121 real}
+    do x = 1, 3   ! {error C1121 real}
     end do
 end subroutine
 subroutine c1121_logical()
@@ -20,6 +20,6 @@ end subroutine
 subroutine c1121_real_dummy(x)
     implicit none
     real, intent(inout) :: x
-    do x = 1.0, 3.0   ! {error C1121 real-dummy}
+    do x = 1, 3   ! {error C1121 real-dummy}
     end do
 end subroutine

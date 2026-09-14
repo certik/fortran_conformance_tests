@@ -1,6 +1,6 @@
-! S15.5.2.4 (not a numbered rule): "The dummy argument shall be type
-! compatible with the actual argument ... the actual argument shall have the
-! same kind type parameters" (15.5.2.4 para 2, normative text).  Mixed-kind
+! S15.5.2.4 is a legacy suite label, retained for stable case IDs.
+! Actual sources: F2023 15.5.2.5 p2 (type compatibility) and p3 (kind agreement).
+! This is an additional LFortran diagnostic-policy fixture. Mixed-kind
 ! argument mistakes are the most common kind-related error in practice, so
 ! they are tested even though the standard does not number this requirement.
 ! Each case uses an explicit interface (internal procedure or module).

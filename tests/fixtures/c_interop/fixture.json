@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "id": "S18_3_7_001_valid__c_interop",
+  "rule": "S18.3.7-001",
+  "facets": ["value-scalar", "array-pointer", "scalar-result"],
+  "files": ["api.f90", "bridge.c", "main.f90"],
+  "build": [
+    {"id": "api", "source": "api.f90", "language": "fortran", "output": "api.o"},
+    {"id": "bridge", "source": "bridge.c", "language": "c", "output": "bridge.o"},
+    {"id": "main", "source": "main.f90", "language": "fortran", "output": "main.o", "depends_on": ["api"]}
+  ],
+  "link": {"objects": ["api.o", "bridge.o", "main.o"], "output": "program"},
+  "expect": {"phase": "run", "outcome": "success", "exit_code": 0, "stdout": "BRIDGE=20\n"}
+}

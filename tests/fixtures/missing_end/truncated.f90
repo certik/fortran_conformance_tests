@@ -1,0 +1,2 @@
+program truncated
+    implicit none

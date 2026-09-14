@@ -1,3 +1,5 @@
+! oracle-basis: lfortran-policy
+! Character-string formats are exempt from mandatory detection under F2023 4.2 p3.
 ! C1302 (R1303) The optional comma shall not be omitted except (P before
 ! F/E/EN/ES/EX/D/G, before an unrepeated slash, after a slash, around a colon).
 subroutine c1302_two_data_descs()
