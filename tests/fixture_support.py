@@ -203,7 +203,7 @@ def load_fixture(path, profiles):
         else:
             fields(expectation.diagnostic, () if expectation.phase == 'link' else ('file',),
                    ('line', 'anchor', 'contains_any', 'file') if expectation.phase == 'link'
-                   else ('line', 'anchor', 'contains_any'), f'{path}.diagnostic')
+                   else ('line', 'end_line', 'anchor', 'contains_any'), f'{path}.diagnostic')
         diagnostic_file = expectation.diagnostic.get('file')
         if 'file' in expectation.diagnostic:
             string(diagnostic_file, f'{path}.diagnostic.file')
@@ -217,7 +217,8 @@ def load_fixture(path, profiles):
             raise SuiteError(f'{path}: invalid diagnostic line')
         if 'end_line' in expectation.diagnostic:
             end_line = expectation.diagnostic['end_line']
-            if type(end_line) is not int or line is None or end_line < line:
+            if (type(end_line) is not int or line is None or end_line < line
+                    or expectation.phase != 'compile' or anchor):
                 raise SuiteError(f'{path}: invalid diagnostic statement span')
         if line is None and anchor not in ('file', 'eof') and expectation.phase != 'link':
             raise SuiteError(f'{path}: a diagnostic line or external anchor is required')

@@ -1,0 +1,548 @@
+{
+  "schema_version": 1,
+  "section": "7.2",
+  "review_state": "reviewed",
+  "subunits": {
+    "p1": [
+      "p1.values",
+      "p1.denotation",
+      "p1.operations"
+    ],
+    "p2": [
+      "p2.kind-or-length",
+      "p2.integer",
+      "p2.kind-resolution",
+      "p2.length-resolution"
+    ],
+    "p3": [
+      "p3.intrinsic-kind",
+      "p3.character-len",
+      "p3.derived-parameters"
+    ],
+    "R701": [
+      "R701.expression",
+      "R701.asterisk",
+      "R701.colon"
+    ],
+    "C702": [
+      "C702.colon-restriction",
+      "C702.pointer",
+      "C702.allocatable"
+    ],
+    "p6": [
+      "p6.allocate",
+      "p6.intrinsic-assignment",
+      "p6.pointer-assignment",
+      "p6.argument-association"
+    ],
+    "note1": [
+      "note1.functions",
+      "note1.procedure-pointers",
+      "note1.returned-results"
+    ],
+    "p7": [
+      "p7.assumed-length",
+      "p7.dummy",
+      "p7.select-type",
+      "p7.character-constant"
+    ],
+    "note2": [
+      "note2.compile-time-kind",
+      "note2.representation-rationale",
+      "note2.length-name",
+      "note2.runtime-length"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "R701",
+      "title": "Type-parameter values have expression, asterisk and colon forms",
+      "source": "7.2 R701, PDF 76, printed 62, lines 12-14.",
+      "source_units": [
+        "R701",
+        "R701.expression",
+        "R701.asterisk",
+        "R701.colon"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "A type-param-value has a scalar integer expression, an asterisk, or a colon form. Enclosing contexts and associated constraints still apply: a kind parameter requires a constant expression, a colon needs a POINTER or ALLOCATABLE entity, and an assumed-length asterisk needs an allowed context. Expression syntax is not itself a requirement that a length be constant.",
+      "facets": [
+        "scalar-integer-expression",
+        "assumed-token",
+        "deferred-token",
+        "malformed-expression"
+      ],
+      "pending": {},
+      "oracle": "Independent positive controls use a dummy-dependent scalar length expression in a subprogram, an assumed-length character dummy, and a deferred-length allocatable character. A compile-only manifest isolates CHARACTER(LEN=2+) as the malformed form; its repaired control changes only 2+ to 2+1. The diagnostic is bound to that declaration's file and line.",
+      "oracle_limitation": "The malformed form tests expression syntax, not noninteger type, rank, unsupported kinds or invalid asterisk/colon placement. R403/C401 and canonical int-expr typing retain their owners. The three form controls do not independently prove parameter establishment, generic selection or constraint-reporting capability. A required reporting capability is not compulsory fatal rejection; the negative uses diagnose, not legacy reject.",
+      "dependencies": "4.1.2 p2 and 4.2 p2(3) (PDF 45-46); C701/C702 and 7.2 p5-p7; 7.3.2.1/C704 (PDF 77), 7.4.4.2/R721-R723/C726 (PDF 84-85), and 10.1.11 p1-p2 (PDF 185-186). The INTENT(IN), nonoptional scalar integer dummy is a legal specification-expression primary."
+    },
+    {
+      "id": "C701",
+      "title": "A kind type-parameter value is a constant expression",
+      "source": "7.2 C701 (R701), PDF 76, printed 62, line 15.",
+      "source_units": [
+        "C701"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "Where a type-param-value supplies a kind parameter, it must be a constant expression. A legal nonconstant specification expression is insufficient. Neither an assumed asterisk nor a deferred colon supplies a constant kind value, even when the entity's dummy/POINTER attributes satisfy the independent placement rules.",
+      "facets": [
+        "constant-expression",
+        "nonconstant-expression",
+        "assumed-kind",
+        "deferred-kind"
+      ],
+      "pending": {},
+      "oracle": "Three compile-only PDT pairs isolate a nonconstant INTENT(IN) integer dummy expression, an asterisk on a dummy's kind parameter, and a colon on a pointer dummy's kind parameter. Each minimal repair replaces only that parameter value with KIND(0). The PDT's integer KIND parameter is an abstract discriminator and is not used as an intrinsic representation selector. The asterisk/colon pairs give the kind parameter a default, so treating an explicit invalid token as an omitted argument cannot produce a misleading missing-default report. Each invalid report must be located at its offending TYPE declaration.",
+      "oracle_limitation": "Using INTEGER(KIND=runtime) would also enter R706's explicit scalar-int-constant-expr grammar rather than isolate R701/C701, so these witnesses use an actual PDT type-param-value context. The dummy-dependent expression satisfies the independent specification-expression premise. The asterisk is in a dummy context admitted by C7100; the colon entity is a POINTER as required by C702. Their default does not legalize an explicitly assumed/deferred kind. Exact declaration points and source-reviewed constancy-message predicates exclude same-line unsupported-feature reports as well as broad recovery ranges. These observed wording predicates are not standard-mandated diagnostic text. Unimplemented PDT diagnostics, missing-default fallbacks, earlier errors, crashes or a failing repaired control cannot corroborate the intended violation. Unsupported reference controls remain source-only evidence, not an excuse to rewrite the type as an intrinsic kind. Compile success does not claim a runtime result.",
+      "dependencies": "7.5.2.1/R726-R727 (PDF 88), 7.5.3.1/R732-R734/p2-p5 (PDF 91-92), 7.5.9/R754-R755/C7100 (PDF 106), 10.1.11 p1-p2 (PDF 185), 10.1.12 p1 (PDF 187-188), 16.9.118 (PDF 424). 4.2 p2(3) requires reporting capability, not a particular process exit status, severity or rule code."
+    },
+    {
+      "id": "C702",
+      "title": "A colon type-parameter value needs POINTER or ALLOCATABLE",
+      "source": "7.2 C702 (R701), PDF 76, printed 62, lines 16-17.",
+      "source_units": [
+        "C702",
+        "C702.colon-restriction",
+        "C702.pointer",
+        "C702.allocatable"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "A colon may be used as a type-param-value only in the declaration of an entity with POINTER or ALLOCATABLE. Either attribute suffices; it need not be spelled in the same type-declaration statement if the entity receives it in a permitted separate attribute statement. This exception does not allow a deferred kind, waive other declaration constraints, or give an unallocated/disassociated object's deferred parameter a value.",
+      "facets": [
+        "character-allocatable",
+        "character-pointer",
+        "separate-attributes",
+        "pdt-allocatable",
+        "pdt-pointer",
+        "character-missing-attributes",
+        "pdt-missing-attributes"
+      ],
+      "pending": {},
+      "oracle": "Runtime character controls exercise ALLOCATABLE and POINTER independently, checking allocation/association before LEN or payload. A compile-only control supplies the attributes in separate statements. Two compile-only invalid/control pairs remove or add only ALLOCATABLE for a deferred character length and a PDT LEN parameter. A further compile-only PDT POINTER control covers the other exception. Invalid diagnostic locations are the individual declarations.",
+      "oracle_limitation": "All deferred parameters here are lengths. The PDT's LEN parameter is distinct from its integer component type, so an unsupported intrinsic kind cannot be the earlier error. The compile-only controls do not read unused, unallocated or disassociated objects. The two negative cases isolate the missing entity attribute; no shape, allocation, initialization or argument mismatch is introduced. Exact declaration points and source-reviewed POINTER/ALLOCATABLE message predicates distinguish normal attribute diagnostics from same-line unsupported-feature errors; the standard does not mandate those particular words. Reporting is observed independently of ordinary exit status, while verifier/crash/resource failures remain failures.",
+      "dependencies": "7.2 p5-p6, 7.4.4.2 (PDF 84-85), 7.5.3.1 and 7.5.9 (PDF 91-92, 106), 8.5.3/8.5.14 (PDF 120, 131), 8.6.2 and 8.6.12 (PDF 135, 139-140), 9.4.5 p2 (PDF 153), and 4.2 p2(3). Kind constancy remains owned by C701."
+    },
+    {
+      "id": "S7.2-001",
+      "title": "Parameter values affect value domains, denotation and operations",
+      "source": "7.2 p1, PDF 76, printed 62, lines 4-5.",
+      "source_units": [
+        "p1",
+        "p1.values",
+        "p1.denotation",
+        "p1.operations"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For a parameterized type, its value set, value-denoting syntax and operations depend on its parameter values as specified in the defining type and expression rules. This is not a claim that every parameter change changes all three observables, nor that all kinds have different values or increasing integer identifiers. Kind, length, type category and rank are separate.",
+      "facets": [
+        "character-length-values",
+        "concatenation-length",
+        "literal-kind",
+        "operation-kind",
+        "parameter-use-graph",
+        "processor-value-set-interface"
+      ],
+      "pending": {
+        "parameter-use-graph": "Needs a finite source/use graph joining each intrinsic/PDT parameter to canonical denotation, value and operation premises, including parameters used for purposes other than component length. Preserve fixed/assumed/deferred contexts and equal-range or equal-precision processor choices. The character and real witnesses do not establish universal parameter semantics or replace 7.4/7.5/10 catalogues.",
+        "processor-value-set-interface": "Needs versioned, source-supported representation/repertoire/limit evidence and canonical inquiry/value witnesses for integer, real and character methods, with complex paired to the applicable real method and PDT domains derived from their components. Do not infer complete sets from a finite positive control, KIND numbers, STORAGE_SIZE, native ASCII or IEEE assumptions. The present registry has no documentary/interface evidence case type."
+      },
+      "oracle": "A character program checks initialized values of lengths zero, two and four, and the exact value/length of their concatenation. A separate real program obtains default and double-precision kinds from KIND(0.0) and KIND(0.0D0), checks the required precision ordering, literal suffix kinds and the kind of a mixed default/double operation. It uses only zero-valued arithmetic.",
+      "oracle_limitation": "Double precision is guaranteed to have greater decimal precision than default real, so this pair does not assume optional kinds or byte-valued selectors. Equal-precision alternative real kinds are not given an invented ordering. These observations do not prove entire value sets or every operation. No floating tolerance, radix, signed-zero distinction or character code is prescribed.",
+      "dependencies": "7.4.3.2 p1/p4-p7 (PDF 81-82); 7.4.4.1-.2 (PDF 84-85); 10.1.5.3.1 (PDF 178); 10.1.9.3 p4 (PDF 184-185); 16.9.118 and 16.9.122 (PDF 424, 426)."
+    },
+    {
+      "id": "S7.2-002",
+      "title": "Type parameters are integer and intrinsic parameter names are defined",
+      "source": "7.2 p2, PDF 76 lines 6-7, and p3, lines 9-10 (printed 62).",
+      "source_units": [
+        "p2.integer",
+        "p3.intrinsic-kind",
+        "p3.character-len"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Every type parameter has integer type. Every intrinsic type has a parameter named KIND, and character additionally has LEN. The kind of a parameter itself is not the parameter's value: intrinsic KIND parameters have default integer kind by 7.4.1, character LEN's integer kind is processor dependent, and PDT parameters can declare an integer kind explicitly. A LEN parameter need not describe a physical length.",
+      "facets": [
+        "intrinsic-kind-integer-names",
+        "character-length-integer-name",
+        "pdt-integer-parameter-kinds",
+        "parameter-type-use-graph"
+      ],
+      "pending": {
+        "parameter-type-use-graph": "Needs source/aggregate evidence for all parameter definitions and inquiry uses, including inherited PDT parameters, explicit integer parameter kinds and type-specific defaults. The selected integer kind may equal default integer on a processor; a genuinely nondefault parameter-kind witness needs a separately qualified support inventory, not an assertion that kind numbers 1/4/8 exist. Finite inquiries do not prove that no noninteger parameter can enter another context."
+      },
+      "oracle": "One program uses %KIND on all five intrinsic types and passes each result to an explicit default-integer dummy, also comparing against KIND of the initialized object. A separate character %LEN program passes that inquiry to a dummy whose integer kind is obtained from KIND(text%LEN), without assuming it is default. A PDT program declares both its KIND and LEN parameters with SELECTED_INT_KIND(18), checks the parameter inquiries' kinds and integer values, then safely initializes and checks a small component array.",
+      "oracle_limitation": "KIND/LEN intrinsics provide comparison values but are not substitutes for checking the parameter names. The PDT kind discriminator is not an intrinsic representation selector. F2023 requires an integer method of range at least 18, but that method need not be nondefault; the PDT case is marked F2023 and its original runtime oracle is retained if a reference lacks support. An integer assignment conversion alone would not establish an inquiry's type, so the controls use explicit typed procedure arguments.",
+      "dependencies": "7.4.1 p2 (PDF 80), 7.4.3.1 p2/p4 (PDF 80), 7.4.4.1 p1 (PDF 84), 7.5.3.1 p2-p5 (PDF 92), 7.5.9 p2 (PDF 106), 9.4.5 (PDF 153-154), 10.1.9.2 p1 (PDF 184), 16.9.118 (PDF 424). The positive call premises follow 15.5.2.5; no legacy clause15 file or shared profile is changed."
+    },
+    {
+      "id": "S7.2-003",
+      "title": "Kind participates in generic resolution but length does not",
+      "source": "7.2 p2, PDF 76, printed 62, lines 7-8.",
+      "source_units": [
+        "p2.kind-resolution",
+        "p2.length-resolution"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "context-dependent",
+      "definition": "Generic resolution uses corresponding kind parameters but not length parameters. Type category, kind and rank distinguishability remain separate, and the generic declaration rules and other argument characteristics still apply. Different character lengths alone do not distinguish otherwise identical specific procedures.",
+      "facets": [
+        "real-kind-selection",
+        "character-length-invariance",
+        "pdt-kind-and-length-selection",
+        "length-only-overload-exclusion"
+      ],
+      "pending": {
+        "length-only-overload-exclusion": "Needs an isolated pair of same-type, same-kind, same-rank, same-name/position scalar character specifics differing only in LEN, plus a minimally repaired distinguishable control under 15.4.3.4.5/C1514. Bind an actual diagnostic to a defensible declaration/statement location for each supported reporting configuration, without a whole-program recovery span or assuming fatal rejection. Join canonical C1514 evidence rather than miscrediting a type/rank or unsupported-kind error. The current one-specific character control is not proof of non-distinguishability."
+      },
+      "oracle": "A same-rank real generic dispatches default and double-precision actuals to different integer tags; these two kinds are guaranteed distinct by precision, not numeric kind codes. A character generic with one assumed-length specific is invoked with two lengths and returns/checks the actual lengths. A PDT generic uses kind discriminators 1 and 2 with assumed LEN, varies LEN while holding KIND fixed, then varies KIND while holding LEN fixed; tags and parameter inquiries are checked.",
+      "oracle_limitation": "The PDT discriminator values 1 and 2 have no role as intrinsic kind selectors; their integer component uses the default integer type. They may therefore be used without a representation profile. The finite same-specific controls do not discharge the pending forbidden length-only overload. Valid PDT reference failures remain implementation/source-only findings, not justification to drop LEN or collapse the generic.",
+      "dependencies": "7.4.3.2 p5 (PDF 82), 7.5.3.1 (PDF 91-92), 7.5.9/C7100 (PDF 106), 15.4.3.4.5 p1-p3/C1514 (PDF 331-332), 15.5.5.2 (PDF 350-351). TKR compatibility explicitly excludes length; generic eligibility is not tested with legacy argument-kind negatives."
+    },
+    {
+      "id": "S7.2-004",
+      "title": "Execution establishes deferred type-parameter values",
+      "source": "7.2 p6, PDF 76, printed 62, lines 19-21; explanatory NOTE 1 immediately follows.",
+      "source_units": [
+        "p6",
+        "p6.allocate",
+        "p6.intrinsic-assignment",
+        "p6.pointer-assignment",
+        "p6.argument-association"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Deferred parameters of an object acquire values through successful ALLOCATE execution, intrinsic assignment, pointer assignment or argument association, according to the respective canonical rules. A declaration with colon alone does not establish a value. Allocation failure, an unallocated allocatable or a disassociated/undefined pointer does not license inquiry of a deferred parameter. The mechanism does not turn kind parameters into deferred parameters.",
+      "facets": [
+        "allocate-character",
+        "intrinsic-assignment-character",
+        "pointer-assignment-character",
+        "allocatable-argument-character",
+        "pointer-argument-character",
+        "allocate-pdt",
+        "intrinsic-assignment-pdt",
+        "pointer-assignment-pdt",
+        "argument-association-pdt",
+        "deferred-parameter-use-graph"
+      ],
+      "pending": {
+        "allocate-pdt": "Needs a source-supported deferred-LEN PDT allocation witness with explicit type-spec (or qualified SOURCE/MOLD), STAT and ALLOCATED guards, and component shape/parameter checks before access. Retain unsupported PDT reference results; do not replace the PDT with character and count the facet.",
+        "intrinsic-assignment-pdt": "Needs an independently reviewed PDT assignment/reallocation witness that establishes changed deferred LEN from a defined RHS, distinguishes object parameters from component shapes, and checks allocation/shape before payload. Reuse canonical 10.2.1.3 semantics rather than guessing a descriptor layout.",
+        "pointer-assignment-pdt": "Needs live defined PDT targets with fixed matching kind parameters and different lengths, a deferred-LEN pointer, and separate ASSOCIATED/parameter/shape checks. Never inspect the pointer after its target lifetime ends or count an unsupported implementation report as a language diagnostic.",
+        "argument-association-pdt": "Needs allocatable and pointer PDT dummy witnesses satisfying 15.5.2.6's same declared type, polymorphism, rank and deferred-parameter conditions. Check actual and dummy dynamic state before inquiry. Ordinary assumed-LEN PDT dummy evidence belongs to p7, not this deferred facet.",
+        "deferred-parameter-use-graph": "Needs a bounded canonical join of the four mechanisms to object/component, array, polymorphic and function-result contexts with the applicable allocation/association premises. NOTE 1 concerns returned result objects, not parameter values of functions or procedure pointers themselves. Record additional canonical mechanisms under their own owners; this finite batch is not every execution path."
+      },
+      "oracle": "Five independent character programs establish deferred length by explicit allocation of a small array, repeated intrinsic assignment with changing scalar lengths, pointer reassociation to live defined targets, allocatable dummy association and pointer dummy association. Each dynamic-state check is a separate statement before LEN, SIZE, association-with-target checks or payload access. The allocated array is shape-checked before element initialization and reads.",
+      "oracle_limitation": "All five executed routes use supported default character kind and preserve the different allocation/association requirements. They do not prove PDT behavior, procedure result descriptors or universal deferred-parameter semantics. No short-circuit boolean expression is used to guard an unsafe inquiry. Character scalar-to-array allocation is not invented: explicit shape allocation precedes array-section assignment.",
+      "dependencies": "9.4.5 p2 (PDF 153); 9.7.1.1 p5-p6/C936-C940 and 9.7.1.2-.3 (PDF 160-163); 10.2.1.3 p3 (PDF 190); 8.5.14 p2-p3 (PDF 131), 10.2.2.2-.3 (PDF 194-195); 15.5.2.6-.8 (PDF 342-343). The assignment catalogue's canonical requirements remain unchanged and are not automatically credited."
+    },
+    {
+      "id": "S7.2-005",
+      "title": "Assumed length parameters take values from their specified source",
+      "source": "7.2 p7, PDF 76, printed 62, lines 22-25.",
+      "source_units": [
+        "p7.dummy",
+        "p7.select-type",
+        "p7.character-constant"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "An asterisk denotes an assumed length parameter. A dummy obtains it from its effective argument; a SELECT TYPE associate name obtains it from the corresponding selector; a named character constant obtains its length from the defining constant expression. These uses do not assume a kind parameter or defer the length for allocation. Context restrictions in the defining type-specifier rules still apply.",
+      "facets": [
+        "dummy-character",
+        "select-type-character",
+        "named-character-constant",
+        "dummy-pdt",
+        "select-type-pdt",
+        "assumed-parameter-use-graph"
+      ],
+      "pending": {
+        "dummy-pdt": "Needs a specifically credited, independently checked assumed-LEN PDT dummy witness, including integer parameter-kind and corresponding-kind agreement premises, without substituting a deferred allocatable/pointer parameter. The generic PDT control under S7.2-003 is not automatically credited to this requirement.",
+        "select-type-pdt": "Needs a conforming polymorphic PDT selector and TYPE IS/CLASS IS guard with every length parameter assumed under C1165; discriminate kind/dynamic type independently from LEN and check the selected associate parameters and defined payload. Unsupported reference SELECT TYPE/PDT behavior remains source-only, not a weaker character oracle.",
+        "assumed-parameter-use-graph": "Needs a finite join from these three local sources to the canonical CHARACTER and PDT asterisk contexts, including the separately specified ALLOCATE and external assumed-character-function rules. Do not misread the local list as a new global ban on other explicitly permitted contexts or treat the obsolescent function rules as covered by these controls."
+      },
+      "oracle": "Separate programs check a character dummy at two actual lengths, an unlimited-polymorphic dummy selected through TYPE IS(CHARACTER(LEN=*)) at two lengths, and character PARAMETER constants whose expressions include concatenation, trailing blanks and an empty string. Expected lengths are literal small counts, not LEN of the same tested object.",
+      "oracle_limitation": "SELECT TYPE uses initialized ordinary arguments, an explicit class-default failure branch and no unchecked dynamic data. Named constants satisfy constant-expression and prior-definition rules. The three character controls do not establish PDT or every asterisk context. KIND is obtained from standard default-character premises, never hard-coded as 1.",
+      "dependencies": "7.4.4.2/C726-C728/p5 (PDF 84-85), 7.5.9/C7100 (PDF 106), 8.5.13 (PDF 130-131), 10.1.12 (PDF 187-188), 11.1.11.1/C1164-C1165 and 11.1.11.2 p3/p5 (PDF 225-226), 15.5.2.5 p3-p5 (PDF 340)."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.2-001"
+      ]
+    },
+    {
+      "unit": "p1.values",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.2-001"
+      ]
+    },
+    {
+      "unit": "p1.denotation",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.2-001"
+      ]
+    },
+    {
+      "unit": "p1.operations",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.2-001"
+      ]
+    },
+    {
+      "unit": "p2",
+      "disposition": "structural",
+      "rationale": "PDF 76 lines 6-8: classification, integer parameter type and the two generic-resolution roles are separate."
+    },
+    {
+      "unit": "p2.kind-or-length",
+      "disposition": "definition",
+      "rationale": "The parameter classification is KIND or LEN. This does not classify the data object's type, rank or storage width. R732-R734 (PDF 91-92) supplies the explicit PDT declaration mechanism."
+    },
+    {
+      "unit": "p2.integer",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.2-002"
+      ]
+    },
+    {
+      "unit": "p2.kind-resolution",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.2-003"
+      ]
+    },
+    {
+      "unit": "p2.length-resolution",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.2-003"
+      ]
+    },
+    {
+      "unit": "p3",
+      "disposition": "structural",
+      "rationale": "PDF 76 lines 9-10: intrinsic parameter names are required properties; derived-type parameterization is a program permission."
+    },
+    {
+      "unit": "p3.intrinsic-kind",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.2-002"
+      ]
+    },
+    {
+      "unit": "p3.character-len",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.2-002"
+      ]
+    },
+    {
+      "unit": "p3.derived-parameters",
+      "disposition": "permission",
+      "rationale": "A derived type may have parameters. Neither every derived type nor every program must use them. 7.5.3 and 7.5.9 supply their definitions, order, defaults and specification; enum/enumeration types do not gain parameters from this sentence."
+    },
+    {
+      "unit": "p4",
+      "disposition": "permission",
+      "rationale": "PDF 76 line 11 permits specifying a parameter value with a type specification. Canonical 7.4/7.5.9 constraints, defaults and other specification contexts remain applicable; this is not a mandate to spell every parameter explicitly."
+    },
+    {
+      "unit": "R701",
+      "disposition": "requirements",
+      "requirements": [
+        "R701"
+      ]
+    },
+    {
+      "unit": "R701.expression",
+      "disposition": "requirements",
+      "requirements": [
+        "R701"
+      ]
+    },
+    {
+      "unit": "R701.asterisk",
+      "disposition": "requirements",
+      "requirements": [
+        "R701"
+      ]
+    },
+    {
+      "unit": "R701.colon",
+      "disposition": "requirements",
+      "requirements": [
+        "R701"
+      ]
+    },
+    {
+      "unit": "C701",
+      "disposition": "requirements",
+      "requirements": [
+        "C701"
+      ]
+    },
+    {
+      "unit": "C702",
+      "disposition": "requirements",
+      "requirements": [
+        "C702"
+      ]
+    },
+    {
+      "unit": "C702.colon-restriction",
+      "disposition": "requirements",
+      "requirements": [
+        "C702"
+      ]
+    },
+    {
+      "unit": "C702.pointer",
+      "disposition": "requirements",
+      "requirements": [
+        "C702"
+      ]
+    },
+    {
+      "unit": "C702.allocatable",
+      "disposition": "requirements",
+      "requirements": [
+        "C702"
+      ]
+    },
+    {
+      "unit": "p5",
+      "disposition": "definition",
+      "rationale": "PDF 76 line 18: colon denotes a deferred parameter. C701/C702 supply the restrictions and S7.2-004 retains the actual establishment effects; declaration alone supplies no deferred value."
+    },
+    {
+      "unit": "p6",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.2-004"
+      ]
+    },
+    {
+      "unit": "p6.allocate",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.2-004"
+      ]
+    },
+    {
+      "unit": "p6.intrinsic-assignment",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.2-004"
+      ]
+    },
+    {
+      "unit": "p6.pointer-assignment",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.2-004"
+      ]
+    },
+    {
+      "unit": "p6.argument-association",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.2-004"
+      ]
+    },
+    {
+      "unit": "note1",
+      "disposition": "structural",
+      "rationale": "PDF 76 unnumbered NOTE 1, between numbered lines 21 and 22: three informative qualifications are preserved below, not converted into standalone mandatory tests."
+    },
+    {
+      "unit": "note1.functions",
+      "disposition": "informative",
+      "rationale": "A function's deferred parameters do not themselves have values. Query only the actual returned object's established parameter values under the applicable execution rules."
+    },
+    {
+      "unit": "note1.procedure-pointers",
+      "disposition": "informative",
+      "rationale": "The explanation also covers function procedure pointers. Procedure association must not be confused with acquiring a deferred data-object length."
+    },
+    {
+      "unit": "note1.returned-results",
+      "disposition": "informative",
+      "rationale": "Execution can determine result parameters when the returned allocatable result is allocated or the returned pointer result is associated. This is conditional on the result state, not permission to inspect an absent result or proof from a function declaration."
+    },
+    {
+      "unit": "p7",
+      "disposition": "structural",
+      "rationale": "PDF 76 lines 22-25 defines assumed length and specifies three sources for its value."
+    },
+    {
+      "unit": "p7.assumed-length",
+      "disposition": "definition",
+      "rationale": "An asterisk marks a length parameter as assumed. C701 independently excludes assumed kinds; C726 and C7100 constrain placement. This is distinct from colon/deferred and is not a ban on other canonical asterisk contexts."
+    },
+    {
+      "unit": "p7.dummy",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.2-005"
+      ]
+    },
+    {
+      "unit": "p7.select-type",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.2-005"
+      ]
+    },
+    {
+      "unit": "p7.character-constant",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.2-005"
+      ]
+    },
+    {
+      "unit": "note2",
+      "disposition": "structural",
+      "rationale": "PDF 76 unnumbered NOTE 2 following numbered line 25: compile-time rationale and the meaning of length are informative, not additional R/C/S obligations."
+    },
+    {
+      "unit": "note2.compile-time-kind",
+      "disposition": "informative",
+      "rationale": "The kind-value compile-time explanation is consistent with C701. No additional diagnostic or representation-size rule is introduced."
+    },
+    {
+      "unit": "note2.representation-rationale",
+      "disposition": "informative",
+      "rationale": "Multiple real precisions and possible character sets motivate compile-time distinctions for some parameterizations. The explanation does not require an optional character kind or equate KIND values with bytes."
+    },
+    {
+      "unit": "note2.length-name",
+      "disposition": "informative",
+      "rationale": "The adjective length is conventional for nonkind parameters; such a parameter can serve another purpose. It need not equal a character count, array extent or storage size."
+    },
+    {
+      "unit": "note2.runtime-length",
+      "disposition": "informative",
+      "rationale": "Length values need not be compile-time known and can change during execution under their defining contexts. This does not make every length dynamically changeable or waive constant/specification-expression restrictions."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_7_2.md"
+  },
+  "review_fingerprint": "fbafc22ee30e86771916b49ad2d8d29f01d833f7f6fac07575474cc3083cf57e",
+  "review_rationale": "Independent original-source review and verified gate repairs: doc/source_audits/batch_007.json. R701/C701/C702 and the kind/LEN, resolution, assumed/deferred and mechanism provisions preserve their premises. C701 defaults eliminate the misleading missing-default fallback. Normal exact-point constancy/attribute predicates now enforce the reviewed negative oracles."
+}

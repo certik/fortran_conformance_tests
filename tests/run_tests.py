@@ -6,7 +6,7 @@ Reference results corroborate fixtures; they never determine LFortran's verdict.
 """
 import argparse
 import collections
-from dataclasses import asdict, dataclass, field
+from dataclasses import asdict, dataclass, field, replace
 import glob
 import json
 import hashlib
@@ -77,6 +77,7 @@ class Check:
     output: str = ''
     trace: List[dict] = field(default_factory=list)
     input_hashes: Dict[str, str] = field(default_factory=dict)
+    profile_checks: Dict[str, dict] = field(default_factory=dict)
 
 
 @dataclass
@@ -461,14 +462,16 @@ def reference_messages(output, filename=None):
             pending = None
 
 
-def reference_error_lines(output, filename=None):
-    return {line for line, severity, _ in reference_messages(output, filename)
-            if severity in ('error', 'fatal error')}
+def reference_error_lines(output, filename=None, messages=None):
+    return {line for line, severity, message in reference_messages(output, filename)
+            if severity in ('error', 'fatal error')
+            and (not messages or any(text.lower() in message.lower() for text in messages))}
 
 
-def reference_warning_lines(output, allowed, filename=None):
+def reference_warning_lines(output, allowed, filename=None, messages=None):
     return {line for line, severity, message in reference_messages(output, filename)
             if severity in ('warning', 'portability')
+            and (not messages or any(text.lower() in message.lower() for text in messages))
             and set(re.findall(r'\[-W([\w-]+)\]', message)).intersection(allowed)}
 
 
@@ -476,15 +479,20 @@ def profile_check(comp, name, timeout):
     if name in comp.profiles:
         return comp.profiles[name]
     source = os.path.join(HERE, 'profiles', name.replace('-', '_') + '.f90')
+    source_hash = hashlib.sha256(Path(source).read_bytes()).hexdigest()
+    trace = []
     with tempfile.TemporaryDirectory() as tmp:
         exe = os.path.join(tmp, 'a.out')
-        result = run([comp.command] + comp.flags(source, Metadata()) + [source, '-o', exe], tmp, timeout)
+        command = [comp.command] + comp.flags(source, Metadata()) + [source, '-o', exe]
+        result = run(command, tmp, timeout)
+        trace.append(trace_entry(command, result, 'profile-compile', name))
         check = failure(result, 'profile compilation')
         if check is None and result.returncode != 0:
             check = Check('fail', 'profile does not compile: ' + excerpt(result.output),
                           'profile', result.output)
         if check is None:
             result = run([exe], tmp, timeout)
+            trace.append(trace_entry([exe], result, 'profile-run', name))
             check = failure(result, 'profile execution', compiler_process=False)
             if check is None:
                 if result.returncode == 77:
@@ -492,7 +500,9 @@ def profile_check(comp, name, timeout):
                 elif result.returncode != 0:
                     check = Check('fail', 'profile failed: ' + name, 'profile', result.output)
                 else:
-                    check = Check('pass')
+                    check = Check('pass', phase='profile', output=result.output)
+    check.trace = trace
+    check.input_hashes = {os.path.basename(source): source_hash}
     comp.profiles[name] = check
     return check
 
@@ -607,10 +617,7 @@ def judge_diagnostic(result, comp, rule, diagnostic, codes=False, primary_source
         reported += driver_warning_diagnostics(result.output, filename, primary_source)
     matching = []
     for item in reported:
-        if 'end_line' in diagnostic:
-            located = line <= item.first <= item.last <= diagnostic['end_line']
-        else:
-            located = item.first <= line <= item.last
+        located = line <= item.first <= item.last <= diagnostic.get('end_line', line)
         if not located:
             continue
         if messages and not any(message.lower() in item.message.lower() for message in messages):
@@ -637,16 +644,18 @@ def judge_rejection(result, comp, meta, rule, line=None, bounds=None, codes=Fals
     diagnostic = diagnostic or {}
     filename = diagnostic.get('file')
     messages = diagnostic.get('contains_any', [])
-    if messages and not any(message.lower() in result.output.lower() for message in messages):
+    external = diagnostic.get('anchor') in ('eof', 'file') or phase == 'link'
+    if external and messages and not any(message.lower() in result.output.lower() for message in messages):
         return Check('fail', 'expected diagnostic predicate was not reported', phase, result.output)
     if comp.family != 'lfortran' and result.returncode == 0:
-        lo, hi = bounds or (1, float('inf'))
-        warnings = reference_warning_lines(result.output, meta.reference_warnings, filename)
+        lo, hi = ((diagnostic['line'], diagnostic.get('end_line', diagnostic['line']))
+                  if diagnostic.get('line') is not None else bounds or (1, float('inf')))
+        warnings = reference_warning_lines(result.output, meta.reference_warnings, filename, messages)
         if any(lo <= location <= hi for location in warnings):
             return Check('pass', 'diagnoses without rejection', phase, result.output)
     if result.returncode == 0:
         return Check('fail', 'not rejected (compiler exited successfully)', phase, result.output)
-    if diagnostic.get('anchor') in ('eof', 'file') or phase == 'link':
+    if external:
         if filename and Path(filename).name not in result.output:
             return Check('fail', 'diagnostic does not identify the expected file', phase, result.output)
         if not re.search(r'\berror\b', result.output, re.I):
@@ -657,20 +666,23 @@ def judge_rejection(result, comp, meta, rule, line=None, bounds=None, codes=Fals
         return Check('pass', 'rejects at external ' + diagnostic.get('anchor', 'link') + ' anchor',
                      phase, result.output)
     if comp.family != 'lfortran':
-        lo, hi = bounds or (line, line)
-        if any(lo <= location <= hi for location in reference_error_lines(result.output, filename)):
+        lo, hi = ((diagnostic['line'], diagnostic.get('end_line', diagnostic['line']))
+                  if diagnostic.get('line') is not None else bounds or (line, line))
+        if any(lo <= location <= hi for location in reference_error_lines(result.output, filename, messages)):
             return Check('pass', 'rejects', phase, result.output)
         return Check('fail', 'rejected without a located case diagnostic', phase, result.output)
     errors = lfortran_errors(result.output)
-    on_line = [error for error in errors if error.first <= line <= error.last
-               and (filename is None or diagnostic_filename_matches(error.file, filename))]
+    on_line = [error for error in errors
+               if line <= error.first <= error.last <= diagnostic.get('end_line', line)
+               and (filename is None or diagnostic_filename_matches(error.file, filename))
+               and (not messages or any(message.lower() in error.message.lower()
+                                        for message in messages))]
     if not on_line:
         return Check('fail', 'not detected on marked line', 'compile', result.output)
     tagged = any(rule in error.codes for error in on_line)
     if codes and not tagged:
         return Check('fail', f'detected without code {rule}', 'compile', result.output)
-    extra = sorted((error.first, error.last) for error in errors
-                   if not error.first <= line <= error.last)
+    extra = sorted((error.first, error.last) for error in errors if error not in on_line)
     note = '' if tagged else 'detected, no rule code'
     if extra:
         note += f'; other diagnostics at {extra}'
@@ -815,7 +827,7 @@ def check_fixture(fixture, comp, cc='cc', timeout=30, codes=False):
         return finish(Check('pass', phase='run', output=result.output))
 
 
-def execute_case(case, comp, cc='cc', timeout=30, codes=False):
+def _execute_case(case, comp, cc='cc', timeout=30, codes=False):
     if case.fixture:
         return check_fixture(case.fixture, comp, cc, timeout, codes)
     if case.kind == 'valid':
@@ -826,6 +838,22 @@ def execute_case(case, comp, cc='cc', timeout=30, codes=False):
             return checked
     line, rule, _, bounds, source = case.isolated
     return check_invalid(case.path, source, line, rule, bounds, comp, case.meta, codes, timeout)
+
+
+def execute_case(case, comp, cc='cc', timeout=30, codes=False):
+    check = _execute_case(case, comp, cc, timeout, codes)
+    profiles = {}
+    for name in case.meta.profiles:
+        if name in comp.profiles:
+            observation = asdict(comp.profiles[name])
+            observation.pop('profile_checks')
+            profiles[name] = observation
+        else:
+            profiles[name] = dict(outcome='not-run', note='Profile was not evaluated.')
+    if any(check is value for value in comp.profiles.values()):
+        return replace(check, trace=[], input_hashes={}, profile_checks=profiles)
+    return replace(check, profile_checks=profiles)
+
 
 def status(name, check, xfail, review=None):
     if check.outcome == 'error':

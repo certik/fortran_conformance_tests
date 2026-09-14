@@ -59,11 +59,13 @@ all be represented by a compile-time rejection test, nor found by
 extracting only sentences containing "shall".
 
 The first executable `S` prototype selected mixed-kind argument mistakes.
-Its legacy file `clause15/S15_5_2_4_invalid.f90` and markers such as
-`! {error S15.5.2.4 real4-to-real8}` remain unchanged for compatibility
-with the current runner and xfail list. In the pinned J3/24-007 source,
-however, ordinary dummy argument type compatibility is in 15.5.2.5
-paragraph 2 and kind agreement is in paragraph 3.
+Its `S15_5_2_4_invalid:<case>` execution IDs and `S15.5.2.4` rule spelling
+remain compatibility labels. The sources now live in separate
+`tests/fixtures/legacy_argument_*/` manifests with precise kind-support
+profiles and minimally repaired compile-only controls. An unrelated
+REAL(8) module no longer becomes a prerequisite of every isolated case.
+In the pinned J3/24-007 source, ordinary dummy argument type compatibility
+is in 15.5.2.5 paragraph 2 and kind agreement is in paragraph 3.
 
 A systematic requirements catalogue is now prototyped in
 `doc/fortran_2023_S10_2_1_3.md` for intrinsic assignment. It gives each
@@ -325,7 +327,8 @@ relax language rules.
 Each invalid case is submitted separately using
 `lfortran --std=f23 --semantics-only --error-format short <isolated-file>`.
 It passes only with an unsuccessful compiler exit and a non-internal error
-whose source range includes the marked line. Compiler crashes, timeouts,
+at the exact marked line; multi-line statements need explicitly declared
+manifest spans. Compiler crashes, timeouts,
 and ASR-verifier failures do not count as successful diagnostics.
 `--continue-compilation` is not passed: recovery is not needed to discover
 the next case. Other errors are retained as notes, not substituted for the

@@ -157,9 +157,9 @@ case.f90:5-5:1-20: semantic warning [C801]: repeated
         self.assertIn('S10.2.1.3-004', errors[2].codes)
         self.assertEqual([error.first for error in errors], [2, 3, 4])
 
-    def test_diagnostic_range_can_cover_the_marked_line(self):
+    def test_unqualified_recovery_range_does_not_satisfy_a_point(self):
         result = runner.ProcessResult(1, 'case.f90:1-3:1-20: syntax error [C801]: repeated')
-        self.assertEqual(self.invalid(result, True).outcome, 'pass')
+        self.assertEqual(self.invalid(result, True).outcome, 'fail')
 
     def test_large_diagnostic_ranges_are_not_expanded(self):
         errors = runner.lfortran_errors('case.f90:1-1000000000:1-20: syntax error: invalid')
@@ -328,6 +328,41 @@ case.f90:5-5:1-20: semantic warning [C801]: repeated
             check = runner.profile_check(self.lf, 'iso10646', 1)
         self.assertEqual(check.outcome, 'fail')
 
+    def test_profile_evidence_is_recorded_without_mutating_cached_results(self):
+        case = runner.SuiteCase(
+            'case', 'C601', 'valid', 'not-compiled.f90',
+            runner.Metadata(profiles=['iso10646', 'two-integer-kinds']), 'case')
+        with patch.object(runner, 'run', side_effect=[
+                runner.ProcessResult(0, ''), runner.ProcessResult(77, 'STOP 77')]) as run:
+            first = runner.execute_case(case, self.lf)
+            second = runner.execute_case(case, self.lf)
+        self.assertEqual(run.call_count, 2)
+        self.assertEqual(first.outcome, 'skip')
+        self.assertEqual(first.trace, [])
+        self.assertEqual(first.input_hashes, {})
+        profile = first.profile_checks['iso10646']
+        self.assertEqual(profile['outcome'], 'skip')
+        self.assertEqual([item['phase'] for item in profile['trace']],
+                         ['profile-compile', 'profile-run'])
+        self.assertEqual(profile['trace'][-1]['returncode'], 77)
+        self.assertTrue(profile['input_hashes'])
+        self.assertNotIn('profile_checks', profile)
+        self.assertEqual(first.profile_checks['two-integer-kinds']['outcome'], 'not-run')
+        self.assertEqual(first.profile_checks, second.profile_checks)
+        self.assertEqual(self.lf.profiles['iso10646'].profile_checks, {})
+
+    def test_successful_case_keeps_profile_and_program_traces_separate(self):
+        path = self.source('C601_valid.f90', 'program p\nend program\n')
+        case = runner.SuiteCase('case', 'C601', 'valid', path,
+                                runner.Metadata(profiles=['iso10646']), 'case')
+        with patch.object(runner, 'run', return_value=runner.ProcessResult(0, '')):
+            result = runner.execute_case(case, self.lf)
+        self.assertEqual(result.outcome, 'pass')
+        self.assertEqual([item['phase'] for item in result.trace], ['compile-link', 'run'])
+        self.assertEqual(result.profile_checks['iso10646']['outcome'], 'pass')
+        self.assertEqual([item['phase'] for item in result.profile_checks['iso10646']['trace']],
+                         ['profile-compile', 'profile-run'])
+
     def test_missing_launcher_does_not_pass_a_multi_image_case(self):
         meta = runner.Metadata(coarray=True, images=2)
         with patch.object(runner, 'run', return_value=runner.ProcessResult(0, '')) as run:
@@ -473,6 +508,40 @@ class CorpusTests(unittest.TestCase):
             self.assertIn('integer :: values(1)', source)
             self.assertNotIn('integer :: values(2)', source)
             self.assertIn('data values /repeats * 7/', source)
+
+    def test_legacy_argument_kind_cases_keep_ids_and_local_qualifications(self):
+        expected = {
+            'real4-to-real8': ['real-kinds-4-8'],
+            'real8-to-real4': ['real-kinds-4-8'],
+            'int4-to-int8': ['integer-kinds-4-8'],
+            'literal-real4-to-real8': ['real-kinds-4-8', 'default-real-kind-4'],
+            'logical1-to-logical4': ['logical-kinds-1-4'],
+            'char4-to-char1': ['character-kinds-1-4-iso10646'],
+            'function-arg-real4-to-real8': ['real-kinds-4-8', 'default-real-kind-4'],
+            'module-procedure-real4-to-real8': ['real-kinds-4-8', 'default-real-kind-4'],
+        }
+        cases = [case for case in runner.collect_cases(self.root, runner.Registry())
+                 if case.rule == 'S15.5.2.4']
+        self.assertEqual(len(cases), 16)
+        negatives = {case.name: case for case in cases if case.kind == 'invalid'}
+        self.assertEqual(set(negatives), {'S15_5_2_4_invalid:' + name for name in expected})
+        for name, profiles in expected.items():
+            with self.subTest(case=name):
+                case = negatives['S15_5_2_4_invalid:' + name]
+                self.assertEqual(case.meta.profiles, profiles)
+                self.assertEqual(case.meta.oracle_basis, 'lfortran-policy')
+                self.assertEqual(case.fixture.expectation.outcome, 'reject')
+                text = (case.fixture.root / 'source.f90').read_text()
+                if name != 'module-procedure-real4-to-real8':
+                    self.assertNotIn('module s15524_m', text)
+                control = next(item for item in cases
+                               if item.name == 'S15_5_2_4_valid__' + name + '_repair')
+                self.assertEqual(control.meta.profiles, profiles)
+                self.assertEqual(control.meta.evidence, 'positive-control')
+                self.assertEqual(control.fixture.expectation.phase, 'compile')
+                self.assertEqual(control.fixture.expectation.outcome, 'success')
+        character_profile = (self.root / 'profiles/character_kinds_1_4_iso10646.f90').read_text()
+        self.assertIn("selected_char_kind('ISO_10646') /= 4", character_profile)
 
     def test_free_form_line_boundaries_are_exact(self):
         boundaries = {

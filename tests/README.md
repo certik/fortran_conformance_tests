@@ -150,11 +150,26 @@ per compiler for the run. Only a profile executable's exit code 77 denotes
 an unavailable optional property. A failed or crashing probe is a failure;
 it is never converted to a successful skip. Exit code 77 from an ordinary
 test is also a failure.
+Reports include profile compile/run traces, input hashes and cached
+outcomes in `profile_checks`, separately from the case's own execution.
+An unavailable compound profile does not identify which individual
+property failed unless the probe itself reports that information.
 
 The `ieee-binary` profile checks IEEE support and the default-real/binary32
 and double-precision/binary64 model before compiling representation-specific
 BOZ literals. Unsupported kinds are not replaced with a default kind while
 silently claiming the missing facet.
+
+The legacy `S15.5.2.4` argument-kind cases retain their negative execution
+IDs but use separate `legacy_argument_*` manifests. Their real, integer,
+logical and character kind premises are independently gated; default
+REAL kind 4 is required only for the three default-literal cases. The
+character branch additionally qualifies kind 4 as ISO 10646 so its literal
+is representable. No profile compiles the invalid call as its own probe.
+Each negative retains its explicit LFortran rejection-policy basis and
+has a matching compile-only repair, not a claimed runtime effect.
+`tools/generate_legacy_argument_kind_fixtures.py --check` verifies the
+deterministic inputs.
 
 ## Out-of-band and multi-file fixtures
 
@@ -189,6 +204,12 @@ a whole-program recovery range merely intersecting it does not pass.
 A specifically reviewed span may include a compiler's one-past-final-record
 EOF position. This does not invent another physical source record or
 authorize unlocated scan/parse summaries.
+Without `end_line`, a point is exact: a multi-line recovery range merely
+enclosing it cannot pass. Compile-phase `reject` manifests also support
+an explicitly declared span while retaining their rejection requirement.
+A relational rule such as matching PROGRAM/END names can declare both
+endpoints and require a name-mismatch message. That qualified relation is
+not permission to accept arbitrary whole-unit recovery ranges.
 Nonfatal reports require explicit compiler-family, severity, and
 case-insensitive message-substring predicates:
 
@@ -285,7 +306,9 @@ Reports retain the isolated input hash and actual compiler command,
 return code, and streams, as they do for manifest fixtures.
 
 LFortran must exit unsuccessfully without a compiler crash/verifier failure
-and issue an error whose source range includes the marked line. `--codes`
+and issue an error at the exact marked line. A multi-line statement needs
+an explicitly declared manifest span; an unqualified recovery range cannot
+stand in for the point. `--codes`
 additionally requires the rule reference, either in the legacy `[C801]`
 field or in a rendering such as `[E0231] (F2023 C801)`. Other diagnostics
 are retained for review, but cannot substitute for the marked diagnostic.

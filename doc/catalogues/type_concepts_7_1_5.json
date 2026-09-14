@@ -1,0 +1,154 @@
+{
+  "schema_version": 1,
+  "section": "7.1.5",
+  "review_state": "reviewed",
+  "subunits": {
+    "p1": [
+      "p1.intrinsic-set",
+      "p1.augmentation",
+      "p1.canonical-definitions"
+    ],
+    "p2": [
+      "p2.no-intrinsic",
+      "p2.program-defined"
+    ],
+    "p3": [
+      "p3.intrinsic-set",
+      "p3.augmentation"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S7.1.5-001",
+      "title": "Intrinsic types have their specified intrinsic operations",
+      "source": "7.1.5 p1, PDF 75, printed 61, lines 31-33.",
+      "source_units": [
+        "p1.intrinsic-set"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Each intrinsic type has the operation set defined in Clause 10, with that clause's operand type, kind, rank and value conditions. This does not admit every intrinsic-operator token for every type or overload an already applicable intrinsic operation with an incompatible interpretation.",
+      "facets": [
+        "integer-operation",
+        "real-operation",
+        "complex-operation",
+        "character-operation",
+        "logical-operation",
+        "intrinsic-operation-use-graph"
+      ],
+      "pending": {
+        "intrinsic-operation-use-graph": "Needs the finite Table 10.2 operand/result relation and the defining operation/parameter/conformability rules joined to their canonical witnesses. Retain unsupported and forbidden combinations, integer-power exceptions, processor-dependent equal-precision/range tie cases and array contexts. Five scalar witnesses do not establish the universal operation set, all kinds or all results; a source/aggregate evidence contract is needed rather than more arbitrary scalar arithmetic."
+      },
+      "oracle": "Five independently compiled programs check one admitted operation in each intrinsic category: small default-integer addition, real unary identity of zero, complex unary identity of zero, default-character concatenation and logical negation. Expected values are specified independently in each source.",
+      "oracle_limitation": "These finite effects do not close the operation-use graph. Zero-valued real/complex controls do not test precision, rounding, signed-zero distinctions or IEEE arithmetic. Character equality and concatenation assume no collating-code ordering. The existing R608-R611 syntax catalogue remains the owner of operator-token alternatives.",
+      "dependencies": "7.4.2 (PDF 80); 10.1.5.1/Table 10.2 (PDF 175-176), 10.1.5.2.1/Table 10.3 (PDF 176), 10.1.5.3-.4 (PDF 178-179), 10.1.9.3 (PDF 184-185)."
+    },
+    {
+      "id": "S7.1.5-002",
+      "title": "Derived types have no intrinsic operations",
+      "source": "7.1.5 p2, PDF 75, printed 61, lines 34-35.",
+      "source_units": [
+        "p2.no-intrinsic"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "context-dependent",
+      "definition": "There is no intrinsic operation on derived-type values. Operations on those values require a program definition under the defined-operation rules. Intrinsic assignment of a derived object is separately provided by 10.2.1 and is not an intrinsic operation in this sense; availability of assignment does not imply intrinsic equality or arithmetic.",
+      "facets": [
+        "defined-derived-operator",
+        "intrinsic-assignment-not-operation",
+        "derived-operation-exclusion"
+      ],
+      "pending": {
+        "derived-operation-exclusion": "Needs a reviewed exclusion/use graph joining the absence of derived operands in Table 10.2 to actual expression contexts and canonical defined-operation constraints. Add source-isolated unbound-operator witnesses only with an applicable reporting basis and minimal interface repairs. A successful defined + or an intrinsic assignment cannot prove that processors exclude every undeclared operation. No mandatory rejection is inferred solely from this prose."
+      },
+      "oracle": "One positive control gives an ordinary derived type a scalar binary + through a two-argument function with INTENT(IN) dummies and an OPERATOR interface, then checks its initialized integer payload. A separate positive control uses only intrinsic derived assignment, with no operator interface, to preserve that important distinction.",
+      "oracle_limitation": "Both programs are restriction controls, not tests of absent operations or proof of universal type semantics. Neither reads an uninitialized component. Assignment itself and the exact defined-operator interface restrictions retain their canonical owners.",
+      "dependencies": "7.5.11 p1 (PDF 109) explicitly distinguishes intrinsic assignment from operations and requires explicit definitions for derived operations. 10.1.5.1/Table 10.2 (PDF 175-176), 10.1.6 and 15.4.3.2/.4.2 (PDF 326-329) supply the operator premises; 10.2.1.3 p15 supplies ordinary-component intrinsic assignment."
+    },
+    {
+      "id": "S7.1.5-003",
+      "title": "Enum and enumeration types have specified intrinsic operations",
+      "source": "7.1.5 p3, PDF 76, printed 62, lines 1-2; this paragraph continues the section that starts on PDF 75.",
+      "source_units": [
+        "p3.intrinsic-set"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Enum and enumeration types have the intrinsic operation sets specified in Clause 10. Their relational premises differ: enumeration operands have the same enumeration type and compare ordinal positions; enum operands have the same enum type or involve an integer expression with an enumerator primary of that enum type. Neither category acquires intrinsic integer arithmetic merely from its representation or ordinal mapping.",
+      "facets": [
+        "enum-relations",
+        "enumeration-relations",
+        "nonintrinsic-operation-use-graph"
+      ],
+      "pending": {
+        "nonintrinsic-operation-use-graph": "Needs a source-bound join of the enum/enumeration rows and footnotes of Table 10.2 to all relational spellings, type compatibility and canonical exclusion witnesses. Preserve the enum integer-enumerator-primary condition and enumeration same-type rule. The two F2023 programs are finite authored witnesses; unsupported reference front ends do not disprove their source premises or validate their runtime effects."
+      },
+      "oracle": "Separate F2023 programs compare two known values of a named enum type and two ordinal values of an enumeration type. Enum integer comparisons use actual enumerator names, not unqualified integer literals. Constructor arguments are within values already supported by the enum or within the enumeration's declared ordinal range.",
+      "oracle_limitation": "These cases may remain source-supported only if the available references do not implement the F2023 types. No fall back to integer declarations, unnamed ENUM/BIND(C), or weaker compile-only expectation is permitted. An F2018-mode parser failure is retained as such, not treated as fixture invalidity.",
+      "dependencies": "7.6.1 p1-p3/p7 (PDF 109-110); 7.6.2 p1/p3/p5 (PDF 111-112); 10.1.5.1 p6/Table 10.2 and its continued legend (PDF 175-176); 10.1.5.5.1 p9-p10 (PDF 181)."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "structural",
+      "rationale": "PDF 75 lines 31-33 separates required intrinsic operation availability, permission for augmentation, and canonical specification references."
+    },
+    {
+      "unit": "p1.intrinsic-set",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.1.5-001"
+      ]
+    },
+    {
+      "unit": "p1.augmentation",
+      "disposition": "permission",
+      "rationale": "An intrinsic type's operation set may be augmented with functions and an OPERATOR interface (15.4.3.2). The program need not do so. 15.4.3.4.2 does not permit changing an already applicable intrinsic operation; this permission is not a mandatory augmentation test or a compiler pass."
+    },
+    {
+      "unit": "p1.canonical-definitions",
+      "disposition": "definition",
+      "rationale": "Clauses 10 and 15 own the detailed operation/interface definitions. The local availability requirement retains a pending canonical use graph instead of treating a few passing arithmetic expressions as complete coverage."
+    },
+    {
+      "unit": "p2",
+      "disposition": "structural",
+      "rationale": "PDF 75 lines 34-35: absence of intrinsic operations is kept as a real restriction, separately from permission to define operations."
+    },
+    {
+      "unit": "p2.no-intrinsic",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.1.5-002"
+      ]
+    },
+    {
+      "unit": "p2.program-defined",
+      "disposition": "permission",
+      "rationale": "Programs can define derived-type operations under 7.5.11 and the interface rules. The positive control for S7.1.5-002 illustrates that permitted path without claiming proof of the exclusion rule."
+    },
+    {
+      "unit": "p3",
+      "disposition": "structural",
+      "rationale": "PDF 76 lines 1-2, not PDF 75: separates intrinsic enum/enumeration operation availability from augmentation permission."
+    },
+    {
+      "unit": "p3.intrinsic-set",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.1.5-003"
+      ]
+    },
+    {
+      "unit": "p3.augmentation",
+      "disposition": "permission",
+      "rationale": "A program may augment enum/enumeration operations using the defined-operation mechanisms. No invented mandatory operation or universal test of an optional program definition is added."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_7_1_5.md"
+  },
+  "review_fingerprint": "6f18f2d3e36067aac37ee7c97284788951860689b46996cd3b9eb00bf7c654df",
+  "review_rationale": "Independent original-source review and verified gate repairs: doc/source_audits/batch_007.json. Intrinsic, derived and other nonintrinsic operation premises remain distinct, including the p3 continuation on PDF76. Finite operations and enum witnesses do not establish the complete canonical operand/operation graph."
+}

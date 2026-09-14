@@ -284,7 +284,7 @@ class FixtureTests(unittest.TestCase):
         fixture = self.reporting_fixture()
         for code in (0, 1):
             for comp, output in (
-                (self.compiler, 'source.f:1-3:1-20: syntax error [R601]: invalid token\n'),
+                (self.compiler, 'source.f:2-2:1-20: syntax error [R601]: invalid token\n'),
                 (runner.Compiler('gfortran', 'gfortran', 'f2023'),
                  'source.f:2:7:\n    2 | invalid\nError: invalid token\n'),
             ):
@@ -393,6 +393,65 @@ class FixtureTests(unittest.TestCase):
         with patch.object(runner, 'run', return_value=runner.ProcessResult(0, output)):
             result = runner.check_fixture(self.fixture(), self.compiler)
         self.assertEqual(result.outcome, 'fail')
+
+    def test_point_rejection_does_not_accept_a_recovery_range(self):
+        self.reporting_fixture()
+        self.data['expect']['outcome'] = 'reject'
+        self.data['expect']['diagnostic'].pop('allow_nonfatal')
+        output = 'source.f:1-3:1-20: semantic error [R601]: unrelated recovery\n'
+        with patch.object(runner, 'run', return_value=runner.ProcessResult(1, output)):
+            self.assertEqual(runner.check_fixture(self.fixture(), self.compiler).outcome, 'fail')
+        self.data['expect']['diagnostic'].update(line=1, end_line=2)
+        with patch.object(runner, 'run', return_value=runner.ProcessResult(1, output)):
+            self.assertEqual(runner.check_fixture(self.fixture(), self.compiler).outcome, 'fail')
+        output = 'source.f:1-2:1-20: semantic error [R601]: declared statement\n'
+        with patch.object(runner, 'run', return_value=runner.ProcessResult(1, output)):
+            self.assertEqual(runner.check_fixture(self.fixture(), self.compiler).outcome, 'pass')
+
+    def test_rejection_warning_uses_the_declared_point_or_span(self):
+        self.reporting_fixture()
+        self.data['expect']['outcome'] = 'reject'
+        self.data['expect']['diagnostic'].pop('allow_nonfatal')
+        self.data['reference_warnings'] = ['long-names']
+        comp = runner.Compiler('flang', 'flang', 'f2018')
+        output = 'source.f:1:7: portability: name too long [-Wlong-names]\n'
+        with patch.object(runner, 'run', return_value=runner.ProcessResult(0, output)):
+            self.assertEqual(runner.check_fixture(self.fixture(), comp).outcome, 'fail')
+        self.data['expect']['diagnostic'].update(line=1, end_line=2)
+        with patch.object(runner, 'run', return_value=runner.ProcessResult(0, output)):
+            self.assertEqual(runner.check_fixture(self.fixture(), comp).outcome, 'pass')
+
+    def test_rejection_predicate_matches_the_primary_diagnostic_not_echoed_text(self):
+        self.reporting_fixture()
+        self.data['expect']['outcome'] = 'reject'
+        self.data['expect']['diagnostic'].pop('allow_nonfatal')
+        self.data['expect']['diagnostic']['contains_any'] = ['names do not match']
+        for comp, output in (
+            (self.compiler, 'source.f:2-2:1-20: syntax error: unrelated\n! names do not match\n'),
+            (self.compiler, 'source.f:1-1:1-20: syntax error: names do not match\n'
+             'source.f:2-2:1-20: syntax error: unrelated\n'),
+            (runner.Compiler('gfortran', 'gfortran', 'f2023'),
+             'source.f:2:1: error: unrelated\n! names do not match\n'),
+        ):
+            with self.subTest(compiler=comp.family, output=output):
+                with patch.object(runner, 'run', return_value=runner.ProcessResult(1, output)):
+                    self.assertEqual(runner.check_fixture(self.fixture(), comp).outcome, 'fail')
+
+    def test_semantic_predicate_rejects_same_line_unsupported_feature(self):
+        self.reporting_fixture()
+        self.data['expect']['diagnostic']['contains_any'] = [
+            'does not reduce to a constant expression', 'must be constant',
+            'cannot either be ASSUMED or DEFERRED']
+        for message, expected in (
+            ('Feature not implemented', 'fail'),
+            ('Kind must be constant', 'pass'),
+            ('Kind cannot either be ASSUMED or DEFERRED', 'pass'),
+        ):
+            with self.subTest(message=message):
+                output = f'source.f:2-2:1-20: semantic error: {message}\n'
+                with patch.object(runner, 'run', return_value=runner.ProcessResult(1, output)):
+                    self.assertEqual(runner.check_fixture(self.fixture(), self.compiler).outcome,
+                                     expected)
 
     def test_raw_source_is_copied_byte_for_byte(self):
         def process(command, cwd, timeout, stdin=None):

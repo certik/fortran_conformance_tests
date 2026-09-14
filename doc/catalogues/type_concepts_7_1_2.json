@@ -1,0 +1,150 @@
+{
+  "schema_version": 1,
+  "section": "7.1.2",
+  "review_state": "reviewed",
+  "subunits": {
+    "p2": [
+      "p2.integer",
+      "p2.real",
+      "p2.complex",
+      "p2.character",
+      "p2.logical"
+    ],
+    "p3": [
+      "p3.derived-origin",
+      "p3.enum-origin",
+      "p3.enumeration-origin",
+      "p3.nonintrinsic-access",
+      "p3.intrinsic-access"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S7.1.2-001",
+      "title": "Use nonintrinsic type names only where accessible",
+      "source": "7.1.2 p3, PDF 75, printed 61, lines 13-14; type origins on lines 11-13.",
+      "source_units": [
+        "p3.nonintrinsic-access"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "context-dependent",
+      "definition": "A use of a nonintrinsic type name requires that name to be accessible at the use. This applies to derived, enum and enumeration types, including types supplied by intrinsic modules. It concerns the identifier's accessibility, not the accessibility of every component or type-bound procedure and not mere availability of a value of that type.",
+      "facets": [
+        "local-derived-name",
+        "host-derived-name",
+        "use-renamed-derived-name",
+        "enum-name-access",
+        "enumeration-name-access",
+        "intrinsic-module-type-access",
+        "nonintrinsic-access-use-graph"
+      ],
+      "pending": {
+        "enum-name-access": "Needs a source-bound enum-name access witness and repaired inaccessible-name counterpart under the actual defining/scope rules, with a reference supporting named F2023 enum types. Integer enumerators of an unnamed interoperable enumeration are not substitutes.",
+        "enumeration-name-access": "Needs the corresponding F2023 enumeration-type visibility witnesses, including PUBLIC/PRIVATE and association premises. Rejection of ENUMERATION TYPE before the intended use is not an accessibility diagnostic.",
+        "intrinsic-module-type-access": "Needs a reviewed inventory of nonintrinsic types supplied by the standard intrinsic modules, their public identifiers and actual association paths, joined to canonical fixtures. Do not assume all such types are ordinary user-defined structures or infer components from an opaque representation.",
+        "nonintrinsic-access-use-graph": "Needs a source/use graph for declarations, constructors, guards, extension and other type-name uses, including PRIVATE, renaming, IMPORT and nested-scope hiding. Join each restriction to its canonical owner (for example C795/C7107) and any Clause 19 reporting basis. The three positive controls prove neither inaccessible-name exclusion nor universal scope behavior; no prose-only fatal-rejection oracle is assigned."
+      },
+      "oracle": "Three independent positive controls declare an ordinary derived type locally, access it in an internal procedure by host association, and access a public module type through a renamed USE name. Initialized integer payloads are checked, so no undefined component or dynamic pointer is read.",
+      "oracle_limitation": "These are conforming-use controls, not negative evidence. The underlying restriction remains real and its missing exclusion/use-graph evidence remains pending. 4.2 p2(3) can apply through numbered constraints such as C795; p2(6) concerns Clause 19 scope inconsistencies in a submitted program. Neither this prose sentence nor a single compiler invocation establishes mandatory fatal rejection or every applicable reporting mode.",
+      "dependencies": "7.5.2.2 p1-p2 (PDF 89) and 8.5.2 p1-p4 (PDF 120) separate type-name and component accessibility. 7.5.9/C795 (PDF 106) and 7.5.10/C7107 (PDF 107) retain their official owners. 19.1 p2/p4 (PDF 548), 19.5.1.3-.4 (PDF 553) and 14.2.2 supply scope, use renaming and host association. 7.6.1-.2 (PDF 109-113) distinguishes enum types, integer enumerators and enumeration types."
+    },
+    {
+      "id": "S7.1.2-002",
+      "title": "Intrinsic types remain accessible",
+      "source": "7.1.2 p3, PDF 75, printed 61, line 14.",
+      "source_units": [
+        "p3.intrinsic-access"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The five intrinsic types are always accessible. They do not require a USE association that imports their type names; a module's default PRIVATE accessibility does not remove intrinsic type availability. This does not make every kind value supported or every intrinsic procedure name immune to ordinary scope rules.",
+      "facets": [
+        "local-intrinsic-keywords",
+        "private-module-intrinsic-keywords",
+        "intrinsic-access-use-graph"
+      ],
+      "pending": {
+        "intrinsic-access-use-graph": "Needs a source-bound finite context census of intrinsic-type uses, including interface/IMPORT and nested scopes, joined to canonical type-specifier fixtures and supported-kind premises. The local and PRIVATE-module programs are witnesses, not proof of the universal accessibility statement or of complete type classification."
+      },
+      "oracle": "Two programs use all five intrinsic type keywords without importing type names, one in a main program and one for private module objects exposed only through a checking procedure. Each object's initialized value is checked. Default real and complex controls use zero, and character equality uses only Fortran characters.",
+      "oracle_limitation": "No storage width, kind number, character encoding or floating-point representation is assumed. The fixtures do not test the unrelated accessibility of intrinsic procedure identifiers. Acceptance alone does not establish that all other types have been classified correctly.",
+      "dependencies": "7.1.2 p2 names the five categories. 7.4.1/R704-R706 (PDF 80), 7.4.3.3 (PDF 83), 7.4.4.2 (PDF 84-85), 7.4.5 (PDF 87) define their specifiers/defaults. 8.5.2 p4 (PDF 120) qualifies PRIVATE as identifier accessibility."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "definition",
+      "rationale": "PDF 75 line 9: intrinsic/nonintrinsic is the exhaustive type classification, not a runtime predicate or a claim about kind, rank, representation or polymorphism. Category-specific definitions are the source evidence; finite object declarations cannot prove the classification universally."
+    },
+    {
+      "unit": "p2",
+      "disposition": "structural",
+      "rationale": "PDF 75 line 10: each of the five intrinsic categories is separately accounted below."
+    },
+    {
+      "unit": "p2.integer",
+      "disposition": "definition",
+      "rationale": "Integer is an intrinsic type; its supported kinds and value domains belong to 7.4.3.1, not to a presumed byte width."
+    },
+    {
+      "unit": "p2.real",
+      "disposition": "definition",
+      "rationale": "Real is an intrinsic type. DOUBLE PRECISION specifies a kind of real, not a sixth intrinsic type (7.4.3.2 p4-p5)."
+    },
+    {
+      "unit": "p2.complex",
+      "disposition": "definition",
+      "rationale": "Complex is an intrinsic type, distinct from real despite using paired real values and the corresponding real-kind approximation method (7.4.3.3)."
+    },
+    {
+      "unit": "p2.character",
+      "disposition": "definition",
+      "rationale": "Character is an intrinsic type; LEN and KIND are separate parameters and a character kind is not a character count or native ASCII assertion."
+    },
+    {
+      "unit": "p2.logical",
+      "disposition": "definition",
+      "rationale": "Logical is an intrinsic type, distinct from integer even if a processor uses similar storage sizes."
+    },
+    {
+      "unit": "p3",
+      "disposition": "structural",
+      "rationale": "PDF 75 lines 11-14 combines three origin definitions with a nonintrinsic-name restriction and intrinsic accessibility. The latter two are retained as genuine local requirements."
+    },
+    {
+      "unit": "p3.derived-origin",
+      "disposition": "definition",
+      "rationale": "A derived type originates in a derived-type definition or an intrinsic module. This neither duplicates the 7.5.2 grammar nor promises public components."
+    },
+    {
+      "unit": "p3.enum-origin",
+      "disposition": "definition",
+      "rationale": "An enum type originates in an enum type definition or an intrinsic module. 7.6.1 distinguishes the nonintrinsic type from its integer enumerators and from an unnamed interoperable enumeration."
+    },
+    {
+      "unit": "p3.enumeration-origin",
+      "disposition": "definition",
+      "rationale": "An enumeration type originates in its type definition or an intrinsic module. 7.6.2 defines a nonintrinsic, noninteroperable, nonderived type with no parameters; this is not an integer-kind variant."
+    },
+    {
+      "unit": "p3.nonintrinsic-access",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.1.2-001"
+      ]
+    },
+    {
+      "unit": "p3.intrinsic-access",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.1.2-002"
+      ]
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_7_1_2.md"
+  },
+  "review_fingerprint": "b36b3f4a79d0d104e1ffa5c5df874b859645f5def28221d7367c3df32f5ef3ce",
+  "review_rationale": "Independent original-source review and verified gate repairs: doc/source_audits/batch_007.json. Intrinsic and nonintrinsic accessibility, their origins and scope premises are separated. Finite controls do not establish enum visibility, intrinsic-module type inventory or the complete use graph."
+}
