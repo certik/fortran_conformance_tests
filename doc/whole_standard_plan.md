@@ -22,7 +22,7 @@ The readiness refactoring now supplies:
   context case.
 
 This is infrastructure readiness, not completed conformance coverage.
-The current census still has 5,257 unresolved base units and five unresolved
+The current census still has 5,245 unresolved base units and five unresolved
 fine-grained units inside the calibration catalogues. Its independent visual
 review is still pending. Automatic PDF extraction is not semantic review,
 and list items/table rows require additional audited subdivisions.
@@ -239,9 +239,13 @@ failed its destination-bound oracle, as the newer single-image GNU run
 did. That case remains source-reviewed only, with its source rationale
 and reference disagreement recorded rather than hidden.
 
-The two enum fixtures still have no successful runtime reference result.
-Six assignment facets still need an additional diagnostic-policy tier or
-independently justified processor-specific expectations. C descriptor
+The two enum fixtures and the new `.NIL.` token control still have no
+successful runtime reference result. Six assignment facets still need an
+additional diagnostic-policy tier or independently justified
+processor-specific expectations. Four prescribed-graphics facets need a
+reviewed processor source/display-interface evidence contract: accepting
+characters in a program does not establish their graphic appearance.
+C descriptor
 header discovery and the remaining IEEE/profile families should be
 calibrated when their work units are reached; the basic C bridge does not
 claim to cover those interfaces.
@@ -249,8 +253,12 @@ claim to cover those interfaces.
 ## 8. Rollout progress and next batch
 
 `doc/rollout_progress.json` records reviewed batch checkpoints. The first
-two implementation batches cover 6.2.2-6.2.5, using separate author
-worktrees and independent source-first reviewers. The coordinator
+three implementation batches cover 6.1.1-6.1.4 and 6.2.1-6.2.6, using
+separate author worktrees and review independent of those authors.
+The first two batches used fresh review contexts. The third review task
+returned no substantive result, so the coordinator performed that source
+and fixture review directly; it is not reported as a fresh-context review.
+The coordinator
 continued in the existing session, while authors and reviewers received
 fresh bounded contexts. No large factory or per-agent model override was
 used, so this is not an A/B model benchmark.
@@ -268,10 +276,19 @@ DATA-repeat diagnostic fallback; count-neutral named cases now distinguish
 missing integer-type rejection from an unrelated object/value-count error.
 Restated operator syntax remains owned by its defining Clause 10 subclause.
 
-The next queued source units are 6.1.1-6.1.4 (characters, letters, digits,
-and underscore), plus 6.2.1 and 6.2.6 (tokens and delimiters). Keep their
-scopes disjoint, avoid assuming ASCII collating values, and do not turn
-permissions or definitions into mandatory diagnostics. The outstanding
-assignment/census questions remain explicit. Compare model routing on
-bounded packets before widening concurrency; do not jump from this batch
-to thousands of unreviewed programs.
+The third checkpoint adds seven requirements and 27 executions, separating
+five effect programs from 22 admission controls. A direct character-equality
+oracle replaces an unnecessary default-integer character-code premise.
+Digit definitions receive source accounting without a synthetic effect
+test, and the `.NIL.` fixture retains source-only approval rather than
+invented reference corroboration. The four new graphics facets remain
+explicitly pending.
+
+The next queued source units are 6.1.5-6.1.6 (special and other characters,
+including Table 6.1), plus 6.3.1, 6.3.2.1, and 6.3.2.2 (source forms,
+free-source line boundaries, and blanks, including Table 6.2). Keep scopes
+disjoint, review the actual F2023 limits, measure exact raw-source
+boundaries, and preserve optional processor-repertoire conditions.
+The outstanding assignment, graphics, and census questions remain explicit.
+Compare model routing on bounded packets before widening concurrency; do
+not jump from this batch to thousands of unreviewed programs.

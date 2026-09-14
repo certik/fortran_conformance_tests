@@ -1,0 +1,268 @@
+{
+  "schema_version": 1,
+  "section": "6.1.2",
+  "review_state": "reviewed",
+  "subunits": {
+    "p2": [
+      "p2.A",
+      "p2.B",
+      "p2.C",
+      "p2.D",
+      "p2.E",
+      "p2.F",
+      "p2.G",
+      "p2.H",
+      "p2.I",
+      "p2.J",
+      "p2.K",
+      "p2.L",
+      "p2.M",
+      "p2.N",
+      "p2.O",
+      "p2.P",
+      "p2.Q",
+      "p2.R",
+      "p2.S",
+      "p2.T",
+      "p2.U",
+      "p2.V",
+      "p2.W",
+      "p2.X",
+      "p2.Y",
+      "p2.Z"
+    ],
+    "p3": [
+      "p3.letter-class",
+      "p3.upper-and-lower-case",
+      "p3.case-equivalence",
+      "p3.character-context-exception"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S6.1.2-001",
+      "title": "The processor character set includes both letter cases",
+      "source": "6.1.2 p3, second sentence (J3/24-007 PDF page 67, printed page 53, lines 17-18), using the p1-p2 letter list.",
+      "source_units": [
+        "p3.upper-and-lower-case"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The processor character set includes the upper-case and lower-case forms of all twenty-six listed letters. Inclusion of both forms is distinct from their equivalence outside character contexts. This does not prescribe an ASCII code value or the numerical relation between a lower-case letter and its upper-case counterpart.",
+      "facets": [
+        "uppercase-letter-repertoire",
+        "lowercase-letter-repertoire"
+      ],
+      "pending": {},
+      "oracle": "A default-character value contains the twenty-six upper-case and twenty-six lower-case letters. Compare every pair of different positions by character equality and require distinct character values. All positions are within the initialized 52-character value. This detects collapse of two letters or of the two cases without assuming integer codes, code ordering, or any particular separation.",
+      "oracle_limitation": "The finite oracle covers representability and distinctness of these 52 source characters in default character data, using the separately specified default-character and character-equality semantics. It does not inspect glyph style, processor input encoding, control characters, optional character kinds, or exhaustive collating-sequence constraints. No character-code conversion is used, so it does not assume that default integer can represent the size of the complete processor repertoire, as a default-kind ICHAR call would require. A successful program is not approval of the fixture.",
+      "dependencies": "6.1.2 p1-p2 defines the alphabet (PDF page 67). 7.4.4.2 p2-p3 supplies default character and the Fortran repertoire (PDF page 84); 7.4.4.3 p2-p4 gives literal kind and representable characters (PDF page 85). 10.1.5.5.1 p7-p8 defines character equality without depending on the collating order (PDF pages 180-181). The avoided character-code result-kind precondition is in 16.9.105 p5 (PDF page 419)."
+    },
+    {
+      "id": "S6.1.2-002",
+      "title": "Letter case is equivalent outside character contexts",
+      "source": "6.1.2 p3, third sentence (J3/24-007 PDF page 67, printed page 53, lines 18-19).",
+      "source_units": [
+        "p3.case-equivalence",
+        "p3.character-context-exception"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "In program units, a lower-case letter is equivalent to the corresponding upper-case letter except within a character context. Under 3.21, character contexts are character literal constants and character string edit descriptors. The exception is not permission to fold the values of literals or output edit strings: their defining rules determine those values. Comment text has no effect under the separate source-form rules; it is not a third character context with an observable case-preservation effect.",
+      "facets": [
+        "all-letter-name-equivalence",
+        "mixed-case-keywords-and-calls",
+        "character-literal-exception",
+        "character-string-edit-exception"
+      ],
+      "pending": {},
+      "oracle": "Four independent programs separate the contexts. One declares all twenty-six one-letter identifiers in upper case, assigns distinct integers through lower-case uses, and reads them in upper case. Another mixes keyword and program/procedure-name case and checks a call's scalar result. The literal program uses both delimiter forms, checks corresponding character positions, and requires each upper/lower pair to differ, so folding both input and expected literals cannot produce a false pass. The FORMAT-statement program outputs both delimiter forms to initialized fixed-size internal records, checks IOSTAT before reading them, and checks exact positions and unequal case pairs.",
+      "oracle_limitation": "This is a finite plan, not coverage of every keyword, operator, name context, source form, literal rule, or I/O operation. Character-context checks depend on 7.4.4.3 and 13.9 and are deliberately separate from the no-I/O name and literal cases. Neither a fixed ASCII case offset nor an ordering between the two cases is assumed. Comments are not given a fake preservation assertion. No negative program is inferred merely from this semantic equivalence rule.",
+      "dependencies": "3.21 (PDF page 21) defines both character contexts. 6.2.2/R603/C601 owns name grammar (PDF page 68). 6.3.1 p2 and 6.3.2.3 p1 (PDF pages 71-72) distinguish admissible comment characters from comments' lack of effect; fixed-form commentary is separately specified by 6.3.3.2 (PDF page 73). 7.4.4.3 p1-p5 supplies character literals (PDF pages 85-86). 13.3.2/R1322/C1313 and p5-p7 supplies edit-string syntax and its case exception (PDF page 292); 13.9 p1-p2 supplies output-only character-string editing (PDF page 307). Native character identity, not ASCII collation, follows from 7.4.4.4 p1 and 16.9.105 p5."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "definition",
+      "rationale": "PDF page 67, line 15 introduces the finite twenty-six-letter repertoire; p2 enumerates every member."
+    },
+    {
+      "unit": "p2",
+      "disposition": "structural",
+      "rationale": "PDF page 67, line 16 lists all twenty-six letters. Each list member is separately accounted for without inventing twenty-six requirements."
+    },
+    {
+      "unit": "p2.A",
+      "disposition": "definition",
+      "rationale": "A is a member of the defined letter repertoire."
+    },
+    {
+      "unit": "p2.B",
+      "disposition": "definition",
+      "rationale": "B is a member of the defined letter repertoire."
+    },
+    {
+      "unit": "p2.C",
+      "disposition": "definition",
+      "rationale": "C is a member of the defined letter repertoire."
+    },
+    {
+      "unit": "p2.D",
+      "disposition": "definition",
+      "rationale": "D is a member of the defined letter repertoire."
+    },
+    {
+      "unit": "p2.E",
+      "disposition": "definition",
+      "rationale": "E is a member of the defined letter repertoire."
+    },
+    {
+      "unit": "p2.F",
+      "disposition": "definition",
+      "rationale": "F is a member of the defined letter repertoire."
+    },
+    {
+      "unit": "p2.G",
+      "disposition": "definition",
+      "rationale": "G is a member of the defined letter repertoire."
+    },
+    {
+      "unit": "p2.H",
+      "disposition": "definition",
+      "rationale": "H is a member of the defined letter repertoire."
+    },
+    {
+      "unit": "p2.I",
+      "disposition": "definition",
+      "rationale": "I is a member of the defined letter repertoire."
+    },
+    {
+      "unit": "p2.J",
+      "disposition": "definition",
+      "rationale": "J is a member of the defined letter repertoire."
+    },
+    {
+      "unit": "p2.K",
+      "disposition": "definition",
+      "rationale": "K is a member of the defined letter repertoire."
+    },
+    {
+      "unit": "p2.L",
+      "disposition": "definition",
+      "rationale": "L is a member of the defined letter repertoire."
+    },
+    {
+      "unit": "p2.M",
+      "disposition": "definition",
+      "rationale": "M is a member of the defined letter repertoire."
+    },
+    {
+      "unit": "p2.N",
+      "disposition": "definition",
+      "rationale": "N is a member of the defined letter repertoire."
+    },
+    {
+      "unit": "p2.O",
+      "disposition": "definition",
+      "rationale": "O is a member of the defined letter repertoire."
+    },
+    {
+      "unit": "p2.P",
+      "disposition": "definition",
+      "rationale": "P is a member of the defined letter repertoire."
+    },
+    {
+      "unit": "p2.Q",
+      "disposition": "definition",
+      "rationale": "Q is a member of the defined letter repertoire."
+    },
+    {
+      "unit": "p2.R",
+      "disposition": "definition",
+      "rationale": "R is a member of the defined letter repertoire."
+    },
+    {
+      "unit": "p2.S",
+      "disposition": "definition",
+      "rationale": "S is a member of the defined letter repertoire."
+    },
+    {
+      "unit": "p2.T",
+      "disposition": "definition",
+      "rationale": "T is a member of the defined letter repertoire."
+    },
+    {
+      "unit": "p2.U",
+      "disposition": "definition",
+      "rationale": "U is a member of the defined letter repertoire."
+    },
+    {
+      "unit": "p2.V",
+      "disposition": "definition",
+      "rationale": "V is a member of the defined letter repertoire."
+    },
+    {
+      "unit": "p2.W",
+      "disposition": "definition",
+      "rationale": "W is a member of the defined letter repertoire."
+    },
+    {
+      "unit": "p2.X",
+      "disposition": "definition",
+      "rationale": "X is a member of the defined letter repertoire."
+    },
+    {
+      "unit": "p2.Y",
+      "disposition": "definition",
+      "rationale": "Y is a member of the defined letter repertoire."
+    },
+    {
+      "unit": "p2.Z",
+      "disposition": "definition",
+      "rationale": "Z is a member of the defined letter repertoire."
+    },
+    {
+      "unit": "p3",
+      "disposition": "structural",
+      "rationale": "PDF page 67, lines 17-19: distinguish the letter syntax-class definition, both-case support, case equivalence, and its exact character-context boundary."
+    },
+    {
+      "unit": "p3.letter-class",
+      "disposition": "definition",
+      "rationale": "The listed set defines letter. Its use as an alphanumeric alternative is owned by R601; this class declaration is not a duplicate S requirement."
+    },
+    {
+      "unit": "p3.upper-and-lower-case",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.1.2-001"
+      ]
+    },
+    {
+      "unit": "p3.case-equivalence",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.1.2-002"
+      ]
+    },
+    {
+      "unit": "p3.character-context-exception",
+      "disposition": "definition",
+      "requirements": [
+        "S6.1.2-002"
+      ],
+      "rationale": "The equivalence rule excludes precisely the 3.21 character contexts: character literals and character string edit descriptors. Their value/output semantics remain in their defining clauses, not in a new local restriction on comments."
+    },
+    {
+      "unit": "note-unnumbered",
+      "disposition": "informative",
+      "rationale": "The three differently cased CALL statements illustrate the equivalence already required by p3. They add neither a new case-folding algorithm nor a separate call-syntax requirement."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_6_1_2.md"
+  },
+  "review_fingerprint": "0ac319def6e0591efd921d59508cb476f903561bc5ae6b17e3dae9925e4f9821",
+  "review_rationale": "Coordinator review independent of the draft authors; see doc/source_audits/lexical_batch_003.json. All 26 alphabet members, both required cases, equivalence outside the two exact character contexts, and the informative CALL example are accounted for. Direct character equality avoids an unnecessary integer-kind premise while preserving the finite repertoire oracle."
+}

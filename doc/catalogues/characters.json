@@ -1,0 +1,230 @@
+{
+  "schema_version": 1,
+  "section": "6.1.1",
+  "review_state": "reviewed",
+  "subunits": {
+    "p1": [
+      "p1.processor-set",
+      "p1.character-partition",
+      "p1.graphic-letters",
+      "p1.graphic-digits",
+      "p1.graphic-underscore",
+      "p1.graphic-special-characters",
+      "p1.graphic-other-characters"
+    ],
+    "p2": [
+      "p2.fortran-character-set",
+      "p2.alphanumeric-class"
+    ],
+    "R601": [
+      "R601.letter",
+      "R601.digit",
+      "R601.underscore"
+    ],
+    "p3": [
+      "p3.graphics-letters",
+      "p3.graphics-digits",
+      "p3.graphics-underscore",
+      "p3.graphics-special-characters",
+      "p3.currency-exception",
+      "p3.graphic-style"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "R601",
+      "title": "Alphanumeric characters have three alternatives",
+      "source": "6.1.1 R601 (J3/24-007 PDF page 67, printed page 53, lines 9-11).",
+      "source_units": [
+        "R601",
+        "R601.letter",
+        "R601.digit",
+        "R601.underscore"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "An alphanumeric-character is a letter, a digit, or an underscore. Special characters and other graphic characters are not alternatives of this syntax class. The definitions of the three alternatives remain in 6.1.2, 6.1.3, and 6.1.4. The enclosing syntax determines where an alphanumeric-character is permitted; R601 does not itself define a name, a literal, or an operator.",
+      "facets": [
+        "letter-alternative",
+        "digit-alternative",
+        "underscore-alternative"
+      ],
+      "pending": {},
+      "oracle": "Three independent free-form programs admit the alternatives in name suffix positions provided by R603. The letter control uses distinct alphabetic suffixes; the digit control separately assigns and checks ten names ending in 0 through 9; the underscore control distinguishes a name ending in underscore from the same prefix without it. Every scalar is defined before comparison.",
+      "oracle_limitation": "These are positive admission controls, not full syntax-rejection coverage. No malformed name is duplicated here: R603/C601 owns name grammar and length, while literal and operator spelling remains in their defining sections. No claim is made about character code values, code distances, source encoding, or glyph rendering. The required diagnostic capability for syntax violations follows from 4.2 p2(3), not a universal obligation to reject extensions.",
+      "dependencies": "4.1.1 p1 defines the BNF alternatives (PDF pages 44-45); 4.2 p2(3) establishes syntax diagnostic capability (PDF page 46). 6.1.2 p1-p3, 6.1.3 p1-p3, and 6.1.4/R602 supply the three alternatives (PDF page 67). 6.2.2/R603/C601 supplies the otherwise legal short-name context (PDF page 68)."
+    },
+    {
+      "id": "S6.1.1-001",
+      "title": "Character graphics have prescribed forms with explicit exceptions",
+      "source": "6.1.1 p3 (J3/24-007 PDF page 67, printed page 53, lines 12-13).",
+      "source_units": [
+        "p3.graphics-letters",
+        "p3.graphics-digits",
+        "p3.graphics-underscore",
+        "p3.graphics-special-characters",
+        "p3.currency-exception",
+        "p3.graphic-style"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The character graphics follow those specified in 6.1.2 through 6.1.5, except that the currency symbol is exempt from this prescribed-graphic condition. The style of every graphic is unspecified. This requirement concerns the graphics, not an ASCII encoding, a font, an integer code assignment, or a fixed distance between character codes.",
+      "facets": [
+        "letter-graphics",
+        "digit-graphics",
+        "underscore-graphic",
+        "special-character-graphics"
+      ],
+      "pending": {
+        "letter-graphics": "Needs an independently reviewed processor source/display-interface oracle tied to the pinned letter graphics. Runtime letter identity does not certify visual form or impose a font.",
+        "digit-graphics": "Needs an independently reviewed processor source/display-interface oracle tied to the ten pinned digit graphics. Successful integer parsing alone is not graphic evidence.",
+        "underscore-graphic": "Needs an independently reviewed processor source/display-interface oracle for the underscore graphic. The R602 name control does not certify rendering.",
+        "special-character-graphics": "Needs a separately justified visual/interface oracle for the 6.1.5 table, excluding the currency symbol and allowing graphic style variation. Table ownership stays in 6.1.5."
+      },
+      "oracle_limitation": "No executable fixture is credited to these four facets. A finite source/interface review must compare the specified graphics while preserving the currency and style exceptions; there is no portable runtime query that verifies their visual appearance. This processor obligation does not supply a single isolated invalid program or a mandatory fatal rejection oracle. The separate 4.2 p2(5) capability to diagnose characters not permitted by Clause 6 is not a glyph-rendering test.",
+      "dependencies": "6.1.2 p2, 6.1.3 p2, and 6.1.4/R602 (PDF page 67); 6.1.5 p1 and Table 6.1 (PDF pages 67-68). 7.4.4.4 p1-p3 (PDF pages 86-87) separates processor collation from graphic appearance and gives no fixed inter-case code relation."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "structural",
+      "rationale": "PDF page 67, lines 4-6: account separately for processor dependence, the control/graphic partition, and all five graphic-character classes."
+    },
+    {
+      "unit": "p1.processor-set",
+      "disposition": "definition",
+      "rationale": "The full processor repertoire is processor dependent, subject to the subsequently specified mandatory characters. This is not a promise of a particular encoding or control-character set."
+    },
+    {
+      "unit": "p1.character-partition",
+      "disposition": "definition",
+      "rationale": "Each processor character belongs to the control or graphic category. Classification alone supplies no additional runtime effect or mandatory invalid program."
+    },
+    {
+      "unit": "p1.graphic-letters",
+      "disposition": "definition",
+      "rationale": "Letters are one graphic-character class; 6.1.2 defines the repertoire and case requirements."
+    },
+    {
+      "unit": "p1.graphic-digits",
+      "disposition": "definition",
+      "rationale": "Digits are one graphic-character class; 6.1.3 supplies its ten members."
+    },
+    {
+      "unit": "p1.graphic-underscore",
+      "disposition": "definition",
+      "rationale": "Underscore is one graphic-character class; R602 supplies its terminal."
+    },
+    {
+      "unit": "p1.graphic-special-characters",
+      "disposition": "definition",
+      "rationale": "Special characters are one graphic-character class; 6.1.5 owns the table and its subdivisions."
+    },
+    {
+      "unit": "p1.graphic-other-characters",
+      "disposition": "definition",
+      "rationale": "Other characters are the fifth graphic-character class; 6.1.6 owns their permitted contexts. This cross-reference does not import those restrictions into a new local S ID."
+    },
+    {
+      "unit": "p2",
+      "disposition": "structural",
+      "rationale": "PDF page 67, lines 7-8: distinguish the Fortran character set from the narrower alphanumeric syntax class."
+    },
+    {
+      "unit": "p2.fortran-character-set",
+      "disposition": "definition",
+      "rationale": "Letters, digits, underscore, and special characters form the Fortran character set; other graphic and control characters are not included by this definition."
+    },
+    {
+      "unit": "p2.alphanumeric-class",
+      "disposition": "definition",
+      "requirements": [
+        "R601"
+      ],
+      "rationale": "Only letters, digits, and underscore form alphanumeric-character. R601 is the canonical numbered union; no duplicate prose ID is allocated."
+    },
+    {
+      "unit": "R601",
+      "disposition": "requirements",
+      "requirements": [
+        "R601"
+      ]
+    },
+    {
+      "unit": "R601.letter",
+      "disposition": "requirements",
+      "requirements": [
+        "R601"
+      ]
+    },
+    {
+      "unit": "R601.digit",
+      "disposition": "requirements",
+      "requirements": [
+        "R601"
+      ]
+    },
+    {
+      "unit": "R601.underscore",
+      "disposition": "requirements",
+      "requirements": [
+        "R601"
+      ]
+    },
+    {
+      "unit": "p3",
+      "disposition": "structural",
+      "rationale": "PDF page 67, lines 12-13: separate the four defining-section graphic references from the currency exception and unspecified style."
+    },
+    {
+      "unit": "p3.graphics-letters",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.1.1-001"
+      ]
+    },
+    {
+      "unit": "p3.graphics-digits",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.1.1-001"
+      ]
+    },
+    {
+      "unit": "p3.graphics-underscore",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.1.1-001"
+      ]
+    },
+    {
+      "unit": "p3.graphics-special-characters",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.1.1-001"
+      ]
+    },
+    {
+      "unit": "p3.currency-exception",
+      "disposition": "permission",
+      "requirements": [
+        "S6.1.1-001"
+      ],
+      "rationale": "The currency symbol is exempt from the prescribed-graphic condition. Its displayed table glyph must not become a mandatory dollar-sign rendering oracle."
+    },
+    {
+      "unit": "p3.graphic-style",
+      "disposition": "permission",
+      "requirements": [
+        "S6.1.1-001"
+      ],
+      "rationale": "The graphic's style is unspecified. The prescribed graphic does not mandate a font or typographic style."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_6_1_1.md"
+  },
+  "review_fingerprint": "ac0059854d223a1cd8319b6529d6f53aa91fd4ab15f950dba70dc6af609d1810",
+  "review_rationale": "Coordinator review independent of the draft authors; see doc/source_audits/lexical_batch_003.json. The processor-dependent repertoire and graphic/control partition are definitions. All five graphic classes, both character-set definitions, three R601 alternatives, prescribed graphics, currency exception, and unspecified style are accounted for. Name-suffix admission controls do not claim glyph rendering or arbitrary-character rejection."
+}
