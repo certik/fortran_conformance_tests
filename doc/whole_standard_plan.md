@@ -22,7 +22,7 @@ The readiness refactoring now supplies:
   context case.
 
 This is infrastructure readiness, not completed conformance coverage.
-The current census still has 5,141 unresolved base units and five unresolved
+The current census still has 5,130 unresolved base units and five unresolved
 fine-grained units inside the calibration catalogues. Its independent visual
 review is still pending. Automatic PDF extraction is not semantic review,
 and list items/table rows require additional audited subdivisions.
@@ -258,20 +258,25 @@ Those contracts must retain their finite coverage boundary rather than
 claiming proof of every possible program.
 The first type batch added 21 explicit pending facets. LEN-only generic
 exclusion now has a reviewed finite canonical-case link, without a duplicate
-execution or universal claim. Six PDT mechanism facets remain bounded
-unauthored work, not inherently untestable. The following compatibility
+execution or universal claim. Six PDT mechanism facets now have seven
+independently reviewed effect programs, all executed by GNU. Target and
+Flang feature failures remain explicit, as do untested zero-LEN transitions
+and the five remaining 7.2 source/use-graph facets. The following compatibility
 batch adds five source-use/identity gaps. Other source/use-graph and C710
 isolation questions remain separate.
-C descriptor
-header discovery and the remaining IEEE/profile families should be
-calibrated when their work units are reached; the basic C bridge does not
-claim to cover those interfaces.
+The integer batch adds four source-use, inventory and processor-value-set
+gaps. Its binary-model branches and identifier bounds are qualified
+witnesses, not universal representation assumptions.
+C descriptor header discovery is now calibrated, but broader descriptor
+interfaces and the remaining IEEE/profile families still need their own
+work units; the basic C bridge does not cover them.
 
 ## 8. Rollout progress and next batch
 
 `doc/rollout_progress.json` records reviewed batch checkpoints. The first
-eight implementation batches catalogue the content-bearing sections of
-Clause 6, 4.1.1-4.1.5/4.2, and 7.1-7.3, using
+nine implementation batches catalogue the content-bearing sections of
+Clause 6, 4.1.1-4.1.5/4.2, 7.1-7.3, and the intrinsic/integer sections
+7.4.1/7.4.2/7.4.3.1, using
 separate author worktrees and review independent of those authors.
 All except the third batch used fresh review contexts. The third review task
 returned no substantive result, so the coordinator performed that source
@@ -352,8 +357,23 @@ header and produced descriptor versions still disagree, so that failure
 is recorded as an interface mismatch before local propagation is observed.
 Frozen copies and successful linking are not ABI certification.
 
-The next units are 7.4.1/7.4.2/7.4.3.1 and the six bounded PDT mechanism
-facets under 7.2. The broader meta-evidence contract, including mixed FORMAT
+The ninth checkpoint adds 21 requirements and 93 executions, including
+seven true PDT effects. Independent review exposed an unguaranteed
+conversion of a processor KIND identifier and noncausal diagnostic
+predicates in all twenty new negatives. The identifier conversion now has
+a separate sufficient profile, while positional/keyword and mandatory
+integer-capacity controls remain unconditional. Case-specific diagnostic
+gates remove four target and four reference credits without changing the
+negative/control sources. Eight existing source-unchanged effects and the
+whole-7.2 canonical-link binding were readjudicated.
+
+The complete frozen-target checkpoint has 784 executions: 532 PASS,
+248 XFAIL and four explicit optional-profile SKIPs. All 691 prior outcomes
+are unchanged. This is a regression checkpoint, not whole-standard closure.
+
+The next units are real/complex/logical types and literals in
+7.4.3.2/7.4.3.3/7.4.5, and the character subclauses 7.4.4.1-7.4.4.4.
+The broader meta-evidence contract, including mixed FORMAT
 diagnostic contexts, is not complete merely because one link type exists.
 Meta-level definitions must not become fabricated passing programs.
 Continue to separate reporting, selected interfaces, finite controls, and

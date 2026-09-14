@@ -1,0 +1,529 @@
+{
+  "schema_version": 1,
+  "section": "7.4.1",
+  "review_state": "reviewed",
+  "subunits": {
+    "p1": [
+      "p1.partition",
+      "p1.numeric-integer",
+      "p1.numeric-real",
+      "p1.numeric-complex",
+      "p1.nonnumeric-character",
+      "p1.nonnumeric-logical"
+    ],
+    "p2": [
+      "p2.kind-parameter",
+      "p2.name",
+      "p2.integer-type",
+      "p2.default-integer-kind"
+    ],
+    "R704": [
+      "R704.integer",
+      "R704.real",
+      "R704.double-precision",
+      "R704.complex",
+      "R704.character",
+      "R704.logical",
+      "R704.real-omitted",
+      "R704.real-selected",
+      "R704.complex-omitted",
+      "R704.complex-selected",
+      "R704.character-omitted",
+      "R704.character-selected",
+      "R704.logical-omitted",
+      "R704.logical-selected"
+    ],
+    "R705": [
+      "R705.integer-keyword",
+      "R705.selector-omitted",
+      "R705.selector-present"
+    ],
+    "R706": [
+      "R706.parentheses",
+      "R706.positional",
+      "R706.keyword",
+      "R706.scalar",
+      "R706.integer",
+      "R706.constant"
+    ],
+    "C717": [
+      "C717.nonnegative",
+      "C717.supported",
+      "C717.integer-context",
+      "C717.real-context",
+      "C717.complex-context",
+      "C717.logical-context"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "R704",
+      "title": "Intrinsic type specifications have six syntactic alternatives",
+      "source": "7.4.1 R704; J3/24-007, 18 December 2023, PDF 80, printed 66, lines 7-12.",
+      "source_units": [
+        "R704",
+        "R704.integer",
+        "R704.real",
+        "R704.double-precision",
+        "R704.complex",
+        "R704.character",
+        "R704.logical",
+        "R704.real-omitted",
+        "R704.real-selected",
+        "R704.complex-omitted",
+        "R704.complex-selected",
+        "R704.character-omitted",
+        "R704.character-selected",
+        "R704.logical-omitted",
+        "R704.logical-selected"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "An intrinsic-type-spec admits integer-type-spec, REAL with an optional kind selector, DOUBLE PRECISION, COMPLEX with an optional kind selector, CHARACTER with an optional character selector, or LOGICAL with an optional kind selector. DOUBLE PRECISION is a real specification, not a sixth intrinsic type or a form with an extra kind selector. The integer alternative expands through R705; character selectors retain their distinct grammar.",
+      "facets": [
+        "integer-alternative",
+        "real-default",
+        "real-selector",
+        "double-precision",
+        "complex-default",
+        "complex-selector",
+        "character-default",
+        "character-selector",
+        "logical-default",
+        "logical-selector"
+      ],
+      "pending": {},
+      "oracle": "Six independently executed declaration controls cover all alternatives and the four locally displayed selector omissions/presences. Use KIND of standard default or double-precision literals, never assumed byte-valued kind codes. Each initialized object has an explicit value assertion.",
+      "oracle_limitation": "These are admission controls, not full numeric, character or logical effects. Malformed descendant syntax stays with R705/R706 or the canonical character grammar rather than gaining a second rejection ID at this union. No DOUBLE COMPLEX extension, derived type, BOZ or arbitrary invalid twin is added.",
+      "dependencies": "7.3.2.1/R703 and 8.2/R801 supply declaration contexts. 7.4.3.1/R705, 7.4.3.2 p4-p5 (PDF 82), 7.4.3.3 p2-p3 (PDF 83), 7.4.4.2/R721-R723 (PDF 84-85), and 7.4.5 (PDF 87) retain their specific defaults and selectors. 4.1.2 p2 and 4.2 p2(3), PDF 45-46, supply the numbered reporting basis."
+    },
+    {
+      "id": "R705",
+      "title": "INTEGER admits an optional kind selector",
+      "source": "7.4.1 R705, PDF 80, printed 66, line 13; canonical keyword restatement in 7.4.3.1 p3, line 34.",
+      "source_units": [
+        "R705",
+        "R705.integer-keyword",
+        "R705.selector-omitted",
+        "R705.selector-present"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "An integer-type-spec uses INTEGER and may include one kind-selector. The selector is not a storage-size notation. Its internal syntax and value restrictions are R706 and C717; omission denotes the default integer method under 7.4.3.1 p4.",
+      "facets": [
+        "without-selector",
+        "with-selector"
+      ],
+      "pending": {},
+      "oracle": "Declare one default integer and one integer explicitly selected with KIND(0). Pass both initialized values to an explicit default-integer dummy and check their distinct values.",
+      "oracle_limitation": "This is a finite syntax/type admission control. Default-kind and minimum-range effects have primary ownership S7.4.3.1-004. A guessed misspelling or malformed selector is not manufactured as another invalid case for this optional wrapper.",
+      "dependencies": "R704/R706/C717; 7.4.3.1 p3-p4, PDF 80; 15.5.2.5 supplies the exact intrinsic dummy type/kind premises. Existing R702/R703 and 7.3 catalogues retain their cases and ownership."
+    },
+    {
+      "id": "R706",
+      "title": "A kind selector encloses a scalar integer constant expression",
+      "source": "7.4.1 R706, PDF 80, printed 66, line 14.",
+      "source_units": [
+        "R706",
+        "R706.parentheses",
+        "R706.positional",
+        "R706.keyword",
+        "R706.scalar",
+        "R706.integer",
+        "R706.constant"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "A kind-selector is parenthesized and contains a scalar integer constant expression, optionally preceded by KIND=. The expression need not be a literal, a bare name, or itself default integer. The value still has to meet C717. The scalar, integer and constant expression restrictions propagate from their canonical definitions; the selected type parameter's own default-integer kind is a different question.",
+      "facets": [
+        "positional-expression",
+        "keyword-expression",
+        "integer-expression-kind",
+        "missing-value",
+        "wrong-keyword",
+        "expression-category-diagnostics"
+      ],
+      "pending": {
+        "expression-category-diagnostics": "Needs canonical, independently reviewed scalar-rank, integer-type and constancy diagnostic/control cases in actual kind-selector use, under C401, C1009 and C1014. Existing foundation IF and PDT C701 cases are not this use graph. No duplicate canonical ownership or intrinsic-selector surrogate for the PDT author's C701 work is introduced. This is bounded authorable canonical evidence, not an impossibility."
+      },
+      "oracle": "An unconditional runtime control uses positional and keyword forms with default-integer arithmetic constant expressions and supported KIND inquiries. A separate expression-kind control stores KIND(0) in an integer parameter selected with SELECTED_INT_KIND(18), but only after the existing integer-division profile bounds that identifier to ten decimal digits. This conservative bound guarantees the initialization conversion is representable in the mandatory range-18 method without ordering arbitrary kind identifiers or assuming that method is wider than default. Two compile-only pairs respectively supply a missing expression and repair a misspelled KIND keyword by one substitution. The misspelling is also declared as a valid supported integer constant in both sources, preventing an undeclared-symbol fallback from masquerading as a keyword report.",
+      "oracle_limitation": "The selected expression kind can equal the default kind; no distinct-kind premise is invented. A larger default kind identifier makes only the separately qualified expression-kind witness unavailable, not the unconditional positional/keyword controls or mandatory integer support. Grammar reports must match the exact declaration and a case-specific expression or delimiter cause. Shared kind-selector nouns, implementation-facility failures and unrelated magnitude reports cannot pass. The qualified message alternatives describe observed diagnostic routes, not standard-prescribed wording. Required reporting is not mandatory fatal rejection; diagnose is used. Repairs are positive compile controls, not range or parameter-kind effects.",
+      "dependencies": "4.1.3/R403/C401 (PDF 45), 10.1.9.1/R1027/C1009 (PDF 183), 10.1.12/R1032/C1014 and the constant-expression definition (PDF 187-188), C717, and 16.9.118/16.9.181 (PDF 424, 454-455). 8.5.13 p1 and 10.2.1.3 p8/Table10.9 require the initialization conversion to be representable. 7.4.3.1 p2 supplies mandatory integer capacity independently of the identifier-size profile; missing support is a failure, not an optional property."
+    },
+    {
+      "id": "C717",
+      "title": "A kind-selector value is nonnegative and supported for its type",
+      "source": "7.4.1 C717 (R706), PDF 80, printed 66, lines 15-16.",
+      "source_units": [
+        "C717",
+        "C717.nonnegative",
+        "C717.supported",
+        "C717.integer-context",
+        "C717.real-context",
+        "C717.complex-context",
+        "C717.logical-context"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "The scalar integer constant expression in a kind-selector has a nonnegative value and identifies a representation method available for the intrinsic type being specified. Numeric kind identifiers are processor- and type-specific. A real kind is also available for complex components as specified by 7.4.3.3. This R706 constraint does not replace the distinct character-selector constraint.",
+      "facets": [
+        "supported-integer",
+        "supported-real",
+        "supported-complex",
+        "supported-logical",
+        "negative-integer",
+        "negative-real",
+        "negative-complex",
+        "negative-logical",
+        "absent-zero-integer",
+        "absent-zero-real",
+        "absent-zero-complex",
+        "absent-zero-logical"
+      ],
+      "pending": {},
+      "oracle": "Eight compile-only pairs cover integer, real, complex and logical independently. Four unprofiled negatives change a supported inquiry-selected value to -1. Four further negatives use nonnegative zero only after an independent ISO_FORTRAN_ENV kind-inventory profile establishes its absence for that type; complex uses the real inventory. Every repair replaces only the selector value with a supported KIND inquiry. The profiles never compile the invalid declaration.",
+      "oracle_limitation": "A negative selector is one defective value, though it necessarily also fails support; the absent-zero cases separate support from sign. Zero is not universally unsupported. On a processor supporting zero these optional witnesses are unavailable, not passes or waivers of C717; the unprofiled supported/negative witnesses remain. Diagnostic predicates bind the exact declaration, actual type, selector value and support cause. A constant-expression complaint cannot corroborate these scalar integer constant expressions, even if it mentions kind parameters. Unsupported-kind value reports remain intended evidence, while unsupported selector syntax, unrelated implementation failures, crashes, resource failures and summaries cannot corroborate. The qualified alternatives are observed diagnostic routes, not standard-prescribed wording. No storage width or universal kind-code mapping is asserted.",
+      "dependencies": "R704-R706; 7.4.3.3 p2, PDF 83; 16.10.2.15 INTEGER_KINDS (PDF 474), 16.10.2.20 LOGICAL_KINDS (PDF 475), 16.10.2.26 REAL_KINDS (PDF 476), and 16.9.118 (PDF 424). 4.2 p2(3)-(4), PDF 46, supplies detection/reporting capability, not a prescribed message, severity or fatal exit. Character C724 remains outside this work unit."
+    },
+    {
+      "id": "S7.4.1-001",
+      "title": "An intrinsic KIND parameter itself has default integer type and kind",
+      "source": "7.4.1 p2, PDF 80, printed 66, lines 5-6.",
+      "source_units": [
+        "p2",
+        "p2.kind-parameter",
+        "p2.name",
+        "p2.integer-type",
+        "p2.default-integer-kind"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Each intrinsic type has a kind parameter named KIND. The parameter itself is a default-kind integer value. Its value may designate a nondefault method of its object; that does not change the type or kind of the parameter inquiry. A KIND intrinsic result alone is not evidence that the parameter named KIND is implemented.",
+      "facets": [
+        "integer-parameter",
+        "real-parameter",
+        "complex-parameter",
+        "character-parameter",
+        "logical-parameter"
+      ],
+      "pending": {},
+      "oracle": "Five independent programs inquire value%KIND, check KIND(value%KIND) against KIND(0), and pass the inquiry to an explicit default-integer dummy that checks its value against an independent KIND inquiry. Real and complex objects use the guaranteed double-precision real method; no optional kind code is presumed.",
+      "oracle_limitation": "The explicit dummy tests integer type as well as kind, which assignment conversion or equality of numeric kind identifiers alone would not establish. These are finite parameter-kind effects, not proof of every representation or all inquiry contexts. The earlier S7.2-002 programs remain unchanged and retain their general parameter-name/type ownership; this refinement is separately credited only to 7.4.1. Unsupported parameter-inquiry implementations are failed or source-only observations, not passing controls.",
+      "dependencies": "7.2 p2-p3, PDF 76, supplies the general parameter concepts. 9.4.5/R916/C923, PDF 153, supplies the parameter-name inquiry on initialized nonpointer/nonallocatable objects. 16.9.118, PDF 424, supplies the comparison inquiry. 15.5.2.5 supplies the explicit dummy's intrinsic type/kind agreement."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "structural",
+      "rationale": "PDF 80 lines 3-4: classification partition and each of its five type members are separated below."
+    },
+    {
+      "unit": "p1.partition",
+      "disposition": "definition",
+      "rationale": "Intrinsic types are classified as numeric or nonnumeric. This taxonomy does not define new operations or require an executable category test."
+    },
+    {
+      "unit": "p1.numeric-integer",
+      "disposition": "definition",
+      "rationale": "Integer is numeric; its value and literal obligations are retained in 7.4.3.1."
+    },
+    {
+      "unit": "p1.numeric-real",
+      "disposition": "definition",
+      "rationale": "Real is numeric; this does not duplicate 7.4.3.2 or its approximation requirements."
+    },
+    {
+      "unit": "p1.numeric-complex",
+      "disposition": "definition",
+      "rationale": "Complex is numeric, not a promise that every numeric relational operator accepts it."
+    },
+    {
+      "unit": "p1.nonnumeric-character",
+      "disposition": "definition",
+      "rationale": "Character is nonnumeric; its concatenation and relational rules retain Clause 10 ownership."
+    },
+    {
+      "unit": "p1.nonnumeric-logical",
+      "disposition": "definition",
+      "rationale": "Logical is nonnumeric. A processor representation as bits or integers does not change its Fortran category."
+    },
+    {
+      "unit": "p2",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.1-001"
+      ]
+    },
+    {
+      "unit": "p2.kind-parameter",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.1-001"
+      ]
+    },
+    {
+      "unit": "p2.name",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.1-001"
+      ]
+    },
+    {
+      "unit": "p2.integer-type",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.1-001"
+      ]
+    },
+    {
+      "unit": "p2.default-integer-kind",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.1-001"
+      ]
+    },
+    {
+      "unit": "R704",
+      "disposition": "requirements",
+      "requirements": [
+        "R704"
+      ]
+    },
+    {
+      "unit": "R704.integer",
+      "disposition": "requirements",
+      "requirements": [
+        "R704"
+      ]
+    },
+    {
+      "unit": "R704.real",
+      "disposition": "requirements",
+      "requirements": [
+        "R704"
+      ]
+    },
+    {
+      "unit": "R704.double-precision",
+      "disposition": "requirements",
+      "requirements": [
+        "R704"
+      ]
+    },
+    {
+      "unit": "R704.complex",
+      "disposition": "requirements",
+      "requirements": [
+        "R704"
+      ]
+    },
+    {
+      "unit": "R704.character",
+      "disposition": "requirements",
+      "requirements": [
+        "R704"
+      ]
+    },
+    {
+      "unit": "R704.logical",
+      "disposition": "requirements",
+      "requirements": [
+        "R704"
+      ]
+    },
+    {
+      "unit": "R704.real-omitted",
+      "disposition": "requirements",
+      "requirements": [
+        "R704"
+      ]
+    },
+    {
+      "unit": "R704.real-selected",
+      "disposition": "requirements",
+      "requirements": [
+        "R704"
+      ]
+    },
+    {
+      "unit": "R704.complex-omitted",
+      "disposition": "requirements",
+      "requirements": [
+        "R704"
+      ]
+    },
+    {
+      "unit": "R704.complex-selected",
+      "disposition": "requirements",
+      "requirements": [
+        "R704"
+      ]
+    },
+    {
+      "unit": "R704.character-omitted",
+      "disposition": "requirements",
+      "requirements": [
+        "R704"
+      ]
+    },
+    {
+      "unit": "R704.character-selected",
+      "disposition": "requirements",
+      "requirements": [
+        "R704"
+      ]
+    },
+    {
+      "unit": "R704.logical-omitted",
+      "disposition": "requirements",
+      "requirements": [
+        "R704"
+      ]
+    },
+    {
+      "unit": "R704.logical-selected",
+      "disposition": "requirements",
+      "requirements": [
+        "R704"
+      ]
+    },
+    {
+      "unit": "R705",
+      "disposition": "requirements",
+      "requirements": [
+        "R705"
+      ]
+    },
+    {
+      "unit": "R705.integer-keyword",
+      "disposition": "requirements",
+      "requirements": [
+        "R705"
+      ]
+    },
+    {
+      "unit": "R705.selector-omitted",
+      "disposition": "requirements",
+      "requirements": [
+        "R705"
+      ]
+    },
+    {
+      "unit": "R705.selector-present",
+      "disposition": "requirements",
+      "requirements": [
+        "R705"
+      ]
+    },
+    {
+      "unit": "R706",
+      "disposition": "requirements",
+      "requirements": [
+        "R706"
+      ]
+    },
+    {
+      "unit": "R706.parentheses",
+      "disposition": "requirements",
+      "requirements": [
+        "R706"
+      ]
+    },
+    {
+      "unit": "R706.positional",
+      "disposition": "requirements",
+      "requirements": [
+        "R706"
+      ]
+    },
+    {
+      "unit": "R706.keyword",
+      "disposition": "requirements",
+      "requirements": [
+        "R706"
+      ]
+    },
+    {
+      "unit": "R706.scalar",
+      "disposition": "requirements",
+      "requirements": [
+        "R706",
+        "C401"
+      ],
+      "rationale": "The scalar premise comes through R403/C401; a kind-selector diagnostic use graph remains explicitly pending, without moving C401 ownership."
+    },
+    {
+      "unit": "R706.integer",
+      "disposition": "requirements",
+      "requirements": [
+        "R706",
+        "C1009"
+      ],
+      "rationale": "R1032's int-expr reaches R1027/C1009 (PDF 183). It is not permission to use a real constant that converts to integer."
+    },
+    {
+      "unit": "R706.constant",
+      "disposition": "requirements",
+      "requirements": [
+        "R706",
+        "C1014"
+      ],
+      "rationale": "R1032/C1014 and 10.1.12 retain constancy ownership, distinct from PDT C701."
+    },
+    {
+      "unit": "C717",
+      "disposition": "requirements",
+      "requirements": [
+        "C717"
+      ]
+    },
+    {
+      "unit": "C717.nonnegative",
+      "disposition": "requirements",
+      "requirements": [
+        "C717"
+      ]
+    },
+    {
+      "unit": "C717.supported",
+      "disposition": "requirements",
+      "requirements": [
+        "C717"
+      ]
+    },
+    {
+      "unit": "C717.integer-context",
+      "disposition": "requirements",
+      "requirements": [
+        "C717"
+      ]
+    },
+    {
+      "unit": "C717.real-context",
+      "disposition": "requirements",
+      "requirements": [
+        "C717"
+      ]
+    },
+    {
+      "unit": "C717.complex-context",
+      "disposition": "requirements",
+      "requirements": [
+        "C717"
+      ]
+    },
+    {
+      "unit": "C717.logical-context",
+      "disposition": "requirements",
+      "requirements": [
+        "C717"
+      ]
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_7_4_1.md"
+  },
+  "review_fingerprint": "026960f70a4d018db2cd61fdc97f15a737f2839580662c2cf37bfeb239a6ade2",
+  "review_rationale": "Independent source-first review and verified integration corrections: doc/source_audits/batch_009.json. Intrinsic taxonomy, every grammar alternative, default-integer KIND parameter type and the separate sign/support conditions retain their source premises. The selected-expression-kind control now has a sufficient independent conversion bound, while positional/keyword controls remain unconditional. All declaration negatives require case-specific grammar or actual type/value support causes. One canonical expression-category evidence facet remains pending."
+}

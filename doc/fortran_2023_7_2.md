@@ -17,13 +17,20 @@ standard's strict precision ordering. PDT kind discriminator values are
 not used as intrinsic kind selectors; the explicit integer parameter-kind
 case does not assume its selected kind differs from default.
 
-The finite plan leaves twelve facets explicitly pending: two parameter
-domain/use contracts, the parameter-type graph, length-only overload
-exclusion, four deferred-PDT mechanisms and their use graph, two assumed-PDT
-mechanisms and their use graph. The catalogue gives concrete next evidence
-for each. Definition/permission/informative accounting is not a processor
-pass. Source-only failed implementations, authoring coverage and independent
-review remain separate; this batch does not close the whole standard.
+Seven independent PDT effect programs now author the four deferred-PDT
+facets and two assumed-PDT facets; allocatable and pointer dummy association
+have separate programs. They check top-level LEN, component bounds and
+defined payload independently, without substituting character evidence.
+Five broader facets remain pending: two parameter domain/use contracts,
+the parameter-type graph, and the deferred and assumed parameter use graphs.
+The catalogue gives concrete next evidence for each.
+
+Definition/permission/informative accounting is not a processor pass.
+Authored effects, failed compiler observations and independent approval
+remain separate. The changed 7.2 content requires independent source
+re-review and re-adjudication of its content-bound canonical link, even
+though the S7.2-003 connection and canonical fixtures are unchanged.
+This batch does not close the whole standard.
 
 <!-- BEGIN GENERATED 7.2 -->
 
@@ -254,20 +261,38 @@ into deferred parameters.
 **Oracle:** Five independent character programs establish deferred length by explicit allocation of
 a small array, repeated intrinsic assignment with changing scalar lengths, pointer
 reassociation to live defined targets, allocatable dummy association and pointer dummy
-association. Each dynamic-state check is a separate statement before LEN, SIZE,
-association-with-target checks or payload access. The allocated array is shape-checked
-before element initialization and reads.
+association. Five separate PDT effect programs explicitly cover the four PDT facets:
+allocation with type-spec LEN 3 and STAT; whole-object intrinsic assignment from defined
+fixed-LEN 2 and 5 RHS values, requiring initial allocation and changed-LEN reallocation;
+pointer reassociation to live defined same-kind targets of LEN 2 and 5; and separate
+allocatable and pointer dummy association at LEN 2 and 5. Each PDT program checks the
+top-level integer LEN parameter independently from its explicit-shape integer
+component's extent, lower bound and exact payload. Dynamic-state checks precede
+inquiries and component access in separate statements, both at callers and in
+deferred-parameter dummies.
 
-**Oracle limitation:** All five executed routes use supported default character kind and preserve the different
-allocation/association requirements. They do not prove PDT behavior, procedure result
-descriptors or universal deferred-parameter semantics. No short-circuit boolean
-expression is used to guard an unsafe inquiry. Character scalar-to-array allocation is
-not invented: explicit shape allocation precedes array-section assignment.
+**Oracle limitation:** The character programs retain default character kind and their original
+allocation/association oracles; explicit array allocation precedes character
+array-section assignment. The PDT objects are scalar and nonpolymorphic, with a fixed
+KIND discriminator obtained from KIND(0), default-integer KIND/LEN parameters, and no
+allocatable or pointer components. Corresponding actual/dummy declared types, KIND,
+rank, polymorphism and deferred LEN agree; INTENT(IN) avoids entry deallocation or
+association undefinition. Fixed-LEN assignment RHS values are fully defined, while only
+the allocatable destination has deferred LEN; no scalar-to-array allocation or
+nondeferred-LEN mismatch is claimed. Pointer targets remain alive throughout all
+inquiries. Allocation/resource failure, unsupported PDT handling, verifier failure or a
+crash is not a passing effect or an invalid-source diagnostic. These finite authored
+fixtures do not prove procedure-result descriptors, every component/array/polymorphic
+context, or a universal ABI, and do not approve their own source or observations.
 
-**Dependencies:** 9.4.5 p2 (PDF 153); 9.7.1.1 p5-p6/C936-C940 and 9.7.1.2-.3 (PDF 160-163); 10.2.1.3 p3
-(PDF 190); 8.5.14 p2-p3 (PDF 131), 10.2.2.2-.3 (PDF 194-195); 15.5.2.6-.8 (PDF 342-343).
-The assignment catalogue's canonical requirements remain unchanged and are not
-automatically credited.
+**Dependencies:** 7.5.2.1/.4, 7.5.3.1-.2, 7.5.4.1/C754-C755/.2 and 7.5.9 (PDF 88, 90-94, 106); 8.5.8.2
+p1-p4 (PDF 125), 8.5.14 p2-p3 (PDF 131); 9.4.5 p2 (PDF 153); 9.7.1.1 p5-p6/C936-C940 and
+9.7.1.2-.3 (PDF 160-163), 9.7.4 p3-p6 (PDF 166-167); 10.1.9.2 p1 and 10.1.11-.12 (PDF
+184-188); 10.2.1.2 p1(9)-(10), 10.2.1.3 p3/p15 (PDF 189-190, 192);
+10.2.2.2/C1016/C1022/C1028 and 10.2.2.3 p1-p5 (PDF 194-195); 15.5.2.4 p3/p5-p6, 15.5.2.6
+p2-p4 and 15.5.2.7-.8 (PDF 339, 342-343); 16.9.13/.15/.20/.118/.119/.155/.194 (PDF
+379-380, 382, 424-425, 441-442, 459). The assignment catalogue's canonical requirements
+remain unchanged and are not automatically credited.
 
 ### S7.2-005: Assumed length parameters take values from their specified source
 
@@ -283,20 +308,38 @@ restrictions in the defining type-specifier rules still apply.
 
 **Facets:** `dummy-character`, `select-type-character`, `named-character-constant`, `dummy-pdt`, `select-type-pdt`, `assumed-parameter-use-graph`.
 
-**Oracle:** Separate programs check a character dummy at two actual lengths, an
-unlimited-polymorphic dummy selected through TYPE IS(CHARACTER(LEN=*)) at two lengths,
-and character PARAMETER constants whose expressions include concatenation, trailing
-blanks and an empty string. Expected lengths are literal small counts, not LEN of the
-same tested object.
+**Oracle:** Separate programs retain the character dummy at two actual lengths,
+unlimited-polymorphic TYPE IS(CHARACTER(LEN=*)) selection at two lengths, and character
+PARAMETER expressions with concatenation, trailing blanks and an empty string. Two new
+independent PDT effect programs cover the assumed-PDT facets. An ordinary nonallocatable
+nonpointer INTENT(IN) dummy assumes LEN 2 then 5 from same-kind fixed-LEN actuals. A
+SELECT TYPE program passes defined scalar PDT actuals to an unlimited-polymorphic dummy
+and uses TYPE IS(packet(family,*)) and TYPE IS(packet(other_family,*)); every LEN is
+assumed. Two lengths with one KIND return tag 101, while a different KIND at the first
+length returns tag 202. Each selected associate is checked for its KIND, LEN inquiry
+kind/value, component extent/lower bound and exact payload, with a class-default failure
+branch. All expected lengths and payloads are independent literal inputs, not inferred
+from the tested descriptors.
 
-**Oracle limitation:** SELECT TYPE uses initialized ordinary arguments, an explicit class-default failure
-branch and no unchecked dynamic data. Named constants satisfy constant-expression and
-prior-definition rules. The three character controls do not establish PDT or every
-asterisk context. KIND is obtained from standard default-character premises, never
-hard-coded as 1.
+**Oracle limitation:** The ordinary PDT dummy and its actuals share one host-associated type definition, scalar
+rank, fixed corresponding KIND and default-integer parameter kinds; its LEN is assumed,
+not deferred. SELECT TYPE uses the actual PDT dynamic types through a polymorphic
+selector without requiring allocation or pointer setup. Its distinct KIND values 1 and 2
+are abstract PDT discriminators, never intrinsic representation selectors; no arithmetic
+on a processor's intrinsic kind codes is needed, and guard choice must not vary with
+LEN. The single LEN parameter is explicitly assumed in both guards, and the associate is
+read-only. Component extents are checked before initialization or payload comparison; no
+undefined value or disassociated parameter is inspected. The character controls and
+named-constant premises remain unchanged. Unsupported PDT/SELECT TYPE outcomes are
+retained as failed observations, not replaced by character evidence, compile-only
+admission or a profile skip. These are finite authored effects, not every asterisk
+context or independent approval.
 
-**Dependencies:** 7.4.4.2/C726-C728/p5 (PDF 84-85), 7.5.9/C7100 (PDF 106), 8.5.13 (PDF 130-131), 10.1.12
-(PDF 187-188), 11.1.11.1/C1164-C1165 and 11.1.11.2 p3/p5 (PDF 225-226), 15.5.2.5 p3-p5
-(PDF 340).
+**Dependencies:** 7.3.2.3 p4-p5 and 7.3.3 p1 (PDF 79); 7.4.4.2/C726-C728/p5 (PDF 84-85); 7.5.2.1/.4,
+7.5.3.1-.2 and 7.5.4.1/C754-C755/.2 (PDF 88, 90-94), 7.5.9/C7100 (PDF 106); 8.5.8.2
+p1-p4 (PDF 125), 8.5.13 (PDF 130-131); 9.4.5 (PDF 153); 10.1.9.2 p1 and 10.1.11-.12 (PDF
+184-188); 11.1.3.3 p1/p5 (PDF 204-205), 11.1.11.1/R1155-R1156/C1164-C1169 and 11.1.11.2
+p3-p5 (PDF 224-226); 15.5.2.4 p3/p6 and 15.5.2.5 p2-p5 (PDF 339-340);
+16.9.15/.118/.119/.194 (PDF 380, 424-425, 459).
 
 <!-- END GENERATED 7.2 -->

@@ -1,0 +1,917 @@
+{
+  "schema_version": 1,
+  "section": "7.4.3.1",
+  "review_state": "reviewed",
+  "subunits": {
+    "p1": [
+      "p1.integer-domain",
+      "p1.representation-methods",
+      "p1.kind-characterization",
+      "p1.kind-inquiry",
+      "p1.range-inquiry",
+      "p1.range-based-selection",
+      "p1.zero-existence",
+      "p1.zero-neutrality",
+      "p1.zero-sign-equivalence"
+    ],
+    "p2": [
+      "p2.method-existence",
+      "p2.range-minimum"
+    ],
+    "p4": [
+      "p4.selector-omitted",
+      "p4.kind-zero-inquiry",
+      "p4.range-minimum"
+    ],
+    "p5": [
+      "p5.every-integer-value",
+      "p5.signed-literal-denotation"
+    ],
+    "R707": [
+      "R707.sign-omitted",
+      "R707.sign-present"
+    ],
+    "R708": [
+      "R708.digit-string",
+      "R708.suffix-omitted",
+      "R708.suffix-present",
+      "R708.underscore-kind"
+    ],
+    "R709": [
+      "R709.digit-string",
+      "R709.constant-name",
+      "R709.scalar-premise"
+    ],
+    "R710": [
+      "R710.sign-omitted",
+      "R710.sign-present"
+    ],
+    "R711": [
+      "R711.first-digit",
+      "R711.additional-digits"
+    ],
+    "R712": [
+      "R712.plus",
+      "R712.minus"
+    ],
+    "C718": [
+      "C718.named-constant",
+      "C718.integer-type"
+    ],
+    "C719": [
+      "C719.nonnegative",
+      "C719.digit-form",
+      "C719.name-form"
+    ],
+    "C720": [
+      "C720.supported-method",
+      "C720.digit-form",
+      "C720.name-form"
+    ],
+    "p6": [
+      "p6.suffix-present",
+      "p6.suffix-absent"
+    ],
+    "note-unnumbered": [
+      "note-unnumbered.unsigned",
+      "note-unnumbered.positive",
+      "note-unnumbered.negative",
+      "note-unnumbered.numeric-selector",
+      "note-unnumbered.named-selector",
+      "note-unnumbered.large-value",
+      "note-unnumbered.name-premise",
+      "note-unnumbered.portability"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "R707",
+      "title": "A signed integer literal has at most one leading sign",
+      "source": "7.4.3.1 R707, PDF 80, printed 66, line 38.",
+      "source_units": [
+        "R707",
+        "R707.sign-omitted",
+        "R707.sign-present"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "A signed-int-literal-constant is an int-literal-constant with an optional sign. The sign can be omitted, plus or minus through R712; the literal may have the R708 kind suffix. An expression containing unary operators is not automatically an occurrence of this syntactic class.",
+      "facets": [
+        "unsigned",
+        "plus",
+        "minus",
+        "kind-suffix",
+        "single-sign-only"
+      ],
+      "pending": {},
+      "oracle": "A DATA control supplies six distinct small values with omitted, plus and minus signs, with and without a supported named suffix, and independently checks each value. A compile-only pair changes a double minus sign to a single minus in one DATA value.",
+      "oracle_limitation": "R848 explicitly admits signed-int-literal-constant, so the negative is not an attempt to outlaw a legitimate unary expression in ordinary assignment. There is one malformed sign prefix, not a negative repetition count or mismatched DATA object count. Case-specific DATA/delimiter syntax predicates exclude an invalid-kind complaint because no kind suffix occurs, as well as implementation and magnitude failures. The repair is a positive compile control. Literal denotation effects retain S7.4.3.1-005 ownership.",
+      "dependencies": "R708/R712; 8.6.7/R848 and p8/p10, PDF 137-138, establish the signed-literal context, one-to-one initialization and value interpretation. 4.2 p2(3), PDF 46, requires reporting capability, not fatal rejection."
+    },
+    {
+      "id": "R708",
+      "title": "An integer literal has digits and an optional underscore-kind suffix",
+      "source": "7.4.3.1 R708, PDF 80, printed 66, line 39.",
+      "source_units": [
+        "R708",
+        "R708.digit-string",
+        "R708.suffix-omitted",
+        "R708.suffix-present",
+        "R708.underscore-kind"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "An int-literal-constant contains a digit-string, optionally followed by an underscore and a kind-param. The underscore cannot appear by itself without its kind parameter. A sign belongs to R707 or an enclosing expression, not to the unsigned R708 token.",
+      "facets": [
+        "digits-only",
+        "kind-suffix",
+        "suffix-needs-kind"
+      ],
+      "pending": {},
+      "oracle": "A DATA control admits an unsuffixed literal and one suffixed with a supported scalar integer constant name. An isolated negative leaves the suffix empty; its one-edit repair supplies the already defined supported name.",
+      "oracle_limitation": "R711 owns the digit sequence, R709 the suffix alternatives, and C718-C720 the name/value constraints. The empty-suffix oracle admits qualified missing-suffix or unexpected-underscore/DATA-delimiter reports, not shared kind nouns, unavailable suffix syntax or magnitude failures. A negative expression is not misclassified as a forbidden unsigned token. No out-of-range literal is assigned a syntax-reporting obligation merely because the grammar has no value bound.",
+      "dependencies": "6.1.4/R602 defines underscore; R709/R711 and C718-C720; 8.6.7/R848 and p8/p10, PDF 137-138. 7.4.3.1 p5-p7 retain literal value, kind and decimal interpretation."
+    },
+    {
+      "id": "R709",
+      "title": "A literal kind parameter is a digit string or scalar integer constant name",
+      "source": "7.4.3.1 R709, PDF 80, printed 66, lines 40-41; associated C718-C719, PDF 81.",
+      "source_units": [
+        "R709",
+        "R709.digit-string",
+        "R709.constant-name",
+        "R709.scalar-premise"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "A kind-param has two alternatives: a digit-string or a scalar-int-constant-name. It is not an arbitrary parenthesized constant expression, unlike the expression in R706. A named alternative remains subject to scalar rank, named-constant/integer typing and nonnegative value constraints, and the containing literal's type-specific support constraint.",
+      "facets": [
+        "digit-string",
+        "zero-padded-kind-digits",
+        "constant-name",
+        "expression-not-alternative"
+      ],
+      "pending": {},
+      "oracle": "An unprofiled named-selector control uses KIND(0). A separately qualified numeric-selector control uses 8 and its zero-padded spelling only after an independent inventory/capacity profile establishes support and room for the small payloads. A DATA negative encloses an already defined valid selector name in parentheses; deleting those parentheses is its minimal repair.",
+      "oracle_limitation": "The profile does not infer bytes, range, default choice or existence from the number 8; it checks support and a model limit of at least 47 without an invalid literal. Other numeric codes are outside this finite spelling sample. The malformed-suffix oracle admits qualified missing-suffix or unexpected-underscore/DATA-delimiter reports, but not unsupported suffix facilities or unrelated kind-value failures. Scalar-rank reporting retains C401 ownership, and this control is not a complete canonical use graph. C718/C719 are covered under their own IDs; real, character and logical uses of R709 do not move their containing literal rules here.",
+      "dependencies": "4.1.3/R402-R403/C401, PDF 45; R706 for the distinct expression syntax; C718-C720; 16.10.2.15, PDF 474, for INTEGER_KINDS. The original unnumbered note warns about numeric-selector portability but does not prescribe any numeric kind code."
+    },
+    {
+      "id": "R710",
+      "title": "A signed digit string has an optional single sign",
+      "source": "7.4.3.1 R710, PDF 81, printed 67, line 1.",
+      "source_units": [
+        "R710",
+        "R710.sign-omitted",
+        "R710.sign-present"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "A signed-digit-string is a digit-string with an optional sign. It is a syntactic building block, not an integer literal with an inferred kind or a separate arithmetic operation.",
+      "facets": [
+        "unsigned-digits",
+        "plus-digits",
+        "minus-digits",
+        "single-sign-only"
+      ],
+      "pending": {},
+      "oracle": "Use the explicit R717 exponent route in three small double-precision initializers with omitted, plus and minus signs. The independently checked control distinguishes a unit value, a larger value and a positive fractional value. A second plus sign in one exponent is the sole defect of a compile-only negative; deleting it repairs the same initializer.",
+      "oracle_limitation": "Only the signed digit-string grammar is credited. The primary report must identify the missing exponent digits or the unexpected D-exponent token; magnitude errors and recovery complaints about an unrelated assignment/DO interpretation are not credited. R714-R717, real approximation, exponent interpretation, E/D distinctions and range remain in 7.4.3.2. No BOZ, character or I/O-format grammar is imported, and no real rounding claim is made by the fractional control.",
+      "dependencies": "7.4.3.2/R714-R717 and p6-p8, PDF 82: R717 explicitly expands to signed-digit-string. D exponents use double precision's mandatory precision/range, rather than silently upgrading the source's default-real recommendations to mandatory bounds. R711/R712 define the digit-string components. 4.2 p2(3) supplies reporting."
+    },
+    {
+      "id": "R711",
+      "title": "A digit string contains one or more decimal digit characters",
+      "source": "7.4.3.1 R711, PDF 81, printed 67, line 2.",
+      "source_units": [
+        "R711",
+        "R711.first-digit",
+        "R711.additional-digits"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "A digit-string starts with a digit and may contain further digits. A single digit is sufficient, multiple digits are permitted, and zero is not excluded from the initial position. The character set defining digit remains 6.1.3.",
+      "facets": [
+        "one-digit",
+        "multiple-digits",
+        "leading-zero",
+        "digits-only"
+      ],
+      "pending": {},
+      "oracle": "A DATA control uses single, multiple and leading-zero sequences. An invalid DATA value inserts one letter between two digits; deleting that letter yields its minimal repair. The declaration, object count, value size and surrounding statement are otherwise valid.",
+      "oracle_limitation": "The syntax controls do not establish decimal evaluation or leading-zero range handling; those are independent S7.4.3.1-007 effects. The primary report must identify the unexpected letter token or malformed DATA/delimiter grammar, not an invalid kind parameter absent from this statement, unavailable features or magnitude failures. A digit-string is reused elsewhere, but no all-context census is claimed and the Clause 6 definition does not acquire artificial executable effects.",
+      "dependencies": "6.1.3 p1-p3, PDF 67, defines the ten digits. R708 supplies the integer-literal use; R848 and 8.6.7 p8/p10, PDF 137-138, provide the DATA context. Syntax-error reports must match the exact defective statement."
+    },
+    {
+      "id": "R712",
+      "title": "A sign has plus and minus alternatives",
+      "source": "7.4.3.1 R712, PDF 81, printed 67, lines 3-4.",
+      "source_units": [
+        "R712",
+        "R712.plus",
+        "R712.minus"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "The sign syntax class contains the plus and minus alternatives. Its inclusion or omission in a literal or digit string is determined by the enclosing production; this is not a definition of every arithmetic operator context.",
+      "facets": [
+        "plus",
+        "minus"
+      ],
+      "pending": {},
+      "oracle": "A small DATA control admits both alternatives and checks their distinct signed values using independently written arithmetic expectations.",
+      "oracle_limitation": "This two-member admission control is not an arithmetic-operator effect test. No non-Fortran character is introduced to manufacture an invalid twin, and the single-sign restriction remains attached to the enclosing R707/R710 pairs.",
+      "dependencies": "R707/R710 and 8.6.7/R848, PDF 137. The processor/source character interface remains with Clause 6; ordinary ASCII source uses the suite's established hyphen-minus spelling."
+    },
+    {
+      "id": "C718",
+      "title": "A named literal kind selector denotes an integer named constant",
+      "source": "7.4.3.1 C718 (R709), PDF 81, printed 67, line 5.",
+      "source_units": [
+        "C718",
+        "C718.named-constant",
+        "C718.integer-type"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "The scalar-int-constant-name alternative in R709 denotes a named constant of integer type. An initialized integer variable is not a named constant, and a real PARAMETER is not integer merely because its initializer originated as an integer or has an integral value.",
+      "facets": [
+        "integer-named-constant",
+        "named-constant-required",
+        "integer-type-required"
+      ],
+      "pending": {},
+      "oracle": "Two compile-only pairs use the selector solely in one integer literal. One changes an initialized integer variable into a PARAMETER without changing its initializer. The other changes a double-precision real PARAMETER's declared type to INTEGER, preserving the supported KIND(0) initializer. A separate integer-division profile bounds that numerical kind code to ten decimal digits so the real initializer is within mandatory double-precision precision/range, without assuming default-real capacity or a small universal kind code. Both names are previously defined and scalar.",
+      "oracle_limitation": "Each negative has one declaration-property defect, with the diagnostic bound to the literal use, not an earlier unrelated declaration. Named-constant and integer-type causes have distinct case-specific predicates; shared constant/parameter nouns, payload magnitude, unavailable representations and implementation failures are excluded. A generic missing kind-parameter message cannot establish which property of the already-present selector name failed and is not credited. If a processor uses a larger default kind code, this finite real-name pair is unavailable and an alternate qualified type witness is needed; the C718 type obligation is not waived. The repaired controls only establish compilation. Array rank and undefined names are not additional C718 negatives.",
+      "dependencies": "R709 and C719/C720; 5.4.3.2.3 p2, 8.5.13 p1-p2, and the existing R606 catalogue distinguish named constants from initialized variables and permit initialization conversion. 7.4.3.2 p5-p6 (PDF 82) guarantees double-precision precision at least ten and range at least thirty-seven; the source's default-real recommendations are not strengthened. C401 retains the scalar premise. 4.2 p2(3), PDF 46, is a reporting capability, not a mandatory fatal exit."
+    },
+    {
+      "id": "C719",
+      "title": "A literal kind parameter has a nonnegative value",
+      "source": "7.4.3.1 C719 (R709), PDF 81, printed 67, line 6.",
+      "source_units": [
+        "C719",
+        "C719.nonnegative",
+        "C719.digit-form",
+        "C719.name-form"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "The value supplied as kind-param is nonnegative. Digit-string spelling cannot carry a minus sign under R709; a scalar integer named constant can have a negative value and must then be rejected as a kind value by the processor's reporting capability. Nonnegative does not mean strictly positive.",
+      "facets": [
+        "negative-named-value",
+        "nonnegative-supported-value"
+      ],
+      "pending": {},
+      "oracle": "A compile-only pair defines a scalar integer PARAMETER as -1 and uses it in one literal. Replacing only that parameter value with KIND(0) repairs the input. The diagnostic must identify the invalid kind value at the literal use.",
+      "oracle_limitation": "There is one bad selector value, but a negative integer kind necessarily also fails the containing literal's C720 support condition. This unavoidable overlap is explicit: the observation does not identify an independent internal C719 check. C720's separate nonnegative-unsupported cases distinguish support without the sign defect. A generic missing kind-parameter or constancy complaint does not establish the actual negative-value/support cause and is not credited. No negative digit-string or unsupported zero is misrepresented as a conforming C719 control, and normal unsupported-kind messages remain eligible when they identify this actual integer value. An ASR verifier failure remains an implementation failure even if its wording mentions unsupported kind.",
+      "dependencies": "R709/C718/C720; 7.4.1/C717 provides the analogous but separately owned declaration-selector rule. 4.2 p2(3)-(4), PDF 46, supplies the reporting basis. The unnumbered portability note does not make -1 optional or prescribe positive kind codes."
+    },
+    {
+      "id": "C720",
+      "title": "An integer literal's kind value identifies an available integer method",
+      "source": "7.4.3.1 C720 (R708), PDF 81, printed 67, line 7.",
+      "source_units": [
+        "C720",
+        "C720.supported-method",
+        "C720.digit-form",
+        "C720.name-form"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "The kind-param value of an integer literal specifies an integer representation method available on the processor. A syntactically valid nonnegative value need not be supported. The restriction applies equally to the digit-string and named-constant alternatives, without implying that kind identifiers are sizes.",
+      "facets": [
+        "unsupported-digit-value",
+        "unsupported-named-value",
+        "supported-name"
+      ],
+      "pending": {},
+      "oracle": "Two independent compile-only pairs use nonnegative zero, as a digit suffix and as a previously defined scalar integer PARAMETER. An independent INTEGER_KINDS profile establishes that zero is absent before either input is compiled. Repairs use a named KIND(0) selector or change only the named selector's value to KIND(0).",
+      "oracle_limitation": "The unsupported kind is not guessed from a large number, SELECTED_INT_KIND failure code or a byte-size convention. On a processor that supports zero this particular diagnostic pair is unavailable and the unconditional support obligation remains; another absent inventory value needs a reviewed branch. The small payload is valid for the supported default repair. The primary report must identify unavailable INTEGER kind zero, not generic kind-parameter syntax, constancy, undeclared names or an unrelated magnitude cause. Located unsupported-kind value reporting is itself the intended effect and is not removed by a blanket unsupported exclusion. Ordinary missing-feature, crash, verifier, resource, wrong-file/step and unlocated output cannot pass.",
+      "dependencies": "R708/R709/C718/C719; 16.10.2.15 INTEGER_KINDS (PDF 474), 16.9.118 (PDF 424), and 4.2 p2(3)-(4) (PDF 46). Real C722 and the other type-specific literal support constraints are not imported."
+    },
+    {
+      "id": "S7.4.3.1-001",
+      "title": "The processor supplies integer methods with kind and range inquiries",
+      "source": "7.4.3.1 p1, PDF 80, printed 66, lines 24-29, excluding the separately mapped zero clauses.",
+      "source_units": [
+        "p1.representation-methods",
+        "p1.kind-characterization",
+        "p1.kind-inquiry",
+        "p1.range-inquiry",
+        "p1.range-based-selection"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The processor provides one or more integer representation methods defining sets of integer values, with each method characterized by its KIND value. KIND returns that parameter, RANGE returns the decimal exponent range, and SELECTED_INT_KIND selects according to a decimal range requirement. These are processor-dependent value sets, not a promise of increasing widths in kind-number order or a prescribed bit encoding.",
+      "facets": [
+        "default-method",
+        "selected-method",
+        "inquiry-connections",
+        "inventory-membership",
+        "processor-value-set-evidence"
+      ],
+      "pending": {
+        "processor-value-set-evidence": "Needs versioned evidence connecting every advertised integer method to its actual value set, including values outside the symmetric numeric model and any alternative representations. Current INTEGER_KINDS, KIND, RADIX, DIGITS, RANGE and HUGE observations identify finite methods/model endpoints, not physical encoding or the complete processor value set. Next qualify representation documentation and independent safe endpoint witnesses; no mandatory processor-documentation requirement is invented."
+      },
+      "oracle": "One effect program checks a nonempty kind inventory and membership of default and range-selected methods, asserts two finite signed values, checks the selected object's KIND, and independently reconstructs each decimal exponent range by repeated safe integer division of HUGE. It prints the actual inventory, kind, radix, digits, range and model upper limits for artifact capture.",
+      "oracle_limitation": "The selected method uses the mandatory range-18 capacity without assuming a distinct default kind. These standard inquiries do not prove byte widths, two's complement, all supported kinds' behavior or values beyond the numeric model. Reported inquiry data are calibration evidence rather than fixed expected-output snapshots.",
+      "dependencies": "7.1.3 p1, PDF 75; 16.4 p2/p4 (PDF 367), 16.9.71 DIGITS (PDF 403), 16.9.96 HUGE (PDF 416), 16.9.118 KIND (PDF 424), 16.9.166 RADIX (PDF 446-447), 16.9.170 RANGE (PDF 449), 16.9.181 SELECTED_INT_KIND (PDF 454-455), and 16.10.2.15 (PDF 474). The bit model in 16.3.1 (PDF 365-366) expressly does not establish a negative integer's representation."
+    },
+    {
+      "id": "S7.4.3.1-002",
+      "title": "Integer zero is neutral in sign and signed zeros have the same value",
+      "source": "7.4.3.1 p1, PDF 80, printed 66, lines 29-31.",
+      "source_units": [
+        "p1.zero-existence",
+        "p1.zero-neutrality",
+        "p1.zero-sign-equivalence"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Integer includes zero, whose mathematical value is neither positive nor negative. Adding a plus or minus sign to an integer zero literal does not create a different integer value. This is a value statement, not a required bit pattern or a statement about real signed zero.",
+      "facets": [
+        "default-zero",
+        "default-signed-zero",
+        "selected-zero",
+        "selected-signed-zero"
+      ],
+      "pending": {},
+      "oracle": "Separate default and mandatory range-selected programs initialize unsigned, plus and minus zero through DATA. Each is independently compared with one minus one, and each is separately checked to be neither less nor greater than zero.",
+      "oracle_limitation": "The selected kind need not differ from default. No SIGN/TRANSFER/BOZ trick, bit-layout assumption or real-zero rule is credited. Failure of the selected method is not an optional-profile skip, and the independent default program remains observable.",
+      "dependencies": "R707/R708/R712 and 8.6.7/R848/p10, PDF 137-138; 10.1.5.5 numeric relations, PDF 180, supplies the finite sign comparisons. Real signed-zero semantics remain owned by 7.4.3.2."
+    },
+    {
+      "id": "S7.4.3.1-003",
+      "title": "At least one integer representation has decimal exponent range eighteen",
+      "source": "7.4.3.1 p2, PDF 80, printed 66, lines 32-33.",
+      "source_units": [
+        "p2",
+        "p2.method-existence",
+        "p2.range-minimum"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "At least one integer representation method has a decimal exponent range of at least 18. The default method need not be that method. Its kind value is obtained through supported inquiries, not a portable numerical code. Missing mandatory support is a processor failure, not an optional facility.",
+      "facets": [
+        "method-exists",
+        "eighteen-digit-capacity",
+        "range-eighteen",
+        "larger-kind-inventories"
+      ],
+      "pending": {
+        "larger-kind-inventories": "The direct all-advertised-method range witness has sixteen static slots, independently gated only by inventory size. For processors advertising more than sixteen integer kinds, extend the deterministic source branches or supply a separately reviewed complete inventory witness. The mandatory unprofiled selected-method/capacity case still runs and missing SELECTED_INT_KIND(18) support fails. This finite authoring bound does not waive the unconditional range-18 requirement or count an unavailable profile as evidence."
+      },
+      "oracle": "An unprofiled F2023 program declares the SELECTED_INT_KIND(18) method directly, requires its existence, and constructs/decomposes an eighteen-digit value with safe overflow guards and no large literal. A separate inventory program obtains RANGE for every advertised kind in an explicitly bounded at-most-sixteen-kind branch and requires their maximum to be at least 18. Constant indices are bounded before use; runtime inventory bounds precede the output section. These draft profile premises still require independent parent review.",
+      "oracle_limitation": "The source defines SELECTED_INT_KIND through an open decimal interval, while RANGE uses the floor of a logarithm of HUGE. The inventory check avoids silently assuming these descriptions identify exactly the same minimum method on every possible numeric model. The first case checks a necessary capacity consequence; only the inventory case establishes the explicit RANGE threshold for its complete bounded inventory. Its profile fails, rather than skips, if the inventory is empty or mandatory selected capacity is missing.",
+      "dependencies": "16.4 p2/p4 and 16.9.96 (PDF 367, 416); 16.9.170 (PDF 449); the complete 16.9.181 p5 spanning PDF 454-455, including no-method and smallest-range/tie conditions; 16.10.2.15 (PDF 474). Constant inquiry and array-constant subobject expressions are permitted by 10.1.12 (PDF 187-188). Default range five is separately S7.4.3.1-004."
+    },
+    {
+      "id": "S7.4.3.1-004",
+      "title": "Omitted INTEGER selection denotes the default kind with range at least five",
+      "source": "7.4.3.1 p4, PDF 80, printed 66, lines 35-36.",
+      "source_units": [
+        "p4",
+        "p4.selector-omitted",
+        "p4.kind-zero-inquiry",
+        "p4.range-minimum"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "INTEGER without a kind-selector denotes the default integer kind, whose parameter value equals KIND(0). The default method has decimal exponent range at least 5. Neither this lower bound nor the separate existence of a range-18 method prescribes a default bit width or a particular kind identifier.",
+      "facets": [
+        "omitted-selector-kind",
+        "default-range-five"
+      ],
+      "pending": {},
+      "oracle": "Compare a selector-free object's kind with KIND(0) and an explicitly default-selected object's kind, pass it to an explicit matching dummy, assert RANGE at least five, and independently check positive and negative five-digit values.",
+      "oracle_limitation": "No default-32-bit or kind-4 premise is used. Model-boundary literals occur only in separate profiled cases. These finite assertions distinguish default choice and value support without claiming that default must be weaker than the mandatory range-selected method.",
+      "dependencies": "R705/R706/C717; 16.9.118 and 16.9.170 (PDF 424, 449); 15.5.2.5 supplies the positive dummy association. The INTEGER keyword restatement in p3 is accounted to R705, not another supplementary program."
+    },
+    {
+      "id": "S7.4.3.1-005",
+      "title": "Integer values can be denoted by signed integer literals",
+      "source": "7.4.3.1 p5, PDF 80, printed 66, line 37.",
+      "source_units": [
+        "p5",
+        "p5.every-integer-value",
+        "p5.signed-literal-denotation"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Every integer value has a signed-int-literal-constant representation, using an appropriate supported kind where necessary. The claim concerns the processor's integer value set, not unlimited mathematical integers. A wider destination does not change the default kind of an unsuffixed literal.",
+      "facets": [
+        "small-default-values",
+        "eighteen-digit-values",
+        "selected-small-boundary",
+        "default-model-boundary",
+        "selected-wide-boundary",
+        "optional-large-boundary",
+        "all-representation-values"
+      ],
+      "pending": {
+        "all-representation-values": "The authored model-boundary samples do not establish all values/methods or the denotation of a processor's extra-model negative endpoint. Next independently qualify actual representation/value sets, test the supported asymmetric minimum in a true signed-literal context if applicable, and add static branches for remaining nonbinary or differently selected model endpoints. HUGE is the largest symmetric model value, not documentary proof of the full machine range. This is explicit finite/source-evidence work, not an assertion that endpoint tests are impossible."
+      },
+      "oracle": "Unprofiled programs independently check small default literals and plus/minus eighteen-digit literals of SELECTED_INT_KIND(18), with a guarded digit recurrence as the latter's value oracle. Five separately qualified static branches test radix two and 7, 15, 31, 63 or 127 model digits using safe inquiry-only profiles; their draft source premises await independent parent review. Each boundary program checks the largest model literal, its immediate predecessor, explicit plus and negative model endpoint against HUGE and safe arithmetic. The 31-digit branch is specifically default integer; other branches use named inquiry-selected kinds.",
+      "oracle_limitation": "Profiles reconstruct 2**q-1 by bounded multiply/add without compiling an out-of-range literal. Only range-38 selection is optional support; range-2/4/18 selectors have no failure-code fallback. A different model skips only its static branch, not the unconditional small/mandatory-wide cases. Model-outside literal probes are calibration artifacts, not required-diagnostic or extension-control fixtures; no -fno-range-check or permissive option is used. No asymmetric minimum is inferred from BIT_SIZE, numeric kind codes or successful linking.",
+      "dependencies": "R707/R708/R709/C718-C720 and p6-p7; 8.6.7/R848/p8/p10, PDF 137-138, ensures actual signed-literal rather than unary-expression use. 16.4 p2/p4 and 16.9.71/96/166/170/181 (PDF 367, 403, 416, 446-447, 449, 454-455) supply model premises. 10.1.5.2.4 p1, PDF 177, prohibits undefined arithmetic, hence the pre-operation guards."
+    },
+    {
+      "id": "S7.4.3.1-006",
+      "title": "A literal suffix selects its kind and omission selects default integer",
+      "source": "7.4.3.1 p6, PDF 81, printed 67, lines 8-9.",
+      "source_units": [
+        "p6",
+        "p6.suffix-present",
+        "p6.suffix-absent"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "When the integer literal has a kind-param suffix, that value is the constant's kind. With no suffix the literal is default integer. Assignment to a wider object does not supply an implicit literal suffix. The selector's spelling alternatives and admissibility remain R709 and C718-C720.",
+      "facets": [
+        "omitted-default",
+        "named-default",
+        "named-selected",
+        "numeric-selector"
+      ],
+      "pending": {},
+      "oracle": "Four independent programs check KIND of the literal itself, not merely the receiving variable. Named default and mandatory range-selected forms use supported inquiries. A finite numeric spelling uses a separately supported/capacity-qualified 8. Explicit same-kind integer dummies check type/kind admission and a finite value constructed from smaller terms.",
+      "oracle_limitation": "Default and selected kinds may coincide. The numeric-selector branch does not imply a portable numeric kind code or identify bytes; its optional unavailability cannot erase the unprofiled default and named-selector effects. The omission case's wider destination is only context and its conversion does not establish the kind of the literal.",
+      "dependencies": "R708/R709/C718-C720, p2/p4; 16.9.118 and 16.9.181 (PDF 424, 454-455); 15.5.2.5 for explicit dummy matching. The original portability note remains informative, not an exception to literal kind selection."
+    },
+    {
+      "id": "S7.4.3.1-007",
+      "title": "Integer constants have decimal positional values, including leading zeros",
+      "source": "7.4.3.1 p7, PDF 81, printed 67, line 10.",
+      "source_units": [
+        "p7"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "An integer constant's value is interpreted in decimal. Successive digits have decimal positional significance; initial zeros do not make the value octal, change the selected kind, or consume the numeric magnitude range. This is distinct from kind selection and from the lexical definition of digit-string.",
+      "facets": [
+        "all-digits",
+        "positional-value",
+        "leading-zero-decimal",
+        "named-kind-decimal",
+        "long-leading-zero-small",
+        "long-leading-zero-boundary"
+      ],
+      "pending": {},
+      "oracle": "An unprofiled program checks all ten digit values with a counter, a five-digit positional value by a weighted sum, and a leading-zero value containing 8 and 9. It checks dynamic array bounds before indexing. Another uses a named range-selected kind and an independent split-value calculation. A third tests 64 leading zeros on a small value and a long all-zero literal. Five model-qualified boundary programs separately check 48 leading zeros on explicit positive and negative model-endpoint literals.",
+      "oracle_limitation": "Leading-zero tests check unchanged mathematical value at small magnitudes and exact separately qualified model limits, not a maximal processor source-length claim. Every generated source line remains within 132 characters. No out-of-range literal is mislabeled as a conforming extension control. The selected/boundary profiles and model limitations remain distinct from the unprofiled decimal obligation.",
+      "dependencies": "R708/R711 and p5-p6; 6.1.3, PDF 67, defines digits. 8.6.7/R848/p10, PDF 137-138, supplies initialization. Model inquiries and pre-operation guards have the same canonical basis as S7.4.3.1-005; Clause 6 source length/continuation constraints retain their owners."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "structural",
+      "rationale": "PDF 80 lines 24-31 separates the mathematical domain definition, actual representation/inquiry requirements, and integer-zero semantics."
+    },
+    {
+      "unit": "p1.integer-domain",
+      "disposition": "definition",
+      "rationale": "Integer values are mathematical integers from a processor-dependent subset, not arbitrary reals, modulo bit patterns or the entire unbounded mathematical set."
+    },
+    {
+      "unit": "p1.representation-methods",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.3.1-001"
+      ]
+    },
+    {
+      "unit": "p1.kind-characterization",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.3.1-001"
+      ]
+    },
+    {
+      "unit": "p1.kind-inquiry",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.3.1-001"
+      ]
+    },
+    {
+      "unit": "p1.range-inquiry",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.3.1-001"
+      ]
+    },
+    {
+      "unit": "p1.range-based-selection",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.3.1-001"
+      ]
+    },
+    {
+      "unit": "p1.zero-existence",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.3.1-002"
+      ]
+    },
+    {
+      "unit": "p1.zero-neutrality",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.3.1-002"
+      ]
+    },
+    {
+      "unit": "p1.zero-sign-equivalence",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.3.1-002"
+      ]
+    },
+    {
+      "unit": "p2",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.3.1-003"
+      ]
+    },
+    {
+      "unit": "p2.method-existence",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.3.1-003"
+      ]
+    },
+    {
+      "unit": "p2.range-minimum",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.3.1-003"
+      ]
+    },
+    {
+      "unit": "p3",
+      "disposition": "definition",
+      "requirements": [
+        "R705"
+      ],
+      "rationale": "PDF 80 line 34 restates the INTEGER keyword already owned by 7.4.1/R705. Its new canonical control is not duplicated with an S execution."
+    },
+    {
+      "unit": "p4",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.3.1-004"
+      ]
+    },
+    {
+      "unit": "p4.selector-omitted",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.3.1-004"
+      ]
+    },
+    {
+      "unit": "p4.kind-zero-inquiry",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.3.1-004"
+      ]
+    },
+    {
+      "unit": "p4.range-minimum",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.3.1-004"
+      ]
+    },
+    {
+      "unit": "p5",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.3.1-005"
+      ]
+    },
+    {
+      "unit": "p5.every-integer-value",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.3.1-005"
+      ]
+    },
+    {
+      "unit": "p5.signed-literal-denotation",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.3.1-005"
+      ]
+    },
+    {
+      "unit": "R707",
+      "disposition": "requirements",
+      "requirements": [
+        "R707"
+      ]
+    },
+    {
+      "unit": "R707.sign-omitted",
+      "disposition": "requirements",
+      "requirements": [
+        "R707"
+      ]
+    },
+    {
+      "unit": "R707.sign-present",
+      "disposition": "requirements",
+      "requirements": [
+        "R707"
+      ]
+    },
+    {
+      "unit": "R708",
+      "disposition": "requirements",
+      "requirements": [
+        "R708"
+      ]
+    },
+    {
+      "unit": "R708.digit-string",
+      "disposition": "requirements",
+      "requirements": [
+        "R708"
+      ]
+    },
+    {
+      "unit": "R708.suffix-omitted",
+      "disposition": "requirements",
+      "requirements": [
+        "R708"
+      ]
+    },
+    {
+      "unit": "R708.suffix-present",
+      "disposition": "requirements",
+      "requirements": [
+        "R708"
+      ]
+    },
+    {
+      "unit": "R708.underscore-kind",
+      "disposition": "requirements",
+      "requirements": [
+        "R708"
+      ]
+    },
+    {
+      "unit": "R709",
+      "disposition": "requirements",
+      "requirements": [
+        "R709"
+      ]
+    },
+    {
+      "unit": "R709.digit-string",
+      "disposition": "requirements",
+      "requirements": [
+        "R709"
+      ]
+    },
+    {
+      "unit": "R709.constant-name",
+      "disposition": "requirements",
+      "requirements": [
+        "R709"
+      ]
+    },
+    {
+      "unit": "R709.scalar-premise",
+      "disposition": "requirements",
+      "requirements": [
+        "R709",
+        "C401"
+      ],
+      "rationale": "Scalar rank is an inherited canonical constraint, not another local malformed-name or C718 type defect."
+    },
+    {
+      "unit": "R710",
+      "disposition": "requirements",
+      "requirements": [
+        "R710"
+      ]
+    },
+    {
+      "unit": "R710.sign-omitted",
+      "disposition": "requirements",
+      "requirements": [
+        "R710"
+      ]
+    },
+    {
+      "unit": "R710.sign-present",
+      "disposition": "requirements",
+      "requirements": [
+        "R710"
+      ]
+    },
+    {
+      "unit": "R711",
+      "disposition": "requirements",
+      "requirements": [
+        "R711"
+      ]
+    },
+    {
+      "unit": "R711.first-digit",
+      "disposition": "requirements",
+      "requirements": [
+        "R711"
+      ]
+    },
+    {
+      "unit": "R711.additional-digits",
+      "disposition": "requirements",
+      "requirements": [
+        "R711"
+      ]
+    },
+    {
+      "unit": "R712",
+      "disposition": "requirements",
+      "requirements": [
+        "R712"
+      ]
+    },
+    {
+      "unit": "R712.plus",
+      "disposition": "requirements",
+      "requirements": [
+        "R712"
+      ]
+    },
+    {
+      "unit": "R712.minus",
+      "disposition": "requirements",
+      "requirements": [
+        "R712"
+      ]
+    },
+    {
+      "unit": "C718",
+      "disposition": "requirements",
+      "requirements": [
+        "C718"
+      ]
+    },
+    {
+      "unit": "C718.named-constant",
+      "disposition": "requirements",
+      "requirements": [
+        "C718"
+      ]
+    },
+    {
+      "unit": "C718.integer-type",
+      "disposition": "requirements",
+      "requirements": [
+        "C718"
+      ]
+    },
+    {
+      "unit": "C719",
+      "disposition": "requirements",
+      "requirements": [
+        "C719"
+      ]
+    },
+    {
+      "unit": "C719.nonnegative",
+      "disposition": "requirements",
+      "requirements": [
+        "C719"
+      ]
+    },
+    {
+      "unit": "C719.digit-form",
+      "disposition": "requirements",
+      "requirements": [
+        "C719"
+      ],
+      "rationale": "R709's digit-string spelling supplies no negative sign alternative. A minus after the underscore would instead violate the spelling grammar."
+    },
+    {
+      "unit": "C719.name-form",
+      "disposition": "requirements",
+      "requirements": [
+        "C719"
+      ]
+    },
+    {
+      "unit": "C720",
+      "disposition": "requirements",
+      "requirements": [
+        "C720"
+      ]
+    },
+    {
+      "unit": "C720.supported-method",
+      "disposition": "requirements",
+      "requirements": [
+        "C720"
+      ]
+    },
+    {
+      "unit": "C720.digit-form",
+      "disposition": "requirements",
+      "requirements": [
+        "C720"
+      ]
+    },
+    {
+      "unit": "C720.name-form",
+      "disposition": "requirements",
+      "requirements": [
+        "C720"
+      ]
+    },
+    {
+      "unit": "p6",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.3.1-006"
+      ]
+    },
+    {
+      "unit": "p6.suffix-present",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.3.1-006"
+      ]
+    },
+    {
+      "unit": "p6.suffix-absent",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.3.1-006"
+      ]
+    },
+    {
+      "unit": "p7",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.3.1-007"
+      ]
+    },
+    {
+      "unit": "note-unnumbered",
+      "disposition": "informative",
+      "rationale": "PDF 81 after line 10: six examples, a named-selector premise and a numeric-selector portability warning. No new mandatory programs or universal kind-number mappings follow."
+    },
+    {
+      "unit": "note-unnumbered.unsigned",
+      "disposition": "informative",
+      "rationale": "The unsigned sample illustrates R707's omitted sign; the actual admission case keeps R707 ownership."
+    },
+    {
+      "unit": "note-unnumbered.positive",
+      "disposition": "informative",
+      "rationale": "The positive sample illustrates a leading plus, not a separate arithmetic operator requirement."
+    },
+    {
+      "unit": "note-unnumbered.negative",
+      "disposition": "informative",
+      "rationale": "The negative sample illustrates a leading minus, not a storage representation."
+    },
+    {
+      "unit": "note-unnumbered.numeric-selector",
+      "disposition": "informative",
+      "rationale": "A numeric kind suffix is an example conditional on processor support; its code is not portable."
+    },
+    {
+      "unit": "note-unnumbered.named-selector",
+      "disposition": "informative",
+      "rationale": "A named suffix illustrates R709 and remains subject to C718-C720."
+    },
+    {
+      "unit": "note-unnumbered.large-value",
+      "disposition": "informative",
+      "rationale": "The large suffixed example presupposes a suitable processor representation; it is not evidence that a particular numeric kind code must exist."
+    },
+    {
+      "unit": "note-unnumbered.name-premise",
+      "disposition": "informative",
+      "rationale": "The example name must be a scalar integer named constant, not an undeclared macro, type name or initialized variable."
+    },
+    {
+      "unit": "note-unnumbered.portability",
+      "disposition": "informative",
+      "rationale": "The warning concerns portability of numeric kind codes. It neither bans their valid use nor removes mandatory integer representation, literal value or kind-selection obligations."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_7_4_3_1.md"
+  },
+  "review_fingerprint": "9576875c44218a04603f9dcd0b1070cd8804eef7135785fafe8d8c1a20fd8574",
+  "review_rationale": "Independent source-first review and verified integration corrections: doc/source_audits/batch_009.json. Representation, zero, mandatory range-18 capacity, default range-five guarantee, signed denotation, suffix kind and decimal interpretation remain separate requirements. Literal/profile boundaries were reconstructed independently. All negative gates now distinguish their actual grammar, name/type or unsupported-value premise from generic kind nouns, magnitude failures and parser recovery. Three value-set/inventory evidence facets remain pending."
+}
