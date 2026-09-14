@@ -64,6 +64,36 @@ class CatalogueTests(unittest.TestCase):
         self.assertIn('1.3', audit['sections_without_catalogues'])
         self.assertFalse(audit['complete_source'])
 
+    def test_recommendations_account_for_source_without_creating_requirements(self):
+        self.b['requirements'] = []
+        self.b['accounting'] = [
+            dict(unit=unit, disposition='recommendation',
+                 rationale='Advisory documentation, not mandatory or implemented evidence.')
+            for unit in ('p1', 'p2')]
+        self.save()
+        registry = self.registry()
+        audit = registry.audit(self.cases())
+        self.assertEqual(set(registry.requirements), {'S1.1-001'})
+        self.assertEqual(audit['requirements'], 1)
+        self.assertEqual(audit['authored_facets'], 1)
+        self.assertEqual(audit['pending_facets'], 0)
+        self.assertEqual(audit['unresolved_base_units'], 1)
+        self.assertFalse(audit['complete_source'])
+        registry.record_catalogue_review('1.2', 'Reviewed advisory modality.')
+        self.b = json.loads((self.root / 'b.json').read_text())
+        self.b['accounting'][0]['rationale'] = 'A changed documentary interpretation.'
+        self.save()
+        self.assertEqual(self.registry().catalogue_review_state('1.2'), 'stale')
+
+    def test_recommendation_needs_a_rationale_and_unknown_dispositions_stay_invalid(self):
+        for disposition, rationale in (('recommendation', ''), ('advice', 'Unrecognized category.')):
+            with self.subTest(disposition=disposition):
+                self.b['accounting'][-1] = dict(
+                    unit='p2', disposition=disposition, rationale=rationale)
+                self.save()
+                with self.assertRaises(SuiteError):
+                    self.registry()
+
     def test_numbered_rules_can_have_structured_facets_too(self):
         item = self.a['requirements'][0]
         item['id'] = 'R601'

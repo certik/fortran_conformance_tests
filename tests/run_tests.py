@@ -32,6 +32,9 @@ SHORT = re.compile(
     r'^(.*?):(\d+)-(\d+):(\d+)-(\d+): (.*? (?:error|warning))'
     r'(?: \[([\w.-]+)\])?(?: \(F2023 ([^)]+)\))?: (.*)$', re.I)
 REF_LOC = re.compile(r'^(.*?\.(?:f90|f|c|h)):(\d+):(\d+)(?::|\s|$)')
+DECLARED_REF_LOC = re.compile(r'^(.*?):(\d+):(\d+)(?::|\s|$)')
+INCLUDE_CONTEXT = re.compile(
+    r'^\s*(?:In file included from\b|from\s+.+:\d+(?::\d+)?[:,]?\s*$)', re.I)
 GNU_DRIVER_LINE = re.compile(r'^f951:\s*Warning:\s*(.*?)\s+in line ([1-9]\d*)\s*$', re.I)
 HEADER = re.compile(r'^!\s*(rule|covers|evidence|requires|profile|images|standard|reference-warnings|oracle-basis|oracle-profile):\s*(.*?)\s*$')
 CASE = re.compile(r'^!\s*case:\s*([\w-]+)\s*$')
@@ -428,11 +431,22 @@ def isolated_cases(path, rule):
         yield line, marked_rule, case, selected_ranges[case], ''.join(source)
 
 
+def diagnostic_filename_matches(actual, expected):
+    actual, expected = Path(actual), Path(expected)
+    if expected.is_absolute():
+        return actual == expected
+    return bool(expected.parts) and actual.parts[-len(expected.parts):] == expected.parts
+
+
 def reference_messages(output, filename=None):
     pending = None
     origin = ''
     for line in output.splitlines():
-        location = REF_LOC.match(line)
+        if INCLUDE_CONTEXT.match(line):
+            pending = None
+            origin = ''
+            continue
+        location = (DECLARED_REF_LOC if filename is not None else REF_LOC).match(line)
         message = line
         if location:
             origin = location.group(1)
@@ -440,7 +454,7 @@ def reference_messages(output, filename=None):
             message = line[location.end():].lstrip()
         diagnostic = re.match(r'^(Error|Fatal Error|Warning|portability):\s*(.*)', message, re.I)
         if diagnostic:
-            if pending is not None and (filename is None or Path(origin).name == Path(filename).name):
+            if pending is not None and (filename is None or diagnostic_filename_matches(origin, filename)):
                 yield pending, diagnostic.group(1).lower(), diagnostic.group(2)
             pending = None
         elif location and message:
@@ -546,7 +560,9 @@ def driver_warning_diagnostics(output, filename, primary_source):
         raise SuiteError('single-source driver attribution needs the staged compilation input')
     primary = Path(primary_source)
     for text in output.splitlines():
-        location = REF_LOC.match(text)
+        if INCLUDE_CONTEXT.match(text):
+            return []
+        location = DECLARED_REF_LOC.match(text)
         if location:
             origin = Path(location.group(1))
             if ((origin.is_absolute() and origin != primary)
@@ -582,7 +598,7 @@ def judge_diagnostic(result, comp, rule, diagnostic, codes=False, primary_source
     nonfatal = diagnostic.get('allow_nonfatal', [])
     if comp.family == 'lfortran':
         reported = [item for item in lfortran_diagnostics(result.output)
-                    if Path(item.file).name == Path(filename).name]
+                    if diagnostic_filename_matches(item.file, filename)]
     else:
         reported = [Diagnostic(location, location, set(), message, filename, severity)
                     for location, severity, message in reference_messages(result.output, filename)]
@@ -647,7 +663,7 @@ def judge_rejection(result, comp, meta, rule, line=None, bounds=None, codes=Fals
         return Check('fail', 'rejected without a located case diagnostic', phase, result.output)
     errors = lfortran_errors(result.output)
     on_line = [error for error in errors if error.first <= line <= error.last
-               and (filename is None or Path(error.file).name == Path(filename).name)]
+               and (filename is None or diagnostic_filename_matches(error.file, filename))]
     if not on_line:
         return Check('fail', 'not detected on marked line', 'compile', result.output)
     tagged = any(rule in error.codes for error in on_line)

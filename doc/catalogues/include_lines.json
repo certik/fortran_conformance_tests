@@ -1,0 +1,482 @@
+{
+  "schema_version": 1,
+  "section": "6.4",
+  "review_state": "reviewed",
+  "subunits": {
+    "p1": [
+      "p1.source-incorporation",
+      "p1.include-form"
+    ],
+    "p4": [
+      "p4.single-source-line",
+      "p4.statement-position",
+      "p4.sole-nonblank-text",
+      "p4.trailing-comment-exception",
+      "p4.no-label"
+    ],
+    "p5": [
+      "p5.physical-replacement",
+      "p5.before-processing",
+      "p5.any-source-text",
+      "p5.nested-inclusion",
+      "p5.nested-replacement",
+      "p5.processor-nesting-limit",
+      "p5.no-direct-self-inclusion",
+      "p5.no-indirect-self-inclusion"
+    ],
+    "p6": [
+      "p6.after-resolution",
+      "p6.first-statement-line",
+      "p6.last-statement-line"
+    ],
+    "p7": [
+      "p7.processor-interpretation",
+      "p7.file-name-example"
+    ],
+    "note-unnumbered": [
+      "note-unnumbered.conditional-guidance",
+      "note-unnumbered.label-columns",
+      "note-unnumbered.statement-columns",
+      "note-unnumbered.significant-blanks",
+      "note-unnumbered.comment-marker",
+      "note-unnumbered.comment-column-exclusion",
+      "note-unnumbered.continued-line-column",
+      "note-unnumbered.continuation-line-column"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S6.4-001",
+      "title": "The INCLUDE form uses a character literal, not an arbitrary expression",
+      "source": "6.4 p1, displayed form; J3/24-007, 18 December 2023, PDF page 73, printed page 59, lines 25-27.",
+      "source_units": [
+        "p1.include-form"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "Source incorporation uses the INCLUDE spelling followed by a char-literal-constant. Both literal delimiters are available under R724. A character variable, named character constant, or concatenation expression is not this syntactic class. Case equivalence outside character context and the selected source form's blank rules still apply. An assignment to a variable named include, or INCLUDE-like text inside a comment or character literal, is not an INCLUDE line. This form does not specify a preprocessing directive such as #include.",
+      "facets": [
+        "free-apostrophe",
+        "free-quotation",
+        "case-equivalence",
+        "fixed-blank-spelling",
+        "include-name-context",
+        "comment-literal-context",
+        "nonliteral-source-diagnostic",
+        "expression-source-diagnostic",
+        "free-no-separator-interpretation"
+      ],
+      "pending": {
+        "free-no-separator-interpretation": "The free-form controls deliberately retain a separating blank. Independent interpretation review is needed before classifying the adjacent spelling INCLUDE'payload.inc': 5.5.2 uses unqualified keyword for a statement keyword, whereas 6.4 p3 expressly excludes INCLUDE from statements. Do not invent a missing-blank diagnostic from analogy with PRINT or STOP, or infer its legality from compiler acceptance. This spelling has no executable case or credited observation here."
+      },
+      "oracle": "Separate controls use apostrophe and quotation delimiters, mixed letter case, and a fixed-form spelling with interspersed blanks and no blank before the literal. The fixed records are exactly 72 ASCII characters. Another control assigns to include inside the included text. Comment and character-literal controls retain INCLUDE and #include text as data or commentary while a real INCLUDE updates an initialized scalar exactly once. Two diagnose pairs replace a literal by a declared character constant, or add concatenation with an empty literal. Their repairs restore the literal form and run the independently known value 23. The concatenation case explicitly permits the located Flang warning 'excess characters after path name [-Wscanning]' through an exact compiler/severity/message predicate; it is a report of invalid input, not a conforming compile-only result.",
+      "oracle_limitation": "All source references use declared, flat, lower-case ASCII sidecars at the staged root. Treating their literals as filenames is an explicitly qualified processor interface, not the universal interpretation required by p7. The source and current directory coincide, so these cases establish no search-order rule. An absent-file or unsupported-feature message is not the intended syntax observation. Delimiter escaping in unusual filenames, empty filename interpretation, Unicode, tab expansion, and a numeric kind convention are not inferred. The special GNU single-source-driver attribution is never applicable to these INCLUDE-bearing, multi-input fixtures.",
+      "dependencies": "4.1.1 p1 and 4.1.4 p1, PDF 44-45, distinguish syntactic forms and statements; 5.5.2 p1, PDF 65, defines keyword usage. 3.21, PDF 21, and 6.1.2 p3, PDF 67, govern character context and case. 6.3.2.2, PDF 71, and 6.3.3.1 p2, PDF 72, govern source-form blanks. R603 and R724/C732, PDF 68/85-86, supply names and literals. 4.2 p2(5), PDF 46, supplies reporting capability rather than mandatory fatal rejection."
+    },
+    {
+      "id": "S6.4-002",
+      "title": "An INCLUDE literal cannot select its kind with a named constant",
+      "source": "6.4 p2; J3/24-007, 18 December 2023, PDF page 73, printed page 59, line 28.",
+      "source_units": [
+        "p2"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "The INCLUDE character literal cannot use a named constant as its kind selector. This is a restriction on the selector's spelling, not a prohibition of all kind prefixes and not a ban on a numeric selector merely because its value equals that of some named constant. R709 and R724 otherwise allow a digit-string selector whose representation is supported; omitting the prefix selects default character.",
+      "facets": [
+        "named-kind-diagnostic",
+        "omitted-kind-control",
+        "numeric-kind-control"
+      ],
+      "pending": {
+        "numeric-kind-control": "A digit-string selector is permitted, but no universal default-character kind number is supplied. A separate immutable KIND('A') profile can qualify a static numeric branch without testing INCLUDE itself; a written kind-number table is not the only evidence route. The branch still needs independently qualified default-character source-reference semantics, static included content and an independent result oracle. If existing interface evidence covers only unprefixed spelling, obtain the missing interface qualification. Do not assume kind 1 universally, generate source/results from an INCLUDE probe, or credit the omitted-kind repair as the numeric branch."
+      },
+      "oracle": "The negative declares an integer parameter ck = kind('a') and uses ck_'payload.inc'. Thus the kind is supported and the parameter is declared; the intended defect is the named selector in INCLUDE, not an unsupported kind or missing declaration. The minimally repaired control removes only ck_ and checks that the included assignment produces 23. Both versions declare the same existing sidecar.",
+      "oracle_limitation": "A located source-form report is required; fatal rejection is not. Failure to open a misinterpreted filename or failure of an unrelated feature is not corroboration. The numeric-selector branch remains pending rather than being silently collapsed into the default-character control.",
+      "dependencies": "R709, PDF 80, distinguishes a digit string from a scalar integer constant name. R724, C732 and 7.4.4.3 p2, PDF 85, supply literal syntax, supported representation and the default on omission. KIND supplies the known supported selector for the negative; its general intrinsic semantics are uncredited context. 4.2 p2(5), PDF 46, applies to the INCLUDE restriction."
+    },
+    {
+      "id": "S6.4-003",
+      "title": "An INCLUDE line occupies one source line at a statement position",
+      "source": "6.4 p4, first clause; J3/24-007, 18 December 2023, PDF page 73, printed page 59, line 30.",
+      "source_units": [
+        "p4.single-source-line",
+        "p4.statement-position"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "An INCLUDE line occurs where a statement can occur and fits on one source line. Ordinary statement continuation does not turn it into a multi-line statement: p3 explicitly says it is not a Fortran statement. The selected source form controls layout. Being able to join tokens or a literal in an ordinary statement does not authorize continuing an INCLUDE line.",
+      "facets": [
+        "free-single-line",
+        "fixed-single-line",
+        "statement-position",
+        "free-token-continuation-diagnostic",
+        "free-literal-continuation-diagnostic",
+        "fixed-continuation-diagnostic"
+      ],
+      "pending": {},
+      "oracle": "Three pairs split the attempted INCLUDE between its spelling and literal in free form, within the filename literal in free form, or onto a fixed-form column-six continuation. Every intended filename names a declared sidecar. The repaired controls join those two physical records into one INCLUDE line, without changing the program computation, and check 23. The diagnostic anchor is the first physical record of the attempted INCLUDE, not a fabricated statement span or an arbitrary whole-program recovery range.",
+      "oracle_limitation": "A compiler that misreads a partial filename can emit an absent-file error; this is not the intended source-form reporting oracle. Reports on a different record must remain visible as attribution differences, not be silently widened. Statement-position controls are finite executable-part witnesses. Specification, complete-unit and partial-construct insertion are effects under S6.4-005, and are not automatically credited to this restriction. No assumption about physical newline encodings beyond the declared LF source interface is made.",
+      "dependencies": "6.4 p3 and 4.1.4 p1 distinguish INCLUDE from -stmt forms. 6.3.1 p1/p3, PDF 71, defines lines and source-form selection; 6.3.2.4 and 6.3.3.3, PDF 72-73, supply ordinary continuation contexts without extending them to INCLUDE. 4.2 p2(5), PDF 46, requires reporting capability."
+    },
+    {
+      "id": "S6.4-004",
+      "title": "An INCLUDE line has no label or other source text beside it",
+      "source": "6.4 p4, remaining clauses and conclusion; J3/24-007, 18 December 2023, PDF page 73, printed page 59, lines 30-31.",
+      "source_units": [
+        "p4.sole-nonblank-text",
+        "p4.trailing-comment-exception",
+        "p4.no-label"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "Apart from blanks and an optional trailing comment, the INCLUDE line is the entire source line. It has no statement label. A semicolon cannot attach a preceding or following statement, or a second INCLUDE, to that line. An action-IF prefix likewise cannot make INCLUDE an action statement. The exception for commentary does not permit additional noncomment source after the literal.",
+      "facets": [
+        "sole-line-free",
+        "sole-line-fixed",
+        "leading-trailing-blanks",
+        "trailing-comment-free",
+        "trailing-comment-fixed",
+        "label-free-diagnostic",
+        "label-fixed-diagnostic",
+        "semicolon-before-free-diagnostic",
+        "semicolon-after-free-diagnostic",
+        "semicolon-before-fixed-diagnostic",
+        "semicolon-after-fixed-diagnostic",
+        "two-includes-diagnostic",
+        "action-if-diagnostic"
+      ],
+      "pending": {},
+      "oracle": "Free and fixed pairs isolate labels and statements before or after a semicolon; another pair places two INCLUDE forms on one line. Repairs remove the label or replace just the offending semicolon boundary by a new source record. An action-IF pair is repaired into a block IF with INCLUDE on its own line. All repaired programs check a defined value. Two additional controls retain surrounding blanks and a trailing comment ending in ampersand, showing that commentary does not continue the INCLUDE. Fixed labels and column-six fields are preserved exactly. The two trailing-statement negatives and the two-INCLUDE negative allow only the observed, located Flang warning 'excess characters after path name [-Wscanning]' with an exact family/severity/message predicate; a zero compiler exit is then permitted by the reporting contract.",
+      "oracle_limitation": "These are restrictions on the INCLUDE line, not on labels or semicolons in the included text. S6.4-005 separately admits labeled included statements. An INCLUDE-like name assignment is also not a forbidden INCLUDE. Rejection is not mandatory: specifically qualified, located warnings or portability reports can satisfy diagnose, but unlocated driver output cannot be guessed to originate in a sidecar. The source-form prohibition, not a processor's extra preprocessing syntax, is the basis.",
+      "dependencies": "6.3.2.3/6.3.3.2 define comments; 6.3.2.5/6.3.3.4 define ordinary statement separators, which p3 does not transfer to INCLUDE. 6.3.2.6/6.3.3.5 supply statement-label contexts. R1141 and the block-IF construct supply the minimal action-IF repair. 4.2 p2(5), PDF 46, supplies the reporting obligation."
+    },
+    {
+      "id": "S6.4-005",
+      "title": "Included source replaces its INCLUDE line before program processing",
+      "source": "6.4 p5, first two sentences; J3/24-007, 18 December 2023, PDF page 73, printed page 59, lines 32-34.",
+      "source_units": [
+        "p5.physical-replacement",
+        "p5.before-processing",
+        "p5.any-source-text",
+        "p5.nested-inclusion",
+        "p5.nested-replacement"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The referenced source takes the place of the INCLUDE line before the resulting program is processed. It can supply declarations, executable statements, construct fragments, comments, or further INCLUDE lines; it need not be a self-contained program or a complete construct. Nested INCLUDE lines undergo the same substitution. The expanded program must still satisfy the applicable source-form, statement-ordering and other language requirements, including p6's boundary restrictions.",
+      "facets": [
+        "specification-text",
+        "executable-order",
+        "repeated-nonrecursive-text",
+        "partial-construct",
+        "contained-subprogram",
+        "whole-program-unit",
+        "fixed-form-text",
+        "nested-replacement",
+        "empty-text",
+        "comment-only-text"
+      ],
+      "pending": {},
+      "oracle": "Eight effect fixtures check independent expected scalar results: declarations supply 35 used to produce 37; two nonrecursive insertions around host arithmetic produce 19; an included open IF construct completed by the host produces 7; an included contained function returns 43; an entire included main program checks 47; fixed-form text with a complete internal continuation and a labeled statement produces 21; ordered nested substitution produces 45; and empty/comment-only text leaves 17 unchanged. No oracle relies solely on agreement with a separately compiled expansion of the same text. All scalar sentinels and function results are explicitly assigned before observation.",
+      "oracle_limitation": "The chosen flat-filename, ASCII/LF interface is qualified under p7, with every asset staged beside its driver and explicit source-form selection. Inherited source form is not selected by the .inc suffix. Two active inclusion levels are a finite observation, not a universal promised maximum or a demand for unbounded resources. No source search order, macro expansion, conditional preprocessing, automatic form switch, external I/O round trip, or arbitrary shell build step is exercised. Passing effect cases do not establish diagnostic coverage for the restrictions.",
+      "dependencies": "6.3.1 p3 prohibits mixing source forms within a unit; 6.3.3.1/6.3.3.3/6.3.3.5 supply exact-width fixed records, continuation and label fields. 5.1/R502 (PDF 53, lines 7-11) and separately 5.3.2 p1 (PDF 57, lines 18-20) supply the ordering illustration. Clause 8 declarations, Clause 10 integer assignment/arithmetic, the block IF and internal subprogram rules govern the expanded programs. 4.2 p2(1) retains size/complexity qualifications; p6 governs processor-dependent provision/semantics, p7 recommends limit/extension documentation, and p8 recommends methods/semantics documentation."
+    },
+    {
+      "id": "S6.4-006",
+      "title": "Active inclusion cannot lead back to the same source text",
+      "source": "6.4 p5, final sentence; J3/24-007, 18 December 2023, PDF page 73, printed page 59, lines 35-36.",
+      "source_units": [
+        "p5.no-direct-self-inclusion",
+        "p5.no-indirect-self-inclusion"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "Following an INCLUDE reference, at no further nesting level may its expansion include that same source text again. Both a direct self-edge and a multi-source cycle violate the rule. A later independent inclusion after an earlier inclusion has finished is not that recursion; nor is reuse in two completed sibling branches. The separate processor-dependent maximum nesting depth is not a universal numeric language limit.",
+      "facets": [
+        "direct-cycle-diagnostic",
+        "indirect-cycle-diagnostic",
+        "acyclic-direct-control",
+        "acyclic-indirect-control",
+        "sibling-reuse-control"
+      ],
+      "pending": {},
+      "oracle": "Two compile-only diagnose fixtures contain respectively loop.inc including itself and first.inc -> second.inc -> first.inc. Their declared locations are the include edge closing the cycle, in loop.inc or second.inc, line 1. A repair replaces just that cyclic edge with value = value + 1; both repaired programs check 1. A separate sibling-reuse control includes the same leaf twice through different completed branches and checks 3. These use actual repeated asset identity, not equal text in unrelated files, path aliases or filesystem links.",
+      "oracle_limitation": "Run every cyclic observation only through the existing process-group timeout; the author command uses --timeout 5. A timeout, crash, resource failure, or generic maximum-depth exhaustion is a failure, not proof of cycle reporting. The diagnostic message must identify recursion, a detected cycle, or reinclusion of the same source; the observed Flang limit report saying 'possibly circular' does not suffice. The reference parser at baseline965afb6 recognizes only .f90/.f/.c/.h locations, so genuine .inc reports can remain parser-blocked. Do not rename the intended assets or use GNU single-source-driver attribution to hide this limitation.",
+      "dependencies": "6.4 p5's depth-limit sentence is separately accounted as processor dependent. 4.2 p2(5), PDF 46, supplies reporting capability for the prohibited source relationship; p2(1) does not turn resource exhaustion into such a report. The acyclic controls use only small integer assignment and the same flat-file source interface."
+    },
+    {
+      "id": "S6.4-007",
+      "title": "The first resolved included statement line cannot be a continuation",
+      "source": "6.4 p6, first boundary condition; J3/24-007, 18 December 2023, PDF page 74, printed page 60, lines 1-2.",
+      "source_units": [
+        "p6.after-resolution",
+        "p6.first-statement-line"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "After resolving the INCLUDE, its first statement line is an initial line, not a continuation of a statement started outside the included text. Leading comments and blank lines do not change which line is the first statement line. Resolution includes nested INCLUDE replacement. Complete statements may still use continuation wholly within included text.",
+      "facets": [
+        "free-first-continuation-diagnostic",
+        "fixed-first-continuation-diagnostic",
+        "nested-first-continuation-diagnostic",
+        "leading-comments",
+        "free-internal-continuation-control",
+        "fixed-internal-continuation-control",
+        "nested-internal-continuation-control"
+      ],
+      "pending": {},
+      "oracle": "Three boundary pairs use free form, fixed form, and a nested free include. The negative starts the included statement with a continuation of value = 10 begun in the host; leading comments and blank records precede that included continuation. Straight text splicing would yield the valid value 12, so missing tokens or unrelated program syntax are not the oracle. The diagnose location is the actual continuation record in payload.inc or inner.inc. Each repair moves the initial host statement record into the included text immediately before its continuation, leaving the arithmetic and other source tokens unchanged, and checks 12.",
+      "oracle_limitation": "The free inward-join witness also exposes p4's statement-position condition; that tightly coupled INCLUDE boundary is explicit, not attributed to an unrelated feature. A report on the host INCLUDE rather than the offending included record remains a location difference. Baseline reference parsing of .inc locations is missing; keep the exact source/line predicate and record the raw report rather than silently relocating the fixture. A positive repair demonstrates legal internal continuation, not detection of the negative.",
+      "dependencies": "6.3.2.3/6.3.3.2 identify comment and blank records. 6.3.2.4 supplies the free ampersands; 6.3.3.3 supplies the fixed column-six marker. 6.4 p5 requires nested resolution before applying the boundary. 4.2 p2(5), PDF 46, supplies reporting capability without imposing a fatal exit."
+    },
+    {
+      "id": "S6.4-008",
+      "title": "The last resolved included statement line cannot continue into its host",
+      "source": "6.4 p6, last boundary condition; J3/24-007, 18 December 2023, PDF page 74, printed page 60, lines 1-2.",
+      "source_units": [
+        "p6.after-resolution",
+        "p6.last-statement-line"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "After INCLUDE resolution, the last included statement line is not continued beyond that included text. Trailing comments do not hide a continued last statement, and nested replacement does not remove the boundary condition. An ampersand in an actual trailing comment is not continuation of either the statement or the INCLUDE line.",
+      "facets": [
+        "free-last-continuation-diagnostic",
+        "fixed-last-continuation-diagnostic",
+        "nested-last-continuation-diagnostic",
+        "trailing-comments",
+        "free-contained-statement-control",
+        "fixed-contained-statement-control",
+        "nested-contained-statement-control",
+        "comment-ampersand-control"
+      ],
+      "pending": {},
+      "oracle": "Three pairs place the start of value = 10 + 2 in an included asset but its completing continuation record in the host, in free, fixed, and nested free forms. Comment records follow the included statement. The fully spliced expression is valid; the specific defect is crossing the include boundary. Diagnose names that last statement record in payload.inc or inner.inc. Each repair moves only the completing host record into the included asset before its trailing comments and checks 12. Another control ends an otherwise complete included assignment with a comment containing ampersand and follows it with a comment line ending in ampersand; value remains 23.",
+      "oracle_limitation": "Fixed-form continuation is signaled on the successor record, so a processor can report that host location instead of the included statement that has been continued. This attribution difference must be preserved, not silently reclassified as matching the declared included-file predicate. No EOF coordinate is invented and no whole-program recovery span is accepted. Genuine .inc locations are presently outside the baseline reference parser; unlocated GNU warnings cannot use the single-source exception because these fixtures have INCLUDE and multiple inputs.",
+      "dependencies": "6.3.2.4 and 6.3.3.3 define the two continuation mechanisms; the commentary and termination subclauses distinguish a real source marker from one in a comment. 6.4 p5 supplies nested resolution. 4.2 p2(5), PDF 46, requires a reporting capability, not compulsory fatal rejection."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "structural",
+      "rationale": "PDF 73, lines 25-27: separate incorporation permission from the displayed INCLUDE form."
+    },
+    {
+      "unit": "p1.source-incorporation",
+      "disposition": "permission",
+      "rationale": "Additional source may be incorporated during processing. The substitution effect is owned by p5; this introduction is not a second runtime requirement."
+    },
+    {
+      "unit": "p1.include-form",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.4-001"
+      ]
+    },
+    {
+      "unit": "p2",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.4-002"
+      ]
+    },
+    {
+      "unit": "p3",
+      "disposition": "definition",
+      "rationale": "PDF 73, line 29: INCLUDE is a line, not a Fortran statement. Ordinary statement labels, semicolon separation and continuation are not imported wholesale. Neither is this a definition of a preprocessing directive."
+    },
+    {
+      "unit": "p4",
+      "disposition": "structural",
+      "rationale": "PDF 73, lines 30-31: account the physical-line condition, statement position, exclusive source text, trailing-comment exception and explicit label exclusion separately."
+    },
+    {
+      "unit": "p4.single-source-line",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.4-003"
+      ]
+    },
+    {
+      "unit": "p4.statement-position",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.4-003"
+      ]
+    },
+    {
+      "unit": "p4.sole-nonblank-text",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.4-004"
+      ]
+    },
+    {
+      "unit": "p4.trailing-comment-exception",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.4-004"
+      ]
+    },
+    {
+      "unit": "p4.no-label",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.4-004"
+      ]
+    },
+    {
+      "unit": "p5",
+      "disposition": "structural",
+      "rationale": "PDF 73, lines 32-36: distinguish substitution and its timing, permitted text, nested resolution, processor-dependent maximum depth and prohibited direct/indirect recurrence."
+    },
+    {
+      "unit": "p5.physical-replacement",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.4-005"
+      ]
+    },
+    {
+      "unit": "p5.before-processing",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.4-005"
+      ]
+    },
+    {
+      "unit": "p5.any-source-text",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.4-005"
+      ]
+    },
+    {
+      "unit": "p5.nested-inclusion",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.4-005"
+      ]
+    },
+    {
+      "unit": "p5.nested-replacement",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.4-005"
+      ]
+    },
+    {
+      "unit": "p5.processor-nesting-limit",
+      "disposition": "definition",
+      "rationale": "The maximum depth is processor dependent. No universal depth value or mandatory rejection policy is invented. Small successful nesting witnesses establish only those observed configurations; generic depth exhaustion does not corroborate the cycle oracle."
+    },
+    {
+      "unit": "p5.no-direct-self-inclusion",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.4-006"
+      ]
+    },
+    {
+      "unit": "p5.no-indirect-self-inclusion",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.4-006"
+      ]
+    },
+    {
+      "unit": "p6",
+      "disposition": "structural",
+      "rationale": "PDF 74, lines 1-2: apply the two different statement-line boundary conditions after resolution, including nested replacement."
+    },
+    {
+      "unit": "p6.after-resolution",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.4-007",
+        "S6.4-008"
+      ]
+    },
+    {
+      "unit": "p6.first-statement-line",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.4-007"
+      ]
+    },
+    {
+      "unit": "p6.last-statement-line",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.4-008"
+      ]
+    },
+    {
+      "unit": "p7",
+      "disposition": "structural",
+      "rationale": "PDF 74, lines 3-4: distinguish processor-dependent interpretation from the example of a possible filename interpretation."
+    },
+    {
+      "unit": "p7.processor-interpretation",
+      "disposition": "definition",
+      "rationale": "The source-reference interpretation belongs to the processor. The fixtures qualify ordinary flat ASCII filenames, declared LF records and explicit form selection; they establish no universal path syntax, search order, newline conversion, kind-number mapping or tab/Unicode convention. Non-filename interfaces remain source-only context."
+    },
+    {
+      "unit": "p7.file-name-example",
+      "disposition": "informative",
+      "rationale": "A filename is one possible interpretation, not the normative definition of char-literal-constant. A missing file or unsupported path convention is an interface observation, not automatically a Clause 6 violation."
+    },
+    {
+      "unit": "note-unnumbered",
+      "disposition": "structural",
+      "rationale": "PDF 74, printed 60: the unnumbered note has a conditional introduction and four bullets. Compound bullets are further divided; none introduces a new mandatory S requirement."
+    },
+    {
+      "unit": "note-unnumbered.conditional-guidance",
+      "disposition": "informative",
+      "rationale": "The guidance concerns reusable text intended for both free and fixed source under suitable source interfaces, not a third source form or permission to mix forms within a unit."
+    },
+    {
+      "unit": "note-unnumbered.label-columns",
+      "disposition": "informative",
+      "rationale": "The first bullet confines labels on included statements to columns 1-5. It does not permit a label on an INCLUDE line."
+    },
+    {
+      "unit": "note-unnumbered.statement-columns",
+      "disposition": "informative",
+      "rationale": "The first bullet places statement text in columns 7-72 for dual-form use. These are layout recommendations for the note's context, not new limits on ordinary free-form statements."
+    },
+    {
+      "unit": "note-unnumbered.significant-blanks",
+      "disposition": "informative",
+      "rationale": "The second bullet preserves blanks needed by free form. It does not repeal fixed-form blank insignificance or create a new INCLUDE keyword-separator rule."
+    },
+    {
+      "unit": "note-unnumbered.comment-marker",
+      "disposition": "informative",
+      "rationale": "The third bullet chooses exclamation commentary shared by both forms rather than fixed-only C or asterisk comment records."
+    },
+    {
+      "unit": "note-unnumbered.comment-column-exclusion",
+      "disposition": "informative",
+      "rationale": "The third bullet avoids starting an exclamation comment in column 6, which has fixed continuation significance."
+    },
+    {
+      "unit": "note-unnumbered.continued-line-column",
+      "disposition": "informative",
+      "rationale": "The fourth bullet places the free trailing continuation ampersand in external record column 73. A dual-form byte fixture would need a qualified fixed source-input mapping that ignores this record field; it must not claim 73 logical default-kind fixed source characters satisfy 6.3.3.1. No such interface calibration is credited here."
+    },
+    {
+      "unit": "note-unnumbered.continuation-line-column",
+      "disposition": "informative",
+      "rationale": "The fourth bullet puts the next line's ampersand in column 6 for the two continuation conventions. This concerns ordinary continued statements inside included text, not continuation of the INCLUDE line or permission to cross p6's boundaries."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_6_4.md"
+  },
+  "review_fingerprint": "38c8d5a41a72fb19de79fca9d2c12531797876e83974e970fa76d452e96851d4",
+  "review_rationale": "Independent source-first review and tested integration repairs: doc/source_audits/batch_006.json. All seven paragraphs and the informative note are accounted for. INCLUDE source replacement is distinct from statements/preprocessing; spelling, literal selectors, placement, nested expansion, cycles and boundary restrictions preserve their source premises. Flat ASCII sidecars at the common staged root are a qualified processor interface, not universal filename/search semantics. The adjacent free spelling and numeric-selector interface remain pending."
+}

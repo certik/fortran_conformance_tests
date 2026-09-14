@@ -7,19 +7,23 @@ is in `doc/whole_standard_plan.md`.
 
 ## 1. Goal
 
-Build a test suite with, for every syntax rule (`R401`–`R1547`, 502 rules) and
-every constraint (`C401`–`C15121`, 666 constraints) of Fortran 2023 as listed
-in `doc/fortran_2023_rules.txt`:
+Trace the pinned Fortran 2023 source to reviewed requirements and finite
+evidence: the 502 syntax rules and 666 constraints in
+`doc/fortran_2023_rules.txt`, normative prose, qualifications, and separately
+classified definitions, permissions, recommendations and informative text.
 
-* a **valid** program that exercises the rule from every side and must compile
-  and run correctly, and
-* an **invalid** file with many nonconforming cases, each violating exactly
-  that rule, each of which must be rejected at compile time with a diagnostic
-  that names the rule.
+For testable facets, use conforming execution assertions, small admission
+controls, or isolated nonconforming inputs with source-justified reporting
+oracles and minimal repairs. An assumed syntax alias or meta-language
+definition does not need an artificial invalid twin. A finite control does
+not prove every possible program's behavior, and source accounting does
+not substitute for execution or documentary evidence.
 
-Then use the suite to drive LFortran: with `--std=f23` and no other option,
-every valid test must pass and every invalid case must fail with the correct
-error message.
+Drive LFortran under the declared standard mode, source form and processor
+profiles. Keep required reporting distinct from stronger rejection and
+rule-code policies. Reviewed implementation gaps may remain XFAILs; they
+do not approve a fixture or establish full-standard conformance. Coverage,
+fixture validity, actual observations and passing effects are separate.
 
 ## 2. What the standard itself says about detectability
 

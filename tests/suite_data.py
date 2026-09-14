@@ -234,7 +234,7 @@ class Registry:
             if unit not in units or unit in accounting:
                 raise SuiteError(f'{section}: unknown or duplicate source unit {unit}')
             disposition = record['disposition']
-            if disposition not in ('requirements', 'definition', 'permission', 'informative',
+            if disposition not in ('requirements', 'definition', 'permission', 'recommendation', 'informative',
                                    'structural', 'unresolved'):
                 raise SuiteError(f'{section}#{unit}: unknown disposition')
             references = strings(record.get('requirements', []), f'{section}#{unit}.requirements')

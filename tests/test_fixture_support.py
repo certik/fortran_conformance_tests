@@ -215,6 +215,46 @@ class FixtureTests(unittest.TestCase):
         self.assertEqual(result.input_hashes['source.f'], hashlib.sha256(self.raw).hexdigest())
         self.assertEqual((self.root / 'source.f').read_bytes(), self.raw)
 
+    def test_declared_included_cycle_report_is_matched_without_host_attribution(self):
+        self.reporting_fixture()
+        (self.root / 'loop.inc').write_text("include 'loop.inc'\n")
+        self.data['files'].append('loop.inc')
+        self.data['expect']['diagnostic'] = dict(
+            file='loop.inc', line=1, contains_any=['being included recursively'])
+        fixture = self.fixture()
+        comp = runner.Compiler('gfortran', 'gfortran', 'f2023')
+        actual = ("loop.inc:1:0:\n\n    1 | include 'loop.inc'\n"
+                  "Fatal Error: File 'loop.inc' is being included recursively\n"
+                  "compilation terminated.\n")
+        for output, expected in (
+            (actual, 'pass'),
+            (actual.replace('loop.inc:1:0:', 'source.f:1:0:'), 'fail'),
+            (actual.replace('loop.inc:1:0:', 'loop.inc:2:0:'), 'fail'),
+            ("Fatal Error: File 'loop.inc' is being included recursively\n", 'fail'),
+            ('loop.inc:1:0: error: INCLUDE nesting depth exceeded\n', 'fail'),
+            (actual + 'internal compiler error: recursion crash\n', 'fail'),
+        ):
+            with self.subTest(output=output):
+                with patch.object(runner, 'run', return_value=runner.ProcessResult(1, output)):
+                    result = runner.check_fixture(fixture, comp)
+                self.assertEqual(result.outcome, expected)
+        with patch.object(runner, 'run', return_value=runner.ProcessResult(1, actual, timed_out=True)):
+            self.assertEqual(runner.check_fixture(fixture, comp).outcome, 'fail')
+
+    def test_lfortran_included_file_match_preserves_a_declared_subdirectory(self):
+        self.reporting_fixture()
+        (self.root / 'expected').mkdir()
+        (self.root / 'expected/payload.inc').write_text('invalid\n')
+        self.data['files'].append('expected/payload.inc')
+        self.data['expect']['diagnostic'] = dict(file='expected/payload.inc', line=1)
+        fixture = self.fixture()
+        for filename, expected in (('expected/payload.inc', 'pass'), ('other/payload.inc', 'fail')):
+            output = f'/workspace/{filename}:1-1:1-7: syntax error: invalid input\n'
+            with self.subTest(filename=filename):
+                with patch.object(runner, 'run', return_value=runner.ProcessResult(1, output)):
+                    result = runner.check_fixture(fixture, self.compiler)
+                self.assertEqual(result.outcome, expected)
+
     def test_reporting_requires_matching_file_line_severity_and_message(self):
         fixture = self.reporting_fixture()
         comp = runner.Compiler('flang', 'flang', 'f2018')

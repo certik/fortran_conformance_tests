@@ -1,0 +1,167 @@
+{
+  "schema_version": 1,
+  "section": "4.1.3",
+  "review_state": "reviewed",
+  "subunits": {
+    "R401": [
+      "R401.initial-member",
+      "R401.comma-repetition"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "R401",
+      "title": "Assumed comma-separated nonempty list",
+      "source": "4.1.3 R401 with p1-p2; J3/24-007 PDF 45, printed 31, lines 14-16 and 20.",
+      "source_units": [
+        "R401",
+        "R401.initial-member",
+        "R401.comma-repetition"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "Where there is no explicit overriding production, a syntactic class with the suffix -list contains one member of its underlying class, optionally followed by further members each preceded by a comma. The optional repetition does not make the first member optional. An enclosing production can separately make the entire list optional. Member constraints and the surrounding grammar continue to apply; xyz denotes a syntactic-class phrase rather than literal Fortran text.",
+      "facets": [
+        "singleton-control",
+        "comma-repetition-control",
+        "assumed-list-census"
+      ],
+      "pending": {
+        "assumed-list-census": "Needs a source-only, content-bound inventory of assumed -list occurrences, their enclosing productions and member constraints, and explicit overriding productions. Reconcile every occurrence with the pinned source and independent review. This is not an executable case and is not supported as such by the present registry."
+      },
+      "oracle": "R401_valid admits one-, two-, and three-member entity-decl-list instances in actual R801 integer declarations. Explicit assignments and independent small-integer checks ensure that each declared entity is usable. Credit singleton and comma repetition as positive controls only.",
+      "oracle_limitation": "One enclosing declaration context does not establish every assumed-list use or lower-level declaration semantics. No malformed declaration twin is invented, and an omitted optional list in another production is not called an empty R401 list. Source census remains pending. Required reporting follows 4.2 p2(3), with its p3 qualification, and does not mandate rejection or a printed R401 code.",
+      "dependencies": "4.1.1 p1 defines optional repetition; 4.1.2 p2 propagates associated constraints; 4.1.3 p2 gives explicit productions priority. R801, R803, R804 and C810 (8.2, PDF 117-118) supply entity-decl-list and valid data-object declarations. R804 explicitly defines object-name, so that member is not credited to R402. Default integer range is at least five decimal digits (7.4.3.1 p4, PDF 80); the fixture uses only 1 through 6. R502/R504/R509/R515 and R1401 (PDF 53-56, 317) supply ordering and the main-program context."
+    },
+    {
+      "id": "R402",
+      "title": "Assumed name alias",
+      "source": "4.1.3 R402 with p1-p2; J3/24-007 PDF 45, printed 31, lines 14-15, 17 and 20.",
+      "source_units": [
+        "R402"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "Without an explicit overriding production, a syntax term ending in -name uses the name syntax. The descriptive prefix does not add literal source text. This alias does not replace the name's lexical constraints, the enclosing production's requirements, or the scope rules that identify an entity.",
+      "facets": [
+        "program-name-control",
+        "assumed-name-census"
+      ],
+      "pending": {
+        "assumed-name-census": "Needs an independently reviewed source-only join of -name occurrences, R603/C601, associated contextual constraints, and explicit overrides. In particular, exclude explicitly defined object-name/R804. A single accepted program name cannot close this non-executable grammar-use census."
+      },
+      "oracle": "R402_valid is a minimal named main program using the assumed program-name term of R1402/R1403. Its same short name on PROGRAM and END PROGRAM satisfies C1401. Successful compilation and normal execution are positive admission evidence; an empty execution part is intentional for this alias control.",
+      "oracle_limitation": "No effect is attributed to the spelling of the program name, and no malformed-name case duplicates R603/C601. The explicit object-name/R804 alias is not an R402 witness. The complete assumed-name census remains pending; conformance of an empty program does not establish universal processor capability.",
+      "dependencies": "6.2.2/R603/C601 (PDF 68) gives the letter-led, at-most-63-character name premise. 14.1/R1401-R1403/C1401 (PDF 317) gives the genuinely assumed program-name context. 19.2 (PDF 548) gives its global-identifier context; the control has no competing entity. 4.1.3 p2 and 8.2/R804 (PDF 118) demonstrate explicit-rule priority. 4.2 p2(3)/p3 supplies the qualified reporting basis."
+    },
+    {
+      "id": "R403",
+      "title": "Assumed scalar syntax alias",
+      "source": "4.1.3 R403 with p1-p2 and C401; J3/24-007 PDF 45, printed 31, lines 14-15 and 18-20.",
+      "source_units": [
+        "R403"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "In the absence of an explicit overriding production, scalar-xyz uses the underlying xyz production. The scalar restriction is supplied by associated C401 and therefore follows the term wherever it occurs. Removing the scalar prefix for grammar expansion does not remove C401, type restrictions, or enclosing-context constraints.",
+      "facets": [
+        "logical-literal-control",
+        "logical-variable-control",
+        "assumed-scalar-census"
+      ],
+      "pending": {
+        "assumed-scalar-census": "Needs a source-only inventory of scalar-prefixed terms, their underlying productions and associated constraints, with explicit overrides resolved first. Review the complete use graph independently; do not infer it from scalar IF examples or from string-prefix matching alone."
+      },
+      "oracle": "R403_valid uses a scalar logical literal and a defined scalar logical variable in the scalar-logical-expr position of R1141. Each IF contributes to an independently checked result of 3. Both facets are positive controls for the alias, not effect coverage of logical expressions or IF.",
+      "oracle_limitation": "R1025/C1007, not R403, supplies logical type. C401 owns scalarity and the separate array-versus-element diagnostic witness. This finite IF context does not prove all scalar aliases or all ranks and types; the source census is explicitly pending.",
+      "dependencies": "11.1.8.4/R1141/C1148/p2 (PDF 219) supplies the actual scalar-logical-expr context and true-branch execution. 10.1.9.1/R1025/C1007 (PDF 183) defines logical-expr, and 10.1.1/10.1.2 (PDF 168-171) permits literal and variable primaries. 4.1.2 p2 makes C401 part of the assumed term. 4.2 p2(3)/p3 separates reporting capability from rejection."
+    },
+    {
+      "id": "C401",
+      "title": "Scalar-prefixed syntax has scalar rank",
+      "source": "4.1.3 C401 associated with R403; J3/24-007 PDF 45, printed 31, line 19.",
+      "source_units": [
+        "C401"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "An instance of the scalar-xyz syntactic class must be scalar. A one-element array is still an array; selecting its single element produces the scalar control. Under 4.1.2 p2 this associated constraint applies wherever the term occurs, subject to any explicit overriding production under 4.1.3 p2.",
+      "facets": [
+        "scalar-element-control",
+        "rank-one-diagnostic",
+        "scalar-context-census"
+      ],
+      "pending": {
+        "scalar-context-census": "Needs independently reviewed source/coverage aggregation over the actual scalar-prefixed contexts, with their underlying type and other constraints. Keep current-invocation diagnostic witnesses distinct from the processor's general 4.2 p2(3) capability; this one IF witness does not cover all contexts or array ranks."
+      },
+      "oracle": "The two foundations_c401 manifests have identical source except that the conforming IF tests condition(1) and the invalid IF tests condition. The latter is a defined rank-one default-logical array of extent one; the intended isolated violation is scalarity, not type or undefined data. The valid control must reach result 1. The negative is compile-only outcome diagnose, requiring an error attributed to source.f90 line 7 regardless of ordinary exit status. No nonfatal predicate is asserted without a concrete reviewed message.",
+      "oracle_limitation": "This witnesses reporting for one scalar-logical-expr in R1141, outside a format specification. It neither requires fatal rejection nor certifies all C401 violations or processor reporting modes. Crashes, timeouts, resource failures, unrelated locations and unlocated summaries cannot satisfy the fixture. The restriction is not transferred to WHERE masks, which are arrays under their own rules.",
+      "dependencies": "5.4.6 p1 (PDF 63) supplies rank and extent distinctions. R803/R814 and the explicit-shape rules give the one-element array declaration (PDF 118, 124-125). Scalar array-element subscripts are governed by 9.5.3. R1025/C1007 (PDF 183) supplies logical type; R1141/C1148/p2 (PDF 219) supplies the IF and simple assignment context. Scalar assignment to the whole logical array defines its element before use. 4.2 p2(3) requires reporting capability and p3 does not exempt this IF."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "definition",
+      "rationale": "PDF 45 lines 14-15: xyz is a placeholder for any syntactic-class phrase. These assumed rules avoid extra productions while carrying constraints. No literal xyz source construct or extra S requirement is introduced."
+    },
+    {
+      "unit": "R401",
+      "disposition": "requirements",
+      "requirements": [
+        "R401"
+      ],
+      "rationale": "PDF 45 line 16. The first member and optional comma/member repetition are separated below; explicit-rule priority is retained in the definition."
+    },
+    {
+      "unit": "R401.initial-member",
+      "disposition": "requirements",
+      "requirements": [
+        "R401"
+      ],
+      "rationale": "The first member is mandatory within an instantiated list; optionality of the entire list belongs to its enclosing production."
+    },
+    {
+      "unit": "R401.comma-repetition",
+      "disposition": "requirements",
+      "requirements": [
+        "R401"
+      ],
+      "rationale": "Each additional member carries its preceding comma, and the repeated group may occur zero or more times."
+    },
+    {
+      "unit": "R402",
+      "disposition": "requirements",
+      "requirements": [
+        "R402"
+      ],
+      "rationale": "PDF 45 line 17. Assumed name alias, not a replacement for explicitly defined name terms such as R804."
+    },
+    {
+      "unit": "R403",
+      "disposition": "requirements",
+      "requirements": [
+        "R403"
+      ],
+      "rationale": "PDF 45 line 18. Scalar prefix expansion retains associated C401."
+    },
+    {
+      "unit": "C401",
+      "disposition": "requirements",
+      "requirements": [
+        "C401"
+      ],
+      "rationale": "PDF 45 line 19. Scalarity is the constraint, not an implication that an extent-one array is scalar."
+    },
+    {
+      "unit": "p2",
+      "disposition": "definition",
+      "rationale": "PDF 45 line 20: an explicit production takes priority over the assumed production. R804/object-name (PDF 118) is a concrete source example of the override. R402's control instead uses program-name, for which R1402/R1403 rely on the assumed rule. Complete assumed-use and override censuses remain pending under R401-R403; no new S ID or artificial override program is allocated."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_4_1_3.md"
+  },
+  "review_fingerprint": "85e22ad10716262e9553c34673d652df7e974e2cdf82cc3f981d9c43a17e746f",
+  "review_rationale": "Independent source-first review and tested integration repairs: doc/source_audits/batch_006.json. R401-R403 and C401 retain defining ownership here. Finite list/name/scalar controls and the diagnostic witness do not stand in for complete assumed-form, override and associated-constraint use graphs."
+}

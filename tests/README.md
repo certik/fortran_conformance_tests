@@ -70,6 +70,13 @@ deliberately stricter gate. The pinned PDF census includes unprocessed
 sections, so they cannot disappear from the denominator. Detailed
 table/list subdivisions and independent visual review remain necessary.
 
+Source dispositions include `requirements`, `definition`, `permission`,
+`recommendation`, `informative`, `structural`, and `unresolved`.
+`recommendation` records advisory normative text with a required rationale.
+It can close a classification gap without creating mandatory requirements,
+test cases, or a claim that a processor implements the advice. Assessing
+actual documentary adherence requires separate, qualified evidence.
+
 Even a section containing only already-numbered R/C items needs an explicit
 reviewed catalogue for final closure. Catalogue review is bound to the
 catalogue contents and the corresponding source census, including fine
@@ -214,6 +221,14 @@ The existing `reject` outcome and ordinary isolated-negative rejection
 policy are unchanged; no arbitrary warning allowance is added to them.
 Successful compile-only and link-only references are displayed as
 `compiles` and `links`, never as runtime observations.
+
+For an explicitly declared diagnostic input, native `file:line:column`
+headers are recognized independently of the filename suffix, including
+`.inc`, other suffixes and extensionless included assets. Relative directory
+components in the expected filename remain significant. Include-context
+records cannot lend their locations to a later unlocated error, and a
+host-file location is not substituted for an included-file expectation.
+The legacy unbound location parser is unchanged.
 
 The GNU driver form `f951: Warning: MESSAGE in line N` has no filename.
 It can be qualified explicitly with a nonfatal predicate containing

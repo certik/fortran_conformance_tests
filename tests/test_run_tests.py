@@ -217,6 +217,38 @@ case.f90:5-5:1-20: semantic warning [C801]: repeated
         text = 'case.f90:4:8:\n    4 | invalid\nError: invalid\ncase.f90:8:2: error: invalid\n'
         self.assertEqual(runner.reference_error_lines(text), {4, 8})
 
+    def test_declared_include_locations_are_not_limited_by_suffix(self):
+        for filename in ('loop.inc', 'payload.data', 'payload', 'nested/payload.inc'):
+            with self.subTest(filename=filename):
+                text = (f'{filename}:1:0:\n\n    1 | include text\n'
+                        "Fatal Error: File 'payload' is being included recursively\n")
+                self.assertEqual(runner.reference_error_lines(text, filename), {1})
+                inline = f'/workspace/{filename}:2:7: error: invalid included source\n'
+                self.assertEqual(runner.reference_error_lines(inline, filename), {2})
+                self.assertEqual(runner.reference_error_lines(text, 'other.inc'), set())
+        self.assertEqual(runner.reference_error_lines(
+            'f951:1:2: error: driver-only text\n', 'loop.inc'), set())
+        self.assertEqual(runner.reference_error_lines(
+            'payload:1:2: error: no declared input\n'), set())
+
+    def test_declared_input_paths_do_not_collapse_to_the_same_basename(self):
+        text = '/workspace/other/payload.inc:3:1: error: wrong input\n'
+        self.assertEqual(runner.reference_error_lines(text, 'expected/payload.inc'), set())
+        self.assertEqual(runner.reference_error_lines(text, 'other/payload.inc'), {3})
+        self.assertFalse(runner.diagnostic_filename_matches('source.f90', ''))
+
+    def test_include_contexts_do_not_lend_locations_to_driver_errors(self):
+        for context in (
+            'In file included from /workspace/payload.inc:1:0:',
+            '                 from parent.f90:2:',
+            'payload.inc:1:0: included here',
+            'payload.inc:1:0: note: included here',
+            'other.data:1:0:',
+        ):
+            with self.subTest(context=context):
+                text = 'payload.inc:1:0:\n' + context + '\nFatal Error: unrelated driver failure\n'
+                self.assertEqual(runner.reference_error_lines(text, 'payload.inc'), set())
+
     def test_warning_location_is_not_reused_for_an_unlocated_error(self):
         text = 'case.f90:4:8:\nWarning: unrelated\nError: driver failed without a location\n'
         self.assertEqual(runner.reference_error_lines(text), set())

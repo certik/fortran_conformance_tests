@@ -22,7 +22,7 @@ The readiness refactoring now supplies:
   context case.
 
 This is infrastructure readiness, not completed conformance coverage.
-The current census still has 5,213 unresolved base units and five unresolved
+The current census still has 5,183 unresolved base units and five unresolved
 fine-grained units inside the calibration catalogues. Its independent visual
 review is still pending. Automatic PDF extraction is not semantic review,
 and list items/table rows require additional audited subdivisions.
@@ -251,6 +251,11 @@ byte-preserved fixtures once their documentary premises are established.
 Three fixed-source line/kind facets need qualified input mappings, and the
 character-context missing-successor condition still lacks a discriminating
 oracle. A generic EOF or missing-END report cannot silently close it.
+Two INCLUDE facets still need an authoritative separator interpretation
+or qualified numeric-selector interface. Twenty-nine foundation facets
+need source/use-graph, documentary/interface, or finite aggregate evidence.
+Those contracts must retain their finite coverage boundary rather than
+claiming proof of every possible program.
 C descriptor
 header discovery and the remaining IEEE/profile families should be
 calibrated when their work units are reached; the basic C bridge does not
@@ -259,8 +264,8 @@ claim to cover those interfaces.
 ## 8. Rollout progress and next batch
 
 `doc/rollout_progress.json` records reviewed batch checkpoints. The first
-five implementation batches catalogue the content-bearing sections of
-6.1-6.3, using
+six implementation batches catalogue the content-bearing sections of
+Clause 6 and 4.1.1-4.1.5/4.2, using
 separate author worktrees and review independent of those authors.
 All except the third batch used fresh review contexts. The third review task
 returned no substantive result, so the coordinator performed that source
@@ -309,11 +314,20 @@ A new one-edit missing-successor EOF pair is diagnosed by LFortran and
 Flang; GNU's compiler crash remains a failed observation. The separate
 character-continuation EOF facet is not conflated with that result.
 
-The next queued work units are 6.4 (INCLUDE lines) and 4.1.1-4.1.5/4.2
-(normative conventions and processor-conformance obligations). Source
-metadata and meta-level definitions must not become fabricated passing
-Fortran programs. Continue to distinguish required reporting, selected
-processor interfaces, finite controls, and universal conformance claims.
-The outstanding assignment, graphics, character-interface, EOF, and census
-questions remain explicit. Compare model routing on bounded packets before
-widening concurrency; do not jump to thousands of unreviewed programs.
+The sixth checkpoint adds 26 requirements and 67 executions. All Clause 6
+source units are now classified and reviewed, with explicit oracle gaps.
+Declared included-file diagnostics no longer depend on filename suffixes;
+two GNU cycle reports are recognized without accepting crashes or generic
+depth limits. A `recommendation` disposition closes eight advisory
+accounting entries without claiming mandatory or implemented documentation.
+The foundation's 29 aggregate/documentary/source-use facets remain pending.
+
+The next queued units are 7.1.1-7.1.5/7.2 (type-system concepts and
+parameters) and 7.3.1/7.3.2.1 (type declarations). Separately tracked
+follow-ups cover legacy argument-kind qualification and finite
+meta-evidence contracts, including mixed FORMAT diagnostic contexts.
+Meta-level definitions must not become fabricated passing programs.
+Continue to distinguish reporting, selected interfaces, finite controls,
+and universal claims. The outstanding assignment, graphics, character,
+EOF, INCLUDE, aggregate-evidence and census questions remain explicit.
+Compare model routing on bounded packets before widening concurrency.
