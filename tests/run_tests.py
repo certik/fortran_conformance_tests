@@ -6,6 +6,7 @@ Reference results corroborate fixtures; they never determine LFortran's verdict.
 """
 import argparse
 import collections
+import copy
 from dataclasses import asdict, dataclass, field, replace
 import glob
 import json
@@ -22,7 +23,8 @@ import tempfile
 from typing import Dict, List, Optional, Set
 
 from fixture_support import Fixture, load_fixture
-from suite_data import Metadata, Registry, Review, ROOT, SuiteError, safe_path
+from evidence_links import qualifying_reference
+from suite_data import Metadata, Registry, Review, ROOT, SuiteError, safe_path, validate_compiler_header
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 RULE = r'(?:[RC]\d+|S\d+(?:\.\d+)+(?:-\d{3})?)'
@@ -78,6 +80,7 @@ class Check:
     trace: List[dict] = field(default_factory=list)
     input_hashes: Dict[str, str] = field(default_factory=dict)
     profile_checks: Dict[str, dict] = field(default_factory=dict)
+    compiler_headers: Dict[str, dict] = field(default_factory=dict)
 
 
 @dataclass
@@ -112,6 +115,7 @@ class Compiler:
     launcher: List[str] = field(default_factory=list)
     profiles: Dict[str, Check] = field(default_factory=dict)
     wrapper: str = ''
+    c_binding_header: dict = field(default_factory=dict)
 
     def flags(self, path, meta, form='auto'):
         fixed = form == 'fixed' or (form == 'auto' and path.endswith('.f'))
@@ -622,6 +626,8 @@ def judge_diagnostic(result, comp, rule, diagnostic, codes=False, primary_source
             continue
         if messages and not any(message.lower() in item.message.lower() for message in messages):
             continue
+        if any(message.lower() in item.message.lower() for message in diagnostic.get('excludes_any', [])):
+            continue
         allowed = item.severity in ('error', 'fatal error') or any(
             nonfatal_matches(item, predicate, comp.family) for predicate in nonfatal)
         if allowed:
@@ -700,6 +706,61 @@ def launch_command(comp, meta, executable, arguments=None):
     return command
 
 
+def compiler_header_bytes(path):
+    try:
+        return Path(path).read_bytes()
+    except OSError as error:
+        raise SuiteError(f'{path}: cannot read the compiler binding header: {error}') from error
+
+
+def compiler_binding_header(comp, timeout=30):
+    if comp.c_binding_header:
+        return comp.c_binding_header
+    if comp.family == 'lfortran':
+        option = '--print-c-include-dir'
+    elif comp.family == 'gfortran':
+        option = '-print-file-name=include'
+    elif comp.family == 'flang':
+        option = '-print-resource-dir'
+    else:
+        raise SuiteError(f'{comp.command}: no Fortran binding-header discovery for {comp.family}')
+    result = run([comp.command, option], HERE, timeout)
+    failed = failure(result, 'binding-header query')
+    if failed or result.returncode:
+        raise SuiteError(f'{comp.command}: binding-header query failed: '
+                         + (failed.note if failed else excerpt(result.output)))
+    lines = [line.strip() for line in result.stdout.splitlines() if line.strip()]
+    if len(lines) != 1:
+        raise SuiteError(f'{comp.command}: binding-header query did not return one directory')
+    directory = Path(lines[0])
+    if not directory.is_absolute():
+        raise SuiteError(f'{comp.command}: binding-header query returned a nonabsolute directory')
+    name = 'ISO_Fortran_binding.h'
+    if comp.family == 'flang':
+        candidates = [directory / 'include' / name, directory / 'include/flang' / name]
+        if len(directory.parents) >= 3:
+            candidates.append(directory.parents[2] / 'include/flang' / name)
+    else:
+        candidates = [directory / name]
+    existing = sorted({candidate.resolve() for candidate in candidates if candidate.is_file()})
+    if not existing:
+        raise SuiteError(f'{comp.command}: processor binding header not found from {option}')
+    contents_by_path = {path: compiler_header_bytes(path) for path in existing}
+    hashes = {hashlib.sha256(contents).hexdigest() for contents in contents_by_path.values()}
+    if len(hashes) != 1:
+        raise SuiteError(f'{comp.command}: ambiguous processor binding headers have different contents')
+    path = existing[0]
+    contents = contents_by_path[path]
+    header = dict(path=str(path), sha256=hashlib.sha256(contents).hexdigest(),
+                  discovery=option)
+    version = re.search(rb'(?m)^\s*#\s*define\s+CFI_VERSION\s+([^\r\n]+)', contents)
+    if version:
+        header['cfi_version'] = version.group(1).decode('ascii', errors='backslashreplace').strip()
+    validate_compiler_header(header, 'processor binding header')
+    comp.c_binding_header = header
+    return header
+
+
 def check_fixture(fixture, comp, cc='cc', timeout=30, codes=False):
     meta = fixture.meta
     for profile in meta.profiles:
@@ -708,6 +769,7 @@ def check_fixture(fixture, comp, cc='cc', timeout=30, codes=False):
             return checked
     trace = []
     hashes = {}
+    headers = {}
     with tempfile.TemporaryDirectory(prefix='conformance-fixture-') as tmp:
         workspace = Path(tmp)
         for filename in fixture.files:
@@ -728,9 +790,11 @@ def check_fixture(fixture, comp, cc='cc', timeout=30, codes=False):
         def finish(check):
             check.trace = trace
             check.input_hashes = hashes
+            check.compiler_headers = headers
             return check
 
         expectation = fixture.expectation
+        header_directory = None
         for step in fixture.build:
             source = str(safe_path(workspace, step.source))
             output = safe_path(workspace, step.output, exists=False)
@@ -741,7 +805,22 @@ def check_fixture(fixture, comp, cc='cc', timeout=30, codes=False):
                     flags += ['--separate-compilation', '--error-format', 'short']
                 command = [comp.command] + flags + ['-c', source, '-o', str(output)]
             else:
-                command = [cc, '-std=c11', '-c', source, '-o', str(output)]
+                flags = []
+                if step.fortran_binding_header:
+                    header = compiler_binding_header(comp, timeout)
+                    contents = compiler_header_bytes(header['path'])
+                    if hashlib.sha256(contents).hexdigest() != header['sha256']:
+                        raise SuiteError(f'{comp.command}: processor binding header changed during the run')
+                    if header_directory is None:
+                        header_directory = Path(tempfile.mkdtemp(prefix='processor-header-', dir=tmp))
+                        staged_header = header_directory / 'ISO_Fortran_binding.h'
+                        staged_header.write_bytes(contents)
+                        if hashlib.sha256(staged_header.read_bytes()).hexdigest() != header['sha256']:
+                            raise SuiteError('processor binding-header staging changed bytes')
+                    headers['ISO_Fortran_binding.h'] = dict(header)
+                    hashes['@compiler/ISO_Fortran_binding.h'] = header['sha256']
+                    flags = ['-I', str(header_directory)]
+                command = [cc, '-std=c11'] + flags + ['-c', source, '-o', str(output)]
             result = invoke(command, 'compile', step.id)
             if expectation.phase == 'compile' and expectation.step == step.id:
                 if expectation.outcome in ('reject', 'diagnose'):
@@ -940,12 +1019,32 @@ def record_fixture_review(registry, cases, key, state, rationale, sources, repor
             if not observation or observation.get('review', {}).get('fingerprint') != fingerprint:
                 raise SuiteError(f'{case.name}: report does not describe the current fixture fingerprint')
             references = list(observation['references'].items())
-            if state == 'reference-validated' and not any(check['outcome'] == 'pass' for _, check in references):
-                raise SuiteError(f'{case.name}: no successful reference observation')
+            if set(observation['references']) - set(versions):
+                raise SuiteError(f'{case.name}: reference observation has no compiler identity')
+            if state == 'reference-validated' and not any(
+                    qualifying_reference(case, dict(check, standard=versions[name]['standard']))
+                    for name, check in references):
+                raise SuiteError(f'{case.name}: no successful reference at the required phase and supported mode')
             for name, check in references:
-                evidence.append(dict(case=case.name, compiler=os.path.basename(name),
-                                     version=versions[name]['version'], standard=versions[name]['standard'],
-                                     phase=check['phase'], outcome=check['outcome']))
+                item = dict(case=case.name, compiler=os.path.basename(name),
+                            version=versions[name]['version'], standard=versions[name]['standard'],
+                            phase=check['phase'], outcome=check['outcome'])
+                headers = check.get('compiler_headers', {})
+                needs_header = case.fixture and any(step.fortran_binding_header for step in case.fixture.build)
+                if needs_header and check['outcome'] == 'pass' and set(headers) != {'ISO_Fortran_binding.h'}:
+                    raise SuiteError(f'{case.name}: successful descriptor observation lacks header provenance')
+                if headers:
+                    if not needs_header:
+                        raise SuiteError(f'{case.name}: report claims an undeclared compiler header')
+                    if set(headers) != {'ISO_Fortran_binding.h'}:
+                        raise SuiteError(f'{case.name}: unknown compiler-header evidence')
+                    validate_compiler_header(headers['ISO_Fortran_binding.h'], f'{case.name} header')
+                    if headers['ISO_Fortran_binding.h'] != versions[name].get('c_binding_header'):
+                        raise SuiteError(f'{case.name}: descriptor header differs from the compiler snapshot')
+                    if not report.get('c_compiler'):
+                        raise SuiteError(f'{case.name}: descriptor observation lacks a C companion identity')
+                    item.update(compiler_headers=headers, c_compiler=report['c_compiler'])
+                evidence.append(item)
     registry.record_review(key, fingerprint, state, rationale, sources, evidence)
 
 
@@ -970,7 +1069,7 @@ def tool_version(command, timeout):
     return banner
 
 
-def confirm_snapshot(compilers, cases, fingerprints, timeout=30, companion=None):
+def confirm_snapshot(compilers, cases, fingerprints, timeout=30, companion=None, evidence_snapshot=None):
     errors = []
     try:
         current_registry = Registry()
@@ -980,6 +1079,10 @@ def confirm_snapshot(compilers, cases, fingerprints, timeout=30, companion=None)
                 checked[case.review_key] = case.fingerprint(current_registry)
             if checked[case.review_key] != fingerprints[case.review_key]:
                 errors.append(f'{case.review_key}: inputs or requirement changed during the run')
+        if evidence_snapshot is not None:
+            current_cases = collect_cases(HERE, current_registry)
+            if current_registry.evidence.snapshot(current_cases) != evidence_snapshot:
+                errors.append('canonical evidence links, dependencies, or reviews changed during the run')
     except (SuiteError, OSError) as error:
         errors.append('cannot confirm fixture snapshot: ' + str(error))
     for comp in compilers:
@@ -989,6 +1092,13 @@ def confirm_snapshot(compilers, cases, fingerprints, timeout=30, companion=None)
                 errors.append(f'{comp.command}: compiler version changed during the run')
         except SuiteError as error:
             errors.append('cannot confirm compiler snapshot: ' + str(error))
+        if comp.c_binding_header:
+            try:
+                actual = hashlib.sha256(compiler_header_bytes(comp.c_binding_header['path'])).hexdigest()
+                if actual != comp.c_binding_header['sha256']:
+                    errors.append(f'{comp.command}: processor binding header changed during the run')
+            except SuiteError as error:
+                errors.append('cannot confirm binding-header snapshot: ' + str(error))
     if companion:
         try:
             if tool_version(companion['command'], timeout) != companion['version']:
@@ -996,6 +1106,47 @@ def confirm_snapshot(compilers, cases, fingerprints, timeout=30, companion=None)
         except SuiteError as error:
             errors.append('cannot confirm C compiler snapshot: ' + str(error))
     return sorted(set(errors))
+
+
+def relevant_links(links, cases):
+    identifiers = {case.name for case in cases}
+    rules = {case.rule for case in cases}
+    return [link for link in links if link['target']['requirement'] in rules
+            or any(member['id'] in identifiers for member in link['cases'])]
+
+
+def print_links(links):
+    for link in links:
+        target = link['target']
+        print(f"LINK {link['state'].upper()} {link['id']} -> {target['requirement']}/{target['facet']}"
+              ' [finite linked evidence; no derived pass/effect count]')
+        for member in link['cases']:
+            print(f"  {member['role']}: {member['id']} [{member['primary_rule']};"
+                  f" {member['phase']}; fixture review={member['review']['state']}]")
+        if link['blockers']:
+            print('  blockers: ' + '; '.join(link['blockers']))
+
+
+def evidence_observations(links, results, compilers, reference_only):
+    linked = copy.deepcopy(links)
+    by_id = {result['name']: result for result in results}
+    identities = {comp.command: dict(command=comp.command, family=comp.family,
+                                     version=comp.version, standard=comp.standard) for comp in compilers}
+    target = next((comp.command for comp in compilers if comp.family == 'lfortran'), None)
+
+    def observation(command, check):
+        return dict(identities[command], outcome=check.outcome, phase=check.phase, note=check.note)
+
+    for link in linked:
+        for member in link['cases']:
+            result = by_id.get(member['id'])
+            member['observation_state'] = 'present' if result else 'not-selected'
+            member['target_observation'] = (
+                observation(target, result['check']) if result and not reference_only else None)
+            member['reference_observations'] = (
+                [observation(command, check) for command, check in result['references'].items()]
+                if result else [])
+    return linked
 
 
 def main():
@@ -1024,6 +1175,8 @@ def main():
     ap.add_argument('--record-review', metavar='FIXTURE', help='explicitly adjudicate a fixture without running compilers')
     ap.add_argument('--record-catalogue-review', metavar='SECTION',
                     help='record a content-bound source/catalogue review without running compilers')
+    ap.add_argument('--record-evidence-review', metavar='LINK',
+                    help='independently adjudicate a canonical case link after source and fixture reviews')
     ap.add_argument('--review-state', choices=['source-reviewed', 'reference-validated', 'unreviewed', 'disputed', 'needs-oracle'])
     ap.add_argument('--review-rationale')
     ap.add_argument('--review-source', action='append', default=[])
@@ -1037,9 +1190,11 @@ def main():
         ap.error('--codes applies to the LFortran target, not a reference-only run')
     if a.require_complete_source and not a.audit:
         ap.error('--require-complete-source must be used with --audit')
-    if sum(bool(value) for value in (a.record_review, a.record_catalogue_review, a.audit, a.list)) > 1:
-        ap.error('--record-review, --record-catalogue-review, --audit, and --list are separate operations')
-    if a.update_xfail and (a.record_review or a.record_catalogue_review or a.audit or a.list):
+    if sum(bool(value) for value in (
+            a.record_review, a.record_catalogue_review, a.record_evidence_review, a.audit, a.list)) > 1:
+        ap.error('--record-review, --record-catalogue-review, --record-evidence-review, --audit,'
+                 ' and --list are separate operations')
+    if a.update_xfail and (a.record_review or a.record_catalogue_review or a.record_evidence_review or a.audit or a.list):
         ap.error('--update-xfail is a separate execution operation')
     if a.update_xfail and (a.allow_unreviewed or a.reference_only):
         ap.error('--update-xfail is only for approved LFortran fixtures')
@@ -1049,7 +1204,12 @@ def main():
         ap.error('--record-catalogue-review needs --review-rationale')
     if a.record_catalogue_review and (a.review_state or a.review_source or a.review_report):
         ap.error('fixture review options do not apply to a catalogue review')
-    if not (a.record_review or a.record_catalogue_review) and (
+    if a.record_evidence_review:
+        if not a.review_state or not a.review_rationale:
+            ap.error('--record-evidence-review needs --review-state and --review-rationale')
+        if a.review_state == 'reference-validated' or a.review_source or a.review_report:
+            ap.error('link adjudication uses its declared source/basis anchors, not a compiler report')
+    if not (a.record_review or a.record_catalogue_review or a.record_evidence_review) and (
             a.review_state or a.review_rationale or a.review_source or a.review_report):
         ap.error('review options require a review operation')
     xfail_path = os.path.join(HERE, 'expected_failures.txt')
@@ -1078,6 +1238,15 @@ def main():
                                   a.review_rationale, a.review_source, a.review_report)
             print('Recorded explicit fixture review:', a.record_review, a.review_state)
             return 0
+        if a.record_evidence_review:
+            registry.evidence.record_review(all_cases, a.record_evidence_review, a.review_state, a.review_rationale)
+            print('Recorded independent canonical-link review:', a.record_evidence_review, a.review_state)
+            return 0
+        links = registry.evidence.report(all_cases)
+        selected_links = relevant_links(links, selected)
+        unapproved_links = any(link['state'] != 'current' for link in selected_links)
+        evidence_snapshot = {link['id']: dict(fingerprint=link['review']['fingerprint'], state=link['state'])
+                             for link in links}
         if a.audit:
             registry.render()
             audit = registry.audit(all_cases)
@@ -1089,16 +1258,21 @@ def main():
                     key: asdict(value) for key, value in reviews.items()}), indent=2) + '\n')
             unapproved = any(not review.approved for review in reviews.values())
             return int((a.require_complete_source and not audit['complete_source'])
-                       or (unapproved and not a.allow_unreviewed))
+                       or ((unapproved or any(link['state'] != 'current' for link in links))
+                           and not a.allow_unreviewed))
         if a.list:
             for case in selected:
                 print(f'{case.rule:20} {case.kind:7} {case.name}'
                       f' [{case.meta.evidence}; review={reviews[case.review_key].state}]')
+            print_links(selected_links)
             return 0
         if a.update_xfail:
             pending = [case.review_key for case in selected if not reviews[case.review_key].approved]
             if pending:
                 raise SuiteError('cannot update xfails for unapproved fixtures: ' + ', '.join(sorted(set(pending))))
+            if unapproved_links:
+                raise SuiteError('cannot update xfails with unreviewed/stale linked evidence: ' + ', '.join(
+                    link['id'] for link in selected_links if link['state'] != 'current'))
         launchers = {}
         for value in a.launcher:
             name, separator, command = value.partition('=')
@@ -1129,7 +1303,7 @@ def main():
                             check=check if check is not None else combined_references(references),
                             metadata=case.meta, references=references,
                             review=reviews[case.review_key], review_key=case.review_key))
-    run_errors = (confirm_snapshot(compilers, selected, fingerprints, a.timeout, companion)
+    run_errors = (confirm_snapshot(compilers, selected, fingerprints, a.timeout, companion, evidence_snapshot)
                   if a.report or a.update_xfail else [])
     for error in run_errors:
         print('ERROR: provisional results:', error, file=sys.stderr)
@@ -1161,6 +1335,7 @@ def main():
     if refs:
         agree = sum(all(v.outcome == 'pass' for v in r['references'].values()) for r in results)
         print(f'reference compilers all agree with the test on {agree}/{len(results)} cases')
+    print_links(selected_links)
     if a.update_xfail:
         if run_errors:
             print('Expected failures were not modified because the run was not a consistent snapshot.')
@@ -1192,11 +1367,13 @@ def main():
     if a.report:
         report = {
             'compilers': [dict(command=c.command, family=c.family, standard=c.standard,
-                               version=c.version, launcher=c.launcher, wrapper=c.wrapper) for c in compilers],
+                               version=c.version, launcher=c.launcher, wrapper=c.wrapper,
+                               c_binding_header=c.c_binding_header) for c in compilers],
             'reference_only': a.reference_only,
             'run_errors': run_errors,
             'c_compiler': companion,
             'source_audit': registry.audit(all_cases),
+            'evidence_links': evidence_observations(links, results, compilers, a.reference_only),
             'results': [dict(name=r['name'], rule=r['rule'], kind=r['kind'],
                              status=status(r['name'], r['check'], xfail, r['review']),
                              check=asdict(r['check']), metadata=asdict(r['metadata']),
@@ -1209,7 +1386,8 @@ def main():
     unapproved = any(not result['review'].approved for result in results)
     skipped = any(result['check'].outcome == 'skip' or any(
         check.outcome == 'skip' for check in result['references'].values()) for result in results)
-    return 2 if run_errors else int(failed or (unapproved and not a.allow_unreviewed) or (a.no_skips and skipped))
+    return 2 if run_errors else int(
+        failed or ((unapproved or unapproved_links) and not a.allow_unreviewed) or (a.no_skips and skipped))
 
 
 if __name__ == '__main__':

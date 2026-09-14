@@ -70,3 +70,27 @@ identifiers, locations, and content hashes rather than the standard's body
 text. Its extraction still needs independent visual review and fine-grained
 list/table subdivision. An internally consistent audit is not full source
 closure; `--require-complete-source` remains false until that work is done.
+
+## Freezing a target used during a long rollout
+
+Do not rely solely on a version banner when another process is rebuilding
+the target compiler. Select a private, immutable compiler snapshot with
+`--lfortran /path/to/snapshot/bin/lfortran`. Preserve the matching runtime
+libraries, intrinsic module files and advertised C binding header as well
+as the executable. Record hashes of all copied inputs and verify the live
+inputs stayed unchanged during copying.
+
+Verify the relocated compiler's version and `--print-c-include-dir`, compile
+and run a small intrinsic-module control, and check that the resulting
+executable resolves the snapshot's runtime rather than the live build.
+The September 14, 2026 development-build snapshot used an installed-layout
+`share/lfortran/lib` path and a separate advertised `include/lfortran`
+header location; do not guess those paths for another build.
+
+Freezing and successful linking establish reproducible input bits, not a
+compatible descriptor ABI. In particular, retain an observed
+descriptor/header `CFI_VERSION` disagreement as a failed interface check.
+Never substitute another compiler's header or change the expected version
+to make it pass. Session-local snapshot manifests are uncommitted
+observation artifacts; the rollout log records the selected version and
+binary hash separately from source/fixture validity.

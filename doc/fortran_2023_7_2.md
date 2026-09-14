@@ -213,14 +213,24 @@ integer tags; these two kinds are guaranteed distinct by precision, not numeric 
 codes. A character generic with one assumed-length specific is invoked with two lengths
 and returns/checks the actual lengths. A PDT generic uses kind discriminators 1 and 2
 with assumed LEN, varies LEN while holding KIND fixed, then varies KIND while holding
-LEN fixed; tags and parameter inquiries are checked.
+LEN fixed; tags and parameter inquiries are checked. The length-only-overload-exclusion
+facet has authored finite linkage S7.2-003.length-only-overload-exclusion in
+doc/evidence/canonical_case_links.json: C1514_invalid__length_only is paired with the
+compile-only C1514_valid__length_rank_control. Both retain primary ownership C1514; no
+supplementary rejection execution is added.
 
 **Oracle limitation:** The PDT discriminator values 1 and 2 have no role as intrinsic kind selectors; their
 integer component uses the default integer type. They may therefore be used without a
-representation profile. The finite same-specific controls do not discharge the pending
-forbidden length-only overload. Valid PDT reference failures remain
-implementation/source-only findings, not justification to drop LEN or collapse the
-generic.
+representation profile. The direct same-specific controls do not establish forbidden
+length-only overloading. The linked scalar-character pair differs only in LEN; adding
+rank one to the second dummy repairs distinguishability. No calls introduce competing
+length/rank errors. A causal ambiguity/distinguishability report must fit the declared
+generic/signature relation, not a whole-module recovery span. Authored linkage clears
+only the authoring gap: normal audit still requires independent current source, fixture
+and link reviews. The link is neither a runtime effect nor a derived passing aggregate,
+and does not ratify all of 15.4.3.4.5, all parameter contexts, or the broader
+meta-evidence work. Valid PDT reference failures remain implementation/source-only
+findings, not justification to drop LEN or collapse the generic.
 
 **Dependencies:** 7.4.3.2 p5 (PDF 82), 7.5.3.1 (PDF 91-92), 7.5.9/C7100 (PDF 106), 15.4.3.4.5 p1-p3/C1514
 (PDF 331-332), 15.5.5.2 (PDF 350-351). TKR compatibility explicitly excludes length;

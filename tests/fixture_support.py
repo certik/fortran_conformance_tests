@@ -15,6 +15,7 @@ class BuildStep:
     output: str
     depends_on: List[str] = field(default_factory=list)
     form: str = 'auto'
+    fortran_binding_header: bool = False
 
 
 @dataclass
@@ -145,7 +146,8 @@ def load_fixture(path, profiles):
         raise SuiteError(f'{path}: build steps are required')
     steps, outputs, seen = [], set(), set()
     for item in data['build']:
-        fields(item, ('id', 'source', 'language', 'output'), ('depends_on', 'form'), str(path))
+        fields(item, ('id', 'source', 'language', 'output'),
+               ('depends_on', 'form', 'fortran_binding_header'), str(path))
         step = BuildStep(**item)
         string(step.id, f'{path}.build.id')
         if not re.fullmatch(r'[A-Za-z][\w-]*', step.id) or step.id in seen:
@@ -154,6 +156,9 @@ def load_fixture(path, profiles):
             raise SuiteError(f'{path}: invalid compilation input or language')
         if step.form not in ('auto', 'fixed', 'free') or (step.language == 'c' and step.form != 'auto'):
             raise SuiteError(f'{path}: invalid source form')
+        if type(step.fortran_binding_header) is not bool or (
+                step.fortran_binding_header and step.language != 'c'):
+            raise SuiteError(f'{path}: Fortran binding headers are available only to C build steps')
         safe_path(path.parent, step.output, exists=False)
         if step.output in inputs or step.output in outputs:
             raise SuiteError(f'{path}: build outputs must not overwrite inputs or each other')
@@ -162,6 +167,9 @@ def load_fixture(path, profiles):
         seen.add(step.id)
         outputs.add(step.output)
         steps.append(step)
+    if any(step.fortran_binding_header for step in steps) and any(
+            Path(name).name == 'ISO_Fortran_binding.h' for name in set(inputs) | outputs):
+        raise SuiteError(f'{path}: fixture files must not shadow the processor Fortran binding header')
     link = data.get('link')
     if link is not None:
         fields(link, ('objects', 'output'), ('driver',), f'{path}.link')
@@ -196,7 +204,8 @@ def load_fixture(path, profiles):
         raise SuiteError(f'{path}: nonzero termination needs an explicit policy/profile basis')
     if expectation.outcome in ('reject', 'diagnose'):
         if expectation.outcome == 'diagnose':
-            fields(expectation.diagnostic, ('file', 'line'), ('end_line', 'contains_any', 'allow_nonfatal'),
+            fields(expectation.diagnostic, ('file', 'line'),
+                   ('end_line', 'contains_any', 'excludes_any', 'allow_nonfatal'),
                    f'{path}.diagnostic')
             validate_nonfatal_diagnostics(expectation.diagnostic.get('allow_nonfatal', []),
                                           f'{path}.diagnostic.allow_nonfatal')
@@ -225,6 +234,9 @@ def load_fixture(path, profiles):
         messages = strings(expectation.diagnostic.get('contains_any', []), 'diagnostic.contains_any')
         for message in messages:
             string(message, 'diagnostic.contains_any')
+        if 'excludes_any' in expectation.diagnostic:
+            for message in strings(expectation.diagnostic['excludes_any'], 'diagnostic.excludes_any', nonempty=True):
+                string(message, 'diagnostic.excludes_any')
         if (anchor == 'eof' or expectation.phase == 'link') and not messages:
             raise SuiteError(f'{path}: an EOF expectation needs a diagnostic predicate')
         if any(predicate.get('attribution') == 'single-source-driver'

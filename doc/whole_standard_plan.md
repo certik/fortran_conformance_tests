@@ -22,7 +22,7 @@ The readiness refactoring now supplies:
   context case.
 
 This is infrastructure readiness, not completed conformance coverage.
-The current census still has 5,152 unresolved base units and five unresolved
+The current census still has 5,141 unresolved base units and five unresolved
 fine-grained units inside the calibration catalogues. Its independent visual
 review is still pending. Automatic PDF extraction is not semantic review,
 and list items/table rows require additional audited subdivisions.
@@ -256,9 +256,11 @@ or qualified numeric-selector interface. Twenty-nine foundation facets
 need source/use-graph, documentary/interface, or finite aggregate evidence.
 Those contracts must retain their finite coverage boundary rather than
 claiming proof of every possible program.
-The first type batch adds 21 explicit pending facets. Six PDT mechanism
-facets and LEN-only generic exclusion are bounded unauthored work; they
-must not be described as inherently untestable. Source/use-graph and C710
+The first type batch added 21 explicit pending facets. LEN-only generic
+exclusion now has a reviewed finite canonical-case link, without a duplicate
+execution or universal claim. Six PDT mechanism facets remain bounded
+unauthored work, not inherently untestable. The following compatibility
+batch adds five source-use/identity gaps. Other source/use-graph and C710
 isolation questions remain separate.
 C descriptor
 header discovery and the remaining IEEE/profile families should be
@@ -268,8 +270,8 @@ claim to cover those interfaces.
 ## 8. Rollout progress and next batch
 
 `doc/rollout_progress.json` records reviewed batch checkpoints. The first
-seven implementation batches catalogue the content-bearing sections of
-Clause 6, 4.1.1-4.1.5/4.2, and 7.1.1-7.1.5/7.2/7.3.1/7.3.2.1, using
+eight implementation batches catalogue the content-bearing sections of
+Clause 6, 4.1.1-4.1.5/4.2, and 7.1-7.3, using
 separate author worktrees and review independent of those authors.
 All except the third batch used fresh review contexts. The third review task
 returned no substantive result, so the coordinator performed that source
@@ -336,11 +338,23 @@ Exact-point and semantic-message gates were tightened, with C1401's
 genuine PROGRAM/END relation expressed by explicit spans and minimal
 controls. Two older nonmatching-range passes are now gate misses.
 
-The next units are 7.3.2.2/7.3.2.3/7.3.3 and a bounded canonical-case-link
-evidence contract, calibrated with the LEN-only generic exclusion and its
-C1514 owner. Six PDT mechanism facets are also queued. The broader
-meta-evidence contract, including mixed FORMAT diagnostic contexts, is
-not complete merely because one link type is implemented. Meta-level
-definitions must not become fabricated passing programs. Continue to
-separate reporting, selected interfaces, finite controls, and universal
-claims; all remaining source, interface and aggregate gaps stay explicit.
+The eighth checkpoint adds 14 requirements and 72 executions, plus one
+independently adjudicated finite link from the C1514 pair to the LEN-only
+generic exclusion. Direct authored, linked, and observed/passing evidence
+remain separate. Per-processor C binding headers are staged without
+shadowing the C companion's standard headers, and optional mapping premises
+are probed before the descriptor fixture.
+
+The target changed externally to a dirty 411 build during that batch.
+Its binary/runtime/module/header set is now frozen in session artifacts;
+all 619 prior outcomes were unchanged on those frozen bits. The advertised
+header and produced descriptor versions still disagree, so that failure
+is recorded as an interface mismatch before local propagation is observed.
+Frozen copies and successful linking are not ABI certification.
+
+The next units are 7.4.1/7.4.2/7.4.3.1 and the six bounded PDT mechanism
+facets under 7.2. The broader meta-evidence contract, including mixed FORMAT
+diagnostic contexts, is not complete merely because one link type exists.
+Meta-level definitions must not become fabricated passing programs.
+Continue to separate reporting, selected interfaces, finite controls, and
+universal claims; all remaining source and evidence gaps stay explicit.

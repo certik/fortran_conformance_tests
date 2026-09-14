@@ -412,6 +412,7 @@ case.f90:5-5:1-20: semantic warning [C801]: repeated
         ref = runner.Compiler('gfortran', 'gfortran', 'f2023')
         registry = Mock()
         registry.legacy = {}
+        registry.evidence.report.return_value = []
         registry.fingerprint.return_value = '0' * 64
         registry.review.return_value = runner.Review('source-reviewed')
         with patch.object(runner, 'HERE', str(self.root)), \
@@ -495,6 +496,25 @@ class CorpusTests(unittest.TestCase):
         covered = registry.validate_cases(cases)
         self.assertEqual(set(covered), set(registry.requirements))
         registry.render()
+
+    def test_assumed_type_contracts_reject_causal_looking_unimplemented_messages(self):
+        paths = sorted((self.root / 'fixtures').glob('type_compatibility_c*/fixture.json'))
+        checked = 0
+        for path in paths:
+            fixture = runner.load_fixture(path, runner.PROFILES)
+            if fixture.kind != 'invalid' or fixture.rule not in ('C714', 'C715', 'C716'):
+                continue
+            diagnostic = fixture.expectation.diagnostic
+            message = diagnostic['contains_any'][0]
+            output = (f"{diagnostic['file']}:{diagnostic['line']}-{diagnostic['line']}:1-20: "
+                      f"semantic error: Not yet implemented: {message}\n")
+            with self.subTest(case=fixture.name):
+                result = runner.judge_diagnostic(
+                    runner.ProcessResult(1, output), runner.Compiler('lfortran', 'lfortran', 'f23'),
+                    fixture.rule, diagnostic)
+                self.assertEqual(result.outcome, 'fail')
+            checked += 1
+        self.assertEqual(checked, 13)
 
     def test_name_length_boundaries_are_exact(self):
         for path in (self.root / 'clause06').glob('C601_*.f90'):
@@ -618,6 +638,61 @@ class CorpusTests(unittest.TestCase):
         fixture = runner.load_fixture(root / 'free_source_missing_successor/fixture.json', runner.PROFILES)
         self.assertEqual(fixture.expectation.diagnostic['line'], 2)
         self.assertEqual(fixture.expectation.diagnostic['end_line'], negative.count(b'\n') + 1)
+
+    def test_length_only_generic_has_one_canonical_negative_and_one_minimal_control(self):
+        registry = runner.Registry()
+        cases = runner.collect_cases(self.root, registry)
+        negative = next(case for case in cases if case.name == 'C1514_invalid__length_only')
+        control = next(case for case in cases if case.name == 'C1514_valid__length_rank_control')
+        self.assertEqual((negative.rule, control.rule), ('C1514', 'C1514'))
+        self.assertEqual((negative.kind, control.kind), ('invalid', 'valid'))
+        self.assertEqual(control.meta.evidence, 'positive-control')
+        for case in (negative, control):
+            self.assertEqual(case.fixture.expectation.phase, 'compile')
+            self.assertEqual(case.meta.profiles, [])
+            self.assertEqual(case.meta.standard, '')
+            self.assertIsNone(case.fixture.link)
+        bad = (negative.fixture.root / 'source.f90').read_text()
+        good = (control.fixture.root / 'source.f90').read_text()
+        self.assertEqual(bad.replace('character(len=2), intent(in) :: value',
+                                     'character(len=2), intent(in) :: value(1)'), good)
+        self.assertNotRegex(bad.lower(), r'\b(call|optional|pointer|allocatable)\b')
+        self.assertEqual(bad.count('subroutine short_text(value)'), 1)
+        self.assertEqual(bad.count('subroutine long_text(value)'), 1)
+        self.assertIn('character(len=1), intent(in) :: value', bad)
+        self.assertEqual([case.kind for case in cases if case.rule == 'S7.2-003'], ['valid'] * 3)
+
+    def test_length_only_generic_requires_a_causal_declared_relation_not_recovery_or_unsupported(self):
+        fixture = runner.load_fixture(self.root / 'fixtures/generic_length_only/fixture.json', runner.PROFILES)
+        diagnostic = fixture.expectation.diagnostic
+        comp = runner.Compiler('lfortran', 'lfortran', 'f23')
+        message = "Ambiguous interfaces in generic interface 'choose_length'"
+        good = runner.ProcessResult(1, f'source.f90:3-3:1-10: semantic error: {message}')
+        self.assertEqual(runner.judge_diagnostic(good, comp, 'C1514', diagnostic).outcome, 'pass')
+        for rule, expected in (('C1514', 'pass'), ('S7.2-003', 'fail')):
+            coded = runner.ProcessResult(1, f'source.f90:3-3:1-10: semantic error [{rule}]: {message}')
+            self.assertEqual(runner.judge_diagnostic(coded, comp, 'C1514', diagnostic, codes=True).outcome, expected)
+        for output in (
+                f'source.f90:1-13:1-10: semantic error: {message}',
+                f'other.f90:3-3:1-10: semantic error: {message}',
+                f'error: {message}',
+                'source.f90:3-3:1-10: semantic error: Generic interfaces not implemented',
+                f'source.f90:3-3:1-10: semantic error: Not yet implemented: {message}',
+                f'source.f90:3-3:1-10: semantic error: Unsupported feature: {message}',
+                good.output + '\nASR verify pass error',
+                good.output + '\nLLVM ERROR: broken IR',
+                good.output + '\nerror: out of memory',
+        ):
+            with self.subTest(output=output):
+                result = runner.ProcessResult(1, output)
+                self.assertEqual(runner.judge_diagnostic(result, comp, 'C1514', diagnostic).outcome, 'fail')
+        for result in (runner.ProcessResult(-11, good.output), runner.ProcessResult(139, good.output),
+                       runner.ProcessResult(1, good.output, timed_out=True)):
+            self.assertEqual(runner.judge_diagnostic(result, comp, 'C1514', diagnostic).outcome, 'fail')
+        for family, point in (('gfortran', 7), ('flang', 3)):
+            reference = runner.Compiler(family, family, 'f2018')
+            result = runner.ProcessResult(1, f'source.f90:{point}:1: error: {message}')
+            self.assertEqual(runner.judge_diagnostic(result, reference, 'C1514', diagnostic).outcome, 'pass')
 
     def test_all_invalid_cases_can_be_isolated(self):
         for path, rule, kind in runner.discover(str(self.root)):

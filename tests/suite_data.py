@@ -47,9 +47,17 @@ class Review:
         return self.state in APPROVED
 
 
-def read_json(path):
+def read_json(path, unique_keys=False):
+    def unique(pairs):
+        result = {}
+        for key, value in pairs:
+            if key in result:
+                raise SuiteError(f'{path}: duplicate JSON field {key}')
+            result[key] = value
+        return result
+
     try:
-        return json.loads(Path(path).read_text())
+        return json.loads(Path(path).read_text(), object_pairs_hook=unique if unique_keys else None)
     except (OSError, UnicodeError, json.JSONDecodeError) as error:
         raise SuiteError(f'{path}: cannot read JSON: {error}') from error
 
@@ -82,6 +90,16 @@ def strings(value, context, nonempty=False):
     if len(value) != len(set(value)) or (nonempty and not value):
         raise SuiteError(f'{context}: duplicate or missing entries')
     return value
+
+
+def validate_compiler_header(value, context):
+    fields(value, ('path', 'sha256', 'discovery'), ('cfi_version',), context)
+    for key, content in value.items():
+        string(content, context + '.' + key)
+    if not Path(value['path']).is_absolute():
+        raise SuiteError(f'{context}: compiler header path must be absolute')
+    if not re.fullmatch(r'[0-9a-f]{64}', value['sha256']):
+        raise SuiteError(f'{context}: invalid compiler header fingerprint')
 
 
 def safe_path(root, relative, exists=True):
@@ -135,7 +153,8 @@ class Registry:
         self.root = Path(root).resolve()
         self.index = read_json(safe_path(self.root, index))
         fields(self.index, ('schema_version', 'standard', 'source_inventory', 'rule_inventory',
-                            'catalogues', 'reviews'), ('legacy_requirements', 'source_inventory_review'), 'catalogue index')
+                            'catalogues', 'reviews'),
+               ('legacy_requirements', 'source_inventory_review', 'evidence_links'), 'catalogue index')
         if self.index['schema_version'] != 1:
             raise SuiteError('unsupported catalogue-index schema')
         self.source = read_json(safe_path(self.root, self.index['source_inventory']))
@@ -190,6 +209,10 @@ class Registry:
         self.reviews = review_data['fixtures']
         for name, review in self.reviews.items():
             self._review_record(name, review)
+        from evidence_links import EvidenceLinks
+        if 'evidence_links' in self.index:
+            string(self.index['evidence_links'], 'evidence registry path')
+        self.evidence = EvidenceLinks(self, self.index.get('evidence_links'))
 
     def _requirement(self, requirement, section):
         fields(requirement, ('id', 'title', 'source', 'source_units', 'category', 'diagnostic_obligation',
@@ -302,9 +325,19 @@ class Registry:
             raise SuiteError(f'{name}: reference evidence must be a list')
         observed = {}
         for observation in references:
-            fields(observation, ('case', 'compiler', 'version', 'standard', 'phase', 'outcome'), (), f'{name} reference')
-            for key, value in observation.items():
-                string(value, f'{name}.reference.{key}')
+            required = ('case', 'compiler', 'version', 'standard', 'phase', 'outcome')
+            fields(observation, required, ('compiler_headers', 'c_compiler'), f'{name} reference')
+            for key in required:
+                string(observation[key], f'{name}.reference.{key}')
+            if 'compiler_headers' in observation or 'c_compiler' in observation:
+                headers = observation.get('compiler_headers')
+                if not isinstance(headers, dict) or set(headers) != {'ISO_Fortran_binding.h'}:
+                    raise SuiteError(f'{name}: incomplete compiler-header evidence')
+                validate_compiler_header(headers['ISO_Fortran_binding.h'], f'{name}.reference.header')
+                companion = observation.get('c_compiler')
+                fields(companion, ('command', 'version'), (), f'{name}.reference.c_compiler')
+                for key, value in companion.items():
+                    string(value, f'{name}.reference.c_compiler.{key}')
             case = observation['case']
             if case != name and not case.startswith(name + ':'):
                 raise SuiteError(f'{name}: reference evidence belongs to another fixture')
@@ -377,8 +410,12 @@ class Registry:
             elif requirement['diagnostic_obligation'] != 'required' and case.meta.oracle_basis != 'lfortran-policy':
                 raise SuiteError(f'{case.name}: a prose rejection case needs an explicit diagnostic-policy basis')
             covered[case.rule].update(facets)
+        linked = self.evidence.validate_cases(cases)
         for name, requirement in self.requirements.items():
-            missing = set(requirement['facets']) - covered[name]
+            linked_facets = set(linked.get(name, {}))
+            if covered[name] & linked_facets:
+                raise SuiteError(f'{name}: a facet cannot be both direct-authored and linked')
+            missing = set(requirement['facets']) - covered[name] - linked_facets
             if missing != set(requirement['pending']):
                 raise SuiteError(f'{name}: uncovered facets {sorted(missing)} differ from declared pending facets')
         return covered
@@ -406,18 +443,24 @@ class Registry:
                 for unit, record in records.items() if unit not in self.sections[section]['units']]
         unresolved_fine = sum(record['disposition'] == 'unresolved' for _, record in fine)
         catalogue_reviews = {section: self.catalogue_review_state(section) for section in self.catalogues}
+        links = self.evidence.report(cases)
         return dict(
             sections=len(self.sections), base_source_units=total, accounted_base_units=accounted,
             unresolved_base_units=unresolved, detailed_catalogues=len(self.catalogues),
             sections_without_catalogues=sections_without_catalogues,
             requirements=len(self.requirements), authored_facets=sum(map(len, covered.values())),
+            declared_facets=sum(len(item['facets']) for item in self.requirements.values()),
+            linked_facets=len(links),
+            current_linked_facets=sum(link['state'] == 'current' for link in links),
+            evidence_links=links, linked_observation_aggregation='not-computed',
             pending_facets=sum(len(item['pending']) for item in self.requirements.values()),
             fine_source_units=len(fine), unresolved_fine_units=unresolved_fine,
             source_inventory_review=self.source_review_state,
             catalogue_reviews=catalogue_reviews,
             complete_source=self.source_review_state == 'reviewed' and unresolved == 0
             and unresolved_fine == 0 and not sections_without_catalogues
-            and all(state == 'reviewed' for state in catalogue_reviews.values()))
+            and all(state == 'reviewed' for state in catalogue_reviews.values())
+            and all(link['state'] == 'current' for link in links))
 
     def render(self, write=False):
         errors = []

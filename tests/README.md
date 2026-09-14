@@ -188,6 +188,25 @@ files, invalid dependencies, and input/output collisions are errors. Build
 steps are typed operations, not arbitrary shell commands. `--cc` selects
 the C companion compiler; linking normally uses the Fortran driver.
 
+A C build step can request `"fortran_binding_header": true` for
+`ISO_Fortran_binding.h`. The runner queries the selected Fortran processor,
+not a globally chosen CPATH header: LFortran's advertised C include directory,
+GNU's include directory, or Flang's resource/install prefix. Only the
+selected header is copied into a private include directory for that C step;
+GNU's standard headers cannot shadow the companion's headers through this
+mechanism. Fixture inputs/outputs cannot replace the processor header.
+Missing or ambiguous discovery is a harness error, not an optional feature
+skip. Processor-specific header dependencies beyond the staged header must
+be resolved explicitly rather than guessed from another compiler.
+
+Header path, hash, discovery method and available version-macro text are
+recorded in compiler/case observations. The original header is rechecked
+before staging and at snapshot confirmation; changed resources invalidate
+the run. Reference adjudication of a descriptor fixture requires this
+header provenance and the C companion identity. A successful link or a
+matching version banner does not establish ABI compatibility, and a
+descriptor/header version disagreement remains a failed interface check.
+
 `expect.phase` is `compile`, `link`, or `run`. Expected compile failure
 names its step; an earlier failure cannot satisfy a later expectation.
 Rejection requires a real diagnostic, not a crash. External expectations
@@ -234,6 +253,11 @@ case-insensitive message-substring predicates:
 Each nonfatal predicate must choose exactly one of those message forms.
 Optional top-level
 `diagnostic.contains_any` further restricts every matching diagnostic.
+For `diagnose`, optional `diagnostic.excludes_any` rejects a candidate
+message containing any of its nonempty case-insensitive substrings. The
+C1514 length-only pair uses this to exclude unsupported/unimplemented
+feature reports even when they mention ambiguity. This is opt-in;
+unrelated fixture predicates and fingerprints are unchanged.
 Predicates match the located diagnostic message, not source echoes or
 other output. A wrong file/line, unlocated message, unrelated warning,
 earlier build failure, crash, verifier failure, or timeout cannot pass.
@@ -393,6 +417,100 @@ before modifying the baseline.
 
 `--reference-only` runs without LFortran or its xfail list. `--no-skips`
 requires actual results in calibration configurations that must execute.
+
+## Finite canonical case links (bounded prototype)
+
+The optional index field `evidence_links` names one repository-relative
+JSON registry, currently `doc/evidence/canonical_case_links.json`. It
+contains `schema_version: 1`, the exact index `standard` pin, and `links`.
+These records are not fixtures and are never discovered as executions.
+
+| Link field | Contract |
+| --- | --- |
+| `id` | Unique explicit identifier; no selectors |
+| `target` | Exactly `requirement`, `facet`, `source_units`; a known supplementary S requirement, one declared facet and nonempty qualified anchors belonging to that requirement |
+| `basis` | Nonempty, unique `section#unit` anchors in the pinned census or its declared subdivisions |
+| `claim`, `limitation` | Nonempty finite semantic claim and its boundary |
+| `cases` | Exactly one `diagnostic` and one `positive-control`, each with `id`, `role`, `primary_rule`, `source`, `path`, `phase` |
+| `review` | Optional existing-style `state`, `rationale`, `sources`, `fingerprint` adjudication; absent means draft/unreviewed |
+
+Each member names an actual canonical R/C execution ID and its exact
+repository-relative source/manifest path. Both members retain the same
+primary rule, whose numbered source anchor must be in `basis`. Roles
+must agree with the case kind/evidence; the diagnostic must be compile
+phase and the control explicitly positive-control. Declared phases must
+match the original case contract. Additional diagnostic-policy oracles
+cannot be imported through a link. Paths, IDs and roles cannot repeat
+within a pair. Unknown fields (including duplicate JSON keys), anchors,
+facets, members, noncanonical/escaping paths and self/circular evidence
+are errors. This first schema deliberately supports diagnostic/control
+pairs, not arbitrary documentary, use-graph or aggregate contracts.
+
+A facet has either direct authored cases or one link, not both. Pending
+facets must exactly match the remainder. Removing a link without restoring
+pending or direct coverage is an error. `authored_facets` remains the
+**direct** count; `linked_facets` and `current_linked_facets` are separate.
+No link adds a compiler execution, direct passing facet or runtime effect.
+Filters do not follow links: selecting an S requirement does not secretly
+execute its canonical members, and selecting a canonical member does not
+create a second S result.
+
+Link adjudication fingerprints bind the complete link (excluding its own
+review), the target definition, pin and source-unit material, relevant
+catalogue fingerprints/reviews, each canonical input/metadata/profile/
+requirement fingerprint, its fixture execution set and its current
+adjudication. Changes or removals cannot retain current linked coverage.
+Already-catalogued source sections need current source reviews. Uncatalogued
+canonical source units are reviewed narrowly through the declared basis;
+that does not approve an entire uncatalogued subclause or the global census.
+
+The independent parent workflow is **source review, fixture observation
+and approval, then semantic link adjudication**. The first two operations
+do not require an approved link. After inspecting original source and the
+current finite observations, the parent can explicitly record the connection:
+
+```sh
+tests/run_tests.py --record-evidence-review \
+    S7.2-003.length-only-overload-exclusion --review-state source-reviewed \
+    --review-rationale 'Independently reviewed the finite source connection and its premises.'
+```
+
+This operation writes only the evidence registry. It requires approved,
+current canonical fixtures and current relevant source reviews, and
+automatically records all declared target/basis anchors. It accepts no
+compiler report as semantic authority. `reference-validated` is not a link
+review state. Referenced fixture reference validation must contain a
+successful observation for the actual required phase and a supported
+standard mode; compile success cannot validate a runtime case, nor can
+an F2018 rejection validate an F2023-only diagnostic. Source-only approvals
+remain possible, explicitly without claimed reference corroboration.
+
+An absent review yields `draft` with an `unreviewed` review; explicit
+`unreviewed`, `disputed` and `needs-oracle` states remain blocked. Changed
+content or prerequisites yields `stale`; an independent current
+`source-reviewed` adjudication yields `current`. Successful compiles never
+change these states. Ordinary audit requires all links current; normal
+selected runs and baseline updates enforce relevant links. Observation
+mode `--allow-unreviewed` preserves draft/stale status and cannot update a
+baseline. Even with that option, whole-source closure cannot bypass the
+link gate.
+
+`--list` and coverage output show finite links separately. JSON
+`evidence_links` joins observations by exact primary case ID, preserving
+compiler identity, mode, phase, failure/skip notes and `not-selected`
+members; complete traces remain on the original result. In reference-only
+reports there is no synthetic target observation. Linked observed/passing
+aggregation is **not implemented**, explicitly `not-computed`, even for
+a current semantic link. A source-only approved link can coexist with
+failed or missing compiler evidence without making that evidence pass.
+
+The initial C1514 scalar-character LEN-only negative and one-rank-change
+control are compile-only, unreviewed fixtures. Their draft S7.2-003 link
+clears an authoring gap, not the review gate. Updating that requirement's
+pending/oracle text intentionally stales its three pre-existing direct
+cases and the 7.2 catalogue review; it does not change their source inputs
+or refresh approvals. The case/metadata/requirement fingerprint algorithm
+and all unrelated default metadata are unchanged.
 
 ## Expected failures and coverage
 

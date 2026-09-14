@@ -94,6 +94,28 @@ class CatalogueTests(unittest.TestCase):
                 with self.assertRaises(SuiteError):
                     self.registry()
 
+    def test_descriptor_review_evidence_requires_header_and_companion_identity(self):
+        registry = self.registry()
+        header = dict(path='/processor/ISO_Fortran_binding.h', sha256='b' * 64,
+                      discovery='compiler-query', cfi_version='1')
+        reference = dict(case='one', compiler='gfortran', version='GNU snapshot',
+                         standard='f2023', phase='run', outcome='pass',
+                         compiler_headers={'ISO_Fortran_binding.h': header},
+                         c_compiler=dict(command='cc', version='C snapshot'))
+        registry.record_review('one', 'a' * 64, 'reference-validated',
+                               'Reviewed descriptor interface.', ['1.1#p1'], [reference])
+        for mutate in (
+            lambda data: data.pop('c_compiler'),
+            lambda data: data.pop('compiler_headers'),
+            lambda data: data['compiler_headers']['ISO_Fortran_binding.h'].update(sha256='bad'),
+            lambda data: data['c_compiler'].update(version=''),
+        ):
+            data = copy.deepcopy(reference)
+            mutate(data)
+            with self.assertRaises(SuiteError):
+                registry.record_review('one', 'a' * 64, 'reference-validated',
+                                       'Bad interface evidence.', ['1.1#p1'], [data])
+
     def test_numbered_rules_can_have_structured_facets_too(self):
         item = self.a['requirements'][0]
         item['id'] = 'R601'
