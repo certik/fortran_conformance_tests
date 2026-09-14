@@ -1,0 +1,163 @@
+{
+  "schema_version": 1,
+  "section": "6.3.2.3",
+  "review_state": "reviewed",
+  "subunits": {
+    "p1": [
+      "p1.comment-introducer",
+      "p1.literal-exception",
+      "p1.edit-descriptor-exception",
+      "p1.comment-extent",
+      "p1.bang-line",
+      "p1.blank-line",
+      "p1.empty-line",
+      "p1.inside-unit",
+      "p1.before-unit",
+      "p1.after-unit",
+      "p1.no-effect"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S6.3.2.3-001",
+      "title": "Free-form comments leave program interpretation unchanged",
+      "source": "6.3.2.3 p1; J3/24-007, 18 December 2023, PDF page 72, printed page 58, lines 2-6.",
+      "source_units": [
+        "p1.comment-introducer",
+        "p1.literal-exception",
+        "p1.edit-descriptor-exception",
+        "p1.comment-extent",
+        "p1.bang-line",
+        "p1.blank-line",
+        "p1.empty-line",
+        "p1.inside-unit",
+        "p1.before-unit",
+        "p1.after-unit",
+        "p1.no-effect"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Outside the two character contexts, an exclamation point starts commentary covering the remainder of its physical line. A line whose first nonblank character is an exclamation point, an all-blank line, and a zero-character line are comment lines. Commentary may occur inside a program unit or on either side of its statements without changing interpretation. Within a character literal or a character string edit descriptor, an exclamation point instead belongs to that character context.",
+      "facets": [
+        "inline-comment",
+        "bang-line",
+        "blank-line",
+        "empty-line",
+        "inside-unit",
+        "before-unit",
+        "after-unit",
+        "literal-context",
+        "edit-descriptor-context",
+        "consecutive-lines"
+      ],
+      "pending": {},
+      "oracle": "One program checks initialized scalar and character sentinels while trailing commentary contains misleading assignment, quote, semicolon, and ampersand spellings. Literal and labeled FORMAT contexts retain embedded exclamation points in exact character results; internal output is checked only after IOSTAT succeeds. Position-specific IACHAR results of 33 independently check those exclamation points, so a source literal and its comparand cannot pass merely by losing the same character. A byte-preserved fixture distinguishes empty lines from lines of three blanks, places comments before, inside, and after a unit, and includes a finite run of 300 comment lines. It checks the unchanged sentinel immediately after the comments, before overwriting it.",
+      "oracle_limitation": "The 300-line witness is finite evidence, not proof of an unbounded capacity or a new limit derived from the note. Character repertoire and source-form selection remain processor-qualified dependencies; these inputs use only ordinary letters, digits, blanks, and the needed mandatory punctuation, with no additional graphics or control characters. No requirement to diagnose commentary is invented. FORMAT, character literal spelling, and the semantics of the enclosing assignments are not owned here.",
+      "dependencies": "3.21 (PDF 21) supplies both character contexts. 3.96 and 6.3.1 p1-p3 (PDF 31/71) supply physical lines, composition, character repertoire permission, and processor-selected source form. 6.1.1/6.1.5/6.1.6 retain character-set ownership. 7.4.4.3, 13.2.1, and 13.9 (PDF 85-86/289/307) supply the character and output contexts. 9.4.1 and 16.9.98 (PDF 151/416) justify in-bounds one-character substrings and ASCII inquiries; IACHAR does not assume native ASCII encoding. 4.2 p2(1), PDF 46, qualifies conforming execution by processor size and complexity limits."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "structural",
+      "rationale": "PDF 72, printed 58, lines 2-6: separate introducer, extent, both canonical character contexts, three comment-line forms, three placement permissions, and semantic inertness."
+    },
+    {
+      "unit": "p1.comment-introducer",
+      "disposition": "definition",
+      "requirements": [
+        "S6.3.2.3-001"
+      ],
+      "rationale": "The exclamation point's role depends on source context, not merely its byte value."
+    },
+    {
+      "unit": "p1.literal-exception",
+      "disposition": "definition",
+      "requirements": [
+        "S6.3.2.3-001"
+      ],
+      "rationale": "The character-literal part of 3.21 excludes an embedded exclamation point from commentary."
+    },
+    {
+      "unit": "p1.edit-descriptor-exception",
+      "disposition": "definition",
+      "requirements": [
+        "S6.3.2.3-001"
+      ],
+      "rationale": "The character string edit descriptor is the second 3.21 context, not an arbitrary quoted-looking token."
+    },
+    {
+      "unit": "p1.comment-extent",
+      "disposition": "definition",
+      "requirements": [
+        "S6.3.2.3-001"
+      ],
+      "rationale": "Comment text ends with its physical line; punctuation within it does not resume source interpretation."
+    },
+    {
+      "unit": "p1.bang-line",
+      "disposition": "definition",
+      "requirements": [
+        "S6.3.2.3-001"
+      ],
+      "rationale": "An initial run of blanks before the comment introducer does not change the line's classification."
+    },
+    {
+      "unit": "p1.blank-line",
+      "disposition": "definition",
+      "requirements": [
+        "S6.3.2.3-001"
+      ],
+      "rationale": "The raw fixture has measured all-blank lines, not just visibly empty text."
+    },
+    {
+      "unit": "p1.empty-line",
+      "disposition": "definition",
+      "requirements": [
+        "S6.3.2.3-001"
+      ],
+      "rationale": "The raw fixture separately preserves physical lines containing zero source characters."
+    },
+    {
+      "unit": "p1.inside-unit",
+      "disposition": "permission",
+      "requirements": [
+        "S6.3.2.3-001"
+      ],
+      "rationale": "Comments between declarations and executable statements give finite placement evidence, not a cross-product of all grammatical positions."
+    },
+    {
+      "unit": "p1.before-unit",
+      "disposition": "permission",
+      "requirements": [
+        "S6.3.2.3-001"
+      ],
+      "rationale": "Comments preceding the initial statement are permitted without becoming part of that statement."
+    },
+    {
+      "unit": "p1.after-unit",
+      "disposition": "permission",
+      "requirements": [
+        "S6.3.2.3-001"
+      ],
+      "rationale": "Comments following the unit's last statement are permitted; 6.3.1 still determines the unit boundary."
+    },
+    {
+      "unit": "p1.no-effect",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.3.2.3-001"
+      ]
+    },
+    {
+      "unit": "note-unnumbered",
+      "disposition": "informative",
+      "rationale": "PDF 72, printed 58, note after line 6: the text specifies no count limit for consecutive comment lines. The 300-line context illustrates p1; it does not turn this note into another normative S requirement or remove 4.2 resource qualifications."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_6_3_2_3.md"
+  },
+  "review_fingerprint": "a4bd1cdf12bb2e66e77a01e131c9d798fe7a0383487420d2acb078bfa5030f04",
+  "review_rationale": "Independent source-first review and verified integration repairs: doc/source_audits/lexical_batch_005.json. Character-context exceptions, three comment-line classes, placement and semantic inertness are distinct. The 319-record control preserves empty and all-blank records and tests the initialized sentinel before overwriting it."
+}

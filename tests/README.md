@@ -174,8 +174,14 @@ can name a source line, file, or EOF anchor.
 For a reporting requirement that does not mandate fatal rejection, opt in
 with `expect.outcome: "diagnose"` in a compile-only fixture. It is an
 invalid-input case, not a conforming compile-only control. The diagnostic
-must name a declared input file and an exact line; an error at that location
+must name a declared input file and a line; an error at that location
 can satisfy the expectation regardless of ordinary process exit status.
+Optional `diagnostic.end_line` declares a closed statement span. When it
+is supplied, a reported point or range must fit entirely within that span;
+a whole-program recovery range merely intersecting it does not pass.
+A specifically reviewed span may include a compiler's one-past-final-record
+EOF position. This does not invent another physical source record or
+authorize unlocated scan/parse summaries.
 Nonfatal reports require explicit compiler-family, severity, and
 case-insensitive message-substring predicates:
 
@@ -195,7 +201,10 @@ case-insensitive message-substring predicates:
 ```
 
 `allow_nonfatal` supports `warning` or `portability` and the `lfortran`,
-`gfortran`, `flang`, or `c` compiler families. Optional top-level
+`gfortran`, `flang`, or `c` compiler families. Instead of `contains_any`,
+`equals_any` matches a complete diagnostic message, case-insensitively.
+Each nonfatal predicate must choose exactly one of those message forms.
+Optional top-level
 `diagnostic.contains_any` further restricts every matching diagnostic.
 Predicates match the located diagnostic message, not source echoes or
 other output. A wrong file/line, unlocated message, unrelated warning,
@@ -205,6 +214,19 @@ The existing `reject` outcome and ordinary isolated-negative rejection
 policy are unchanged; no arbitrary warning allowance is added to them.
 Successful compile-only and link-only references are displayed as
 `compiles` and `links`, never as runtime observations.
+
+The GNU driver form `f951: Warning: MESSAGE in line N` has no filename.
+It can be qualified explicitly with a nonfatal predicate containing
+`"attribution": "single-source-driver"` and `equals_any`. This route is
+limited to one declared ASCII input, one Fortran compilation step, an
+explicit free source form, a lower-case `.f`/`.f90` suffix, and no INCLUDE
+spelling anywhere in that input. The predicate must specify `gfortran`
+and `warning`. Competing source locations disqualify this attribution.
+The separately parsed line number must still match the declared location,
+and only the exact message is accepted; other driver messages do not pass.
+The source hash, command and original output remain in the report, with
+the inferred attribution identified in the result note. Ordinary located
+reports remain the default.
 
 Runtime expectations use an exact exit code. Nonzero codes need an
 explicit policy/profile basis: Fortran does not universally mandate the

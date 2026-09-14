@@ -1,0 +1,130 @@
+{
+  "schema_version": 1,
+  "section": "6.3.3.1",
+  "review_state": "reviewed",
+  "subunits": {
+    "p1": [
+      "p1.placement",
+      "p1.default-length",
+      "p1.other-kind-limit"
+    ],
+    "p2": [
+      "p2.insignificant-blanks",
+      "p2.literal-exception",
+      "p2.edit-descriptor-exception"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S6.3.3.1-001",
+      "title": "Default-kind fixed source lines have exactly 72 characters",
+      "source": "6.3.3.1 p1; J3/24-007, 18 December 2023, PDF page 72, printed page 58, lines 33-34.",
+      "source_units": [
+        "p1.default-length",
+        "p1.other-kind-limit"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "A fixed source line containing only default-kind characters has exactly 72 characters, not merely an upper bound of 72. Otherwise the maximum character count is processor dependent. This specifies source characters, not a portable file-record encoding, filename suffix, tab expansion, or command-line convention. The field-placement rules are defined by the later fixed-source subclauses.",
+      "facets": [
+        "exact-72",
+        "content-in-column-72",
+        "short-source-line-report",
+        "overlong-source-line-report",
+        "nondefault-character-limit"
+      ],
+      "pending": {
+        "short-source-line-report": "First establish and independently review a processor source-input mapping that presents 71 file characters as a 71-character source line rather than padding to 72. Then pair a declared-line diagnose fixture with its one-blank repair. The preserved short-record calibration is not this negative oracle.",
+        "overlong-source-line-report": "First establish a source-input mapping that retains a 73rd file character as source rather than an ignored record field. Then isolate a 73-character source line and its 72-character repair, requiring a relevant report under 4.2 p2(5). Do not use an unlimited-line option to hide the boundary.",
+        "nondefault-character-limit": "Needs an independently documented supported nondefault source-character kind, its encoding-to-character mapping, and the processor's maximum. Do not infer a nondefault kind from UTF-8 bytes or assume a universal maximum, control repertoire, or tab width."
+      },
+      "oracle": "The exact-width control has 72 default-kind ASCII characters on every physical record. Its character literal closes in column 72; all 58 A characters and the final Z are checked against independent values. Other new fixed_source fixtures use the same explicit width and manifest form selection. No source-line-length or padding option is passed.",
+      "oracle_limitation": "The byte witness assumes the ordinary ASCII source interface of the observed processors, not an ASCII collating value in the Fortran program. Acceptance of a short or long external record alone does not establish which source line the processor constructed. Those two diagnostic facets and the nondefault branch remain explicitly pending, not silently counted as covered by green controls. Compiler size/complexity limits remain subject to 4.2 p2(1).",
+      "dependencies": "6.3.1 p1/p3 (line definition and processor-dependent form selection), 6.1.1 and 7.4.4.2 (character kinds), 7.4.4.3 (literal representation), 6.3.3.3 and 6.3.3.5 (fields), and 4.2 p2(1)/(5), PDF page 46. The preserved fixed_form fixture has CRLF records shorter than 72 bytes and remains a source-interface calibration, not proof of this exact-width obligation."
+    },
+    {
+      "id": "S6.3.3.1-002",
+      "title": "Fixed-form blanks are insignificant outside character context",
+      "source": "6.3.3.1 p2; J3/24-007 PDF page 72, printed page 58, line 35.",
+      "source_units": [
+        "p2.insignificant-blanks",
+        "p2.literal-exception",
+        "p2.edit-descriptor-exception"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Blanks outside character context can be inserted or removed without changing the interpretation of fixed source. This includes positions inside tokens, unlike free form. Blanks in a character literal or character string edit descriptor remain characters of that context. Column fields, comment recognition, and statement termination still apply: insignificant blanks do not move a physical continuation indicator or label to another field.",
+      "facets": [
+        "keyword-interiors",
+        "name-interiors",
+        "constant-interiors",
+        "operator-interiors",
+        "format-spacing",
+        "literal-blanks",
+        "edit-descriptor-blanks"
+      ],
+      "pending": {},
+      "oracle": "The tokens control inserts blanks in PROGRAM, IMPLICIT NONE, INTEGER, a variable name, 12, the power operator, and .NE.; its integer result must be 145, not merely equal to a second implementation of the same expression. A separate FORMAT control checks I2 spelled I followed by blanks and 2 against the exact internal record ' 7'. The two character contexts preserve 'a  b' using independent single-character positions and a repeated single blank, with initialized output storage and guarded IOSTAT. The oracle does not merely compare two literals whose blanks could be identically misparsed.",
+      "oracle_limitation": "These are finite lexical classes, not every Fortran token. Neither a tab nor a Unicode space substitutes for a blank. Name, label, literal and FORMAT grammar retain their canonical owners; only fixed-source blank handling is credited here. Physical trailing padding outside a character context is insignificant, but padding inside a continued literal is data, tested separately under continuation.",
+      "dependencies": "3.21, PDF page 21, defines both character contexts. 6.2.2/R603 and C601, 7.4.3, R1008/R1014, 7.4.4.3, and 13.2.1 p1/R1301/R1302/C1301 provide the otherwise conforming tokens and FORMAT. 6.3.3.3/6.3.3.5 retain physical field ownership."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "structural",
+      "rationale": "Separate placement from the conditional default/nondefault line-length branches."
+    },
+    {
+      "unit": "p1.placement",
+      "disposition": "definition",
+      "rationale": "Fixed source has positional restrictions, supplied in 6.3.3.3 and 6.3.3.5. This introduction does not duplicate those requirements."
+    },
+    {
+      "unit": "p1.default-length",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.3.3.1-001"
+      ]
+    },
+    {
+      "unit": "p1.other-kind-limit",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.3.3.1-001"
+      ],
+      "rationale": "Preserve the processor-dependent maximum branch with an explicit missing source-interface oracle."
+    },
+    {
+      "unit": "p2",
+      "disposition": "structural",
+      "rationale": "Separate insignificant blanks and the two character contexts in the exception."
+    },
+    {
+      "unit": "p2.insignificant-blanks",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.3.3.1-002"
+      ]
+    },
+    {
+      "unit": "p2.literal-exception",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.3.3.1-002"
+      ]
+    },
+    {
+      "unit": "p2.edit-descriptor-exception",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.3.3.1-002"
+      ]
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_6_3_3_1.md"
+  },
+  "review_fingerprint": "c612882fae81e6fc9601979c658aa2b596079db459b126309ab6a952bbc5ee50",
+  "review_rationale": "Independent source-first review and verified integration repairs: doc/source_audits/lexical_batch_005.json. Exactly 72 logical default-kind source characters are distinguished from raw file records and the nondefault-kind branch. The 71/73-byte and nondefault-kind reporting facets require independent input-mapping evidence, not a fabricated universal padding/truncation rule."
+}

@@ -1,0 +1,210 @@
+{
+  "schema_version": 1,
+  "section": "6.3.3.4",
+  "review_state": "reviewed",
+  "subunits": {
+    "p1": [
+      "p1.not-continued",
+      "p1.comment-terminator",
+      "p1.line-end-terminator"
+    ],
+    "p2": [
+      "p2.semicolon-terminator",
+      "p2.literal-exception",
+      "p2.edit-descriptor-exception",
+      "p2.comment-exception",
+      "p2.column-six-exception",
+      "p2.not-statement-text",
+      "p2.next-on-same-line",
+      "p2.next-continued",
+      "p2.initial-leading-exclusion",
+      "p2.separator-sequence"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S6.3.3.4-001",
+      "title": "Comment or line end terminates a statement only when it is not continued",
+      "source": "6.3.3.4 p1; J3/24-007, 18 December 2023, PDF page 73, printed page 59, line 13.",
+      "source_units": [
+        "p1.not-continued",
+        "p1.comment-terminator",
+        "p1.line-end-terminator"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For a statement without continuation, either the start of commentary or the end of the source line terminates the statement. The absence-of-continuation premise matters: commentary after an unfinished expression does not prevent a later noncomment continuation line from completing that expression.",
+      "facets": [
+        "line-end",
+        "inline-comment",
+        "continued-exception"
+      ],
+      "pending": {},
+      "oracle": "A control uses distinct initial assignments terminated by line ends and by trailing commentary and checks the exact integer result 7. A second control places a trailing comment after x=1 and continues with +2 on the next noncomment line, then checks 3. No undefined value or accidental fallthrough supplies success.",
+      "oracle_limitation": "This is termination of statements, not program termination, INCLUDE processing, or the execution semantics of END. The continued case is legal and must not become a fake negative merely because there was a comment.",
+      "dependencies": "6.3.3.2 defines commentary and 6.3.3.3 supplies initial/continuation status. 6.3.3.1 preserves exact fields. Ordinary assignment and addition are canonical Clause 10 context."
+    },
+    {
+      "id": "S6.3.3.4-002",
+      "title": "Semicolons separate fixed-form statements subject to context and column exceptions",
+      "source": "6.3.3.4 p2 except the first-nonblank restriction; J3/24-007 PDF page 73, printed page 59, lines 14-17.",
+      "source_units": [
+        "p2.semicolon-terminator",
+        "p2.literal-exception",
+        "p2.edit-descriptor-exception",
+        "p2.comment-exception",
+        "p2.column-six-exception",
+        "p2.not-statement-text",
+        "p2.next-on-same-line",
+        "p2.next-continued",
+        "p2.separator-sequence"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A semicolon outside character context, commentary and position 6 terminates the current statement without becoming part of it. A following statement can begin on that same line and can itself continue on later lines. Any sequence containing only blanks and one or more such semicolons is equivalent to one terminator; it does not introduce extra executable statements. Semicolons in either character context, in commentary, or in the continuation position retain their other meanings.",
+      "facets": [
+        "same-line-next",
+        "same-line-continued",
+        "blank-semicolon-runs",
+        "trailing-runs",
+        "literal-exception",
+        "edit-descriptor-exception",
+        "comment-exception",
+        "column-six-exception"
+      ],
+      "pending": {},
+      "oracle": "One program executes successive assignments separated by single semicolons, runs of semicolons with and without blanks, and trailing runs, checking independently computed values 7 and 10. A second begins x=1 after a terminating semicolon and completes it with +2 on a continuation line. A third checks literal and character-edit-descriptor semicolons as exact character data, ignores statement-looking text after a comment, and checks that a semicolon in column 6 continues arithmetic rather than terminating it.",
+      "oracle_limitation": "Only real terminators participate in the blank/semicolon equivalence; quoted or commented semicolons do not. Same-line labels are excluded by 6.3.3.5 and remain owned by S6.2.5-005. This effect catalogue does not reallocate that diagnostic rule or weaken the separate initial-line restriction.",
+      "dependencies": "3.21 defines character context; R724 and 13.2.1/13.3.2 supply its two forms. 6.3.3.2/6.3.3.3 distinguish commentary and position 6. 6.2.5 p3 and 6.3.3.5 p1 retain the same-line label exclusion."
+    },
+    {
+      "id": "S6.3.3.4-003",
+      "title": "An initial line cannot begin with a nonblank semicolon",
+      "source": "6.3.3.4 p2, fourth sentence; J3/24-007 PDF page 73, printed page 59, line 16.",
+      "source_units": [
+        "p2.initial-leading-exclusion"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "A semicolon cannot be the first nonblank character of an initial line. Optional leading blanks do not waive the restriction, and the permission for a run of terminators is not permission for an initial empty statement. An indicator semicolon in position 6 and a semicolon already inside commentary are different cases.",
+      "facets": [
+        "semicolon-in-column-seven",
+        "semicolon-after-statement-field-blanks"
+      ],
+      "pending": {},
+      "oracle": "Two byte-preserved diagnose fixtures put the offending semicolon in column 7 or column 12 of an otherwise unlabeled initial assignment line. Replacing only that semicolon by a blank yields the paired run control, whose initialized scalar must become 3. Require a diagnostic at that exact source line; nonfatal reports are allowed only by explicitly matched compiler-family, severity and source-specific message predicates.",
+      "oracle_limitation": "The line has blank label and continuation fields and an otherwise legal assignment. No second defect involving a label, omitted operand, or orphan continuation is used to obtain a report. A located ordinary error suffices irrespective of exit status; crashes, timeouts, earlier-step failures and unrelated or unlocated reports do not.",
+      "dependencies": "6.3.3.3 p1 defines an initial line, 6.3.3.5 p1 defines its label field, and 4.2 p2(5), PDF page 46, supplies the Clause 6 reporting capability without mandating rejection."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "structural",
+      "rationale": "Account separately for the premise and both terminators."
+    },
+    {
+      "unit": "p1.not-continued",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.3.3.4-001"
+      ]
+    },
+    {
+      "unit": "p1.comment-terminator",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.3.3.4-001"
+      ]
+    },
+    {
+      "unit": "p1.line-end-terminator",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.3.3.4-001"
+      ]
+    },
+    {
+      "unit": "p2",
+      "disposition": "structural",
+      "rationale": "Retain all three exceptions (including both character contexts), removal from statement text, both following-statement choices, initial-line restriction and separator-run equivalence."
+    },
+    {
+      "unit": "p2.semicolon-terminator",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.3.3.4-002"
+      ]
+    },
+    {
+      "unit": "p2.literal-exception",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.3.3.4-002"
+      ]
+    },
+    {
+      "unit": "p2.edit-descriptor-exception",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.3.3.4-002"
+      ]
+    },
+    {
+      "unit": "p2.comment-exception",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.3.3.4-002"
+      ]
+    },
+    {
+      "unit": "p2.column-six-exception",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.3.3.4-002"
+      ]
+    },
+    {
+      "unit": "p2.not-statement-text",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.3.3.4-002"
+      ]
+    },
+    {
+      "unit": "p2.next-on-same-line",
+      "disposition": "permission",
+      "requirements": [
+        "S6.3.3.4-002"
+      ],
+      "rationale": "A following statement may start on the same physical line."
+    },
+    {
+      "unit": "p2.next-continued",
+      "disposition": "permission",
+      "requirements": [
+        "S6.3.3.4-002"
+      ],
+      "rationale": "That same-line following statement may continue; the first terminated statement is not the continued one."
+    },
+    {
+      "unit": "p2.initial-leading-exclusion",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.3.3.4-003"
+      ]
+    },
+    {
+      "unit": "p2.separator-sequence",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.3.3.4-002"
+      ]
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_6_3_3_4.md"
+  },
+  "review_fingerprint": "211eb346f08805aad47c13a207322869a1442e95a67c7fc892c259893d50acfb",
+  "review_rationale": "Independent source-first review and verified integration repairs: doc/source_audits/lexical_batch_005.json. The leading-semicolon negatives isolate initial-line restrictions with otherwise blank label/continuation fields. Character data, comments and sixth-position semicolons retain different roles."
+}

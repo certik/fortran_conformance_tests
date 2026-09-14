@@ -32,10 +32,15 @@ SHORT = re.compile(
     r'^(.*?):(\d+)-(\d+):(\d+)-(\d+): (.*? (?:error|warning))'
     r'(?: \[([\w.-]+)\])?(?: \(F2023 ([^)]+)\))?: (.*)$', re.I)
 REF_LOC = re.compile(r'^(.*?\.(?:f90|f|c|h)):(\d+):(\d+)(?::|\s|$)')
+GNU_DRIVER_LINE = re.compile(r'^f951:\s*Warning:\s*(.*?)\s+in line ([1-9]\d*)\s*$', re.I)
 HEADER = re.compile(r'^!\s*(rule|covers|evidence|requires|profile|images|standard|reference-warnings|oracle-basis|oracle-profile):\s*(.*?)\s*$')
 CASE = re.compile(r'^!\s*case:\s*([\w-]+)\s*$')
 ICE = re.compile(r'internal compiler error|LCOMPILERS_ASSERT|assertion .*failed|'
                  r'LLVM ERROR|segmentation fault|PLEASE submit a bug report', re.I)
+RESOURCE_FAILURE = re.compile(
+    r'^(?:(?:f951|gfortran|flang|lfortran):\s*)?(?:(?:fatal\s+)?error:\s*)?'
+    r'(?:out of memory|virtual memory exhausted|cannot allocate memory|'
+    r'killed signal terminated program)\b', re.I | re.M)
 PROFILES = {path.stem.replace('_', '-') for path in (Path(HERE) / 'profiles').glob('*.f90')}
 
 
@@ -58,6 +63,7 @@ class Diagnostic:
     message: str
     file: str = ''
     severity: str = 'error'
+    attribution: str = 'located'
 
 
 @dataclass
@@ -280,6 +286,8 @@ def failure(result, phase, compiler_process=True):
     if result.returncode < 0 or (compiler_process and (result.returncode >= 128 or ICE.search(result.output))):
         return Check('fail', f'{phase} crashed (exit {result.returncode})',
                      phase, result.output)
+    if compiler_process and RESOURCE_FAILURE.search(result.output):
+        return Check('fail', f'{phase} exhausted compiler resources', phase, result.output)
     return None
 
 
@@ -356,11 +364,14 @@ def lfortran_diagnostics(output):
     for line in output.splitlines():
         m = SHORT.match(line)
         if m:
+            first, last = int(m.group(2)), int(m.group(3))
+            if first < 1 or last < first:
+                continue
             codes = set(re.findall(RULE, m.group(8) or ''))
             if m.group(7):
                 codes.add(m.group(7))
             severity = 'warning' if m.group(6).lower().endswith('warning') else 'error'
-            found.append(Diagnostic(int(m.group(2)), int(m.group(3)), codes, m.group(9),
+            found.append(Diagnostic(first, last, codes, m.group(9),
                                     m.group(1), severity))
     return found
 
@@ -530,7 +541,38 @@ def check_invalid(path, source, line, rule, bounds, comp, meta, codes=False, tim
     return check
 
 
-def judge_diagnostic(result, comp, rule, diagnostic, codes=False):
+def driver_warning_diagnostics(output, filename, primary_source):
+    if not primary_source:
+        raise SuiteError('single-source driver attribution needs the staged compilation input')
+    primary = Path(primary_source)
+    for text in output.splitlines():
+        location = REF_LOC.match(text)
+        if location:
+            origin = Path(location.group(1))
+            if ((origin.is_absolute() and origin != primary)
+                    or (not origin.is_absolute() and str(origin) not in (filename, primary.name))):
+                return []
+    reported = []
+    for text in output.splitlines():
+        match = GNU_DRIVER_LINE.match(text)
+        if match:
+            line = int(match.group(2))
+            reported.append(Diagnostic(line, line, set(), match.group(1), filename,
+                                       'warning', 'single-source-driver'))
+    return reported
+
+
+def nonfatal_matches(item, predicate, family):
+    if predicate['compiler'] != family or predicate['severity'] != item.severity:
+        return False
+    if item.attribution != 'located' and predicate.get('attribution', 'located') != item.attribution:
+        return False
+    if 'equals_any' in predicate:
+        return any(message.lower() == item.message.lower() for message in predicate['equals_any'])
+    return any(message.lower() in item.message.lower() for message in predicate['contains_any'])
+
+
+def judge_diagnostic(result, comp, rule, diagnostic, codes=False, primary_source=None):
     failed = failure(result, 'compile')
     if failed:
         return failed
@@ -544,16 +586,21 @@ def judge_diagnostic(result, comp, rule, diagnostic, codes=False):
     else:
         reported = [Diagnostic(location, location, set(), message, filename, severity)
                     for location, severity, message in reference_messages(result.output, filename)]
+    if comp.family == 'gfortran' and any(
+            predicate.get('attribution') == 'single-source-driver' for predicate in nonfatal):
+        reported += driver_warning_diagnostics(result.output, filename, primary_source)
     matching = []
     for item in reported:
-        if not item.first <= line <= item.last:
+        if 'end_line' in diagnostic:
+            located = line <= item.first <= item.last <= diagnostic['end_line']
+        else:
+            located = item.first <= line <= item.last
+        if not located:
             continue
         if messages and not any(message.lower() in item.message.lower() for message in messages):
             continue
         allowed = item.severity in ('error', 'fatal error') or any(
-            predicate['compiler'] == comp.family and predicate['severity'] == item.severity
-            and any(message.lower() in item.message.lower() for message in predicate['contains_any'])
-            for predicate in nonfatal)
+            nonfatal_matches(item, predicate, comp.family) for predicate in nonfatal)
         if allowed:
             matching.append(item)
     if not matching:
@@ -561,6 +608,8 @@ def judge_diagnostic(result, comp, rule, diagnostic, codes=False):
     if codes and comp.family == 'lfortran' and not any(rule in item.codes for item in matching):
         return Check('fail', f'detected without code {rule}', 'compile', result.output)
     note = 'diagnoses without rejection' if result.returncode == 0 else 'rejects'
+    if all(item.attribution == 'single-source-driver' for item in matching):
+        note += '; single-source driver attribution'
     return Check('pass', note, 'compile', result.output)
 
 
@@ -672,7 +721,7 @@ def check_fixture(fixture, comp, cc='cc', timeout=30, codes=False):
                     judged_comp = comp if step.language == 'fortran' else Compiler(cc, 'c', '')
                     if expectation.outcome == 'diagnose':
                         return finish(judge_diagnostic(result, judged_comp, fixture.rule,
-                                                       diagnostic, codes))
+                                                       diagnostic, codes, primary_source=source))
                     return finish(judge_rejection(
                         result, judged_comp, meta, fixture.rule, diagnostic.get('line'),
                         codes=codes, diagnostic=diagnostic))
@@ -799,7 +848,7 @@ def safely(check, *args):
 
 def reference_label(check, kind):
     if check.outcome == 'pass':
-        if check.note == 'diagnoses without rejection':
+        if check.note.startswith('diagnoses without rejection'):
             return 'diagnoses'
         if kind == 'invalid':
             return 'rejects'

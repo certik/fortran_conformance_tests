@@ -1,0 +1,235 @@
+{
+  "schema_version": 1,
+  "section": "6.3.3.5",
+  "review_state": "reviewed",
+  "subunits": {
+    "p1": [
+      "p1.label-placement",
+      "p1.absent-label-field",
+      "p1.label-blanks",
+      "p1.after-semicolon",
+      "p1.continuation-label-field",
+      "p1.statement-length",
+      "p1.end-not-continued",
+      "p1.apparent-end"
+    ],
+    "p1.end-not-continued": [
+      "p1.end-not-continued.main",
+      "p1.end-not-continued.external",
+      "p1.end-not-continued.module",
+      "p1.end-not-continued.submodule",
+      "p1.end-not-continued.block-data",
+      "p1.end-not-continued.nonunit-exclusion"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S6.3.3.5-001",
+      "title": "Only an initial line can carry a label, confined to positions one through five",
+      "source": "6.3.3.5 p1, first, second and fourth sentences; J3/24-007, 18 December 2023, PDF page 73, printed page 59, lines 19-21.",
+      "source_units": [
+        "p1.label-placement",
+        "p1.absent-label-field",
+        "p1.label-blanks",
+        "p1.continuation-label-field"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "A statement label belongs in positions 1 through 5 of the statement's first line, with blanks permitted anywhere inside that field and inside the label spelling. Without a label those five positions are blank. Every continuation line has a blank field in positions 1 through 5. The character in position 6 is separate from the label, even when it is a digit. Label grammar, nonzero content, uniqueness and permitted references remain governed by 6.2.5.",
+      "facets": [
+        "label-in-each-field-position",
+        "label-interior-blanks",
+        "unlabeled-blank-field",
+        "continuation-blank-field",
+        "nonlabel-field-character",
+        "label-in-statement-field",
+        "continuation-field-label"
+      ],
+      "pending": {},
+      "oracle": "The placement control uses single-digit labels in each position from 1 to 5 and a spaced 1 0 0 label, with forward branches skipping explicit failure paths. Three isolated diagnose/repair pairs respectively put a letter in an otherwise empty label field, place a legal label before CONTINUE in the statement field, and place a distinct unused label on a continuation line. Repairs blank the stray character, move the label to the initial label field, or blank only the continuation label. The arithmetic repair checks 3.",
+      "oracle_limitation": "These tests target fixed-source placement, not new ownership of R611, C603, label identity or scope restrictions. All labels have valid nonzero decimal spellings and no duplicate/missing targets; there is no accidental six-digit-label negative. Same-line post-semicolon labeling is accounted to the already canonical S6.2.5-005 and its preserved existing pair, not duplicated as another S requirement.",
+      "dependencies": "6.2.5/R611/C603 and S6.2.5-005 retain label syntax and the semicolon exclusion. 6.3.3.3 supplies initial and continuation lines; 6.3.3.1 permits label blanks without moving fields. R1159/11.2 supply legal forward-branch context. 4.2 p2(5) requires relevant reporting, not necessarily rejection."
+    },
+    {
+      "id": "S6.3.3.5-002",
+      "title": "A fixed-form statement has at most one million characters",
+      "source": "6.3.3.5 p1, fifth sentence; J3/24-007 PDF page 73, printed page 59, line 21.",
+      "source_units": [
+        "p1.statement-length"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "The limit is 1000000 characters in one statement, not 1000000 physical file bytes or a limit of 255 continuation lines. Continuation indicators, label fields, physical record delimiters, comment lines and the semicolon terminator do not become statement characters. The fixtures avoid insignificant-blank counting ambiguity by filling the statement with nonblank characters, primarily a character literal, and explicitly terminating it with a semicolon.",
+      "facets": [
+        "statement-1000000",
+        "statement-1000001",
+        "more-than-255-continuations"
+      ],
+      "pending": {},
+      "oracle": "Two byte-preserved compile-only fixtures contain a character assignment statement of exactly 1000000 or 1000001 nonblank statement characters in columns 7-72. Both have the same small enclosing subroutine with an assumed-length output character dummy. Removing one literal character and restoring one trailing record-padding blank repairs the over-limit input without changing any line width. An inserted 72-character comment is excluded from the statement count. A smaller 257-line statement supplies an admission control beyond the old 255-continuation-line threshold. Independent artifact measurements reconstruct the statement fields and count the characters before the explicit semicolon rather than trusting the generator's requested length.",
+      "oracle_limitation": "These are admission/reporting observations, not runtime verification of a million-character value. No large default-integer literal, optional character kind, dynamic subscript, huge expression tree, or nonstandard continuation option is needed. The F2018 reference mode is not expected to corroborate an F2023-only increased limit. A documented processor size/complexity limit can explain rejection of a conforming boundary under 4.2 p2(1), but does not validate the over-limit diagnostic. That report must identify statement length and be contained in the declared assignment span. Numeric text alone, a whole-program recovery range, character-capacity error or generic continuation-count warning is not a million-character-limit report.",
+      "dependencies": "6.3.1 p1 defines statements from complete/partial lines; 6.3.3.1/6.3.3.3 define width, blank handling and continuation fields; 6.3.3.2 excludes comment interpretation; 6.3.3.4 p2 excludes the terminator. R1033 and 10.2.1.3 provide assignment, R724 the literal, and 15.6.2.3/7.4.4.2 the subroutine and assumed-length dummy. 4.2 p2(1)/(5), PDF page 46, separates processor resource limits from source-form reporting."
+    },
+    {
+      "id": "S6.3.3.5-003",
+      "title": "A program-unit END statement cannot be continued",
+      "source": "6.3.3.5 p1, sixth sentence; J3/24-007 PDF page 73, printed page 59, line 22.",
+      "source_units": [
+        "p1.end-not-continued.main",
+        "p1.end-not-continued.external",
+        "p1.end-not-continued.module",
+        "p1.end-not-continued.submodule",
+        "p1.end-not-continued.block-data",
+        "p1.end-not-continued.nonunit-exclusion"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "The END statement of a program unit occupies an uncontinued statement. Program units are main programs, external subprograms, modules, submodules and block data units. An internal or module subprogram is not itself a program unit; its END can be split when the initial line does not look like a program-unit END, subject to the separate following sentence. END IF, END DO and other construct ends are also not program-unit END statements.",
+      "facets": [
+        "main-end",
+        "external-subroutine-end",
+        "external-function-end",
+        "module-end",
+        "submodule-end",
+        "block-data-end",
+        "nonunit-end-control"
+      ],
+      "pending": {},
+      "oracle": "Six diagnose/repair pairs cover the five program-unit classes, using both external subprogram kinds. Each negative splits EN from D plus the appropriate END suffix; its initial line is not already END, isolating the actual-END restriction from the apparent-END restriction. Its declared two-line span admits a primary report on either piece but excludes surrounding recovery text. The repair joins only those statement pieces. The submodule pair declares and implements its ancestor's separate module procedure with explicit ordered compilation; a parent-file error cannot substitute for the END span in source.f90. All repairs are compile-only positive controls. A separate executing program splits an internal subroutine END after EN and checks the subroutine's defined scalar result.",
+      "oracle_limitation": "Compile-only module, block-data and external-unit controls establish admission, not whole-program execution, common-block initialization, or submodule runtime behavior. A failure in the ancestor or procedure body cannot satisfy the submodule END diagnostic expectation. Earlier unsupported-feature failures remain visible. No procedure END is assumed to be a program-unit END merely because it uses the same grammar.",
+      "dependencies": "5.2.1 p1-p4, PDF page 56, defines program-unit membership; 5.3.3, PDF page 58, distinguishes executable and nonexecutable END forms. R1403/C1401 (PDF 317), R1406/C1402 (318), R1419/C1412/C1413 and R1422/C1414/C1415 (321), R1536/C1573 (354), R1540/C1576 (355) supply canonical END syntax and matching names. 15.6.2.5 and C1577 supply the separate procedure. 4.2 p2(5) supplies reporting capability."
+    },
+    {
+      "id": "S6.3.3.5-004",
+      "title": "A statement initially resembling a program-unit END cannot be continued",
+      "source": "6.3.3.5 p1, final sentence; J3/24-007 PDF page 73, printed page 59, lines 22-23.",
+      "source_units": [
+        "p1.apparent-end"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "Even a statement that is not ultimately an END statement cannot be continued if its initial line appears to be a program-unit END statement. Fixed-form blank insignificance participates in that appearance. This is not a ban on names beginning with END: an initial fragment that is not itself an END form may continue into an otherwise legal assignment.",
+      "facets": [
+        "bare-end-prefix",
+        "spaced-end-prefix",
+        "named-end-prefix",
+        "non-end-initial-control"
+      ],
+      "pending": {},
+      "oracle": "Three diagnose fixtures begin an assignment with an initial END, E N D, or END PROGRAM p line and continue it into endvalue=7 or endprogramp=7. The completed assignment has legal name and expression syntax; the defect is the initial END appearance. Each repair leaves EN on the initial line and moves the remaining completed-assignment characters onto the continuation line, retaining the same assignment and independently checking 7. Merely removing blanks from END PROGRAM p would not repair it in fixed form. Another control starts with the complete name endvalue and continues only =7.",
+      "oracle_limitation": "These are not continued actual END statements and not malformed keyword declarations. The program name p matches the apparent END PROGRAM p, avoiding a second name-mismatch defect. Neither rejection at unrelated later recovery text nor silent acceptance of the assignment proves the intended reporting obligation. The standard requires detection/reporting capability under 4.2, not a particular fatal status.",
+      "dependencies": "6.3.3.1 p2 (blank insignificance), 6.3.3.3 (initial-line definition), R1403/C1401 and 5.2.1 (appearance of a program-unit END), R603/C601 (legal completed names), and 4.2 p2(5). Canonical name and END syntax IDs are not reallocated."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "structural",
+      "rationale": "All seven sentences are represented, splitting the first sentence's label/no-label alternatives and the program-unit END premise."
+    },
+    {
+      "unit": "p1.label-placement",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.3.3.5-001"
+      ]
+    },
+    {
+      "unit": "p1.absent-label-field",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.3.3.5-001"
+      ]
+    },
+    {
+      "unit": "p1.label-blanks",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.3.3.5-001"
+      ]
+    },
+    {
+      "unit": "p1.after-semicolon",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.2.5-005"
+      ],
+      "rationale": "This restates the canonical fixed-semicolon label exclusion already catalogued and tested by the preserved labels_fixed_semicolon pair. Do not allocate a duplicate local S ID."
+    },
+    {
+      "unit": "p1.continuation-label-field",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.3.3.5-001"
+      ]
+    },
+    {
+      "unit": "p1.statement-length",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.3.3.5-002"
+      ]
+    },
+    {
+      "unit": "p1.end-not-continued",
+      "disposition": "structural",
+      "rationale": "Interpret the program-unit premise using every class in 5.2.1, not every syntactically similar END."
+    },
+    {
+      "unit": "p1.end-not-continued.main",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.3.3.5-003"
+      ]
+    },
+    {
+      "unit": "p1.end-not-continued.external",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.3.3.5-003"
+      ],
+      "rationale": "Both external subroutine and external function contexts are in the finite matrix."
+    },
+    {
+      "unit": "p1.end-not-continued.module",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.3.3.5-003"
+      ]
+    },
+    {
+      "unit": "p1.end-not-continued.submodule",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.3.3.5-003"
+      ]
+    },
+    {
+      "unit": "p1.end-not-continued.block-data",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.3.3.5-003"
+      ]
+    },
+    {
+      "unit": "p1.end-not-continued.nonunit-exclusion",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.3.3.5-003"
+      ],
+      "rationale": "Internal/module subprograms and construct ends are not program units. The initial-appearance restriction still applies independently."
+    },
+    {
+      "unit": "p1.apparent-end",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.3.3.5-004"
+      ]
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_6_3_3_5.md"
+  },
+  "review_fingerprint": "dc04b88731bb61e804dbb1e395af2f48b03a7adb5966b1eeef05b9abc6461026",
+  "review_rationale": "Independent source-first review and verified integration repairs: doc/source_audits/lexical_batch_005.json. All seven sentences and program-unit membership are accounted for. Label placement, exact statement size, actual-END versus apparent-END restrictions and the nonunit exclusion are distinct. END reports are confined to their two-line statements and cannot be substituted by ancestor-file failures."
+}

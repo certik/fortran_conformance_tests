@@ -1,0 +1,173 @@
+{
+  "schema_version": 1,
+  "section": "6.3.2.5",
+  "review_state": "reviewed",
+  "subunits": {
+    "p1": [
+      "p1.not-continued",
+      "p1.comment-termination",
+      "p1.line-termination"
+    ],
+    "p2": [
+      "p2.semicolon-termination",
+      "p2.literal-exclusion",
+      "p2.edit-descriptor-exclusion",
+      "p2.comment-exclusion",
+      "p2.terminator-elision",
+      "p2.same-line-successor",
+      "p2.continued-successor",
+      "p2.separator-sequence"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S6.3.2.5-001",
+      "title": "A noncontinued statement ends at commentary or physical line end",
+      "source": "6.3.2.5 p1; J3/24-007 PDF page 72, printed page 58, line 23.",
+      "source_units": [
+        "p1.not-continued",
+        "p1.comment-termination",
+        "p1.line-termination"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Without continuation, a statement ends when its physical line ends or when commentary begins. This rule does not terminate a statement whose valid continuation marker connects it to a subsequent noncomment line.",
+      "facets": [
+        "line-end",
+        "comment-start",
+        "continued-exception"
+      ],
+      "pending": {},
+      "oracle": "A program initializes all sentinels, executes separate physical-line assignments, checks that an inline comment prevents its apparent following assignment from executing, and separately evaluates a comment-interrupted continued expression to 3. Each expected value is independent, rather than only a comparison between two source spellings.",
+      "oracle_limitation": "No negative is inferred by simply placing two otherwise complete legal statements on different lines. Missing continuation markers are owned by 6.3.2.4. This effect does not specify the processor's byte encoding of physical line endings or invent an end-of-file diagnostic requirement.",
+      "dependencies": "3.96/6.3.1 define a line, 6.3.2.3 defines actual commentary, and 6.3.2.4 determines continuation. 4.2 p2(1) supplies the interpretation obligation."
+    },
+    {
+      "id": "S6.3.2.5-002",
+      "title": "Semicolons separate statements only outside character and comment contexts",
+      "source": "6.3.2.5 p2; J3/24-007 PDF page 72, printed page 58, lines 24-27.",
+      "source_units": [
+        "p2.semicolon-termination",
+        "p2.literal-exclusion",
+        "p2.edit-descriptor-exclusion",
+        "p2.comment-exclusion",
+        "p2.terminator-elision",
+        "p2.same-line-successor",
+        "p2.continued-successor",
+        "p2.separator-sequence"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Outside character context and commentary, a semicolon can end a statement without becoming part of it. A following statement can occupy the rest of the same physical line or start there and continue onto another line. Any nonempty sequence of semicolons interspersed with zero or more blanks has the separating effect of one semicolon. Inside either character context or a comment, the semicolon does not act as a statement terminator.",
+      "facets": [
+        "same-line-successor",
+        "continued-successor",
+        "terminator-elision",
+        "separator-sequence",
+        "literal-exclusion",
+        "edit-descriptor-exclusion",
+        "comment-exclusion"
+      ],
+      "pending": {},
+      "oracle": "One program checks dependent assignments separated by one semicolon or mixed runs of blanks and semicolons, including a successor that begins before its own continuation marker on that line. Another retains semicolons in both literal delimiter styles and a character string edit descriptor, while a comment containing an apparent semicolon-separated assignment leaves an initialized scalar unchanged. Guarded internal output is compared with an exact record. IACHAR must independently return 59 at each of the three literal/descriptor semicolon positions, rather than relying only on comparands containing the same lexical feature.",
+      "oracle_limitation": "Only separating and trailing semicolon sequences after actual statements are used; no unrelated empty-statement or fixed-form placement rule is assumed. The literal and descriptor delimiters still belong to their source spelling even though they are not output character values. A semicolon in character data is not counted as a terminator. Label permission after a semicolon is demonstrated by 6.3.2.6, without claiming fixed-form semantics here.",
+      "dependencies": "3.21 distinguishes literal and edit-descriptor contexts. 6.3.2.3 and 6.3.2.4 govern comments and continued successor statements. 7.4.4.3, 13.2.1, and 13.9 supply uncredited character/FORMAT context. 9.4.1 and 16.9.98 (PDF 151/416) justify the length-one substring and ASCII inquiries independently of native character encoding. 4.2 p2(1) supplies conforming execution."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "structural",
+      "rationale": "PDF 72, line 23: the not-continued premise and the two physical termination alternatives are preserved."
+    },
+    {
+      "unit": "p1.not-continued",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.3.2.5-001"
+      ]
+    },
+    {
+      "unit": "p1.comment-termination",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.3.2.5-001"
+      ]
+    },
+    {
+      "unit": "p1.line-termination",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.3.2.5-001"
+      ]
+    },
+    {
+      "unit": "p2",
+      "disposition": "structural",
+      "rationale": "PDF 72, lines 24-27: separate semicolon role, all excluded contexts, elision, both successor alternatives, and sequence equivalence."
+    },
+    {
+      "unit": "p2.semicolon-termination",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.3.2.5-002"
+      ]
+    },
+    {
+      "unit": "p2.literal-exclusion",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.3.2.5-002"
+      ]
+    },
+    {
+      "unit": "p2.edit-descriptor-exclusion",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.3.2.5-002"
+      ]
+    },
+    {
+      "unit": "p2.comment-exclusion",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.3.2.5-002"
+      ]
+    },
+    {
+      "unit": "p2.terminator-elision",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.3.2.5-002"
+      ]
+    },
+    {
+      "unit": "p2.same-line-successor",
+      "disposition": "permission",
+      "requirements": [
+        "S6.3.2.5-002"
+      ],
+      "rationale": "An actual following statement may share the physical line without a new line-termination requirement."
+    },
+    {
+      "unit": "p2.continued-successor",
+      "disposition": "permission",
+      "requirements": [
+        "S6.3.2.5-002"
+      ],
+      "rationale": "The new statement may start after the semicolon and use its own valid continuation."
+    },
+    {
+      "unit": "p2.separator-sequence",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.3.2.5-002"
+      ]
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_6_3_2_5.md"
+  },
+  "review_fingerprint": "84b8e40669400c5f916a68205e7e63f151588ffd9fb7a9b6521d6ee7169b8183",
+  "review_rationale": "Independent source-first review and verified integration repairs: doc/source_audits/lexical_batch_005.json. The not-continued premise, semicolon contexts, terminator elision, permitted successors and separator-run equivalence are accounted for without importing fixed-form restrictions."
+}

@@ -115,7 +115,8 @@ single-file conventions remain supported.
 
 A compile-only manifest can explicitly choose `outcome: "diagnose"` when
 the oracle requires a relevant report rather than fatal rejection. Such a
-fixture is still invalid input. Its exact source file/line and constrained
+fixture is still invalid input. Its source file/line or declared statement
+span and constrained
 nonfatal-message predicates are independent of ordinary process exit
 status; crashes, timeouts and earlier build failures remain failures.
 This opt-in contract does not relax the existing `reject` outcome or

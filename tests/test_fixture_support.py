@@ -56,6 +56,151 @@ class FixtureTests(unittest.TestCase):
                 dict(compiler='flang', severity='portability', contains_any=['missing space'])]))
         return self.fixture()
 
+    def driver_reporting_fixture(self):
+        self.reporting_fixture()
+        self.data['build'][0]['form'] = 'free'
+        self.data['expect']['diagnostic']['allow_nonfatal'] = [
+            dict(compiler='gfortran', severity='warning',
+                 equals_any=["'&' not allowed by itself"], attribution='single-source-driver')]
+        return self.fixture()
+
+    def test_declared_statement_span_accepts_only_contained_diagnostics(self):
+        self.reporting_fixture()
+        self.data['expect']['diagnostic'].update(line=1, end_line=2)
+        fixture = self.fixture()
+        for first, last, expected in ((1, 1, 'pass'), (2, 2, 'pass'), (1, 2, 'pass'),
+                                      (1, 3, 'fail'), (3, 3, 'fail'), (2, 1, 'fail'),
+                                      (0, 2, 'fail'), (1, 1000000000, 'fail')):
+            with self.subTest(first=first, last=last):
+                output = f'source.f:{first}-{last}:1-20: syntax error: malformed statement\n'
+                with patch.object(runner, 'run', return_value=runner.ProcessResult(1, output)):
+                    result = runner.check_fixture(fixture, self.compiler)
+                self.assertEqual(result.outcome, expected)
+        comp = runner.Compiler('gfortran', 'gfortran', 'f2023')
+        for line, expected in ((1, 'pass'), (2, 'pass'), (3, 'fail')):
+            with self.subTest(reference_line=line):
+                output = f'source.f:{line}:1: Error: Unclassifiable statement\n'
+                with patch.object(runner, 'run', return_value=runner.ProcessResult(1, output)):
+                    result = runner.check_fixture(fixture, comp)
+                self.assertEqual(result.outcome, expected)
+
+    def test_statement_span_schema_rejects_invalid_bounds(self):
+        self.reporting_fixture()
+        for end_line in (1, True, None, '3'):
+            with self.subTest(end_line=end_line):
+                self.data['expect']['diagnostic']['end_line'] = end_line
+                with self.assertRaises(SuiteError):
+                    self.fixture()
+
+    def test_eof_position_is_explicit_and_not_an_unlocated_summary(self):
+        self.reporting_fixture()
+        self.data['expect']['diagnostic'].update(
+            line=2, end_line=3, contains_any=['end of file', "bad character ('&')"])
+        fixture = self.fixture()
+        for output, expected in (
+            ('source.f:3-3:1-1: syntax error: End of file is unexpected here\n', 'pass'),
+            ('source.f:1-3:1-1: syntax error: End of file is unexpected here\n', 'fail'),
+            ('error: Could not scan source.f\n', 'fail'),
+            ('error: End of file in source.f\n', 'fail'),
+            ('other.f:3-3:1-1: syntax error: End of file is unexpected here\n', 'fail'),
+            ('source.f:3-3:1-1: syntax error: Cannot open output\n! end of file\n', 'fail'),
+        ):
+            with self.subTest(output=output):
+                with patch.object(runner, 'run', return_value=runner.ProcessResult(1, output)):
+                    result = runner.check_fixture(fixture, self.compiler)
+                self.assertEqual(result.outcome, expected)
+
+    def test_exact_driver_warning_can_be_bound_to_the_only_source(self):
+        fixture = self.driver_reporting_fixture()
+        comp = runner.Compiler('gfortran', 'gfortran', 'f2023')
+        output = "f951: Warning: '&' not allowed by itself in line 2\n"
+        with patch.object(runner, 'run', return_value=runner.ProcessResult(0, output)):
+            result = runner.check_fixture(fixture, comp)
+        self.assertEqual(result.outcome, 'pass')
+        self.assertIn('single-source driver attribution', result.note)
+        self.assertEqual(runner.reference_label(result, 'invalid'), 'diagnoses')
+        self.assertEqual(result.trace[0]['returncode'], 0)
+        self.assertTrue(result.input_hashes)
+        self.assertEqual(result.output, output)
+
+    def test_driver_attribution_rejects_ambiguous_or_unrelated_output(self):
+        fixture = self.driver_reporting_fixture()
+        comp = runner.Compiler('gfortran', 'gfortran', 'f2023')
+        wanted = "f951: Warning: '&' not allowed by itself in line 2\n"
+        for output in (
+            wanted.replace('line 2', 'line 1'),
+            wanted.replace('Warning:', 'Error:'),
+            wanted.replace('f951:', 'another-driver:'),
+            wanted.replace("'&' not allowed by itself", "unrelated warning"),
+            wanted.replace("'&' not allowed by itself", "other.f: '&' not allowed by itself"),
+            wanted.replace(' in line 2', ''),
+            'other.f:2:1: warning: unrelated\n' + wanted,
+            '/another/directory/source.f:2:1: in the context: statement\n' + wanted,
+            'f951: Warning: Inconsistent internal state: No location in statement\n',
+        ):
+            with self.subTest(output=output):
+                with patch.object(runner, 'run', return_value=runner.ProcessResult(0, output)):
+                    result = runner.check_fixture(fixture, comp)
+                self.assertEqual(result.outcome, 'fail')
+
+    def test_driver_attribution_requires_its_explicit_qualified_context(self):
+        comp = runner.Compiler('gfortran', 'gfortran', 'f2023')
+        output = "f951: Warning: '&' not allowed by itself in line 2\n"
+        with patch.object(runner, 'run', return_value=runner.ProcessResult(0, output)):
+            result = runner.check_fixture(self.reporting_fixture(), comp)
+        self.assertEqual(result.outcome, 'fail')
+        with self.assertRaises(SuiteError):
+            runner.driver_warning_diagnostics(output, 'source.f', None)
+        self.driver_reporting_fixture()
+        self.data['build'][0]['form'] = 'fixed'
+        with self.assertRaises(SuiteError):
+            self.fixture()
+        self.data['build'][0]['form'] = 'free'
+        for raw in (b"include 'other.inc'\n", b"program p\n!\xff\nend\n"):
+            (self.root / 'source.f').write_bytes(raw)
+            with self.subTest(raw=raw):
+                with self.assertRaises(SuiteError):
+                    self.fixture()
+        (self.root / 'source.f').write_bytes(self.raw)
+        (self.root / 'other.f').write_bytes(self.raw)
+        self.data['files'].append('other.f')
+        with self.assertRaises(SuiteError):
+            self.fixture()
+
+    def test_driver_predicate_schema_requires_exact_gnu_warning(self):
+        self.driver_reporting_fixture()
+        original = json.loads(json.dumps(self.data))
+        for update in (
+            {'compiler': 'flang'}, {'severity': 'portability'}, {'attribution': 'guess'},
+            {'contains_any': ['allowed']}, {'equals_any': []},
+        ):
+            with self.subTest(update=update):
+                self.data = json.loads(json.dumps(original))
+                self.data['expect']['diagnostic']['allow_nonfatal'][0].update(update)
+                with self.assertRaises(SuiteError):
+                    self.fixture()
+        self.data = json.loads(json.dumps(original))
+        predicate = self.data['expect']['diagnostic']['allow_nonfatal'][0]
+        predicate['contains_any'] = predicate.pop('equals_any')
+        with self.assertRaises(SuiteError):
+            self.fixture()
+
+    def test_driver_or_eof_diagnostic_cannot_hide_a_compiler_failure(self):
+        fixture = self.driver_reporting_fixture()
+        comp = runner.Compiler('gfortran', 'gfortran', 'f2023')
+        wanted = "f951: Warning: '&' not allowed by itself in line 2\n"
+        for process in (
+            runner.ProcessResult(1, wanted + 'internal compiler error: Segmentation fault: 11\n'),
+            runner.ProcessResult(1, wanted + 'f951: Fatal Error: Out of memory\n'),
+            runner.ProcessResult(1, wanted + 'gfortran: fatal error: Killed signal terminated program f951\n'),
+            runner.ProcessResult(-11, wanted),
+            runner.ProcessResult(0, wanted, timed_out=True),
+        ):
+            with self.subTest(process=process):
+                with patch.object(runner, 'run', return_value=process):
+                    result = runner.check_fixture(fixture, comp)
+                self.assertEqual(result.outcome, 'fail')
+
     def test_reporting_fixture_is_invalid_input_without_requiring_rejection(self):
         fixture = self.reporting_fixture()
         comp = runner.Compiler('flang', 'flang', 'f2018')

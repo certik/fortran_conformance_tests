@@ -166,6 +166,17 @@ case.f90:5-5:1-20: semantic warning [C801]: repeated
         self.assertEqual(len(errors), 1)
         self.assertEqual(errors[0].last, 1000000000)
 
+    def test_invalid_reported_ranges_are_not_source_locations(self):
+        for span in ('0-2', '3-2'):
+            with self.subTest(span=span):
+                self.assertEqual(runner.lfortran_errors(
+                    f'case.f90:{span}:1-20: syntax error: invalid'), [])
+
+    def test_resource_failure_detection_does_not_scan_application_data(self):
+        result = runner.ProcessResult(0, 'f951: Fatal Error: Out of memory\n')
+        self.assertEqual(runner.failure(result, 'compile').outcome, 'fail')
+        self.assertIsNone(runner.failure(result, 'run', compiler_process=False))
+
     def test_successful_exit_does_not_count_as_rejection(self):
         result = runner.ProcessResult(0, 'case.f90:2-2:1-20: semantic error [C801]: repeated')
         self.assertEqual(self.invalid(result).outcome, 'fail')
@@ -459,6 +470,53 @@ class CorpusTests(unittest.TestCase):
                 self.assertEqual(len(upper[4]) - len(lower[4]), 1)
         self.assertEqual(sources['trailing_10000'][4][-9990:], b' ' * 9990)
         self.assertEqual(sources['trailing_10001'][4][-9991:], b' ' * 9991)
+
+    def test_million_character_statement_boundaries_are_exact(self):
+        for length in (1000000, 1000001):
+            state = 'valid' if length == 1000000 else 'invalid'
+            for form, folder, character in (
+                ('free', f'free_source_statement_{length}', b'x'),
+                ('fixed', f'fixed_source_5_002_{state}_length_{length}', b'A'),
+            ):
+                with self.subTest(form=form, length=length):
+                    raw = (self.root / 'fixtures' / folder / 'source.f90').read_bytes()
+                    self.assertTrue(raw.isascii())
+                    lines = raw.split(b'\n')[:-1]
+                    self.assertTrue(raw.endswith(b'\n'))
+                    if form == 'fixed':
+                        self.assertTrue(all(len(line) == 72 for line in lines))
+                        fields = [line[6:72] for line in lines if not line.startswith(b'C')]
+                        start = next(i for i, field in enumerate(fields) if field.startswith(b"s='"))
+                    else:
+                        self.assertLessEqual(max(map(len, lines)), 10000)
+                        fields = [line for line in lines if not line.startswith(b'!')]
+                        start = next(i for i, field in enumerate(fields)
+                                     if field.startswith(b"s='") and field.endswith(b'&'))
+                    parts = []
+                    for field in fields[start:]:
+                        if form == 'free':
+                            if field.startswith(b'&'):
+                                field = field[1:]
+                            if field.endswith(b'&'):
+                                parts.append(field[:-1])
+                                continue
+                        parts.append(field.split(b';', 1)[0])
+                        if b';' in field:
+                            break
+                    statement = b''.join(parts)
+                    self.assertEqual(len(statement), length)
+                    self.assertEqual(statement, b"s='" + character * (length - 5) + b"Z'")
+
+    def test_missing_successor_repair_and_eof_coordinate(self):
+        root = self.root / 'fixtures'
+        negative = (root / 'free_source_missing_successor/source.f90').read_bytes()
+        control = (root / 'free_source_missing_successor_control/source.f90').read_bytes()
+        self.assertEqual(negative.replace(b'&', b'', 1), control)
+        self.assertEqual(negative.split(b'\n'),
+                         [b'program p', b'end program p &', b'! trailing comment', b''])
+        fixture = runner.load_fixture(root / 'free_source_missing_successor/fixture.json', runner.PROFILES)
+        self.assertEqual(fixture.expectation.diagnostic['line'], 2)
+        self.assertEqual(fixture.expectation.diagnostic['end_line'], negative.count(b'\n') + 1)
 
     def test_all_invalid_cases_can_be_isolated(self):
         for path, rule, kind in runner.discover(str(self.root)):

@@ -1,0 +1,98 @@
+{
+  "schema_version": 1,
+  "section": "6.3.2.6",
+  "review_state": "reviewed",
+  "subunits": {
+    "p1": [
+      "p1.label-permission",
+      "p1.whole-statement-condition"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S6.3.2.6-001",
+      "title": "A free-form whole statement may carry a preceding label",
+      "source": "6.3.2.6 p1; J3/24-007 PDF page 72, printed page 58, line 29.",
+      "source_units": [
+        "p1.label-permission",
+        "p1.whole-statement-condition"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "not-required",
+      "definition": "A label is permitted before a statement that is not embedded as part of another statement. In free form this includes a whole statement following a semicolon and a statement spread over several continued physical lines. The permission does not attach a second label to an embedded action statement or waive the canonical label spelling, uniqueness, or permitted-use rules.",
+      "facets": [
+        "whole-statements",
+        "after-semicolon",
+        "continued-statement",
+        "enclosing-if"
+      ],
+      "pending": {},
+      "oracle": "One positive control labels a declaration, assignments, an enclosing action-IF statement, and END PROGRAM, including a labeled assignment continued across lines. A separate control branches forward to an assignment after a semicolon, so lack of that form does not mask the other label contexts. Defined scalar checks provide finite executable context; they are not full effects of the label permission.",
+      "oracle_limitation": "The embedded-statement condition is source-accounted, not turned into a negative under this permission. R1141 and the canonical label owner govern the nested action syntax; this batch neither reallocates those R/C IDs nor claims coverage of all labeled statement classes. The informative digit observation does not need a manufactured executable effect.",
+      "dependencies": "3.130 and 6.3.1 define statements. 6.2.5/R611/C603 retain label spelling and use ownership (PDF 70). 6.3.2.4 and 6.3.2.5 supply free-form layout. R1141/11.1.8.4 (PDF 219) distinguishes the enclosing IF from its action. 4.2 p2(1) supplies syntax admission subject to processor resource qualifications."
+    },
+    {
+      "id": "S6.3.2.6-002",
+      "title": "A free-form statement contains at most one million source characters",
+      "source": "6.3.2.6 p2; J3/24-007 PDF page 72, printed page 58, line 30.",
+      "source_units": [
+        "p2"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "The total source-character length of one free-form statement cannot exceed 1000000. This is neither a file-byte limit nor a limit on the resulting value of a character literal. Continuation markers and semicolon terminators are excluded by their defining subclauses; interposed commentary and physical line separators are not statement text. Literal quote delimiters remain part of the statement's source spelling even though they do not belong to the literal value.",
+      "facets": [
+        "at-limit",
+        "one-over-limit",
+        "continuation-exclusion",
+        "comment-exclusion",
+        "terminator-exclusion"
+      ],
+      "pending": {},
+      "oracle": "A deterministic generator emits two byte-preserved assignments of exactly 1000000 and 1000001 source characters. Their only byte difference is one inserted x before the terminal Z of the literal. Both use 250 noncomment source lines, hence 249 continuation lines, with a maximum physical line length of 4004; neither violates the F2023 physical-line rule. Twelve interposed comment lines and a semicolon terminator are excluded. The at-limit control checks every literal character, terminal Z, and one blank of assignment padding. The over-limit compile-only diagnose oracle requires a statement-length-specific message within the reconstructed assignment's declared source span, rather than insisting on only its final line.",
+      "oracle_limitation": "The explicit kind SELECTED_INT_KIND(9) is justified by 7.4.3.1 p2: the processor must supply an integer representation with decimal range at least 18. All large length literals, loop bounds, substring indices, and LEN inquiries use the selected kind; the weaker default-integer minimum of range 5 is not enough for the boundary. No optional profile gates this mandatory premise. Positive admission remains subject to the 4.2 p2(1) size/complexity qualification; an observed resource failure is not silently rewritten as a fixture defect. Flang's f2018 fallback cannot independently validate the F2023 length premise. An unrelated source location, whole-program recovery range, physical-line/legacy-continuation limit, character-capacity error, crash or timeout cannot replace the statement-length report. Numeric limit text alone is not an accepted message predicate. No permissive compiler option or broad warning allowance is added.",
+      "dependencies": "3.96/3.130 and 6.3.1 define physical lines and statements. 6.3.2.3 excludes commentary, 6.3.2.4 p1 excludes continuation markers, and 6.3.2.5 p2 excludes semicolon terminators. 7.4.4.3/R724 distinguishes source spelling from literal value. 7.4.3.1 p2/p4 (PDF 80) distinguishes mandatory range 18 support from default range 5. 16.9.181 SELECTED_INT_KIND (PDF 454-455), 16.9.122 LEN (PDF 426), 9.4.1 substrings, and 10.2.1.3 character assignment supply the guarded control. 4.2 p2(5), PDF 46, requires reporting capability, not necessarily fatal rejection."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "structural",
+      "rationale": "PDF 72, line 29: account for the label permission separately from its whole-statement premise."
+    },
+    {
+      "unit": "p1.label-permission",
+      "disposition": "permission",
+      "requirements": [
+        "S6.3.2.6-001"
+      ],
+      "rationale": "Separate finite positive controls include a labeled successor after a free-form semicolon without importing fixed-source restrictions or masking the other label contexts."
+    },
+    {
+      "unit": "p1.whole-statement-condition",
+      "disposition": "definition",
+      "requirements": [
+        "S6.3.2.6-001"
+      ],
+      "rationale": "The permission concerns a whole statement, not the embedded action of an IF statement. Canonical syntax and label rules remain with their existing owners; no extra reporting obligation is inferred from the permission."
+    },
+    {
+      "unit": "note-unnumbered",
+      "disposition": "informative",
+      "rationale": "PDF 72, printed 58, note following line 29: the observation about a statement's initial digit explains label recognition. It neither redefines R611 nor creates a separate executable effect."
+    },
+    {
+      "unit": "p2",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.3.2.6-002"
+      ],
+      "rationale": "The pinned source says one million characters, not an older edition's effective statement-size or continuation-line ceiling. Exact logical lengths are independently measured from committed ASCII source bytes."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_6_3_2_6.md"
+  },
+  "review_fingerprint": "f9885816a2441bd0e3c557d96af75cfa6a649c7c36a3099f11ea732506dd7f96",
+  "review_rationale": "Independent source-first review and verified integration repairs: doc/source_audits/lexical_batch_005.json. Whole-statement label permission includes the valid free-form semicolon successor. The million-character assignments have independently measured source lengths, selected integer arithmetic and a demonstrated-capacity executing control; the over-limit oracle requires a statement-length report."
+}

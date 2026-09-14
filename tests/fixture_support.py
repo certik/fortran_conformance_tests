@@ -73,15 +73,25 @@ def validate_nonfatal_diagnostics(value, context):
     if not isinstance(value, list):
         raise SuiteError(f'{context}: expected a list of diagnostic predicates')
     for predicate in value:
-        fields(predicate, ('compiler', 'severity', 'contains_any'), (), context)
+        fields(predicate, ('compiler', 'severity'), ('contains_any', 'equals_any', 'attribution'), context)
         compiler = string(predicate['compiler'], context + '.compiler')
         severity = string(predicate['severity'], context + '.severity')
         if compiler not in ('lfortran', 'gfortran', 'flang', 'c'):
             raise SuiteError(f'{context}: unknown compiler family')
         if severity not in ('warning', 'portability'):
             raise SuiteError(f'{context}: expected warning or portability severity')
-        for message in strings(predicate['contains_any'], context + '.contains_any', nonempty=True):
-            string(message, context + '.contains_any')
+        message_keys = set(predicate) & {'contains_any', 'equals_any'}
+        if len(message_keys) != 1:
+            raise SuiteError(f'{context}: choose exactly one message predicate')
+        key = message_keys.pop()
+        for message in strings(predicate[key], context + '.' + key, nonempty=True):
+            string(message, context + '.' + key)
+        attribution = string(predicate.get('attribution', 'located'), context + '.attribution')
+        if attribution not in ('located', 'single-source-driver'):
+            raise SuiteError(f'{context}: unknown diagnostic attribution')
+        if attribution == 'single-source-driver' and (
+                compiler != 'gfortran' or severity != 'warning' or key != 'equals_any'):
+            raise SuiteError(f'{context}: single-source driver warnings need exact GNU message predicates')
 
 
 def load_fixture(path, profiles):
@@ -186,7 +196,7 @@ def load_fixture(path, profiles):
         raise SuiteError(f'{path}: nonzero termination needs an explicit policy/profile basis')
     if expectation.outcome in ('reject', 'diagnose'):
         if expectation.outcome == 'diagnose':
-            fields(expectation.diagnostic, ('file', 'line'), ('contains_any', 'allow_nonfatal'),
+            fields(expectation.diagnostic, ('file', 'line'), ('end_line', 'contains_any', 'allow_nonfatal'),
                    f'{path}.diagnostic')
             validate_nonfatal_diagnostics(expectation.diagnostic.get('allow_nonfatal', []),
                                           f'{path}.diagnostic.allow_nonfatal')
@@ -205,6 +215,10 @@ def load_fixture(path, profiles):
         anchor = expectation.diagnostic.get('anchor', '')
         if line is not None and (type(line) is not int or line < 1):
             raise SuiteError(f'{path}: invalid diagnostic line')
+        if 'end_line' in expectation.diagnostic:
+            end_line = expectation.diagnostic['end_line']
+            if type(end_line) is not int or line is None or end_line < line:
+                raise SuiteError(f'{path}: invalid diagnostic statement span')
         if line is None and anchor not in ('file', 'eof') and expectation.phase != 'link':
             raise SuiteError(f'{path}: a diagnostic line or external anchor is required')
         messages = strings(expectation.diagnostic.get('contains_any', []), 'diagnostic.contains_any')
@@ -212,6 +226,16 @@ def load_fixture(path, profiles):
             string(message, 'diagnostic.contains_any')
         if (anchor == 'eof' or expectation.phase == 'link') and not messages:
             raise SuiteError(f'{path}: an EOF expectation needs a diagnostic predicate')
+        if any(predicate.get('attribution') == 'single-source-driver'
+               for predicate in expectation.diagnostic.get('allow_nonfatal', [])):
+            step = steps[-1]
+            if (len(steps) != 1 or inputs != [step.source] or diagnostic_file != step.source
+                    or step.language != 'fortran' or step.form != 'free'
+                    or Path(step.source).suffix not in ('.f', '.f90')):
+                raise SuiteError(f'{path}: driver attribution requires one explicit free-form Fortran input')
+            source = safe_path(path.parent, step.source).read_bytes()
+            if not source.isascii() or re.search(rb'\binclude\b', source, re.I):
+                raise SuiteError(f'{path}: driver attribution requires self-contained ASCII without INCLUDE')
     run = data.get('run', {})
     fields(run, (), ('arguments', 'stdin_file'), f'{path}.run')
     if run and expectation.phase != 'run':
