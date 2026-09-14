@@ -1,0 +1,150 @@
+{
+  "schema_version": 1,
+  "section": "6.2.3",
+  "review_state": "reviewed",
+  "accounting": [
+    {
+      "unit": "R604",
+      "disposition": "requirements",
+      "requirements": [
+        "R604"
+      ]
+    },
+    {
+      "unit": "R605",
+      "disposition": "requirements",
+      "requirements": [
+        "R605"
+      ]
+    },
+    {
+      "unit": "R606",
+      "disposition": "requirements",
+      "requirements": [
+        "R606"
+      ]
+    },
+    {
+      "unit": "R607",
+      "disposition": "requirements",
+      "requirements": [
+        "R607"
+      ]
+    },
+    {
+      "unit": "C602",
+      "disposition": "requirements",
+      "requirements": [
+        "C602"
+      ]
+    }
+  ],
+  "requirements": [
+    {
+      "id": "R604",
+      "title": "Constants have literal and named alternatives",
+      "source": "6.2.3 R604 (PDF page 69, printed page 55, lines 2-3).",
+      "source_units": [
+        "R604"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "The constant category admits either a literal constant or a named constant. This union does not broaden the contexts allowed for a particular alternative or replace that alternative's defining rules.",
+      "facets": [
+        "literal-alternative",
+        "named-alternative"
+      ],
+      "pending": {},
+      "oracle": "Initialize two distinct integer objects in DATA statements, one with a literal and one with a previously defined integer PARAMETER name. Independently assert both initialized values. R848's scalar-constant alternative uses R403 and R604 in this context.",
+      "oracle_limitation": "The two facets are admission controls, not separate literal grammars or a requirement that every constant be permitted in every expression. No invalid pair is manufactured for the union: malformed literal spelling belongs to the defining literal rule, and a name's spelling belongs to R603/C601.",
+      "dependencies": "R605 and R606 define the two alternatives. 5.4.3.2.3 p1-p2 (PDF page 62) gives the constant classification and PARAMETER basis. 4.1.3/R403/C401 supplies scalar-constant. 8.5.13 p1 and 8.6.7 R848/C887, p8/p10 (PDF pages 130, 137-138) justify the named constant and DATA initialization context."
+    },
+    {
+      "id": "R605",
+      "title": "Literal constants have six admitted categories",
+      "source": "6.2.3 R605 (PDF page 69, printed page 55, lines 4-9).",
+      "source_units": [
+        "R605"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "The literal-constant union contains integer, real, complex, logical, character, and BOZ literal categories. The spelling, type, kind, and interpretation of each category remain governed by its defining subclause. In particular, membership in this union does not give a BOZ literal a type.",
+      "facets": [
+        "integer-literal",
+        "real-literal",
+        "complex-literal",
+        "logical-literal",
+        "character-literal",
+        "boz-literal"
+      ],
+      "pending": {},
+      "oracle": "Use six separately compiled programs, one per union alternative, each with independently specified runtime checks. DATA values supply explicit scalar-constant contexts. The BOZ program initializes only an integer object, using a short hexadecimal value with no sign-bit dependence; its expected decimal value is computed with ordinary integer arithmetic.",
+      "oracle_limitation": "This is a finite category-admission plan, not an exhaustive test of signs, kind suffixes, exponent forms, character delimiters, radix digits, or representation limits. Those canonical definitions are not duplicated here. No malformed-literal negative is attributed to the union. BOZ is used as a DATA value, not as a repeat factor or in a presumed unrestricted expression context.",
+      "dependencies": "7.4.3.1/R708, 7.4.3.2/R714, 7.4.3.3/R718, 7.4.4.3/R724, 7.4.5/R725, and 7.7/R772-R776 define the alternatives. 7.7 p1 (PDF page 113) makes BOZ typeless; C7119 (PDF page 114) explicitly permits DATA values. 8.6.7 R848 and p10-p11 (PDF pages 137-138) supplies initialization, with BOZ converted as by INT to the integer object's kind. No optional processor representation is assumed."
+    },
+    {
+      "id": "R606",
+      "title": "A named constant is referenced with a name",
+      "source": "6.2.3 R606 (PDF page 69, printed page 55, line 10).",
+      "source_units": [
+        "R606"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "R606 uses name syntax for the named-constant category. A PARAMETER entity supplies the named constant; an ordinary variable does not become one merely by having an initializer or by remaining unchanged. The alias itself imposes neither scalar rank nor integer type. Lexical name restrictions and PARAMETER semantics remain dependencies.",
+      "facets": [
+        "scalar-name",
+        "array-name"
+      ],
+      "pending": {},
+      "oracle": "A scalar PARAMETER name is used as a DATA repeat factor and its initialized elements are checked independently. A separate array PARAMETER program checks the whole named array's size and its individual values, in contexts that do not impose the scalar restriction of DATA repetition.",
+      "oracle_limitation": "These programs are admission controls for scalar and array names. They do not claim rejection coverage for an initialized variable, reassignment to a PARAMETER, or a malformed name. The first two distinctions require the defining data-object/PARAMETER rules, and malformed names are already owned by R603/C601. No unrelated invalid case is added merely to accompany the alias.",
+      "dependencies": "R603/C601 owns name spelling. 5.4.3.2.1 p1/p4 and 5.4.3.2.3 p2 (PDF pages 61-62), plus 8.5.13 p1/C852 (PDF page 130), establish the named-constant/variable distinction and permit named arrays. 8.5.13 p2 (PDF page 131) requires prior definition. R847 with R403/C401 and C886 (PDF pages 45, 137) imposes the scalar, integer, nonnegative, previously defined repeat context; those are not new R606 obligations."
+    },
+    {
+      "id": "R607",
+      "title": "Integer constants inherit the constant category",
+      "source": "6.2.3 R607 (PDF page 69, printed page 55, line 11), together with its associated C602.",
+      "source_units": [
+        "R607"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "R607 imports the constant category rather than defining another literal spelling. C602 restricts its type to integer. Both an integer literal and an integer named constant can therefore supply an int-constant; an enclosing scalar-int-constant additionally imposes scalar rank.",
+      "facets": [
+        "literal-integer",
+        "named-integer"
+      ],
+      "pending": {},
+      "oracle": "Use both alternatives as DATA repeat factors under R847. The literal repeat initializes two entries followed by a distinct sentinel. A name defined by a small integer constant expression initializes three entries followed by another sentinel. Check every entry separately so ignored or misapplied repetition cannot satisfy the control.",
+      "oracle_limitation": "The constant expression defines the PARAMETER; the DATA repeat operand is its bare name, not an arbitrary constant expression. Subobjects have a separate R847 alternative through R849/C889, and are not credited to R607. Rank and nonnegativity belong to C401/C886. C602 owns the isolated type negatives; no duplicate rejection case is attached to this alias.",
+      "dependencies": "R604-R606 supplies constant syntax; 4.1.2 p2 makes C602 part of R607 wherever used. 4.1.3/R403/C401 and 8.6.7 R846-R847/C886, p5-p8 (PDF pages 45, 137-138) supplies DATA repetition and scalar rank. 8.5.13 p1-p2 supplies previously defined integer PARAMETER values."
+    },
+    {
+      "id": "C602",
+      "title": "An int-constant has integer type",
+      "source": "6.2.3 C602 (R607; PDF page 69, printed page 55, line 12).",
+      "source_units": [
+        "C602"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "The type of a constant used as an int-constant is integer. An integral-valued real constant does not satisfy this condition. For a named constant, the entity's type is decisive, not the type of the expression that initialized it; permitted initialization conversion does not change the receiving context's integer-type requirement.",
+      "facets": [
+        "integer-literal",
+        "integer-named",
+        "noninteger-literal",
+        "noninteger-named"
+      ],
+      "pending": {},
+      "oracle": "R847 DATA repetition explicitly requires scalar-int-constant, reaching R607 and C602 rather than scalar-int-expr. The integer-literal control initializes two entries; the named-constant controls use one entry and one repetition. An integer PARAMETER initialized from 1.0 demonstrates permitted initialization conversion. Two negative containers isolate real, complex, logical, and character operands: one uses literals and the other previously defined scalar PARAMETER names. The named cases are count-neutral so an implementation cannot appear to check integer type merely by reporting two objects versus one produced value. Each case has one marked repeat operand. Literal repairs use integer 2; named repairs use INTEGER, PARAMETER :: repeats = 1.",
+      "oracle_limitation": "The invalid containers claim only their common noninteger-literal or noninteger-named facet; individual types are not credited to every execution. Real and complex named negatives start from an integer initializer, leaving their declared noninteger type decisive. Scalar operands, small extents, prior definitions, and matching repaired DATA counts avoid independent defects. A count-neutral rejection still does not prove a particular internal type-check implementation; the diagnostic and any standard code must be inspected separately. BOZ repetition is excluded because it would also violate C7119. Exhaustive kinds, derived/enum types, rank, negative repeats, and constant-subobject constraints remain outside this plan. Required diagnostics mean detection/reporting capability under 4.2 p2(3), not a mandated severity, code, or refusal to compile.",
+      "dependencies": "4.1.2 p2 and 4.2 p2(3) (PDF pages 45-46); R604-R607; 4.1.3/R403/C401; 8.6.7 R846-R847/C886 and p6-p8 (PDF pages 137-138). 8.5.13 p1 (PDF page 130) permits conversion when defining the named constant. 7.4 defines the noninteger literal types. Ordinary intrinsic assignment and DATA value conversion in 8.6.7 p10 are not int-constant contexts and are not used as negative oracles."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_6_2_3.md"
+  },
+  "review_fingerprint": "cf68b78ac390bd90e66f8980a5ad111b0d5f92e6c1c262a73e55fc4413a1fe39",
+  "review_rationale": "Independent source-first review verified all five numbered units, union/alias boundaries, legal DATA constant contexts, scalar/PARAMETER premises, and minimal repairs. Parent integration applied the reviewer-recommended one-element/one-repeat strengthening to named C602 cases; both references validate the repaired control and reject the noninteger variants. No new language obligation or weaker oracle was introduced."
+}

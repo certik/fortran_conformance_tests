@@ -402,6 +402,13 @@ class CorpusTests(unittest.TestCase):
                 r'\b(?:name|modu|type|part|proc|argu|prog)_123\w*', path.read_text())}
             self.assertEqual(lengths, {64} if '_invalid' in path.name else {63}, path)
 
+    def test_named_constant_type_negatives_are_count_neutral(self):
+        path = str(self.root / 'clause06/C602_invalid__named.f90')
+        for _, _, _, _, source in runner.isolated_cases(path, 'C602'):
+            self.assertIn('integer :: values(1)', source)
+            self.assertNotIn('integer :: values(2)', source)
+            self.assertIn('data values /repeats * 7/', source)
+
     def test_all_invalid_cases_can_be_isolated(self):
         for path, rule, kind in runner.discover(str(self.root)):
             if kind == 'invalid':

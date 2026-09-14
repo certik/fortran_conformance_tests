@@ -22,7 +22,7 @@ The readiness refactoring now supplies:
   context case.
 
 This is infrastructure readiness, not completed conformance coverage.
-The current census still has 5,264 unresolved base units and five unresolved
+The current census still has 5,257 unresolved base units and five unresolved
 fine-grained units inside the calibration catalogues. Its independent visual
 review is still pending. Automatic PDF extraction is not semantic review,
 and list items/table rows require additional audited subdivisions.
@@ -249,8 +249,8 @@ claim to cover those interfaces.
 ## 8. Rollout progress and next batch
 
 `doc/rollout_progress.json` records reviewed batch checkpoints. The first
-implementation batch covers 6.2.2 and 6.2.5, using separate author
-worktrees and an independent source-first reviewer. The coordinator
+two implementation batches cover 6.2.2-6.2.5, using separate author
+worktrees and independent source-first reviewers. The coordinator
 continued in the existing session, while authors and reviewers received
 fresh bounded contexts. No large factory or per-agent model override was
 used, so this is not an A/B model benchmark.
@@ -262,9 +262,16 @@ reviews; both now have regression coverage. The subsequent fixture review
 also found and repaired a short-diagnostic-format omission in manifest
 rejection tests. See `doc/source_audits/`.
 
-After the first reviewed checkpoint, the next queued source units are
-6.2.3 (Constants) and 6.2.4 (Operators). Keep their scopes disjoint and
-review the actual source, especially any restated syntax and dependencies.
-The outstanding assignment/census questions remain explicit. Compare
-model routing on bounded packets before widening concurrency; do not
-jump from this batch to thousands of unreviewed programs.
+The second checkpoint adds Constants and Operators: eight structured
+numbered requirements, 38 facets, and 45 executions. Review exposed a
+DATA-repeat diagnostic fallback; count-neutral named cases now distinguish
+missing integer-type rejection from an unrelated object/value-count error.
+Restated operator syntax remains owned by its defining Clause 10 subclause.
+
+The next queued source units are 6.1.1-6.1.4 (characters, letters, digits,
+and underscore), plus 6.2.1 and 6.2.6 (tokens and delimiters). Keep their
+scopes disjoint, avoid assuming ASCII collating values, and do not turn
+permissions or definitions into mandatory diagnostics. The outstanding
+assignment/census questions remain explicit. Compare model routing on
+bounded packets before widening concurrency; do not jump from this batch
+to thousands of unreviewed programs.
