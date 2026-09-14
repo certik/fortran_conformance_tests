@@ -125,7 +125,7 @@ to dependencies mentioned in the source.
 
 | Header | Meaning |
 | --- | --- |
-| `evidence: effect` | Default: assertions about conforming execution |
+| `evidence: effect` | Direct runtime assertions or diagnostic observations; retain case kind and execution phase |
 | `evidence: positive-control` | Conforming controls; not a check that violating programs are diagnosed |
 | `evidence: context-only` | Context/admission evidence, not a direct assertion about an undefined value |
 | `profile: ...` | Required optional processor properties, checked before compiling the case |
@@ -171,6 +171,41 @@ names its step; an earlier failure cannot satisfy a later expectation.
 Rejection requires a real diagnostic, not a crash. External expectations
 can name a source line, file, or EOF anchor.
 
+For a reporting requirement that does not mandate fatal rejection, opt in
+with `expect.outcome: "diagnose"` in a compile-only fixture. It is an
+invalid-input case, not a conforming compile-only control. The diagnostic
+must name a declared input file and an exact line; an error at that location
+can satisfy the expectation regardless of ordinary process exit status.
+Nonfatal reports require explicit compiler-family, severity, and
+case-insensitive message-substring predicates:
+
+```json
+{
+  "phase": "compile",
+  "step": "source",
+  "outcome": "diagnose",
+  "diagnostic": {
+    "file": "source.f90",
+    "line": 6,
+    "allow_nonfatal": [
+      {"compiler": "flang", "severity": "portability", "contains_any": ["missing space"]}
+    ]
+  }
+}
+```
+
+`allow_nonfatal` supports `warning` or `portability` and the `lfortran`,
+`gfortran`, `flang`, or `c` compiler families. Optional top-level
+`diagnostic.contains_any` further restricts every matching diagnostic.
+Predicates match the located diagnostic message, not source echoes or
+other output. A wrong file/line, unlocated message, unrelated warning,
+earlier build failure, crash, verifier failure, or timeout cannot pass.
+`--codes` still requires the LFortran rule reference when requested.
+The existing `reject` outcome and ordinary isolated-negative rejection
+policy are unchanged; no arbitrary warning allowance is added to them.
+Successful compile-only and link-only references are displayed as
+`compiles` and `links`, never as runtime observations.
+
 Runtime expectations use an exact exit code. Nonzero codes need an
 explicit policy/profile basis: Fortran does not universally mandate the
 STOP-code-to-process-status mapping. Signals and timeouts cannot satisfy
@@ -209,6 +244,8 @@ This permits several main-program cases, missing-END cases, and fixed-form
 cases without depending on compiler recovery. Legacy free-form files use
 their column-1 top-level END statements as boundaries; unmarked helper
 units remain in each compilation.
+Reports retain the isolated input hash and actual compiler command,
+return code, and streams, as they do for manifest fixtures.
 
 LFortran must exit unsuccessfully without a compiler crash/verifier failure
 and issue an error whose source range includes the marked line. `--codes`

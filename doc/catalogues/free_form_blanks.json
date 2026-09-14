@@ -1,0 +1,701 @@
+{
+  "schema_version": 1,
+  "section": "6.3.2.2",
+  "review_state": "reviewed",
+  "subunits": {
+    "p1": [
+      "p1.token-interiors",
+      "p1.character-literal-exception",
+      "p1.character-edit-exception",
+      "p1.format-exception",
+      "p1.inter-token-permission",
+      "p1.complex-literal-example",
+      "p1.blank-run-equivalence",
+      "p1.blank-run-character-exception"
+    ],
+    "p2": [
+      "p2.names",
+      "p2.constants",
+      "p2.labels",
+      "p2.adjacent-keywords",
+      "p2.adjacent-names",
+      "p2.adjacent-constants",
+      "p2.adjacent-labels"
+    ],
+    "note-unnumbered": [
+      "note-unnumbered.real-name",
+      "note-unnumbered.read-label",
+      "note-unnumbered.label-do",
+      "note-unnumbered.do-name"
+    ],
+    "p3": [
+      "p3.required-separator",
+      "p3.table-exceptions"
+    ],
+    "table6.2": [
+      "table6.2.block-data",
+      "table6.2.double-precision",
+      "table6.2.else-if",
+      "table6.2.else-where",
+      "table6.2.end-associate",
+      "table6.2.end-block",
+      "table6.2.end-block-data",
+      "table6.2.end-critical",
+      "table6.2.end-do",
+      "table6.2.end-enum",
+      "table6.2.end-file",
+      "table6.2.end-forall",
+      "table6.2.end-function",
+      "table6.2.end-if",
+      "table6.2.end-interface",
+      "table6.2.end-module",
+      "table6.2.end-procedure",
+      "table6.2.end-program",
+      "table6.2.end-select",
+      "table6.2.end-submodule",
+      "table6.2.end-subroutine",
+      "table6.2.end-team",
+      "table6.2.end-type",
+      "table6.2.end-where",
+      "table6.2.go-to",
+      "table6.2.in-out",
+      "table6.2.select-case",
+      "table6.2.select-type"
+    ],
+    "table6.2.end-block-data": [
+      "table6.2.end-block-data.no-gaps",
+      "table6.2.end-block-data.first-gap",
+      "table6.2.end-block-data.second-gap",
+      "table6.2.end-block-data.both-gaps"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S6.3.2.2-001",
+      "title": "Free-form token interiors exclude blanks outside the stated exceptions",
+      "source": "6.3.2.2 p1, first two sentences; J3/24-007 PDF page 71, printed page 57, lines 15-17.",
+      "source_units": [
+        "p1.token-interiors",
+        "p1.character-literal-exception",
+        "p1.character-edit-exception",
+        "p1.format-exception",
+        "p1.inter-token-permission",
+        "p1.complex-literal-example"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "A free-form lexical token cannot contain an inserted blank unless the blank is in a character context or a format specification. This does not prohibit blanks between separate tokens. In particular, a complex literal is compound syntax rather than one lexical token, so its constituent tokens can be separated by blanks. Character context means a character literal or a character string edit descriptor, not every quoted-looking construct.",
+      "facets": [
+        "name-interior",
+        "integer-interior",
+        "real-interior",
+        "logical-interior",
+        "boz-interior",
+        "keyword-interior",
+        "operator-interior",
+        "label-interior",
+        "double-colon-interior",
+        "character-literal",
+        "character-edit-descriptor",
+        "format-specification",
+        "inter-token",
+        "compound-complex"
+      ],
+      "pending": {},
+      "oracle": "Nine isolated diagnostic cases insert one blank into otherwise legal tokens; nine one-blank-removal repairs execute small independent checks. The selected tokens are a name, integer, real exponent spelling, logical literal, BOZ digit sequence in DATA, INTEGER keyword, power operator, label, and double colon. A quoted BOZ constant is not the 3.21 character-context exception. Separate positive controls admit ordinary inter-token blanks and a complex literal with blanks next to its parentheses, comma, and unary minus. The character/FORMAT control checks two internal blanks in both a literal and a character edit descriptor, and a blank inside I2 in a labeled FORMAT specification.",
+      "oracle_limitation": "These are representative blank insertions, not complete spelling/kind/operator/delimiter coverage; canonical token owners remain unchanged. The negative sources must not simply become legal assignments to names that resemble keywords. FORMAT and character contexts are positive-control exceptions, not negative character blacklists. Character data values and formatting mechanics are uncredited enclosing context. No split across physical lines, comment termination, or statement-continuation obligation is authored. Diagnostic capability comes from 4.2 p2(5), even without a numbered C item; a crash, timeout, or unrelated feature failure is not corroboration.",
+      "dependencies": "3.21, PDF 21; 5.5.2 p1, PDF 65; 6.2.1 and R603-R611/C601-C603, PDF 68-70; R708/R714/R718-R720/R724/R725/R772-R776 retain lexical and literal definitions. 7.7 and 8.6.7 permit the small positive BOZ DATA value. 13.2.1 p1/R1301-R1302/C1301, PDF 289, permits blanks inside FORMAT but preserves character string edit descriptors. R1033 and the existing Clause 10 rules supply the arithmetic and assignment contexts. 4.2 p2(3)/(5) supplies diagnostic capability."
+    },
+    {
+      "id": "S6.3.2.2-002",
+      "title": "A run of blanks outside character context has the effect of one blank",
+      "source": "6.3.2.2 p1, final sentence; J3/24-007 PDF page 71, printed page 57, lines 17-18.",
+      "source_units": [
+        "p1.blank-run-equivalence",
+        "p1.blank-run-character-exception"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Replacing one blank by several consecutive blanks outside a character context preserves the interpretation. The equivalence does not collapse the characters stored in a character literal or emitted by a character string edit descriptor.",
+      "facets": [
+        "ordinary-statements",
+        "format-spacing",
+        "character-context-exclusion"
+      ],
+      "pending": {},
+      "oracle": "Separate programs compare compact and expanded inter-token spacing against the independently known integer result 17, compare I2 with I followed by three blanks and 2 against the exact internal record ' 7', and check the literal length and internal-record content of 'a  b'. The character-context case also distinguishes the one-blank spelling; all substrings are statically in bounds.",
+      "oracle_limitation": "Agreement between two equally wrong computations is insufficient: each effect has an independent expected value or exact character record. The FORMAT rule is a canonical dependency, not new coverage of all edit descriptors. These three finite contexts are not a matrix of every statement and keyword.",
+      "dependencies": "3.21 distinguishes the two character contexts. 13.2.1 p1, PDF 289, controls FORMAT spacing and its character-string exception. 7.4.4 and 10.2.1.3 define character values and assignment; ordinary integer addition and multiplication use Clause 10. This effect is not a standalone negative diagnostic obligation."
+    },
+    {
+      "id": "S6.3.2.2-003",
+      "title": "Names, constants, and labels need separators from adjacent word-like tokens",
+      "source": "6.3.2.2 p2; J3/24-007 PDF page 71, printed page 57, line 19.",
+      "source_units": [
+        "p2.names",
+        "p2.constants",
+        "p2.labels",
+        "p2.adjacent-keywords",
+        "p2.adjacent-names",
+        "p2.adjacent-constants",
+        "p2.adjacent-labels"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "Where the enclosing syntax places a name, constant, or statement label next to a keyword, name, constant, or label, a separating blank is required. The rule is conditional on that token adjacency being otherwise grammatical; inserting a blank cannot repair missing commas, operators, or other syntax. A named constant is spelled as a name. A quote delimiter does not by itself waive the separator before a character literal.",
+      "facets": [
+        "keyword-name",
+        "keyword-named-constant",
+        "keyword-integer-constant",
+        "keyword-character-constant",
+        "keyword-label",
+        "label-keyword",
+        "label-name",
+        "keyword-prefix-name-control",
+        "nonfatal-diagnostic"
+      ],
+      "pending": {},
+      "oracle": "Seven negatives remove exactly one required blank from REAL x, STOP code, STOP 0, PRINT '(A)', GO TO 10, 10 CONTINUE, or DO 10 i. Their repaired programs are minimal positive controls with defined values, finite forward branches/loops, or normal STOP 0 termination. Six byte-preserved compile-only manifests use a diagnose expectation: a located error or a specifically matched Flang missing-space portability report is sufficient, independent of ordinary exit status. Their original source bytes and execution IDs are retained. The character-constant case retains the ordinary rejection contract. The labeled DO uses its matching labeled END DO, not a deleted shared or nonblock terminal action. A separate legal program assigns to realx, stop0, goto10, and endprogramx, showing why such names in assignment contexts must not be treated as malformed keywords.",
+      "oracle_limitation": "The seven role subdivisions are source accounting, not a claim that every Cartesian pair occurs in valid Fortran syntax or that every semantic context was exercised. Already-invalid adjacent constants are not used as separator tests. The source's REAL/READ/30/DO note is illustrative, not an independent obligation. Fatal rejection is not mandated by 4.2. The nonfatal-diagnostic facet checks a reporting oracle that permits relevant nonfatal reports; it does not require processors to choose that severity. Compiler family, file, line, severity and message constrain each nonfatal predicate, and crashes, timeouts, unlocated or unrelated reports, and earlier build failures cannot satisfy it.",
+      "dependencies": "6.2.2/R603, 6.2.3/R604/R606, and 6.2.5/R611 retain the name/constant/label definitions. 5.5.2 permits names with keyword spellings. R801 supplies REAL x; R1162 and 11.4 supply STOP; R1212 supplies PRINT (PDF 257); R1159 supplies GO TO; R1121/R1123/R1134 and C1137 supply the three-iteration labeled DO. 4.2 p2(5), PDF 46, requires Clause 6 diagnostic capability."
+    },
+    {
+      "id": "S6.3.2.2-004",
+      "title": "Adjacent keywords outside Table 6.2 need one or more blanks",
+      "source": "6.3.2.2 p3 before the exception list; J3/24-007 PDF page 71, printed page 57, lines 20-21.",
+      "source_units": [
+        "p3.required-separator"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "Distinct adjacent keywords require at least one intervening blank unless their combination is an exception listed in Table 6.2. Similar spelling or analogy with a listed combination is not permission to join a different pair.",
+      "facets": [
+        "implicit-none",
+        "error-stop",
+        "select-rank",
+        "nonfatal-diagnostic"
+      ],
+      "pending": {},
+      "oracle": "Isolate IMPLICITNONE, ERRORSTOP, and SELECTRANK in byte-preserved diagnose manifests and require a relevant report at the joined spelling. Their original source bytes and execution IDs are retained. A located error or an explicitly matched Flang missing-space portability diagnostic satisfies the reporting contract without requiring an unsuccessful process exit. Each positive repair inserts one blank. ERROR STOP is in a false action-IF branch so the control terminates normally, not by deliberate error termination. SELECT RANK has an explicit assumed-rank dummy and a scalar actual; the value is used only in RANK(0). An expanded-blank IMPLICIT NONE control demonstrates that more than one separating blank is allowed.",
+      "oracle_limitation": "Only three unlisted combinations are tested. SELECT CASE and SELECT TYPE being listed does not license SELECT RANK. The assumed-rank feature can mask the latter negative if it fails elsewhere, which is why its repair and exact source location are retained. Compiler-specific severity/message predicates qualify nonfatal observations; wrong or unlocated reports, earlier build failures, compiler crashes and timeouts do not pass. The nonfatal facet permits a nonfatal report but does not require that processor choice. This source-form diagnostic obligation is not inferred solely from the prose word 'shall'; 4.2 p2(5) applies directly.",
+      "dependencies": "R866 defines IMPLICIT NONE. R1163 defines ERROR STOP and R1141 provides the action-IF context. R1151/C1155, R1152, and 11.1.10.2 define the SELECT RANK selector and guarded scalar case (PDF 222-223); R827/C840 defines the assumed-rank dummy. Table 6.2 is the exhaustive exception list for this separator rule, not a complete keyword grammar."
+    },
+    {
+      "id": "S6.3.2.2-005",
+      "title": "The listed keyword combinations admit omitted or inserted internal blanks",
+      "source": "6.3.2.2 p3 and Table 6.2; J3/24-007 PDF page 71, printed page 57. Original visual table: 10 entries in the left column, 10 in the middle, 8 in the right.",
+      "source_units": [
+        "p3.table-exceptions",
+        "table6.2.block-data",
+        "table6.2.double-precision",
+        "table6.2.else-if",
+        "table6.2.else-where",
+        "table6.2.end-associate",
+        "table6.2.end-block",
+        "table6.2.end-block-data",
+        "table6.2.end-block-data.no-gaps",
+        "table6.2.end-block-data.first-gap",
+        "table6.2.end-block-data.second-gap",
+        "table6.2.end-block-data.both-gaps",
+        "table6.2.end-critical",
+        "table6.2.end-do",
+        "table6.2.end-enum",
+        "table6.2.end-file",
+        "table6.2.end-forall",
+        "table6.2.end-function",
+        "table6.2.end-if",
+        "table6.2.end-interface",
+        "table6.2.end-module",
+        "table6.2.end-procedure",
+        "table6.2.end-program",
+        "table6.2.end-select",
+        "table6.2.end-submodule",
+        "table6.2.end-subroutine",
+        "table6.2.end-team",
+        "table6.2.end-type",
+        "table6.2.end-where",
+        "table6.2.go-to",
+        "table6.2.in-out",
+        "table6.2.select-case",
+        "table6.2.select-type"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "context-dependent",
+      "definition": "Each combination enumerated in Table 6.2 has optional blanks at its listed internal word boundaries in free form. This is a spelling exception, not permission to insert blanks at arbitrary positions within an individual word or omit the separator before a following name or label. END BLOCK DATA has two optional boundaries, so all four omission/insertion combinations are included.",
+      "facets": [
+        "block-data",
+        "double-precision",
+        "else-if",
+        "else-where",
+        "end-associate",
+        "end-block",
+        "end-block-data-no-gaps",
+        "end-block-data-first-gap",
+        "end-block-data-second-gap",
+        "end-block-data-both-gaps",
+        "end-critical",
+        "end-do",
+        "end-enum",
+        "end-file",
+        "end-forall",
+        "end-function",
+        "end-if",
+        "end-interface",
+        "end-module",
+        "end-procedure",
+        "end-program",
+        "end-select",
+        "end-submodule",
+        "end-subroutine",
+        "end-team",
+        "end-type",
+        "end-where",
+        "go-to",
+        "in-out",
+        "select-case",
+        "select-type"
+      ],
+      "pending": {},
+      "oracle": "A finite set of separately executable positive controls places compact and separated spellings in minimal legal enclosing constructs. Scalar results, three-iteration sums, statically sized two-element arrays, guarded polymorphic selection, and initialized named COMMON values give small independent checks. The block-data case contains all four END BLOCK DATA variants. Explicit ordered compilation supplies the module/submodule/END PROCEDURE context. END FILE uses a guarded scratch-file round trip. END TEAM is deliberately a compile-only subroutine accepting a TEAM_TYPE dummy: require the declared object, do not execute an undefined team value. Its form could be included in a conforming caller using FORM TEAM. All these cases are labeled positive-control, not effect coverage of the enclosing constructs.",
+      "oracle_limitation": "One or a few legal contexts per table entry do not establish every semantic context, optional clause, construct name, language binding, or keyword use. ELSE WHERE uses unmasked alternatives; END SELECT uses SELECT CASE; IN OUT uses ordinary scalar nonpointer dummies. END TEAM does not claim runtime team or multi-image semantics. CRITICAL uses the existing coarray flags without an optional feature profile and does not claim cross-image exclusion. BLOCK DATA and FORALL remain valid but obsolescent contexts. Feature failures in any preceding module or construct are evidence of masking, not disproof of an optional spelling. Unlisted keyword pairs and splits within a word belong to the separate restriction cases.",
+      "dependencies": "Canonical ownership: R1421/R1422 (BLOCK DATA, PDF 321); R704 (DOUBLE PRECISION, PDF 80); R1138/R1140 (ELSE IF/END IF, PDF 218); R1048/R1049/R1050 (ELSE WHERE/END WHERE, PDF 198); R1106 (END ASSOCIATE, PDF 204); R1110 (END BLOCK, PDF 206); R1118 (END CRITICAL, PDF 209); R1134 (END DO, PDF 212); R763 (END ENUM, PDF 109); R1225 (END FILE, PDF 276); R1055 (END FORALL, PDF 200); R1536/R1540 (END FUNCTION/END SUBROUTINE, PDF 354-355); R1504 (END INTERFACE, PDF 326); R1406 (END MODULE, PDF 318); R1543 (END PROCEDURE, PDF 356); R1403 (END PROGRAM, PDF 317); R1145/R1153/R1157 (END SELECT, PDF 220/222/225); R1419 (END SUBMODULE, PDF 321); R1114/C1115 and 11.1.5.2 p1 (END TEAM, PDF 207); R730/C744 (END TYPE, PDF 89); R1159 (GO TO, PDF 227); R828 (IN OUT, PDF 128); R1143 (SELECT CASE, PDF 220); R1155/C1164 (SELECT TYPE, PDF 224-225). C1412 and C1577 require the ancestor module's separate-procedure interfaces. 4.2 p2(1) supplies admission/execution of conforming controls."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "structural",
+      "rationale": "PDF 71, lines 15-18: separate token interiors, both character contexts, FORMAT, inter-token permission, the complex example, and blank-run equivalence with its exception."
+    },
+    {
+      "unit": "p1.token-interiors",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.3.2.2-001"
+      ]
+    },
+    {
+      "unit": "p1.character-literal-exception",
+      "disposition": "permission",
+      "requirements": [
+        "S6.3.2.2-001"
+      ],
+      "rationale": "The first 3.21 character context permits internal data blanks, including repeated blanks. This is an exception to the token restriction, not an unrestricted quote-based exemption for BOZ."
+    },
+    {
+      "unit": "p1.character-edit-exception",
+      "disposition": "permission",
+      "requirements": [
+        "S6.3.2.2-001"
+      ],
+      "rationale": "The second 3.21 character context preserves spaces within a character string edit descriptor; canonical interpretation remains in Clause 13."
+    },
+    {
+      "unit": "p1.format-exception",
+      "disposition": "permission",
+      "requirements": [
+        "S6.3.2.2-001"
+      ],
+      "rationale": "A FORMAT specification admits internal blanks under 13.2.1. This does not license splitting the FORMAT statement keyword."
+    },
+    {
+      "unit": "p1.inter-token-permission",
+      "disposition": "permission",
+      "requirements": [
+        "S6.3.2.2-001"
+      ],
+      "rationale": "Readability blanks may separate existing tokens without changing their interiors. Ordinary syntax and the mandatory separator rules still apply."
+    },
+    {
+      "unit": "p1.complex-literal-example",
+      "disposition": "informative",
+      "requirements": [
+        "S6.3.2.2-001"
+      ],
+      "rationale": "The in-paragraph example explains that a complex literal has multiple tokens; R718 and the 6.2.1 exclusion remain canonical. A positive compound-literal control is not a token-count oracle."
+    },
+    {
+      "unit": "p1.blank-run-equivalence",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.3.2.2-002"
+      ]
+    },
+    {
+      "unit": "p1.blank-run-character-exception",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.3.2.2-002"
+      ],
+      "rationale": "The final sentence's character-context qualification is preserved separately from the first sentence's permission."
+    },
+    {
+      "unit": "p2",
+      "disposition": "structural",
+      "rationale": "PDF 71, line 19: account for all three subject categories and all four adjacent categories. These conditional grammar roles are not seven new S IDs or a Cartesian semantic-context claim."
+    },
+    {
+      "unit": "p2.names",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.3.2.2-003"
+      ]
+    },
+    {
+      "unit": "p2.constants",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.3.2.2-003"
+      ]
+    },
+    {
+      "unit": "p2.labels",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.3.2.2-003"
+      ]
+    },
+    {
+      "unit": "p2.adjacent-keywords",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.3.2.2-003"
+      ]
+    },
+    {
+      "unit": "p2.adjacent-names",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.3.2.2-003"
+      ],
+      "rationale": "The labeled DO supplies a legal label/name adjacency. No otherwise-illegal name/name juxtaposition is fabricated as a blank-only negative."
+    },
+    {
+      "unit": "p2.adjacent-constants",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.3.2.2-003"
+      ],
+      "rationale": "Integer, named, and character STOP/PRINT operands retain constant roles. Constant/constant juxtaposition is not assumed legal merely because the separator sentence lists both categories."
+    },
+    {
+      "unit": "p2.adjacent-labels",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.3.2.2-003"
+      ],
+      "rationale": "GO TO has a keyword followed by a label. Canonical label grammar and context still apply; two labels on a statement are not repaired by adding a blank."
+    },
+    {
+      "unit": "note-unnumbered",
+      "disposition": "structural",
+      "rationale": "The note visually singles out four required separator positions. Its examples illustrate p2; they do not add independent obligations."
+    },
+    {
+      "unit": "note-unnumbered.real-name",
+      "disposition": "informative",
+      "rationale": "The blank after REAL separates the declaration keyword and name."
+    },
+    {
+      "unit": "note-unnumbered.read-label",
+      "disposition": "informative",
+      "rationale": "The blank after READ separates the keyword and format label; no interactive READ execution is required by this note."
+    },
+    {
+      "unit": "note-unnumbered.label-do",
+      "disposition": "informative",
+      "rationale": "The blank after 30 separates the statement label and DO keyword."
+    },
+    {
+      "unit": "note-unnumbered.do-name",
+      "disposition": "informative",
+      "rationale": "The blank after DO separates the keyword and loop variable name."
+    },
+    {
+      "unit": "p3",
+      "disposition": "structural",
+      "rationale": "PDF 71, lines 20-21: the general requirement and table exceptions are separate source units."
+    },
+    {
+      "unit": "p3.required-separator",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.3.2.2-004"
+      ]
+    },
+    {
+      "unit": "p3.table-exceptions",
+      "disposition": "permission",
+      "requirements": [
+        "S6.3.2.2-005"
+      ],
+      "rationale": "The listed boundaries make blanks optional, not prohibited. The syntax-admission obligation is tied to these permissions and 4.2, not to invented keyword semantics."
+    },
+    {
+      "unit": "table6.2",
+      "disposition": "structural",
+      "rationale": "Visually read all 28 entries, in column order 10/10/8. END BLOCK DATA is further split into its four two-gap combinations."
+    },
+    {
+      "unit": "table6.2.block-data",
+      "disposition": "permission",
+      "requirements": [
+        "S6.3.2.2-005"
+      ],
+      "rationale": "BLOCK DATA: R1421; initial values in named COMMON provide the finite context."
+    },
+    {
+      "unit": "table6.2.double-precision",
+      "disposition": "permission",
+      "requirements": [
+        "S6.3.2.2-005"
+      ],
+      "rationale": "DOUBLE PRECISION: R704; scalar declarations only, not every type-specifier context."
+    },
+    {
+      "unit": "table6.2.else-if",
+      "disposition": "permission",
+      "requirements": [
+        "S6.3.2.2-005"
+      ],
+      "rationale": "ELSE IF: R1138; ordinary unnamed block IF."
+    },
+    {
+      "unit": "table6.2.else-where",
+      "disposition": "permission",
+      "requirements": [
+        "S6.3.2.2-005"
+      ],
+      "rationale": "ELSE WHERE: R1048/R1049; unmasked ELSEWHERE controls, not all masked variants."
+    },
+    {
+      "unit": "table6.2.end-associate",
+      "disposition": "permission",
+      "requirements": [
+        "S6.3.2.2-005"
+      ],
+      "rationale": "END ASSOCIATE: R1106; defined scalar selectors."
+    },
+    {
+      "unit": "table6.2.end-block",
+      "disposition": "permission",
+      "requirements": [
+        "S6.3.2.2-005"
+      ],
+      "rationale": "END BLOCK: R1110; unnamed BLOCK constructs."
+    },
+    {
+      "unit": "table6.2.end-block-data",
+      "disposition": "permission",
+      "requirements": [
+        "S6.3.2.2-005"
+      ],
+      "rationale": "END BLOCK DATA: R1422; preserve both independently optional boundaries in the four child units."
+    },
+    {
+      "unit": "table6.2.end-block-data.no-gaps",
+      "disposition": "permission",
+      "requirements": [
+        "S6.3.2.2-005"
+      ],
+      "rationale": "ENDBLOCKDATA omits both internal blanks."
+    },
+    {
+      "unit": "table6.2.end-block-data.first-gap",
+      "disposition": "permission",
+      "requirements": [
+        "S6.3.2.2-005"
+      ],
+      "rationale": "END BLOCKDATA retains only the boundary after END."
+    },
+    {
+      "unit": "table6.2.end-block-data.second-gap",
+      "disposition": "permission",
+      "requirements": [
+        "S6.3.2.2-005"
+      ],
+      "rationale": "ENDBLOCK DATA retains only the boundary after BLOCK."
+    },
+    {
+      "unit": "table6.2.end-block-data.both-gaps",
+      "disposition": "permission",
+      "requirements": [
+        "S6.3.2.2-005"
+      ],
+      "rationale": "END BLOCK DATA retains both boundaries."
+    },
+    {
+      "unit": "table6.2.end-critical",
+      "disposition": "permission",
+      "requirements": [
+        "S6.3.2.2-005"
+      ],
+      "rationale": "END CRITICAL: R1118; single-image control, no cross-image exclusion claim."
+    },
+    {
+      "unit": "table6.2.end-do",
+      "disposition": "permission",
+      "requirements": [
+        "S6.3.2.2-005"
+      ],
+      "rationale": "END DO: R1134; fixed, finite iteration counts."
+    },
+    {
+      "unit": "table6.2.end-enum",
+      "disposition": "permission",
+      "requirements": [
+        "S6.3.2.2-005"
+      ],
+      "rationale": "END ENUM: R763; unnamed interoperable enumeration, not END ENUMERATION TYPE."
+    },
+    {
+      "unit": "table6.2.end-file",
+      "disposition": "permission",
+      "requirements": [
+        "S6.3.2.2-005"
+      ],
+      "rationale": "END FILE: R1225 ENDFILE; connected scratch sequential formatted unit with IOSTAT guards."
+    },
+    {
+      "unit": "table6.2.end-forall",
+      "disposition": "permission",
+      "requirements": [
+        "S6.3.2.2-005"
+      ],
+      "rationale": "END FORALL: R1055; obsolescent but conforming finite independent array assignments."
+    },
+    {
+      "unit": "table6.2.end-function",
+      "disposition": "permission",
+      "requirements": [
+        "S6.3.2.2-005"
+      ],
+      "rationale": "END FUNCTION: R1536; ordinary scalar internal functions."
+    },
+    {
+      "unit": "table6.2.end-if",
+      "disposition": "permission",
+      "requirements": [
+        "S6.3.2.2-005"
+      ],
+      "rationale": "END IF: R1140; paired with the finite ELSE IF control."
+    },
+    {
+      "unit": "table6.2.end-interface",
+      "disposition": "permission",
+      "requirements": [
+        "S6.3.2.2-005"
+      ],
+      "rationale": "END INTERFACE: R1504; explicit interfaces to external functions, not generic-spec coverage."
+    },
+    {
+      "unit": "table6.2.end-module",
+      "disposition": "permission",
+      "requirements": [
+        "S6.3.2.2-005"
+      ],
+      "rationale": "END MODULE: R1406; modules exporting defined scalar parameters."
+    },
+    {
+      "unit": "table6.2.end-procedure",
+      "disposition": "permission",
+      "requirements": [
+        "S6.3.2.2-005"
+      ],
+      "rationale": "END PROCEDURE: R1543; separate module procedures declared by the ancestor."
+    },
+    {
+      "unit": "table6.2.end-program",
+      "disposition": "permission",
+      "requirements": [
+        "S6.3.2.2-005"
+      ],
+      "rationale": "END PROGRAM: R1403; compact and separated independent main programs."
+    },
+    {
+      "unit": "table6.2.end-select",
+      "disposition": "permission",
+      "requirements": [
+        "S6.3.2.2-005"
+      ],
+      "rationale": "END SELECT: R1145/R1153/R1157; SELECT CASE is the credited spelling context, not all three constructs."
+    },
+    {
+      "unit": "table6.2.end-submodule",
+      "disposition": "permission",
+      "requirements": [
+        "S6.3.2.2-005"
+      ],
+      "rationale": "END SUBMODULE: R1419; explicit ordered parent/submodule build."
+    },
+    {
+      "unit": "table6.2.end-subroutine",
+      "disposition": "permission",
+      "requirements": [
+        "S6.3.2.2-005"
+      ],
+      "rationale": "END SUBROUTINE: R1540; ordinary scalar internal subroutines."
+    },
+    {
+      "unit": "table6.2.end-team",
+      "disposition": "permission",
+      "requirements": [
+        "S6.3.2.2-005"
+      ],
+      "rationale": "END TEAM: R1114; compile-only well-typed procedure with an input TEAM_TYPE dummy, never an executed undefined team."
+    },
+    {
+      "unit": "table6.2.end-type",
+      "disposition": "permission",
+      "requirements": [
+        "S6.3.2.2-005"
+      ],
+      "rationale": "END TYPE: R730; ordinary derived types without allocation, pointers, or finalization."
+    },
+    {
+      "unit": "table6.2.end-where",
+      "disposition": "permission",
+      "requirements": [
+        "S6.3.2.2-005"
+      ],
+      "rationale": "END WHERE: R1050; statically sized masks and arrays."
+    },
+    {
+      "unit": "table6.2.go-to",
+      "disposition": "permission",
+      "requirements": [
+        "S6.3.2.2-005"
+      ],
+      "rationale": "GO TO: R1159; unconditional forward branches, not computed GO TO."
+    },
+    {
+      "unit": "table6.2.in-out",
+      "disposition": "permission",
+      "requirements": [
+        "S6.3.2.2-005"
+      ],
+      "rationale": "IN OUT: R828 INOUT; scalar nonpointer dummy arguments."
+    },
+    {
+      "unit": "table6.2.select-case",
+      "disposition": "permission",
+      "requirements": [
+        "S6.3.2.2-005"
+      ],
+      "rationale": "SELECT CASE: R1143; scalar integer selector."
+    },
+    {
+      "unit": "table6.2.select-type",
+      "disposition": "permission",
+      "requirements": [
+        "S6.3.2.2-005"
+      ],
+      "rationale": "SELECT TYPE: R1155; defined unlimited-polymorphic scalar dummy inspected only in its matching TYPE IS guard."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_6_3_2_2.md"
+  },
+  "review_fingerprint": "f8f928f86334a4066db7c5e31cfb8ea6aecba7900851b20c357e7b18b79a623d",
+  "review_rationale": "Independent source-first review and recorded integration repairs: doc/source_audits/lexical_batch_004.json. All 28 Table 6.2 entries, four END BLOCK DATA choices, four note separator positions, token/character/FORMAT exceptions and adjacency premises are accounted for. The source locator now assigns the first two sentences to token interiors, leaving blank-run equivalence separate. Reporting permits precisely qualified nonfatal observations without requiring that processor choice."
+}

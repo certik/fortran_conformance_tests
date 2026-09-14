@@ -1,0 +1,126 @@
+{
+  "schema_version": 1,
+  "section": "6.3.1",
+  "review_state": "reviewed",
+  "subunits": {
+    "p1": [
+      "p1.program-unit-composition",
+      "p1.line-definition",
+      "p1.after-end-boundary",
+      "p1.statement-composition"
+    ],
+    "p2": [
+      "p2.character-literal-repertoire",
+      "p2.character-edit-descriptor-repertoire"
+    ],
+    "p3": [
+      "p3.two-forms",
+      "p3.free-applicability",
+      "p3.fixed-applicability",
+      "p3.no-mixing",
+      "p3.processor-selection"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S6.3.1-001",
+      "title": "A program unit uses one source form",
+      "source": "6.3.1 p3, fourth sentence; J3/24-007, 18 December 2023, PDF page 71, printed page 57, lines 8-9.",
+      "source_units": [
+        "p3.no-mixing"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "An individual program unit cannot switch between free-form and fixed-form conventions. This restriction is per program unit, not per complete program. The processor selects how a unit's source form is specified; neither a filename suffix nor a command-line spelling is standardized.",
+      "facets": [
+        "free-unit",
+        "fixed-unit",
+        "separate-unit-forms",
+        "mixed-continuation"
+      ],
+      "pending": {},
+      "oracle": "The source_forms_separate_units manifest explicitly selects free and fixed form for different compilation inputs, then links and runs them together. The free input contains a main program and a following external subroutine; another external subroutine is fixed form. Calls must produce 37 and then 43. These are positive controls, including uncredited INCLUDE and comment context. The mixed-continuation negative has unmistakably free-form lines starting in column one but imports a fixed-form column-six continuation after a complete, uncontinued assignment. Require a diagnostic on the imported continuation line. Its positive control adds just the missing trailing free-form ampersand to the preceding line and checks the result 3.",
+      "oracle_limitation": "This is one concrete mixed-convention witness, not detection of every possible mixture or a processor-independent way to request an in-unit mode switch. Text that happens to be legal in both forms is not a violation. The diagnostic is also explained by 6.3.2.4; that later section is necessary, uncredited context, not a newly authored continuation requirement. The standard requires reporting capability under 4.2 p2(5), not necessarily rejection. The existing runner checks located errors and supported reference-warning classes; unsupported nonfatal reporting paths must not be mistaken for absence of a diagnostic. No exhaustive comment-character, INCLUDE, END, or compiler-selection semantics are claimed.",
+      "dependencies": "4.2 p2(1)/(5), PDF 46, supplies conforming execution and Clause 6 diagnostic obligations. 5.2.1 and 14.1/15.6.2.3 define the program units used here. 6.3.2.1, 6.3.2.4 p1-p2, and 6.3.3.1/6.3.3.3 supply the contrasting layout contexts. Fixed input uses exactly 72 default-kind ASCII characters per line without a continuation case. 6.4 p3-p5, PDF 73, keeps INCLUDE separate from statements. 3.21, PDF 21, defines character contexts; 6.1.1, 6.1.6, and 7.4.4.2 retain character-set ownership."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "structural",
+      "rationale": "PDF 71, printed 57, lines 3-5: four definitional sentences are accounted separately; they are not four invented runtime requirements."
+    },
+    {
+      "unit": "p1.program-unit-composition",
+      "disposition": "definition",
+      "rationale": "A program unit is organized from lines containing statements, comments, and INCLUDE lines. The separate-units fixture supplies finite context, not a new S obligation or complete unit grammar coverage."
+    },
+    {
+      "unit": "p1.line-definition",
+      "disposition": "definition",
+      "rationale": "A line is a possibly empty character sequence. Newline bytes delimit the raw fixture's physical lines and are not counted as source characters."
+    },
+    {
+      "unit": "p1.after-end-boundary",
+      "disposition": "definition",
+      "rationale": "Source after a program-unit END is outside that unit. A following external subroutine is context in source_forms_separate_units; canonical END and program-unit grammars remain in Clause 14 and 15."
+    },
+    {
+      "unit": "p1.statement-composition",
+      "disposition": "definition",
+      "rationale": "Statements can occupy complete or partial lines. Continuation and termination are defined in later source-form subclauses; no later-section obligation is allocated here."
+    },
+    {
+      "unit": "p2",
+      "disposition": "structural",
+      "rationale": "PDF 71, line 6: comment-character permission is decomposed by the two character contexts in 3.21, not promoted to an all-character compiler test."
+    },
+    {
+      "unit": "p2.character-literal-repertoire",
+      "disposition": "permission",
+      "rationale": "Characters admissible in a character literal may occur in a comment. The processor's representable repertoire, including supported additional characters, is not a universal ASCII-only whitelist. The short ASCII comment in the raw control is context only; exhaustive repertoire evidence is source-only."
+    },
+    {
+      "unit": "p2.character-edit-descriptor-repertoire",
+      "disposition": "permission",
+      "rationale": "The same permission includes characters admissible in a character string edit descriptor. This is the second 3.21 context, not a separate mandatory diagnostic or an assertion that comment punctuation is executable syntax."
+    },
+    {
+      "unit": "p3",
+      "disposition": "structural",
+      "rationale": "PDF 71, lines 7-9: distinguish the two forms, their applicability, the intra-unit restriction, and processor-supplied selection."
+    },
+    {
+      "unit": "p3.two-forms",
+      "disposition": "definition",
+      "rationale": "Identifies free and fixed form. It does not specify file extensions or introduce a third mixed form."
+    },
+    {
+      "unit": "p3.free-applicability",
+      "disposition": "definition",
+      "rationale": "6.3.2 governs the free-form selection, not every source input regardless of processor mode."
+    },
+    {
+      "unit": "p3.fixed-applicability",
+      "disposition": "definition",
+      "rationale": "6.3.3 governs the fixed-form selection. Its defining catalogues and existing fixed-form calibration remain untouched."
+    },
+    {
+      "unit": "p3.no-mixing",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.3.1-001"
+      ]
+    },
+    {
+      "unit": "p3.processor-selection",
+      "disposition": "definition",
+      "rationale": "The selection mechanism is processor dependent. Manifest form fields exercise the existing compiler adapters; source filename suffixes are not credited as standard requirements."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_6_3_1.md"
+  },
+  "review_fingerprint": "541903a6b5e577a02fc19908feffea5d9d0f1c2b535c135cdb22898f2014b4bb",
+  "review_rationale": "Independent source-first review and recorded integration repairs: doc/source_audits/lexical_batch_004.json. Composition definitions, both character contexts, both forms, separate applicability, per-unit nonmixing and processor selection are accounted for. Explicit form flags, not filename suffix semantics, select the two forms. The mixed-continuation negative has the one-ampersand repair."
+}

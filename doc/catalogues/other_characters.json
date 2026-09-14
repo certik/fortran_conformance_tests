@@ -1,0 +1,118 @@
+{
+  "schema_version": 1,
+  "section": "6.1.6",
+  "review_state": "reviewed",
+  "subunits": {
+    "p1": [
+      "p1.optional-representability",
+      "p1.restricted-occurrence",
+      "p1.comments",
+      "p1.character-constants",
+      "p1.io-records",
+      "p1.character-string-edit-descriptors"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S6.1.6-001",
+      "title": "Additional representable graphic characters have restricted occurrence contexts",
+      "source": "6.1.6 p1 (J3/24-007 PDF 68, printed 54, lines 4-5; heading at line 3).",
+      "source_units": [
+        "p1.restricted-occurrence",
+        "p1.comments",
+        "p1.character-constants",
+        "p1.io-records",
+        "p1.character-string-edit-descriptors"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "Given additional characters that the processor can represent, their occurrence is limited to comments, character constants, input/output records, and character string edit descriptors. In the 6.1.1 partition, other characters are a graphic-character class outside letters, digits, underscore, and the Table 6.1 special characters. This paragraph does not require any particular additional repertoire, Unicode support, input encoding, or nondefault character kind. It does not classify ordinary control characters as other graphic characters or forbid character variables from holding values supplied by the character-type rules.\n\nThe enclosing context must still be legal. Free-form literal rep-char is graphic; fixed-form literal rep-char can be any character of the appropriate processor set, with processor restrictions on control characters allowed. Comments inherit character-context admissibility under 6.3.1 p2 and have different free/fixed initiation rules. Character string edit descriptors use a literal without a kind parameter and are output-only. Formatted records contain representable characters and can be subject to control-character prohibitions. Neither comments nor arbitrary I/O records become character contexts under 3.21, which names only literals and character string edit descriptors.\n\nFor an actual source-character or source-form violation, the diagnostic basis is the capability required by 4.2 p2(5), not merely the word shall in this paragraph. A permitted extension does not remove that capability, but the standard does not require a fatal rejection in every mode. The 4.2 p3 exemption for additional forms in a format specification outside a FORMAT statement must also be preserved. No invalid case is claimed until its source-character identity, representability assumptions, source form, prohibited occurrence, and applicable reporting configuration are established.",
+      "facets": [
+        "free-form-comment-admission",
+        "fixed-form-comment-admission",
+        "free-form-character-constant-admission",
+        "fixed-form-character-constant-admission",
+        "free-form-edit-descriptor-admission",
+        "fixed-form-edit-descriptor-admission",
+        "iso10646-internal-input-record",
+        "iso10646-internal-output-record",
+        "external-formatted-input-record",
+        "external-formatted-output-record",
+        "free-form-prohibited-source-context",
+        "fixed-form-prohibited-source-context"
+      ],
+      "pending": {
+        "free-form-comment-admission": "Needs a registered, independently justified processor source-interface profile identifying additional graphic source characters and their byte spelling. Then place them after a real free-form comment introducer and check an unchanged, nontrivial computation against a minimally changed mandatory-character control. The iso10646 kind inquiry does not establish source decoding or comment admission.",
+        "fixed-form-comment-admission": "Needs documented source-byte/graphic identity and fixed-form column and line-length semantics. Then use byte-preserved comment controls for C, star, and exclamation initiation, without treating position 6 as an exclamation comment. Kind support alone does not establish any of these source-interface premises.",
+        "free-form-character-constant-admission": "Needs an independent source-repertoire/encoding precondition for the chosen character kind and an expected character sequence established independently of repeating the same literal. Exercise both delimiters after that precondition is registered. Do not treat a multibyte source spelling as length one; rep-char must be graphic in free form.",
+        "fixed-form-character-constant-admission": "Needs an independently established source repertoire and byte-preserved fixed-form record layout, followed by both literal delimiters with guarded character-value observations. Preserve the separate permission to restrict control characters; a tab or other control is not a substitute for an other-graphic-character case.",
+        "free-form-edit-descriptor-admission": "Needs additional default-character source representability, because C1313 forbids a kind parameter in the edit descriptor. Use an actual FORMAT statement, both delimiters, a successful IOSTAT guard, and an independent output-character oracle. The existing ISO-kind inquiry cannot establish default-source repertoire or permit an ISO-kind-prefixed edit string.",
+        "fixed-form-edit-descriptor-admission": "Needs the same default-character source precondition as the free-form edit control plus verified fixed columns/records and character-context boundaries. Use output only and preserve the distinction between FORMAT statements and the 4.2 p3 exemption for other format specifications.",
+        "external-formatted-input-record": "No external-medium/record-boundary oracle is established in this batch. Next evidence is a declared byte-preserved input and a documented connection encoding and record convention, checking decoded graphic values independently after successful OPEN and READ status checks. ISO_10646 support alone does not specify the default external encoding or how arbitrary host bytes delimit records.",
+        "external-formatted-output-record": "Needs an independent external-record oracle with explicit connection encoding and documented external-medium record conventions; a self-consistent compiler round trip or an unexplained LF byte expectation is insufficient. UTF-8 under 12.5.6.9 is one possible ISO-kind-qualified path, not a requirement on every processor or on its default encoding.",
+        "free-form-prohibited-source-context": "Needs a source-interface profile proving that the submitted spelling denotes the selected additional graphic character, and a documented diagnostic-capability invocation. Isolate one forbidden noncharacter/noncomment source occurrence, mark one F2023 anchor, and pair it with a minimal legal repair. Do not use profile rejection of that same bad source to infer supported repertoire; 4.2 p2(5) requires reporting capability, not unconditional fatal rejection.",
+        "fixed-form-prohibited-source-context": "Needs the same independently established graphic/source and diagnostic premises plus an explicit fixed-form column layout. Keep the candidate away from comments, literals, edit strings, and the continuation-indicator ambiguity; one isolated marked case and minimally repaired control are required. Do not transfer a free-form diagnostic expectation to position 6."
+      },
+      "oracle": "Two independent positive controls use the already registered iso10646 profile. Its separate program asks SELECTED_CHAR_KIND('ISO_10646'); an unavailable kind yields the runner's profile skip, whereas a failed probe remains a failure. After that precondition, CHAR(937,kind=ucs4) and CHAR(9731,kind=ucs4) construct the ISO 10646 graphics U+03A9 and U+2603 without non-Fortran source bytes. Each constructed value has length one by the CHAR contract, not by counting a multibyte source spelling. The output program writes a four-character ISO-kind internal record through A1,A2,A1 fields, then checks both distinct outer characters and the two-character middle field. The input program initializes a different record with reversed outer characters and different middle data, reads the three fields, and checks their exact same-kind character values and distinctness. Both guard IOSTAT before accessing transferred data. All record lengths and substring bounds are fixed and valid; no allocation, association, or absent data is involved.",
+      "oracle_limitation": "These two cases are conditional admission controls for the I/O-record context of a restriction, not full effects or source-representability evidence. Their source contains only the Fortran repertoire. They cannot cover source literals containing additional graphics, comments, edit strings, forbidden source placements, default-kind extra repertoire, external encoding, or rendering. The finite oracle relies on the canonical CHAR, character equality, assignment, and character-editing semantics; it does not certify every ISO character or every character kind. Direct character equality avoids ICHAR's separate result-kind requirement to represent the entire collating-sequence size. Unsupported ISO kind is an explicit optional-profile skip, not a passed case. The graphics facets already pending under S6.1.1-001 are unchanged.",
+      "dependencies": "6.1.1 p1-p3 and 6.1.2-6.1.5 (PDF 67-68) define the graphic/control partition, Fortran repertoire, and separate graphic ownership. 3.21 (PDF 21), 6.3.1 p2-p3 (PDF 71), 6.3.2.3 p1 and 6.3.3.1 (PDF 72), and 6.3.3.2-6.3.3.3 (PDF 73) define source forms and comment boundaries. 7.4.4.1 p1-p3, 7.4.4.2 p3, 7.4.4.3/R724/C732/p2-p5, and 7.4.4.4 p1/p4 (PDF 84-87) supply kinds, representable literals, and ISO collation. 12.2.2 p1 (PDF 242), 12.4 p2 (PDF 248), and 13.7.4 p1-p4 (PDF 302) permit ISO-kind internal files and define the A-field transfers. 12.11.2 p2 and 12.11.5 p1 (PDF 286-287) justify status-first access. 10.1.5.5.1 p7-p8 (PDF 180-181) supplies same-kind character equality. 16.9.52 p3-p5 (PDF 394) defines CHAR and its length; 16.9.180 p5 (PDF 454) defines the independent ISO-kind probe; 16.9.105 p5 (PDF 419) explains the avoided ICHAR premise. 13.3.2/R1322/C1313/p5-p7 (PDF 292) and 13.9 p1-p2 (PDF 307) supply edit-string restrictions and output semantics. 12.5.6.9 p1 (PDF 253) distinguishes explicit UTF-8 connections from processor-dependent default external encoding. 4.2 p2(1)/(5), p3-p4, and p6-p8 (PDF 46-47) separate conforming execution, diagnostic capability, the format exemption, extensions, and processor-dependent methods."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "structural",
+      "rationale": "PDF 68, printed 54, lines 4-5: distinguish optional representability, the occurrence restriction, and every member of the four-context list. Source-form and kind premises are imported from their defining sections, not inferred from compiler agreement."
+    },
+    {
+      "unit": "p1.optional-representability",
+      "disposition": "permission",
+      "rationale": "Additional repertoire is permitted, not universally required. The 6.1.1 graphic/control partition remains authoritative. No mandatory Unicode or source encoding, no default-kind extension, and no new repertoire effect ID is invented."
+    },
+    {
+      "unit": "p1.restricted-occurrence",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.1.6-001"
+      ],
+      "rationale": "The context restriction is conditional on the selected additional characters and their representation. Actual Clause 6 violations engage the diagnostic capability in 4.2 p2(5); all source-diagnostic facets remain explicitly pending."
+    },
+    {
+      "unit": "p1.comments",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.1.6-001"
+      ],
+      "rationale": "First context-list member. Retain both cited source-form definitions and 6.3.1 p2; comments are not themselves 3.21 character contexts. Separate free/fixed admission facets need source-interface evidence."
+    },
+    {
+      "unit": "p1.character-constants",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.1.6-001"
+      ],
+      "rationale": "Second list member. 7.4.4 supplies representation methods and literal rules; free/fixed rep-char distinctions and both delimiters remain necessary premises. Runtime CHAR construction in the I/O controls is not credited as source-literal admission."
+    },
+    {
+      "unit": "p1.io-records",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.1.6-001"
+      ],
+      "rationale": "Third list member, explicitly referencing formatted records in 12.2.2. Two ISO-kind internal-record positive controls cover only the named input/output facets; external-medium facets remain pending. Control-character prohibitions are not erased by this context permission."
+    },
+    {
+      "unit": "p1.character-string-edit-descriptors",
+      "disposition": "requirements",
+      "requirements": [
+        "S6.1.6-001"
+      ],
+      "rationale": "Fourth list member. Preserve representability, default-kind syntax, output-only use, both delimiter alternatives, free/fixed character-context boundaries, and the distinct diagnostic status of formats outside FORMAT statements. No input edit-string rejection case is reassigned from its canonical owner."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_6_1_6.md"
+  },
+  "review_fingerprint": "db75cd477dc6a4f2bde89843396cc8e07a28c56444ead94699e8a47863e2c933",
+  "review_rationale": "Independent source-first review and recorded integration repairs: doc/source_audits/lexical_batch_004.json. Optional representability and the occurrence restriction's four permitted contexts are separated. The two ISO-kind internal-record programs are conditional positive controls, not source-decoding, default-repertoire, external-record, glyph or prohibited-context diagnostic evidence. Ten facets remain explicitly pending."
+}

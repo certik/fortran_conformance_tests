@@ -113,6 +113,14 @@ files, compile order, dependencies, link inputs, and expectations. Such
 sources are never accidentally discovered as standalone tests. The original
 single-file conventions remain supported.
 
+A compile-only manifest can explicitly choose `outcome: "diagnose"` when
+the oracle requires a relevant report rather than fatal rejection. Such a
+fixture is still invalid input. Its exact source file/line and constrained
+nonfatal-message predicates are independent of ordinary process exit
+status; crashes, timeouts and earlier build failures remain failures.
+This opt-in contract does not relax the existing `reject` outcome or
+ordinary isolated-negative policy. See `tests/README.md` for the schema.
+
 The rule id is spelled as in the standard (`C726`, `C7100`, `C15121`), with
 no zero padding, so file names are greppable with the string used in the
 standard, in compiler messages and in `doc/fortran_2023_rules.txt`. The

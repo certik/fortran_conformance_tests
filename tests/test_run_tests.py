@@ -210,6 +210,28 @@ case.f90:5-5:1-20: semantic warning [C801]: repeated
         text = 'case.f90:4:8:\nWarning: unrelated\nError: driver failed without a location\n'
         self.assertEqual(runner.reference_error_lines(text), set())
 
+    def test_context_location_is_not_reused_for_an_unlocated_error(self):
+        text = 'case.f90:4:8: in the context: statement\nError: driver failed\n'
+        self.assertEqual(runner.reference_error_lines(text), set())
+
+    def test_inline_negative_reports_retain_trace_and_staged_input_hash(self):
+        source = 'end\n'
+        output = 'case.f90:1-1:1-3: syntax error [C801]: invalid\n'
+        with patch.object(runner, 'run', return_value=runner.ProcessResult(1, output)):
+            result = runner.check_invalid('C801_invalid.f90', source, 1, 'C801',
+                                          (1, 1), self.lf, runner.Metadata())
+        self.assertEqual(result.outcome, 'pass')
+        self.assertEqual(result.trace[0]['phase'], 'compile')
+        self.assertEqual(result.trace[0]['returncode'], 1)
+        self.assertEqual(result.input_hashes, {
+            'C801_invalid.f90': runner.hashlib.sha256(source.encode()).hexdigest()})
+
+    def test_reference_labels_preserve_execution_phase(self):
+        for phase, expected in (('compile', 'compiles'), ('link', 'links'), ('run', 'runs'), ('', 'passes')):
+            with self.subTest(phase=phase):
+                self.assertEqual(runner.reference_label(runner.Check('pass', phase=phase), 'valid'),
+                                 expected)
+
     def test_unlocated_reference_failure_is_not_acceptance(self):
         comp = runner.Compiler('flang', 'flang', 'f2018')
         with patch.object(runner, 'run', return_value=runner.ProcessResult(1, 'fatal error: aborted')):
@@ -408,6 +430,35 @@ class CorpusTests(unittest.TestCase):
             self.assertIn('integer :: values(1)', source)
             self.assertNotIn('integer :: values(2)', source)
             self.assertIn('data values /repeats * 7/', source)
+
+    def test_free_form_line_boundaries_are_exact(self):
+        boundaries = {
+            'comment_10000': 10000, 'comment_10001': 10001,
+            'content_10000': 10000, 'content_10001': 10001,
+            'trailing_10000': 10000, 'trailing_10001': 10001,
+            'late_10000': 10000, 'late_133': 133,
+        }
+        sources = {}
+        for name, length in boundaries.items():
+            path = self.root / 'fixtures' / ('free_form_' + name) / 'source.f90'
+            raw = path.read_bytes()
+            with self.subTest(fixture=name):
+                self.assertTrue(raw.isascii())
+                self.assertNotIn(b'\r', raw)
+                self.assertTrue(raw.endswith(b'\n'))
+                lines = raw.split(b'\n')[:-1]
+                self.assertEqual(lines[3], b'')
+                self.assertEqual(len(lines[4]), length)
+                self.assertEqual(max(map(len, lines)), length)
+                sources[name] = lines
+        for kind in ('comment', 'content', 'trailing'):
+            lower, upper = sources[kind + '_10000'], sources[kind + '_10001']
+            with self.subTest(pair=kind):
+                self.assertEqual(lower[:4], upper[:4])
+                self.assertEqual(lower[5:], upper[5:])
+                self.assertEqual(len(upper[4]) - len(lower[4]), 1)
+        self.assertEqual(sources['trailing_10000'][4][-9990:], b' ' * 9990)
+        self.assertEqual(sources['trailing_10001'][4][-9991:], b' ' * 9991)
 
     def test_all_invalid_cases_can_be_isolated(self):
         for path, rule, kind in runner.discover(str(self.root)):

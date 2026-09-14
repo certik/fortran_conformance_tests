@@ -29,7 +29,7 @@ RULE = r'(?:[RC]\d+|S\d+(?:\.\d+)+(?:-\d{3})?)'
 MARK = re.compile(r'!\s*\{error\s+(' + RULE + r')(?:\s+([\w-]+))?\}')
 NAME = re.compile(r'^([RC]\d+|S[\d_]+)_(valid|invalid)(?:__([a-z][\w-]*))?\.f(90)?$')
 SHORT = re.compile(
-    r'^(.*?):(\d+)-(\d+):(\d+)-(\d+): (.*?) error'
+    r'^(.*?):(\d+)-(\d+):(\d+)-(\d+): (.*? (?:error|warning))'
     r'(?: \[([\w.-]+)\])?(?: \(F2023 ([^)]+)\))?: (.*)$', re.I)
 REF_LOC = re.compile(r'^(.*?\.(?:f90|f|c|h)):(\d+):(\d+)(?::|\s|$)')
 HEADER = re.compile(r'^!\s*(rule|covers|evidence|requires|profile|images|standard|reference-warnings|oracle-basis|oracle-profile):\s*(.*?)\s*$')
@@ -57,6 +57,7 @@ class Diagnostic:
     codes: Set[str]
     message: str
     file: str = ''
+    severity: str = 'error'
 
 
 @dataclass
@@ -350,16 +351,23 @@ def cases(path):
     return out
 
 
-def lfortran_errors(output):
+def lfortran_diagnostics(output):
     found = []
     for line in output.splitlines():
         m = SHORT.match(line)
-        if m and 'warning' not in m.group(6).lower():
+        if m:
             codes = set(re.findall(RULE, m.group(8) or ''))
             if m.group(7):
                 codes.add(m.group(7))
-            found.append(Diagnostic(int(m.group(2)), int(m.group(3)), codes, m.group(9), m.group(1)))
+            severity = 'warning' if m.group(6).lower().endswith('warning') else 'error'
+            found.append(Diagnostic(int(m.group(2)), int(m.group(3)), codes, m.group(9),
+                                    m.group(1), severity))
     return found
+
+
+def lfortran_errors(output):
+    return [diagnostic for diagnostic in lfortran_diagnostics(output)
+            if diagnostic.severity == 'error']
 
 
 def unit_ranges(path):
@@ -423,6 +431,8 @@ def reference_messages(output, filename=None):
         if diagnostic:
             if pending is not None and (filename is None or Path(origin).name == Path(filename).name):
                 yield pending, diagnostic.group(1).lower(), diagnostic.group(2)
+            pending = None
+        elif location and message:
             pending = None
 
 
@@ -511,8 +521,47 @@ def check_invalid(path, source, line, rule, bounds, comp, meta, codes=False, tim
             flags += ['--semantics-only', '--error-format', 'short']
         else:
             flags.append('-fsyntax-only')
-        result = run([comp.command] + flags + [isolated], tmp, timeout)
-    return judge_rejection(result, comp, meta, rule, line, bounds, codes)
+        command = [comp.command] + flags + [isolated]
+        source_hash = hashlib.sha256(Path(isolated).read_bytes()).hexdigest()
+        result = run(command, tmp, timeout)
+    check = judge_rejection(result, comp, meta, rule, line, bounds, codes)
+    check.trace = [trace_entry(command, result, 'compile', 'source')]
+    check.input_hashes = {os.path.basename(path): source_hash}
+    return check
+
+
+def judge_diagnostic(result, comp, rule, diagnostic, codes=False):
+    failed = failure(result, 'compile')
+    if failed:
+        return failed
+    filename = diagnostic['file']
+    line = diagnostic['line']
+    messages = diagnostic.get('contains_any', [])
+    nonfatal = diagnostic.get('allow_nonfatal', [])
+    if comp.family == 'lfortran':
+        reported = [item for item in lfortran_diagnostics(result.output)
+                    if Path(item.file).name == Path(filename).name]
+    else:
+        reported = [Diagnostic(location, location, set(), message, filename, severity)
+                    for location, severity, message in reference_messages(result.output, filename)]
+    matching = []
+    for item in reported:
+        if not item.first <= line <= item.last:
+            continue
+        if messages and not any(message.lower() in item.message.lower() for message in messages):
+            continue
+        allowed = item.severity in ('error', 'fatal error') or any(
+            predicate['compiler'] == comp.family and predicate['severity'] == item.severity
+            and any(message.lower() in item.message.lower() for message in predicate['contains_any'])
+            for predicate in nonfatal)
+        if allowed:
+            matching.append(item)
+    if not matching:
+        return Check('fail', 'expected located diagnostic was not reported', 'compile', result.output)
+    if codes and comp.family == 'lfortran' and not any(rule in item.codes for item in matching):
+        return Check('fail', f'detected without code {rule}', 'compile', result.output)
+    note = 'diagnoses without rejection' if result.returncode == 0 else 'rejects'
+    return Check('pass', note, 'compile', result.output)
 
 
 def judge_rejection(result, comp, meta, rule, line=None, bounds=None, codes=False,
@@ -618,9 +667,12 @@ def check_fixture(fixture, comp, cc='cc', timeout=30, codes=False):
                 command = [cc, '-std=c11', '-c', source, '-o', str(output)]
             result = invoke(command, 'compile', step.id)
             if expectation.phase == 'compile' and expectation.step == step.id:
-                if expectation.outcome == 'reject':
+                if expectation.outcome in ('reject', 'diagnose'):
                     diagnostic = expectation.diagnostic
                     judged_comp = comp if step.language == 'fortran' else Compiler(cc, 'c', '')
+                    if expectation.outcome == 'diagnose':
+                        return finish(judge_diagnostic(result, judged_comp, fixture.rule,
+                                                       diagnostic, codes))
                     return finish(judge_rejection(
                         result, judged_comp, meta, fixture.rule, diagnostic.get('line'),
                         codes=codes, diagnostic=diagnostic))
@@ -749,7 +801,9 @@ def reference_label(check, kind):
     if check.outcome == 'pass':
         if check.note == 'diagnoses without rejection':
             return 'diagnoses'
-        return 'runs' if kind == 'valid' else 'rejects'
+        if kind == 'invalid':
+            return 'rejects'
+        return {'compile': 'compiles', 'link': 'links', 'run': 'runs'}.get(check.phase, 'passes')
     if check.outcome == 'skip':
         return 'skip'
     if check.outcome == 'error':

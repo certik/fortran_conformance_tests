@@ -22,7 +22,7 @@ The readiness refactoring now supplies:
   context case.
 
 This is infrastructure readiness, not completed conformance coverage.
-The current census still has 5,245 unresolved base units and five unresolved
+The current census still has 5,232 unresolved base units and five unresolved
 fine-grained units inside the calibration catalogues. Its independent visual
 review is still pending. Automatic PDF extraction is not semantic review,
 and list items/table rows require additional audited subdivisions.
@@ -240,11 +240,14 @@ did. That case remains source-reviewed only, with its source rationale
 and reference disagreement recorded rather than hidden.
 
 The two enum fixtures and the new `.NIL.` token control still have no
-successful runtime reference result. Six assignment facets still need an
-additional diagnostic-policy tier or independently justified
+successful runtime reference result. Six assignment facets still need
+explicit diagnostic-policy decisions or independently justified
 processor-specific expectations. Four prescribed-graphics facets need a
 reviewed processor source/display-interface evidence contract: accepting
 characters in a program does not establish their graphic appearance.
+Ten additional-character facets still need qualified source-interface or
+external-record evidence. The two external UTF-8 cases can use existing
+byte-preserved fixtures once their documentary premises are established.
 C descriptor
 header discovery and the remaining IEEE/profile families should be
 calibrated when their work units are reached; the basic C bridge does not
@@ -253,9 +256,10 @@ claim to cover those interfaces.
 ## 8. Rollout progress and next batch
 
 `doc/rollout_progress.json` records reviewed batch checkpoints. The first
-three implementation batches cover 6.1.1-6.1.4 and 6.2.1-6.2.6, using
+four implementation batches catalogue 6.1.1-6.1.6, 6.2.1-6.2.6, 6.3.1,
+and 6.3.2.1-6.3.2.2, using
 separate author worktrees and review independent of those authors.
-The first two batches used fresh review contexts. The third review task
+The first, second, and fourth batches used fresh review contexts. The third review task
 returned no substantive result, so the coordinator performed that source
 and fixture review directly; it is not reported as a fresh-context review.
 The coordinator
@@ -284,11 +288,21 @@ test, and the `.NIL.` fixture retains source-only approval rather than
 invented reference corroboration. The four new graphics facets remain
 explicitly pending.
 
-The next queued source units are 6.1.5-6.1.6 (special and other characters,
-including Table 6.1), plus 6.3.1, 6.3.2.1, and 6.3.2.2 (source forms,
-free-source line boundaries, and blanks, including Table 6.2). Keep scopes
-disjoint, review the actual F2023 limits, measure exact raw-source
-boundaries, and preserve optional processor-repertoire conditions.
-The outstanding assignment, graphics, and census questions remain explicit.
-Compare model routing on bounded packets before widening concurrency; do
-not jump from this batch to thousands of unreviewed programs.
+The fourth checkpoint adds eight requirements and 81 executions, including
+all 32 special-character table members, all 28 optional keyword-spacing
+entries, and exact 10000/10001-character line boundaries. Its opt-in
+`diagnose` fixture contract distinguishes relevant nonfatal reporting from
+fatal rejection. Nine migrated cases preserve their original source bytes
+and execution IDs; all pre-existing fixture fingerprints are unchanged.
+The END TEAM control is explicitly compile-only. Three unanimously
+accepted negatives retain source-only approval rather than altered oracles.
+
+The next queued source units are 6.3.2.3-6.3.2.6 (remaining free-source
+comments, continuation, termination, and statements) and 6.3.3.1-6.3.3.5
+(complete fixed-source coverage). Preserve the existing 6.3.3.3 calibration
+IDs and byte-sensitive inputs while extending its catalogue. Use the
+reporting contract where the source requires a report, not rejection;
+measure actual F2023 boundaries and qualify optional processor properties.
+The outstanding assignment, graphics, additional-character, and census
+questions remain explicit. Compare model routing on bounded packets before
+widening concurrency; do not jump to thousands of unreviewed programs.

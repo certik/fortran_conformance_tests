@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "id": "S6_3_2_2_005_valid__submodules",
+  "rule": "S6.3.2.2-005",
+  "facets": ["end-submodule", "end-procedure"],
+  "evidence": "positive-control",
+  "files": ["parent.f90", "compact.f90", "spaced.f90", "main.f90"],
+  "build": [
+    {"id": "parent", "source": "parent.f90", "language": "fortran", "form": "free", "output": "parent.o"},
+    {"id": "compact", "source": "compact.f90", "language": "fortran", "form": "free", "output": "compact.o", "depends_on": ["parent"]},
+    {"id": "spaced", "source": "spaced.f90", "language": "fortran", "form": "free", "output": "spaced.o", "depends_on": ["parent"]},
+    {"id": "main", "source": "main.f90", "language": "fortran", "form": "free", "output": "main.o", "depends_on": ["parent", "compact", "spaced"]}
+  ],
+  "link": {"objects": ["parent.o", "compact.o", "spaced.o", "main.o"], "output": "program"},
+  "expect": {"phase": "run", "outcome": "success", "exit_code": 0, "stdout": "SUBMODULES\n"}
+}

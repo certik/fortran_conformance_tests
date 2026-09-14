@@ -50,7 +50,7 @@ class Fixture:
 
     @property
     def kind(self):
-        return 'invalid' if self.expectation.outcome == 'reject' else 'valid'
+        return 'invalid' if self.expectation.outcome in ('reject', 'diagnose') else 'valid'
 
     def inputs(self):
         result = {'fixture.json': self.path.read_bytes()}
@@ -67,6 +67,21 @@ def output_options(value, context):
     if len(options) != len(set(options)):
         raise SuiteError(f'{context}: duplicate alternatives')
     return options
+
+
+def validate_nonfatal_diagnostics(value, context):
+    if not isinstance(value, list):
+        raise SuiteError(f'{context}: expected a list of diagnostic predicates')
+    for predicate in value:
+        fields(predicate, ('compiler', 'severity', 'contains_any'), (), context)
+        compiler = string(predicate['compiler'], context + '.compiler')
+        severity = string(predicate['severity'], context + '.severity')
+        if compiler not in ('lfortran', 'gfortran', 'flang', 'c'):
+            raise SuiteError(f'{context}: unknown compiler family')
+        if severity not in ('warning', 'portability'):
+            raise SuiteError(f'{context}: expected warning or portability severity')
+        for message in strings(predicate['contains_any'], context + '.contains_any', nonempty=True):
+            string(message, context + '.contains_any')
 
 
 def load_fixture(path, profiles):
@@ -153,8 +168,10 @@ def load_fixture(path, profiles):
         phase=raw['phase'], outcome=raw['outcome'], step=raw.get('step', ''),
         exit_code=raw.get('exit_code', 0), stdout=output_options(raw.get('stdout'), 'stdout'),
         stderr=output_options(raw.get('stderr'), 'stderr'), diagnostic=raw.get('diagnostic', {}))
-    if expectation.phase not in ('compile', 'link', 'run') or expectation.outcome not in ('success', 'reject'):
+    if expectation.phase not in ('compile', 'link', 'run') or expectation.outcome not in ('success', 'reject', 'diagnose'):
         raise SuiteError(f'{path}: invalid expected phase/outcome')
+    if expectation.outcome == 'diagnose' and expectation.phase != 'compile':
+        raise SuiteError(f'{path}: diagnostic reporting expectations require a compile phase')
     if expectation.phase == 'compile' and expectation.step not in seen:
         raise SuiteError(f'{path}: compile expectations must name a build step')
     if expectation.phase == 'compile' and (expectation.step != steps[-1].id or link is not None):
@@ -167,13 +184,23 @@ def load_fixture(path, profiles):
         raise SuiteError(f'{path}: expected exit code must be in 0..255')
     if expectation.exit_code and (expectation.phase != 'run' or basis == 'standard'):
         raise SuiteError(f'{path}: nonzero termination needs an explicit policy/profile basis')
-    if expectation.outcome == 'reject':
-        fields(expectation.diagnostic, () if expectation.phase == 'link' else ('file',),
-               ('line', 'anchor', 'contains_any', 'file') if expectation.phase == 'link'
-               else ('line', 'anchor', 'contains_any'), f'{path}.diagnostic')
+    if expectation.outcome in ('reject', 'diagnose'):
+        if expectation.outcome == 'diagnose':
+            fields(expectation.diagnostic, ('file', 'line'), ('contains_any', 'allow_nonfatal'),
+                   f'{path}.diagnostic')
+            validate_nonfatal_diagnostics(expectation.diagnostic.get('allow_nonfatal', []),
+                                          f'{path}.diagnostic.allow_nonfatal')
+        else:
+            fields(expectation.diagnostic, () if expectation.phase == 'link' else ('file',),
+                   ('line', 'anchor', 'contains_any', 'file') if expectation.phase == 'link'
+                   else ('line', 'anchor', 'contains_any'), f'{path}.diagnostic')
         diagnostic_file = expectation.diagnostic.get('file')
+        if 'file' in expectation.diagnostic:
+            string(diagnostic_file, f'{path}.diagnostic.file')
         if diagnostic_file and diagnostic_file not in set(inputs) | outputs:
             raise SuiteError(f'{path}: diagnostic file is not a declared input')
+        if expectation.outcome == 'diagnose' and diagnostic_file not in inputs:
+            raise SuiteError(f'{path}: a reporting diagnostic must name a declared input')
         line = expectation.diagnostic.get('line')
         anchor = expectation.diagnostic.get('anchor', '')
         if line is not None and (type(line) is not int or line < 1):
@@ -181,6 +208,8 @@ def load_fixture(path, profiles):
         if line is None and anchor not in ('file', 'eof') and expectation.phase != 'link':
             raise SuiteError(f'{path}: a diagnostic line or external anchor is required')
         messages = strings(expectation.diagnostic.get('contains_any', []), 'diagnostic.contains_any')
+        for message in messages:
+            string(message, 'diagnostic.contains_any')
         if (anchor == 'eof' or expectation.phase == 'link') and not messages:
             raise SuiteError(f'{path}: an EOF expectation needs a diagnostic predicate')
     run = data.get('run', {})

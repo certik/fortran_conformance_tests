@@ -47,6 +47,168 @@ class FixtureTests(unittest.TestCase):
         with patch.object(runner, 'run', side_effect=self.process):
             return runner.check_fixture(fixture or self.fixture(), self.compiler)
 
+    def reporting_fixture(self):
+        self.data.pop('link', None)
+        self.data['id'] = 'R601_invalid__reports'
+        self.data['expect'] = dict(
+            phase='compile', step='source', outcome='diagnose',
+            diagnostic=dict(file='source.f', line=2, allow_nonfatal=[
+                dict(compiler='flang', severity='portability', contains_any=['missing space'])]))
+        return self.fixture()
+
+    def test_reporting_fixture_is_invalid_input_without_requiring_rejection(self):
+        fixture = self.reporting_fixture()
+        comp = runner.Compiler('flang', 'flang', 'f2018')
+        output = 'source.f:2:7: portability: missing space\n'
+        with patch.object(runner, 'run', return_value=runner.ProcessResult(0, output)):
+            result = runner.check_fixture(fixture, comp)
+        self.assertEqual(fixture.kind, 'invalid')
+        self.assertEqual(result.outcome, 'pass')
+        self.assertEqual(result.note, 'diagnoses without rejection')
+        self.assertEqual(runner.reference_label(result, fixture.kind), 'diagnoses')
+        self.assertEqual([entry['phase'] for entry in result.trace], ['compile'])
+        self.assertEqual(result.input_hashes['source.f'], hashlib.sha256(self.raw).hexdigest())
+        self.assertEqual((self.root / 'source.f').read_bytes(), self.raw)
+
+    def test_reporting_requires_matching_file_line_severity_and_message(self):
+        fixture = self.reporting_fixture()
+        comp = runner.Compiler('flang', 'flang', 'f2018')
+        for output in (
+            'other.f:2:7: portability: missing space\n',
+            'source.f:1:7: portability: missing space\n',
+            'source.f:2:7: warning: missing space\n',
+            'source.f:2:7: portability: unused variable\n',
+            'portability: missing space\n',
+            'source.f:2:7: portability: unused variable\n  ! missing space\n',
+            'source.f:2:7: in the context: statement\nerror: driver failed\n',
+        ):
+            with self.subTest(output=output):
+                with patch.object(runner, 'run', return_value=runner.ProcessResult(0, output)):
+                    result = runner.check_fixture(fixture, comp)
+                self.assertEqual(result.outcome, 'fail')
+
+    def test_reporting_nonfatal_allowance_is_compiler_specific(self):
+        fixture = self.reporting_fixture()
+        comp = runner.Compiler('gfortran', 'gfortran', 'f2023')
+        output = 'source.f:2:7: portability: missing space\n'
+        with patch.object(runner, 'run', return_value=runner.ProcessResult(0, output)):
+            result = runner.check_fixture(fixture, comp)
+        self.assertEqual(result.outcome, 'fail')
+
+    def test_reporting_errors_are_independent_of_ordinary_exit_status(self):
+        fixture = self.reporting_fixture()
+        for code in (0, 1):
+            for comp, output in (
+                (self.compiler, 'source.f:1-3:1-20: syntax error [R601]: invalid token\n'),
+                (runner.Compiler('gfortran', 'gfortran', 'f2023'),
+                 'source.f:2:7:\n    2 | invalid\nError: invalid token\n'),
+            ):
+                with self.subTest(code=code, compiler=comp.family):
+                    with patch.object(runner, 'run', return_value=runner.ProcessResult(code, output)):
+                        result = runner.check_fixture(fixture, comp)
+                    self.assertEqual(result.outcome, 'pass')
+
+    def test_reporting_preserves_codes_mode(self):
+        fixture = self.reporting_fixture()
+        for tag, expected in (('[R601]', 'pass'), ('[R602]', 'fail'), ('', 'fail')):
+            output = f'source.f:2-2:1-20: syntax error {tag}: invalid token\n'
+            output = output.replace('error :', 'error:')
+            with self.subTest(tag=tag):
+                with patch.object(runner, 'run', return_value=runner.ProcessResult(0, output)):
+                    result = runner.check_fixture(fixture, self.compiler, codes=True)
+                self.assertEqual(result.outcome, expected)
+
+    def test_reporting_lfortran_warnings_require_explicit_allowance(self):
+        self.reporting_fixture()
+        output = 'source.f:2-2:1-20: semantic warning [R601]: missing space\n'
+        for allowed, expected in (([], 'fail'), (
+                [dict(compiler='lfortran', severity='warning', contains_any=['missing space'])], 'pass')):
+            self.data['expect']['diagnostic']['allow_nonfatal'] = allowed
+            with self.subTest(allowed=allowed):
+                with patch.object(runner, 'run', return_value=runner.ProcessResult(0, output)):
+                    result = runner.check_fixture(self.fixture(), self.compiler)
+                self.assertEqual(result.outcome, expected)
+        self.assertEqual(runner.lfortran_errors(output), [])
+
+    def test_reporting_predicate_does_not_match_source_echo_or_another_diagnostic(self):
+        self.reporting_fixture()
+        self.data['expect']['diagnostic']['contains_any'] = ['missing space']
+        for output in (
+            'source.f:2-2:1-20: syntax error: unrelated\n! missing space\n',
+            'source.f:1-1:1-20: syntax error: missing space\n'
+            'source.f:2-2:1-20: syntax error: unrelated\n',
+        ):
+            with self.subTest(output=output):
+                with patch.object(runner, 'run', return_value=runner.ProcessResult(1, output)):
+                    result = runner.check_fixture(self.fixture(), self.compiler)
+                self.assertEqual(result.outcome, 'fail')
+
+    def test_reporting_crashes_verifier_failures_and_timeouts_never_pass(self):
+        fixture = self.reporting_fixture()
+        output = 'source.f:2-2:1-20: syntax error [R601]: invalid token\n'
+        for process in (
+            runner.ProcessResult(-11, output),
+            runner.ProcessResult(139, output),
+            runner.ProcessResult(1, output + 'LLVM ERROR: aborting'),
+            runner.ProcessResult(1, output + 'ASR verify pass error: invalid IR'),
+            runner.ProcessResult(0, output, timed_out=True),
+        ):
+            with self.subTest(process=process):
+                with patch.object(runner, 'run', return_value=process):
+                    result = runner.check_fixture(fixture, self.compiler)
+                self.assertEqual(result.outcome, 'fail')
+
+    def test_earlier_failure_cannot_satisfy_later_reporting_step(self):
+        self.reporting_fixture()
+        self.data['build'].insert(0, dict(
+            id='earlier', source='source.f', language='fortran', form='fixed', output='earlier.o'))
+        self.data['build'][1]['depends_on'] = ['earlier']
+        output = 'source.f:2-2:1-20: syntax error [R601]: invalid token\n'
+        with patch.object(runner, 'run', return_value=runner.ProcessResult(1, output)):
+            result = runner.check_fixture(self.fixture(), self.compiler)
+        self.assertEqual(result.outcome, 'fail')
+        self.assertEqual([entry['step'] for entry in result.trace], ['earlier'])
+
+    def test_reporting_schema_requires_precise_compile_contract(self):
+        self.reporting_fixture()
+        original = json.loads(json.dumps(self.data))
+        mutations = (
+            lambda: self.data['expect'].update(phase='link'),
+            lambda: self.data['expect'].update(phase='run'),
+            lambda: self.data['expect'].update(step='missing'),
+            lambda: self.data['expect']['diagnostic'].pop('file'),
+            lambda: self.data['expect']['diagnostic'].pop('line'),
+            lambda: self.data['expect']['diagnostic'].update(line=0),
+            lambda: self.data['expect']['diagnostic'].update(line=True),
+            lambda: self.data['expect']['diagnostic'].update(file={}),
+            lambda: self.data['expect']['diagnostic'].update(file='source.o'),
+            lambda: self.data['expect']['diagnostic'].update(anchor='file'),
+            lambda: self.data['expect']['diagnostic'].update(allow_nonfatal={}),
+            lambda: self.data['expect']['diagnostic']['allow_nonfatal'][0].update(compiler='unknown'),
+            lambda: self.data['expect']['diagnostic']['allow_nonfatal'][0].update(compiler={}),
+            lambda: self.data['expect']['diagnostic']['allow_nonfatal'][0].update(severity='error'),
+            lambda: self.data['expect']['diagnostic']['allow_nonfatal'][0].update(contains_any=[]),
+            lambda: self.data['expect']['diagnostic']['allow_nonfatal'][0].update(contains_any=[' ']),
+            lambda: self.data['expect']['diagnostic']['allow_nonfatal'][0].update(extra='ignored'),
+        )
+        for index, mutate in enumerate(mutations):
+            self.data = json.loads(json.dumps(original))
+            with self.subTest(index=index):
+                mutate()
+                with self.assertRaises(SuiteError):
+                    self.fixture()
+
+    def test_reporting_opt_in_does_not_relax_manifest_rejection(self):
+        self.reporting_fixture()
+        self.data['expect']['outcome'] = 'reject'
+        with self.assertRaises(SuiteError):
+            self.fixture()
+        self.data['expect']['diagnostic'].pop('allow_nonfatal')
+        output = 'source.f:2-2:1-20: syntax error [R601]: invalid token\n'
+        with patch.object(runner, 'run', return_value=runner.ProcessResult(0, output)):
+            result = runner.check_fixture(self.fixture(), self.compiler)
+        self.assertEqual(result.outcome, 'fail')
+
     def test_raw_source_is_copied_byte_for_byte(self):
         def process(command, cwd, timeout, stdin=None):
             self.assertEqual((Path(cwd) / 'source.f').read_bytes(), self.raw)
