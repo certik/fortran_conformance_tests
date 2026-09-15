@@ -22,9 +22,14 @@ import sys
 import tempfile
 from typing import Dict, List, Optional, Set
 
-from fixture_support import Fixture, load_fixture
+from fixture_support import Fixture, load_fixture, uses_c_companion
+from case_contracts import apply_case_contracts
 from evidence_links import qualifying_reference
-from suite_data import Metadata, Registry, Review, ROOT, SuiteError, safe_path, validate_compiler_header
+from execution_aggregates import observations as execution_observations
+from execution_commands import (compiler_flags, compile_command, execution_context,
+                                launch_argv, link_command, ordinary_command, syntax_command)
+from suite_data import (Metadata, Registry, Review, ROOT, SuiteError, case_review_bindings,
+                        safe_path, validate_compiler_header)
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 RULE = r'(?:[RC]\d+|S\d+(?:\.\d+)+(?:-\d{3})?)'
@@ -81,6 +86,7 @@ class Check:
     input_hashes: Dict[str, str] = field(default_factory=dict)
     profile_checks: Dict[str, dict] = field(default_factory=dict)
     compiler_headers: Dict[str, dict] = field(default_factory=dict)
+    execution_context: dict = field(default_factory=dict)
 
 
 @dataclass
@@ -93,6 +99,7 @@ class SuiteCase:
     review_key: str
     fixture: Optional[Fixture] = None
     isolated: Optional[tuple] = None
+    contract: Optional[dict] = None
 
     def fingerprint(self, registry):
         if self.fixture:
@@ -100,6 +107,8 @@ class SuiteCase:
         else:
             inputs = {os.path.basename(self.path): Path(self.path).read_bytes()}
         inputs['@metadata'] = json.dumps(asdict(self.meta), sort_keys=True).encode()
+        if self.contract is not None:
+            inputs['@case-contract'] = json.dumps(self.contract, sort_keys=True).encode()
         for name in self.meta.profiles:
             profile = Path(HERE) / 'profiles' / (name.replace('-', '_') + '.f90')
             inputs['@profile/' + name] = profile.read_bytes()
@@ -117,28 +126,12 @@ class Compiler:
     wrapper: str = ''
     c_binding_header: dict = field(default_factory=dict)
 
+    def configuration(self):
+        return dict(command=self.command, family=self.family, standard=self.standard,
+                    launcher=self.launcher, wrapper=self.wrapper)
+
     def flags(self, path, meta, form='auto'):
-        fixed = form == 'fixed' or (form == 'auto' and path.endswith('.f'))
-        if self.family == 'lfortran':
-            flags = ['--std=' + self.standard, '--no-color']
-            if fixed:
-                flags.append('--fixed-form')
-            if meta.coarray:
-                flags.append('--coarray')
-        else:
-            flags = ['-std=' + self.standard]
-            if self.family == 'gfortran':
-                flags.append('-fdiagnostics-color=never')
-            if fixed:
-                flags.append('-ffixed-form')
-            elif form == 'free':
-                flags.append('-ffree-form')
-            if meta.coarray:
-                if self.family == 'flang':
-                    flags.append('-fcoarray')
-                elif self.wrapper != 'opencoarrays' and os.path.basename(self.command) != 'caf':
-                    flags.append('-fcoarray=lib' if self.launcher else '-fcoarray=single')
-        return flags
+        return compiler_flags(self.configuration(), asdict(meta), path, form)
 
 
 def canonical_rule(name):
@@ -194,7 +187,9 @@ def collect_cases(root, registry, patterns=None):
         cases_found.append(SuiteCase(fixture.name, fixture.rule, fixture.kind, str(manifest),
                                     fixture.meta, fixture.name, fixture=fixture))
     cases_found.sort(key=lambda case: case.name)
+    apply_case_contracts(cases_found, PROFILES, root, fixture_roots)
     registry.validate_cases(cases_found)
+    case_review_bindings(cases_found, registry)
     return select_cases(cases_found, patterns)
 
 
@@ -273,13 +268,27 @@ def run(cmd, cwd, timeout=30, stdin=None):
     try:
         input_bytes = stdin.encode('utf-8') if isinstance(stdin, str) else stdin
         stdout, stderr = process.communicate(input=input_bytes, timeout=timeout)
-    except subprocess.TimeoutExpired:
+    except subprocess.TimeoutExpired as initial_timeout:
         timed_out = True
         try:
             os.killpg(process.pid, signal.SIGKILL)
         except ProcessLookupError:
             pass
-        stdout, stderr = process.communicate()
+        cleanup_timeout = min(timeout, 1.0)
+        try:
+            stdout, stderr = process.communicate(timeout=cleanup_timeout)
+        except subprocess.TimeoutExpired as drain_timeout:
+            stdout = drain_timeout.output if drain_timeout.output is not None else initial_timeout.output
+            stderr = drain_timeout.stderr if drain_timeout.stderr is not None else initial_timeout.stderr
+            stdout = b'' if stdout is None else stdout
+            stderr = b'' if stderr is None else stderr
+            for stream in (process.stdin, process.stdout, process.stderr):
+                if stream is not None:
+                    stream.close()
+            try:
+                process.wait(timeout=cleanup_timeout)
+            except subprocess.TimeoutExpired as error:
+                raise SuiteError(f'timed-out subprocess {process.pid} could not be reaped within cleanup bound') from error
     stdout_text = stdout.decode('utf-8', errors='backslashreplace')
     stderr_text = stderr.decode('utf-8', errors='backslashreplace')
     return ProcessResult(process.returncode, stdout_text + stderr_text, timed_out,
@@ -486,8 +495,8 @@ def profile_check(comp, name, timeout):
     source_hash = hashlib.sha256(Path(source).read_bytes()).hexdigest()
     trace = []
     with tempfile.TemporaryDirectory() as tmp:
-        exe = os.path.join(tmp, 'a.out')
-        command = [comp.command] + comp.flags(source, Metadata()) + [source, '-o', exe]
+        exe = str(safe_path(Path(tmp), 'a.out', exists=False))
+        command = ordinary_command(comp.configuration(), asdict(Metadata()), source, exe)
         result = run(command, tmp, timeout)
         trace.append(trace_entry(command, result, 'profile-compile', name))
         check = failure(result, 'profile compilation')
@@ -507,13 +516,15 @@ def profile_check(comp, name, timeout):
                     check = Check('pass', phase='profile', output=result.output)
     check.trace = trace
     check.input_hashes = {os.path.basename(source): source_hash}
+    check.execution_context = execution_context(tmp)
     comp.profiles[name] = check
     return check
 
 
-def trace_entry(command, result, phase, step):
+def trace_entry(command, result, phase, step, stdin=None):
     return dict(phase=phase, step=step, command=command, returncode=result.returncode,
                 timed_out=result.timed_out, stdout=result.stdout, stderr=result.stderr,
+                stdin_sha256=hashlib.sha256(stdin).hexdigest() if stdin is not None else None,
                 stdout_hex=result.stdout_bytes.hex() if result.stdout_bytes is not None else None,
                 stderr_hex=result.stderr_bytes.hex() if result.stderr_bytes is not None else None)
 
@@ -524,13 +535,14 @@ def check_valid(path, comp, meta, timeout=30):
         if check.outcome != 'pass':
             return check
     with tempfile.TemporaryDirectory() as tmp:
-        exe = os.path.join(tmp, 'a.out')
-        command = [comp.command] + comp.flags(path, meta) + [path, '-o', exe]
+        exe = str(safe_path(Path(tmp), 'a.out', exists=False))
+        command = ordinary_command(comp.configuration(), asdict(meta), path, exe)
         result = run(command, tmp, timeout)
         trace = [trace_entry(command, result, 'compile-link', 'source')]
         hashes = {Path(path).name: hashlib.sha256(Path(path).read_bytes()).hexdigest()} if Path(path).is_file() else {}
         def finish(check):
             check.trace, check.input_hashes = trace, hashes
+            check.execution_context = execution_context(tmp)
             return check
         failed = failure(result, 'compilation')
         if failed:
@@ -551,21 +563,20 @@ def check_valid(path, comp, meta, timeout=30):
     return finish(Check('pass', phase='run'))
 
 
-def check_invalid(path, source, line, rule, bounds, comp, meta, codes=False, timeout=30):
+def check_invalid(path, source, line, rule, bounds, comp, meta, codes=False, timeout=30, contract=None):
     with tempfile.TemporaryDirectory() as tmp:
-        isolated = os.path.join(tmp, os.path.basename(path))
+        isolated = str(safe_path(Path(tmp), os.path.basename(path), exists=False))
         Path(isolated).write_text(source)
-        flags = comp.flags(path, meta)
-        if comp.family == 'lfortran':
-            flags += ['--semantics-only', '--error-format', 'short']
-        else:
-            flags.append('-fsyntax-only')
-        command = [comp.command] + flags + [isolated]
+        command = syntax_command(comp.configuration(), asdict(meta), isolated)
         source_hash = hashlib.sha256(Path(isolated).read_bytes()).hexdigest()
         result = run(command, tmp, timeout)
-    check = judge_rejection(result, comp, meta, rule, line, bounds, codes)
+    if contract is None:
+        check = judge_rejection(result, comp, meta, rule, line, bounds, codes)
+    else:
+        check = judge_diagnostic(result, comp, rule, contract['diagnostic'], codes)
     check.trace = [trace_entry(command, result, 'compile', 'source')]
     check.input_hashes = {os.path.basename(path): source_hash}
+    check.execution_context = execution_context(tmp)
     return check
 
 
@@ -696,14 +707,7 @@ def judge_rejection(result, comp, meta, rule, line=None, bounds=None, codes=Fals
 
 
 def launch_command(comp, meta, executable, arguments=None):
-    command = [executable] + list(arguments or [])
-    if meta.coarray and comp.launcher:
-        command = [token.replace('{images}', str(meta.images)).replace('{exe}', executable)
-                   for token in comp.launcher]
-        if not any('{exe}' in token for token in comp.launcher):
-            command.append(executable)
-        command += list(arguments or [])
-    return command
+    return launch_argv(comp.configuration(), asdict(meta), executable, arguments or [])
 
 
 def compiler_header_bytes(path):
@@ -770,8 +774,9 @@ def check_fixture(fixture, comp, cc='cc', timeout=30, codes=False):
     trace = []
     hashes = {}
     headers = {}
+    resources = {}
     with tempfile.TemporaryDirectory(prefix='conformance-fixture-') as tmp:
-        workspace = Path(tmp)
+        workspace = Path(tmp).resolve()
         for filename in fixture.files:
             original = safe_path(fixture.root, filename)
             staged = safe_path(workspace, filename, exists=False)
@@ -784,13 +789,14 @@ def check_fixture(fixture, comp, cc='cc', timeout=30, codes=False):
 
         def invoke(command, phase, step, stdin=None):
             result = run(command, tmp, timeout, stdin=stdin)
-            trace.append(trace_entry(command, result, phase, step))
+            trace.append(trace_entry(command, result, phase, step, stdin))
             return result
 
         def finish(check):
             check.trace = trace
             check.input_hashes = hashes
             check.compiler_headers = headers
+            check.execution_context = execution_context(workspace, resources)
             return check
 
         expectation = fixture.expectation
@@ -799,28 +805,25 @@ def check_fixture(fixture, comp, cc='cc', timeout=30, codes=False):
             source = str(safe_path(workspace, step.source))
             output = safe_path(workspace, step.output, exists=False)
             output.parent.mkdir(parents=True, exist_ok=True)
-            if step.language == 'fortran':
-                flags = comp.flags(source, meta, step.form)
-                if comp.family == 'lfortran':
-                    flags += ['--separate-compilation', '--error-format', 'short']
-                command = [comp.command] + flags + ['-c', source, '-o', str(output)]
-            else:
-                flags = []
+            selected_header_directory = None
+            if step.language == 'c':
                 if step.fortran_binding_header:
                     header = compiler_binding_header(comp, timeout)
                     contents = compiler_header_bytes(header['path'])
                     if hashlib.sha256(contents).hexdigest() != header['sha256']:
                         raise SuiteError(f'{comp.command}: processor binding header changed during the run')
                     if header_directory is None:
-                        header_directory = Path(tempfile.mkdtemp(prefix='processor-header-', dir=tmp))
+                        header_directory = Path(tempfile.mkdtemp(prefix='processor-header-', dir=tmp)).resolve()
                         staged_header = header_directory / 'ISO_Fortran_binding.h'
                         staged_header.write_bytes(contents)
                         if hashlib.sha256(staged_header.read_bytes()).hexdigest() != header['sha256']:
                             raise SuiteError('processor binding-header staging changed bytes')
                     headers['ISO_Fortran_binding.h'] = dict(header)
                     hashes['@compiler/ISO_Fortran_binding.h'] = header['sha256']
-                    flags = ['-I', str(header_directory)]
-                command = [cc, '-std=c11'] + flags + ['-c', source, '-o', str(output)]
+                    resources['ISO_Fortran_binding.h'] = str(header_directory / 'ISO_Fortran_binding.h')
+                    selected_header_directory = str(header_directory)
+            command = compile_command(comp.configuration(), asdict(meta), source, str(output),
+                                      step.language, step.form, cc, selected_header_directory)
             result = invoke(command, 'compile', step.id)
             if expectation.phase == 'compile' and expectation.step == step.id:
                 if expectation.outcome in ('reject', 'diagnose'):
@@ -853,9 +856,9 @@ def check_fixture(fixture, comp, cc='cc', timeout=30, codes=False):
         executable = safe_path(workspace, link['output'], exists=False)
         executable.parent.mkdir(parents=True, exist_ok=True)
         objects = [str(safe_path(workspace, name)) for name in link['objects']]
-        driver = comp.command if link.get('driver', 'fortran') == 'fortran' else cc
-        flags = comp.flags('link.f90', meta) if driver == comp.command else []
-        result = invoke([driver] + flags + objects + ['-o', str(executable)], 'link', 'link')
+        command = link_command(comp.configuration(), asdict(meta), objects, str(executable),
+                               link.get('driver', 'fortran'), cc)
+        result = invoke(command, 'link', 'link')
         if expectation.phase == 'link' and expectation.outcome == 'reject':
             return finish(judge_rejection(result, comp, meta, fixture.rule, codes=codes,
                                           diagnostic=expectation.diagnostic, phase='link'))
@@ -916,7 +919,8 @@ def _execute_case(case, comp, cc='cc', timeout=30, codes=False):
         if checked.outcome != 'pass':
             return checked
     line, rule, _, bounds, source = case.isolated
-    return check_invalid(case.path, source, line, rule, bounds, comp, case.meta, codes, timeout)
+    return check_invalid(case.path, source, line, rule, bounds, comp, case.meta, codes, timeout,
+                         contract=case.contract)
 
 
 def execute_case(case, comp, cc='cc', timeout=30, codes=False):
@@ -930,7 +934,7 @@ def execute_case(case, comp, cc='cc', timeout=30, codes=False):
         else:
             profiles[name] = dict(outcome='not-run', note='Profile was not evaluated.')
     if any(check is value for value in comp.profiles.values()):
-        return replace(check, trace=[], input_hashes={}, profile_checks=profiles)
+        return replace(check, trace=[], input_hashes={}, execution_context={}, profile_checks=profiles)
     return replace(check, profile_checks=profiles)
 
 
@@ -991,10 +995,8 @@ def record_fixture_review(registry, cases, key, state, rationale, sources, repor
     selected = [case for case in cases if case.review_key == key]
     if not selected:
         raise SuiteError('unknown fixture review key: ' + key)
-    fingerprints = {case.fingerprint(registry) for case in selected}
-    if len(fingerprints) != 1:
-        raise SuiteError('review group has inconsistent inputs')
-    fingerprint = fingerprints.pop()
+    _, fingerprints = case_review_bindings(selected, registry)
+    fingerprint = fingerprints[key]
     if not sources:
         rule = selected[0].rule
         if rule in registry.requirements:
@@ -1069,20 +1071,28 @@ def tool_version(command, timeout):
     return banner
 
 
-def confirm_snapshot(compilers, cases, fingerprints, timeout=30, companion=None, evidence_snapshot=None):
+def confirm_snapshot(compilers, cases, fingerprints, timeout=30, companion=None, evidence_snapshot=None,
+                     execution_snapshot=None):
     errors = []
     try:
         current_registry = Registry()
-        checked = {}
+        current_cases = (collect_cases(HERE, current_registry)
+                         if cases or evidence_snapshot is not None or execution_snapshot is not None else [])
+        by_name = {case.name: case for case in current_cases}
         for case in cases:
-            if case.review_key not in checked:
-                checked[case.review_key] = case.fingerprint(current_registry)
-            if checked[case.review_key] != fingerprints[case.review_key]:
+            current = by_name.get(case.name)
+            if current is None:
+                errors.append(f'{case.name}: selected execution disappeared during the run')
+            elif (current.review_key != case.review_key
+                  or current.fingerprint(current_registry) != fingerprints[case.review_key]):
                 errors.append(f'{case.review_key}: inputs or requirement changed during the run')
-        if evidence_snapshot is not None:
-            current_cases = collect_cases(HERE, current_registry)
-            if current_registry.evidence.snapshot(current_cases) != evidence_snapshot:
+        if evidence_snapshot is not None or execution_snapshot is not None:
+            if (evidence_snapshot is not None
+                    and current_registry.evidence.snapshot(current_cases) != evidence_snapshot):
                 errors.append('canonical evidence links, dependencies, or reviews changed during the run')
+            if (execution_snapshot is not None
+                    and current_registry.execution.snapshot(current_cases) != execution_snapshot):
+                errors.append('execution aggregate, complete case universe, source census, or reviews changed during the run')
     except (SuiteError, OSError) as error:
         errors.append('cannot confirm fixture snapshot: ' + str(error))
     for comp in compilers:
@@ -1125,6 +1135,15 @@ def print_links(links):
                   f" {member['phase']}; fixture review={member['review']['state']}]")
         if link['blockers']:
             print('  blockers: ' + '; '.join(link['blockers']))
+
+
+def print_execution_aggregates(aggregates):
+    for aggregate in aggregates:
+        print(f"AGGREGATE {aggregate['state'].upper()} {aggregate['id']}"
+              f" [{aggregate['member_count']} collected cases; observational only;"
+              ' no new execution, facet completion, or universal conformance credit]')
+        if aggregate['blockers']:
+            print('  blockers: ' + '; '.join(aggregate['blockers']))
 
 
 def evidence_observations(links, results, compilers, reference_only):
@@ -1177,6 +1196,8 @@ def main():
                     help='record a content-bound source/catalogue review without running compilers')
     ap.add_argument('--record-evidence-review', metavar='LINK',
                     help='independently adjudicate a canonical case link after source and fixture reviews')
+    ap.add_argument('--record-execution-review', metavar='AGGREGATE',
+                    help='independently review a finite execution aggregate and its complete case inventory')
     ap.add_argument('--review-state', choices=['source-reviewed', 'reference-validated', 'unreviewed', 'disputed', 'needs-oracle'])
     ap.add_argument('--review-rationale')
     ap.add_argument('--review-source', action='append', default=[])
@@ -1191,10 +1212,12 @@ def main():
     if a.require_complete_source and not a.audit:
         ap.error('--require-complete-source must be used with --audit')
     if sum(bool(value) for value in (
-            a.record_review, a.record_catalogue_review, a.record_evidence_review, a.audit, a.list)) > 1:
+            a.record_review, a.record_catalogue_review, a.record_evidence_review,
+            a.record_execution_review, a.audit, a.list)) > 1:
         ap.error('--record-review, --record-catalogue-review, --record-evidence-review, --audit,'
-                 ' and --list are separate operations')
-    if a.update_xfail and (a.record_review or a.record_catalogue_review or a.record_evidence_review or a.audit or a.list):
+                 ' --record-execution-review, and --list are separate operations')
+    if a.update_xfail and (a.record_review or a.record_catalogue_review or a.record_evidence_review
+                          or a.record_execution_review or a.audit or a.list):
         ap.error('--update-xfail is a separate execution operation')
     if a.update_xfail and (a.allow_unreviewed or a.reference_only):
         ap.error('--update-xfail is only for approved LFortran fixtures')
@@ -1209,7 +1232,13 @@ def main():
             ap.error('--record-evidence-review needs --review-state and --review-rationale')
         if a.review_state == 'reference-validated' or a.review_source or a.review_report:
             ap.error('link adjudication uses its declared source/basis anchors, not a compiler report')
-    if not (a.record_review or a.record_catalogue_review or a.record_evidence_review) and (
+    if a.record_execution_review:
+        if not a.review_state or not a.review_rationale:
+            ap.error('--record-execution-review needs --review-state and --review-rationale')
+        if a.review_state == 'reference-validated' or a.review_source or a.review_report:
+            ap.error('aggregate adjudication uses source and the complete inventory, not a compiler report')
+    if not (a.record_review or a.record_catalogue_review or a.record_evidence_review
+            or a.record_execution_review) and (
             a.review_state or a.review_rationale or a.review_source or a.review_report):
         ap.error('review options require a review operation')
     xfail_path = os.path.join(HERE, 'expected_failures.txt')
@@ -1220,13 +1249,8 @@ def main():
         selected = select_cases(all_cases, a.test)
         if not selected:
             raise SuiteError('no cases selected')
-        fingerprints = {}
         reviews = {}
-        review_groups = collections.defaultdict(list)
-        for case in all_cases:
-            review_groups[case.review_key].append(case.name)
-            if case.review_key not in fingerprints:
-                fingerprints[case.review_key] = case.fingerprint(registry)
+        review_groups, fingerprints = case_review_bindings(all_cases, registry)
         for key, fingerprint in fingerprints.items():
             reviews[key] = registry.review(key, fingerprint, review_groups[key])
         if a.record_catalogue_review:
@@ -1242,11 +1266,21 @@ def main():
             registry.evidence.record_review(all_cases, a.record_evidence_review, a.review_state, a.review_rationale)
             print('Recorded independent canonical-link review:', a.record_evidence_review, a.review_state)
             return 0
+        if a.record_execution_review:
+            registry.execution.record_review(all_cases, a.record_execution_review,
+                                             a.review_state, a.review_rationale)
+            print('Recorded independent finite execution-aggregate review:',
+                  a.record_execution_review, a.review_state)
+            return 0
         links = registry.evidence.report(all_cases)
+        aggregates = registry.execution.report(all_cases)
         selected_links = relevant_links(links, selected)
         unapproved_links = any(link['state'] != 'current' for link in selected_links)
+        unapproved_execution = any(item['state'] != 'current' for item in aggregates)
         evidence_snapshot = {link['id']: dict(fingerprint=link['review']['fingerprint'], state=link['state'])
                              for link in links}
+        execution_snapshot = {item['id']: dict(fingerprint=item['review']['fingerprint'], state=item['state'])
+                              for item in aggregates}
         if a.audit:
             registry.render()
             audit = registry.audit(all_cases)
@@ -1258,13 +1292,15 @@ def main():
                     key: asdict(value) for key, value in reviews.items()}), indent=2) + '\n')
             unapproved = any(not review.approved for review in reviews.values())
             return int((a.require_complete_source and not audit['complete_source'])
-                       or ((unapproved or any(link['state'] != 'current' for link in links))
+                       or ((unapproved or any(link['state'] != 'current' for link in links)
+                            or unapproved_execution)
                            and not a.allow_unreviewed))
         if a.list:
             for case in selected:
                 print(f'{case.rule:20} {case.kind:7} {case.name}'
                       f' [{case.meta.evidence}; review={reviews[case.review_key].state}]')
             print_links(selected_links)
+            print_execution_aggregates(aggregates)
             return 0
         if a.update_xfail:
             pending = [case.review_key for case in selected if not reviews[case.review_key].approved]
@@ -1273,6 +1309,9 @@ def main():
             if unapproved_links:
                 raise SuiteError('cannot update xfails with unreviewed/stale linked evidence: ' + ', '.join(
                     link['id'] for link in selected_links if link['state'] != 'current'))
+            if unapproved_execution:
+                raise SuiteError('cannot update xfails with unreviewed/stale execution aggregates: ' + ', '.join(
+                    item['id'] for item in aggregates if item['state'] != 'current'))
         launchers = {}
         for value in a.launcher:
             name, separator, command = value.partition('=')
@@ -1286,7 +1325,7 @@ def main():
         refs = [compiler(name, False, a.reference_std, launchers.get(name, []), a.timeout)
                 for name in dict.fromkeys(a.reference)]
         companion = (dict(command=a.cc, version=tool_version(a.cc, a.timeout))
-                     if any(case.fixture and any(step.language == 'c' for step in case.fixture.build)
+                     if any(case.fixture and uses_c_companion(case.fixture)
                             for case in selected) else None)
     except SuiteError as error:
         print('ERROR:', error, file=sys.stderr)
@@ -1303,8 +1342,28 @@ def main():
                             check=check if check is not None else combined_references(references),
                             metadata=case.meta, references=references,
                             review=reviews[case.review_key], review_key=case.review_key))
-    run_errors = (confirm_snapshot(compilers, selected, fingerprints, a.timeout, companion, evidence_snapshot)
+    run_errors = (confirm_snapshot(compilers, selected, fingerprints, a.timeout, companion,
+                                   evidence_snapshot, execution_snapshot)
                   if a.report or a.update_xfail else [])
+    compiler_records = [
+        dict(command=c.command, family=c.family, standard=c.standard,
+             version=c.version, launcher=c.launcher, wrapper=c.wrapper,
+             c_binding_header=c.c_binding_header) for c in compilers]
+    result_records = [
+        dict(name=r['name'], rule=r['rule'], kind=r['kind'],
+             status=status(r['name'], r['check'], xfail, r['review']),
+             check=asdict(r['check']), metadata=asdict(r['metadata']),
+             review=asdict(r['review']), review_key=r['review_key'],
+             references={name: asdict(check) for name, check in r['references'].items()})
+        for r in results]
+    try:
+        execution_reports = execution_observations(
+            aggregates, result_records, compiler_records, a.reference_only, run_errors, companion,
+            source_root=registry.root) if aggregates else []
+    except SuiteError as error:
+        run_errors.append('cannot aggregate execution evidence: ' + str(error))
+        execution_reports = [dict(item, observations=[], provisional=True, run_errors=list(run_errors))
+                             for item in aggregates]
     for error in run_errors:
         print('ERROR: provisional results:', error, file=sys.stderr)
 
@@ -1336,6 +1395,7 @@ def main():
         agree = sum(all(v.outcome == 'pass' for v in r['references'].values()) for r in results)
         print(f'reference compilers all agree with the test on {agree}/{len(results)} cases')
     print_links(selected_links)
+    print_execution_aggregates(aggregates)
     if a.update_xfail:
         if run_errors:
             print('Expected failures were not modified because the run was not a consistent snapshot.')
@@ -1366,20 +1426,15 @@ def main():
               f" Census review: {source_audit['source_inventory_review']}.")
     if a.report:
         report = {
-            'compilers': [dict(command=c.command, family=c.family, standard=c.standard,
-                               version=c.version, launcher=c.launcher, wrapper=c.wrapper,
-                               c_binding_header=c.c_binding_header) for c in compilers],
+            'compilers': compiler_records,
+            'source_root': str(registry.root),
             'reference_only': a.reference_only,
             'run_errors': run_errors,
             'c_compiler': companion,
             'source_audit': registry.audit(all_cases),
             'evidence_links': evidence_observations(links, results, compilers, a.reference_only),
-            'results': [dict(name=r['name'], rule=r['rule'], kind=r['kind'],
-                             status=status(r['name'], r['check'], xfail, r['review']),
-                             check=asdict(r['check']), metadata=asdict(r['metadata']),
-                             review=asdict(r['review']), review_key=r['review_key'],
-                             references={name: asdict(check) for name, check in r['references'].items()})
-                        for r in results],
+            'execution_aggregates': execution_reports,
+            'results': result_records,
         }
         Path(a.report).write_text(json.dumps(report, indent=2) + '\n')
     failed = any(status(r['name'], r['check'], xfail) in ('FAIL', 'XPASS', 'ERROR') for r in results)
@@ -1387,7 +1442,8 @@ def main():
     skipped = any(result['check'].outcome == 'skip' or any(
         check.outcome == 'skip' for check in result['references'].values()) for result in results)
     return 2 if run_errors else int(
-        failed or ((unapproved or unapproved_links) and not a.allow_unreviewed) or (a.no_skips and skipped))
+        failed or ((unapproved or unapproved_links or unapproved_execution) and not a.allow_unreviewed)
+        or (a.no_skips and skipped))
 
 
 if __name__ == '__main__':

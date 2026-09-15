@@ -371,8 +371,38 @@ The complete frozen-target checkpoint has 784 executions: 532 PASS,
 248 XFAIL and four explicit optional-profile SKIPs. All 691 prior outcomes
 are unchanged. This is a regression checkpoint, not whole-standard closure.
 
+The subsequent observational-ledger review corrected two older BOZ
+adjudications. GNU's f2023 compilation failures and Flang's f2018 successes
+do not constitute qualifying f2023 reference validation. The integer
+effect has a source-supported oracle and is now source-reviewed. The real
+effect's numerical/IEEE model probe does not establish its internal
+bit-sequence interpretation, so that unchanged case is explicitly
+**needs-oracle** until an independent representation/ordering premise is
+available.
+
+The current normal run therefore reports 531 PASS, 248 XFAIL, four SKIPs
+and one NEEDS_ORACLE and intentionally returns nonzero; normal audit also
+refuses that unapproved oracle. Raw target outcomes are unchanged. Do not
+turn the needs-oracle state into an XFAIL or regard its passing output as
+approval. Observation mode remains available, but is not a completion gate.
+
+The ledger has a separately reviewed exact inventory. Current explicit
+unresolved adjudications can remain in that inventory without receiving
+qualified passes, baseline updates or completed-facet credit. This permits
+unrelated individually approved work to proceed while preserving the
+entire denominator. Exact ordered commands, input/profile hashes, source
+root/private context, compiler modes, launcher/companion/header provenance
+and actual stdin are checked. Independently reviewed defects in those
+relationships and a timeout-drain hang were repaired. Per-case sidecars
+now support the forthcoming C722/C726 migrations without deleting their
+original source files or assigning a union of facets to every case.
+See `doc/source_audits/execution_ledger_001.json`.
+
 The next units are real/complex/logical types and literals in
 7.4.3.2/7.4.3.3/7.4.5, and the character subclauses 7.4.4.1-7.4.4.4.
+Their seven source plans have been independently reviewed before fixture
+generation; both isolated authors are implementing the bounded plans and
+the explicitly required legacy migrations.
 The broader meta-evidence contract, including mixed FORMAT
 diagnostic contexts, is not complete merely because one link type exists.
 Meta-level definitions must not become fabricated passing programs.

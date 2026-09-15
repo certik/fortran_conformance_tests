@@ -1,10 +1,11 @@
 """Finite diagnostic/control links to canonical cases, never new executions."""
 from dataclasses import asdict
 import json
-from pathlib import Path, PurePosixPath
+from pathlib import Path
 import re
 
-from suite_data import Review, SuiteError, digest, fields, read_json, safe_path, string, strings, write_json
+from suite_data import (Review, SuiteError, canonical_evidence_path, digest, fields,
+                        read_json, string, strings, write_json)
 
 
 ROLES = {'diagnostic', 'positive-control'}
@@ -47,27 +48,10 @@ class EvidenceLinks:
             targets.add(target)
 
     def _path(self, relative):
-        path = safe_path(self.registry.root, relative)
-        if (PurePosixPath(relative).as_posix() != relative
-                or path.relative_to(self.registry.root).as_posix() != relative):
-            raise SuiteError(f'noncanonical evidence path: {relative}')
-        return path
+        return canonical_evidence_path(self.registry.root, relative)
 
     def _source(self, anchor):
-        string(anchor, 'evidence source')
-        section, separator, unit = anchor.partition('#')
-        entry = self.registry.sections.get(section, {})
-        units = entry.get('units', {})
-        accounting = self.registry.accounting.get(section, {})
-        if not separator or unit not in set(units) | set(accounting):
-            raise SuiteError(f'unknown pinned evidence source anchor {anchor}')
-        parents = [name for name in units if unit == name or unit.startswith(name + '.')]
-        if not parents:
-            raise SuiteError(f'{anchor}: source subdivision has no pinned parent')
-        parent = max(parents, key=len)
-        return dict(section=section, unit=unit, parent=parent, source=units[parent],
-                    section_material={key: value for key, value in entry.items() if key != 'units'},
-                    accounting=accounting.get(unit))
+        return self.registry.source_material(anchor)
 
     def _link(self, link):
         fields(link, ('id', 'target', 'basis', 'claim', 'limitation', 'cases'), ('review',), 'evidence link')

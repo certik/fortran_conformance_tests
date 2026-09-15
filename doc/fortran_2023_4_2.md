@@ -71,10 +71,13 @@ Processor-dependent facilities retain their qualified methods or semantics under
 
 **Facets:** `whole-suite-execution`.
 
-**Oracle limitation:** No executable case is assigned to this universal facet. The foundation syntax controls
-are credited only to their R/C/S owners and cannot make S4.2-001 authored or passed.
-Documentation is a proposed way to qualify evidence, not a conversion of p7-p8
-recommendations into mandatory processor documentation.
+**Oracle limitation:** No executable case or completion credit is assigned to this universal facet. The finite
+execution ledger binds the current whole collected case set, including separately
+classified negative/admission/context evidence. A partial invocation cannot silently
+shrink that set. An aggregate's current source/inventory review is not source
+completeness, successful execution, or an independent effect test; the ordinary cases
+retain their primary R/C/S owners. Documentation is a proposed way to qualify evidence,
+not a conversion of p7-p8 recommendations into mandatory processor documentation.
 
 **Dependencies:** 4.2 p1 distinguishes program and program-unit conformance; 5.2.1-.2 (PDF 56) includes
 non-Fortran-defined entities and requires exactly one main program. 4.2 p5 spans PDF 46

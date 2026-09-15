@@ -93,7 +93,10 @@ xfail update. It does not ratify the entire PDF census.
 
 Every compiler and executable invocation has a 30-second timeout,
 configurable with `--timeout`. A timeout terminates the invocation's process
-group. Compilation crashes and ASR-verifier failures are failures, not
+group. Pipe draining and process reaping have separate bounded cleanup
+allowances, at most one second each. A pipe held outside the child group
+cannot make the post-timeout drain wait indefinitely; captured partial
+stdout/stderr bytes are retained. Compilation crashes and ASR-verifier failures are failures, not
 successful language diagnostics. Failure to start a tool is a harness
 `ERROR`, which cannot be hidden by an xfail.
 
@@ -329,7 +332,28 @@ units remain in each compilation.
 Reports retain the isolated input hash and actual compiler command,
 return code, and streams, as they do for manifest fixtures.
 
-LFortran must exit unsuccessfully without a compiler crash/verifier failure
+An adjacent `<RULE>_invalid.cases.json` can give a retained container
+per-execution contracts without moving its source or changing execution
+IDs. It contains `schema_version: 1` and a `cases` object whose keys exactly
+match every original marker name. Each entry supplies its own `facets`,
+`outcome: "diagnose"`, and `diagnostic.contains_any`; optional
+`diagnostic.excludes_any` excludes known wrong causes. An optional `profiles`
+list explicitly replaces the inherited file-level list. The initial
+sidecar contract deliberately supports only compile-phase reporting,
+without generic warning or driver-attribution fallbacks.
+
+The diagnostic filename and default point come from the original source
+and marker. An explicit `line`/`end_line` relation must contain that marker
+and stay within the preserved source. The source bytes and isolation rules
+are unchanged. Each execution then has its own review key and a fingerprint
+binding the full source, effective metadata and its exact diagnostic
+contract. A sidecar cannot assign a union of all facets to every isolated
+case; unknown/missing cases, profiles and orphan contracts are errors.
+Changed contracts require fresh adjudication. Source-specific predicate
+validity still requires independent review rather than compiler consensus.
+
+Without a per-execution `diagnose` contract, LFortran must exit
+unsuccessfully without a compiler crash/verifier failure
 and issue an error at the exact marked line. A multi-line statement needs
 an explicitly declared manifest span; an unqualified recovery range cannot
 stand in for the point. `--codes`
@@ -503,6 +527,135 @@ reports there is no synthetic target observation. Linked observed/passing
 aggregation is **not implemented**, explicitly `not-computed`, even for
 a current semantic link. A source-only approved link can coexist with
 failed or missing compiler evidence without making that evidence pass.
+
+## Finite whole-suite execution ledgers (observational prototype)
+
+The optional `execution_aggregates` index entry names
+`doc/evidence/whole_suite_execution.json`. Its `schema_version`, exact
+`standard` pin and `aggregates` array define a separate kind of evidence.
+Each aggregate has an `id`, supplementary-effect `target` with source
+anchors, `basis`, `claim`, `limitation`, and optional source `review`.
+This first contract accepts only `scope: "all-collected-cases"` and
+`coverage_credit: "none"`. It cannot name a filtered subset or clear its
+target's pending facet.
+
+The current collected suite is enumerated in full, not inferred from the
+selected invocation. Every ID, primary requirement, source/manifest path,
+declared phase, metadata, actual input/profile hash, requirement fingerprint,
+fixture execution group and current adjudication enters the inventory
+binding. The source census and all registered catalogue fingerprints/review
+states are also bound. Adding, removing or changing even an unselected case
+makes the aggregate review stale. Changes during a report or baseline run
+make the observations provisional and prevent baseline modification.
+Every member's actual fingerprint is checked before grouping reviews.
+Different inputs with the same review key are errors, even when their
+execution IDs differ or one member is unselected. Legitimate isolated
+executions from the same source container still share a review.
+
+Review the relevant source, all current fixture adjudications and the
+finite inventory before recording its independent source adjudication:
+
+```sh
+tests/run_tests.py --record-execution-review \
+    S4.2-001.whole-suite-execution --review-state source-reviewed \
+    --review-rationale 'Independently reviewed the finite inventory and its qualifications.'
+```
+
+A compiler report cannot perform this adjudication. Reference-validated
+member approvals must themselves contain an observation at the required
+phase and supported standard mode. Source-only member approvals remain
+possible without claiming reference corroboration. Normal audit, runs and
+baseline updates require registered aggregates to be current;
+`--allow-unreviewed` permits draft observations but never baseline updates.
+
+**Inventory review is not member approval.** A current, explicit
+`needs-oracle` or `disputed` adjudication may remain in a reviewed inventory,
+listed under `members_needing_approval` with `all_members_approved: false`.
+It cannot produce a qualified pass, receive an xfail update, or satisfy
+normal whole-suite audit/run gates. Unreviewed or stale member adjudications
+still block inventory review, as does a falsely labelled reference
+validation lacking the required phase/mode. Independently approved
+selections can continue to be observed and baselined without hiding or
+removing the unresolved member from the full denominator.
+
+JSON `execution_aggregates` joins each compiler's observations by exact
+case ID, retaining unselected members as `not-selected`. It never launches
+another test or synthesizes a target from reference-only results. Different
+compiler versions, modes, launchers and header configurations are not joined
+into one successful processor. XFAIL status is not a passing outcome, and a
+generic resource error is not evidence of a permitted size or complexity
+limit.
+
+Each compiler has separate populations for runtime effects, non-runtime
+effects, positive controls, context-only cases and invalid-input diagnostics.
+The latter are outside the declared-valid execution population, not erased
+from the inventory. Counts are **cases**, not inferred passing facets.
+An admission control can pass its declared compile/link/run expectation
+without becoming an interpretation effect. A context-only run does not
+establish an undefined value.
+
+`qualified_pass` means the declared-valid case passed with a current
+aggregate/case adjudication, matching inputs, the declared observed phase
+and successful trace, a qualifying standard mode, successful declared
+profile traces/hashes, and the required recorded launcher/companion/header
+evidence. It is not independent certification of processor limits, external
+interfaces, ABI compatibility or universal execution semantics. An explicit
+profile-qualified application exit such as 200 is judged against its
+declared runtime status, not mistaken for a compiler crash.
+
+The bound execution plan retains the ordered build steps, link driver,
+terminal expectation, arguments and stdin asset. Each check records its
+versioned `execution_context`, including the private workspace and any
+staged compiler resources. Shared command constructors reconstruct every
+expected argv from that declaration and the recorded configuration.
+The entire observed prefix, exact phase/step order, preceding successes,
+source/output paths, effective compiler flags, and built-executable/run
+relationship must agree. Profiles likewise bind one ordered compilation/run
+pair to their actual source, hash, compiler and executable.
+
+The report's `source_root` connects the declared repository-relative inputs
+to the observed commands; it is invocation provenance, not part of portable
+fixture or inventory review fingerprints. Launcher/wrapper shapes are
+validated, and actual run commands must contain the configured executable,
+image substitution and arguments. A C link driver needs a recorded C
+companion even when there are no C compilation steps. Header evidence must
+have a matching C build and private include path. Input hashes have an exact
+declared key set, plus only the processor resources used by that execution.
+Declared stdin is hashed from the actual bytes supplied to the process and
+joined to the corresponding input asset.
+
+Contradictory or incomplete success traces, transplanted compiler/profile
+observations, missing required interface identities and unrelated input
+claims are consistency errors: the report becomes provisional and no xfail
+update is permitted. Genuine earlier compiler failures, unavailable
+profiles, missing launchers and correctly labelled older-standard
+observations remain failed, skipped or mode-unqualified evidence instead.
+This is internal evidence consistency, not cryptographic attestation or an
+inventory of all transitive operating-system and compiler dependencies.
+
+`runtime_attempted` comes from a recorded run command; an early compilation
+failure cannot become a run effect. `runtime_effect_pass` additionally
+requires a qualified pass in the runtime-effect population. Missing,
+failed or skipped profiles, unsupported standard modes and provisional
+observations cannot produce qualified passes. Complete traces and output
+oracles remain on the primary result, with aggregate rows retaining its
+exact ID and input evidence.
+
+`observation_set_complete` describes row presence for the whole collected
+population; `valid_observation_set_complete` describes the declared-valid
+population. Neither means that programs executed or passed: present failure
+and skip observations remain present. Even
+`all_declared_valid_expectations_qualified` concerns only the finite
+declared phases, including admission controls, not the universal
+processor obligation.
+
+Audit counts `observational_aggregates` and
+`current_observational_aggregates` remain separate from direct or linked
+authored facets. No new case or completion credit is assigned to S4.2-001.
+Its source/requirement census, complete fixture/oracle inventory and
+documentary/interface qualifications remain pending. A current ledger
+review does not ratify the whole PDF or turn the recommendations in
+4.2 p7-p8 into mandatory processor documentation.
 
 The initial C1514 scalar-character LEN-only negative and one-rank-change
 control are compile-only, unreviewed fixtures. Their draft S7.2-003 link

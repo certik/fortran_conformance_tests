@@ -59,6 +59,11 @@ class Fixture:
         return result
 
 
+def uses_c_companion(fixture):
+    return any(step.language == 'c' for step in fixture.build) or bool(
+        fixture.link and fixture.link.get('driver', 'fortran') == 'c')
+
+
 def output_options(value, context):
     if value is None:
         return None

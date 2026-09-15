@@ -1,8 +1,11 @@
 import contextlib
 import collections
 import io
+import os
 from pathlib import Path
 import re
+import signal
+import subprocess
 import sys
 import tempfile
 import time
@@ -23,6 +26,48 @@ class RunnerTests(unittest.TestCase):
         path = self.root / name
         path.write_text(contents)
         return str(path)
+
+    def test_timeout_with_pipe_held_outside_child_group_is_bounded_and_lossless(self):
+        stdout_read, stdout_write = os.pipe()
+        stderr_read, stderr_write = os.pipe()
+        process = subprocess.Popen(
+            [sys.executable, '-c', 'import time; time.sleep(10)'],
+            stdin=subprocess.PIPE, stdout=stdout_write, stderr=stderr_write, start_new_session=True)
+        process.stdout = os.fdopen(stdout_read, 'rb')
+        process.stderr = os.fdopen(stderr_read, 'rb')
+        stdout = b'partial stdout\xff\n'
+        stderr = b'partial stderr\x00\n'
+        os.write(stdout_write, stdout)
+        os.write(stderr_write, stderr)
+        old_handler = signal.getsignal(signal.SIGALRM)
+
+        def expired(signum, frame):
+            self.fail('post-timeout pipe draining exceeded its bound')
+
+        try:
+            signal.signal(signal.SIGALRM, expired)
+            signal.setitimer(signal.ITIMER_REAL, 2)
+            with patch.object(runner.subprocess, 'Popen', return_value=process):
+                start = time.monotonic()
+                result = runner.run(['synthetic-owned-process'], str(self.root), timeout=0.1)
+            self.assertLess(time.monotonic() - start, 1)
+            self.assertTrue(result.timed_out)
+            self.assertEqual(result.stdout_bytes, stdout)
+            self.assertEqual(result.stderr_bytes, stderr)
+        finally:
+            signal.setitimer(signal.ITIMER_REAL, 0)
+            signal.signal(signal.SIGALRM, old_handler)
+            if process.poll() is None:
+                try:
+                    os.killpg(process.pid, signal.SIGKILL)
+                except ProcessLookupError:
+                    pass
+            os.close(stdout_write)
+            os.close(stderr_write)
+            for stream in (process.stdin, process.stdout, process.stderr):
+                if stream is not None:
+                    stream.close()
+            process.wait(timeout=2)
 
     def invalid(self, result, codes=False):
         source = 'subroutine s\n integer, save, save :: x ! {error C801 save}\nend subroutine\n'
@@ -413,6 +458,7 @@ case.f90:5-5:1-20: semantic warning [C801]: repeated
         registry = Mock()
         registry.legacy = {}
         registry.evidence.report.return_value = []
+        registry.execution.report.return_value = []
         registry.fingerprint.return_value = '0' * 64
         registry.review.return_value = runner.Review('source-reviewed')
         with patch.object(runner, 'HERE', str(self.root)), \
@@ -463,11 +509,13 @@ case.f90:5-5:1-20: semantic warning [C801]: repeated
 
     def test_snapshot_detects_input_and_compiler_changes(self):
         case = Mock()
+        case.name = 'fixture'
         case.review_key = 'fixture'
         case.fingerprint.return_value = 'b' * 64
         old = runner.Compiler('lfortran', 'lfortran', 'f23', version='old')
         new = runner.Compiler('lfortran', 'lfortran', 'f23', version='new')
-        with patch.object(runner, 'Registry'), patch.object(runner, 'compiler', return_value=new):
+        with patch.object(runner, 'Registry'), patch.object(runner, 'compiler', return_value=new), \
+                patch.object(runner, 'collect_cases', return_value=[case]):
             errors = runner.confirm_snapshot([old], [case], {'fixture': 'a' * 64})
         self.assertTrue(any('inputs or requirement changed' in error for error in errors))
         self.assertTrue(any('compiler version changed' in error for error in errors))

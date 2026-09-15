@@ -117,6 +117,14 @@ def safe_path(root, relative, exists=True):
     return resolved
 
 
+def canonical_evidence_path(root, relative):
+    path = safe_path(root, relative)
+    if (PurePosixPath(relative).as_posix() != relative
+            or path.relative_to(root).as_posix() != relative):
+        raise SuiteError(f'noncanonical evidence path: {relative}')
+    return path
+
+
 def digest(parts):
     value = hashlib.sha256()
     for name, data in sorted(parts.items()):
@@ -126,6 +134,17 @@ def digest(parts):
         value.update(b'\0')
         value.update(data)
     return value.hexdigest()
+
+
+def case_review_bindings(cases, registry):
+    groups, fingerprints = {}, {}
+    for case in cases:
+        fingerprint = case.fingerprint(registry)
+        if case.review_key in fingerprints and fingerprints[case.review_key] != fingerprint:
+            raise SuiteError(f'{case.review_key}: review group has inconsistent inputs')
+        fingerprints[case.review_key] = fingerprint
+        groups.setdefault(case.review_key, []).append(case.name)
+    return groups, fingerprints
 
 
 def render_requirement(requirement):
@@ -154,7 +173,8 @@ class Registry:
         self.index = read_json(safe_path(self.root, index))
         fields(self.index, ('schema_version', 'standard', 'source_inventory', 'rule_inventory',
                             'catalogues', 'reviews'),
-               ('legacy_requirements', 'source_inventory_review', 'evidence_links'), 'catalogue index')
+               ('legacy_requirements', 'source_inventory_review', 'evidence_links',
+                'execution_aggregates'), 'catalogue index')
         if self.index['schema_version'] != 1:
             raise SuiteError('unsupported catalogue-index schema')
         self.source = read_json(safe_path(self.root, self.index['source_inventory']))
@@ -213,6 +233,26 @@ class Registry:
         if 'evidence_links' in self.index:
             string(self.index['evidence_links'], 'evidence registry path')
         self.evidence = EvidenceLinks(self, self.index.get('evidence_links'))
+        from execution_aggregates import ExecutionAggregates
+        if 'execution_aggregates' in self.index:
+            string(self.index['execution_aggregates'], 'execution aggregate registry path')
+        self.execution = ExecutionAggregates(self, self.index.get('execution_aggregates'))
+
+    def source_material(self, anchor):
+        string(anchor, 'evidence source')
+        section, separator, unit = anchor.partition('#')
+        entry = self.sections.get(section, {})
+        units = entry.get('units', {})
+        accounting = self.accounting.get(section, {})
+        if not separator or unit not in set(units) | set(accounting):
+            raise SuiteError(f'unknown pinned evidence source anchor {anchor}')
+        parents = [name for name in units if unit == name or unit.startswith(name + '.')]
+        if not parents:
+            raise SuiteError(f'{anchor}: source subdivision has no pinned parent')
+        parent = max(parents, key=len)
+        return dict(section=section, unit=unit, parent=parent, source=units[parent],
+                    section_material={key: value for key, value in entry.items() if key != 'units'},
+                    accounting=accounting.get(unit))
 
     def _requirement(self, requirement, section):
         fields(requirement, ('id', 'title', 'source', 'source_units', 'category', 'diagnostic_obligation',
@@ -444,6 +484,7 @@ class Registry:
         unresolved_fine = sum(record['disposition'] == 'unresolved' for _, record in fine)
         catalogue_reviews = {section: self.catalogue_review_state(section) for section in self.catalogues}
         links = self.evidence.report(cases)
+        aggregates = self.execution.report(cases, include_members=False)
         return dict(
             sections=len(self.sections), base_source_units=total, accounted_base_units=accounted,
             unresolved_base_units=unresolved, detailed_catalogues=len(self.catalogues),
@@ -453,6 +494,8 @@ class Registry:
             linked_facets=len(links),
             current_linked_facets=sum(link['state'] == 'current' for link in links),
             evidence_links=links, linked_observation_aggregation='not-computed',
+            execution_aggregates=aggregates, observational_aggregates=len(aggregates),
+            current_observational_aggregates=sum(item['state'] == 'current' for item in aggregates),
             pending_facets=sum(len(item['pending']) for item in self.requirements.values()),
             fine_source_units=len(fine), unresolved_fine_units=unresolved_fine,
             source_inventory_review=self.source_review_state,
@@ -460,7 +503,8 @@ class Registry:
             complete_source=self.source_review_state == 'reviewed' and unresolved == 0
             and unresolved_fine == 0 and not sections_without_catalogues
             and all(state == 'reviewed' for state in catalogue_reviews.values())
-            and all(link['state'] == 'current' for link in links))
+            and all(link['state'] == 'current' for link in links)
+            and all(item['state'] == 'current' for item in aggregates))
 
     def render(self, write=False):
         errors = []
