@@ -1,0 +1,1095 @@
+{
+  "schema_version": 1,
+  "section": "7.4.3.2",
+  "review_state": "reviewed",
+  "subunits": {
+    "p1": [
+      "p1.approximate-domain",
+      "p1.minimum-methods",
+      "p1.value-sets",
+      "p1.representation-method",
+      "p1.kind-characterization",
+      "p1.kind-inquiry"
+    ],
+    "p2": [
+      "p2.precision-inquiry",
+      "p2.range-inquiry",
+      "p2.radix-inquiry",
+      "p2.precision-selection",
+      "p2.range-selection",
+      "p2.radix-selection"
+    ],
+    "p3": [
+      "p3.zero-existence",
+      "p3.distinguishing-processors",
+      "p3.all-intrinsic-relations",
+      "p3.intrinsic-arguments",
+      "p3.explicit-exceptions"
+    ],
+    "note2": [
+      "note2.distinguishing-premise",
+      "note2.nonnegative-comparison",
+      "note2.negative-comparison",
+      "note2.sign-procedure",
+      "note2.sign-conditions"
+    ],
+    "p4": [
+      "p4.real-keyword",
+      "p4.double-precision-keyword"
+    ],
+    "p5": [
+      "p5.real-selector-omitted",
+      "p5.default-kind-inquiry",
+      "p5.double-precision-real-type",
+      "p5.double-kind-inquiry",
+      "p5.strictly-greater-precision"
+    ],
+    "p6": [
+      "p6.double-minimum-precision",
+      "p6.double-minimum-range",
+      "p6.default-precision-recommendation",
+      "p6.default-range-recommendation"
+    ],
+    "R713": [
+      "R713.sign-omitted",
+      "R713.sign-present"
+    ],
+    "R714": [
+      "R714.significand-only",
+      "R714.significand-exponent",
+      "R714.digit-string-exponent",
+      "R714.suffix-optional",
+      "R714.underscore-kind"
+    ],
+    "R715": [
+      "R715.digits-point-digits",
+      "R715.digits-point",
+      "R715.point-digits"
+    ],
+    "R716": [
+      "R716.e",
+      "R716.d"
+    ],
+    "R717": [
+      "R717.signed-digit-string"
+    ],
+    "C721": [
+      "C721.both-present-condition",
+      "C721.e-required"
+    ],
+    "C722": [
+      "C722.available-real-method",
+      "C722.digit-selector",
+      "C722.named-selector"
+    ],
+    "p7": [
+      "p7.no-exponent-default",
+      "p7.e-exponent-default",
+      "p7.d-exponent-double",
+      "p7.explicit-kind"
+    ],
+    "p8": [
+      "p8.power-of-ten",
+      "p8.significand-scaling",
+      "p8.digit-string-scaling",
+      "p8.decimal-scientific-notation"
+    ],
+    "p9": [
+      "p9.excess-significand-digits"
+    ],
+    "note3": [
+      "note3.negative-decimal",
+      "note3.positive-e-exponent",
+      "note3.unsigned-decimal",
+      "note3.numeric-kind-e-exponent",
+      "note3.d-negative-exponent"
+    ],
+    "note3.2": [
+      "note3.2.named-kind-e-exponent",
+      "note3.2.leading-point",
+      "note3.2.digit-string-exponent",
+      "note3.2.named-kind-premise"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "R713",
+      "title": "A signed real literal has an optional leading sign",
+      "source": "7.4.3.2 R713, PDF 82, printed 68, line 10.",
+      "source_units": [
+        "R713",
+        "R713.sign-omitted",
+        "R713.sign-present"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "A signed-real-literal-constant consists of an R714 literal with either no leading sign or one R712 sign. Plus and minus are the existing sign alternatives. The sign on an exponent is a different occurrence of the shared syntax. An arbitrary expression with unary operators is not necessarily a signed real literal.",
+      "facets": [
+        "unsigned",
+        "plus",
+        "minus",
+        "signed-suffixed",
+        "single-leading-sign"
+      ],
+      "pending": {},
+      "oracle": "Compile-only DATA controls use matching kinds and zero payloads for omitted/plus/minus signs and both signed named-suffix forms. The double-leading-minus negative has a one-character repair and a narrow unexpected-minus token contract. No generic DATA/expected-token fallback is counted.",
+      "oracle_limitation": "R712 retains sign ownership; R710 retains exponent-sign ownership. The initial snapshot supplies no qualifying reference route for the extra-minus case: the target accepts it, GNU reports generic DATA syntax, and Flang's parenthesis recovery is not the declared cause. Its source/contract therefore remains an explicit source-only/needs-oracle review candidate, not approved diagnostic coverage; the unexpected-minus route is prospective, not a claimed observed message. Source echoes, unrelated recovery, unsupported facilities, crashes, verifier and resource failures cannot satisfy the contract. Required reporting does not prescribe a fatal exit.",
+      "dependencies": "R714/R712; 8.6.7/R848 and p8/p10, PDF 137-138; 4.1.2 p2 and 4.2 p2(3), PDF 45-46. Real signed-zero semantics remain S7.4.3.2-003."
+    },
+    {
+      "id": "R714",
+      "title": "Real literals have significand and exponent-bearing alternatives",
+      "source": "7.4.3.2 R714, PDF 82, printed 68, lines 11-12.",
+      "source_units": [
+        "R714",
+        "R714.significand-only",
+        "R714.significand-exponent",
+        "R714.digit-string-exponent",
+        "R714.suffix-optional",
+        "R714.underscore-kind"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "A real literal either has a significand with an optional exponent-letter/exponent pair, or has a digit string followed by a required exponent-letter/exponent pair. Either alternative may end with an underscore and kind-param. An underscore without its kind parameter is incomplete. A sign before the entire literal belongs to R713 or to an enclosing expression.",
+      "facets": [
+        "significand-only",
+        "significand-exponent",
+        "digits-exponent",
+        "significand-suffix",
+        "significand-exponent-suffix",
+        "digits-exponent-suffix",
+        "suffix-needs-kind"
+      ],
+      "pending": {},
+      "oracle": "Six finite zero-valued compile controls distinguish the two top-level alternatives, exponent omission/presence and suffix omission/presence. One empty-suffix negative has a one-token conforming repair and a diagnostic located at that literal.",
+      "oracle_limitation": "R709 owns kind-param alternatives, R711 owns digit strings and R715-R717 own descendants. In particular, a bare digit string can be a valid integer constant and is not an isolated R714 negative in DATA or assignment. Parenthesized suffix expressions remain a canonical R709 issue rather than a new local rule. No literal magnitude or decimal-rounding conclusion is credited to these admission controls.",
+      "dependencies": "R709/R711, R715-R717, C721/C722; 6.1.4/R602 and 8.6.7/R848, PDF 67 and 137. 4.2 p2(3), PDF 46, supplies detection/reporting rather than mandatory rejection."
+    },
+    {
+      "id": "R715",
+      "title": "A significand contains a decimal point and at least one digit",
+      "source": "7.4.3.2 R715, PDF 82, printed 68, lines 13-14.",
+      "source_units": [
+        "R715",
+        "R715.digits-point-digits",
+        "R715.digits-point",
+        "R715.point-digits"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "The significand alternatives allow digits on both sides of a decimal point, digits before a trailing point, or digits after a leading point. At least one digit is present. The dot is not optional within a significand, even though R714 separately permits a digit-string/exponent real literal.",
+      "facets": [
+        "digits-both-sides",
+        "trailing-point",
+        "leading-point",
+        "digit-required"
+      ],
+      "pending": {},
+      "oracle": "The three positive forms are compile-only controls with matching object kinds and zero payloads. The negative removes the only digit from the leading-point form, keeping the actual DATA constant context and one-to-one initialization intact.",
+      "oracle_limitation": "R711 remains the digit-string owner. A missing point in a valid exponent-bearing real or an ordinary integer constant is not a negative. Value accuracy, leading-zero semantics and exponent scaling require their separate effect oracles. The reporting contract is a cause-specific located grammar route, not the substring real or constant.",
+      "dependencies": "R714/R711 and 6.1.3; 8.6.7/R848 and p8/p10, PDF 137-138. The finite source uses the established free-form character interface."
+    },
+    {
+      "id": "R716",
+      "title": "The standard real exponent letters are E and D",
+      "source": "7.4.3.2 R716, PDF 82, printed 68, lines 15-16.",
+      "source_units": [
+        "R716",
+        "R716.e",
+        "R716.d"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "E and D are the alternatives for exponent-letter. Their case-insensitive source spellings follow the existing letter-case rule outside character contexts. The literal's kind and the restriction on combining an exponent letter with a suffix are separate semantic and constraint requirements.",
+      "facets": [
+        "e-letter",
+        "d-letter",
+        "nonstandard-letter"
+      ],
+      "pending": {},
+      "oracle": "Finite E/e and D/d compile controls establish admission in the actual exponent position. The Q-to-D pair admits the observed target Q0-token report and GNU's explicit Q-exponent extension report. Flang's exact located Q-exponent portability message is allowed nonfatally; no compiler warning flag or mandatory rejection is invented.",
+      "oracle_limitation": "No portable Q kind, quad representation or storage width is asserted. Generic exponent nouns or unsupported precision facilities cannot credit the negative. R716 does not itself establish that E is default real or D is double precision; those effects are S7.4.3.2-006.",
+      "dependencies": "6.1.2 p3 and S6.1.2-002, PDF 67; R714/R717/C721; 4.2 p2(3) and p4, PDF 46, permit extensions only with the required reporting capability."
+    },
+    {
+      "id": "R717",
+      "title": "The exponent uses the existing signed digit-string syntax",
+      "source": "7.4.3.2 R717, PDF 82, printed 68, line 17.",
+      "source_units": [
+        "R717",
+        "R717.signed-digit-string"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "The exponent syntactic class expands to signed-digit-string. R710 supplies the optional sign, R711 the nonempty decimal digit sequence, and R712 the sign alternatives. This occurrence does not introduce an integer literal kind or an arithmetic expression inside the exponent.",
+      "facets": [
+        "unsigned-exponent",
+        "plus-exponent",
+        "minus-exponent",
+        "multiple-and-leading-zero-digits",
+        "canonical-sign-control-link"
+      ],
+      "pending": {
+        "canonical-sign-control-link": "Phase 2: propose a reviewed canonical link to R710_invalid__double_exponent_sign and R710_valid__double_exponent_sign_repair in tests/fixtures/integer_literal_r710_double_exponent_sign_{invalid,valid}/fixture.json. Reuse their actual R717 context and cause-specific contract; do not copy them, claim them now, or update evidence_links during this phase."
+      },
+      "oracle": "Four zero-payload DATA controls cover the finite admitted exponent forms. The existing R710 pair, whose single defect is 1.0d++1 versus 1.0d+1, is the proposed negative/control evidence connection, subject to coordinator-owned link adjudication.",
+      "oracle_limitation": "The R710 pair retains its exact IDs, source files, fingerprints and primary ownership. No new R710/R711/R712 requirements are created. Its parser recovery or constancy complaints cannot be repurposed as an R717 pass. These are syntax observations, not independent decimal-value, exponent-range or kind effects.",
+      "dependencies": "R710-R712 and the reviewed 7.4.3.1 catalogue; R714; 8.6.7/R848, PDF 137. Batch009's corrected double-exponent-sign contract excludes unrelated assignment/DO recovery."
+    },
+    {
+      "id": "C721",
+      "title": "An exponent-bearing literal with a kind suffix uses E",
+      "source": "7.4.3.2 C721 (R714), PDF 82, printed 68, line 18.",
+      "source_units": [
+        "C721",
+        "C721.both-present-condition",
+        "C721.e-required"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "When both an exponent-letter and kind-param occur in a real literal, the letter must be E. A D exponent with a suffix is not permitted even when the suffix denotes the double-precision kind. A suffix without an exponent letter and a D exponent without a suffix do not violate this constraint.",
+      "facets": [
+        "suffix-without-exponent",
+        "e-with-suffix",
+        "d-without-suffix",
+        "d-with-named-suffix",
+        "d-with-digit-suffix"
+      ],
+      "pending": {
+        "d-with-digit-suffix": "Phase 2: the same D-to-E pair uses a digit suffix in independently supported static branches 0, 1, 2, 4, 8 and 16. An unavailable branch is not a diagnostic pass or a waiver of C721."
+      },
+      "oracle": "The no-exponent suffix, E-plus-suffix and unsuffixed-D forms are compile controls. The authored named-suffix pair changes only D to E with a supported double-kind selector and zero payload. GNU's joint D/exponent/explicit-kind cause and Flang's exact located non-E-plus-kind portability report qualify; the latter need not reject. The optional digit-suffix matrix remains pending.",
+      "oracle_limitation": "A generic invalid kind, unavailable method, exponent, constant-expression or parser-summary message is not sufficient. In particular, a constancy complaint about kd=KIND(0.0D0) is a wrong cause. Numeric branch profiles establish real-kind support without compiling the invalid D-suffix form. The proposed message routes are semantic predicates awaiting exact phase-2 diagnostic qualification, not invented standard wording.",
+      "dependencies": "R714/R716/R709, C718/C719/C722; 16.9.118 and 16.10.2.26, PDF 424 and 476; 10.1.12 p1, PDF 187-188; 4.2 p2(3), PDF 46."
+    },
+    {
+      "id": "C722",
+      "title": "A real literal kind value identifies an available real method",
+      "source": "7.4.3.2 C722 (R714), PDF 82, printed 68, line 19.",
+      "source_units": [
+        "C722",
+        "C722.available-real-method",
+        "C722.digit-selector",
+        "C722.named-selector"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "A real literal's kind-param value identifies a real approximation method available on the processor. The condition applies to both digit-string and named selectors, wherever the literal production occurs. It does not imply byte-valued identifiers, portable supported numbers or that an integer/logical kind with the same number is a real kind.",
+      "facets": [
+        "supported-name",
+        "supported-digit",
+        "unsupported-digit",
+        "unsupported-name",
+        "unsupported-exponent",
+        "unsupported-constant-expression",
+        "unsupported-array-constructor",
+        "legacy-supported-digit-codes",
+        "absent-zero-alternative"
+      ],
+      "pending": {
+        "supported-digit": "Following bounded pass: independently qualify the planned 0/1/2/4/8/16 numeric-selector family. This pass wires the retained 4/8 program only to the narrower legacy-supported-digit-codes facet; it does not claim the full family.",
+        "absent-zero-alternative": "Following bounded pass: add the previously proposed 0.0_0 diagnostic/control alternative only after an independent REAL_KINDS probe establishes zero absence. The five preserved kind-seven contexts do not exercise this alternate profile branch."
+      },
+      "oracle": "The five retained negatives have separate adjacent per-execution contracts, exact inferred marker points and one genuine context facet each. REAL_KINDS independently establishes kind-seven absence; a separate numeric-literal-legacy-default-model profile qualifies their receiving/default arithmetic context. Five compile-only repairs remove the bad digit suffix, change the named selector to KIND(0.0), or remove both repeated array suffixes. A new unprofiled zero-valued control uses default/double named selectors. The retained positive keeps its runtime body and assertions behind numeric-literal-legacy-real-kinds: REAL32=4, REAL64=8 and the declared double choice matches REAL64, so its assignments are same-kind; the exact original REAL128>0 MERGE choice is preserved.",
+      "oracle_limitation": "All six legacy execution IDs and both Fortran bodies are preserved; only metadata headers are added. The sidecar needs the coordinator's retained-container harness overlay and gives no union of facets to every member. The narrow legacy profile uses only independently selected zero objects, inventories and model inquiries, never the candidate 1.5/2.5 literals to decide eligibility. Its binary/digits/range conditions bound a finite admission context, not conversion accuracy, correct rounding, physical BOZ representation or IEEE encoding. The retained value comparisons are same-kind literal-value identity checks, not independent proofs that their approximations equal rational 3/2 or 5/2. A REAL128 identifier zero follows the existing REAL64 fallback and receives no REAL128-method credit. Old reviews are not refreshed; these are draft activation candidates for independent fixture review. Unsupported facilities, generic kind nouns, false constancy complaints, crashes, ASR verifier and resource failures cannot substitute for a real-kind-seven support report.",
+      "dependencies": "R709/C718/C719; 16.10.2.26 REAL_KINDS and 16.10.2.27 storage-sized real kinds, PDF 476-477; 10.2.1.3 p8, PDF 191, for the same-kind assignment distinction; 4.2 p2(3)-(4), PDF 46. Existing absent_real_kind_seven.f90 is deliberately composed with the new numeric_literal_legacy_default_model.f90 profile; numeric_literal_legacy_real_kinds.f90 qualifies only the retained positive. Declaration selectors retain C717 ownership."
+    },
+    {
+      "id": "S7.4.3.2-001",
+      "title": "At least two real approximation methods have representation and kind identities",
+      "source": "7.4.3.2 p1, PDF 81, printed 67, lines 12-15.",
+      "source_units": [
+        "p1.minimum-methods",
+        "p1.value-sets",
+        "p1.representation-method",
+        "p1.kind-characterization",
+        "p1.kind-inquiry"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The processor supplies at least two approximation methods defining real value sets. Each has a representation method and is identified by a KIND parameter value, returned by KIND for an entity using that method. The sets approximate mathematical reals; they are not the unbounded real line, an IEEE format specification or a physical storage-layout contract.",
+      "facets": [
+        "two-method-minimum",
+        "default-double-membership",
+        "finite-method-inventory",
+        "actual-value-set-evidence"
+      ],
+      "pending": {
+        "finite-method-inventory": "Phase 2: a separate at-most-sixteen-entry inventory witness statically instantiates every advertised kind and checks its KIND and real model inquiries. Guard constant indices and an empty inventory before use. Larger inventories need a declared follow-on branch, not a claim of complete coverage.",
+        "actual-value-set-evidence": "Needs source-reviewed, versioned processor evidence for the actual value sets and representation methods of every advertised kind, including extra-model values. Start with one record per REAL_KINDS entry from the bounded inventory and explicit documentation/independent finite witnesses; numeric model inquiries alone cannot close this facet."
+      },
+      "oracle": "Runtime type/kind and inventory relationships provide a finite necessary witness. Default and double kinds are distinct because p5 requires different decimal precisions. Additional inquiry-selected kinds may coincide with either or with each other. Actual representation/value-set evidence remains a separate pending source/profile contract.",
+      "oracle_limitation": "The sixteen-slot authoring boundary does not weaken the unprofiled two-method requirement. No kind is narrowed into another integer kind or converted to real to compare identifiers. Decimal text may be parsed as arbitrary-precision host integers in future external oracles. KIND order, storage size and numeric model shape are not interchangeable.",
+      "dependencies": "7.4.1 p2/S7.4.1-001, PDF 80; 16.4 p1/p3/p4, PDF 366-367; 16.9.118, PDF 424; 16.10.2.26, PDF 476. The p1 domain sentence is separately classified as a definition."
+    },
+    {
+      "id": "S7.4.3.2-002",
+      "title": "Real methods expose decimal precision, exponent range, radix and criterion-based selection",
+      "source": "7.4.3.2 p2, PDF 81, printed 67, lines 16-19; canonical intrinsic definitions supply the inquiry and selection contracts.",
+      "source_units": [
+        "p2.precision-inquiry",
+        "p2.range-inquiry",
+        "p2.radix-inquiry",
+        "p2.precision-selection",
+        "p2.range-selection",
+        "p2.radix-selection"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "PRECISION, RANGE and RADIX return the corresponding properties of a real approximation method. SELECTED_REAL_KIND selects using requested decimal precision, exponent range and radix. Under its canonical definition, present precision/range are lower bounds, omitted precision/range act as zero, and omitted radix places no radix condition. Among qualifying kinds it minimizes decimal precision, then the numeric kind value if that precision ties; range does not supply a further tie-breaker.",
+      "facets": [
+        "precision-inquiry",
+        "range-inquiry",
+        "radix-inquiry",
+        "default-integer-inquiry-results",
+        "precision-selection",
+        "range-selection",
+        "radix-selection",
+        "selection-ties"
+      ],
+      "pending": {
+        "precision-inquiry": "Phase 2: emit the inquiry and model parameters for default/double methods, with an external exact-integer/rational oracle for the canonical precision formula in bounded profiles b=2..16 and p=2..128. Do not use a floating LOG10 tolerance at an integer boundary.",
+        "range-inquiry": "Phase 2: compare RANGE with the canonical HUGE/TINY model formulas using exact rational powers in the same bounded profiles and exponent magnitudes at most 20000. This is a model-consistency witness, not an actual-value-set or IEEE guarantee.",
+        "radix-inquiry": "Phase 2: compare RADIX with a versioned processor model record and use the actual returned radix, not a fixed two, in the independently calculated model expectations.",
+        "selection-ties": "Phase 2: over the at-most-sixteen-kind inventory, independently filter qualifying methods, minimize precision, then minimize the kind code. Test one P-only, one R-only and one P/R/radix request. Record equal-precision/equal-range aliases explicitly; an absent tie is not observed tie coverage."
+      },
+      "oracle": "Mandatory selection controls run independently of bounded model or inventory profiles. In the complete bounded inventory, external exact arithmetic determines the expected selector from all qualifying methods; it must not merely reselect an object's kind and demand identity. Default-integer results and actual selected-object properties are separately checked.",
+      "oracle_limitation": "This is a local connection to canonical intrinsic behavior, not full ownership or coverage of all SELECTED_REAL_KIND argument and failure-code rules. Unexpected negative results for the guaranteed requests fail. Optional requests and failure codes must never be used as supposedly supported selectors. Equal precision or range does not imply equal kind, representation or radix. Physical format, correct rounding and total value sets remain outside these inquiry witnesses.",
+      "dependencies": "16.4, PDF 366-367; 16.9.71/96/118/136/142/162/166/170/183/209, PDF 403, 416, 424, 431, 434-435, 445-447, 449, 455-456 and 466. 10.1.12 permits the inquiry-based constant selectors. C.3.1, PDF 583-584, is informative guidance, not a promise about kind numbers."
+    },
+    {
+      "id": "S7.4.3.2-003",
+      "title": "Real zero exists and sign-distinguishing zeros are mathematically equivalent with explicit exceptions",
+      "source": "7.4.3.2 p3, PDF 81, printed 67, lines 20-24; informative NOTE 2 on PDF 82.",
+      "source_units": [
+        "p3.zero-existence",
+        "p3.distinguishing-processors",
+        "p3.all-intrinsic-relations",
+        "p3.intrinsic-arguments",
+        "p3.explicit-exceptions"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Real includes zero. If a processor distinguishes positive and negative real zero, it treats them as mathematically equivalent in every intrinsic relational operation and as intrinsic-procedure actual arguments, except where a procedure explicitly distinguishes negative zero. This does not require a processor to distinguish zeros or require their stored representations to be identical.",
+      "facets": [
+        "zero-exists",
+        "all-relational-spellings",
+        "mixed-kind-and-type-relations",
+        "sign-distinguishing-profile",
+        "finite-intrinsic-arguments",
+        "explicit-sign-exception",
+        "remaining-intrinsic-use-matrix"
+      ],
+      "pending": {
+        "sign-distinguishing-profile": "Needs an independent versioned processor/standardized-facility contract establishing distinction and a source-justified negative-zero construction. Then rerun the relational matrix. Do not use the tested comparison or SIGN result to decide whether its own case is eligible, and do not skip a documented capability after its implementation fails.",
+        "explicit-sign-exception": "Phase 2: under an independently established distinction profile, check SIGN with negative zero according to 16.9.189 case(iv); also record its non-distinguishing branch. The nonzero magnitude needs an independently justified representability/accuracy premise, not an arbitrary tolerance.",
+        "remaining-intrinsic-use-matrix": "Needs a finite source/use matrix over the pinned census's 16.9 procedure entries and standardized IEEE procedure entries in Clause 17: classify each real-valued argument position as applicable, explicit zero-sign exception, or not applicable. Add one bounded defined-input witness per remaining applicable route under its canonical owner; the four-procedure sample does not close the all-intrinsic-arguments condition."
+      },
+      "oracle": "The relational truth matrix is exact mathematical equality, not a bit comparison. The four initially selected intrinsic routes have defined zero inputs and source-defined mathematical expectations. SIGN's explicit exception is retained rather than incorrectly applying the general equivalence rule to it.",
+      "oracle_limitation": "No division by zero, signed-zero bit pattern, IEEE support, negative-zero preservation in every operation, or identical MIN/MAX zero representations is assumed. A missing optional distinction profile limits that additional witness only; unprofiled zero/equality cases remain runtime effects. There is no invented mandatory diagnostic for these prose effects.",
+      "dependencies": "10.1.5.5, PDF 180; 16.9.2 ABS (PDF 376), 16.9.110 INT (PDF 421-422), 16.9.135 MAX (PDF 431), 16.9.141 MIN (PDF 434), 16.9.189 SIGN including case(iv) across PDF 457-458. Clause 17 exception routes require their own source review before use."
+    },
+    {
+      "id": "S7.4.3.2-004",
+      "title": "Default and double-precision declarations select real kinds with strictly ordered decimal precision",
+      "source": "7.4.3.2 p5, PDF 82, printed 68, lines 3-6.",
+      "source_units": [
+        "p5.real-selector-omitted",
+        "p5.default-kind-inquiry",
+        "p5.double-precision-real-type",
+        "p5.double-kind-inquiry",
+        "p5.strictly-greater-precision"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "REAL without a kind parameter denotes the default real method, whose kind is KIND(0.0). DOUBLE PRECISION denotes a real method whose kind is KIND(0.0D0). The latter method has strictly greater decimal precision than the default method. No analogous strict exponent-range ordering or portable kind-code ordering is specified here.",
+      "facets": [
+        "default-declaration-kind",
+        "double-declaration-kind",
+        "double-is-real",
+        "strict-decimal-precision"
+      ],
+      "pending": {},
+      "oracle": "Runtime inquiry comparisons and explicit dummy type/kind agreement directly test the declaration semantics. The precision inequality is unconditional and independently retained even when a selected-kind inquiry has an implementation failure.",
+      "oracle_limitation": "R704 retains keyword syntax. No default-32/double-64 storage premise, fixed radix, greater RANGE, or numerical ordering of the two kind identifiers is introduced. The strictly different precisions imply different default/double kind identities; other selected methods may alias either one.",
+      "dependencies": "R704/R706/C717 and 7.4.1 p2, PDF 80; 16.9.118/162, PDF 424 and 445; 15.5.2.5 for explicit intrinsic dummy agreement. The keyword restatements in p4 map to R704 rather than new local syntax requirements."
+    },
+    {
+      "id": "S7.4.3.2-005",
+      "title": "Double precision meets mandatory decimal precision ten and exponent range thirty-seven",
+      "source": "7.4.3.2 p6, PDF 82, printed 68, lines 7-9; mandatory first sentence only.",
+      "source_units": [
+        "p6.double-minimum-precision",
+        "p6.double-minimum-range"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The double-precision real method has decimal precision at least 10 and decimal exponent range at least 37. The same paragraph recommends, but does not require, default-real precision at least 6 and range at least 37. Those two recommendations are separately accounted and are not conformance-failure thresholds.",
+      "facets": [
+        "double-precision-at-least-ten",
+        "double-range-at-least-thirty-seven"
+      ],
+      "pending": {},
+      "oracle": "The measured thresholds are the actual PRECISION and RANGE results for the double method. Default-real recommendation observations may be recorded as advisory data but must not affect pass/fail.",
+      "oracle_limitation": "These are runtime effects even if a compiler lacks double declarations or inquiries. Neither threshold guarantees a particular IEEE encoding, bit width, exact decimal-literal rounding or arbitrary identifier representability in a real/integer conversion. No non-required prose diagnostic is promoted to mandatory rejection.",
+      "dependencies": "16.9.162 and 16.9.170, PDF 445 and 449. 7.4.3.2 p5 fixes the double method independently of ISO_FORTRAN_ENV storage-size constants."
+    },
+    {
+      "id": "S7.4.3.2-006",
+      "title": "Real literal kind follows suffix presence and E or D exponent spelling",
+      "source": "7.4.3.2 p7, PDF 82, printed 68, lines 20-22.",
+      "source_units": [
+        "p7.no-exponent-default",
+        "p7.e-exponent-default",
+        "p7.d-exponent-double",
+        "p7.explicit-kind"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "An unsuffixed real literal is default real when its exponent part is absent or uses E. An unsuffixed D-exponent literal is double precision. With an explicit kind-param, the literal has that specified supported real kind. Assignment to a differently declared object does not retroactively choose the literal's kind.",
+      "facets": [
+        "no-exponent-default",
+        "e-exponent-default",
+        "d-exponent-double",
+        "named-kind",
+        "digit-kind"
+      ],
+      "pending": {
+        "digit-kind": "Phase 2: in independently supported 0/1/2/4/8/16 branches, require the literal's KIND to equal its actual suffix. Include one zero-padded digit spelling without assuming storage size."
+      },
+      "oracle": "KIND is applied to the literal before any receiving-object conversion. Explicit matching real dummies provide a separate type/kind admission check. Zero payloads avoid a decimal-accuracy dependency for these kind effects.",
+      "oracle_limitation": "The declaration keyword and suffix grammar keep their canonical owners. The digit-code set is a finite profile family, not a universal list of real kinds; unavailability cannot erase the unprofiled named/default/double effects. Arbitrary kind values stay default integers and are never narrowed or interpreted as bytes.",
+      "dependencies": "R714-R717/C721/C722; R709/C718/C719; 16.9.118, PDF 424; 10.2.1.3 p8/Table 10.9, PDF 191, distinguishes later assignment conversion."
+    },
+    {
+      "id": "S7.4.3.2-007",
+      "title": "A real exponent gives decimal power-of-ten scaling",
+      "source": "7.4.3.2 p8, PDF 82, printed 68, lines 23-24.",
+      "source_units": [
+        "p8.power-of-ten",
+        "p8.significand-scaling",
+        "p8.digit-string-scaling",
+        "p8.decimal-scientific-notation"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The exponent specifies decimal power-of-ten scaling of the significand or digit string. Real literal notation therefore denotes decimal scientific values even on a nondecimal-radix processor. This mathematical denotation does not by itself prescribe the processor's conversion accuracy, rounding direction or stored representation.",
+      "facets": [
+        "zero-exponent",
+        "positive-exponent",
+        "negative-exponent",
+        "digit-string-scaling",
+        "equivalent-decimal-forms",
+        "nonexact-decimal-conversion"
+      ],
+      "pending": {
+        "zero-exponent": "Phase 2: a run witness compares a finite zero-exponent decimal spelling against an independently constructed rational expectation under a reviewed conversion contract.",
+        "positive-exponent": "Phase 2: include 1.25E2_k and .125E3_k, both denoting 125, plus D-exponent analogues without a suffix. Establish each method's conversion/representability premise independently.",
+        "negative-exponent": "Phase 2: include 125E-2_k, denoting 5/4, and 1250.E-1_k, denoting 125. Do not force their results with an arbitrary epsilon.",
+        "digit-string-scaling": "Phase 2: include 125E0_k and 1E1_k so the digit-string alternative has an independent value oracle, not just a successful parse.",
+        "equivalent-decimal-forms": "Phase 2: evaluate the finite rational set 0, 1, 10, 125, 1/8 and 5/4 using integer/rational host arithmetic plus a reviewed conversion contract; same-spelling self-comparison or compiler agreement is not independent evidence.",
+        "nonexact-decimal-conversion": "Needs a versioned conversion/rounding contract for the finite decimal 1/10 and one long nonzero-tail value. Derive the exact allowed result or documented interval from that contract; until then keep these run effects pending rather than assuming nearest rounding or inventing a tolerance."
+      },
+      "oracle": "The source denotation is calculated exactly as a rational numerator times a power of ten. The executable oracle must separately justify how that rational maps to the selected processor method, including any arithmetic used to build the expected value. Initial profile candidates are documented radix-two p=24/53/113 methods and a documented decimal method if available, not assumed IEEE formats.",
+      "oracle_limitation": "An exactly representable model value does not independently establish a universal literal-conversion accuracy promise. RANGE/PRECISION/RADIX alone cannot ratify physical format or correct rounding. Overflow, underflow, an out-of-domain value, or unknown approximation must not be assigned a fixed standard oracle. No out-of-range prose negative or permissive compiler option is planned.",
+      "dependencies": "7.4.3.2 p1/p6/p9 and 16.4, PDF 81-82 and 366-367; 16.9.172 REAL, PDF 449-450, explicitly uses processor-dependent approximation. 10.2.1.3 p8, PDF 191, supplies subsequent numeric assignment conversion, not literal rounding."
+    },
+    {
+      "id": "S7.4.3.2-008",
+      "title": "A significand may contain more digits than the method uses in its approximation",
+      "source": "7.4.3.2 p9, PDF 82, printed 68, line 25.",
+      "source_units": [
+        "p9",
+        "p9.excess-significand-digits"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "not-required",
+      "definition": "A real literal may be written with excess significand digits beyond those the processor uses for the approximation. This permission is not a requirement to retain every digit or to round the value in a particular way.",
+      "facets": [
+        "long-zero-tail",
+        "long-nonzero-tail"
+      ],
+      "pending": {
+        "long-zero-tail": "Phase 2: a compile-only control uses a 64-digit significand beginning with 1 and followed by zeros, with D0. Independently qualify a double method whose representational precision is below this finite digit count; retain normal free-form line limits.",
+        "long-nonzero-tail": "Phase 2: a second compile-only control uses a 64-digit bounded-magnitude nonzero-tail significand with D0 under the same precision premise. Acceptance is the oracle; its conversion value remains pending under S7.4.3.2-007."
+      },
+      "oracle": "Successful compilation of two finite, bounded-magnitude long-significand controls demonstrates permitted source forms for the qualified methods. Their source length, literal kind and range must already be valid.",
+      "oracle_limitation": "No maximum processor precision or arbitrary source-size limit is inferred. If 64 digits do not exceed the qualified method's precision, these controls do not demonstrate the excess-digits facet; extend the finite reviewed family rather than mislabeling it. There is no invalid twin and no invented mandatory rejection for this prose permission.",
+      "dependencies": "R714/R715; 6.3.2.1 source limits and the canonical continuation rules; 16.4 and 16.9.71/162, PDF 367, 403 and 445. Model precision must not be confused with a promised decimal conversion error bound."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "structural",
+      "rationale": "PDF 81 lines 12-15 separates the approximate mathematical domain, two-method minimum, value sets, representation and kind inquiry."
+    },
+    {
+      "unit": "p1.approximate-domain",
+      "disposition": "definition",
+      "rationale": "Real values approximate mathematical reals; this does not identify a physical format or require the unbounded mathematical value set."
+    },
+    {
+      "unit": "p1.minimum-methods",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.3.2-001"
+      ]
+    },
+    {
+      "unit": "p1.value-sets",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.3.2-001"
+      ]
+    },
+    {
+      "unit": "p1.representation-method",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.3.2-001"
+      ]
+    },
+    {
+      "unit": "p1.kind-characterization",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.3.2-001"
+      ]
+    },
+    {
+      "unit": "p1.kind-inquiry",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.3.2-001"
+      ]
+    },
+    {
+      "unit": "p2",
+      "disposition": "structural",
+      "rationale": "PDF 81 lines 16-19 lists three distinct inquiry properties and the three selection criteria."
+    },
+    {
+      "unit": "p2.precision-inquiry",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.3.2-002"
+      ]
+    },
+    {
+      "unit": "p2.range-inquiry",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.3.2-002"
+      ]
+    },
+    {
+      "unit": "p2.radix-inquiry",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.3.2-002"
+      ]
+    },
+    {
+      "unit": "p2.precision-selection",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.3.2-002"
+      ]
+    },
+    {
+      "unit": "p2.range-selection",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.3.2-002"
+      ]
+    },
+    {
+      "unit": "p2.radix-selection",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.3.2-002"
+      ]
+    },
+    {
+      "unit": "note1",
+      "disposition": "informative",
+      "rationale": "PDF 81 NOTE 1 refers to C.3.1, read across PDF 583-584. Its module/named-kind guidance and numerical examples do not impose fixed kind codes, ordering, mandatory documentation or extra executable requirements."
+    },
+    {
+      "unit": "p3",
+      "disposition": "structural",
+      "rationale": "PDF 81 lines 20-24 separates zero existence, the sign-distinguishing-processor condition, both bullets and the explicit intrinsic-procedure exception."
+    },
+    {
+      "unit": "p3.zero-existence",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.3.2-003"
+      ]
+    },
+    {
+      "unit": "p3.distinguishing-processors",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.3.2-003"
+      ]
+    },
+    {
+      "unit": "p3.all-intrinsic-relations",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.3.2-003"
+      ]
+    },
+    {
+      "unit": "p3.intrinsic-arguments",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.3.2-003"
+      ]
+    },
+    {
+      "unit": "p3.explicit-exceptions",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.3.2-003"
+      ]
+    },
+    {
+      "unit": "note2",
+      "disposition": "structural",
+      "rationale": "PDF 82 NOTE 2 is informative; its condition, two relational examples and SIGN discussion are separately preserved below."
+    },
+    {
+      "unit": "note2.distinguishing-premise",
+      "disposition": "informative",
+      "rationale": "The examples assume a processor that distinguishes the two real zeros; they do not require that capability."
+    },
+    {
+      "unit": "note2.nonnegative-comparison",
+      "disposition": "informative",
+      "rationale": "The nonnegative comparison is true for either zero sign, illustrating p3 rather than creating another rule."
+    },
+    {
+      "unit": "note2.negative-comparison",
+      "disposition": "informative",
+      "rationale": "The strict negative comparison is false for negative zero, illustrating the same mathematical equivalence."
+    },
+    {
+      "unit": "note2.sign-procedure",
+      "disposition": "informative",
+      "rationale": "SIGN is the illustrated means of distinguishing zeros where supported; the normative contract remains 16.9.189."
+    },
+    {
+      "unit": "note2.sign-conditions",
+      "disposition": "informative",
+      "rationale": "The negative SIGN result applies to a negative argument or, conditionally, negative zero. It is not a universal sign-bit or reciprocal-zero requirement."
+    },
+    {
+      "unit": "p4",
+      "disposition": "structural",
+      "rationale": "PDF 82 lines 1-2 restates the two real type-specifier keywords already owned by R704."
+    },
+    {
+      "unit": "p4.real-keyword",
+      "disposition": "requirements",
+      "requirements": [
+        "R704"
+      ]
+    },
+    {
+      "unit": "p4.double-precision-keyword",
+      "disposition": "requirements",
+      "requirements": [
+        "R704"
+      ]
+    },
+    {
+      "unit": "p5",
+      "disposition": "structural",
+      "rationale": "PDF 82 lines 3-6 distinguishes omission, both kind inquiries, the real type of DOUBLE PRECISION and strict decimal-precision ordering."
+    },
+    {
+      "unit": "p5.real-selector-omitted",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.3.2-004"
+      ]
+    },
+    {
+      "unit": "p5.default-kind-inquiry",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.3.2-004"
+      ]
+    },
+    {
+      "unit": "p5.double-precision-real-type",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.3.2-004"
+      ]
+    },
+    {
+      "unit": "p5.double-kind-inquiry",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.3.2-004"
+      ]
+    },
+    {
+      "unit": "p5.strictly-greater-precision",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.3.2-004"
+      ]
+    },
+    {
+      "unit": "p6",
+      "disposition": "structural",
+      "rationale": "PDF 82 lines 7-9 contains two mandatory double-precision minima and two separately modal default-real recommendations."
+    },
+    {
+      "unit": "p6.double-minimum-precision",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.3.2-005"
+      ]
+    },
+    {
+      "unit": "p6.double-minimum-range",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.3.2-005"
+      ]
+    },
+    {
+      "unit": "p6.default-precision-recommendation",
+      "disposition": "recommendation",
+      "rationale": "Default-real decimal precision of at least six is recommended, not mandatory. A smaller value is not a conformance failure under this sentence."
+    },
+    {
+      "unit": "p6.default-range-recommendation",
+      "disposition": "recommendation",
+      "rationale": "Default-real decimal exponent range of at least thirty-seven is recommended, not mandatory. Advisory observations must not become a pass/fail threshold."
+    },
+    {
+      "unit": "R713",
+      "disposition": "requirements",
+      "requirements": [
+        "R713"
+      ]
+    },
+    {
+      "unit": "R713.sign-omitted",
+      "disposition": "requirements",
+      "requirements": [
+        "R713"
+      ]
+    },
+    {
+      "unit": "R713.sign-present",
+      "disposition": "requirements",
+      "requirements": [
+        "R713"
+      ]
+    },
+    {
+      "unit": "R714",
+      "disposition": "requirements",
+      "requirements": [
+        "R714"
+      ]
+    },
+    {
+      "unit": "R714.significand-only",
+      "disposition": "requirements",
+      "requirements": [
+        "R714"
+      ]
+    },
+    {
+      "unit": "R714.significand-exponent",
+      "disposition": "requirements",
+      "requirements": [
+        "R714"
+      ]
+    },
+    {
+      "unit": "R714.digit-string-exponent",
+      "disposition": "requirements",
+      "requirements": [
+        "R714"
+      ]
+    },
+    {
+      "unit": "R714.suffix-optional",
+      "disposition": "requirements",
+      "requirements": [
+        "R714"
+      ]
+    },
+    {
+      "unit": "R714.underscore-kind",
+      "disposition": "requirements",
+      "requirements": [
+        "R714"
+      ]
+    },
+    {
+      "unit": "R715",
+      "disposition": "requirements",
+      "requirements": [
+        "R715"
+      ]
+    },
+    {
+      "unit": "R715.digits-point-digits",
+      "disposition": "requirements",
+      "requirements": [
+        "R715"
+      ]
+    },
+    {
+      "unit": "R715.digits-point",
+      "disposition": "requirements",
+      "requirements": [
+        "R715"
+      ]
+    },
+    {
+      "unit": "R715.point-digits",
+      "disposition": "requirements",
+      "requirements": [
+        "R715"
+      ]
+    },
+    {
+      "unit": "R716",
+      "disposition": "requirements",
+      "requirements": [
+        "R716"
+      ]
+    },
+    {
+      "unit": "R716.e",
+      "disposition": "requirements",
+      "requirements": [
+        "R716"
+      ]
+    },
+    {
+      "unit": "R716.d",
+      "disposition": "requirements",
+      "requirements": [
+        "R716"
+      ]
+    },
+    {
+      "unit": "R717",
+      "disposition": "requirements",
+      "requirements": [
+        "R717"
+      ]
+    },
+    {
+      "unit": "R717.signed-digit-string",
+      "disposition": "requirements",
+      "requirements": [
+        "R717"
+      ]
+    },
+    {
+      "unit": "C721",
+      "disposition": "requirements",
+      "requirements": [
+        "C721"
+      ]
+    },
+    {
+      "unit": "C721.both-present-condition",
+      "disposition": "requirements",
+      "requirements": [
+        "C721"
+      ]
+    },
+    {
+      "unit": "C721.e-required",
+      "disposition": "requirements",
+      "requirements": [
+        "C721"
+      ]
+    },
+    {
+      "unit": "C722",
+      "disposition": "requirements",
+      "requirements": [
+        "C722"
+      ]
+    },
+    {
+      "unit": "C722.available-real-method",
+      "disposition": "requirements",
+      "requirements": [
+        "C722"
+      ]
+    },
+    {
+      "unit": "C722.digit-selector",
+      "disposition": "requirements",
+      "requirements": [
+        "C722"
+      ]
+    },
+    {
+      "unit": "C722.named-selector",
+      "disposition": "requirements",
+      "requirements": [
+        "C722"
+      ]
+    },
+    {
+      "unit": "p7",
+      "disposition": "structural",
+      "rationale": "PDF 82 lines 20-22 contains three suffix-absent cases and the explicit-kind case."
+    },
+    {
+      "unit": "p7.no-exponent-default",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.3.2-006"
+      ]
+    },
+    {
+      "unit": "p7.e-exponent-default",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.3.2-006"
+      ]
+    },
+    {
+      "unit": "p7.d-exponent-double",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.3.2-006"
+      ]
+    },
+    {
+      "unit": "p7.explicit-kind",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.3.2-006"
+      ]
+    },
+    {
+      "unit": "p8",
+      "disposition": "structural",
+      "rationale": "PDF 82 lines 23-24 preserves base-ten scaling, both grammar alternatives and decimal scientific interpretation."
+    },
+    {
+      "unit": "p8.power-of-ten",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.3.2-007"
+      ]
+    },
+    {
+      "unit": "p8.significand-scaling",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.3.2-007"
+      ]
+    },
+    {
+      "unit": "p8.digit-string-scaling",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.3.2-007"
+      ]
+    },
+    {
+      "unit": "p8.decimal-scientific-notation",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.3.2-007"
+      ]
+    },
+    {
+      "unit": "p9",
+      "disposition": "permission",
+      "requirements": [
+        "S7.4.3.2-008"
+      ],
+      "rationale": "PDF 82 line 25 permits excess significand digits without specifying a rounding guarantee."
+    },
+    {
+      "unit": "p9.excess-significand-digits",
+      "disposition": "permission",
+      "requirements": [
+        "S7.4.3.2-008"
+      ],
+      "rationale": "The positive syntax facet retains the permission; no invalid twin or mandatory prose diagnostic is invented."
+    },
+    {
+      "unit": "note3",
+      "disposition": "structural",
+      "rationale": "The first five examples of NOTE 3 are on PDF 82; the remaining examples and named-kind premise continue in the distinct base unit note3.2."
+    },
+    {
+      "unit": "note3.negative-decimal",
+      "disposition": "informative",
+      "rationale": "An example combines a leading minus with a decimal-point real literal; grammar and value rules remain separately owned."
+    },
+    {
+      "unit": "note3.positive-e-exponent",
+      "disposition": "informative",
+      "rationale": "An example combines a leading plus and an E exponent; it does not prescribe default precision."
+    },
+    {
+      "unit": "note3.unsigned-decimal",
+      "disposition": "informative",
+      "rationale": "An unsigned decimal-point literal illustrates the optional leading sign and exponent."
+    },
+    {
+      "unit": "note3.numeric-kind-e-exponent",
+      "disposition": "informative",
+      "rationale": "The example's numeric suffix is processor dependent; it does not require kind 8 to exist or identify storage size."
+    },
+    {
+      "unit": "note3.d-negative-exponent",
+      "disposition": "informative",
+      "rationale": "The example uses D and a negative exponent without a suffix; it is not a fixed rounding oracle."
+    },
+    {
+      "unit": "note3.2",
+      "disposition": "structural",
+      "rationale": "PDF 83 continues NOTE 3. This is a separate census base unit, not another note or an omitted part of the real scope."
+    },
+    {
+      "unit": "note3.2.named-kind-e-exponent",
+      "disposition": "informative",
+      "rationale": "The continued example uses a named kind and E; a name such as QUAD does not guarantee a particular precision or encoding."
+    },
+    {
+      "unit": "note3.2.leading-point",
+      "disposition": "informative",
+      "rationale": "The leading-point example illustrates the second R715 alternative."
+    },
+    {
+      "unit": "note3.2.digit-string-exponent",
+      "disposition": "informative",
+      "rationale": "The example without a decimal point illustrates R714's required-exponent digit-string alternative."
+    },
+    {
+      "unit": "note3.2.named-kind-premise",
+      "disposition": "informative",
+      "rationale": "The note expressly makes its kind name a scalar integer named constant; support and nonnegative-value constraints still apply through their canonical owners."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_7_4_3_2.md"
+  },
+  "review_fingerprint": "e0c1d2775c922c18584a6d5dbede7a1949aafd34afce734af8d1ae84cf286bb7",
+  "review_rationale": "Independent source-plan and fixture review with verified corrections: doc/source_audits/batch_010.json. Source, default/mandatory method and bounded zero/type/kind effects are eligible. Legacy C722 assumptions now have explicit independent profiles. Recommendations, nonzero approximation, complete method inventories and representation/rounding claims remain qualified or pending."
+}

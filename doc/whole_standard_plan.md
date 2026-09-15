@@ -22,7 +22,7 @@ The readiness refactoring now supplies:
   context case.
 
 This is infrastructure readiness, not completed conformance coverage.
-The current census still has 5,130 unresolved base units and five unresolved
+The current census still has 5,083 unresolved base units and five unresolved
 fine-grained units inside the calibration catalogues. Its independent visual
 review is still pending. Automatic PDF extraction is not semantic review,
 and list items/table rows require additional audited subdivisions.
@@ -274,9 +274,8 @@ work units; the basic C bridge does not cover them.
 ## 8. Rollout progress and next batch
 
 `doc/rollout_progress.json` records reviewed batch checkpoints. The first
-nine implementation batches catalogue the content-bearing sections of
-Clause 6, 4.1.1-4.1.5/4.2, 7.1-7.3, and the intrinsic/integer sections
-7.4.1/7.4.2/7.4.3.1, using
+ten implementation batches catalogue the content-bearing sections of
+Clause 6, 4.1.1-4.1.5/4.2, and 7.1-7.4, using
 separate author worktrees and review independent of those authors.
 All except the third batch used fresh review contexts. The third review task
 returned no substantive result, so the coordinator performed that source
@@ -380,8 +379,8 @@ bit-sequence interpretation, so that unchanged case is explicitly
 **needs-oracle** until an independent representation/ordering premise is
 available.
 
-The current normal run therefore reports 531 PASS, 248 XFAIL, four SKIPs
-and one NEEDS_ORACLE and intentionally returns nonzero; normal audit also
+The ledger checkpoint's normal run therefore reported 531 PASS, 248 XFAIL,
+four SKIPs and one NEEDS_ORACLE and intentionally returned nonzero; normal audit also
 refuses that unapproved oracle. Raw target outcomes are unchanged. Do not
 turn the needs-oracle state into an XFAIL or regard its passing output as
 approval. Observation mode remains available, but is not a completion gate.
@@ -398,11 +397,32 @@ now support the forthcoming C722/C726 migrations without deleting their
 original source files or assigning a union of facets to every case.
 See `doc/source_audits/execution_ledger_001.json`.
 
-The next units are real/complex/logical types and literals in
-7.4.3.2/7.4.3.3/7.4.5, and the character subclauses 7.4.4.1-7.4.4.4.
-Their seven source plans have been independently reviewed before fixture
-generation; both isolated authors are implementing the bounded plans and
-the explicitly required legacy migrations.
+The tenth checkpoint adds the real/complex/logical and character subclauses:
+61 requirements, 211 directly authored facets and 224 new executions.
+Independent source-plan review preceded case generation. The retained
+C722/C726 source paths, runtime bodies and thirteen execution IDs now have
+explicit legacy qualifications and per-execution metadata rather than
+coarse container claims.
+
+Fixture review corrected two C731 wrong-subject contracts, removed six
+unconstrained complex-literal punctuation routes, and withdrew one new C727
+negative whose unused-external-declaration prohibition was not established.
+Its interpretation facet stays pending; its two source-valid declaration
+controls are admission evidence only. Twenty-four other negatives retain
+specific source-only adjudications, without invented reference support.
+Seven old target passes were correctly lost under stricter causal gates.
+
+The current 1,008-case normal run reports 689 PASS, 314 XFAIL, four SKIPs
+and the same one NEEDS_ORACLE. Raw target outcomes are 690 pass, 314 fail
+and four skip; the unresolved oracle's passing output remains unapproved.
+The normal gate remains deliberately nonzero for that case. Source
+accounting, fixture approval and compiler implementation status are not
+interchangeable completion measures.
+
+Forty-three character and 41 numeric facets remain explicit follow-ups.
+The next source-only unit is 7.5.1 and 7.5.2.1-7.5.2.4, covering derived-type
+concepts and definitions. Its inventory is being prepared independently of
+the completed intrinsic fixture batch.
 The broader meta-evidence contract, including mixed FORMAT
 diagnostic contexts, is not complete merely because one link type exists.
 Meta-level definitions must not become fabricated passing programs.

@@ -1,3 +1,4 @@
+! standard: f2023
 ! profile: absent-real-kind-seven
 ! C722 (R714) The value of kind-param shall specify an approximation method
 ! that exists on the processor.

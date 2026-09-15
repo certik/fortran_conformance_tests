@@ -1,0 +1,209 @@
+{
+  "schema_version": 1,
+  "section": "7.4.4.1",
+  "review_state": "reviewed",
+  "subunits": {
+    "p1": [
+      "p1.string-values",
+      "p1.position-order",
+      "p1.length-count",
+      "p1.length-parameter-kind",
+      "p1.nonnegative-length"
+    ],
+    "p2": [
+      "p2.required-methods",
+      "p2.default-integer-kind-identifier",
+      "p2.kind-inquiry",
+      "p2.named-kind-selection",
+      "p2.representable-members"
+    ],
+    "p3": [
+      "p3.ascii-definition",
+      "p3.iso10646-definition"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S7.4.4.1-001",
+      "title": "Character strings have ordered positions and nonnegative length",
+      "source": "7.4.4.1 p1; J3/24-007, 18 December 2023, PDF 84, printed 70, lines 3-6.",
+      "source_units": [
+        "p1",
+        "p1.string-values",
+        "p1.position-order",
+        "p1.length-count",
+        "p1.length-parameter-kind",
+        "p1.nonnegative-length"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Character values are strings: sequences of characters with positions starting at one on the left. Their length counts characters, not source bytes, storage units, or displayed glyphs. LEN is a nonnegative type parameter whose integer kind is processor dependent. A zero-length string is a value, not an invalid declaration. An expression specifying a negative character length has the zero-length interpretation in 7.4.4.2 p5; it is not a counterexample to nonnegative actual LEN.",
+      "facets": [
+        "ordered-positions",
+        "zero-and-positive-lengths",
+        "length-parameter-integer-kind"
+      ],
+      "pending": {
+        "length-parameter-integer-kind": "Planned finite canonical link to S7_2_002_valid__character_len at tests/clause07/S7_2_002_valid__character_len.f90: its explicit integer dummy uses KIND(text%LEN), checks the value, and compares with LEN. Review that source connection before linking; do not clear this facet now or duplicate its execution. The LEN intrinsic's result kind is not evidence for the parameter's own integer kind."
+      },
+      "oracle": "Two run programs check every position in a four-character value and exact LEN/%LEN values for lengths 0, 1 and 4, including an array. Zero-length values are never indexed. The typed integer-kind inquiry remains a pending canonical link. Direct case IDs: S7_4_4_1_001_valid__lengths, S7_4_4_1_001_valid__positions.",
+      "oracle_limitation": "No negative twin is inferred from this value definition. These finite witnesses do not enumerate a processor's value set, specify LEN's storage representation, or prove source-byte decoding or graphics. No inquiry is made of an absent optional argument, unallocated deferred-length object, or disassociated deferred-length pointer.",
+      "dependencies": "7.2 p2-p3 and R701/C702 (PDF 76); 7.4.4.2 p4-p5 (PDF 85); 9.4.1 p1-p3/R908-R910 (PDF 151); 9.4.5/R916/C923/p2 (PDF 153); 10.1.9.2 p1 (PDF 184) makes a parameter inquiry a scalar integer of the parameter's kind; 10.1.5.5.1 p7-p8 (PDF 180-181) supplies same-kind equality; 16.9.118 and 16.9.122 (PDF 424, 426)."
+    },
+    {
+      "id": "S7.4.4.1-002",
+      "title": "Character representation methods have kind identifiers and inquiries",
+      "source": "7.4.4.1 p2, first four sentences; PDF 84, printed 70, lines 7-11.",
+      "source_units": [
+        "p2.required-methods",
+        "p2.default-integer-kind-identifier",
+        "p2.kind-inquiry",
+        "p2.named-kind-selection"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "At least one character representation method is required. Each method determines a character value set and is identified by a default-integer KIND parameter value. KIND inquires that value; SELECTED_CHAR_KIND selects by character-type name under its own contract. The existence requirement does not require a nondefault method or support for either named ASCII or ISO_10646 kind. No numerical identifier, ordering of identifiers, byte width, or equality with an integer/real kind is specified.",
+      "facets": [
+        "required-default-method",
+        "method-kind-inquiry",
+        "named-method-selection",
+        "representation-inventory"
+      ],
+      "pending": {
+        "method-kind-inquiry": "Planned finite canonical link to S7_4_1_001_valid__character at tests/clause07/S7_4_1_001_valid__character.f90, with S7_2_002_valid__intrinsic_kind as prior art: %KIND must pass an explicit default-integer dummy and agree with KIND. Review the exact character member before recording a link. No KIND identifier is narrowed into another integer kind.",
+        "representation-inventory": "Planned documentary record character-representation-inventory: join the finite CHARACTER_KINDS list with versioned processor documentation for each listed method's repertoire, limits, aliases and designated blank; record unavailable documentation explicitly. The intrinsic lists identifiers, not the complete character value sets. This evidence type is not currently implemented in the registry, and an executable inquiry cannot replace it."
+      },
+      "oracle": "Default-method declarations and DEFAULT selection are required unprofiled run controls. A separate run checks case/trailing-blank equivalence for DEFAULT, ASCII and ISO_10646 and membership of nonnegative results in CHARACTER_KINDS, without instantiating optional kinds. This does not establish full value sets or source mapping. Direct case IDs: S7_4_4_1_002_valid__default_method, S7_4_4_1_002_valid__named_selection.",
+      "oracle_limitation": "A selected kind can equal the default kind; no distinct-kind assertion is made without an independent premise. CHARACTER_KINDS order is unspecified. Finite successful declarations or a compiler's familiar numeric kind values do not prove complete repertoire support. Missing method implementation is an observation failure; only genuine optional-method absence can make its qualified witness unavailable.",
+      "dependencies": "7.4.1 p2 (PDF 80) and 7.4.4.2 p2-p3/C724 (PDF 84); 9.4.5 and 10.1.9.2 p1 (PDF 153, 184); 16.9.118 (PDF 424); 16.9.180 p3-p5 (PDF 454); 16.10.2.4 (PDF 472) defines CHARACTER_KINDS as a rank-one default-integer constant with lower bound one and processor-dependent order. 4.2 p6-p8 (PDF 47) distinguishes processor-dependent semantics and recommended documentation."
+    },
+    {
+      "id": "S7.4.4.1-003",
+      "title": "Representable characters can be members of strings of their method",
+      "source": "7.4.4.1 p2, last sentence; PDF 84, printed 70, lines 11-12.",
+      "source_units": [
+        "p2.representable-members"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A character that the processor can represent in a particular character method can occur in a string of that same method. This concerns data values, including representable control characters; it does not admit every corresponding byte in a source literal, require additional source characters, or allow arbitrary cross-kind conversion. Free/fixed literal admission and source-interface restrictions remain separate.",
+      "facets": [
+        "required-repertoire-in-strings",
+        "constructed-character-members",
+        "additional-repertoire-members"
+      ],
+      "pending": {
+        "required-repertoire-in-strings": "Planned canonical link to the future run S7_4_4_2_002_valid__repertoire: the complete required default repertoire will occur in initialized strings with exact count, position and distinctness checks. That case has primary repertoire ownership in 7.4.4.2. No linkage or current authored coverage is claimed here.",
+        "additional-repertoire-members": "Planned qualified run S7_4_4_1_003_valid__additional: after a documentary profile supplies one additional graphic and one admitted control value in one supported method, construct them through proven in-range CHAR indices and check position-preserving storage/concatenation in a five-character same-kind string. If no such documented values exist, leave that finite witness unavailable; do not use non-Fortran source bytes, invent repertoire membership, or substitute a glyph check."
+      },
+      "oracle": "CHAR(0,KIND=KIND('A')) supplies one in-domain character of the required nonempty default method. A run checks its position and count inside a three-character string. It is not identified as NUL, graphic or control, and no ICHAR capacity or byte layout is presumed. Direct case IDs: S7_4_4_1_003_valid__constructed.",
+      "oracle_limitation": "The additional-value witness needs processor evidence not yet available. It is not permissible to infer that all integers are valid CHAR inputs, that indices fit a narrower selected integer kind, or that every possible code is graphic. No invalid program or mandated trap follows from the ability to hold a valid value.",
+      "dependencies": "6.1.1 and 6.1.6 (PDF 67-68); 7.4.4.2 p3 and 7.4.4.3 p3 (PDF 84-85); 7.4.4.4 p1 (PDF 86); 10.1.5.3.1 p1-p3 (PDF 178), 10.1.5.5.1 p7-p8 (PDF 180-181), and 10.2.1.2 p1(7)-(8)/10.2.1.3 p11-p12 (PDF 189, 191); 16.9.52 p3-p5 and 16.9.105 p5 (PDF 394, 419). Existing Clause 6 processor-interface and graphics gaps remain pending under their owners."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.4.1-001"
+      ],
+      "rationale": "PDF 84 lines 3-6: subdivide sequence, position, count, parameter kind and nonnegative actual length without equating characters with bytes."
+    },
+    {
+      "unit": "p1.string-values",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.4.1-001"
+      ]
+    },
+    {
+      "unit": "p1.position-order",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.4.1-001"
+      ]
+    },
+    {
+      "unit": "p1.length-count",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.4.1-001"
+      ]
+    },
+    {
+      "unit": "p1.length-parameter-kind",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.4.1-001"
+      ]
+    },
+    {
+      "unit": "p1.nonnegative-length",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.4.1-001"
+      ]
+    },
+    {
+      "unit": "p2",
+      "disposition": "structural",
+      "rationale": "PDF 84 lines 7-12: separate method availability, identifier type, both inquiry references and the last sentence's character-membership effect."
+    },
+    {
+      "unit": "p2.required-methods",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.4.1-002"
+      ]
+    },
+    {
+      "unit": "p2.default-integer-kind-identifier",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.4.1-002"
+      ]
+    },
+    {
+      "unit": "p2.kind-inquiry",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.4.1-002"
+      ]
+    },
+    {
+      "unit": "p2.named-kind-selection",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.4.1-002"
+      ]
+    },
+    {
+      "unit": "p2.representable-members",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.4.1-003"
+      ]
+    },
+    {
+      "unit": "p3",
+      "disposition": "structural",
+      "rationale": "PDF 84 lines 13-16 defines two named character sets/methods; neither definition requires optional method support."
+    },
+    {
+      "unit": "p3.ascii-definition",
+      "disposition": "definition",
+      "rationale": "ASCII names the ISO/IEC 646:1991 International Reference Version character set and corresponding method. Its collation is specified in 7.4.4.4 p4; it is not a promise that default character uses that method or source encoding."
+    },
+    {
+      "unit": "p3.iso10646-definition",
+      "disposition": "definition",
+      "rationale": "ISO 10646 character names the UCS-4 set specified by ISO/IEC 10646 and its corresponding method. This is not a requirement to support ISO_10646, a UTF-8 source/connection rule, or a byte-width inference."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_7_4_4_1.md"
+  },
+  "review_fingerprint": "7acd3d84fd80638d101af88cba50e9b1e772189154da35ac9503292199bc2f01",
+  "review_rationale": "Independent source-plan and fixture review with verified corrections: doc/source_audits/batch_010.json. Finite default character length/position/method controls are eligible. Complete value sets, inherited semantic-use graphs and additional repertoire remain pending."
+}

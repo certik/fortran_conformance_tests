@@ -1,0 +1,689 @@
+{
+  "schema_version": 1,
+  "section": "7.4.3.3",
+  "review_state": "reviewed",
+  "subunits": {
+    "p1": [
+      "p1.approximate-domain",
+      "p1.ordered-real-pair",
+      "p1.first-real-part",
+      "p1.second-imaginary-part"
+    ],
+    "p2": [
+      "p2.every-real-method",
+      "p2.real-part-availability",
+      "p2.imaginary-part-availability",
+      "p2.default-integer-kind-parameter",
+      "p2.common-method",
+      "p2.kind-inquiry"
+    ],
+    "p3": [
+      "p3.complex-keyword",
+      "p3.no-double-complex-keyword",
+      "p3.selector-omitted",
+      "p3.default-kind-value",
+      "p3.both-parts-default-real"
+    ],
+    "R718": [
+      "R718.parentheses",
+      "R718.real-part-first",
+      "R718.comma",
+      "R718.imaginary-part-second"
+    ],
+    "R719": [
+      "R719.signed-integer-literal",
+      "R719.signed-real-literal",
+      "R719.named-constant"
+    ],
+    "R720": [
+      "R720.signed-integer-literal",
+      "R720.signed-real-literal",
+      "R720.named-constant"
+    ],
+    "C723": [
+      "C723.each-named-part",
+      "C723.scalar",
+      "C723.integer-or-real"
+    ],
+    "p4": [
+      "p4.both-parts-real",
+      "p4.greater-decimal-precision",
+      "p4.equal-precision-condition",
+      "p4.processor-choice-of-one-part-kind",
+      "p4.different-kind-conversion-condition",
+      "p4.conversion-to-complex-method"
+    ],
+    "p5": [
+      "p5.both-integer-condition",
+      "p5.both-converted-to-default-real",
+      "p5.default-complex-result",
+      "p5.one-integer-condition",
+      "p5.integer-converted-to-real-typed-part-method",
+      "p5.real-typed-part-kind-determines-result"
+    ],
+    "note-unnumbered": [
+      "note-unnumbered.real-real",
+      "note-unnumbered.integer-real",
+      "note-unnumbered.numeric-kind-example",
+      "note-unnumbered.named-real-example",
+      "note-unnumbered.prior-real-name-premise"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "R718",
+      "title": "A complex literal is a parenthesized pair separated by a comma",
+      "source": "7.4.3.3 R718, PDF 83, printed 69, line 12.",
+      "source_units": [
+        "R718",
+        "R718.parentheses",
+        "R718.real-part-first",
+        "R718.comma",
+        "R718.imaginary-part-second"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "A complex literal encloses a real-part and an imag-part in parentheses with one separating comma. The first and second part positions have their own productions, R719 and R720. Token-separating blanks are permitted by the canonical source-form rules, not by treating the whole pair as one real token.",
+      "facets": [
+        "parenthesized-pair",
+        "spaced-pair",
+        "comma-required",
+        "exactly-two-parts"
+      ],
+      "pending": {},
+      "oracle": "The unchanged controls compile complete same-kind zero-valued DATA initializations. Each negative changes one separator/arity feature on one source line. Only the existing token-specific reports identifying the unexpected second real token or extra comma are retained. Unconstrained expected-comma and expected-parenthesis alternatives are removed.",
+      "oracle_limitation": "A one-item parenthesized real expression is not an isolated R718 negative in ordinary assignment, where numeric conversion may make it conforming. A file/line match and a minimal repair do not make a bare terminal message context-specific. The matcher does not bind compiler family or diagnostic context chains for these routes; even a genuine Flang COMPLEX-context terminal report remains an unconfirmed raw observation rather than passing contract evidence. Generic complex/type/constant errors, unrelated parenthesis recovery, unsupported facilities, crashes, verifier and resource failures remain excluded.",
+      "dependencies": "R719/R720/C723; 6.3.2.2 p1, PDF 71; 8.6.7/R848 and p8/p10, PDF 137-138; 4.2 p2(3), PDF 46. Component values and order are separately S7.4.3.3-001."
+    },
+    {
+      "id": "R719",
+      "title": "The real part admits signed numeric literals or a named constant",
+      "source": "7.4.3.3 R719, PDF 83, printed 69, lines 13-15.",
+      "source_units": [
+        "R719",
+        "R719.signed-integer-literal",
+        "R719.signed-real-literal",
+        "R719.named-constant"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "The first part of a complex literal is a signed integer literal, a signed real literal, or a named constant. The named alternative is subject to C723. An arbitrary constant expression, a variable, or a sign applied to a name is not an additional alternative merely because an ordinary expression could use it.",
+      "facets": [
+        "signed-integer-part",
+        "signed-real-part",
+        "named-part",
+        "expression-not-part",
+        "variable-not-named-constant",
+        "sign-before-name"
+      ],
+      "pending": {
+        "variable-not-named-constant": "Following bounded pass with the canonical R606 owner: pair an initialized variable first-part name with the same declaration after adding PARAMETER. A genuine constancy defect must keep R606 primary ownership, with a separately supported and reviewed use-context evidence connection; no duplicate R719 constancy case or shared evidence edit is made here."
+      },
+      "oracle": "The independent first-position integer-literal, real-literal and named-part controls are unchanged. The arithmetic-expression pair retains 0.0D0+0.0D0 versus 0.0D0 and only the existing unexpected-plus token route. The signed-name pair retains -r versus the same already constant r. Its prospective cause contract explicitly identifies a forbidden sign before a named constant in the real part of a complex literal, as required by R719's alternatives; no observed compiler support for that text is claimed. The variable-name constancy route remains pending with canonical R606 ownership.",
+      "oracle_limitation": "The rule permits signed literals, not general signed constant expressions. Constancy complaints about the already-constant expression or -r, failed PARAMETER/name lookup, and missing named-part implementation support remain wrong causes. Bare comma/dot expectations are not accepted, even when the raw output includes genuine literal-context labels: the matcher cannot enforce the previously claimed relationship. The signed-name diagnostic remains a source-only/prospective-contract candidate for independent adjudication. C723's scalar/type negatives remain separate, and no source or repaired control is changed to force an observation.",
+      "dependencies": "R707/R708/R713/R714 and R606; 8.5.13 p1, PDF 130, defines PARAMETER; 10.1.12 p1, PDF 187-188, distinguishes constant expressions from the narrower part syntax. 4.1.2 p2 and 4.2 p2(3), PDF 45-46."
+    },
+    {
+      "id": "R720",
+      "title": "The imaginary part independently admits signed numeric literals or a named constant",
+      "source": "7.4.3.3 R720, PDF 83, printed 69, lines 16-18.",
+      "source_units": [
+        "R720",
+        "R720.signed-integer-literal",
+        "R720.signed-real-literal",
+        "R720.named-constant"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "The second part of a complex literal has the signed integer literal, signed real literal and named-constant alternatives. The restriction is independently applied in the imaginary position. C723 supplies the named constant's scalar and integer-or-real conditions.",
+      "facets": [
+        "signed-integer-part",
+        "signed-real-part",
+        "named-part",
+        "expression-not-part",
+        "variable-not-named-constant",
+        "sign-before-name"
+      ],
+      "pending": {
+        "variable-not-named-constant": "Following bounded pass with the canonical R606 owner: make the initialized-variable/PARAMETER contrast in the second part, preserving the true constancy cause and an independently representable evidence connection. This author does not create a duplicate R720 constancy case or edit the shared evidence registry."
+      },
+      "oracle": "The independent second-position controls and the two source/repair pairs are unchanged. The 0.0D0+0.0D0 pair retains only the existing unexpected-plus token route. The -r pair has a prospective cause contract explicitly identifying a forbidden sign before a named constant in the imaginary part of a complex literal, following R720's alternatives; that text has no claimed observed compiler support. Unexpected-name errors that also reject valid named controls do not qualify. The variable-name constancy pair remains pending with R606.",
+      "oracle_limitation": "R719's executions are not assumed to cover R720, and descendant sign/suffix/digit owners are unchanged. Bare closing-parenthesis or decimal-point messages no longer qualify; a source-line match cannot enforce their missing literal-context relationship. The actual Flang context chain is retained only as an unconfirmed raw observation. The signed-name contract remains source-only/prospective pending independent adjudication; no family/context-matching subsystem or counterexample-word blacklist is introduced. Constancy, PARAMETER, implementation, crash, verifier and resource exclusions and the distinction between reporting and fatal rejection are preserved.",
+      "dependencies": "R707/R708/R713/R714, R606 and C723; 8.5.13 and 10.1.12, PDF 130 and 187-188; 4.2 p2(3), PDF 46."
+    },
+    {
+      "id": "C723",
+      "title": "Every named complex-literal part is scalar and integer or real",
+      "source": "7.4.3.3 C723 (R718), PDF 83, printed 69, line 19.",
+      "source_units": [
+        "C723",
+        "C723.each-named-part",
+        "C723.scalar",
+        "C723.integer-or-real"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "Each named constant used in either part of a complex literal is scalar and has integer or real type. Both properties apply separately to each named part. A scalar constant of another type fails the type condition; an integer or real array constant fails the scalar condition even if it has only one element.",
+      "facets": [
+        "scalar-integer-names",
+        "scalar-real-names",
+        "real-part-rank",
+        "imaginary-part-rank",
+        "real-part-type",
+        "imaginary-part-type"
+      ],
+      "pending": {},
+      "oracle": "Two supported controls and eight negative/control pairs cover both named-part positions, scalar rank and logical/character/complex excluded-type representatives. Rank repair substitutes a scalar name, never an array element. GNU's Scalar PARAMETER route checks rank after constant lookup, while its Numeric PARAMETER route checks numeric type and qualifies only the logical/character pairs; complex is already numeric and that route cannot qualify its exclusion. Flang's operand-type whitelist reports qualify these excluded types, and its exact real/imaginary-part-not-scalar portability messages qualify rank nonfatally.",
+      "oracle_limitation": "These are finite named-part samples, not every derived/enum/enumeration type. The upstream GNU 16.1 diagnostic paths were checked separately from Fortran source validity: its PARAMETER-lookup failure is a different, excluded cause. Flang's observed type message also lists implementation extensions; no UNSIGNED or BOZ source is admitted or credited here. The target's unexpected-identifier reports also reject the conforming named controls and cannot stand in for C723. Generic parser/type/constant words, false constancy complaints, facilities, crashes, verifier and resource failures remain excluded. Current reference-mode and silent-acceptance limitations require independent fixture adjudication, not self-approval.",
+      "dependencies": "R718-R720 and R606; 8.5.13 p1, PDF 130; R606 and 8.6.7/R848, PDF 137, distinguish a named constant from a constant subobject without adding a part-grammar alternative. 4.1.2 p2 and 4.2 p2(3), PDF 45-46, apply this numbered constraint wherever the complex literal occurs."
+    },
+    {
+      "id": "S7.4.3.3-001",
+      "title": "Complex values have ordered real and imaginary components",
+      "source": "7.4.3.3 p1, PDF 83, printed 69, lines 2-4.",
+      "source_units": [
+        "p1.ordered-real-pair",
+        "p1.first-real-part",
+        "p1.second-imaginary-part"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A complex value is an ordered pair of real values approximating a mathematical complex number. Its first component is the real part and its second is the imaginary part. These names and order describe values, not interleaved memory, storage-unit counts or a pair of prescribed floating-point bit patterns.",
+      "facets": [
+        "real-part-first",
+        "imaginary-part-second",
+        "component-value-identity"
+      ],
+      "pending": {
+        "real-part-first": "Phase 2: initialize z=(r,i) from two previously defined, same-kind real PARAMETERs and compare z%RE with r. Use a reviewed finite-value premise to make r and i distinct so a swapped-component implementation cannot pass vacuously.",
+        "imaginary-part-second": "Phase 2: independently compare z%IM with i and check AIMAG's value/type connection in the same-kind case.",
+        "component-value-identity": "Phase 2: repeat the ordered-pair witness in default and guaranteed double kinds with separate programs. Establish the two finite payloads independently; no kind-changing conversion should mask component identity."
+      },
+      "oracle": "Component designators compare the actual already-defined input real values rather than reconstructing an expected complex value with CMPLX, which might share the same defect. The first and second values are independently checked.",
+      "oracle_limitation": "The finite distinct-value premise must be justified, not inferred from arbitrary literal accuracy or a bit cast. The pair contract itself does not promise an IEEE representation, layout or exact conversion between unlike real methods. Component inquiries are dependent mechanisms and remain runtime effects if an implementation lacks them.",
+      "dependencies": "9.4.4/R915 and p1, PDF 153, supplies real component designators with the complex kind; 16.9.10 AIMAG, PDF 378-379. 16.9.172 REAL, PDF 449-450, has an approximation contract, so it is not used as an unqualified exact-layout oracle."
+    },
+    {
+      "id": "S7.4.3.3-002",
+      "title": "Every real method is available for both components of complex with the same kind",
+      "source": "7.4.3.3 p2, PDF 83, printed 69, lines 5-8, excluding the separately linked default-integer parameter-type restatement.",
+      "source_units": [
+        "p2.every-real-method",
+        "p2.real-part-availability",
+        "p2.imaginary-part-availability",
+        "p2.common-method",
+        "p2.kind-inquiry"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Every real approximation method is available for both components of complex. A complex kind value selects that same real method for each part, and KIND returns that value for the complex entity. A component does not independently choose another kind. The KIND parameter's own default-integer type is the existing 7.4.1 requirement.",
+      "facets": [
+        "default-real-correspondence",
+        "double-real-correspondence",
+        "real-component-kind",
+        "imaginary-component-kind",
+        "kind-inquiry",
+        "finite-all-method-correspondence"
+      ],
+      "pending": {
+        "finite-all-method-correspondence": "Phase 2: in a separate at-most-sixteen-entry REAL_KINDS witness, instantiate a complex declaration for every advertised real kind and check both components. An unsupported complex counterpart fails rather than making the inventory profile unavailable; only the explicit inventory-size authoring bound may defer this branch."
+      },
+      "oracle": "The unprofiled default/double cases and a complete bounded inventory directly exercise the real-to-complex kind correspondence. Optional selected kinds may alias default, double or each other; each distinct inventory entry is considered without ordering assumptions.",
+      "oracle_limitation": "REAL_KINDS is used because the source requires corresponding real methods; no separate complex-storage inventory is invented. The finite inventory is not proof for more than sixteen methods or a physical representation/value-set specification. The parameter named KIND and its default-integer type keep S7.4.1-001 ownership.",
+      "dependencies": "7.4.1 p2/S7.4.1-001, PDF 80; 7.4.3.2 p1/p5/p6; 9.4.4, PDF 153; 16.9.10/118/172, PDF 378-379, 424 and 449-450; 16.10.2.26, PDF 476."
+    },
+    {
+      "id": "S7.4.3.3-003",
+      "title": "Omitted COMPLEX selection gives default-real kind for both parts",
+      "source": "7.4.3.3 p3, PDF 83, printed 69, lines 9-11; default semantics only.",
+      "source_units": [
+        "p3.selector-omitted",
+        "p3.default-kind-value",
+        "p3.both-parts-default-real"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "COMPLEX without a kind parameter denotes default complex. Its kind value equals KIND(0.0), and each component is default real. No special double-precision complex keyword is defined; an explicit complex kind selector supplies that method through the canonical grammar.",
+      "facets": [
+        "default-complex-kind",
+        "default-real-component",
+        "default-imaginary-component"
+      ],
+      "pending": {},
+      "oracle": "The selector-free declaration and both actual component types/kinds supply exact runtime inquiry/type-agreement oracles. Zero payloads avoid a mixed-method value-conversion premise.",
+      "oracle_limitation": "R704/R706/C717 retain declaration syntax and support constraints. No DOUBLE COMPLEX extension negative is manufactured here. CMPLX has its own default-kind rule and is not substituted for a plain COMPLEX declaration.",
+      "dependencies": "R704/R706/C717, PDF 80; 9.4.4, PDF 153; 16.9.118, PDF 424. 16.9.53 CMPLX, PDF 394-395, remains a separate intrinsic owner."
+    },
+    {
+      "id": "S7.4.3.3-004",
+      "title": "Two real parts select by decimal precision, with processor choice on ties and conversion if needed",
+      "source": "7.4.3.3 p4, PDF 83, printed 69, lines 20-24.",
+      "source_units": [
+        "p4.both-parts-real",
+        "p4.greater-decimal-precision",
+        "p4.equal-precision-condition",
+        "p4.processor-choice-of-one-part-kind",
+        "p4.different-kind-conversion-condition",
+        "p4.conversion-to-complex-method"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "When both parts of a complex literal are real, the literal takes the kind of the part with greater decimal precision. If their decimal precisions tie, the processor chooses the kind of one of those parts. A part with a different kind is converted to the chosen complex approximation method. Range, radix, storage size and numerical kind order are not additional tie-breakers in this paragraph.",
+      "facets": [
+        "greater-precision-first",
+        "greater-precision-second",
+        "same-kind-parts",
+        "distinct-equal-precision-equal-range",
+        "distinct-equal-precision-different-range",
+        "first-part-conversion",
+        "second-part-conversion"
+      ],
+      "pending": {
+        "distinct-equal-precision-equal-range": "Phase 2: a complete at-most-sixteen-kind inventory independently finds a pair of different real kind codes with equal PRECISION and RANGE. If present, run both part orders with zero payloads; each literal's kind may be either candidate independently.",
+        "distinct-equal-precision-different-range": "Phase 2: separately find equal-PRECISION but unequal-RANGE real kinds. Run both part orders with zero payloads and allow either candidate, not necessarily the larger-range one. A processor without this pair supplies no observed evidence for this optional witness.",
+        "first-part-conversion": "Needs a reviewed finite conversion contract for a nonzero first real part whose kind differs from the chosen result. Run the converted-component value oracle separately from the unconditional kind-selection cases; do not compare two invocations of the same conversion as independent proof.",
+        "second-part-conversion": "Needs the corresponding independent second-part conversion witness, with every payload representable under the established source and selected-method premises. Retain a separate exact component-kind check even while numerical conversion evidence is pending."
+      },
+      "oracle": "Mandatory unequal-precision and same-kind controls use literal KIND inquiries and zero components. Tie cases accept the explicitly permitted finite set of two kind values, then require both components to have the selected kind. Value-conversion cases need separate, independently justified rational/processor expectations.",
+      "oracle_limitation": "The tie choice need not be invariant under operand order, equal range or another selected-kind call. Do not borrow SELECTED_REAL_KIND's smallest-kind tie rule. A larger decimal precision need not imply larger exponent range, so arbitrary extreme values cannot test conversion safely. Unknown conversion accuracy is a genuine pending oracle gap, not a reason to require nearest rounding, add a tolerance or downgrade the run phase.",
+      "dependencies": "7.4.3.2 p5/p6, PDF 82; 16.9.162/170, PDF 445 and 449; 16.10.2.26, PDF 476; 9.4.4, PDF 153. 16.9.172 REAL and 16.9.53 CMPLX, PDF 449-450 and 394-395, are dependencies with processor-dependent conversion, not alternate complex-literal selection rules."
+    },
+    {
+      "id": "S7.4.3.3-005",
+      "title": "Integer parts convert to default real or to the method of the real-typed part",
+      "source": "7.4.3.3 p5, PDF 83, printed 69, lines 25-28.",
+      "source_units": [
+        "p5.both-integer-condition",
+        "p5.both-converted-to-default-real",
+        "p5.default-complex-result",
+        "p5.one-integer-condition",
+        "p5.integer-converted-to-real-typed-part-method",
+        "p5.real-typed-part-kind-determines-result"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "If both parts of a complex literal are integers, both are converted to default real and the result is default complex. If exactly one part is integer, it is converted to the method of the part whose type is real, and that real-typed part's kind is the literal's kind, regardless of its position. Integer kind identifiers, integer range and the receiving variable do not select the literal's complex kind.",
+      "facets": [
+        "both-default-integers",
+        "both-selected-integers",
+        "integer-first-real-second",
+        "real-first-integer-second",
+        "both-integer-value-conversion",
+        "mixed-integer-value-conversion"
+      ],
+      "pending": {
+        "both-integer-value-conversion": "Needs independent default-real representability/conversion evidence for the finite nonzero integer pair 2 and -5. Then run both component value checks; the source's default-real recommendations cannot supply mandatory precision/range premises.",
+        "mixed-integer-value-conversion": "Needs a reviewed finite integer-to-real conversion contract for 2 and -5 with a double-kind real-typed part, in both positions. Keep run effects and distinguish the expected approximation from kind selection."
+      },
+      "oracle": "Unprofiled zero-payload effects directly check all kind-selection branches without narrowing any identifier or relying on real conversion accuracy. Separately profiled nonzero payloads test the actual component conversions in a bounded family.",
+      "oracle_limitation": "Do not promote the complex kind because an integer part uses a larger-range integer method, assume integer and real kinds share code meanings, or use an arbitrary kind number as a real payload. In a both-integer literal, a double-kind complex receiving object does not change the literal's default-complex kind. Nonzero conversion oracles remain pending until their approximation premises are independently established.",
+      "dependencies": "7.4.3.1 p2 and the reviewed integer catalogue supply the supported range-18 method; 16.9.181, PDF 454-455. 7.4.3.2 p5/p6, PDF 82; 16.9.118, PDF 424; 9.4.4, PDF 153; numeric assignment and REAL conversion, PDF 191 and 449-450."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "structural",
+      "rationale": "PDF 83 lines 2-4 separates the approximate domain, ordered pair and the two component names."
+    },
+    {
+      "unit": "p1.approximate-domain",
+      "disposition": "definition",
+      "rationale": "Complex values approximate mathematical complex numbers; this supplies neither a physical layout nor an IEEE-format premise."
+    },
+    {
+      "unit": "p1.ordered-real-pair",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.3.3-001"
+      ]
+    },
+    {
+      "unit": "p1.first-real-part",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.3.3-001"
+      ]
+    },
+    {
+      "unit": "p1.second-imaginary-part",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.3.3-001"
+      ]
+    },
+    {
+      "unit": "p2",
+      "disposition": "structural",
+      "rationale": "PDF 83 lines 5-8 preserves every-real-method availability in both parts, the common kind, KIND inquiry and the default-integer parameter-type restatement."
+    },
+    {
+      "unit": "p2.every-real-method",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.3.3-002"
+      ]
+    },
+    {
+      "unit": "p2.real-part-availability",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.3.3-002"
+      ]
+    },
+    {
+      "unit": "p2.imaginary-part-availability",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.3.3-002"
+      ]
+    },
+    {
+      "unit": "p2.default-integer-kind-parameter",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.1-001"
+      ]
+    },
+    {
+      "unit": "p2.common-method",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.3.3-002"
+      ]
+    },
+    {
+      "unit": "p2.kind-inquiry",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.3.3-002"
+      ]
+    },
+    {
+      "unit": "p3",
+      "disposition": "structural",
+      "rationale": "PDF 83 lines 9-11 contains the keyword restatement, absent special keyword, selector omission, default kind and both default-real components."
+    },
+    {
+      "unit": "p3.complex-keyword",
+      "disposition": "requirements",
+      "requirements": [
+        "R704"
+      ]
+    },
+    {
+      "unit": "p3.no-double-complex-keyword",
+      "disposition": "definition",
+      "rationale": "There is no standard special keyword for double-precision complex. R704/R706 already provide COMPLEX with a kind selector; no duplicate extension negative is authored here."
+    },
+    {
+      "unit": "p3.selector-omitted",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.3.3-003"
+      ]
+    },
+    {
+      "unit": "p3.default-kind-value",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.3.3-003"
+      ]
+    },
+    {
+      "unit": "p3.both-parts-default-real",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.3.3-003"
+      ]
+    },
+    {
+      "unit": "R718",
+      "disposition": "requirements",
+      "requirements": [
+        "R718"
+      ]
+    },
+    {
+      "unit": "R718.parentheses",
+      "disposition": "requirements",
+      "requirements": [
+        "R718"
+      ]
+    },
+    {
+      "unit": "R718.real-part-first",
+      "disposition": "requirements",
+      "requirements": [
+        "R718"
+      ]
+    },
+    {
+      "unit": "R718.comma",
+      "disposition": "requirements",
+      "requirements": [
+        "R718"
+      ]
+    },
+    {
+      "unit": "R718.imaginary-part-second",
+      "disposition": "requirements",
+      "requirements": [
+        "R718"
+      ]
+    },
+    {
+      "unit": "R719",
+      "disposition": "requirements",
+      "requirements": [
+        "R719"
+      ]
+    },
+    {
+      "unit": "R719.signed-integer-literal",
+      "disposition": "requirements",
+      "requirements": [
+        "R719"
+      ]
+    },
+    {
+      "unit": "R719.signed-real-literal",
+      "disposition": "requirements",
+      "requirements": [
+        "R719"
+      ]
+    },
+    {
+      "unit": "R719.named-constant",
+      "disposition": "requirements",
+      "requirements": [
+        "R719"
+      ]
+    },
+    {
+      "unit": "R720",
+      "disposition": "requirements",
+      "requirements": [
+        "R720"
+      ]
+    },
+    {
+      "unit": "R720.signed-integer-literal",
+      "disposition": "requirements",
+      "requirements": [
+        "R720"
+      ]
+    },
+    {
+      "unit": "R720.signed-real-literal",
+      "disposition": "requirements",
+      "requirements": [
+        "R720"
+      ]
+    },
+    {
+      "unit": "R720.named-constant",
+      "disposition": "requirements",
+      "requirements": [
+        "R720"
+      ]
+    },
+    {
+      "unit": "C723",
+      "disposition": "requirements",
+      "requirements": [
+        "C723"
+      ]
+    },
+    {
+      "unit": "C723.each-named-part",
+      "disposition": "requirements",
+      "requirements": [
+        "C723"
+      ]
+    },
+    {
+      "unit": "C723.scalar",
+      "disposition": "requirements",
+      "requirements": [
+        "C723"
+      ]
+    },
+    {
+      "unit": "C723.integer-or-real",
+      "disposition": "requirements",
+      "requirements": [
+        "C723"
+      ]
+    },
+    {
+      "unit": "p4",
+      "disposition": "structural",
+      "rationale": "PDF 83 lines 20-24 separates the both-real condition, precision choice, equal-precision processor choice, and conditional conversion of a differently kinded part."
+    },
+    {
+      "unit": "p4.both-parts-real",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.3.3-004"
+      ]
+    },
+    {
+      "unit": "p4.greater-decimal-precision",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.3.3-004"
+      ]
+    },
+    {
+      "unit": "p4.equal-precision-condition",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.3.3-004"
+      ]
+    },
+    {
+      "unit": "p4.processor-choice-of-one-part-kind",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.3.3-004"
+      ]
+    },
+    {
+      "unit": "p4.different-kind-conversion-condition",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.3.3-004"
+      ]
+    },
+    {
+      "unit": "p4.conversion-to-complex-method",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.3.3-004"
+      ]
+    },
+    {
+      "unit": "p5",
+      "disposition": "structural",
+      "rationale": "PDF 83 lines 25-28 preserves both-integer conversion/default and exactly-one-integer conversion/kind-selection branches independently."
+    },
+    {
+      "unit": "p5.both-integer-condition",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.3.3-005"
+      ]
+    },
+    {
+      "unit": "p5.both-converted-to-default-real",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.3.3-005"
+      ]
+    },
+    {
+      "unit": "p5.default-complex-result",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.3.3-005"
+      ]
+    },
+    {
+      "unit": "p5.one-integer-condition",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.3.3-005"
+      ]
+    },
+    {
+      "unit": "p5.integer-converted-to-real-typed-part-method",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.3.3-005"
+      ]
+    },
+    {
+      "unit": "p5.real-typed-part-kind-determines-result",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.3.3-005"
+      ]
+    },
+    {
+      "unit": "note-unnumbered",
+      "disposition": "structural",
+      "rationale": "The unnumbered note on PDF 83 has four examples and the previously declared real-name premise; all remain informative."
+    },
+    {
+      "unit": "note-unnumbered.real-real",
+      "disposition": "informative",
+      "rationale": "The first example has two real parts with a negative imaginary literal; it illustrates the signed-part alternatives."
+    },
+    {
+      "unit": "note-unnumbered.integer-real",
+      "disposition": "informative",
+      "rationale": "The second example combines integer and real parts, illustrating p5 rather than a new rounding rule."
+    },
+    {
+      "unit": "note-unnumbered.numeric-kind-example",
+      "disposition": "informative",
+      "rationale": "Numeric suffixes 4 and 8 are example processor kind values. Their support and relative precision cannot be assumed from those numbers."
+    },
+    {
+      "unit": "note-unnumbered.named-real-example",
+      "disposition": "informative",
+      "rationale": "The final example combines a real literal with a named real constant and includes permitted inter-token spacing."
+    },
+    {
+      "unit": "note-unnumbered.prior-real-name-premise",
+      "disposition": "informative",
+      "rationale": "The note expressly requires the real named constant to have been declared previously. Its name does not independently fix a mathematical value, kind or conversion accuracy."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_7_4_3_3.md"
+  },
+  "review_fingerprint": "d77b0b1266a70b283dd21aa1e5317f012ce35021bf96fb158efdcacf4e67825f",
+  "review_rationale": "Independent source-plan and fixture review with verified corrections: doc/source_audits/batch_010.json. Source and minimal complex-part contrasts are eligible after NLP2-001 correction. Literal-only operator probes avoid a named-part implementation mask. Complete value/method sets, precision ties and nonzero conversions remain pending."
+}

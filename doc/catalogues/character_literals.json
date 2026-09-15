@@ -1,0 +1,529 @@
+{
+  "schema_version": 1,
+  "section": "7.4.4.3",
+  "review_state": "reviewed",
+  "subunits": {
+    "R724": [
+      "R724.apostrophe-delimiters",
+      "R724.quotation-delimiters",
+      "R724.omitted-prefix",
+      "R724.kind-prefix",
+      "R724.prefix-underscore",
+      "R724.zero-or-more-rep-chars"
+    ],
+    "C732": [
+      "C732.supported-method"
+    ],
+    "p2": [
+      "p2.explicit-kind",
+      "p2.default-kind"
+    ],
+    "p3": [
+      "p3.selected-or-default-method",
+      "p3.free-graphic",
+      "p3.fixed-character",
+      "p3.fixed-control-restriction-permission"
+    ],
+    "p4": [
+      "p4.apostrophe-exclusion",
+      "p4.quotation-exclusion"
+    ],
+    "p5": [
+      "p5.apostrophe-doubling",
+      "p5.apostrophe-adjacency",
+      "p5.apostrophe-count-one",
+      "p5.quotation-doubling",
+      "p5.quotation-adjacency",
+      "p5.quotation-count-one"
+    ],
+    "p6": [
+      "p6.apostrophe-empty",
+      "p6.quotation-empty",
+      "p6.adjacency",
+      "p6.outside-character-context"
+    ],
+    "note1": [
+      "note1.equivalent-delimiters",
+      "note1.doubled-interior",
+      "note1.empty-example"
+    ],
+    "note2": [
+      "note2.conditional-method",
+      "note2.named-kind-constant",
+      "note2.graphic-illustration"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "R724",
+      "title": "Character literals have matching delimiters and an optional kind prefix",
+      "source": "7.4.4.3 R724; J3/24-007, 18 December 2023, PDF 85, printed 71, lines 32-33.",
+      "source_units": [
+        "R724",
+        "R724.apostrophe-delimiters",
+        "R724.quotation-delimiters",
+        "R724.omitted-prefix",
+        "R724.kind-prefix",
+        "R724.prefix-underscore",
+        "R724.zero-or-more-rep-chars"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "A character literal uses a matching pair of apostrophes or a matching pair of quotation marks, surrounding zero or more rep-char occurrences. An optional kind-param precedes the opening delimiter and is separated from it by an underscore. R709 defines that prefix as a digit string or scalar integer constant name, not an arbitrary expression. C718/C719 and C732 retain their own name/type, sign and supported-method conditions. The source-form definition of rep-char and the doubling/empty-context rules below are part of interpreting this syntax.",
+      "facets": [
+        "apostrophe-form",
+        "quotation-form",
+        "named-prefix-form",
+        "digit-prefix-form",
+        "prefix-category-premises",
+        "prefix-separator",
+        "unterminated-apostrophe",
+        "unterminated-quotation",
+        "free-form-control-exclusion"
+      ],
+      "pending": {
+        "digit-prefix-form": "Planned compile/run admission controls R724_valid__digit_apostrophe and R724_valid__digit_quotation. In phase 2 only, serialize the default character kind from an independent inquiry without narrowing; materialize that digit token in two fixed fixtures and bind a profile to that exact default-kind value. A 64-decimal-digit construction bound must be established by repeated default-integer division, not by conversion into a supposedly wider selected kind. Different identifiers or a larger token make only these finite witnesses unavailable; 1/4/8 are never presumed. Check LEN, KIND and the default-kind value after admission.",
+        "prefix-category-premises": "Planned canonical compile pairs C718_invalid__character_real_prefix/C718_valid__character_real_prefix_repair, C718_invalid__character_variable_prefix/C718_valid__character_variable_prefix_repair, C401_invalid__character_array_prefix/C401_valid__character_array_prefix_repair, and R709_invalid__character_expression_prefix/R709_valid__character_expression_prefix_repair. Declare valid integer dk=KIND('A') alongside each candidate; replace only a real constant name, integer variable name, rank-one integer constant name, or parenthesized (dk+0) prefix with dk. The real candidate has the small value 1.0, not an arbitrary kind identifier converted to real. Require noninteger-name, nonconstant-name, nonscalar-name and prefix-grammar causes respectively. Preserve R709/C718/C719 ownership in 7.4.3.1; do not credit C732 unsupported-method complaints for these defects.",
+        "free-form-control-exclusion": "Planned qualified compile diagnose R724_invalid__free_control and control R724_valid__free_control_repair only after a versioned source-interface profile proves that a specified byte spelling is a control, not a graphic, within the chosen method's free-form literal. Replace only that character with a proven graphic X. The required reporting basis is R724's rep-char domain as defined in p3, under 4.2 p2(3); require a nongraphic/control-character-in-literal cause. Unknown decoding, unsupported source encoding, crashes and generic lexer/EOF recovery cannot establish that relation. Without the profile, the case remains pending, not a successful negative."
+      },
+      "oracle": "Three compile pairs isolate a missing prefix underscore and each unterminated delimiter, with one local repair apiece. Repairs directly admit apostrophe/quotation forms and a supported named prefix. Literal-specific/token-specific causal predicates exclude generic EOF, missing-END and assignment recovery. Digit prefixes, canonical prefix categories and source-control rejection remain pending. Direct case IDs: R724_invalid__apostrophe_closer, R724_invalid__prefix_separator, R724_invalid__quotation_closer, R724_valid__apostrophe_closer_repair, R724_valid__prefix_separator_repair, R724_valid__quotation_closer_repair.",
+      "oracle_limitation": "The authored diagnostic predicates are finite source/cause contracts, not approvals or standard-mandated wording. A kind-selector expression legal in R721 is not automatically a legal literal prefix. Numbered reporting capability does not prescribe fatal rejection or wording. Unsupported representation-value reports belong to C732 where that is the actual condition; unsupported language features, false constancy reports, ASR verifier errors and wrong-source recovery cannot corroborate another rule.",
+      "dependencies": "R709/C718/C719 (PDF 80-81), R403/C401 (PDF 45), C732 and p2-p6 (PDF 85-86), 3.21 (PDF 21), 6.1.1/6.1.6 and 6.3 (PDF 67-73), 16.9.118/16.10.2.4 (PDF 424, 472). 4.1.2 p2/4.2 p2(3) (PDF 45-46); doc/source_audits/batch_009.json supplies the corrected per-cause diagnostic principles."
+    },
+    {
+      "id": "C732",
+      "title": "A literal kind prefix names a supported character method",
+      "source": "7.4.4.3 C732 (R724); PDF 85, printed 71, line 34.",
+      "source_units": [
+        "C732",
+        "C732.supported-method"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "The literal's kind-param identifies an available character representation method. R709/C718/C719 independently constrain the prefix syntax, integer constant name and nonnegative value. A kind supported for another intrinsic type is not thereby a supported character kind.",
+      "facets": [
+        "supported-prefix",
+        "unsupported-nonnegative-prefix"
+      ],
+      "pending": {
+        "unsupported-nonnegative-prefix": "Planned compile diagnoses C732_invalid__absent_zero_apostrophe and C732_invalid__absent_zero_quotation, each with its same-suffix C732_valid__absent_zero_apostrophe_repair or C732_valid__absent_zero_quotation_repair. An independent character-kind-zero-absent profile must establish 0 is absent from CHARACTER_KINDS; replace only prefix 0 with a declared supported dk. Require the literal's actual CHARACTER kind value 0/support cause. A negative prefix value would also violate C719 and is not used to isolate this condition."
+      },
+      "oracle": "An unprofiled run uses a supported named default kind prefix with both delimiters and checks literal kind, count and value. No unsupported-nonnegative-prefix case is authored without an independent absence profile. Direct case IDs: C732_valid__supported.",
+      "oracle_limitation": "A processor that supports character kind zero makes the absent-zero witnesses unavailable, not passing. Generic kind/constant/expected messages, undefined-name reports, unsupported character-literal facilities and crashes do not establish the intended unsupported representation value. Reporting need not be fatal.",
+      "dependencies": "R724 (PDF 85), R709/C718/C719 (PDF 80-81), 7.4.4.1 p2 and 7.4.4.2 p2 (PDF 84), 16.10.2.4 (PDF 472), 16.9.118 (PDF 424), 4.2 p2(3)-(4) (PDF 46)."
+    },
+    {
+      "id": "S7.4.4.3-001",
+      "title": "Literal kind comes from its prefix or the default method",
+      "source": "7.4.4.3 p2; PDF 85, printed 71, lines 35-36.",
+      "source_units": [
+        "p2",
+        "p2.explicit-kind",
+        "p2.default-kind"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A supplied kind prefix determines the literal's character kind; without it the literal is default character. The prefix is not part of the literal value or its represented length. Prefix selection does not imply distinctness from default, optional-kind availability, byte width or a source encoding.",
+      "facets": [
+        "omitted-prefix-default",
+        "named-prefix-value",
+        "selected-named-methods"
+      ],
+      "pending": {
+        "selected-named-methods": "Planned qualified runs S7_4_4_3_001_valid__ascii and S7_4_4_3_001_valid__iso10646: instantiate the respective selected kind only in separately profile-qualified files. For the finite source graphic used, record the appropriate method's representability/source mapping independently; KIND and LEN must match that supported method and the known character count. The selected method may equal default, and unsupported names must not appear in declarations hidden behind runtime IF statements."
+      },
+      "oracle": "Two run programs inquire directly on empty and nonempty literals, with absent, KIND-derived and SELECTED_CHAR_KIND(DEFAULT)-derived named prefixes and both delimiters. They check exact kinds and lengths before assignment can convert or pad. Optional named/source-interface branches remain pending. Direct case IDs: S7_4_4_3_001_valid__default, S7_4_4_3_001_valid__named_prefix.",
+      "oracle_limitation": "SELECTED_CHAR_KIND support is not proof of arbitrary source bytes or non-Fortran graphics. The existing iso10646 profile only inquires kind availability. It cannot certify literal decoding, additional repertoire, or rendering; those dependencies must be recorded separately.",
+      "dependencies": "7.4.4.1 p2-p3 and 7.4.4.2 p2-p3 (PDF 84), R724/C732 (PDF 85), 15.5.2.5 p3 (PDF 340), 16.9.118/16.9.122/16.9.180 (PDF 424, 426, 454)."
+    },
+    {
+      "id": "S7.4.4.3-002",
+      "title": "Literal repertoire is method-specific and source-form-specific",
+      "source": "7.4.4.3 p3 and its two bullets; PDF 85, printed 71, lines 37-41.",
+      "source_units": [
+        "p3",
+        "p3.selected-or-default-method",
+        "p3.free-graphic",
+        "p3.fixed-character",
+        "p3.fixed-control-restriction-permission"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "rep-char is interpreted in the prefixed character method, or default character when no prefix is present. In free source form it is a graphic character in that processor-dependent set. In fixed form it can be any character in the corresponding set, but the processor may restrict some or all control characters. Extra graphics, controls, nondefault kinds and byte-to-character mappings are not universally required by this definition.",
+      "facets": [
+        "free-required-graphics",
+        "fixed-required-graphics",
+        "free-additional-graphic",
+        "fixed-additional-graphic",
+        "fixed-control-policy"
+      ],
+      "pending": {
+        "free-additional-graphic": "Planned qualified run S7_4_4_3_002_valid__free_extra after a documentary profile supplies one additional graphic, its chosen method, exact source-byte spelling and independently constructed expected character value. Put it between two required graphics using both delimiters; assert LEN=3 and middle-character identity. Do not derive represented length by counting source bytes.",
+        "fixed-additional-graphic": "Planned qualified run S7_4_4_3_002_valid__fixed_extra for the same single additional graphic, but with an independently documented fixed-form character-column/record convention. A nondefault/multibyte source spelling is not automatically subject to a 72-byte rule. Both delimiters and the same three-character oracle remain required.",
+        "fixed-control-policy": "Planned documentary record character-fixed-control-policy plus, only if the processor documents an admitted control and its source spelling, run S7_4_4_3_002_valid__fixed_control. Put that one control between two graphic values and compare with an independent in-range constructor; never print it as a visual oracle. A documented restriction on every control is permitted and leaves this optional run witness unavailable. No universal rejection or admission case is invented for a processor-permitted restriction."
+      },
+      "oracle": "Separate free- and fixed-form run fixtures check a finite required-graphic subset with both literal delimiters, case distinction and exact interior/edge blanks. Every fixed-form source record is byte-preserved at 72 default-source characters. No additional graphic/control or decoding/graphics interface premise is inferred. Direct case IDs: S7_4_4_3_002_valid__fixed_graphics, S7_4_4_3_002_valid__free_graphics.",
+      "oracle_limitation": "The registry has no documentary/interface evidence case type, and the needed additional-source profiles are not authored. Existing S6.1.6-001 free/fixed literal-admission gaps and S6.1.1-001 graphics gaps remain honest dependencies. Neither successful ASCII-source compilation nor iso10646 kind availability closes them.",
+      "dependencies": "6.1.1 and 6.1.6 (PDF 67-68); 6.3.1 and 6.3.2.1-.4 (PDF 71-72); 6.3.3.1-.3 (PDF 72-73); 7.4.4.1 p2-p3 (PDF 84); 16.9.52/16.9.122 (PDF 394, 426); 3.21 (PDF 21). B.3.7 (PDF 578) and 4.2 p2(2), p6-p8 (PDF 46-47) preserve obsolescence and processor-interface distinctions."
+    },
+    {
+      "id": "S7.4.4.3-003",
+      "title": "Delimiters are excluded while literal character data is preserved",
+      "source": "7.4.4.3 p4; PDF 85, printed 71, line 42, with p3's rep-char domain and canonical character-context premises.",
+      "source_units": [
+        "p4",
+        "p4.apostrophe-exclusion",
+        "p4.quotation-exclusion"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The surrounding delimiter pair is not part of a literal's value. Interior data, including a delimiter of the other kind, retains its character identity under the rep-char rules. Character-context case and blank exceptions remain operative; they do not permit folding letter case, collapsing interior blanks or counting delimiters in the represented length.",
+      "facets": [
+        "apostrophe-delimiter-exclusion",
+        "quotation-delimiter-exclusion",
+        "other-delimiter-data",
+        "case-and-blank-dependencies"
+      ],
+      "pending": {
+        "case-and-blank-dependencies": "Planned finite source/evidence connection to S6_1_2_002_valid__literals, S6_3_2_4_006_valid__raw_blanks at tests/fixtures/free_source_character_blanks/fixture.json, and S6_3_3_1_002_valid__character_blanks at tests/fixtures/fixed_source_1_002_valid_character_blanks/fixture.json. Preserve their paths, raw layout, individual oracles and primary owners. Before linking, check exact LEN as well as literal identity and retain the case-distinctness assertions; equality alone can hide folding or blank padding. No lexical metadata or existing source is changed now."
+      },
+      "oracle": "Three run programs check literal lengths 0/1/3 directly and verify nonempty positions. Opposite delimiters occur undoubled as data, are checked against one-character literals and are required to be distinct. Canonical case/blank evidence links remain pending. Direct case IDs: S7_4_4_3_003_valid__apostrophe, S7_4_4_3_003_valid__opposite_delimiters, S7_4_4_3_003_valid__quotation.",
+      "oracle_limitation": "No negative program follows from excluding delimiters or preserving data. Literal equality with an identically misprocessed literal is not enough: counts and distinct-value contrasts are required. This finite plan is neither exhaustive decoding nor typography evidence.",
+      "dependencies": "p3/p5/p6 and R724 (PDF 85-86), 3.21 (PDF 21), 6.1.2 p3 (PDF 67), 6.3.2.2 p1 and 6.3.3.1 p2 (PDF 71-72), 6.3.2.4 p4 and 6.3.3.3 (PDF 72-73), 9.4.1 (PDF 151), 10.1.5.5.1 p8 (PDF 180-181), 16.9.122 (PDF 426)."
+    },
+    {
+      "id": "S7.4.4.3-004",
+      "title": "A doubled matching delimiter represents one character",
+      "source": "7.4.4.3 p5; PDF 86, printed 72, lines 1-5.",
+      "source_units": [
+        "p5",
+        "p5.apostrophe-doubling",
+        "p5.apostrophe-adjacency",
+        "p5.apostrophe-count-one",
+        "p5.quotation-doubling",
+        "p5.quotation-adjacency",
+        "p5.quotation-count-one"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Inside an apostrophe-delimited literal, two immediately consecutive apostrophes denote one apostrophe value. Inside a quotation-delimited literal, two immediately consecutive quotation marks denote one quotation-mark value. No intervening blank is part of the doubling spelling, and each doubled pair contributes one character to LEN, not two. The other delimiter does not require doubling just because it is punctuation.",
+      "facets": [
+        "apostrophe-doubling-and-count",
+        "quotation-doubling-and-count",
+        "boundary-and-repeated-pairs"
+      ],
+      "pending": {},
+      "oracle": "Three run programs check each matching-delimiter doubling, including boundary and repeated pairs, using represented counts 3 and 2 and opposite-delimiter identity controls. The generator preserves exact source quote bytes; no backslash-escape extension is assumed. Direct case IDs: S7_4_4_3_004_valid__apostrophe, S7_4_4_3_004_valid__boundaries, S7_4_4_3_004_valid__quotation.",
+      "oracle_limitation": "No artificial invalid twin is added for this value effect. A separated pair would enter other token/grammar rules and is not a new mandatory rejection oracle under this S ID. No backslash escape extension is assumed.",
+      "dependencies": "R724 and p3-p4/p6 (PDF 85-86); 3.21 (PDF 21); 9.4.1 and 16.9.122 (PDF 151, 426). NOTE 1 is explanatory only and does not create another requirement."
+    },
+    {
+      "id": "S7.4.4.3-005",
+      "title": "An adjacent delimiter pair outside character context denotes an empty literal",
+      "source": "7.4.4.3 p6; PDF 86, printed 72, lines 6-7.",
+      "source_units": [
+        "p6",
+        "p6.apostrophe-empty",
+        "p6.quotation-empty",
+        "p6.adjacency",
+        "p6.outside-character-context"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Two adjacent apostrophes, or two adjacent quotation marks, with no intervening blank and beginning outside a character context, denote a zero-length literal. A doubled delimiter within an already-open literal instead denotes delimiter data under p5. An empty literal is not the same length as a one-blank literal, even though padded character equality can consider their values equal.",
+      "facets": [
+        "empty-apostrophe",
+        "empty-quotation",
+        "empty-versus-interior-pair"
+      ],
+      "pending": {},
+      "oracle": "Three run cases distinguish outside-context empty pairs, one-blank literals and inside-context doubled delimiter data by counts 0/1/1. Empty concatenation has unchanged value and count. Equality alone is not the empty-length oracle. Direct case IDs: S7_4_4_3_005_valid__apostrophe, S7_4_4_3_005_valid__context, S7_4_4_3_005_valid__quotation.",
+      "oracle_limitation": "No negative or trapping behavior is inferred for an empty value. Runtime success would be a finite effect witness, not proof of every lexer context or source representation.",
+      "dependencies": "3.21 (PDF 21), p5/R724 (PDF 85-86), 7.4.4.1 p1 (PDF 84), 10.1.5.3.1 p1-p3 (PDF 178), 10.1.5.5.1 p8 (PDF 180-181), and 16.9.122 (PDF 426)."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "definition",
+      "requirements": [
+        "R724"
+      ],
+      "rationale": "PDF 85 line 31 introduces R724; no second literal-grammar requirement is manufactured."
+    },
+    {
+      "unit": "R724",
+      "disposition": "requirements",
+      "requirements": [
+        "R724"
+      ]
+    },
+    {
+      "unit": "R724.apostrophe-delimiters",
+      "disposition": "requirements",
+      "requirements": [
+        "R724"
+      ]
+    },
+    {
+      "unit": "R724.quotation-delimiters",
+      "disposition": "requirements",
+      "requirements": [
+        "R724"
+      ]
+    },
+    {
+      "unit": "R724.omitted-prefix",
+      "disposition": "requirements",
+      "requirements": [
+        "R724"
+      ]
+    },
+    {
+      "unit": "R724.kind-prefix",
+      "disposition": "requirements",
+      "requirements": [
+        "R724",
+        "R709"
+      ],
+      "rationale": "Both digit-string and scalar-int-constant-name alternatives come from R709, with C718/C719 still canonically owned by 7.4.3.1."
+    },
+    {
+      "unit": "R724.prefix-underscore",
+      "disposition": "requirements",
+      "requirements": [
+        "R724"
+      ]
+    },
+    {
+      "unit": "R724.zero-or-more-rep-chars",
+      "disposition": "requirements",
+      "requirements": [
+        "R724"
+      ]
+    },
+    {
+      "unit": "C732",
+      "disposition": "requirements",
+      "requirements": [
+        "C732"
+      ]
+    },
+    {
+      "unit": "C732.supported-method",
+      "disposition": "requirements",
+      "requirements": [
+        "C732"
+      ]
+    },
+    {
+      "unit": "p2",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.4.3-001"
+      ]
+    },
+    {
+      "unit": "p2.explicit-kind",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.4.3-001"
+      ]
+    },
+    {
+      "unit": "p2.default-kind",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.4.3-001"
+      ]
+    },
+    {
+      "unit": "p3",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.4.3-002"
+      ],
+      "rationale": "PDF 85 lines 37-41: preserve method qualification, both source-form bullets and the explicit fixed-control restriction permission."
+    },
+    {
+      "unit": "p3.selected-or-default-method",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.4.3-002"
+      ]
+    },
+    {
+      "unit": "p3.free-graphic",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.4.3-002"
+      ]
+    },
+    {
+      "unit": "p3.fixed-character",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.4.3-002"
+      ]
+    },
+    {
+      "unit": "p3.fixed-control-restriction-permission",
+      "disposition": "permission",
+      "requirements": [
+        "S7.4.4.3-002"
+      ],
+      "rationale": "The processor may restrict some or all fixed-form control occurrences. The permission is not a universal control-rejection or control-admission mandate."
+    },
+    {
+      "unit": "p4",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.4.3-003"
+      ]
+    },
+    {
+      "unit": "p4.apostrophe-exclusion",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.4.3-003"
+      ]
+    },
+    {
+      "unit": "p4.quotation-exclusion",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.4.3-003"
+      ]
+    },
+    {
+      "unit": "p5",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.4.3-004"
+      ],
+      "rationale": "PDF 86 lines 1-5: each delimiter's spelling, no-intervening-blank qualification and represented count are individually retained."
+    },
+    {
+      "unit": "p5.apostrophe-doubling",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.4.3-004"
+      ]
+    },
+    {
+      "unit": "p5.apostrophe-adjacency",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.4.3-004"
+      ]
+    },
+    {
+      "unit": "p5.apostrophe-count-one",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.4.3-004"
+      ]
+    },
+    {
+      "unit": "p5.quotation-doubling",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.4.3-004"
+      ]
+    },
+    {
+      "unit": "p5.quotation-adjacency",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.4.3-004"
+      ]
+    },
+    {
+      "unit": "p5.quotation-count-one",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.4.3-004"
+      ]
+    },
+    {
+      "unit": "p6",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.4.3-005"
+      ]
+    },
+    {
+      "unit": "p6.apostrophe-empty",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.4.3-005"
+      ]
+    },
+    {
+      "unit": "p6.quotation-empty",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.4.3-005"
+      ]
+    },
+    {
+      "unit": "p6.adjacency",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.4.3-005"
+      ]
+    },
+    {
+      "unit": "p6.outside-character-context",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.4.3-005"
+      ]
+    },
+    {
+      "unit": "note1",
+      "disposition": "structural",
+      "rationale": "PDF 86 NOTE 1 is informative; retain the equivalent-delimiter, doubled-interior and empty illustrations without copying its body into the repository."
+    },
+    {
+      "unit": "note1.equivalent-delimiters",
+      "disposition": "informative",
+      "rationale": "The two example spellings illustrate one character value. No new equality rule or independent example requirement."
+    },
+    {
+      "unit": "note1.doubled-interior",
+      "disposition": "informative",
+      "rationale": "The example illustrates p5's matching-delimiter doubling, not backslash escaping."
+    },
+    {
+      "unit": "note1.empty-example",
+      "disposition": "informative",
+      "rationale": "The last spelling illustrates p6's zero-length value; it is not a one-blank value."
+    },
+    {
+      "unit": "note2",
+      "disposition": "structural",
+      "rationale": "PDF 86 NOTE 2 was also read in the original page image because text extraction omits its Japanese graphic string. Preserve the support premise, named constant and illustrative role."
+    },
+    {
+      "unit": "note2.conditional-method",
+      "disposition": "informative",
+      "rationale": "The nondefault illustration is explicitly conditional on support for the corresponding set; no Nihongo method or Unicode source support is required."
+    },
+    {
+      "unit": "note2.named-kind-constant",
+      "disposition": "informative",
+      "rationale": "NIHONGO is an integer named constant holding the relevant kind identifier, not a standard intrinsic kind name or fixed numeric code."
+    },
+    {
+      "unit": "note2.graphic-illustration",
+      "disposition": "informative",
+      "rationale": "The Japanese text and English explanation are an example of a nondefault character value, not a required executable sample or a glyph oracle. Original text and image remain session artifacts only."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_7_4_4_3.md"
+  },
+  "review_fingerprint": "7104b8849a2e261f546705b99ad6edd41c522217196896772dfe9b2ce0318edd",
+  "review_rationale": "Independent source-plan and fixture review with verified corrections: doc/source_audits/batch_010.json. Exact literal delimiter, blank/case/count and fixed/free source witnesses are eligible. The prefix-separator negative is source-reviewed only. Digit-prefix, optional-method and source/display-interface work remains pending."
+}

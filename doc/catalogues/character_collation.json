@@ -1,0 +1,367 @@
+{
+  "schema_version": 1,
+  "section": "7.4.4.4",
+  "review_state": "reviewed",
+  "subunits": {
+    "p1": [
+      "p1.each-kind-sequence",
+      "p1.isomorphism-domain",
+      "p1.char-conversion",
+      "p1.ichar-conversion"
+    ],
+    "note1": [
+      "note1.processor-index-example"
+    ],
+    "p2": [
+      "p2.default-kind-qualification",
+      "p2.uppercase-order",
+      "p2.digit-order",
+      "p2.blank-digits-uppercase",
+      "p2.lowercase-order",
+      "p2.blank-digits-lowercase"
+    ],
+    "p3": [
+      "p3.other-positions-unconstrained",
+      "p3.intercase-order-unconstrained"
+    ],
+    "p4": [
+      "p4.ascii-method-order",
+      "p4.iso10646-method-order"
+    ],
+    "note2": [
+      "note2.achar-conversion",
+      "note2.iachar-conversion"
+    ],
+    "p5": [
+      "p5.lgt",
+      "p5.lge",
+      "p5.lle",
+      "p5.llt",
+      "p5.ascii-basis",
+      "p5.fortran-repertoire-portability"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S7.4.4.4-001",
+      "title": "Each character method has a one-to-one collating index map",
+      "source": "7.4.4.4 p1; J3/24-007, 18 December 2023, PDF 86, printed 72, lines 9-12.",
+      "source_units": [
+        "p1",
+        "p1.each-kind-sequence",
+        "p1.isomorphism-domain",
+        "p1.char-conversion",
+        "p1.ichar-conversion"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For each character kind the processor defines a collating sequence giving a one-to-one correspondence between its characters and the integers from zero through N-1, where N is the size of that character set. CHAR and ICHAR convert according to this kind-specific map. The contiguous abstract index domain does not require consecutive code positions for letters or digits, ASCII native order, UTF-8, a storage encoding or any graphic shape.\n\nCHAR's argument must lie in the selected method's index domain. ICHAR requires a representable one-character argument, and its result integer kind must be capable of representing N itself, not merely one sampled code or N-1. Same-kind character relational operations use the corresponding collating order with their separately specified padding rules. Neither a guessed N nor a small observed ICHAR result establishes the result-kind premise.",
+      "facets": [
+        "finite-round-trips",
+        "native-relational-consistency",
+        "method-cardinality-and-result-kind",
+        "whole-method-mapping"
+      ],
+      "pending": {
+        "finite-round-trips": "Planned qualified run S7_4_4_4_001_valid__round_trips after an independent profile documents the chosen method's N and an available integer result kind representing N. Use one default-method sample of distinct required characters and indices 0, 1 and N-1 where distinct. Assert ICHAR(CHAR(i,k),kind=ik)=i and CHAR(ICHAR(c,kind=ik),kind=k)=c, with LEN=1 and matching kind. Keep N and indices in a proven sufficient integer kind; do not cast an arbitrary kind identifier into ik.",
+        "native-relational-consistency": "Planned qualified run S7_4_4_4_001_valid__native_relations with the same proven N/result-kind premise and a finite same-kind sample containing upper/lower letters, a digit, blank and punctuation. Check character <= and == against ICHAR ordering/equality, and check first-difference, blank-extension and zero-length relations separately. Do not use ICHAR on a multi-character/empty value or assert a fixed upper/lower or punctuation order.",
+        "method-cardinality-and-result-kind": "Planned documentary/profile record character-collation-capacity: obtain N independently for each candidate method, derive a sufficient decimal-range request without overflow, and query a supported integer kind before compiling its dependent fixture. The proof must cover N, not just sampled codes. If this premise cannot be established, the ICHAR fixture remains pending; it must not probe potentially undefined results or silently assume default integer suffices.",
+        "whole-method-mapping": "Planned documentary record character-collation-map: join each supported method's versioned repertoire/index specification, cardinality, required-order constraints and CHAR/ICHAR behavior. Bound executable sampling to the cases above and record that full finite-set/map inspection needs documentary evidence not represented by the current registry. A round trip or CHARACTER_KINDS inventory alone cannot prove the entire map."
+      },
+      "oracle": "Draft plan only. Inverse identities and equality/order consistency are conditional finite witnesses with explicit domain and integer-capacity proofs. The mandatory default-order effects below use native one-character relational comparisons instead of unsafe ICHAR calls, so their execution is not gated away by missing cardinality documentation.",
+      "oracle_limitation": "No full repertoire, character storage size or source/display interface is inferred from codes. The round trips can be mutually consistent while a separate named-set mapping is wrong; S7.4.4.4-003 therefore keeps its independent external-reference obligation. Do not test out-of-domain CHAR, insufficient ICHAR result kinds, unrepresentable characters or undefined results as mandatory rejection/trap cases.",
+      "dependencies": "7.4.4.1 and 7.4.4.2 p3 (PDF 84); 10.1.5.1 p6 and 10.1.5.5.1 p7-p8/NOTE 2 (PDF 175, 180-181); 16.9.52 p3-p5 and 16.9.105 p3-p5 (PDF 394, 419); 16.9.181 (PDF 454-455) can select a result kind only after a sufficient range request is proved. 4.2 p6-p8 (PDF 47) supplies the separate processor-documentation context."
+    },
+    {
+      "id": "S7.4.4.4-002",
+      "title": "Default character order satisfies exactly five listed constraints",
+      "source": "7.4.4.4 p2 and its five bullets; PDF 86, printed 72, lines 13-20.",
+      "source_units": [
+        "p2",
+        "p2.default-kind-qualification",
+        "p2.uppercase-order",
+        "p2.digit-order",
+        "p2.blank-digits-uppercase",
+        "p2.lowercase-order",
+        "p2.blank-digits-lowercase"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For default character, the 26 uppercase letters are strictly ordered alphabetically, the ten digits are strictly ordered by their listed digit order, and the 26 lowercase letters are strictly ordered alphabetically. Blank precedes the digits and uppercase letters, with either the whole digit interval before uppercase or the whole uppercase interval before digits. Independently, blank precedes digits and lowercase letters, with either interval before the other. Both alternatives in each of the two disjunctions are permitted.\n\nThese constraints specify relative order, not consecutive integer codes or distances. They do not fix the relative placement of upper- and lowercase letters, punctuation or other characters. They are not imposed as a general rule on every nondefault character kind.",
+      "facets": [
+        "uppercase-order",
+        "digit-order",
+        "blank-digit-uppercase-alternatives",
+        "lowercase-order",
+        "blank-digit-lowercase-alternatives"
+      ],
+      "pending": {},
+      "oracle": "Five unconditional run cases check all 25 uppercase, nine digit and 25 lowercase adjacent inequalities and both complete alternatives in each blank/digit/letter boundary disjunction. Native one-character comparisons avoid an unproved ICHAR result-kind capacity; no intercase order or contiguous code spacing is asserted. Direct case IDs: S7_4_4_4_002_valid__blank_lowercase, S7_4_4_4_002_valid__blank_uppercase, S7_4_4_4_002_valid__digits, S7_4_4_4_002_valid__lowercase, S7_4_4_4_002_valid__uppercase.",
+      "oracle_limitation": "There is no negative-source twin for these processor effects. The finite comparisons cover all required adjacent letter/digit inequalities and boundary chains, not any unconstrained order. No default N, character-code width, ASCII native encoding, contiguous letters/digits or graphic appearance is asserted.",
+      "dependencies": "6.1.2-.5 (PDF 67-68), 7.4.4.2 p2-p3 (PDF 84), 7.4.4.4 p1/p3 (PDF 86), 10.1.5.1 p6 and 10.1.5.5.1 p7-p8 (PDF 175, 180-181). The direct relational route deliberately avoids 16.9.105 p5's ICHAR result-kind requirement (PDF 419)."
+    },
+    {
+      "id": "S7.4.4.4-003",
+      "title": "Named ASCII and ISO 10646 methods retain their specified collating sequences",
+      "source": "7.4.4.4 p4; PDF 87, printed 73, lines 1-3.",
+      "source_units": [
+        "p4",
+        "p4.ascii-method-order",
+        "p4.iso10646-method-order"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The ASCII character kind uses the ISO/IEC 646:1991 International Reference Version sequence, called the ASCII collating sequence here. The ISO 10646 character kind uses the ISO/IEC 10646 sequence. These are conditional obligations for those methods, not a requirement that either optional kind exist or that default character be ASCII. ACHAR/IACHAR use the ASCII mapping under their own argument, representation and result premises; CHAR/ICHAR use the selected/native method's mapping.",
+      "facets": [
+        "ascii-method-witness",
+        "iso10646-method-witness",
+        "external-collation-reference"
+      ],
+      "pending": {
+        "ascii-method-witness": "Planned qualified run S7_4_4_4_003_valid__ascii after SELECTED_CHAR_KIND('ASCII') support is established independently. The pinned ACHAR/IACHAR examples supply the ASCII position 88 for X: compare CHAR(88,kind=ascii), ACHAR(88,kind=ascii) and a representable same-kind X literal; require LEN=1, KIND=ascii and IACHAR(...)=88. This uses bounded ASCII IACHAR results, not an unproved default-kind ICHAR capacity or the claim that native CHAR(88) is X on every processor.",
+        "iso10646-method-witness": "Planned qualified run S7_4_4_4_003_valid__iso10646 for the three year/month/day positions in the pinned 16.9.180 example (hex 5E74, 6708, 65E5). Before implementation, obtain independently reviewed ISO character identities and source spellings for the corresponding same-kind literal controls. Compare each in-range CHAR construction to that independent character, plus LEN and KIND. Do not use a CHAR/ICHAR round trip alone as identity evidence, infer glyph shape from acceptance, or claim iso10646 kind inquiry proves source decoding.",
+        "external-collation-reference": "Planned documentary record character-external-collation-reference: identify and checksum the relevant ISO/IEC 646:1991 IRV and ISO/IEC 10646 reference material, extract a finite expected mapping for the required Fortran repertoire and the three ISO witnesses, and have those identities reviewed before authoring fixed-value tables. The pinned Fortran draft's definitions/examples are read, but the full external mappings are not yet independently inventoried. Preserve that real documentary/source-interface gap and do not replace the pinned Fortran PDF."
+      },
+      "oracle": "Draft plan only. The ASCII X position has a direct pinned canonical example. The ISO witness and broader tables need independent external-reference/source-interface evidence, not compiler agreement or memory. Optional named-kind support is checked separately; any source-interface profile states only its finite decoding premise.",
+      "oracle_limitation": "For ACHAR, ASCII positions 0 through 127 have the specified character only if representable in the result kind; other cases are processor dependent. IACHAR requires length one and has specified ASCII positions only for ASCII members; otherwise its result is processor dependent. No arbitrary CHAR code, non-ASCII IACHAR fixed value, native/default ASCII promise or ICHAR result-kind shortcut is licensed. A selected kind may equal default; no distinction is presumed.",
+      "dependencies": "7.4.4.1 p3 (PDF 84); 16.9.3 p3-p6 (PDF 377), 16.9.98 p3-p6 (PDF 416), 16.9.52 (PDF 394), 16.9.105 (PDF 419), 16.9.180 p5-p6 (PDF 454), and 7.4.3.1 p4 (PDF 80) for bounded default-integer ASCII results. The informative NOTE 2 is a reference to these contracts, not an independent new requirement."
+    },
+    {
+      "id": "S7.4.4.4-004",
+      "title": "Lexical comparison intrinsics use ASCII order under their own premises",
+      "source": "7.4.4.4 p5; PDF 87, printed 73, lines 4-6.",
+      "source_units": [
+        "p5",
+        "p5.lgt",
+        "p5.lge",
+        "p5.lle",
+        "p5.llt",
+        "p5.ascii-basis",
+        "p5.fortran-repertoire-portability"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "LGT, LGE, LLE and LLT compare strings using the ASCII collating sequence; this subclause guarantees international portability for characters restricted to the Fortran character set. Their canonical contracts require STRING_A to be default or ASCII character and STRING_B to have the same kind. A separately supported ISO_10646 or arbitrary nondefault kind is not automatically an admissible argument kind unless it also is default or ASCII.\n\nFor unequal lengths the shorter string is extended on the right with blanks. Equal and zero-length strings have the specified nonstrict/strict comparison results. If either string contains a non-ASCII character, the intrinsic result is processor dependent; IACHAR's specified consistency relationship still applies to legal one-character arguments. Native relational operators instead use the kind's processor collating sequence and are not interchangeable with the LGE family.",
+      "facets": [
+        "default-ascii-order",
+        "ascii-kind-order",
+        "padding-and-empty",
+        "fortran-repertoire-portability",
+        "iachar-consistency",
+        "nonascii-result-domain"
+      ],
+      "pending": {
+        "ascii-kind-order": "Planned qualified run S7_4_4_4_004_valid__ascii with both arguments in a supported ASCII kind and the same finite example/equality matrix. Kind selection is separately checked; the kind may equal default. Do not substitute ISO_10646-only operands or mix kinds.",
+        "fortran-repertoire-portability": "Planned run S7_4_4_4_004_valid__fortran_repertoire after the finite external-reference table in S7.4.4.4-003 is source-reviewed. Enumerate the 95 required values and compare every one-character pair with all four lexical functions against that independently established ASCII order. Keep the currency-graphic exception separate from character-value identity. This is bounded authorable oracle work, not an optional excuse to waive the required repertoire or a native-order shortcut.",
+        "nonascii-result-domain": "Planned documentary record character-lexical-nonascii-domain: identify whether one documented additional character is representable in a legal default/ASCII argument kind, record its non-ASCII membership and the processor's lexical/IACHAR semantics, and keep any fixed-order expectation out until an explicit processor-profile oracle is justified. The pure standard supplies no particular non-ASCII ordering or rejection result. No undefined/trap case or arbitrary nondefault-kind call is planned."
+      },
+      "oracle": "Three run programs check all four lexical procedures with the pinned ONE/TWO examples, reversals/equality, blank extension and zero-length outcomes. The separate O/T/X one-character witness checks IACHAR consistency and ACHAR inversion only in the bounded ASCII domain. Native relational order is not its oracle; optional ASCII-kind and full external mapping work remains pending. Direct case IDs: S7_4_4_4_004_valid__default, S7_4_4_4_004_valid__iachar_consistency, S7_4_4_4_004_valid__padding_empty.",
+      "oracle_limitation": "No compile-only downgrade is allowed for these run effects. Non-ASCII results are not replaced by a guessed fixed order, and unsupported lexical intrinsics are failed observations rather than optional properties. The broader ACHAR(IACHAR(c)) default-representability promise and IACHAR consistency do not make every outside-ASCII numeric result fixed. No identical-answer requirement between native relational and lexical functions is imposed.",
+      "dependencies": "6.1 (PDF 67-68); 16.9.124-.127 p3-p5 and their zero-length notes (PDF 427-428); 16.9.98 p3-p5 and 16.9.3 p5 (PDF 416, 377); 10.1.5.1 p6 and 10.1.5.5.1 p7-p8/NOTE 2 (PDF 175, 180-181); 7.4.3.1 p4 (PDF 80); 16.9.180 (PDF 454)."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.4.4-001"
+      ]
+    },
+    {
+      "unit": "p1.each-kind-sequence",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.4.4-001"
+      ]
+    },
+    {
+      "unit": "p1.isomorphism-domain",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.4.4-001"
+      ]
+    },
+    {
+      "unit": "p1.char-conversion",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.4.4-001"
+      ]
+    },
+    {
+      "unit": "p1.ichar-conversion",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.4.4-001"
+      ]
+    },
+    {
+      "unit": "note1",
+      "disposition": "structural",
+      "rationale": "PDF 86 NOTE 1 illustrates processor-native ICHAR indexing only; its example is not assigned an ASCII numeric value."
+    },
+    {
+      "unit": "note1.processor-index-example",
+      "disposition": "informative",
+      "rationale": "The X example returns the processor's index for X. No constant 88 is inferred for default/native ICHAR."
+    },
+    {
+      "unit": "p2",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.4.4-002"
+      ],
+      "rationale": "PDF 86 lines 13-20: preserve the default-kind qualification and all five bullets, including both branches of each boundary disjunction."
+    },
+    {
+      "unit": "p2.default-kind-qualification",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.4.4-002"
+      ]
+    },
+    {
+      "unit": "p2.uppercase-order",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.4.4-002"
+      ]
+    },
+    {
+      "unit": "p2.digit-order",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.4.4-002"
+      ]
+    },
+    {
+      "unit": "p2.blank-digits-uppercase",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.4.4-002"
+      ]
+    },
+    {
+      "unit": "p2.lowercase-order",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.4.4-002"
+      ]
+    },
+    {
+      "unit": "p2.blank-digits-lowercase",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.4.4-002"
+      ]
+    },
+    {
+      "unit": "p3",
+      "disposition": "structural",
+      "rationale": "PDF 86 lines 21-22: both explicit freedoms are retained, not converted to required opposite-order witnesses."
+    },
+    {
+      "unit": "p3.other-positions-unconstrained",
+      "disposition": "permission",
+      "rationale": "The location of characters outside the listed default-order constraints is not fixed. No punctuation, control, currency or other-character position is imposed without a separate named-method/profile premise."
+    },
+    {
+      "unit": "p3.intercase-order-unconstrained",
+      "disposition": "permission",
+      "rationale": "No relationship between the uppercase and lowercase alphabets is specified here. No fixed case offset, universal uppercase-first rule or contiguous interleaving requirement."
+    },
+    {
+      "unit": "p4",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.4.4-003"
+      ],
+      "rationale": "PDF 87 lines 1-3: both named external collating references are preserved with optional-method support premises."
+    },
+    {
+      "unit": "p4.ascii-method-order",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.4.4-003"
+      ]
+    },
+    {
+      "unit": "p4.iso10646-method-order",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.4.4-003"
+      ]
+    },
+    {
+      "unit": "note2",
+      "disposition": "structural",
+      "rationale": "PDF 87 NOTE 2 is informative; its two intrinsic references are expanded below and their actual contracts were read on PDF 377 and 416."
+    },
+    {
+      "unit": "note2.achar-conversion",
+      "disposition": "informative",
+      "rationale": "ACHAR refers to ASCII-based conversion under 16.9.3, including the range and result-kind representability qualification, processor-dependent other results and the default-representability inverse promise. It does not assert native CHAR codes or external byte encoding."
+    },
+    {
+      "unit": "note2.iachar-conversion",
+      "disposition": "informative",
+      "rationale": "IACHAR refers to 16.9.98: length-one input, ASCII position for an ASCII member, processor-dependent result otherwise, and consistency with the lexical functions. It is distinct from ICHAR's native map and full-N result-kind premise."
+    },
+    {
+      "unit": "p5",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.4.4-004"
+      ]
+    },
+    {
+      "unit": "p5.lgt",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.4.4-004"
+      ]
+    },
+    {
+      "unit": "p5.lge",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.4.4-004"
+      ]
+    },
+    {
+      "unit": "p5.lle",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.4.4-004"
+      ]
+    },
+    {
+      "unit": "p5.llt",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.4.4-004"
+      ]
+    },
+    {
+      "unit": "p5.ascii-basis",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.4.4-004"
+      ]
+    },
+    {
+      "unit": "p5.fortran-repertoire-portability",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.4.4.4-004"
+      ],
+      "rationale": "Retain the international-portability guarantee for the required Fortran repertoire, together with the actual lexical intrinsics' default/ASCII same-kind and non-ASCII-result premises. Compiler agreement is not the source of the guarantee."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_7_4_4_4.md"
+  },
+  "review_fingerprint": "d7aac5484d8c25df6ec675aa38e40d0860d076d4e4061ad5ca16184ba8c601a7",
+  "review_rationale": "Independent source-plan and fixture review with verified corrections: doc/source_audits/batch_010.json. Native one-character ordering and separately qualified lexical/inquiry relationships are eligible. No complete ICHAR range, ASCII storage, nondefault collation map or universal representation is inferred."
+}

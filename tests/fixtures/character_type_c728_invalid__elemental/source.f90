@@ -1,0 +1,5 @@
+impure elemental character(*) function f(n)
+    implicit none
+    integer, intent(in) :: n
+    f = 'ABC'
+end function

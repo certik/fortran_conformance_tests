@@ -1,3 +1,11 @@
+! rule: C722
+! covers: supported-name legacy-supported-digit-codes
+! evidence: positive-control
+! standard: f2023
+! profile: numeric-literal-legacy-real-kinds
+! oracle-basis: processor-profile
+! oracle-profile: numeric-literal-legacy-real-kinds
+! Legacy conditional admission control, not an IEEE or rounding oracle.
 ! C722 (R714) The value of kind-param shall specify an approximation method
 ! that exists on the processor.
 ! Valid: real literals with every way of writing an existing kind-param:

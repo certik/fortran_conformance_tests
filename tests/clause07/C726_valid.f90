@@ -1,3 +1,7 @@
+! rule: C726
+! covers: ordinary-dummies named-constant character-type-guard
+! evidence: positive-control
+! standard: f2023
 ! C726 (R721 R722 R723) A type-param-value of * shall be used only
 !   - to declare a dummy argument,
 !   - to declare a named constant,
@@ -6,7 +10,8 @@
 !   - in the type-spec or derived-type-spec of a type guard statement, or
 !   - in an external function, to declare the character length parameter of the
 !     function result.
-! Valid: every permitted use of `*` as a type-param-value.
+! Valid: ordinary character dummies, a named constant, and a character type guard.
+! The PDT dummy is retained context, not an ALLOCATE or external-result witness.
 module c726_valid_m
     implicit none
     type :: pt(n)
