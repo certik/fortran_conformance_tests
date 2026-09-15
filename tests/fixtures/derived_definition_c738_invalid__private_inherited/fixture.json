@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "id": "C738_invalid__private_inherited",
+  "rule": "C738",
+  "facets": [
+    "private-inherited-deferred"
+  ],
+  "evidence": "effect",
+  "standard": "f2023",
+  "files": [
+    "parent.f90",
+    "child.f90"
+  ],
+  "build": [
+    {
+      "id": "parent",
+      "source": "parent.f90",
+      "language": "fortran",
+      "form": "free",
+      "output": "parent.o",
+      "depends_on": []
+    },
+    {
+      "id": "child",
+      "source": "child.f90",
+      "language": "fortran",
+      "form": "free",
+      "output": "child.o",
+      "depends_on": [
+        "parent"
+      ]
+    }
+  ],
+  "expect": {
+    "phase": "compile",
+    "outcome": "diagnose",
+    "step": "child",
+    "diagnostic": {
+      "file": "child.f90",
+      "line": 4,
+      "contains_any": [
+        "Derived-type 'child' declared at (1) must be ABSTRACT because 'action' is DEFERRED and not overridden",
+        "Non-ABSTRACT type 'child' inherits deferred binding 'action'",
+        "'child' is not abstract but does not override the deferred type bound procedure 'action'",
+        "Non-ABSTRACT extension of ABSTRACT derived type 'parent' lacks a binding for DEFERRED procedure 'action'"
+      ],
+      "excludes_any": [
+        "not implemented",
+        "not yet implemented",
+        "unimplemented",
+        "unsupported feature",
+        "not supported yet",
+        "not yet supported",
+        "not currently supported",
+        "implementation limitation",
+        "ASR verify",
+        "ASR verifier",
+        "internal compiler error",
+        "unexpected end of file",
+        "unexpected eof",
+        "missing end",
+        "obsolescent",
+        "obsolete feature",
+        "out of memory",
+        "overflow"
+      ]
+    }
+  }
+}

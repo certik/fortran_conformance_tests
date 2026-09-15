@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "id": "S7_5_2_4_002_valid__component_order",
+  "rule": "S7.5.2.4-002",
+  "facets": [
+    "component-order-distinction"
+  ],
+  "evidence": "effect",
+  "standard": "f2023",
+  "files": [
+    "types_a.f90",
+    "types_b.f90",
+    "dispatch.f90",
+    "main.f90"
+  ],
+  "build": [
+    {
+      "id": "types_a",
+      "source": "types_a.f90",
+      "language": "fortran",
+      "form": "free",
+      "output": "types_a.o",
+      "depends_on": []
+    },
+    {
+      "id": "types_b",
+      "source": "types_b.f90",
+      "language": "fortran",
+      "form": "free",
+      "output": "types_b.o",
+      "depends_on": [
+        "types_a"
+      ]
+    },
+    {
+      "id": "dispatch",
+      "source": "dispatch.f90",
+      "language": "fortran",
+      "form": "free",
+      "output": "dispatch.o",
+      "depends_on": [
+        "types_a",
+        "types_b"
+      ]
+    },
+    {
+      "id": "main",
+      "source": "main.f90",
+      "language": "fortran",
+      "form": "free",
+      "output": "main.o",
+      "depends_on": [
+        "types_a",
+        "types_b",
+        "dispatch"
+      ]
+    }
+  ],
+  "expect": {
+    "phase": "run",
+    "outcome": "success",
+    "exit_code": 0
+  },
+  "link": {
+    "objects": [
+      "types_a.o",
+      "types_b.o",
+      "dispatch.o",
+      "main.o"
+    ],
+    "output": "program"
+  }
+}

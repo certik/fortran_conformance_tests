@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "id": "C1514_invalid__sequence_definition_identity",
+  "rule": "C1514",
+  "facets": [],
+  "evidence": "effect",
+  "standard": "f2023",
+  "files": [
+    "types_a.f90",
+    "types_b.f90",
+    "dispatch.f90"
+  ],
+  "build": [
+    {
+      "id": "types_a",
+      "source": "types_a.f90",
+      "language": "fortran",
+      "form": "free",
+      "output": "types_a.o",
+      "depends_on": []
+    },
+    {
+      "id": "types_b",
+      "source": "types_b.f90",
+      "language": "fortran",
+      "form": "free",
+      "output": "types_b.o",
+      "depends_on": [
+        "types_a"
+      ]
+    },
+    {
+      "id": "dispatch",
+      "source": "dispatch.f90",
+      "language": "fortran",
+      "form": "free",
+      "output": "dispatch.o",
+      "depends_on": [
+        "types_a",
+        "types_b"
+      ]
+    }
+  ],
+  "expect": {
+    "phase": "compile",
+    "outcome": "diagnose",
+    "step": "dispatch",
+    "diagnostic": {
+      "file": "dispatch.f90",
+      "line": 3,
+      "contains_any": [
+        "Ambiguous interfaces in generic interface 'identify' for 'left_tag' at (1) and 'right_tag' at (2)",
+        "Generic 'identify' may not have specific procedures 'left_tag' and 'right_tag' as their interfaces are not distinguishable"
+      ],
+      "excludes_any": [
+        "not implemented",
+        "not yet implemented",
+        "unimplemented",
+        "unsupported feature",
+        "not supported yet",
+        "not yet supported",
+        "not currently supported",
+        "implementation limitation",
+        "ASR verify",
+        "ASR verifier",
+        "internal compiler error",
+        "unexpected end of file",
+        "unexpected eof",
+        "missing end",
+        "obsolescent",
+        "obsolete feature",
+        "out of memory",
+        "overflow"
+      ],
+      "end_line": 11
+    }
+  }
+}

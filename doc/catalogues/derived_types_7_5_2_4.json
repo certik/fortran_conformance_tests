@@ -1,0 +1,269 @@
+{
+  "schema_version": 1,
+  "section": "7.5.2.4",
+  "review_state": "reviewed",
+  "subunits": {
+    "p1": [
+      "p1.same-spelling-different-scopes",
+      "p1.same-or-different-types"
+    ],
+    "p2": [
+      "p2.same-definition",
+      "p2.different-definitions",
+      "p2.same-definition-name",
+      "p2.all-sequence",
+      "p2.all-bind",
+      "p2.no-private-components",
+      "p2.component-order",
+      "p2.component-names",
+      "p2.component-attributes",
+      "p2.otherwise-different",
+      "p2.private-final-sentence"
+    ],
+    "note1": [
+      "note1.same-definition-example"
+    ],
+    "note1.2": [
+      "note1.2.host-path",
+      "note1.2.use-path"
+    ],
+    "note2": [
+      "note2.separate-sequence-definitions",
+      "note2.matching-components",
+      "note2.changed-component-name",
+      "note2.argument-compatibility-consequence"
+    ],
+    "note3": [
+      "note3.definition-name-not-use-alias"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S7.5.2.4-001",
+      "title": "References to the same derived-type definition establish the same type",
+      "source": "7.5.2.4 p2, first sentence; J3/24-007, 18 December 2023, PDF 90, printed 76, line 6. NOTE 1 continues on PDF 91.",
+      "source_units": [
+        "p2.same-definition"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Data entities declared by reference to the same derived-type definition have the same derived type. A different local USE name does not create another definition. Type identity is distinct from type-parameter equality, rank, allocation/association state, directional type compatibility and the additional conditions on a particular assignment or call. The unambiguous finite witnesses here use ordinary extensible definitions; the private-component/SEQUENCE interaction in the last p2 sentence is separately pending interpretation.",
+      "facets": [
+        "local-definition",
+        "host-associated-definition",
+        "use-renamed-definition",
+        "parameter-values-not-type-identity"
+      ],
+      "pending": {},
+      "oracle": "Local assignment, internal dummy association and renamed uses of one definition have initialized value checks. SAME_TYPE_AS is used only with ordinary extensible types. The PDT run explicitly distinguishes small KIND/LEN values (1,2) and (2,3) while requiring the same dynamic type; the KIND discriminator never selects an intrinsic representation and no mismatching-parameter assignment is attempted.",
+      "oracle_limitation": "These are run-effect oracles, not compile-only substitutions when a compiler lacks PDTs or inquiries. SAME_TYPE_AS is processor dependent when neither dynamic type is extensible and is not used to judge SEQUENCE/BIND equivalence. Same type alone does not make differing KIND/LEN/rank or pointer/allocatable associations valid. No negative twin or undefined-value assertion is inferred.",
+      "dependencies": "7.2 (PDF 76); 7.3.2.1 p3 and 7.3.3 (PDF 78-79); 7.5.3.1/.2 and 7.5.7.1 (PDF 91-92, 104); 10.2.1.2 p1(9)-(10) (PDF 189); 14.2.2/19.5.1.3-.4 (PDF 318-320, 553-554); 15.5.2.4-.6 (PDF 339-343); 16.9.177 p3-p5/NOTE 2 (PDF 452)."
+    },
+    {
+      "id": "S7.5.2.4-002",
+      "title": "Separate derived-type definitions match only under the specified structural conditions",
+      "source": "7.5.2.4 p2, remaining sentences; PDF 90, printed 76, lines 6-11, with NOTE 2 and NOTE 3 on PDF 91.",
+      "source_units": [
+        "p2.different-definitions",
+        "p2.same-definition-name",
+        "p2.all-sequence",
+        "p2.all-bind",
+        "p2.no-private-components",
+        "p2.component-order",
+        "p2.component-names",
+        "p2.component-attributes",
+        "p2.otherwise-different",
+        "p2.private-final-sentence"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For entities referring to different definitions, sameness requires the same type name in the definitions, all definitions having SEQUENCE or all having BIND, no PRIVATE components, and components agreeing in order, name and attributes. Otherwise the derived types differ. The name comparison is not a comparison of local USE aliases. Agreement of physical storage, C representations or numeric kind codes cannot replace any of these conditions.\n\nThe paragraph additionally ends with an exclusion involving a SEQUENCE/BIND data entity and a type with PRIVATE components. That qualification is retained explicitly. Its interaction with the first same-definition sentence, in particular a same-definition private-SEQUENCE case, remains source-interpretation work rather than an asserted self-inequality. No disputed private-type executable is supplied by this draft.",
+      "facets": [
+        "ordinary-definitions-remain-distinct",
+        "matching-sequence-definitions",
+        "matching-bind-definitions",
+        "definition-name-versus-alias",
+        "component-order-distinction",
+        "component-name-distinction",
+        "component-kind-distinction",
+        "component-rank-distinction",
+        "pointer-allocatable-attribute-distinction",
+        "uniform-sequence-or-bind-condition",
+        "private-component-interpretation",
+        "canonical-distinguishability-evidence"
+      ],
+      "pending": {
+        "private-component-interpretation": "Pending original-source interpretation of p2's final sentence against its first sentence and 7.5.4.8, 18.3.2/.4 and 19.5.1. First distinguish same-definition/private-SEQUENCE and separate-definition/private-component scenarios, recording the exact scope of the private exclusion. Only then authorize a bounded private-component identity/association case and any canonical diagnostic link. Do not manufacture a type that differs from itself, infer identity by private representation, or resolve the question by compiler consensus.",
+        "canonical-distinguishability-evidence": "Canonical C1514_invalid__sequence_definition_identity/C1514_valid__sequence_component_name_repair now exist with identical scalar outer dummy characteristics and a one-component-name repair in the second type definition. The primary owner remains C1514. This semantic-link facet stays pending until parent integration and independent review; no duplicate local rejection execution or direct credit is assigned."
+      },
+      "oracle": "Matching public SEQUENCE/BIND definitions exchange defined members through explicit typed Fortran argument association. Other scalar-generic runs distinguish definition names, component order/names/kinds/ranks/attributes and nonuniform SEQUENCE/BIND flags without outer-rank or optional-argument shortcuts. Nonextensible cases do not use SAME_TYPE_AS. The canonical C1514 pair changes only the second SEQUENCE definition component name and remains separate pending linkage. The private-component final sentence remains unresolved and has no fixture.",
+      "oracle_limitation": "SAME_TYPE_AS is processor dependent when neither dynamic type is extensible, and SELECT TYPE guards cannot name SEQUENCE/BIND types under C1166; neither is a substitute here. Intrinsic == is not defined for general derived values. Intrinsic assignment and argument association additionally constrain parameters, rank, attributes and defined state. No layout/size/model comparison, C interoperability coincidence, f2018-only observation or malformed actual argument is a type-identity oracle.",
+      "dependencies": "7.5.2.3/C745 (PDF 89-90); 7.3.3 and 7.5.11 (PDF 79, 109); 7.4.3.2 p5 (PDF 82); 7.5.4.8 (PDF 99); 10.2.1.2 and 15.5.2.5-.6 (PDF 189, 339-343); C1166 (PDF 225); 14.2.2/19.5.1 (PDF 318-320, 552-554); C1514 and TKR definitions (PDF 331-332); 16.9.177 (PDF 452); 18.2.2 p3 and 18.3.2/.4 (PDF 516, 526-527). C and Fortran component names may differ for C interoperation, but that does not change the Fortran identity criteria."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "structural",
+      "rationale": "PDF 90 lines 4-5: same spelling in different scoping units does not by itself decide type identity."
+    },
+    {
+      "unit": "p1.same-spelling-different-scopes",
+      "disposition": "permission",
+      "rationale": "The same type name may occur in definitions in different scoping units. This is not permission for conflicting declarations in one scope."
+    },
+    {
+      "unit": "p1.same-or-different-types",
+      "disposition": "definition",
+      "rationale": "Such definitions can denote the same or different types according to p2. Neither source-name equality nor storage coincidence is an independent identity test."
+    },
+    {
+      "unit": "p2",
+      "disposition": "structural",
+      "rationale": "PDF 90 lines 6-11: split same-definition identity, every cross-definition condition, the otherwise branch and the final private-component qualification. The latter's full interaction is explicitly unresolved below, not omitted."
+    },
+    {
+      "unit": "p2.same-definition",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.2.4-001"
+      ]
+    },
+    {
+      "unit": "p2.different-definitions",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.2.4-002"
+      ]
+    },
+    {
+      "unit": "p2.same-definition-name",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.2.4-002"
+      ]
+    },
+    {
+      "unit": "p2.all-sequence",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.2.4-002"
+      ]
+    },
+    {
+      "unit": "p2.all-bind",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.2.4-002"
+      ]
+    },
+    {
+      "unit": "p2.no-private-components",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.2.4-002"
+      ]
+    },
+    {
+      "unit": "p2.component-order",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.2.4-002"
+      ]
+    },
+    {
+      "unit": "p2.component-names",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.2.4-002"
+      ]
+    },
+    {
+      "unit": "p2.component-attributes",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.2.4-002"
+      ]
+    },
+    {
+      "unit": "p2.otherwise-different",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.2.4-002"
+      ]
+    },
+    {
+      "unit": "p2.private-final-sentence",
+      "disposition": "unresolved",
+      "requirements": [
+        "S7.5.2.4-002"
+      ],
+      "rationale": "PDF 90 lines 10-11 were also visually read. Preserve the explicit SEQUENCE/BIND versus private-component exclusion, but establish its scope relative to the first same-definition sentence before making a same-definition/private-SEQUENCE assertion. This is one explicit fine-grained source-interpretation gap; compiler acceptance, storage layout or a fabricated self-inequality cannot close it."
+    },
+    {
+      "unit": "note1",
+      "disposition": "informative",
+      "rationale": "PDF 90 NOTE 1 begins the same-definition host-association example. Its continuation is a distinct census base unit, note1.2, on PDF 91; neither is a new normative requirement."
+    },
+    {
+      "unit": "note1.same-definition-example",
+      "disposition": "informative",
+      "rationale": "The actual object and internal dummy refer to one definition. Their different entity names do not create distinct types."
+    },
+    {
+      "unit": "note1.2",
+      "disposition": "structural",
+      "rationale": "PDF 91 continues NOTE 1 with explicit host and module/use explanations. It is not a second independent note or a discarded continuation."
+    },
+    {
+      "unit": "note1.2.host-path",
+      "disposition": "informative",
+      "rationale": "Host association supplies the same definition to the internal procedure, subject to the canonical scope/import rules."
+    },
+    {
+      "unit": "note1.2.use-path",
+      "disposition": "informative",
+      "rationale": "Accessing the same module definition from both scopes also preserves identity; local aliases are not separate definitions."
+    },
+    {
+      "unit": "note2",
+      "disposition": "structural",
+      "rationale": "PDF 91 NOTE 2 illustrates separate matching SEQUENCE definitions and a single component-name change; all its premises are retained without copying its code."
+    },
+    {
+      "unit": "note2.separate-sequence-definitions",
+      "disposition": "informative",
+      "rationale": "The definitions are in different scoping units, have the same definition name and have SEQUENCE."
+    },
+    {
+      "unit": "note2.matching-components",
+      "disposition": "informative",
+      "rationale": "The components agree in order, names and attributes, yielding the same type under the stated conditions. Mere common storage is not the criterion."
+    },
+    {
+      "unit": "note2.changed-component-name",
+      "disposition": "informative",
+      "rationale": "Changing one component name breaks the matching-components condition even when its intrinsic type, position and apparent representation remain the same."
+    },
+    {
+      "unit": "note2.argument-compatibility-consequence",
+      "disposition": "informative",
+      "rationale": "The note's mismatching actual/dummy case is not standard conforming under argument association. It does not supply a mandatory diagnostic from an implicit-interface call; a future required diagnostic must use its actual canonical owner and source relation."
+    },
+    {
+      "unit": "note3",
+      "disposition": "informative",
+      "rationale": "PDF 91 NOTE 3 clarifies which names are compared in p2, not a new standalone naming rule."
+    },
+    {
+      "unit": "note3.definition-name-not-use-alias",
+      "disposition": "informative",
+      "rationale": "The relevant names are those on the derived-type definitions, not local identifiers introduced by USE renaming. Both same-definition and separate-definition plans retain this distinction."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_7_5_2_4.md"
+  },
+  "review_fingerprint": "6609947a769b6a319ec721ebee85456f638ed88033e19698329d852db41e24d1",
+  "review_rationale": "Original-source and final fixture review: doc/source_audits/batch_011.json. Unambiguous identity effects are supported. No nonextensible inquiry or private-SEQUENCE shortcut is used; the final private sentence remains unresolved. Initial definition source-plan review used an independent-of-author coordinator fallback, not a successful fresh-context source reviewer; the combined fixture reviewer subsequently read original PDF87-92 and necessary dependencies. Pending and unresolved units are retained."
+}

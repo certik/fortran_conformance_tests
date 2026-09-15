@@ -271,12 +271,34 @@ Successful compile-only and link-only references are displayed as
 `compiles` and `links`, never as runtime observations.
 
 For an explicitly declared diagnostic input, native `file:line:column`
-headers are recognized independently of the filename suffix, including
+and `file:line:first-column-last-column` headers are recognized
+independently of the filename suffix, including
 `.inc`, other suffixes and extensionless included assets. Relative directory
 components in the expected filename remain significant. Include-context
 records cannot lend their locations to a later unlocated error, and a
 host-file location is not substituted for an included-file expectation.
-The legacy unbound location parser is unchanged.
+Column ranges describe one source line, not a line span; their endpoints
+must be positive and ordered. A malformed location-like header clears any
+earlier attribution, even when its column syntax cannot be parsed.
+The legacy unbound parser retains its filename-suffix restriction and
+applies the same location validation. Legitimate source/caret continuation
+records and native single-column-zero headers remain supported. Native
+source/caret records are classified before header detection, so their
+expressions and comments remain content. Complete, delimited quoted text
+inside diagnostic/driver messages is also shielded from header detection.
+An unquoted coordinate sequence is not shielded merely because a filename
+resembles a severity or driver prefix, as in `Error:9:1:` or
+`Error:asset:9:1:`. Ambiguous unquoted location/message records cannot
+borrow an earlier location or preserve single-source-driver attribution.
+This is a conservative text-format qualification, not a prohibition on
+extensionless or severity-named assets; original output is retained.
+Classification and extraction must select the same first unshielded
+coordinate. A mixed record cannot be classified using one coordinate and
+then qualify an earlier quoted coordinate or skip a malformed first
+candidate to a later valid one. Filename namespaces that collide with
+native source-record delimiters need disambiguating path/record provenance
+or separate format qualification; this parser does not certify every
+legal filesystem namespace.
 
 The GNU driver form `f951: Warning: MESSAGE in line N` has no filename.
 It can be qualified explicitly with a nonfatal predicate containing
@@ -284,7 +306,8 @@ It can be qualified explicitly with a nonfatal predicate containing
 limited to one declared ASCII input, one Fortran compilation step, an
 explicit free source form, a lower-case `.f`/`.f90` suffix, and no INCLUDE
 spelling anywhere in that input. The predicate must specify `gfortran`
-and `warning`. Competing source locations disqualify this attribution.
+and `warning`. Competing source locations and malformed location-like
+headers disqualify this attribution.
 The separately parsed line number must still match the declared location,
 and only the exact message is accepted; other driver messages do not pass.
 The source hash, command and original output remain in the report, with

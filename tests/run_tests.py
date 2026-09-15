@@ -38,10 +38,15 @@ NAME = re.compile(r'^([RC]\d+|S[\d_]+)_(valid|invalid)(?:__([a-z][\w-]*))?\.f(90
 SHORT = re.compile(
     r'^(.*?):(\d+)-(\d+):(\d+)-(\d+): (.*? (?:error|warning))'
     r'(?: \[([\w.-]+)\])?(?: \(F2023 ([^)]+)\))?: (.*)$', re.I)
-REF_LOC = re.compile(r'^(.*?\.(?:f90|f|c|h)):(\d+):(\d+)(?::|\s|$)')
-DECLARED_REF_LOC = re.compile(r'^(.*?):(\d+):(\d+)(?::|\s|$)')
+REF_LOC = re.compile(r'^(.*?\.(?:f90|f|c|h)):(\d+):(\d+)(?:-(\d+))?(?::|\s|$)')
+DECLARED_REF_LOC = re.compile(r'^(.*?):(\d+):(\d+)(?:-(\d+))?(?::|\s|$)')
+REF_LOC_HEADER = re.compile(r'^(.*?):(\d+(?:-\d+)?):')
+REF_SOURCE_RECORD = re.compile(r'^\s*(?:\d+\s*)?\|(?:\s|$)')
+REF_MESSAGE = re.compile(r'^(Error|Fatal Error|Warning|portability):\s*(.*)', re.I)
+REF_QUOTED_CONTENT = re.compile(r"""(?<!\w)(?:'[^']*'|"[^"]*")(?!\w)""")
 INCLUDE_CONTEXT = re.compile(
     r'^\s*(?:In file included from\b|from\s+.+:\d+(?::\d+)?[:,]?\s*$)', re.I)
+GNU_DRIVER_MESSAGE = re.compile(r'^f951:\s*(?:Fatal\s+)?(?:Error|Warning):', re.I)
 GNU_DRIVER_LINE = re.compile(r'^f951:\s*Warning:\s*(.*?)\s+in line ([1-9]\d*)\s*$', re.I)
 HEADER = re.compile(r'^!\s*(rule|covers|evidence|requires|profile|images|standard|reference-warnings|oracle-basis|oracle-profile):\s*(.*?)\s*$')
 CASE = re.compile(r'^!\s*case:\s*([\w-]+)\s*$')
@@ -452,6 +457,24 @@ def diagnostic_filename_matches(actual, expected):
     return bool(expected.parts) and actual.parts[-len(expected.parts):] == expected.parts
 
 
+def reference_location_header(text):
+    if REF_SOURCE_RECORD.match(text):
+        return None
+    if REF_MESSAGE.match(text) or GNU_DRIVER_MESSAGE.match(text):
+        text = REF_QUOTED_CONTENT.sub(lambda match: ' ' * len(match.group()), text)
+    return REF_LOC_HEADER.match(text)
+
+
+def reference_location(text, pattern, header):
+    location = pattern.match(text)
+    if location is None or location.span(2) != header.span(2):
+        return None
+    if (location.group(4) is not None
+            and not 1 <= int(location.group(3)) <= int(location.group(4))):
+        return None
+    return location
+
+
 def reference_messages(output, filename=None):
     pending = None
     origin = ''
@@ -460,13 +483,20 @@ def reference_messages(output, filename=None):
             pending = None
             origin = ''
             continue
-        location = (DECLARED_REF_LOC if filename is not None else REF_LOC).match(line)
+        location = None
         message = line
-        if location:
+        header = reference_location_header(line)
+        if header:
+            pending = None
+            origin = ''
+            location = reference_location(
+                line, DECLARED_REF_LOC if filename is not None else REF_LOC, header)
+            if location is None:
+                continue
             origin = location.group(1)
             pending = int(location.group(2))
             message = line[location.end():].lstrip()
-        diagnostic = re.match(r'^(Error|Fatal Error|Warning|portability):\s*(.*)', message, re.I)
+        diagnostic = REF_MESSAGE.match(message)
         if diagnostic:
             if pending is not None and (filename is None or diagnostic_filename_matches(origin, filename)):
                 yield pending, diagnostic.group(1).lower(), diagnostic.group(2)
@@ -587,8 +617,11 @@ def driver_warning_diagnostics(output, filename, primary_source):
     for text in output.splitlines():
         if INCLUDE_CONTEXT.match(text):
             return []
-        location = DECLARED_REF_LOC.match(text)
-        if location:
+        header = reference_location_header(text)
+        if header:
+            location = reference_location(text, DECLARED_REF_LOC, header)
+            if location is None:
+                return []
             origin = Path(location.group(1))
             if ((origin.is_absolute() and origin != primary)
                     or (not origin.is_absolute() and str(origin) not in (filename, primary.name))):

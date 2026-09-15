@@ -1,0 +1,963 @@
+{
+  "schema_version": 1,
+  "section": "7.5.2.1",
+  "review_state": "reviewed",
+  "subunits": {
+    "R726": [
+      "R726.opening",
+      "R726.parameter-definitions",
+      "R726.private-or-sequence",
+      "R726.components",
+      "R726.bindings",
+      "R726.ending",
+      "R726.part-order"
+    ],
+    "R727": [
+      "R727.type-keyword-name",
+      "R727.optional-colons",
+      "R727.attribute-list",
+      "R727.parameter-name-list"
+    ],
+    "R728": [
+      "R728.abstract",
+      "R728.access",
+      "R728.bind-c",
+      "R728.extends-parent-name"
+    ],
+    "C734": [
+      "C734.doubleprecision",
+      "C734.intrinsic-type-names"
+    ],
+    "C735": [
+      "C735.no-repeated-type-attribute"
+    ],
+    "C736": [
+      "C736.no-repeated-parameter-name"
+    ],
+    "C737": [
+      "C737.type-name",
+      "C737.previously-defined",
+      "C737.extensible"
+    ],
+    "C738": [
+      "C738.local-deferred",
+      "C738.inherited-deferred",
+      "C738.abstract-required"
+    ],
+    "C739": [
+      "C739.abstract-antecedent",
+      "C739.extensible-consequent"
+    ],
+    "C740": [
+      "C740.extends-antecedent",
+      "C740.sequence-exclusion"
+    ],
+    "C741": [
+      "C741.extension-antecedent",
+      "C741.child-coarray-potential",
+      "C741.parent-coarray-potential"
+    ],
+    "C742": [
+      "C742.extension-antecedent",
+      "C742.child-event",
+      "C742.child-lock",
+      "C742.child-notify",
+      "C742.parent-special-type",
+      "C742.parent-special-potential"
+    ],
+    "R729": [
+      "R729.component-private",
+      "R729.sequence"
+    ],
+    "C743": [
+      "C743.private-uniqueness",
+      "C743.sequence-uniqueness"
+    ],
+    "R730": [
+      "R730.end-type-keywords",
+      "R730.optional-name"
+    ],
+    "C744": [
+      "C744.name-present",
+      "C744.corresponding-start-name"
+    ],
+    "p1": [
+      "p1.bind-interop-cross-reference"
+    ],
+    "note-unnumbered": [
+      "note-unnumbered.definition",
+      "note-unnumbered.object-declaration"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "R726",
+      "title": "A derived-type definition has ordered optional parts between its boundary statements",
+      "source": "7.5.2.1 R726; J3/24-007, 18 December 2023, PDF 88, printed 74, lines 8-13.",
+      "source_units": [
+        "R726",
+        "R726.opening",
+        "R726.parameter-definitions",
+        "R726.private-or-sequence",
+        "R726.components",
+        "R726.bindings",
+        "R726.ending",
+        "R726.part-order"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "A derived-type definition begins with its TYPE statement and ends with END TYPE. Between them, type-parameter definitions precede private-or-sequence statements, which precede the component part, which precedes the type-bound-procedure part. These displayed parts are optional; their repeated subparts can be empty where the canonical grammar permits. An ordinary extensible type need not have components, bindings or parameters. Procedure-pointer components belong to the component part, whereas specific, generic and final bindings belong to the type-bound-procedure part.",
+      "facets": [
+        "empty-definition",
+        "parameter-part",
+        "component-part",
+        "binding-part",
+        "parameter-ordering",
+        "private-ordering",
+        "component-binding-ordering"
+      ],
+      "pending": {},
+      "oracle": "Explicit compile admissions cover the empty ordinary definition and CONTAINS-only binding part. Run controls exercise a defaulted KIND/LEN PDT with initialized payload, a data/procedure-pointer component pair, and a NOPASS binding. Three negative/control pairs exchange only adjacent statements to isolate parameter, component-PRIVATE and component/binding ordering. Their cause contracts identify the actual statement role, not generic recovery.",
+      "oracle_limitation": "C745 and C1801-C1806 restrict special type classes despite R726's optional parts. Required reporting follows 4.2 p2(3), not compulsory fatal exit. Generic type/expected/constant/function words, wrong-source recovery, crashes, ASR verification failures and unsupported facilities cannot corroborate a different ordering condition.",
+      "dependencies": "R727/R729/R730 (PDF 88-89); R732-R742/C746-C764 (PDF 91-94); R746-R752/C774/C784/C788 (PDF 99-101); 7.5.7.2 NOTE 2 (PDF 104); 10.2.2.4 and 15.4.3.6 (PDF 196, 333-334). C745 and C1801-C1806 (PDF 89, 526); 4.1.2 and 4.2 (PDF 45-46)."
+    },
+    {
+      "id": "R727",
+      "title": "The TYPE header names the type and optionally its attributes and parameters",
+      "source": "7.5.2.1 R727; PDF 88, printed 74, lines 14-15.",
+      "source_units": [
+        "R727",
+        "R727.type-keyword-name",
+        "R727.optional-colons",
+        "R727.attribute-list",
+        "R727.parameter-name-list"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "The header admits TYPE followed by a type name, TYPE :: followed by that name, or TYPE with a comma-led type-attribute list and required :: before the name. A parenthesized, nonempty type-parameter-name list may follow the type name. The names in that list are declarations of parameters, not actual values or intrinsic kind codes.",
+      "facets": [
+        "bare-header",
+        "double-colon-header",
+        "attribute-header",
+        "parameter-list",
+        "attribute-needs-colons",
+        "nonempty-parameter-list"
+      ],
+      "pending": {
+        "attribute-header": "Planned finite linkage to R728's actual attribute controls after review; their valid headers supply comma and ::. Do not clear this facet from a textual cross-reference or duplicate every attribute execution.",
+        "parameter-list": "Planned finite linkage to R726_valid__parameters, with matching R732 definitions and separate KIND/LEN roles. Existing 7.2 PDT cases remain unchanged and are not relabeled as this new header evidence."
+      },
+      "oracle": "Bare and double-colon headers have initialized runtime member checks. Two compile pairs insert only the missing :: after ABSTRACT or remove only an empty parameter-name list. The attribute-union and parameter-part semantic-link proposals remain pending rather than receiving duplicate execution credit.",
+      "oracle_limitation": "C734 governs forbidden type names; C735/C736 govern duplicates. A successful header is not proof of all declaration contexts or parameter semantics. Negative reports must identify the precise local grammar; ordinary EOF/END recovery and generic expected text are not sufficient.",
+      "dependencies": "R401/R402 and 4.2 p2(3) (PDF 45-46); R728/C734-C736 (PDF 88); R732-R734/C746-C747 and 7.5.3.2 (PDF 91-92); 19.3.4 and 19.5.1.4 (PDF 550, 553-554)."
+    },
+    {
+      "id": "R728",
+      "title": "Type attributes distinguish ABSTRACT, access, BIND(C) and an EXTENDS parent name",
+      "source": "7.5.2.1 R728; PDF 88, printed 74, lines 16-19.",
+      "source_units": [
+        "R728",
+        "R728.abstract",
+        "R728.access",
+        "R728.bind-c",
+        "R728.extends-parent-name"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "A type-attr-spec is ABSTRACT, an access-spec, BIND(C), or EXTENDS with a parent-type-name. PUBLIC and PRIVATE are the canonical access alternatives. BIND here has no NAME= binding-label alternative, and EXTENDS names a type rather than supplying a parameterized derived-type-spec. The combinations and enclosing scope still have to meet the related constraints.",
+      "facets": [
+        "abstract-attribute",
+        "public-attribute",
+        "private-attribute",
+        "bind-c-attribute",
+        "extends-attribute",
+        "no-type-binding-label",
+        "parent-name-not-parameterization"
+      ],
+      "pending": {},
+      "oracle": "Five controls exercise ABSTRACT, PUBLIC, PRIVATE, BIND(C) and EXTENDS with their actual source premises. Two compile pairs remove only an illegal NAME= type binding label or the actual parameter list from EXTENDS. INTEGER(C_INT) uses the required supported kind, without an ABI/layout claim or numeric identifier assumption.",
+      "oracle_limitation": "No attribute combination is granted merely by membership in this union. Missing implementation of a valid attribute or C_INT import is not the intended syntax diagnostic. The standalone access-spec scope belongs to C817; pointer-type nonextensibility and derived-parent eligibility belong to C737.",
+      "dependencies": "R807/C817 and 8.5.2 (PDF 120); R808 (PDF 121); C735/C737-C742 (PDF 88-89); 7.5.3/7.5.7 (PDF 91-92, 104-105); 18.2.2 p3 and 18.3.4 (PDF 516, 526-527); 4.2 p2(3) (PDF 46)."
+    },
+    {
+      "id": "C734",
+      "title": "A derived type name excludes intrinsic type names and DOUBLEPRECISION",
+      "source": "7.5.2.1 C734 (R727); PDF 88, printed 74, lines 20-21.",
+      "source_units": [
+        "C734",
+        "C734.doubleprecision",
+        "C734.intrinsic-type-names"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "A derived type's type-name cannot be DOUBLEPRECISION or a name of an intrinsic type defined by this document: INTEGER, REAL, COMPLEX, CHARACTER or LOGICAL. Name case is not a distinction. This restriction concerns the type name, not every component identifier or every Fortran keyword; DOUBLE_PRECISION with an underscore is not the forbidden spelling DOUBLEPRECISION.",
+      "facets": [
+        "five-intrinsic-names",
+        "doubleprecision-name",
+        "name-subject-and-spelling-boundaries"
+      ],
+      "pending": {},
+      "oracle": "Six compile pairs change only a forbidden type-name spelling, with unnamed END TYPE statements so no extra name mismatch occurs. The five intrinsic names are repaired to record; DOUBLEPRECISION is repaired to DOUBLE_PRECISION. A separate control retains intrinsic-keyword spellings as component identifiers. A cause must identify the forbidden derived-type name.",
+      "oracle_limitation": "No processor representation, numeric kind value or storage size defines the forbidden-name set. An unimplemented intrinsic or a report about another identifier does not corroborate C734; every predicate must retain the actual type-name subject.",
+      "dependencies": "R727 (PDF 88); 7.4.1/R704 (PDF 80); 6.1.2 and R603 (PDF 67-68); 19.3.4 (PDF 550); 4.2 p2(3) (PDF 46)."
+    },
+    {
+      "id": "C735",
+      "title": "A TYPE header does not repeat a type attribute",
+      "source": "7.5.2.1 C735 (R727); PDF 88, printed 74, line 22.",
+      "source_units": [
+        "C735",
+        "C735.no-repeated-type-attribute"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "The same type-attr-spec does not appear more than once in a derived-type-stmt. The duplicate is a header type attribute, not a component attribute, binding attribute or parameter name.",
+      "facets": [
+        "duplicate-abstract",
+        "duplicate-access",
+        "duplicate-bind",
+        "duplicate-extends"
+      ],
+      "pending": {},
+      "oracle": "Five compile pairs delete only the repeated identical ABSTRACT, PUBLIC, PRIVATE, BIND(C) or EXTENDS attribute. Parent definitions, module accessibility scope, interoperable components and other type attributes remain valid. Contracts distinguish the repeated header attribute from a component or binding attribute.",
+      "oracle_limitation": "A broad duplicate/type/attribute noun at the same line is insufficient if it identifies a different attribute role. Unsupported attributes, unrelated ABSTRACT or BIND restrictions, crashes and recovery do not count.",
+      "dependencies": "R727-R728/C737/C739 (PDF 88); C817 (PDF 120); C1801-C1806 (PDF 526); 4.1.2 and 4.2 p2(3) (PDF 45-46)."
+    },
+    {
+      "id": "C736",
+      "title": "A TYPE header lists each parameter name once",
+      "source": "7.5.2.1 C736; PDF 88, printed 74, line 23.",
+      "source_units": [
+        "C736",
+        "C736.no-repeated-parameter-name"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "A type-param-name is not repeated in one derived-type-stmt. The restriction concerns declaration names in the header, not repeated actual parameter values, duplicate type-parameter definition statements, or components. Case variants of a name denote the same name.",
+      "facets": [
+        "duplicate-kind-name",
+        "duplicate-length-name"
+      ],
+      "pending": {},
+      "oracle": "KIND and LEN pairs remove only the second case-equivalent header parameter name. Each body still defines that parameter exactly once with a small default and an ordinary integer component; neither value selects an intrinsic representation. The cause is duplicate declaration naming, not value constancy or missing parameter definition.",
+      "oracle_limitation": "The scalar integer/default/definition rules are not weakened to obtain a duplicate-name report. Preserve C746/C747 and ordinary scope ownership rather than crediting their unrelated failures.",
+      "dependencies": "R727 (PDF 88); R732-R734/C746-C747 (PDF 91-92); 7.2 (PDF 76); 19.3.4/19.5.1.4 (PDF 550, 553); 4.2 p2(3) (PDF 46)."
+    },
+    {
+      "id": "C737",
+      "title": "An EXTENDS parent names a previously defined extensible type",
+      "source": "7.5.2.1 C737 (R728); PDF 88, printed 74, line 24.",
+      "source_units": [
+        "C737",
+        "C737.type-name",
+        "C737.previously-defined",
+        "C737.extensible"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "The parent name identifies a previously defined extensible type. In 7.5.7.1, extensibility excludes BIND and SEQUENCE types and also the specified ISO_C_BINDING types C_PTR and C_FUNPTR. ABSTRACT by itself does not make a type nonextensible. A legal USE rename or host association can provide the parent name and counts as a prior definition; parameterizing the parent in EXTENDS is a separate R728 grammar issue.",
+      "facets": [
+        "prior-extensible-parent",
+        "renamed-or-host-parent",
+        "parent-is-a-type",
+        "prior-definition-required",
+        "sequence-parent-exclusion",
+        "bind-parent-exclusion",
+        "intrinsic-pointer-type-exclusions"
+      ],
+      "pending": {},
+      "oracle": "Initialized parent/child, host-parent and renamed-parent runs supplement type-only abstract-parent admission. Six negative/control pairs replace only the bad EXTENDS parent with a prior ordinary extensible type, separating non-type names, forward definitions, SEQUENCE/BIND parents and C_PTR/C_FUNPTR. The chosen parent subject and its actual failed property are required diagnostic evidence.",
+      "oracle_limitation": "A similarly shaped type, a numeric kind, a C pointer value or an identically spelled alias is not automatically an eligible parent. No private intrinsic representation is inspected. Required diagnostics must distinguish the actual failed parent premise; generic type/expected/function messages and unsupported facilities cannot substitute.",
+      "dependencies": "R728 (PDF 88); 7.5.7.1 p1-p4 and 7.5.7.2 (PDF 104); 14.2.2 p2 (PDF 318-319); 19.5.1.4 (PDF 553-554); 18.2.1 and 18.3.2/.4 (PDF 516, 526); C705's existing CLASS-owner controls remain unchanged."
+    },
+    {
+      "id": "C738",
+      "title": "A type with local or inherited deferred bindings must be abstract",
+      "source": "7.5.2.1 C738 (R726); PDF 88, printed 74, lines 25-26.",
+      "source_units": [
+        "C738",
+        "C738.local-deferred",
+        "C738.inherited-deferred",
+        "C738.abstract-required"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "ABSTRACT is required when a definition contains a deferred type-bound procedure or inherits a deferred binding. Inheritance includes inaccessible bindings; a private inherited binding is not absent merely because the child cannot name it. A compatible concrete override removes that deferred binding from the inherited set under 7.5.7.2-.3, so an extension with no remaining deferred bindings need not be abstract. The implication is not reversed: an abstract type need not have a deferred binding.",
+      "facets": [
+        "local-deferred",
+        "inherited-deferred",
+        "private-inherited-deferred",
+        "concrete-override-boundary"
+      ],
+      "pending": {},
+      "oracle": "Three compile pairs add only ABSTRACT to the actual nonabstract type that contains or inherits the deferred binding, including an inaccessible inherited private binding across modules. The parent is already valid and abstract. A concrete-child run overrides the one deferred NOPASS subroutine with matching characteristics and verifies its integer result. Wrong-parent or missing-interface reports do not establish the child condition.",
+      "oracle_limitation": "No deferred procedure is invoked and no abstract dynamic object is created. A same-spelled local binding is not assumed to override an inaccessible inherited binding. The reporting subject is the specific nonabstract type and its deferred binding, not a generic function/abstract noun.",
+      "dependencies": "R746-R752/C774/C784/C787-C790 and 7.5.5 p2/p8-p9 (PDF 99-101); 7.5.7.1-.3 (PDF 104-105); C703/C706 (PDF 77); 15.3 and 15.4.3.6 (PDF 324, 333); 4.2 p2(3) (PDF 46)."
+    },
+    {
+      "id": "C739",
+      "title": "An ABSTRACT derived type must be extensible",
+      "source": "7.5.2.1 C739 (R726); PDF 88, printed 74, line 27.",
+      "source_units": [
+        "C739",
+        "C739.abstract-antecedent",
+        "C739.extensible-consequent"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "If ABSTRACT appears, the defined type must be extensible. In particular an ABSTRACT type cannot acquire SEQUENCE or BIND. The rule does not prohibit extending a valid abstract parent and does not require a deferred binding.",
+      "facets": [
+        "abstract-sequence-exclusion",
+        "abstract-bind-exclusion",
+        "ordinary-abstract-admission"
+      ],
+      "pending": {},
+      "oracle": "Two compile pairs keep ABSTRACT and remove only SEQUENCE or BIND(C), leaving a valid extensible type. A separate empty ordinary abstract declaration shows that deferred bindings and objects are not required. No abstract object is instantiated.",
+      "oracle_limitation": "Do not create a C739 surrogate by attempting to extend C_PTR/C_FUNPTR: that instead violates parent eligibility C737. No nonpolymorphic abstract object is declared, so C706 is not the diagnostic stimulus.",
+      "dependencies": "7.5.7.1 p1/p4 (PDF 104), C745 (PDF 89), C703/C706 (PDF 77), 18.2.2 p3/C1801-C1806 (PDF 516, 526)."
+    },
+    {
+      "id": "C740",
+      "title": "An extended derived type cannot have SEQUENCE",
+      "source": "7.5.2.1 C740 (R726); PDF 88, printed 74, line 28.",
+      "source_units": [
+        "C740",
+        "C740.extends-antecedent",
+        "C740.sequence-exclusion"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "When EXTENDS appears for the type being defined, SEQUENCE cannot appear in that definition. This concerns the child's attributes; extending a previously SEQUENCE parent is the separate C737 failure.",
+      "facets": [
+        "child-sequence-exclusion",
+        "nonextended-sequence-boundary"
+      ],
+      "pending": {
+        "nonextended-sequence-boundary": "Planned finite linkage to R731_valid__sequence_statement or C745's nonempty control after independent review. A nonextended SEQUENCE type is legal, but that control is not a second rejection execution under C740."
+      },
+      "oracle": "The compile pair removes only the child SEQUENCE statement, preserving its earlier extensible parent and EXTENDS header. The child attribute conflict is the cause; a complaint that this actual parent is nonextensible is wrong. The allowed nonextended SEQUENCE admission linkage remains pending.",
+      "oracle_limitation": "No default memory layout or byte-order relation is inferred from removing SEQUENCE. A generic type/parent complaint cannot establish the actual attribute conflict.",
+      "dependencies": "C737/R728 (PDF 88), R731/C745 (PDF 89), 7.5.7.1-.2 (PDF 104), 4.2 p2(3) (PDF 46)."
+    },
+    {
+      "id": "C741",
+      "title": "An extension may have a coarray potential subobject only when its parent already has one",
+      "source": "7.5.2.1 C741 (R726); PDF 88, printed 74, lines 29-30.",
+      "source_units": [
+        "C741",
+        "C741.extension-antecedent",
+        "C741.child-coarray-potential",
+        "C741.parent-coarray-potential"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "If EXTENDS appears and the child type has a coarray potential subobject component, its parent must have a coarray potential subobject component. The condition is existence in the type's potential-subobject graph, including inheritance and valid nonpointer nesting, not current allocation state or an identically named component. It does not forbid every extension involving coarrays.",
+      "facets": [
+        "direct-introduction",
+        "nested-introduction",
+        "inherited-parent-presence"
+      ],
+      "pending": {},
+      "oracle": "Two type-only coarray pairs change only EXTENDS(empty_parent) to a prior coarray-containing parent. The nested form uses a scalar nonpointer nonallocatable leaf component as required by C753. A further declaration chain checks inherited parent presence. No coarray is allocated or read, and coarray language support is not treated as optional.",
+      "oracle_limitation": "Only legal component graphs are proposed: C751/C753 and C825/C826 remain premises. No object/cobound is queried while unallocated and no raw descriptor layout is inferred. Missing coarray implementation, storage/resource failures or the wrong component's diagnostic cannot count.",
+      "dependencies": "7.5.1 p5-p6 (PDF 87), C751/C753 and 7.5.4.3 (PDF 93, 95), 7.5.7.2 (PDF 104), C825-C827 (PDF 121-122), 4.2 p2(3) (PDF 46)."
+    },
+    {
+      "id": "C742",
+      "title": "An extension's event, lock or notify potential subobject needs the specified parent qualification",
+      "source": "7.5.2.1 C742 (R726); PDF 89, printed 75, lines 1-4.",
+      "source_units": [
+        "C742",
+        "C742.extension-antecedent",
+        "C742.child-event",
+        "C742.child-lock",
+        "C742.child-notify",
+        "C742.parent-special-type",
+        "C742.parent-special-potential"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "For an extended type with a potential subobject component of EVENT_TYPE, LOCK_TYPE or NOTIFY_TYPE from ISO_FORTRAN_ENV, the parent must itself be one of those three types or have a potential subobject component of any of those three types. The parent category need not match the child's particular listed category. These are the actual intrinsic-module types, not user types with the same spelling or layout. Potential-subobject traversal excludes pointer edges but does not depend on current allocation.",
+      "facets": [
+        "event-introduction",
+        "lock-introduction",
+        "notify-introduction",
+        "special-parent-alternatives",
+        "cross-category-potential-parent",
+        "pointer-boundary-use-graph"
+      ],
+      "pending": {
+        "pointer-boundary-use-graph": "Planned finite source-use record for a pointer edge versus an owning edge, joining 7.5.1 p5 with C753/C825 and C1603-C1614 before selecting a boundary fixture. Do not claim access to private intrinsic components or infer their storage/absence of subobjects from a compiler. This graph needs independent review, not an invented event/lock/notify value test."
+      },
+      "oracle": "Three type-only pairs insert only the missing EVENT_TYPE, LOCK_TYPE or NOTIFY_TYPE member in the parent. An explicit parent integer coarray independently satisfies C741 in both inputs. Six admission controls preserve direct special parents and cross-category qualifying parents. No forbidden named object, constructor, event/lock/notify operation or private representation is used; NOTIFY remains F2023.",
+      "oracle_limitation": "The controls are type definitions, not claims that arbitrary objects of every such combination can be instantiated. No event count, lock state, notify state or coarray value is read or changed. A correct line plus a broad type/coarray/expected word cannot identify the specific missing special-parent relation. All special-type facilities remain required language features, not optional skips.",
+      "dependencies": "7.5.1 p5-p6 (PDF 87), C741 (PDF 88), C753/C825-C826 (PDF 93, 121-122), 7.5.7.2 (PDF 104), 16.10.2.10/.19/.22 and C1603-C1614 (PDF 473, 475-476), 4.2 p2(3) (PDF 46)."
+    },
+    {
+      "id": "R729",
+      "title": "The pre-component statement is component PRIVATE or SEQUENCE",
+      "source": "7.5.2.1 R729; PDF 89, printed 75, lines 5-6.",
+      "source_units": [
+        "R729",
+        "R729.component-private",
+        "R729.sequence"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "A private-or-sequence is a private-components-stmt or a sequence-stmt. It is not the binding-private-stmt after CONTAINS. R726 permits a list of these pre-component statements, while C743 limits repeated occurrences of the same alternative.",
+      "facets": [
+        "component-private-alternative",
+        "sequence-alternative",
+        "both-orders"
+      ],
+      "pending": {
+        "sequence-alternative": "Planned finite link to R731_valid__sequence_statement after source/fixture review. Do not add a duplicate SEQUENCE execution just to label the union."
+      },
+      "oracle": "Three compile admissions retain component PRIVATE and both PRIVATE/SEQUENCE orders in module type definitions. The SEQUENCE union link remains pending. No private-SEQUENCE identity or runtime-layout assertion follows from these type-only controls.",
+      "oracle_limitation": "No generic misspelling negative is invented for a wrapper union. Component-private scope is C771; binding-private scope is C772, not R729/C743.",
+      "dependencies": "R726/C743 (PDF 88-89), R731/C745 (PDF 89), R745/C771 and R746-R747/C772 (PDF 99)."
+    },
+    {
+      "id": "C743",
+      "title": "The component PRIVATE and SEQUENCE alternatives are each unique",
+      "source": "7.5.2.1 C743 (R726); PDF 89, printed 75, line 7.",
+      "source_units": [
+        "C743",
+        "C743.private-uniqueness",
+        "C743.sequence-uniqueness"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "The same private-or-sequence alternative does not occur twice in one derived-type definition. One component PRIVATE and one SEQUENCE are allowed together. A separate binding-private-stmt in the type-bound-procedure part is a different syntax class, not a duplicate private-or-sequence.",
+      "facets": [
+        "duplicate-component-private",
+        "duplicate-sequence",
+        "separate-private-roles"
+      ],
+      "pending": {},
+      "oracle": "Two pairs remove only the second component PRIVATE or SEQUENCE statement. A runtime control has one PRIVATE in the component part and one in the binding part, with explicit PUBLIC overrides and defined member/method checks. The two roles are not duplicate statements.",
+      "oracle_limitation": "The actual repeated statement and role are necessary. A report about a private type name, a private binding's accessibility or an unsupported SEQUENCE feature is not C743 evidence.",
+      "dependencies": "R726/R729 (PDF 88-89); R745-R747/C771-C772 (PDF 99); 7.5.5 p8-p9/NOTE 2 (PDF 101); 4.2 p2(3) (PDF 46)."
+    },
+    {
+      "id": "R730",
+      "title": "END TYPE optionally repeats the type name",
+      "source": "7.5.2.1 R730; PDF 89, printed 75, line 8.",
+      "source_units": [
+        "R730",
+        "R730.end-type-keywords",
+        "R730.optional-name"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "The ending statement is END TYPE, optionally followed by a type-name. The optional name is constrained by C744; it is not a fresh declaration or an arbitrary label.",
+      "facets": [
+        "unnamed-ending",
+        "named-ending"
+      ],
+      "pending": {},
+      "oracle": "Named and unnamed END TYPE forms are followed by initialized object/member checks. C744 owns the corresponding-name mismatch.",
+      "oracle_limitation": "This wrapper does not establish all scoping or type-identity behavior. Case equivalence comes from the name rules, not a processor-dependent string comparison.",
+      "dependencies": "R727/C744 (PDF 88-89); 6.1.2 and R603 (PDF 67-68); 4.2 p2(3) (PDF 46)."
+    },
+    {
+      "id": "C744",
+      "title": "A named END TYPE matches its corresponding opening definition",
+      "source": "7.5.2.1 C744 (R730); PDF 89, printed 75, lines 9-10.",
+      "source_units": [
+        "C744",
+        "C744.name-present",
+        "C744.corresponding-start-name"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "When END TYPE includes a type name, that name is the same as the name on its corresponding derived-type-stmt. Fortran name case equivalence still applies. The rule is conditional on a name being present and does not require every END TYPE to include one.",
+      "facets": [
+        "mismatching-name",
+        "case-equivalent-name"
+      ],
+      "pending": {},
+      "oracle": "A single ending-name repair changes other to record while retaining an earlier real type named other. The cause is the corresponding TYPE/END TYPE mismatch, not an undefined other identifier. A separate run uses case-equivalent opening and ending names.",
+      "oracle_limitation": "Reports about another construct, type parameter, label or unmatched program unit do not establish this corresponding TYPE/END TYPE relation.",
+      "dependencies": "R727/R730 (PDF 88-89); 6.1.2 (PDF 67), 19.3.4 and 19.5.1.4 (PDF 550, 553-554); 4.2 p2(3) (PDF 46)."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "R726",
+      "disposition": "requirements",
+      "requirements": [
+        "R726"
+      ]
+    },
+    {
+      "unit": "R726.opening",
+      "disposition": "requirements",
+      "requirements": [
+        "R726"
+      ]
+    },
+    {
+      "unit": "R726.parameter-definitions",
+      "disposition": "requirements",
+      "requirements": [
+        "R726"
+      ]
+    },
+    {
+      "unit": "R726.private-or-sequence",
+      "disposition": "requirements",
+      "requirements": [
+        "R726"
+      ]
+    },
+    {
+      "unit": "R726.components",
+      "disposition": "requirements",
+      "requirements": [
+        "R726"
+      ]
+    },
+    {
+      "unit": "R726.bindings",
+      "disposition": "requirements",
+      "requirements": [
+        "R726"
+      ]
+    },
+    {
+      "unit": "R726.ending",
+      "disposition": "requirements",
+      "requirements": [
+        "R726"
+      ]
+    },
+    {
+      "unit": "R726.part-order",
+      "disposition": "requirements",
+      "requirements": [
+        "R726"
+      ]
+    },
+    {
+      "unit": "R727",
+      "disposition": "requirements",
+      "requirements": [
+        "R727"
+      ]
+    },
+    {
+      "unit": "R727.type-keyword-name",
+      "disposition": "requirements",
+      "requirements": [
+        "R727"
+      ]
+    },
+    {
+      "unit": "R727.optional-colons",
+      "disposition": "requirements",
+      "requirements": [
+        "R727"
+      ]
+    },
+    {
+      "unit": "R727.attribute-list",
+      "disposition": "requirements",
+      "requirements": [
+        "R727"
+      ]
+    },
+    {
+      "unit": "R727.parameter-name-list",
+      "disposition": "requirements",
+      "requirements": [
+        "R727"
+      ]
+    },
+    {
+      "unit": "R728",
+      "disposition": "requirements",
+      "requirements": [
+        "R728"
+      ]
+    },
+    {
+      "unit": "R728.abstract",
+      "disposition": "requirements",
+      "requirements": [
+        "R728"
+      ]
+    },
+    {
+      "unit": "R728.access",
+      "disposition": "requirements",
+      "requirements": [
+        "R728",
+        "R807"
+      ],
+      "rationale": "Access-spec has PUBLIC and PRIVATE alternatives and module-scope premises under C817; the type attribute is not component/binding privacy."
+    },
+    {
+      "unit": "R728.bind-c",
+      "disposition": "requirements",
+      "requirements": [
+        "R728"
+      ]
+    },
+    {
+      "unit": "R728.extends-parent-name",
+      "disposition": "requirements",
+      "requirements": [
+        "R728"
+      ]
+    },
+    {
+      "unit": "C734",
+      "disposition": "requirements",
+      "requirements": [
+        "C734"
+      ]
+    },
+    {
+      "unit": "C734.doubleprecision",
+      "disposition": "requirements",
+      "requirements": [
+        "C734"
+      ]
+    },
+    {
+      "unit": "C734.intrinsic-type-names",
+      "disposition": "requirements",
+      "requirements": [
+        "C734"
+      ]
+    },
+    {
+      "unit": "C735",
+      "disposition": "requirements",
+      "requirements": [
+        "C735"
+      ]
+    },
+    {
+      "unit": "C735.no-repeated-type-attribute",
+      "disposition": "requirements",
+      "requirements": [
+        "C735"
+      ]
+    },
+    {
+      "unit": "C736",
+      "disposition": "requirements",
+      "requirements": [
+        "C736"
+      ]
+    },
+    {
+      "unit": "C736.no-repeated-parameter-name",
+      "disposition": "requirements",
+      "requirements": [
+        "C736"
+      ]
+    },
+    {
+      "unit": "C737",
+      "disposition": "requirements",
+      "requirements": [
+        "C737"
+      ]
+    },
+    {
+      "unit": "C737.type-name",
+      "disposition": "requirements",
+      "requirements": [
+        "C737"
+      ]
+    },
+    {
+      "unit": "C737.previously-defined",
+      "disposition": "requirements",
+      "requirements": [
+        "C737"
+      ]
+    },
+    {
+      "unit": "C737.extensible",
+      "disposition": "requirements",
+      "requirements": [
+        "C737"
+      ]
+    },
+    {
+      "unit": "C738",
+      "disposition": "requirements",
+      "requirements": [
+        "C738"
+      ]
+    },
+    {
+      "unit": "C738.local-deferred",
+      "disposition": "requirements",
+      "requirements": [
+        "C738"
+      ]
+    },
+    {
+      "unit": "C738.inherited-deferred",
+      "disposition": "requirements",
+      "requirements": [
+        "C738"
+      ]
+    },
+    {
+      "unit": "C738.abstract-required",
+      "disposition": "requirements",
+      "requirements": [
+        "C738"
+      ]
+    },
+    {
+      "unit": "C739",
+      "disposition": "requirements",
+      "requirements": [
+        "C739"
+      ]
+    },
+    {
+      "unit": "C739.abstract-antecedent",
+      "disposition": "requirements",
+      "requirements": [
+        "C739"
+      ]
+    },
+    {
+      "unit": "C739.extensible-consequent",
+      "disposition": "requirements",
+      "requirements": [
+        "C739"
+      ]
+    },
+    {
+      "unit": "C740",
+      "disposition": "requirements",
+      "requirements": [
+        "C740"
+      ]
+    },
+    {
+      "unit": "C740.extends-antecedent",
+      "disposition": "requirements",
+      "requirements": [
+        "C740"
+      ]
+    },
+    {
+      "unit": "C740.sequence-exclusion",
+      "disposition": "requirements",
+      "requirements": [
+        "C740"
+      ]
+    },
+    {
+      "unit": "C741",
+      "disposition": "requirements",
+      "requirements": [
+        "C741"
+      ]
+    },
+    {
+      "unit": "C741.extension-antecedent",
+      "disposition": "requirements",
+      "requirements": [
+        "C741"
+      ]
+    },
+    {
+      "unit": "C741.child-coarray-potential",
+      "disposition": "requirements",
+      "requirements": [
+        "C741"
+      ]
+    },
+    {
+      "unit": "C741.parent-coarray-potential",
+      "disposition": "requirements",
+      "requirements": [
+        "C741"
+      ]
+    },
+    {
+      "unit": "C742",
+      "disposition": "requirements",
+      "requirements": [
+        "C742"
+      ]
+    },
+    {
+      "unit": "C742.extension-antecedent",
+      "disposition": "requirements",
+      "requirements": [
+        "C742"
+      ]
+    },
+    {
+      "unit": "C742.child-event",
+      "disposition": "requirements",
+      "requirements": [
+        "C742"
+      ]
+    },
+    {
+      "unit": "C742.child-lock",
+      "disposition": "requirements",
+      "requirements": [
+        "C742"
+      ]
+    },
+    {
+      "unit": "C742.child-notify",
+      "disposition": "requirements",
+      "requirements": [
+        "C742"
+      ]
+    },
+    {
+      "unit": "C742.parent-special-type",
+      "disposition": "requirements",
+      "requirements": [
+        "C742"
+      ]
+    },
+    {
+      "unit": "C742.parent-special-potential",
+      "disposition": "requirements",
+      "requirements": [
+        "C742"
+      ]
+    },
+    {
+      "unit": "R729",
+      "disposition": "requirements",
+      "requirements": [
+        "R729"
+      ]
+    },
+    {
+      "unit": "R729.component-private",
+      "disposition": "requirements",
+      "requirements": [
+        "R729",
+        "R745"
+      ]
+    },
+    {
+      "unit": "R729.sequence",
+      "disposition": "requirements",
+      "requirements": [
+        "R729",
+        "R731"
+      ]
+    },
+    {
+      "unit": "C743",
+      "disposition": "requirements",
+      "requirements": [
+        "C743"
+      ]
+    },
+    {
+      "unit": "C743.private-uniqueness",
+      "disposition": "requirements",
+      "requirements": [
+        "C743"
+      ]
+    },
+    {
+      "unit": "C743.sequence-uniqueness",
+      "disposition": "requirements",
+      "requirements": [
+        "C743"
+      ]
+    },
+    {
+      "unit": "R730",
+      "disposition": "requirements",
+      "requirements": [
+        "R730"
+      ]
+    },
+    {
+      "unit": "R730.end-type-keywords",
+      "disposition": "requirements",
+      "requirements": [
+        "R730"
+      ]
+    },
+    {
+      "unit": "R730.optional-name",
+      "disposition": "requirements",
+      "requirements": [
+        "R730"
+      ]
+    },
+    {
+      "unit": "C744",
+      "disposition": "requirements",
+      "requirements": [
+        "C744"
+      ]
+    },
+    {
+      "unit": "C744.name-present",
+      "disposition": "requirements",
+      "requirements": [
+        "C744"
+      ]
+    },
+    {
+      "unit": "C744.corresponding-start-name",
+      "disposition": "requirements",
+      "requirements": [
+        "C744"
+      ]
+    },
+    {
+      "unit": "p1",
+      "disposition": "structural",
+      "rationale": "PDF 89 line 11 is an explicit interoperability cross-reference. It does not transfer the defining C1801-C1806 ownership or justify a local duplicate restriction matrix."
+    },
+    {
+      "unit": "p1.bind-interop-cross-reference",
+      "disposition": "requirements",
+      "requirements": [
+        "C1801",
+        "C1802",
+        "C1803",
+        "C1804",
+        "C1805",
+        "C1806"
+      ],
+      "rationale": "Preserve no SEQUENCE, no type parameters, no EXTENDS, no binding part, nonempty type and interoperable nonpointer/nonallocatable data components under 18.3.4. R728's BIND admission is not a complete review of that later section."
+    },
+    {
+      "unit": "note-unnumbered",
+      "disposition": "structural",
+      "rationale": "PDF 89 unnumbered note illustrates a record definition and a declaration using it; the original example body is not copied into the catalogue."
+    },
+    {
+      "unit": "note-unnumbered.definition",
+      "disposition": "informative",
+      "rationale": "The example has intrinsic integer and fixed-length character components. It illustrates R726-R730 rather than a new mandatory type shape."
+    },
+    {
+      "unit": "note-unnumbered.object-declaration",
+      "disposition": "informative",
+      "rationale": "TYPE(name) declares an object using the defined type. R703 and 7.3.2.2 retain declaration ownership; no constructor, I/O or storage guarantee follows from the example."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_7_5_2_1.md"
+  },
+  "review_fingerprint": "8dd86c1951e35c58f16a836e00e190ee43fd844da655cf2f1e61db8851dac3df",
+  "review_rationale": "Original-source and final fixture review: doc/source_audits/batch_011.json. Source/repair expectations are supported. Keep strict parent/header/component roles and type-only special-object limits; pending union/boundary links remain uncredited. Initial definition source-plan review used an independent-of-author coordinator fallback, not a successful fresh-context source reviewer; the combined fixture reviewer subsequently read original PDF87-92 and necessary dependencies. Pending and unresolved units are retained."
+}

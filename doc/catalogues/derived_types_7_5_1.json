@@ -1,0 +1,280 @@
+{
+  "schema_version": 1,
+  "section": "7.5.1",
+  "review_state": "reviewed",
+  "subunits": {
+    "p1": [
+      "p1.type-origins",
+      "p1.type-name",
+      "p1.components",
+      "p1.type-bound-procedures"
+    ],
+    "p2": [
+      "p2.parameterization",
+      "p2.kind-or-length",
+      "p2.optional-defaults"
+    ],
+    "p3": [
+      "p3.intrinsic-terminal",
+      "p3.allocatable-terminal",
+      "p3.pointer-terminal",
+      "p3.plain-derived-recursion"
+    ],
+    "p4": [
+      "p4.immediate-components",
+      "p4.plain-derived-recursion"
+    ],
+    "p5": [
+      "p5.nonpointer-members",
+      "p5.nonpointer-recursion",
+      "p5.possible-subobjects"
+    ],
+    "p6": [
+      "p6.object-components",
+      "p6.object-direct-components",
+      "p6.object-potential-subobjects",
+      "p6.object-ultimate-components"
+    ],
+    "p7": [
+      "p7.default-no-storage-sequence",
+      "p7.sequence-type-storage",
+      "p7.bind-companion-storage"
+    ],
+    "p8": [
+      "p8.structure",
+      "p8.sequence-structure"
+    ],
+    "note-unnumbered": [
+      "note-unnumbered.example-types",
+      "note-unnumbered.ultimate-set",
+      "note-unnumbered.direct-set"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S7.5.1-001",
+      "title": "BIND derived-type storage follows the selected companion processor",
+      "source": "7.5.1 p7, last sentence; J3/24-007, 18 December 2023, PDF 88, printed 74, lines 2-3.",
+      "source_units": [
+        "p7.bind-companion-storage"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For a derived type with BIND, the storage sequence is the one required by the selected companion processor under 5.5.7 and 18.3.4. Ordinary component declaration order alone supplies no such default layout guarantee. This is an interoperability obligation, not a promise of particular byte offsets, padding, alignment, endianness or a numeric kind identifier. A BIND type and a same-layout Fortran type are not thereby the same derived type.",
+      "facets": [
+        "companion-member-order",
+        "companion-selection-evidence"
+      ],
+      "pending": {
+        "companion-member-order": "Planned F2023 run S7_5_1_001_valid__companion_order after independent companion qualification: compile a Fortran BIND(C) record with two INTEGER(C_INT) members, a matching C struct and a BIND(C) interface separately. Use member values 0 and 1, have C check them by corresponding relative position and exchange them, then check the returned C_INT status and both Fortran members. C field names may differ. The non-VALUE scalar record dummy corresponds to a C pointer parameter. C_INT is required to be a valid integer kind; no assumed code 1/4/8, optional floating kind, fixed sizeof/offsetof, raw bytes or arithmetic-model-to-layout inference. Preserve this as a run effect if a compiler lacks implementation.",
+        "companion-selection-evidence": "Planned documentary/profile record derived-definition-companion-selection: identify the actual selected C companion, version, target and ABI-affecting options from processor-supported documentation, then bind the paired build and interface declarations. Merely finding a C compiler or observing a self-consistent build is not universal companion/ABI certification. No such profile is created now; unresolved pairing remains pending, while a failure after valid qualification is not an optional-property skip."
+      },
+      "oracle": "A finite cross-language member-value exchange can observe one declared interoperability relationship only after the actual companion and matching prototype premises are independently established. C1801-C1806 constrain the Fortran record; the existing C array bridge is not evidence for struct member layout. No derived-definition fixture currently supplies this independent companion/layout qualification.",
+      "oracle_limitation": "Numeric/model/storage-width inquiries do not prove an internal representation, and successful arithmetic or the needs-oracle real BOZ case cannot supply this layout premise. No invalid twin or undefined-value trap follows from this effect. The native SEQUENCE storage obligation is separately owned by S7.5.2.3-001.",
+      "dependencies": "5.5.7 p1-p2 (PDF 66); 18.1 p4 and 18.2.2 p3 (PDF 516); 18.3.1, 18.3.4/C1801-C1806/p2-p3 and 18.3.7 p2-p3 (PDF 525-529). The source of component position correspondence is 18.3.4 p2, not Fortran type-identity matching in 7.5.2.4."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "structural",
+      "rationale": "PDF 87 lines 22-23: distinguish the origin of additional types and the names/attributes established by a type definition. The detailed grammar and semantics remain with their defining sections."
+    },
+    {
+      "unit": "p1.type-origins",
+      "disposition": "definition",
+      "rationale": "Derived types are built from intrinsic and other derived types. This is not an integer-like representation category or an invitation to infer compatibility from storage."
+    },
+    {
+      "unit": "p1.type-name",
+      "disposition": "definition",
+      "requirements": [
+        "R727"
+      ],
+      "rationale": "The definition establishes its type name. R727/C734 and the canonical name/scope rules govern its spelling and use; no duplicate keyword test is created here."
+    },
+    {
+      "unit": "p1.components",
+      "disposition": "definition",
+      "rationale": "Component names and attributes are established by their declarations. Data and procedure-pointer components are distinguished by R736-R742; a type-bound binding is not a component."
+    },
+    {
+      "unit": "p1.type-bound-procedures",
+      "disposition": "definition",
+      "rationale": "Type-bound procedure names and attributes are established by the binding declarations in 7.5.5. This concept sentence does not duplicate binding or call semantics."
+    },
+    {
+      "unit": "p2",
+      "disposition": "structural",
+      "rationale": "PDF 87 lines 24-25: parameterization, KIND/LEN classification and optional default values are distinct source items."
+    },
+    {
+      "unit": "p2.parameterization",
+      "disposition": "permission",
+      "requirements": [
+        "R727"
+      ],
+      "rationale": "A derived type can have one or more type parameters; unparameterized types remain allowed. R727 and 7.5.3 define declarations and ordering."
+    },
+    {
+      "unit": "p2.kind-or-length",
+      "disposition": "definition",
+      "rationale": "Each parameter is classified as KIND or LEN by R734. 7.2 and 7.5.3.1 retain integer parameter types, kind versus length roles and expression premises; neither numeric kind identifiers nor parameter values are storage sizes."
+    },
+    {
+      "unit": "p2.optional-defaults",
+      "disposition": "permission",
+      "rationale": "A parameter may have a default. The default expression, any representable conversion and omitted-argument rules belong to 7.5.3.1 and 7.5.9. No default or nondefault integer method is inferred from a numeric identifier."
+    },
+    {
+      "unit": "p3",
+      "disposition": "structural",
+      "rationale": "PDF 87 lines 26-28: ultimate-component traversal terminates at intrinsic, ALLOCATABLE and POINTER components, and recurses only through ordinary derived components."
+    },
+    {
+      "unit": "p3.intrinsic-terminal",
+      "disposition": "definition",
+      "rationale": "An intrinsic component is itself ultimate; its physical representation is not recursively inspected."
+    },
+    {
+      "unit": "p3.allocatable-terminal",
+      "disposition": "definition",
+      "rationale": "An allocatable component is ultimate even if its declared type is derived. Its allocation status does not make its allocated payload an additional ultimate component of this containing type."
+    },
+    {
+      "unit": "p3.pointer-terminal",
+      "disposition": "definition",
+      "rationale": "A pointer component is ultimate; traversal does not follow its target. 7.5.4.4 distinguishes data and procedure-pointer components. A type-bound procedure is not a pointer component merely because it can be referenced with percent syntax."
+    },
+    {
+      "unit": "p3.plain-derived-recursion",
+      "disposition": "definition",
+      "rationale": "Ultimate components of an ordinary derived component are included only when that component has neither ALLOCATABLE nor POINTER. Canonical uses include storage association and component-operation restrictions; no nonexistent runtime ultimate-component inquiry is invented."
+    },
+    {
+      "unit": "p4",
+      "disposition": "structural",
+      "rationale": "PDF 87 lines 29-30: direct components include all immediate components as well as recursively reachable ordinary derived components."
+    },
+    {
+      "unit": "p4.immediate-components",
+      "disposition": "definition",
+      "rationale": "Every immediate component is direct, including an ordinary derived component itself and allocatable/pointer terminals."
+    },
+    {
+      "unit": "p4.plain-derived-recursion",
+      "disposition": "definition",
+      "rationale": "Recursion excludes ALLOCATABLE and POINTER edges. This differs from potential-subobject traversal and does not prescribe storage order. Parent-component inheritance association must not be counted as independent physical storage."
+    },
+    {
+      "unit": "p5",
+      "disposition": "structural",
+      "rationale": "PDF 87 lines 31-33: potential subobject components use a different recursion boundary from direct and ultimate components."
+    },
+    {
+      "unit": "p5.nonpointer-members",
+      "disposition": "definition",
+      "rationale": "Nonpointer components are potential subobject components; pointer components and their targets are not included by following that pointer edge."
+    },
+    {
+      "unit": "p5.nonpointer-recursion",
+      "disposition": "definition",
+      "rationale": "Recursion follows nonpointer components, including allocatable derived components, rather than stopping at allocation as the direct/ultimate definitions do. The definition is type-based, not conditioned on an allocation currently existing. Recursive types require graph-aware source reasoning, not a depth-truncated universal path count."
+    },
+    {
+      "unit": "p5.possible-subobjects",
+      "disposition": "definition",
+      "rationale": "The class includes components that could be subobjects under 9.4.2. C741/C742 and C753/C825/C1603-C1614 constrain actual uses; do not infer the contents of opaque intrinsic-module types or manufacture an invalid storage/object control from the classification alone."
+    },
+    {
+      "unit": "p6",
+      "disposition": "structural",
+      "rationale": "PDF 87 lines 34-36 carries all four component classes from a type to its objects, without converting these definitions into separate introspection effects."
+    },
+    {
+      "unit": "p6.object-components",
+      "disposition": "definition",
+      "rationale": "An object's components are those of its type."
+    },
+    {
+      "unit": "p6.object-direct-components",
+      "disposition": "definition",
+      "rationale": "An object's direct-component class is that of its type; the ordinary-derived recursion boundary remains."
+    },
+    {
+      "unit": "p6.object-potential-subobjects",
+      "disposition": "definition",
+      "rationale": "An object's potential-subobject class is that of its type, not merely its currently allocated data."
+    },
+    {
+      "unit": "p6.object-ultimate-components",
+      "disposition": "definition",
+      "rationale": "An object's ultimate-component class retains the intrinsic/allocatable/pointer terminal rules of its type."
+    },
+    {
+      "unit": "p7",
+      "disposition": "structural",
+      "rationale": "PDF 88 lines 1-3: default layout freedom and the two explicit storage regimes are separately accounted; the operational obligations are not dismissed as definitions."
+    },
+    {
+      "unit": "p7.default-no-storage-sequence",
+      "disposition": "permission",
+      "rationale": "Ordinary component declaration order implies no default storage sequence. This does not promise noncontiguity or require a processor to choose a different order. BIND and SEQUENCE retain their separate conditions."
+    },
+    {
+      "unit": "p7.sequence-type-storage",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.2.3-001"
+      ],
+      "rationale": "The explicit 7.5.2.3 reference has a genuine ordered-storage effect under its canonical local owner. No duplicate run is assigned to this concept paragraph."
+    },
+    {
+      "unit": "p7.bind-companion-storage",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.1-001"
+      ]
+    },
+    {
+      "unit": "p8",
+      "disposition": "structural",
+      "rationale": "PDF 88 lines 4-5 supplies two terms, not new mandatory operations."
+    },
+    {
+      "unit": "p8.structure",
+      "disposition": "definition",
+      "rationale": "A scalar derived-type entity is a structure; an array of such entities is not thereby a scalar structure."
+    },
+    {
+      "unit": "p8.sequence-structure",
+      "disposition": "definition",
+      "rationale": "A scalar entity whose type has SEQUENCE is a sequence structure."
+    },
+    {
+      "unit": "note-unnumbered",
+      "disposition": "structural",
+      "rationale": "PDF 88 unnumbered note illustrates the differing ultimate/direct sets for a nested ordinary record and an allocatable record array. Original code remains only in session source artifacts."
+    },
+    {
+      "unit": "note-unnumbered.example-types",
+      "disposition": "informative",
+      "rationale": "The two example types provide a simple nested component and an allocatable array component; they are not an exhaustive component-kind inventory."
+    },
+    {
+      "unit": "note-unnumbered.ultimate-set",
+      "disposition": "informative",
+      "rationale": "The nested ordinary record contributes its two intrinsic members, while the allocatable array is a terminal ultimate component."
+    },
+    {
+      "unit": "note-unnumbered.direct-set",
+      "disposition": "informative",
+      "rationale": "The direct set additionally includes the immediate nested record itself. The array's element payload is not recursively included through its ALLOCATABLE edge."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_7_5_1.md"
+  },
+  "review_fingerprint": "086c73586cf5306bea337141c7d08db5b29cc71d52762cdb8190c46c10084145",
+  "review_rationale": "Original-source and final fixture review: doc/source_audits/batch_011.json. No new layout fixture is claimed. Companion selection/member-order evidence remains genuinely pending. Initial definition source-plan review used an independent-of-author coordinator fallback, not a successful fresh-context source reviewer; the combined fixture reviewer subsequently read original PDF87-92 and necessary dependencies. Pending and unresolved units are retained."
+}

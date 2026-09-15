@@ -22,8 +22,8 @@ The readiness refactoring now supplies:
   context case.
 
 This is infrastructure readiness, not completed conformance coverage.
-The current census still has 5,083 unresolved base units and five unresolved
-fine-grained units inside the calibration catalogues. Its independent visual
+The current census still has 5,051 unresolved base units and six unresolved
+fine-grained units inside the catalogues. Its independent visual
 review is still pending. Automatic PDF extraction is not semantic review,
 and list items/table rows require additional audited subdivisions.
 
@@ -412,17 +412,46 @@ controls are admission evidence only. Twenty-four other negatives retain
 specific source-only adjudications, without invented reference support.
 Seven old target passes were correctly lost under stricter causal gates.
 
-The current 1,008-case normal run reports 689 PASS, 314 XFAIL, four SKIPs
+The tenth checkpoint's 1,008-case normal run reports 689 PASS, 314 XFAIL, four SKIPs
 and the same one NEEDS_ORACLE. Raw target outcomes are 690 pass, 314 fail
 and four skip; the unresolved oracle's passing output remains unapproved.
 The normal gate remains deliberately nonzero for that case. Source
 accounting, fixture approval and compiler implementation status are not
 interchangeable completion measures.
 
-Forty-three character and 41 numeric facets remain explicit follow-ups.
-The next source-only unit is 7.5.1 and 7.5.2.1-7.5.2.4, covering derived-type
-concepts and definitions. Its inventory is being prepared independently of
-the completed intrinsic fixture batch.
+The eleventh batch covers 7.5.1, 7.5.2.1-7.5.2.4 and 7.5.3.1-7.5.3.2:
+35 requirements, 140 directly authored facets and 231 new executions.
+Independent fixture review supports 200 reference-validated and 31
+source-reviewed cases, including compiler-failing default-conversion and
+dependent-default effects. The definition source-plan gate used a recorded
+coordinator fallback after an acknowledgement-only delegated response; it
+is not represented as a successful fresh-context source review.
+
+Diagnostic review exposed malformed-header attribution, source/message
+classification and quoted-coordinate selection defects. The corrected
+checker requires classification and extraction to use the same first
+unshielded coordinate and rejects candidate switching. Native-text
+namespace ambiguities remain explicitly qualified rather than presented as
+universally lossless parsing. The original full observation report retains
+20 Flang timeouts; all 20 cases passed a separate exact-selection retry
+under the unchanged 30-second budget. No failed observation was relabelled.
+The source, fixture and correction receipts are in
+`doc/source_audits/batch_011.json`.
+
+The observational inventory now contains 1,239 executions, without
+approving the real BOZ oracle or resolving the private-component sentence
+in 7.5.2.4. The normal full frozen-target run reports 803 PASS, 431 XFAIL,
+four SKIPs and one NEEDS_ORACLE; raw target outcomes are 804 pass, 431 fail
+and four skip. All 1,008 prior fingerprints and target outcomes are unchanged.
+The normal gate still returns nonzero only for the retained oracle block.
+Twenty-three new canonical-use, inventory and interpretation
+facets remain pending. Forty-three character and 41 numeric facets also
+remain explicit follow-ups.
+
+The next source-only packets cover 7.5.4.1-7.5.4.8: 74 base units,
+245 subdivisions, 56 requirements and 284 pending facets. Both drafts are
+committed in isolated author worktrees and are under independent source
+review; no component fixture generation or approval is claimed yet.
 The broader meta-evidence contract, including mixed FORMAT
 diagnostic contexts, is not complete merely because one link type exists.
 Meta-level definitions must not become fabricated passing programs.

@@ -167,6 +167,88 @@ class FixtureTests(unittest.TestCase):
         with self.assertRaises(SuiteError):
             self.fixture()
 
+    def test_driver_attribution_rejects_malformed_competitive_locations(self):
+        fixture = self.driver_reporting_fixture()
+        comp = runner.Compiler('gfortran', 'gfortran', 'f2023')
+        wanted = "f951: Warning: '&' not allowed by itself in line 2\n"
+        for origin in ('source.f', 'other.f90', 'other.inc'):
+            for columns in ('5-', '5--8', '5-x', '5-8-9', '8-5', '0-8'):
+                for status in (0, 1):
+                    with self.subTest(origin=origin, columns=columns, status=status):
+                        output = f'source.f:2:1:\n{origin}:9:{columns}:\n' + wanted
+                        self.assertEqual(runner.driver_warning_diagnostics(
+                            output, 'source.f', str(self.root / 'source.f')), [])
+                        with patch.object(runner, 'run', return_value=runner.ProcessResult(status, output)):
+                            self.assertEqual(runner.check_fixture(fixture, comp).outcome, 'fail')
+        for columns in ('0', '2-8'):
+            output = f'source.f:2:{columns}:\n    2 | &\n      | 1\n' + wanted
+            with patch.object(runner, 'run', return_value=runner.ProcessResult(0, output)):
+                self.assertEqual(runner.check_fixture(fixture, comp).outcome, 'pass')
+
+    def test_driver_attribution_does_not_parse_source_or_message_content_as_locations(self):
+        raw = b'! source\n& ! note:7:\n'
+        (self.root / 'source.f').write_bytes(raw)
+        fixture = self.driver_reporting_fixture()
+        comp = runner.Compiler('gfortran', 'gfortran', 'f2023')
+        wanted = "f951: Warning: '&' not allowed by itself in line 2\n"
+        for status in (0, 1):
+            for continuation in (
+                '    2 | & ! note:7:\n      | 1\n',
+                "    2 | & ! other.f90:9:5-:\n      | 1\n",
+                '',
+            ):
+                with self.subTest(status=status, continuation=continuation):
+                    output = 'source.f:2:0:\n' + continuation + wanted
+                    with patch.object(runner, 'run', return_value=runner.ProcessResult(status, output)):
+                        result = runner.check_fixture(fixture, comp)
+                    self.assertEqual(result.outcome, 'pass')
+                    self.assertEqual(result.input_hashes['source.f'], hashlib.sha256(raw).hexdigest())
+                    foreign = 'source.f:2:0:\n' + continuation + 'other.f90:9:5-:\n' + wanted
+                    with patch.object(runner, 'run', return_value=runner.ProcessResult(status, foreign)):
+                        self.assertEqual(runner.check_fixture(fixture, comp).outcome, 'fail')
+        for message in ("expected token 'shape:3:2'", "expected token 'other.f90:9:5-:'"):
+            for prefix in ('Error:', 'Warning:', 'f951: Warning:', 'f951: Fatal Error:'):
+                output = f'{prefix} {message}\n' + wanted
+                self.assertEqual(len(runner.driver_warning_diagnostics(
+                    output, 'source.f', str(self.root / 'source.f'))), 1)
+
+    def test_driver_attribution_rejects_severity_named_competing_files(self):
+        fixture = self.driver_reporting_fixture()
+        comp = runner.Compiler('gfortran', 'gfortran', 'f2023')
+        wanted = "f951: Warning: '&' not allowed by itself in line 2\n"
+        for filename in ('Error', 'Fatal Error', 'Warning', 'portability',
+                         'f951: Warning', 'f951: Fatal Error', 'Error:asset',
+                         'Error: asset', "Error: 'asset'", "Error: can't",
+                         '|asset', '4 |asset'):
+            for columns in ('1', '1-9', '5-', '5--8', '5-x', '5-8-9'):
+                for status in (0, 1):
+                    with self.subTest(filename=filename, columns=columns, status=status):
+                        output = f'{filename}:9:{columns}:\n' + wanted
+                        with patch.object(runner, 'run', return_value=runner.ProcessResult(status, output)):
+                            self.assertEqual(runner.check_fixture(fixture, comp).outcome, 'fail')
+
+    def test_declared_include_asset_may_have_a_severity_name(self):
+        self.reporting_fixture()
+        source = b"include 'Error'\n"
+        payload = b'integer :: width\ninteger :: width\n'
+        (self.root / 'source.f').write_bytes(source)
+        (self.root / 'Error').write_bytes(payload)
+        self.data['files'].append('Error')
+        self.data['expect']['diagnostic'] = dict(
+            file='Error', line=2, contains_any=["Symbol 'width' already declared"])
+        fixture = self.fixture()
+        output = "Error:2:1: Error: Symbol 'width' already declared\n"
+        for family in ('gfortran', 'flang'):
+            for status in (0, 1):
+                with self.subTest(family=family, status=status):
+                    comp = runner.Compiler(family, family, 'f2023')
+                    with patch.object(runner, 'run', return_value=runner.ProcessResult(status, output)):
+                        result = runner.check_fixture(fixture, comp)
+                    self.assertEqual(result.outcome, 'pass')
+                    self.assertEqual(result.input_hashes, {
+                        'source.f': hashlib.sha256(source).hexdigest(),
+                        'Error': hashlib.sha256(payload).hexdigest()})
+
     def test_driver_predicate_schema_requires_exact_gnu_warning(self):
         self.driver_reporting_fixture()
         original = json.loads(json.dumps(self.data))

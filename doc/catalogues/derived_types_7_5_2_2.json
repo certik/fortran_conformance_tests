@@ -1,0 +1,178 @@
+{
+  "schema_version": 1,
+  "section": "7.5.2.2",
+  "review_state": "reviewed",
+  "subunits": {
+    "p1": [
+      "p1.name-access-rule",
+      "p1.name-does-not-set-components",
+      "p1.components-do-not-set-name",
+      "p1.name-does-not-set-bindings",
+      "p1.bindings-do-not-set-name"
+    ],
+    "p2": [
+      "p2.module-definition",
+      "p2.private-name",
+      "p2.constructor-name",
+      "p2.module-and-descendants"
+    ],
+    "note-unnumbered": [
+      "note-unnumbered.private-type-example",
+      "note-unnumbered.scope-qualification"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S7.5.2.2-001",
+      "title": "Type-name, component and binding accessibility are independent",
+      "source": "7.5.2.2 p1; J3/24-007, 18 December 2023, PDF 89, printed 75, lines 13-14.",
+      "source_units": [
+        "p1.name-does-not-set-components",
+        "p1.components-do-not-set-name",
+        "p1.name-does-not-set-bindings",
+        "p1.bindings-do-not-set-name"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The type name's accessibility is determined by 8.5.2 independently of the accessibility of components and type-bound procedures. Making a name public does not make all its members public, and private members do not make the type name private. A private type name does not prevent access to an otherwise accessible object and its public members. Component PRIVATE and binding PRIVATE have separate scopes and defaults.",
+      "facets": [
+        "public-name-public-members",
+        "public-name-private-members",
+        "private-name-public-members",
+        "private-name-private-members",
+        "component-private-binding-public",
+        "binding-private-component-public"
+      ],
+      "pending": {},
+      "oracle": "Six ordered provider/client runs exercise public/private type names, component defaults and binding defaults independently. A public module object with a private type name is accessed without importing that name. Initialization precedes public member or method observations, and real passed-object dummies are scalar CLASS(record) with appropriate intent. Public components do not expose private bindings and component PRIVATE does not change public binding defaults.",
+      "oracle_limitation": "These finite positive effects are not inaccessible-name diagnostic evidence or proof of every visibility path. No invalid twin is invented for an independence effect. Private component/binding exclusions keep their 7.5.4.8/7.5.5/19.3.4 owners; private type-name use and constructor questions remain in S7.5.2.2-002. Existing 7.1.2/7.2/7.3 controls are unchanged and receive no new credit.",
+      "dependencies": "8.5.2 p1-p4/R807/C817 (PDF 120); 7.5.4.5/C765, 7.5.4.8/R745/C771 and 7.5.5/R746-R747/C772/p8-p9/NOTE 2 (PDF 96, 99, 101); 19.3.4 p1/p3/p5 and 19.5.1.4 p4 (PDF 550, 554); 19.6.1/.5 (PDF 562-564)."
+    },
+    {
+      "id": "S7.5.2.2-002",
+      "title": "A module-private type name and its constructor are confined to that module and descendants",
+      "source": "7.5.2.2 p2; PDF 89, printed 75, lines 15-17.",
+      "source_units": [
+        "p2",
+        "p2.module-definition",
+        "p2.private-name",
+        "p2.constructor-name",
+        "p2.module-and-descendants"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "context-dependent",
+      "definition": "If a type is defined in a module scoping unit and its name is private there, the type name and its corresponding structure constructor are accessible only within that module and its descendants. This does not hide every object of that type or its public components/bindings. Host/import/shadowing rules still govern a particular reference; being in an allowed region is not a waiver of those rules. A descendant obtains private names through the appropriate host path, not a general exemption from the public-identifier requirement on USE.",
+      "facets": [
+        "module-constructor-access",
+        "descendant-constructor-access",
+        "private-name-import-exclusion",
+        "constructor-use-graph"
+      ],
+      "pending": {
+        "private-name-import-exclusion": "Canonical C1409_invalid__private_derived_name/C1409_valid__private_derived_name_repair now supply a provider/consumer privacy contrast under C1409, without local facet credit. Parent-owned source/fixture/link adjudication must establish the exact private-type public-export connection before this semantic-link facet can be cleared. No unbound constructor/function recovery is accepted.",
+        "constructor-use-graph": "Planned finite source-use record joining p2 with C795/C7107, USE/host/IMPORT and the constructor-versus-generic resolution rule C7108. Include module, descendant and external-consumer paths, plus access through a public object/TYPEOF without granting access to the private constructor name. Do not invent an external call to an unbound identifier and count a missing-function/type report as a private-constructor violation. Exact constructor-exclusion evidence remains pending independent canonical analysis."
+      },
+      "oracle": "A module construction service and a root/intermediate/descendant submodule chain construct the private type only in allowed host scopes and return defined integer values. The canonical C1409 pair changes only provider type-name privacy, preserving consumer source; it exists under its own primary owner, while the local semantic-link facet and broader constructor use graph remain pending.",
+      "oracle_limitation": "This prose does not by itself prescribe fatal rejection. Numbered C1409/C795/C7107 or a proven Clause 19 source relation can supply reporting capability; an unbound generic-looking call cannot supply it merely because a similarly named private type exists elsewhere. A public factory or accessible object is not the private constructor name. No approved semantic link is created.",
+      "dependencies": "8.5.2 and 8.8 (PDF 120, 144-145); 7.5.9/C795 and 7.5.10/C7107-C7108 (PDF 106-108); 14.2.2/C1409 and 14.2.3/C1412 (PDF 318-321); 19.5.1.3-.4 (PDF 553-554); 7.3.2.1 p3/TYPEOF premises (PDF 77-78); 4.2 p2(3)/(6) (PDF 46)."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "structural",
+      "rationale": "PDF 89 lines 13-14: retain the canonical name-access rule and both directions of independence for components and bindings."
+    },
+    {
+      "unit": "p1.name-access-rule",
+      "disposition": "definition",
+      "requirements": [
+        "R807"
+      ],
+      "rationale": "8.5.2 determines accessibility of the type-name identifier. This cross-reference does not duplicate that owner's PUBLIC/PRIVATE or module-default rules."
+    },
+    {
+      "unit": "p1.name-does-not-set-components",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.2.2-001"
+      ]
+    },
+    {
+      "unit": "p1.components-do-not-set-name",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.2.2-001"
+      ]
+    },
+    {
+      "unit": "p1.name-does-not-set-bindings",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.2.2-001"
+      ]
+    },
+    {
+      "unit": "p1.bindings-do-not-set-name",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.2.2-001"
+      ]
+    },
+    {
+      "unit": "p2",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.2.2-002"
+      ]
+    },
+    {
+      "unit": "p2.module-definition",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.2.2-002"
+      ]
+    },
+    {
+      "unit": "p2.private-name",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.2.2-002"
+      ]
+    },
+    {
+      "unit": "p2.constructor-name",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.2.2-002"
+      ]
+    },
+    {
+      "unit": "p2.module-and-descendants",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.2.2-002"
+      ]
+    },
+    {
+      "unit": "note-unnumbered",
+      "disposition": "structural",
+      "rationale": "PDF 89 note illustrates a private type name and its qualified module/descendant accessibility; no original body text or sample code is copied into the catalogue."
+    },
+    {
+      "unit": "note-unnumbered.private-type-example",
+      "disposition": "informative",
+      "rationale": "The sample uses PRIVATE for the type name. It does not implicitly mark the displayed logical/character components private."
+    },
+    {
+      "unit": "note-unnumbered.scope-qualification",
+      "disposition": "informative",
+      "rationale": "The illustrated name is restricted to its defining module and descendants. It supplies no claim about a hidden type's public object, private binding, ABI or type identity."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_7_5_2_2.md"
+  },
+  "review_fingerprint": "29244d02b9dc69b355c80bdf59e9d32dbc3f44be21652361b5cc264ce01fa4c3",
+  "review_rationale": "Original-source and final fixture review: doc/source_audits/batch_011.json. Accessibility and descendant construction effects are supported with complete state/host premises. C1409 remains a separately owned unlinked pair. Initial definition source-plan review used an independent-of-author coordinator fallback, not a successful fresh-context source reviewer; the combined fixture reviewer subsequently read original PDF87-92 and necessary dependencies. Pending and unresolved units are retained."
+}

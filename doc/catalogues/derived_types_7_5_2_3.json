@@ -1,0 +1,309 @@
+{
+  "schema_version": 1,
+  "section": "7.5.2.3",
+  "review_state": "reviewed",
+  "subunits": {
+    "R731": [
+      "R731.sequence-keyword"
+    ],
+    "C745": [
+      "C745.at-least-one-component",
+      "C745.data-component-types",
+      "C745.no-type-parameters",
+      "C745.no-binding-part"
+    ],
+    "p1": [
+      "p1.sequence-attribute",
+      "p1.storage-order",
+      "p1.numeric-no-pointer",
+      "p1.numeric-no-allocatable",
+      "p1.numeric-default-integer",
+      "p1.numeric-default-real",
+      "p1.numeric-double-real",
+      "p1.numeric-default-complex",
+      "p1.numeric-default-logical",
+      "p1.numeric-recursion",
+      "p1.character-no-pointer",
+      "p1.character-no-allocatable",
+      "p1.character-default-kind",
+      "p1.character-recursion"
+    ],
+    "note1": [
+      "note1.numeric-example"
+    ],
+    "note2": [
+      "note2.definition-sequence-not-layout",
+      "note2.no-general-contiguity",
+      "note2.name-based-component-access",
+      "note2.constructor-order",
+      "note2.assignment-correspondence",
+      "note2.namelist-order",
+      "note2.formatted-transfer-order",
+      "note2.storage-freedom-qualified"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "R731",
+      "title": "SEQUENCE is a statement in a derived-type definition",
+      "source": "7.5.2.3 R731; J3/24-007, 18 December 2023, PDF 89, printed 75, line 19.",
+      "source_units": [
+        "R731",
+        "R731.sequence-keyword"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "A sequence-stmt is the SEQUENCE keyword. R726/R729 place that statement in a derived-type definition before components. It is not a type-attr-spec spelling in the TYPE header; the SEQUENCE attribute and sequence-type terms follow from its use under p1.",
+      "facets": [
+        "sequence-statement-admission"
+      ],
+      "pending": {},
+      "oracle": "A nonempty nonparameterized SEQUENCE record has defined integer member checks. This is statement admission, not storage-layout proof or intrinsic equality on the whole derived value.",
+      "oracle_limitation": "No arbitrary misspelling negative is manufactured for this one-token rule. Do not infer numeric sequence classification from the word SEQUENCE alone or treat every procedure-related component as a prohibited binding part.",
+      "dependencies": "R726/R728/R729/C740/C743 (PDF 88-89); C745 and p1 (PDF 89-90); 7.5.11 (PDF 109)."
+    },
+    {
+      "id": "C745",
+      "title": "SEQUENCE constrains component presence, declared data types, parameters and bindings",
+      "source": "7.5.2.3 C745 (R726); PDF 89, printed 75, lines 20-22.",
+      "source_units": [
+        "C745",
+        "C745.at-least-one-component",
+        "C745.data-component-types",
+        "C745.no-type-parameters",
+        "C745.no-binding-part"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "A type with a SEQUENCE statement has at least one component. Every data component is declared intrinsic or of a sequence type, the type has no type parameters, and no type-bound-procedure-part appears. KIND and LEN parameters are both excluded. This does not prohibit all POINTER/ALLOCATABLE data components or procedure-pointer components: the data-component type condition and the distinction between R741 components and R746 binding parts still apply. Presence of CONTAINS already introduces the prohibited binding part, even when that part has no bindings.",
+      "facets": [
+        "nonempty-type",
+        "intrinsic-and-sequence-data",
+        "nonsequence-derived-data-exclusion",
+        "enum-data-exclusions",
+        "kind-parameter-exclusion",
+        "length-parameter-exclusion",
+        "binding-part-exclusion",
+        "pointer-allocatable-procedure-component-admission"
+      ],
+      "pending": {},
+      "oracle": "Minimal pairs isolate empty type, ordinary/enum/enumeration data component types, KIND/LEN parameters and empty/specific binding parts. They preserve other declaration and interface premises. Run controls initialize all permitted intrinsic/nested data and separately establish pointer, allocatable and procedure-pointer components without a type-bound-procedure part. The latter is a general sequence type, not numeric/character sequence and not an EQUIVALENCE operand.",
+      "oracle_limitation": "No field is interpreted by an assumed storage layout or intrinsic == on the whole derived value. Required diagnostics follow C745/4.2 p2(3); each must identify the actual component, parameter or binding-part subject. Generic type/constant/function/expected strings, mismatched END TYPE recovery, crashes, ASR failures and unsupported facilities are ineligible.",
+      "dependencies": "R726 and R731 (PDF 88-89); R732-R734/C746-C747 (PDF 91-92); R736-R742/C749-C764 (PDF 93-95); R746 and C774/C784 (PDF 99-100); 7.6.1-.2 (PDF 109, 111-113); procedure-pointer assignment and interface characteristics (PDF 196, 324, 333-334); 19.5.2/19.6 (PDF 556, 562-565)."
+    },
+    {
+      "id": "S7.5.2.3-001",
+      "title": "SEQUENCE component order specifies a storage sequence",
+      "source": "7.5.2.3 p1, first two sentences; PDF 89, printed 75, lines 23-24; cross-reference in 7.5.1 p7, PDF 88.",
+      "source_units": [
+        "p1.sequence-attribute",
+        "p1.storage-order"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A SEQUENCE statement gives the type the SEQUENCE attribute, and its component-definition order specifies the storage sequence for its objects. Canonical storage-association rules express sequence objects through ordered ultimate-component storage sequences. The portable witnesses below use those actual association and definition-status rules; they do not equate symbolic numeric/character storage units with bytes or infer a physical bit layout from arithmetic/model inquiries.",
+      "facets": [
+        "numeric-storage-order",
+        "nested-numeric-storage-order",
+        "character-storage-order",
+        "general-sequence-storage-evidence"
+      ],
+      "pending": {
+        "general-sequence-storage-evidence": "Planned finite evidence record for one mixed numeric/character sequence, one nondefault-intrinsic-component sequence and one pointer-containing sequence. Map their specified storage sequences and the restrictions on usable association contexts before selecting an observable oracle. C8110/C8116 prevent treating all of them as an intrinsic array overlay; SAME_TYPE_AS is not a layout query. Any physical/processor-interface witness needs an independently reviewed representation contract, not arithmetic, model or width queries. No such executable or documentary evidence mechanism is authored now."
+      },
+      "oracle": "Four local typed EQUIVALENCE runs observe two default integers, a nested three-integer sequence, default-character lengths 1/2, and the same character sequence with a zero-sized member. No TARGET, pointer/allocatable object, nonsequence type, initialization, coarray, BIND or use-associated equivalence object is present. Executable same-type component and element/substring writes establish definition status before reading the associated values; no zero-length substring is equivalenced. General sequence-storage realization remains separate pending evidence.",
+      "oracle_limitation": "Do not weaken run effects when a compiler lacks SEQUENCE/EQUIVALENCE support. EQUIVALENCE is obsolescent, not a universal invalid program. The canonical restrictions forbid many seemingly convenient overlays and do not imply conversion or mathematical equivalence between different types. No unknown value, padding bit or unavailable storage interpretation is asserted. The real BOZ needs-oracle member supplies no representation premise.",
+      "dependencies": "7.5.1 p3/p7 (PDF 87-88); C745 and p1 classification (PDF 89-90); 8.10.1/C8110-C8120 (PDF 146-148); 19.5.3.2 p2(1)/(3)/(5)/(7), p3 and 19.5.3.4 (PDF 559-561); 19.6.1-.2 and 19.6.5 p1(12)/(15), 19.6.6 p1(1)/(9) (PDF 562-565). 4.2 p2(1)-(2) (PDF 46) distinguishes effects and obsolescence reporting."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "R731",
+      "disposition": "requirements",
+      "requirements": [
+        "R731"
+      ]
+    },
+    {
+      "unit": "R731.sequence-keyword",
+      "disposition": "requirements",
+      "requirements": [
+        "R731"
+      ]
+    },
+    {
+      "unit": "C745",
+      "disposition": "requirements",
+      "requirements": [
+        "C745"
+      ]
+    },
+    {
+      "unit": "C745.at-least-one-component",
+      "disposition": "requirements",
+      "requirements": [
+        "C745"
+      ]
+    },
+    {
+      "unit": "C745.data-component-types",
+      "disposition": "requirements",
+      "requirements": [
+        "C745"
+      ]
+    },
+    {
+      "unit": "C745.no-type-parameters",
+      "disposition": "requirements",
+      "requirements": [
+        "C745"
+      ]
+    },
+    {
+      "unit": "C745.no-binding-part",
+      "disposition": "requirements",
+      "requirements": [
+        "C745"
+      ]
+    },
+    {
+      "unit": "p1",
+      "disposition": "structural",
+      "rationale": "PDF 89 lines 23-26 continues on PDF 90 lines 1-2. Separate the attribute/storage effect from both conditional classification definitions and every permitted component category."
+    },
+    {
+      "unit": "p1.sequence-attribute",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.2.3-001"
+      ]
+    },
+    {
+      "unit": "p1.storage-order",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.2.3-001"
+      ]
+    },
+    {
+      "unit": "p1.numeric-no-pointer",
+      "disposition": "definition",
+      "rationale": "Numeric sequence classification excludes pointer components. C745 permits some pointer-containing sequence types, which are not numeric sequence types."
+    },
+    {
+      "unit": "p1.numeric-no-allocatable",
+      "disposition": "definition",
+      "rationale": "Numeric sequence classification excludes allocatable components; current allocation status cannot change the classification."
+    },
+    {
+      "unit": "p1.numeric-default-integer",
+      "disposition": "definition",
+      "rationale": "Default integer is one allowed numeric-sequence component category. A merely same-sized nondefault kind is not substituted."
+    },
+    {
+      "unit": "p1.numeric-default-real",
+      "disposition": "definition",
+      "rationale": "Default real is allowed. Its model or representation is not equated with a fixed IEEE format."
+    },
+    {
+      "unit": "p1.numeric-double-real",
+      "disposition": "definition",
+      "rationale": "Double precision real is allowed as the specifically defined real kind, not a presumed kind number or REAL64 synonym."
+    },
+    {
+      "unit": "p1.numeric-default-complex",
+      "disposition": "definition",
+      "rationale": "Default complex is allowed; this does not add every complex kind or double precision complex to the list."
+    },
+    {
+      "unit": "p1.numeric-default-logical",
+      "disposition": "definition",
+      "rationale": "Default logical is allowed, without giving it INTEGER value semantics or a prescribed internal representation."
+    },
+    {
+      "unit": "p1.numeric-recursion",
+      "disposition": "definition",
+      "rationale": "A component may itself be numeric sequence type, preserving that type's recursive conditions. Declaration order and ultimate-component storage sequence are distinct from a raw memory byte model."
+    },
+    {
+      "unit": "p1.character-no-pointer",
+      "disposition": "definition",
+      "rationale": "Character sequence classification excludes pointer components, independently of the general C745 admission rules."
+    },
+    {
+      "unit": "p1.character-no-allocatable",
+      "disposition": "definition",
+      "rationale": "Character sequence classification excludes allocatable components, regardless of allocation status."
+    },
+    {
+      "unit": "p1.character-default-kind",
+      "disposition": "definition",
+      "rationale": "The permitted intrinsic character category is default character, not every C/ASCII/ISO_10646 or processor-defined kind. Character length is not required to be one or positive by this classification."
+    },
+    {
+      "unit": "p1.character-recursion",
+      "disposition": "definition",
+      "rationale": "Nested character sequence types are allowed under their same no-pointer/no-allocatable/default-character conditions. Mixed numeric/character sequence types need not belong to either classification."
+    },
+    {
+      "unit": "note1",
+      "disposition": "informative",
+      "rationale": "PDF 90 NOTE 1 illustrates one numeric sequence type, not the whole allowed-category list or a representation/size requirement."
+    },
+    {
+      "unit": "note1.numeric-example",
+      "disposition": "informative",
+      "rationale": "The displayed default INTEGER/REAL/LOGICAL members satisfy the numeric classification. Their storage representations are not specified by the example."
+    },
+    {
+      "unit": "note2",
+      "disposition": "structural",
+      "rationale": "PDF 90 NOTE 2 is informative. All four operational references are retained with their actual canonical qualifications, rather than promoted to new temporal/layout requirements."
+    },
+    {
+      "unit": "note2.definition-sequence-not-layout",
+      "disposition": "informative",
+      "rationale": "An ordered list of component definitions is not, by terminology alone, an ordinary type's physical layout. SEQUENCE and BIND have separate normative regimes."
+    },
+    {
+      "unit": "note2.no-general-contiguity",
+      "disposition": "informative",
+      "rationale": "No general contiguous-memory requirement follows for ordinary nonsequence structures. This is not a requirement that a processor use noncontiguous storage."
+    },
+    {
+      "unit": "note2.name-based-component-access",
+      "disposition": "informative",
+      "rationale": "Most component references use names. 9.4.2 and 19.3.4 retain the actual selection/access rules; this explanation does not reveal private components or make bindings into data."
+    },
+    {
+      "unit": "note2.constructor-order",
+      "disposition": "informative",
+      "rationale": "7.5.4.7 and 7.5.10 p2 specify positional constructor correspondence; explicit component keywords and parent-component rules remain exceptions. A later finite constructor case must use accessible components and the correct component order, not inferred memory order."
+    },
+    {
+      "unit": "note2.assignment-correspondence",
+      "disposition": "informative",
+      "rationale": "10.2.1.3 p15 maps corresponding components, but p16 permits component assignment in any order. The note is not an observable temporal-assignment-order requirement. Existing assignment cases/owners remain unchanged."
+    },
+    {
+      "unit": "note2.namelist-order",
+      "disposition": "informative",
+      "rationale": "13.11.3.2 p2 expands a derived variable through the formatted effective-item rules in 12.6.3. The order of separate name-value subsequences can differ and null values preserve prior definition status. No mandatory namelist-output byte spelling or external-record encoding is inferred."
+    },
+    {
+      "unit": "note2.formatted-transfer-order",
+      "disposition": "informative",
+      "rationale": "12.6.3 p8 expands eligible intrinsic formatted derived-type items in component order, subject to accessibility, pointer/allocatable, polymorphism and defined-I/O premises. Unformatted derived I/O has a different processor-dependent rule; it is not a layout test."
+    },
+    {
+      "unit": "note2.storage-freedom-qualified",
+      "disposition": "informative",
+      "rationale": "The architectural-freedom explanation does not override the normative BIND companion-storage requirement in 7.5.1 p7 or the operational ordering rules at their owners. No local executable or source-completeness credit is fabricated from the note."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_7_5_2_3.md"
+  },
+  "review_fingerprint": "32db876da06a3956c5e14b9a5cf4ccaf21a8e86a959720f7d7460160f8f17068",
+  "review_rationale": "Original-source and final fixture review: doc/source_audits/batch_011.json. Sequence controls, exclusions and typed storage oracles are supported. Named-enum facility gaps are source-only, not invalid controls. General storage remains pending. Initial definition source-plan review used an independent-of-author coordinator fallback, not a successful fresh-context source reviewer; the combined fixture reviewer subsequently read original PDF87-92 and necessary dependencies. Pending and unresolved units are retained."
+}

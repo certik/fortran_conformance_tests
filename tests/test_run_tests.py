@@ -262,6 +262,94 @@ case.f90:5-5:1-20: semantic warning [C801]: repeated
         text = 'case.f90:4:8:\n    4 | invalid\nError: invalid\ncase.f90:8:2: error: invalid\n'
         self.assertEqual(runner.reference_error_lines(text), {4, 8})
 
+    def test_malformed_reference_locations_clear_prior_attribution(self):
+        for filename in (None, 'case.f90', 'payload.inc'):
+            source = filename or 'case.f90'
+            for origin in (source, 'other.f90', 'other.inc'):
+                for columns in ('5-', '5--8', '5-x', '5-8-9', '8-5', '0-8'):
+                    with self.subTest(filename=filename, origin=origin, columns=columns):
+                        text = f'{source}:4:1:\n{origin}:9:{columns}:\nError: invalid\n'
+                        self.assertEqual(runner.reference_error_lines(text, filename), set())
+                        restored = text + f'{source}:7:2-8:\n    7 | invalid\n      |  1\nError: invalid\n'
+                        self.assertEqual(runner.reference_error_lines(restored, filename), {7})
+            text = f'{source}:4:1:\n{source}:9-10:5-8:\nError: invalid\n'
+            self.assertEqual(runner.reference_error_lines(text, filename), set())
+
+    def test_reference_record_content_is_not_a_location_header(self):
+        for filename in (None, 'source.f90', 'payload.inc', 'payload'):
+            source = filename or 'source.f90'
+            for columns in ('0', '1', '1-9'):
+                for continuation in (
+                    '    4 | value = values(1:3:2)\n      | 1\n',
+                    '    4 | integer, len :: width ! stamp:9:\n      | 1\n',
+                    "    4 | print *, 'other.f90:9:5-:'\n      | 1\n",
+                    '      | shape:3:2\n',
+                    '',
+                ):
+                    for severity in ('Error', 'Fatal Error', 'Warning', 'portability'):
+                        with self.subTest(filename=filename, columns=columns,
+                                          continuation=continuation, severity=severity):
+                            message = "expected token 'shape:3:2'"
+                            output = f'{source}:4:{columns}:\n' + continuation
+                            output += f'{severity}: {message}\n'
+                            self.assertEqual(list(runner.reference_messages(output, filename)),
+                                             [(4, severity.lower(), message)])
+                            foreign = f'{source}:4:{columns}:\n' + continuation
+                            foreign += f'other.f90:9:5-:\n{severity}: {message}\n'
+                            self.assertEqual(list(runner.reference_messages(foreign, filename)), [])
+
+    def test_severity_names_remain_declared_or_competing_filenames(self):
+        for filename in ('Error', 'Fatal Error', 'Warning', 'portability',
+                         'Error:asset', 'Error: asset', "Error: 'asset'", "Error: can't",
+                         '|asset', '4 |asset'):
+            for columns in ('0', '1', '1-9'):
+                for tail in (' Error: wanted\n', '\nError: wanted\n'):
+                    with self.subTest(filename=filename, columns=columns, tail=tail):
+                        output = f'{filename}:9:{columns}:' + tail
+                        self.assertEqual(list(runner.reference_messages(output, filename)),
+                                         [(9, 'error', 'wanted')])
+                        self.assertEqual(list(runner.reference_messages(
+                            'source.f90:5:1:\n' + output, 'source.f90')), [])
+                        self.assertEqual(list(runner.reference_messages(
+                            'source.f90:5:1:\n' + output)), [])
+            for columns in ('5-', '5--8', '5-x', '5-8-9', '8-5', '0-8'):
+                for tail in (' Error: wanted\n', '\nError: wanted\n'):
+                    with self.subTest(filename=filename, columns=columns, tail=tail):
+                        output = f'source.f90:5:1:\n{filename}:9:{columns}:' + tail
+                        self.assertEqual(list(runner.reference_messages(output, 'source.f90')), [])
+                        self.assertEqual(list(runner.reference_messages(output, filename)), [])
+        for message in ('invalid', "expected token 'shape:3:2'"):
+            self.assertEqual(list(runner.reference_messages(
+                'source.f90:5:1:\nError:' + message, 'source.f90')), [(5, 'error', message)])
+
+    def test_ambiguous_unquoted_coordinates_cannot_borrow_a_location(self):
+        for message in (
+            'Error: shape:3:2: Error: wanted',
+            'Error: shape:3:5-: Error: wanted',
+            'Warning: shape:3:2:',
+        ):
+            output = 'source.f90:5:1:\n' + message + '\nError: wanted\n'
+            self.assertEqual(list(runner.reference_messages(output, 'source.f90')), [])
+            self.assertEqual(runner.driver_warning_diagnostics(
+                message + '\nf951: Warning: wanted in line 5\n',
+                'source.f90', '/tmp/source.f90'), [])
+
+    def test_reference_extraction_cannot_switch_coordinate_candidates(self):
+        quoted = 'Error: "/tmp/source.f90:5:1: Error: wanted"'
+        for columns in ('1', '1-9', '5-', '5--8', '5-x', '5-8-9'):
+            for prefix in ('', 'source.f90:4:1:\n'):
+                with self.subTest(columns=columns, prefix=prefix):
+                    output = prefix + quoted + f' other.f90:9:{columns}:\n'
+                    self.assertEqual(list(runner.reference_messages(output, 'source.f90')), [])
+                    self.assertEqual(list(runner.reference_messages(output)), [])
+                    self.assertEqual(runner.driver_warning_diagnostics(
+                        output + 'f951: Warning: wanted in line 5\n',
+                        'source.f90', '/tmp/source.f90'), [])
+        for columns in ('5-', '5--8', '5-x', '5-8-9'):
+            output = f'/tmp/other.f90:9:{columns}: /tmp/source.f90:5:1: Error: wanted\n'
+            self.assertEqual(list(runner.reference_messages(output, 'source.f90')), [])
+            self.assertEqual(list(runner.reference_messages(output)), [])
+
     def test_declared_include_locations_are_not_limited_by_suffix(self):
         for filename in ('loop.inc', 'payload.data', 'payload', 'nested/payload.inc'):
             with self.subTest(filename=filename):

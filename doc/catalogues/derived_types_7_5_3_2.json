@@ -1,0 +1,170 @@
+{
+  "schema_version": 1,
+  "section": "7.5.3.2",
+  "review_state": "reviewed",
+  "subunits": {
+    "p1": [
+      "p1.ordering-definition",
+      "p1.derived-type-specifier-use"
+    ],
+    "p2": [
+      "p2.nonextended-condition",
+      "p2.nonextended-header-order",
+      "p2.extended-condition",
+      "p2.parent-order-prefix",
+      "p2.local-parameter-suffix",
+      "p2.local-header-order"
+    ],
+    "note-unnumbered": [
+      "note-unnumbered.parent-order",
+      "note-unnumbered.child-suffix",
+      "note-unnumbered.kind-use-premises"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S7.5.3.2-001",
+      "title": "A nonextended type's parameter order follows its header list",
+      "source": "7.5.3.2 p2, first sentence; J3/24-007, 18 December 2023, PDF 92, printed 78, line 14.",
+      "source_units": [
+        "p2.nonextended-condition",
+        "p2.nonextended-header-order"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For a nonextended derived type, parameter order is the order of names in the defining TYPE header list. It is not the order of parameter-definition statements, the order within a later definition list, alphabetical order, or a rule that all KIND parameters precede all LEN parameters. Positional derived-type specifiers use this ordering subject to their own value, omission and keyword conditions.",
+      "facets": [
+        "header-position-values",
+        "definition-statement-order",
+        "declarator-list-order",
+        "mixed-kind-length-order",
+        "specifier-use-graph"
+      ],
+      "pending": {
+        "specifier-use-graph": "Pending a finite canonical use graph through R754/R755/C795-C7100 for declarations, component specifications, ALLOCATE type-specs, constructors, dummy declarations and TYPE IS guards. Preserve each context's constant/assumed/deferred/keyword/omission conditions before selecting a witness. A declaration-only positional test does not complete all uses."
+      },
+      "oracle": "Four bounded run plans use distinct exactly representable integer values and direct parameter inquiries to distinguish header order from independent body ordering. Typed integer dummies and guarded component-size checks may supplement the inquiry values. Every concrete fixture still requires independent review.",
+      "oracle_limitation": "No negative or compulsory diagnostic is manufactured for this prose interpretation. Reordering body declarations must not introduce a forward-reference default expression. No storage-layout, numeric kind ordering, intrinsic generic-resolution or nonzero real approximation premise is used. Keyword syntax and argument omission retain their canonical owners.",
+      "dependencies": "R727/C736, PDF 88; R732-R734/C746-C747, PDF 91-92; 7.2, PDF 76; 7.5.9/R754 and associated argument conditions, PDF 106-107; 9.4.5/R916/C923, PDF 153; 10.1.12, PDF 187-188. Default integer's range-five minimum supplies the finite payload bound."
+    },
+    {
+      "id": "S7.5.3.2-002",
+      "title": "An extension retains its parent's parameter order before its local header parameters",
+      "source": "7.5.3.2 p2, second sentence; PDF 92, printed 78, lines 14-17.",
+      "source_units": [
+        "p2.extended-condition",
+        "p2.parent-order-prefix",
+        "p2.local-parameter-suffix",
+        "p2.local-header-order"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "An extended type's parameter order consists of its parent's parameter order followed by any additional parameters in the order of the extending definition's TYPE header list. Parent order is preserved recursively through ancestors. An extension can add no local parameters while retaining inherited ones; inherited parameters are not redeclared as new local header entries.",
+      "facets": [
+        "parent-prefix",
+        "local-header-suffix",
+        "inherited-only-extension",
+        "multi-generation-order",
+        "inheritance-and-specifier-use-graph"
+      ],
+      "pending": {
+        "inheritance-and-specifier-use-graph": "Pending independently represented canonical inheritance/default/omission and derived-type-specifier use links. Include local and inherited defaults, keyword overrides and no-new-parameter descendants only where their source contexts admit them. Do not count one positional chain as all inheritance or parameter semantics."
+      },
+      "oracle": "Four bounded runtime witnesses distinguish the inherited prefix and local suffix through exact parameter values, including a no-new-parameter extension and a deeper chain. They use only ordinary extensible types and source-valid parameter specifications.",
+      "oracle_limitation": "The parent must be a previously defined extensible type, and local names/definitions still satisfy C736/C746/C747 and inheritance name rules. Type-parameter order does not imply physical component order or identical type identity across definitions. Missing PDT implementation is a failed observation, not a reason to replace run effects by compile controls.",
+      "dependencies": "7.5.7.1-.3 and inheritance notes, PDF 104-105; R727/C737, PDF 88; R732/C746/C747, PDF 91; 7.5.9, PDF 106-107; 9.4.5, PDF 153. The concurrent definition/identity source unit remains a separate owner and review."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "structural",
+      "rationale": "PDF 92 line 13 defines parameter order and identifies its canonical use, without creating a third executable ordering requirement."
+    },
+    {
+      "unit": "p1.ordering-definition",
+      "disposition": "definition",
+      "rationale": "Parameter order is an ordering of the type's parameters, not object storage, parameter-definition statement order or a numerical ordering of kind identifiers."
+    },
+    {
+      "unit": "p1.derived-type-specifier-use",
+      "disposition": "definition",
+      "requirements": [
+        "R754"
+      ],
+      "rationale": "Derived-type specifiers use this order under 7.5.9; argument syntax/default/keyword/assumed/deferred constraints retain their canonical ownership."
+    },
+    {
+      "unit": "p2",
+      "disposition": "structural",
+      "rationale": "PDF 92 lines 14-17 separately define nonextended header order and the inherited-prefix/local-suffix ordering of extensions."
+    },
+    {
+      "unit": "p2.nonextended-condition",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.3.2-001"
+      ]
+    },
+    {
+      "unit": "p2.nonextended-header-order",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.3.2-001"
+      ]
+    },
+    {
+      "unit": "p2.extended-condition",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.3.2-002"
+      ]
+    },
+    {
+      "unit": "p2.parent-order-prefix",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.3.2-002"
+      ]
+    },
+    {
+      "unit": "p2.local-parameter-suffix",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.3.2-002"
+      ]
+    },
+    {
+      "unit": "p2.local-header-order",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.3.2-002"
+      ]
+    },
+    {
+      "unit": "note-unnumbered",
+      "disposition": "structural",
+      "rationale": "The PDF 92 example illustrates inherited ordering. Its code and numeric selector assumptions are not copied into an unqualified fixture."
+    },
+    {
+      "unit": "note-unnumbered.parent-order",
+      "disposition": "informative",
+      "rationale": "The parent's two names occur in the order of its header, independently of representation or component layout."
+    },
+    {
+      "unit": "note-unnumbered.child-suffix",
+      "disposition": "informative",
+      "rationale": "The extending type's additional name follows both inherited names. The example illustrates the normative prefix/suffix rule without defining another one."
+    },
+    {
+      "unit": "note-unnumbered.kind-use-premises",
+      "disposition": "informative",
+      "rationale": "The example later uses parameters as intrinsic selectors and bounds, whose supported values and canonical constraints remain required. The finite plans instead use small abstract values without assuming machine kind codes."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_7_5_3_2.md"
+  },
+  "review_fingerprint": "eacccea2a8c89d5802481b18be14ae6b4087299a3a6a35beacf895f3a3f57266",
+  "review_rationale": "Original-source and final fixture review: doc/source_audits/batch_011.json. Header/body and inherited-prefix/local-suffix effects are supported. Consumer/inheritance use graphs remain pending; the source-only introduction needs DTFR-002 clarification. Initial definition source-plan review used an independent-of-author coordinator fallback, not a successful fresh-context source reviewer; the combined fixture reviewer subsequently read original PDF87-92 and necessary dependencies. Pending and unresolved units are retained."
+}
