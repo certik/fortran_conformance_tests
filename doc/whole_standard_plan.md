@@ -646,16 +646,17 @@ refreshes the four earlier proposals and adds the default-public connection.
 Five draft links reuse six canonical cases without another program. Its
 generator distinguishes direct, registered-linked and pending facets; only
 three existing cases acquire changed requirement-metadata fingerprints,
-with fresh observations and no input-byte changes. The candidate remains
-outside main. Independent review found the five semantic connections
-eligible, but identified two generator defects: false connection prose after
+with fresh observations and no input-byte changes. The candidate initially
+remained outside main. Independent review found the five semantic connections
+eligible but identified two generator defects: false connection prose after
 removal/restoration, and silent omission of unknown explicit-map owners.
 Correction `a9ec1bf` uses conditional/candidate prose and an exact current
 link list, rejects unknown scoped owners, and exercises all 32 subsets
 through real Registry collection/rendering. Its 81 regressions and fresh
-nine-case observations do not substitute for independent correction
-closeout. Source, three metadata-changed cases and inventory staleness still
-need explicit coordinator adjudication before main coverage is credited.
+nine-case observations did not substitute for independent correction
+closeout. Both findings have now been independently closed, and batch021
+explicitly renews the source, three metadata-bound cases, five connection
+receipts and observational inventory.
 
 The twentieth batch integrates **34 compile-only type-specifier cases**:
 17 diagnostic inputs and 17 positive controls, representing 28 facets.
@@ -672,12 +673,28 @@ Uncredited generic recovery or conservative wording matches are not
 automatically failures of the standard's minimum reporting capability.
 Source and exact provenance are in `doc/source_audits/batch_020.json`.
 
-The current measured whole-target checkpoint has **1,907 cases**:
+The twentieth-batch measured whole-target checkpoint has **1,907 cases**:
 **1,168 PASS, 734 XFAIL, four SKIPs and one NEEDS_ORACLE**.
 All 1,873 prior IDs, fingerprints and target outcomes/phases are unchanged.
 There are 78 catalogues, 414 requirements, 1,639 direct and four linked
 facets, and 462 pending facets. All 31 remaining local facets, including
 15 S-owned value/default/conversion effects, remain explicitly pending.
+
+The twenty-first batch makes the five reviewed canonical connections
+current without adding a conformance case. Two S7.5.5-007 outside-call pairs
+retain their diagnostic/control ownership; two existing S7.5.2.2-001
+runtime programs serve three permitted-call/default facets. Six unique
+cases supply seven link-member occurrences, but each remains one scheduled
+case per processor configuration. No passing linked effect is computed.
+
+The current measured checkpoint remains **1,907 cases: 1,168 PASS,
+734 XFAIL, four SKIPs and one NEEDS_ORACLE**. Every prior case ID, input,
+target outcome/phase and baseline line is unchanged; three metadata
+fingerprints have explicit current renewals and the other 1,904 are
+unchanged. There are **1,639 direct, nine current-linked and 457 pending
+facets out of 2,105**. The 78 catalogues, 414 requirements and remaining
+source gaps do not change. Complete connection, state-transition and
+provenance decisions are in `doc/source_audits/batch_021.json`.
 A further source-only packet covers 7.5.8 and 7.5.9 with 13 base units,
 50 fine units, 14 requirements and 72 pending facets. It preserves existing
 canonical witnesses and explicitly accounts for the value-set definition
@@ -691,9 +708,11 @@ Source-only constructor packet `8ba944c` in 7.5.10 covers 28 base and
 C7107 facets and 96 pending. The four existing C7107 programs and their
 primary ownership remain; the new detailed metadata intentionally exposes
 four stale case bindings and three stale links. Its independent source gate
-has passed, not automatically renewed those receipts. A bounded constructor
-author is implementing 20 compile facets, retaining 76 pending alongside
-the two existing C7107 facets.
+has passed, not automatically renewed those receipts. Constructor packet
+`9169f1c` now contains 28 new compile cases with 13 minimal repairs,
+representing 20 new facets alongside the two existing C7107 facets and
+retaining 76 pending. Its independent fixture/cause review includes the four
+existing C7107 metadata refreshes and the three dependent link receipts.
 
 The enum/enumeration source packet `fa1fbf02` also passed independent
 eligibility review: 39 base units, 147 fine units, 28 requirements and
@@ -703,6 +722,10 @@ inventory through its changed source context. That renewal remains explicit.
 The conditional range of the note's12345 example, NEXT's endpoint error
 termination, and outstanding companion/representation/BOZ qualifications
 are preserved rather than turned into unqualified positive tests.
+A bounded unnamed-enum author is implementing seven common-kind and
+value/default/statement-partition/reset facets in 7.6.1, with 57 local facets
+still pending. Named enum types, enumeration types, BOZ and companion/
+representation profiles are excluded from that runtime subset.
 A source-only author is now cataloguing 7.7's ten base units on PDF113-114,
 stopping before 7.8; the existing real-BOZ oracle block is not silently
 resolved by this scheduling step.

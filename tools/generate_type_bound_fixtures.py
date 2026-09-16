@@ -1094,14 +1094,17 @@ metadata-only component-scope-duty corrections recorded in
 `doc/source_audits/component_scope_duty_001.json`. In particular preserve
 `S7_5_2_2_001_valid__component_private`,
 `__binding_private`, `__private_private` and `__public_public` rather than
-copying them under S7.5.5. Private-default/explicit-private S7.5.5-005 consumers
-remain pending connections to the genuine S7.5.5-007 outside-call contrasts.
+copying them under S7.5.5. The genuine S7.5.5-007 outside-call pairs and
+S7.5.2.2-001 public-call runtime witnesses are candidates for finite canonical
+connections, not automatic facet credit. Any registered targets are listed
+separately below; they are not directly
+authored facets or additional executions. Registration does not approve a
+connection, and link/case/source adjudications remain independently bound.
 The current link schema supports explicit finite S-owned diagnostic/control
-pairs and singleton runtime-effect or positive-control witnesses. These
-consumers still need independently adjudicated, registered connections; the
-available mechanism alone clears no pending facet. Arbitrary numbered wrappers
-and general source-use graphs remain outside those finite patterns. No new
-links or duplicate programs are installed by this generator.
+pairs and singleton runtime-effect or positive-control witnesses. Arbitrary
+numbered wrappers and general source-use graphs remain outside those finite
+patterns. This generator reads registered links but neither installs them nor
+copies their canonical programs.
 
 C784's INTEGER-only binding interface necessarily also violates C765 while
 implicit PASS remains. Its NOPASS repair removes passed-object status; adding
@@ -1126,21 +1129,60 @@ def catalogue_review_status(catalogue):
     return registry.catalogue_review_state("7.5.5")
 
 
+def facet_partitions(catalogue, specs, linked=None):
+    """Partition one catalogue; an explicit override is scoped to its requirements."""
+    requirements = {r["id"]: r for r in catalogue["requirements"]}
+    if linked is None:
+        sys.path.insert(0, str(ROOT / "tests"))
+        from suite_data import Registry
+        registry = Registry(ROOT)
+        # Case collection requires the pending partition to have been synchronized already.
+        linked = {}
+        for link in registry.evidence.links.values():
+            target = link["target"]
+            if target["requirement"] in requirements:
+                linked.setdefault(target["requirement"], {})[target["facet"]] = link["id"]
+    elif set(linked) - set(requirements):
+        raise ValueError("unknown linked requirement for this catalogue: "
+                         + ", ".join(sorted(set(linked) - set(requirements))))
+    if {s["rule"] for s in specs.values()} - set(requirements):
+        raise ValueError("generated case has an unknown primary requirement")
+    result = {}
+    for rule, requirement in requirements.items():
+        direct = {facet for spec in specs.values() if spec["rule"] == rule for facet in spec["facets"]}
+        connections = dict(linked.get(rule, {}))
+        declared = set(requirement["facets"])
+        if (direct | set(connections)) - declared:
+            raise ValueError("unknown generated or linked facet for " + rule)
+        if direct & set(connections):
+            raise ValueError("direct and linked facets overlap for " + rule)
+        result[rule] = dict(direct=direct, linked=connections,
+                            pending=declared - direct - set(connections))
+    return result
+
+
 def render_view(catalogue, specs):
     sys.path.insert(0, str(ROOT / "tests"))
     from suite_data import render_requirement
     negative = sum(s["kind"] == "invalid" for s in specs.values())
     runtime = sum(s["phase"] == "run" for s in specs.values())
     controls = len(specs) - negative - runtime
+    partitions = facet_partitions(catalogue, specs)
+    direct = sum(len(p["direct"]) for p in partitions.values())
+    linked = sum(len(p["linked"]) for p in partitions.values())
     pending = sum(len(r["pending"]) for r in catalogue["requirements"])
     declared = sum(len(r["facets"]) for r in catalogue["requirements"])
+    for requirement in catalogue["requirements"]:
+        if set(requirement["pending"]) != partitions[requirement["id"]]["pending"]:
+            raise ValueError("inconsistent pending partition for " + requirement["id"])
     out = (
         "# Fortran 2023: 7.5.5 Type-bound procedures — phase-2 implementation\n\n"
         f"**Catalogue source review: {catalogue_review_status(catalogue)}.** "
         "Case and evidence adjudications are maintained in their separate content-bound records.\n\n"
         f"The finite packet has **{len(specs)} cases**: **{negative} diagnostic inputs**, "
         f"**{controls} compile-only positive controls/admissions**, and **{runtime} runtime effect cases**. "
-        f"Of **{declared} facets**, **{declared-pending} are directly represented** and "
+        f"Of **{declared} facets**, **{direct} are directly represented**, "
+        f"**{linked} have registered canonical links**, and "
         f"**{pending} remain PENDING**. Representation is not a claim of compiler success, "
         "independent review or source closure.\n\n" + CONTRACT
         + "\n## Definitions\n\n<!-- BEGIN GENERATED 7.5.5 -->"
@@ -1155,6 +1197,15 @@ def render_view(catalogue, specs):
         run = sum(s["phase"] == "run" for s in rows)
         out += f"| {rule} | {len(rows)} | {bad} | {len(rows)-bad-run} | {run} | "
         out += ", ".join("`" + f + "`" for f in facets.split()) + " |\n"
+    out += "\n## Registered canonical connections\n\n"
+    out += ("These targets reuse their canonical cases without adding or duplicating executions. "
+            "Registered, independently approved, observed and passing evidence remain separate states; "
+            "this table grants no link approval or derived runtime-effect pass.\n\n")
+    out += "| Target requirement | Linked facet | Canonical connection |\n"
+    out += "| --- | --- | --- |\n"
+    for rule, partition in partitions.items():
+        for facet, name in sorted(partition["linked"].items()):
+            out += f"| {rule} | `{facet}` | `{name}` |\n"
     out += "\n## Complete finite pending plans\n\n"
     out += "This appendix is generated from the canonical JSON `pending` maps, not a stale copy "
     out += "of the original all-pending source packet. Every row below remains **PENDING**; "
@@ -1174,7 +1225,9 @@ def render_view(catalogue, specs):
         "The author worktree's validation-only index overlay is not merged wholesale. "
         "Coordinator index integration and source/case/evidence adjudications are separate "
         "from code generation and never inferred from compiler observations.\n\n"
-        "Consult current content-bound fixture and diagnostic-cause adjudications before integration. "
+        "Independent connection and metadata-renewal decisions are recorded in "
+        "`doc/source_audits/batch_021.json`, including the restored/partial-state and explicit-owner "
+        "corrections. Current content-bound fixture, source and connection approvals remain separate. "
         "Retained observation handoffs and per-case current-fingerprint indexes record "
         "reference failures and source-valid controls without inventing a combined run. "
         "The original `type-bound-phase2-handoff.json` and subsequent correction handoffs "
@@ -1183,16 +1236,16 @@ def render_view(catalogue, specs):
     return out
 
 
-def synced_catalogue(catalogue, specs):
+def synced_catalogue(catalogue, specs, linked=None):
     catalogue = json.loads(json.dumps(catalogue))
+    partitions = facet_partitions(catalogue, specs, linked)
     for r in catalogue["requirements"]:
         rows = [s for s in specs.values() if s["rule"] == r["id"]]
-        represented = {f for row in rows for f in row["facets"]}
-        if not represented <= set(r["facets"]):
-            raise ValueError("unknown generated facet for " + r["id"])
-        for facet in represented:
+        partition = partitions[r["id"]]
+        represented, connections = partition["direct"], partition["linked"]
+        for facet in represented | set(connections):
             r["pending"].pop(facet, None)
-        if set(r["pending"]) != set(r["facets"]) - represented:
+        if set(r["pending"]) != partition["pending"]:
             raise ValueError("missing original pending source plans for " + r["id"])
         if rows:
             old = r["oracle"].split("\n\nPhase 2 implementation:", 1)[0]
@@ -1207,6 +1260,28 @@ def synced_catalogue(catalogue, specs):
                        "payload7, using distinct nonpassed argument types and separate call evaluation. "
                        "This tests cumulative membership and receiver use without real arithmetic or "
                        "constructor-order cancellation.")
+            elif r["id"] == "S7.5.5-005":
+                old = ("The directly owned explicit-public-over-private runtime observes an allowed client "
+                       "call and integer result17. The existing S7.5.2.2-001 default-public runtime and "
+                       "S7.5.5-007 outside-call/public-repair pairs are canonical reuse candidates, not "
+                       "automatically linked facets. "
+                       "A legal owner wrapper alone would not establish outside inaccessibility. Original "
+                       "primary owners, diagnostic duties, runtime premises and independent literal oracles "
+                       "are preserved. The exact registered map and pending plans determine the current "
+                       "partition; registration is not connection approval.")
+                r["oracle_limitation"] = (
+                    "Direct runtime cases make only legal calls. Any registered outside-call "
+                    "diagnostic/control pair retains S7.5.5-007 ownership and its reporting basis, "
+                    "not a new duty for this default rule. Component PRIVATE before CONTAINS and "
+                    "binding PRIVATE after it have independent subjects.")
+            elif r["id"] == "S7.5.5-006":
+                old = ("Two directly owned legal-call cases expose17 through an inaccessible type name "
+                       "and through a public generic naming a private specific. The existing S7.5.2.2-001 "
+                       "public-type/public-object and private-implementation-name runtimes, with their "
+                       "defined13/17/19observations, are canonical reuse candidates rather than new local "
+                       "programs. Their allowed object-based calls do not establish direct private-name "
+                       "rejection or a completed general use graph. The exact registered map and pending "
+                       "plans determine the current partition; registration is not connection approval.")
             bad = sum(x["kind"] == "invalid" for x in rows)
             run = sum(x["phase"] == "run" for x in rows)
             r["oracle"] = old + (
@@ -1217,6 +1292,14 @@ def synced_catalogue(catalogue, specs):
                 "Authorship and observations do not establish adjudication; approval status is held "
                 "in separate content-bound review records. A control remains distinct from a runtime effect."
             )
+            if connections:
+                r["oracle"] += (
+                    f" {len(connections)} additional facets have registered canonical links, not directly "
+                    "owned cases or additional executions. Connection approval is independently content-bound."
+                    " Registered canonical links: "
+                    + ", ".join(f"{facet} ({name})" for facet, name in sorted(connections.items())) + ".")
+            elif r["id"] in ("S7.5.5-005", "S7.5.5-006"):
+                r["oracle"] += " No canonical links are registered for this requirement."
     return catalogue
 
 
@@ -1250,8 +1333,12 @@ def main():
         if args.sync_catalogue:
             (ROOT / CATALOGUE).write_text(json.dumps(updated, indent=2) + "\n")
             (ROOT / VIEW).write_text(view)
+    partitions = facet_partitions(updated, specs)
+    direct = sum(len(p["direct"]) for p in partitions.values())
+    linked = sum(len(p["linked"]) for p in partitions.values())
+    pending = sum(len(p["pending"]) for p in partitions.values())
     print(f"{'Checked' if args.check else 'Generated'} {len(outputs)} files for {len(specs)} "
-          f"type-bound cases, representing {sum(len(v.split()) for v in ELIGIBLE.values())} facets.")
+          f"type-bound cases: {direct} direct, {linked} registered linked and {pending} pending facets.")
 
 
 if __name__ == "__main__":

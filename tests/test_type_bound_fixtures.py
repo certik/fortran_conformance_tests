@@ -1,4 +1,5 @@
 """Finite inventory, source premises and diagnostic guards for type-bound bindings."""
+import itertools
 import json
 from pathlib import Path
 import sys
@@ -6,6 +7,8 @@ import unittest
 from unittest.mock import patch
 
 import run_tests as runner
+import evidence_links
+import suite_data
 from suite_data import Registry
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -52,6 +55,57 @@ RUNS = {
     "S7.5.5-005": "public_over_private",
     "S7.5.5-006": "private_type public_generic",
 }
+LINKED = {
+    "S7.5.5-005": {
+        "default-public-binding": "S7.5.5-005.default-public-binding",
+        "default-private-binding": "S7.5.5-005.default-private-binding",
+        "explicit-private-over-public": "S7.5.5-005.explicit-private-over-public"},
+    "S7.5.5-006": {
+        "public-type-public-object": "S7.5.5-006.public-type-public-object",
+        "private-implementation-name": "S7.5.5-006.private-implementation-name"},
+}
+RESTORED_PENDING = {
+    "S7.5.5-005": {
+        "default-public-binding": (
+            "PENDING \u2014 Source-use: preserve S7_5_2_2_001_valid__component_private, which already has "
+            "module default PRIVATE, component PRIVATE, unspecified getter/setter binding access, "
+            "private implementation names and explicit public type/object exports. Its separate client "
+            "calls the default-public bindings and observes defined values 13/17/19. Finite S-owned "
+            "runtime reuse is available, but this connection still needs independent semantic "
+            "adjudication and registration. Keep its S7.5.2.2-001 ownership rather than author a second "
+            "copy under p8."),
+        "default-private-binding": (
+            "PENDING \u2014 Source-use: S7_5_5_007_invalid__tbp_default_private_client and its repair provide "
+            "the actual named outside-call contrast, changing only the bare binding PRIVATE default. "
+            "The available finite S-owned pair pattern still requires independent semantic adjudication "
+            "and registration for this consumer. A defining-module wrapper call is an allowed-use "
+            "control, not proof of the private default; preserve S7_5_2_2_001_valid__binding_private "
+            "rather than duplicate it or promote it to an inaccessibility effect."),
+        "explicit-private-over-public": (
+            "PENDING \u2014 Source-use: preserve S7_5_5_007_invalid__tbp_explicit_private_client and its "
+            "PRIVATE-to-PUBLIC repair. This actual outside-call pair distinguishes explicit private "
+            "access from the otherwise public default. An internal wrapper returning17 would work "
+            "even if PRIVATE were ignored and cannot prove the override. Finite S-owned pair reuse "
+            "is supported, but this consumer remains pending independent semantic adjudication and "
+            "registration; no duplicate effect is introduced.")
+    },
+    "S7.5.5-006": {
+        "public-type-public-object": (
+            "PENDING \u2014 Source-use: preserve S7_5_2_2_001_valid__public_public, whose public type/object "
+            "and explicitly PUBLIC bindings already let the client define the public payload, call "
+            "get/set and observe13/17/19. Its module default PRIVATE does not weaken these explicit "
+            "publicity premises. A finite S-owned runtime connection is now structurally supported, "
+            "but independent semantic adjudication and registration remain pending. A new public-call "
+            "program would duplicate the existing behavior."),
+        "private-implementation-name": (
+            "PENDING \u2014 Source-use: S7_5_2_2_001_valid__component_private has private implementation "
+            "procedure names, callable default-public bindings and defined client observations. "
+            "Preserve its actual S7.5.2.2-001 primary owner. The finite S-owned runtime pattern does "
+            "not automatically adjudicate this semantic connection; registration and independent "
+            "review remain pending, with no new duplicate program or claim of direct private-name "
+            "rejection.")
+    }
+}
 
 
 class TypeBoundFixturesTests(unittest.TestCase):
@@ -60,6 +114,7 @@ class TypeBoundFixturesTests(unittest.TestCase):
         cls.outputs, cls.specs, cls.repairs = generated.build_corpus()
         cls.registry = Registry(ROOT)
         all_cases = runner.collect_cases(ROOT / "tests", cls.registry)
+        cls.all_case_ids = {case.name for case in all_cases}
         cls.cases = {c.name: c for c in all_cases if "/fixtures/type_bound_" in c.path}
         cls.catalogue = cls.registry.catalogues["7.5.5"]
 
@@ -154,23 +209,215 @@ class TypeBoundFixturesTests(unittest.TestCase):
         self.assertEqual(coverage, {k: set(v.split()) for k, v in generated.ELIGIBLE.items()})
         self.assertEqual(sum(map(len, coverage.values())), 90)
         self.assertEqual(sum(len(r["facets"]) for r in self.catalogue["requirements"]), 156)
-        self.assertEqual(sum(len(r["pending"]) for r in self.catalogue["requirements"]), 66)
+        partitions = generated.facet_partitions(self.catalogue, self.specs)
+        self.assertEqual({r: p["direct"] for r, p in partitions.items() if p["direct"]}, coverage)
+        self.assertEqual({r: p["linked"] for r, p in partitions.items() if p["linked"]}, LINKED)
+        self.assertEqual(sum(len(p["linked"]) for p in partitions.values()), 5)
+        self.assertEqual(sum(len(r["pending"]) for r in self.catalogue["requirements"]), 61)
         for r in self.catalogue["requirements"]:
-            self.assertEqual(set(r["pending"]), set(r["facets"]) - coverage.get(r["id"], set()))
+            self.assertEqual(set(r["pending"]), partitions[r["id"]]["pending"])
+            self.assertEqual(set(r["facets"]), coverage.get(r["id"], set())
+                             | set(LINKED.get(r["id"], {})) | set(r["pending"]))
         for rule in ["R748", "C780", "C781", "C782", "S7.5.5-002"]:
             self.assertNotIn(rule, coverage)
         self.assertIn("access-alternative-identity-source-question", self.registry.requirements["C783"]["pending"])
-        self.assertIn("default-private-binding", self.registry.requirements["S7.5.5-005"]["pending"])
-        self.assertIn("explicit-private-over-public", self.registry.requirements["S7.5.5-005"]["pending"])
-        self.assertIn("public-type-public-object", self.registry.requirements["S7.5.5-006"]["pending"])
+        self.assertEqual(set(self.registry.requirements["S7.5.5-005"]["pending"]),
+                         {"inherited-default-origin", "generic-default-source-use"})
+        self.assertEqual(set(self.registry.requirements["S7.5.5-006"]["pending"]),
+                         {"nameless-binding-access-source-use"})
         self.assertIn("defining-module-control", self.registry.requirements["S7.5.5-007"]["pending"])
+
+    def test_facet_partitions_reject_missing_links_unknown_targets_and_double_credit(self):
+        for rule, facets in LINKED.items():
+            for facet in facets:
+                removed = json.loads(json.dumps(LINKED))
+                del removed[rule][facet]
+                with self.subTest(rule=rule, facet=facet), self.assertRaisesRegex(
+                        ValueError, "missing original pending"):
+                    generated.synced_catalogue(self.catalogue, self.specs, removed)
+        for facet, message in (("invented-facet", "unknown generated or linked"),
+                               ("explicit-public-over-private", "direct and linked facets overlap")):
+            invalid = json.loads(json.dumps(LINKED))
+            invalid["S7.5.5-005"][facet] = "synthetic.invalid-connection"
+            with self.subTest(facet=facet), self.assertRaisesRegex(ValueError, message):
+                generated.facet_partitions(self.catalogue, self.specs, invalid)
+        invented = {name: dict(spec) for name, spec in self.specs.items()}
+        next(iter(invented.values()))["rule"] = "S7.5.5-999"
+        with self.assertRaisesRegex(ValueError, "unknown primary requirement"):
+            generated.facet_partitions(self.catalogue, invented, LINKED)
+        restored = json.loads(json.dumps(self.catalogue))
+        for requirement in restored["requirements"]:
+            requirement["pending"].update(RESTORED_PENDING.get(requirement["id"], {}))
+        unlinked = generated.synced_catalogue(restored, self.specs, {})
+        self.assertEqual(sum(len(r["pending"]) for r in unlinked["requirements"]), 66)
+        linked = generated.synced_catalogue(restored, self.specs, LINKED)
+        self.assertEqual(sum(len(r["pending"]) for r in linked["requirements"]), 61)
+
+    def test_explicit_linked_overrides_reject_unknown_owners(self):
+        invalid = json.loads(json.dumps(LINKED))
+        invalid["S7.5.5-999"] = {"invented-facet": "synthetic.unknown-owner"}
+        with self.assertRaisesRegex(ValueError, "unknown linked requirement"):
+            generated.facet_partitions(self.catalogue, self.specs, invalid)
+        invalid = {"S7.5.5-999": {}}
+        with self.assertRaisesRegex(ValueError, "unknown linked requirement"):
+            generated.synced_catalogue(self.catalogue, self.specs, invalid)
+
+    def test_every_registered_subset_has_truthful_real_registry_and_rendered_state(self):
+        original_reader = suite_data.read_json
+        catalogue_path = ROOT / generated.CATALOGUE
+        evidence_path = self.registry.evidence.path
+        scoped = [link for link in self.registry.evidence.data["links"]
+                  if link["target"]["requirement"] in LINKED]
+        outside = [link for link in self.registry.evidence.data["links"]
+                   if link["target"]["requirement"] not in LINKED]
+        self.assertEqual(len(scoped), 5)
+        self.assertEqual(len(outside), 4)
+        original_admin = {k: v for k, v in self.catalogue.items() if k.startswith("review_")}
+        states = 0
+        for choices in itertools.product((False, True), repeat=len(scoped)):
+            selected = [link for keep, link in zip(choices, scoped) if keep]
+            active = {}
+            for link in selected:
+                target = link["target"]
+                active.setdefault(target["requirement"], {})[target["facet"]] = link["id"]
+            restored = json.loads(json.dumps(self.catalogue))
+            for requirement in restored["requirements"]:
+                requirement["pending"].update(RESTORED_PENDING.get(requirement["id"], {}))
+            updated = generated.synced_catalogue(restored, self.specs, active)
+            evidence = dict(self.registry.evidence.data, links=outside + selected)
+
+            def scoped_reader(path, *args, **kwargs):
+                if Path(path) == catalogue_path:
+                    return json.loads(json.dumps(updated))
+                if Path(path) == evidence_path:
+                    return json.loads(json.dumps(evidence))
+                return original_reader(path, *args, **kwargs)
+
+            def cached_registry(root):
+                self.assertEqual(Path(root), ROOT)
+                return registry
+
+            # Each state still parses and collects through a real Registry.
+            with patch.object(suite_data, "read_json", side_effect=scoped_reader), \
+                    patch.object(evidence_links, "read_json", side_effect=scoped_reader), \
+                    patch.object(suite_data, "Registry", side_effect=cached_registry):
+                registry = Registry(ROOT)
+                actual_cases = runner.collect_cases(ROOT / "tests", registry)
+                self.assertEqual({case.name for case in actual_cases}, self.all_case_ids)
+                partitions = generated.facet_partitions(updated, self.specs)
+                self.assertEqual({r: p["linked"] for r, p in partitions.items() if p["linked"]}, active)
+                self.assertEqual(generated.synced_catalogue(updated, self.specs), updated)
+                view = generated.render_view(updated, self.specs)
+                self.assertIn("**90 are directly represented**", view)
+                self.assertIn(f"**{len(selected)} have registered canonical links**", view)
+                self.assertIn(f"**{66-len(selected)} remain PENDING**", view)
+                self.assertFalse("Explicit canonical connections consume" in view, choices)
+                self.assertEqual({k: v for k, v in updated.items() if k.startswith("review_")}, original_admin)
+                for requirement in updated["requirements"]:
+                    rule = requirement["id"]
+                    if rule not in LINKED:
+                        continue
+                    current = active.get(rule, {})
+                    if not current:
+                        self.assertTrue("No canonical links are registered for this requirement."
+                                        in requirement["oracle"], (choices, rule))
+                    for facet, link_id in LINKED[rule].items():
+                        self.assertEqual(link_id in requirement["oracle"], facet in current,
+                                         (choices, rule, facet))
+                        self.assertEqual(link_id in view, facet in current, (choices, rule, facet))
+                        if facet not in current:
+                            self.assertEqual(requirement["pending"][facet], RESTORED_PENDING[rule][facet])
+                    self.assertNotIn("Registered canonical connections consume", requirement["oracle"])
+                    self.assertNotIn("Registered connections reuse", requirement["oracle"])
+                limitation = next(r["oracle_limitation"] for r in updated["requirements"]
+                                  if r["id"] == "S7.5.5-005")
+                self.assertNotIn("The linked outside-call diagnostic/control pairs", limitation)
+            states += 1
+        self.assertEqual(states, 32)
+
+    def test_registered_links_reuse_six_canonical_cases_without_execution_fanout(self):
+        cases = runner.collect_cases(ROOT / "tests", self.registry)
+        by_id = {case.name: case for case in cases}
+        names = set(by_id)
+        scoped = [link for link in self.registry.evidence.links.values()
+                  if link["target"]["requirement"] in LINKED]
+        self.assertEqual({link["id"] for link in scoped}, {
+            name for facets in LINKED.values() for name in facets.values()})
+        self.assertEqual(len(scoped), 5)
+        members = [member for link in scoped for member in link["cases"]]
+        self.assertEqual(len(members), 7)
+        self.assertEqual(len({member["id"] for member in members}), 6)
+        self.assertFalse({link["id"] for link in scoped} & names)
+        for member in members:
+            case = by_id[member["id"]]
+            self.assertEqual(case.rule, member["primary_rule"])
+            self.assertNotIn(case.name, {
+                name for name, spec in self.specs.items() if spec["rule"] in LINKED})
+            self.assertEqual(case.fixture.expectation.phase, member["phase"])
+        shared = "S7_5_2_2_001_valid__component_private"
+        self.assertEqual(sum(member["id"] == shared for member in members), 2)
+        self.assertEqual(sum(case.name == shared for case in cases), 1)
+        self.assertEqual(sum(member["role"] == "runtime-effect" for member in members), 3)
+        self.assertEqual(sum(member["role"] == "diagnostic" for member in members), 2)
+        self.assertEqual(sum(member["role"] == "positive-control" for member in members), 2)
+
+    def test_private_reuse_pairs_keep_the_exact_provider_only_repair(self):
+        for variant, old, new in (
+                ("default_private_client", "contains\nprivate\nprocedure :: secret",
+                 "contains\nprocedure :: secret"),
+                ("explicit_private_client", "procedure, private :: secret",
+                 "procedure, public :: secret")):
+            bad = self.cases[generated.identifier("S7.5.5-007", variant, True)]
+            good = self.cases[generated.identifier("S7.5.5-007", variant + "_repair", False)]
+            source = (bad.fixture.root / "provider.f90").read_text()
+            self.assertEqual(source.count(old), 1)
+            self.assertEqual(source.replace(old, new), (good.fixture.root / "provider.f90").read_text())
+            self.assertEqual((bad.fixture.root / "client.f90").read_bytes(),
+                             (good.fixture.root / "client.f90").read_bytes())
+            client = (bad.fixture.root / "client.f90").read_text()
+            self.assertIn("use tbp_provider, only: object", client)
+            self.assertIn("object%payload = 17\nobserved = object%secret()", client)
+            self.assertEqual(bad.fixture.expectation.outcome, "diagnose")
+            self.assertEqual(good.fixture.expectation.outcome, "success")
+            self.assertEqual(good.fixture.expectation.phase, "compile")
+
+    def test_runtime_reuse_has_public_calls_not_a_private_name_rejection_claim(self):
+        cases = {case.name: case for case in runner.collect_cases(ROOT / "tests", self.registry)}
+        for variant in ("public_public", "component_private"):
+            case = cases["S7_5_2_2_001_valid__" + variant]
+            provider = (case.fixture.root / "provider.f90").read_text()
+            client = (case.fixture.root / "main.f90").read_text()
+            self.assertIn("implicit none\nprivate\npublic :: published", provider)
+            self.assertIn("type, public :: record", provider)
+            self.assertIn("published%payload = 11", provider)
+            self.assertIn("call local%set_value(19)\nif (local%get_value() /= 19) error stop 6", client)
+            self.assertIn("if (published%get_value() /= 13) error stop 4", client)
+            self.assertIn("call published%set_value(17)\nif (check_inside() /= 17) error stop 5", client)
+            self.assertNotIn("get_value", client.splitlines()[1])
+            self.assertNotIn("set_value", client.splitlines()[1])
+            self.assertEqual(case.meta.evidence, "effect")
+            self.assertEqual(case.fixture.expectation.phase, "run")
+            if variant == "component_private":
+                self.assertIn("type, public :: record\n    private\n", provider)
+                self.assertIn("contains\n    procedure :: get_value, set_value", provider)
+                self.assertNotIn("published%payload", client)
+                self.assertIn("call mutate_inside()\nif (check_inside() /= 13)", client)
+            else:
+                self.assertIn("procedure, public :: get_value, set_value", provider)
+                self.assertIn("published%payload = 13\nif (check_inside() /= 13)", client)
 
     def test_canonical_json_and_both_markdown_views_are_current(self):
         self.assertEqual(self.catalogue, generated.synced_catalogue(self.catalogue, self.specs))
         view = (ROOT / generated.VIEW).read_text()
         self.assertEqual(view, generated.render_view(self.catalogue, self.specs))
         appendix = view.split("## Complete finite pending plans\n", 1)[1].split("## Reproduction and gates", 1)[0]
-        self.assertEqual(appendix.count("* **`"), 66)
+        self.assertEqual(appendix.count("* **`"), 61)
+        self.assertIn("**90 are directly represented**", view)
+        self.assertIn("**5 have registered canonical links**", view)
+        self.assertIn("**61 remain PENDING**", view)
+        for facets in LINKED.values():
+            for facet, link in facets.items():
+                self.assertIn(f"| `{facet}` | `{link}` |", view)
         for r in self.catalogue["requirements"]:
             for facet, plan in r["pending"].items():
                 self.assertIn(f"* **`{facet}`** — {plan}", appendix)
