@@ -470,8 +470,32 @@ block still makes the normal whole-suite gate nonzero.
 The reviewed 7.5.4.1-7.5.4.5 source plan now has a 211-case implementation
 packet in its isolated author worktree. Independent fixture review is in
 progress; no approval or main-checkout coverage is claimed for that packet.
-A separate source-only inventory of the 39 base units in 7.5.5 is under
-construction, before fixture generation or source adjudication.
+The 7.5.5 source inventory has been reviewed, including 39 base and 145
+fine units. Its 151-case implementation remains unapproved: independent
+coordinator review found overbroad diagnostic-cause routes and permanent
+draft-status assertions/prose, which are being corrected. All 94 valid
+sources, 57 repair pairs and nine runtime oracles were reviewed against
+the original source; that eligibility does not approve the faulty cause
+contracts. The packet still has 90 direct and 66 pending facets outside
+the main-checkout counts.
+
+Two subsequent infrastructure commits close specific review and reuse
+gaps without adding coverage. Native compiler `error: Internal:` reports
+now override otherwise accepted warnings, without treating filenames,
+source echoes or application output as compiler failures. Explicit finite
+canonical-case patterns support S-owned diagnostic/control pairs and
+single runtime-effect or positive-control witnesses. Their direct owners,
+source anchors, phases, evidence roles and independent review gates remain
+binding; links still create neither executions nor derived passing effects.
+All 1,395 existing fingerprints, target outcomes/phases, four link bindings
+and the observational inventory are unchanged. Four actual type-bound
+connections over six existing cases have been structurally checked, but
+remain unregistered and clear no pending facet.
+
+The isolated component-name reporting-duty correction and the source-only
+finalization and extension packets still require independent review before
+integration or fixture generation. Their unapproved contents are not
+included in the committed source or execution totals.
 The broader meta-evidence contract, including mixed FORMAT
 diagnostic contexts, is not complete merely because one link type exists.
 Meta-level definitions must not become fabricated passing programs.
