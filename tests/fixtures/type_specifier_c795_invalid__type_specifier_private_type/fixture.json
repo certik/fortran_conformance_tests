@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "id": "C795_invalid__type_specifier_private_type",
+  "rule": "C795",
+  "facets": [
+    "inaccessible-provider-type"
+  ],
+  "standard": "f2023",
+  "evidence": "effect",
+  "files": [
+    "provider.f90",
+    "client.f90"
+  ],
+  "build": [
+    {
+      "id": "provider",
+      "source": "provider.f90",
+      "language": "fortran",
+      "form": "free",
+      "output": "provider.o",
+      "depends_on": []
+    },
+    {
+      "id": "client",
+      "source": "client.f90",
+      "language": "fortran",
+      "form": "free",
+      "output": "client.o",
+      "depends_on": [
+        "provider"
+      ]
+    }
+  ],
+  "expect": {
+    "phase": "compile",
+    "step": "client",
+    "outcome": "diagnose",
+    "diagnostic": {
+      "file": "client.f90",
+      "line": 4,
+      "contains_any": [
+        "'hidden' is not an accessible derived type",
+        "'hidden' is not the name of a derived type",
+        "Derived type 'hidden' is not declared",
+        "Derived type 'hidden' has not been declared",
+        "Derived type 'hidden' not found",
+        "Derived type 'hidden' at (1) is being used before it is defined"
+      ],
+      "excludes_any": [
+        "not implemented",
+        "not yet implemented",
+        "unimplemented",
+        "unsupported",
+        "not supported",
+        "implementation limitation",
+        "internal compiler error",
+        "ASR verify",
+        "ASR verifier",
+        "module failed verification",
+        "out of memory",
+        "cannot allocate memory",
+        "segmentation fault",
+        "unexpected end of file",
+        "unexpected eof",
+        "missing end",
+        "stack trace"
+      ]
+    }
+  }
+}

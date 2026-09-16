@@ -22,7 +22,7 @@ The readiness refactoring now supplies:
   context case.
 
 This is infrastructure readiness, not completed conformance coverage.
-The current census still has 4,965 unresolved base units and eight unresolved
+The current census still has 4,962 unresolved base units and eight unresolved
 fine-grained units inside the catalogues. Its independent visual
 review is still pending. Automatic PDF extraction is not semantic review,
 and list items/table rows require additional audited subdivisions.
@@ -634,7 +634,7 @@ are not successful automatic-finalization executions for IF/DO, and none of
 these controls becomes another conformance case. The source/observer and
 exact provenance decisions are in `doc/source_audits/batch_019.json`.
 
-The current measured whole-target checkpoint has **1,873 cases**:
+The nineteenth-batch measured whole-target checkpoint has **1,873 cases**:
 **1,159 PASS, 709 XFAIL, four SKIPs and one NEEDS_ORACLE**.
 All 1,855 prior IDs, fingerprints and target outcomes/phases are unchanged.
 There are 77 catalogues, 403 requirements, 1,611 direct and four linked
@@ -647,26 +647,65 @@ Five draft links reuse six canonical cases without another program. Its
 generator distinguishes direct, registered-linked and pending facets; only
 three existing cases acquire changed requirement-metadata fingerprints,
 with fresh observations and no input-byte changes. The candidate remains
-outside main awaiting independent connection review. Its source, case and
-inventory staleness must be explicitly adjudicated before integration;
-neither its 79 regressions nor the nine selected processor observations per
-compiler count as link approval or new main coverage.
+outside main. Independent review found the five semantic connections
+eligible, but identified two generator defects: false connection prose after
+removal/restoration, and silent omission of unknown explicit-map owners.
+Correction `a9ec1bf` uses conditional/candidate prose and an exact current
+link list, rejects unknown scoped owners, and exercises all 32 subsets
+through real Registry collection/rendering. Its 81 regressions and fresh
+nine-case observations do not substitute for independent correction
+closeout. Source, three metadata-changed cases and inventory staleness still
+need explicit coordinator adjudication before main coverage is credited.
+
+The twentieth batch integrates **34 compile-only type-specifier cases**:
+17 diagnostic inputs and 17 positive controls, representing 28 facets.
+All 17 controls compile with GNU f2023; 23 cases are reference-validated and
+11 negatives retain source-only approval. Empty-list/non-PDT/missing-value
+conditions, keyword correspondence/order and complete C7100 dummy/selector/
+allocation contexts remain distinct. No allocation or parameter-value
+runtime effect is inferred from these admissions.
+
+Twelve predicates were calibrated from actual native messages, with a
+genuine current-fingerprint refresh and all original rows preserved.
+Eighty-seven archived negative checks were independently replayed.
+Uncredited generic recovery or conservative wording matches are not
+automatically failures of the standard's minimum reporting capability.
+Source and exact provenance are in `doc/source_audits/batch_020.json`.
+
+The current measured whole-target checkpoint has **1,907 cases**:
+**1,168 PASS, 734 XFAIL, four SKIPs and one NEEDS_ORACLE**.
+All 1,873 prior IDs, fingerprints and target outcomes/phases are unchanged.
+There are 78 catalogues, 414 requirements, 1,639 direct and four linked
+facets, and 462 pending facets. All 31 remaining local facets, including
+15 S-owned value/default/conversion effects, remain explicitly pending.
 A further source-only packet covers 7.5.8 and 7.5.9 with 13 base units,
 50 fine units, 14 requirements and 72 pending facets. It preserves existing
 canonical witnesses and explicitly accounts for the value-set definition
 without inventing a no-op execution. Its four-file author commit `1fada1e`
 has passed independent source-eligibility review; no main-checkout coverage
-is credited yet. A bounded compile-only 7.5.9 author is implementing 28 facets
-with 31 pending, excluding 7.5.8 and S-owned runtime effects.
+was credited by the source-only packet. The 7.5.9 compile subset is now
+integrated separately as batch020; 7.5.8's 13 value facets remain pending
+outside main, without a fabricated value-set classifier execution.
 Source-only constructor packet `8ba944c` in 7.5.10 covers 28 base and
 114 fine units, with 22 requirements and 98 facets: two already represented
 C7107 facets and 96 pending. The four existing C7107 programs and their
 primary ownership remain; the new detailed metadata intentionally exposes
-four stale case bindings and three stale links. Its source gate is still
-under independent review, not an automatic renewal or additional execution
-credit. A new source-only author packet for 7.6.1/.2 is limited to 39 base units
-on original PDF109-113, with two catalogues and two views; it does not start
-fixtures or change the pending source gate.
+four stale case bindings and three stale links. Its independent source gate
+has passed, not automatically renewed those receipts. A bounded constructor
+author is implementing 20 compile facets, retaining 76 pending alongside
+the two existing C7107 facets.
+
+The enum/enumeration source packet `fa1fbf02` also passed independent
+eligibility review: 39 base units, 147 fine units, 28 requirements and
+116 pending facets. Its two catalogues do not change any of the author's
+1,849 case fingerprints or four links, but would stale the observational
+inventory through its changed source context. That renewal remains explicit.
+The conditional range of the note's12345 example, NEXT's endpoint error
+termination, and outstanding companion/representation/BOZ qualifications
+are preserved rather than turned into unqualified positive tests.
+A source-only author is now cataloguing 7.7's ten base units on PDF113-114,
+stopping before 7.8; the existing real-BOZ oracle block is not silently
+resolved by this scheduling step.
 The broader meta-evidence contract, including mixed FORMAT
 diagnostic contexts, is not complete merely because one link type exists.
 Meta-level definitions must not become fabricated passing programs.
