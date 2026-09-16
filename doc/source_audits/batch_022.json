@@ -1,0 +1,162 @@
+{
+  "schema_version": 1,
+  "review_type": "independent-unnamed-enum-value-oracle-review",
+  "review_date": "2026-09-16",
+  "baseline_commit": "865af9ca1cd4f93c7a58ec5dff93d8ee1cf39ac0",
+  "state": "reviewed-and-integrated-with-prior-oracle-block",
+  "source": {
+    "document": "J3/24-007",
+    "edition": "F2023",
+    "date": "2023-12-18",
+    "sha256": "7371e889f231cfb0316d30365d5083fb5af34cbb6d5f7cb1e01855c73021bfa2",
+    "sections": ["7.6.1"],
+    "pdf_pages": [109, 110, 111],
+    "base_units_reviewed": 23,
+    "previously_counted_numbered_units": 10,
+    "additional_base_units_accounted": 13,
+    "fine_units_reviewed": 93,
+    "accounting_records": 116,
+    "requirements": 15,
+    "whole_pdf_ratification": false
+  },
+  "author_handoffs": {
+    "source": "fa1fbf02ec0ee55dffb543c509aa276f418cc35d",
+    "fixtures": "50061f33f6bbf3b574c83ec36e11279b68106a46",
+    "fixture_author_base": "37f6939b73c728460b2847b1efed83d1f7a38c8e",
+    "handoff_sha256": "cd8a4f1eac405b9c76caa34302d8aee371fd9e3f60ddc82a940589837026bbf4",
+    "owned_paths": 8
+  },
+  "independent_review": {
+    "source": "enumerations-source-review.json",
+    "source_review_sha256": "2cba3b4a7bc9d6371ae4c81829e44eb0617e45ed5fd0ee8d99e2563d761b53e9",
+    "fixtures": "enum-values-fixture-review.json",
+    "fixture_review_sha256": "5822d5d333df678b1cddac1bb0c6e70075a5fef189022761bc516c8d71b452c0",
+    "context": "Independent original-source review preceded the author packet. The coordinator read both complete actual programs and generator/regressions, reconstructed each value directly from declaration order and explicit initializers, and checked all source/observer/processor/sensitivity bindings. No fresh-context-per-pass claim is made.",
+    "additional_premises": [
+      "Enum enumerators are defined INTEGER named constants, including when their initializer is omitted.",
+      "One definition has one enumerator kind, but no KIND-code identity across different definitions or prescribed C_INT equality is inferred.",
+      "INT only converts the small values to default INTEGER for homogeneous observer arrays.7.4.3.1p4 guarantees a default decimal exponent range of at least5, sufficient for every value used.",
+      "Every source name is unique within its containing program, and no ENUM definition is assumed to create a separate enumerator namespace.",
+      "The associated C kind/representation, named enum types, ENUMERATION TYPE, BOZ and processor-profile qualifications remain outside this runtime subset."
+    ],
+    "findings": [],
+    "reference_validation_eligible": 2,
+    "source_only_eligible": 0,
+    "approvals_written_during_review": 0
+  },
+  "finite_boundaries": {
+    "new_cases": 2,
+    "runtime_effects": 2,
+    "compile_only_cases": 0,
+    "diagnostic_inputs": 0,
+    "direct_facets": 7,
+    "pending_facets": 57,
+    "declared_facets": 64,
+    "enum_definitions": 5,
+    "named_integer_constants": 29,
+    "literal_value_vectors": 5,
+    "definition_local_kind_checks": 5,
+    "generated_files": 4,
+    "new_profiles": 0,
+    "new_C_companions": 0,
+    "new_links": 0,
+    "new_diagnostic_policies": 0
+  },
+  "case_oracle_judgments": {
+    "S7_6_1_001_valid__enum_value_common_kind": {
+      "primary": "S7.6.1-001",
+      "facets": ["within-definition-common-kind"],
+      "definitions": {"common": {"statement_partition": [3, 3], "expected_values": [0, 1, 4, 5, 9, 10]}},
+      "judgment": "Every member's KIND is compared only with the definition's first member. Its six actual INTEGER values are independently checked, not used to infer the kind. No numeric kind identifier, cross-definition equality, C_INT assumption or physical-layout observation appears.",
+      "limit": "This represents only common kind within the definition, not correctness of the corresponding C kind-selection policy or interoperability."
+    },
+    "S7_6_1_004_valid__enum_value_sequence_matrix": {
+      "primary": "S7.6.1-004",
+      "facets": ["first-implicit-zero", "explicit-values", "successor-after-explicit", "across-statement-boundary", "negative-and-repeated-values", "new-definition-reset"],
+      "definitions": {
+        "flat": {"statement_partition": [8], "expected_values": [0, 1, 4, 5, 9, 10, 4, 5]},
+        "split": {"statement_partition": [3, 5], "expected_values": [0, 1, 4, 5, 9, 10, 4, 5]},
+        "negative": {"statement_partition": [2, 3], "expected_values": [-3, -2, 4, 4, 5]},
+        "fresh": {"statement_partition": [2], "expected_values": [0, 1]}
+      },
+      "judgment": "Flat and split forms independently match literal vectors, so two equally wrong forms cannot cancel. Explicit4 after10 resets the next implicit value to5. Negative and repeated values are legal with distinct names. A fresh definition starts0/1 after the preceding5, without carrying state or assuming equal KIND identifiers across definitions.",
+      "limit": "Incidental local-kind checks are prerequisites; they do not create additional direct S001, source-use or representation credit."
+    }
+  },
+  "observer_and_sensitivity": {
+    "observer": "The source checks equal nonempty vector sizes before array comparison, then exact ordered values and the definition-local KIND boolean. No global KIND variable, guessed code or mutable expected-value source is used.",
+    "source_binding": "Every literal vector, INT-name order and KIND-name order/first-member reference is bound to the exact emitted observation span and its SHA256.",
+    "symbolic_value_cell_countermodels": 29,
+    "symbolic_kind_cell_countermodels": 29,
+    "runtime_probes": 44,
+    "runtime_probe_traces": 132,
+    "runtime_probe_kinds": {
+      "wrong-expected-value": 29,
+      "missing-expected-cell": 5,
+      "inverted-definition-kind-check": 5,
+      "empty-observation": 5
+    },
+    "verification": "Every probe changes only one uniquely bound observation block; definitions and other source bytes remain. Manifests differ only in the explicit sensitivity ID. The unchanged parent first has successful GNUf2023 runtime evidence. Every mutant compiles/links and fails at its predicted size101, empty102, value104 or kind105 guard with the expected marker.",
+    "kind_limit": "Runtime inversions test the actual KIND condition's connection to the guard without arithmetic on identifiers. Per-member differing-kind inputs are symbolic countermodels, not claims that a processor emitted those codes.",
+    "conformance_cases_added": 0
+  },
+  "observation_provenance": {
+    "current_selection": "enum-values-current-selection.json",
+    "current_selection_sha256": "b6f49558351561468d2b874509ef3b107178db411c23157b9caccd540ea36017",
+    "actual_reports": 2,
+    "lf_gnu_report_sha256": "c40c319167ec52428d9dda0599513209bea50bc5e190be7be91bf45b0bddd04e",
+    "flang_reference_only_report_sha256": "a431e298656a914f6f81b647a696c0a5ba8016b4c12c4d22851b7cd91364d378",
+    "current_processor_records": 6,
+    "ordered_trace_records": 18,
+    "lfortran": {"pass": 2},
+    "gnu_f2023": {"pass": 2},
+    "flang_f2018": {"pass": 2},
+    "join_policy": "Exact IDs, current source/manifest/requirement fingerprints, compiler identities/modes and ordered compile/link/run contexts match the two actual reports. The reference-only Flang report supplies no invented target run and no f2023 qualification.",
+    "superseded_rows": 0
+  },
+  "validation": {
+    "python_regressions": 485,
+    "independent_review_targeted_regressions": 90,
+    "full_target_checkpoint": "verified",
+    "full_target_report": "batch022-full-target.json",
+    "full_report_sha256": "496609c056dc9562a0d4890a5ed006ca5a1517c4165e575fb57214781f28c476",
+    "full_case_count": 1909,
+    "normal_statuses": {"PASS": 1170, "XFAIL": 734, "SKIP": 4, "NEEDS_ORACLE": 1},
+    "raw_target_outcomes": {"pass": 1171, "fail": 734, "skip": 4},
+    "actual_full_run_exit": 1,
+    "expected_nonzero_reason": "The pre-existing real-BOZ case remains needs-oracle.",
+    "unchanged_prior_ids_fingerprints_metadata_outcomes_phases": 1907,
+    "unchanged_prior_review_records": 1861,
+    "unchanged_current_link_receipts": 9,
+    "new_baseline_entries": 0,
+    "baseline_byte_identical": true,
+    "baseline_sha256": "68a2b6eb84e7ca9edc85f454e13cf878557c2c4a274d352417f86d010ae2dc85",
+    "normal_selected_report_sha256": "2f79e19aa06831cb02a518c017d823239509869b7eb76b73f76ce50af36e3a55",
+    "normal_selected_pass": 2,
+    "run_consistency_errors": 0,
+    "lfortran": "0.65.0-411-ga0afaa840b-dirty; f23; frozen installation",
+    "lfortran_binary_sha256": "a0e77e3e5f2dd3b940318df215dbbd5d55529ce05ac66362b6ffb05e9d61a54e"
+  },
+  "current_corpus": {
+    "detailed_catalogues": 79,
+    "structured_requirements": 429,
+    "direct_facets": 1646,
+    "linked_facets": 9,
+    "current_linked_facets": 9,
+    "pending_facets": 514,
+    "declared_facets": 2169,
+    "accounted_base_units": 1524,
+    "unresolved_base_units": 4949,
+    "unresolved_fine_units": 8,
+    "fixture_review_groups": {"reference-validated": 1619, "source-reviewed": 243, "needs-oracle": 1}
+  },
+  "remaining_boundaries": [
+    "All57other local facets remain pending, including named enum values, companion/representation qualifications and source-use graphs.",
+    "The older Clause6 enum spelling program and all1907current-main bindings, including the three metadata renewals since the author base, are preserved.",
+    "The1909-member observational inventory retains the real-BOZ needs-oracle case without approval or qualified passing-effect credit.",
+    "BOZsourcec0c9e5de is independently source-eligible only; its64facets and physical REAL ordering bridge remain pending.",
+    "Constructor declaration integration, enumeration-type value authoring and array-constructor source work remain separate gates.",
+    "Whole-standard completion and global source-census ratification remain false."
+  ],
+  "whole_standard_complete": false
+}

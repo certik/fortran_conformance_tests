@@ -22,7 +22,7 @@ The readiness refactoring now supplies:
   context case.
 
 This is infrastructure readiness, not completed conformance coverage.
-The current census still has 4,962 unresolved base units and eight unresolved
+The current census still has 4,949 unresolved base units and eight unresolved
 fine-grained units inside the catalogues. Its independent visual
 review is still pending. Automatic PDF extraction is not semantic review,
 and list items/table rows require additional audited subdivisions.
@@ -687,7 +687,7 @@ runtime programs serve three permitted-call/default facets. Six unique
 cases supply seven link-member occurrences, but each remains one scheduled
 case per processor configuration. No passing linked effect is computed.
 
-The current measured checkpoint remains **1,907 cases: 1,168 PASS,
+The twenty-first-batch measured checkpoint remains **1,907 cases: 1,168 PASS,
 734 XFAIL, four SKIPs and one NEEDS_ORACLE**. Every prior case ID, input,
 target outcome/phase and baseline line is unchanged; three metadata
 fingerprints have explicit current renewals and the other 1,904 are
@@ -695,6 +695,22 @@ unchanged. There are **1,639 direct, nine current-linked and 457 pending
 facets out of 2,105**. The 78 catalogues, 414 requirements and remaining
 source gaps do not change. Complete connection, state-transition and
 provenance decisions are in `doc/source_audits/batch_021.json`.
+
+The twenty-second batch adds two shared unnamed-ENUM runtime programs for
+seven finite common-kind/value/default/statement-partition/reset facets.
+Five definitions supply 29 named INTEGER constants with independent literal
+vectors. Flat/split forms are each checked against their own expected values;
+KIND comparisons never cross definitions or assume a numeric identifier.
+Forty-four separately bound wrong-oracle runs built successfully and failed
+at their predicted guards, without becoming conformance negatives.
+
+The current measured checkpoint has **1,909 cases: 1,170 PASS,
+734 XFAIL, four SKIPs and one NEEDS_ORACLE**. All 1,907 prior fingerprints,
+outcomes, nine link receipts and baseline bytes are unchanged. There are
+79 catalogues, 429 requirements, 1,646 direct and nine linked facets, and
+514 pending facets out of 2,169. The 57 local followups include named enum,
+BOZ, companion/representation and source-use work. Review and exact
+provenance are in `doc/source_audits/batch_022.json`.
 A further source-only packet covers 7.5.8 and 7.5.9 with 13 base units,
 50 fine units, 14 requirements and 72 pending facets. It preserves existing
 canonical witnesses and explicitly accounts for the value-set definition
@@ -711,8 +727,11 @@ four stale case bindings and three stale links. Its independent source gate
 has passed, not automatically renewed those receipts. Constructor packet
 `9169f1c` now contains 28 new compile cases with 13 minimal repairs,
 representing 20 new facets alongside the two existing C7107 facets and
-retaining 76 pending. Its independent fixture/cause review includes the four
-existing C7107 metadata refreshes and the three dependent link receipts.
+retaining 76 pending. Independent fixture/cause review found no blockers:
+all 17 valid controls compile with GNU, with 29 reference-eligible selections
+and three source-only negatives among the 32 selected cases. Integration
+still requires explicit current-main renewal of the four existing C7107
+metadata fingerprints and three dependent link receipts.
 
 The enum/enumeration source packet `fa1fbf02` also passed independent
 eligibility review: 39 base units, 147 fine units, 28 requirements and
@@ -722,13 +741,20 @@ inventory through its changed source context. That renewal remains explicit.
 The conditional range of the note's12345 example, NEXT's endpoint error
 termination, and outstanding companion/representation/BOZ qualifications
 are preserved rather than turned into unqualified positive tests.
-A bounded unnamed-enum author is implementing seven common-kind and
-value/default/statement-partition/reset facets in 7.6.1, with 57 local facets
-still pending. Named enum types, enumeration types, BOZ and companion/
-representation profiles are excluded from that runtime subset.
-A source-only author is now cataloguing 7.7's ten base units on PDF113-114,
-stopping before 7.8; the existing real-BOZ oracle block is not silently
-resolved by this scheduling step.
+The unnamed-enum subset is integrated as batch022. A separate 7.6.2 author
+is implementing eight enumeration-type ordinal/constructor/access effects,
+with 44 facets pending; it does not substitute INTEGER constants or C/BOZ
+representation for enumeration values.
+
+BOZ source packet `c0c9e5de` passed independent review: ten base units,
+83 fine units, nine requirements and 64 pending facets. It preserves exact
+bit/context/consumer conditions, C7127 for typed REAL arrays, and the
+distinction between STORAGE_SIZE's array-element quantity and physical
+isolated-scalar width. Its source-only registration changes no case or link
+fingerprint but stales the observational inventory through source context.
+The real-BOZ representation bridge remains unresolved; this is not a
+profile, fixture or oracle approval. Array-constructor source work in 7.8
+is now bounded to its 31 base units on PDF114-116 before Clause8 on117.
 The broader meta-evidence contract, including mixed FORMAT
 diagnostic contexts, is not complete merely because one link type exists.
 Meta-level definitions must not become fabricated passing programs.
