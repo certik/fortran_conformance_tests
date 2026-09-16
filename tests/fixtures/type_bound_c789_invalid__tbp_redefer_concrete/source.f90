@@ -1,0 +1,28 @@
+module tbp_defs
+implicit none
+type :: record
+contains
+procedure :: act => parent_impl
+end type record
+type, abstract, extends(record) :: child
+contains
+procedure(child_iface), deferred :: act
+end type child
+abstract interface
+subroutine parent_iface(self)
+import record
+class(record), intent(in) :: self
+end subroutine parent_iface
+subroutine child_iface(self)
+import child
+class(child), intent(in) :: self
+end subroutine child_iface
+end interface
+contains
+subroutine parent_impl(self)
+class(record), intent(in) :: self
+end subroutine parent_impl
+subroutine child_impl(self)
+class(child), intent(in) :: self
+end subroutine child_impl
+end module tbp_defs

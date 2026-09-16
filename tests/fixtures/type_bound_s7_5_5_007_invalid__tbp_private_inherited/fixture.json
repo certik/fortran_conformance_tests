@@ -1,0 +1,81 @@
+{
+  "schema_version": 1,
+  "id": "S7_5_5_007_invalid__tbp_private_inherited",
+  "rule": "S7.5.5-007",
+  "facets": [
+    "inherited-private-call"
+  ],
+  "evidence": "effect",
+  "standard": "f2023",
+  "files": [
+    "provider.f90",
+    "child.f90",
+    "client.f90"
+  ],
+  "build": [
+    {
+      "id": "provider",
+      "source": "provider.f90",
+      "language": "fortran",
+      "form": "free",
+      "output": "provider.o",
+      "depends_on": []
+    },
+    {
+      "id": "child",
+      "source": "child.f90",
+      "language": "fortran",
+      "form": "free",
+      "output": "child.o",
+      "depends_on": [
+        "provider"
+      ]
+    },
+    {
+      "id": "client",
+      "source": "client.f90",
+      "language": "fortran",
+      "form": "free",
+      "output": "client.o",
+      "depends_on": [
+        "provider",
+        "child"
+      ]
+    }
+  ],
+  "expect": {
+    "phase": "compile",
+    "outcome": "diagnose",
+    "step": "client",
+    "diagnostic": {
+      "file": "client.f90",
+      "line": 7,
+      "contains_any": [
+        "'secret' of 'parent' is PRIVATE at (1)",
+        "'secret' of 'child' is PRIVATE at (1)",
+        "PRIVATE name 'secret' is accessible only within module 'tbp_provider'"
+      ],
+      "excludes_any": [
+        "not implemented",
+        "not yet implemented",
+        "unimplemented",
+        "unsupported",
+        "not supported",
+        "implementation limitation",
+        "internal compiler error",
+        "ASR verify",
+        "ASR verifier",
+        "unexpected end of file",
+        "unexpected eof",
+        "missing end",
+        "out of memory",
+        "segmentation fault",
+        "stack trace",
+        "obsolescent",
+        "obsolete feature",
+        "private component",
+        "Component 'secret'"
+      ]
+    }
+  }
+}

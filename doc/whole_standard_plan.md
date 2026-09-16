@@ -22,7 +22,7 @@ The readiness refactoring now supplies:
   context case.
 
 This is infrastructure readiness, not completed conformance coverage.
-The current census still has 5,029 unresolved base units and six unresolved
+The current census still has 5,016 unresolved base units and seven unresolved
 fine-grained units inside the catalogues. Its independent visual
 review is still pending. Automatic PDF extraction is not semantic review,
 and list items/table rows require additional audited subdivisions.
@@ -461,7 +461,7 @@ obligation. General source-use and classification graphs remain pending.
 The source, fixture, correction and exact-binding decisions are recorded
 in `doc/source_audits/batch_012.json`; source-only cases retain their
 unweakened programs and explicit lack of qualifying reference evidence.
-The normal full frozen-target run now reports 885 PASS, 505 XFAIL,
+The twelfth-batch full frozen-target run reported 885 PASS, 505 XFAIL,
 four SKIPs and one NEEDS_ORACLE across 1,395 executions. Raw target
 outcomes are 886 pass, 505 fail and four skip. All 1,239 prior case
 fingerprints and target outcomes are unchanged; the one existing oracle
@@ -470,20 +470,14 @@ block still makes the normal whole-suite gate nonzero.
 The reviewed 7.5.4.1-7.5.4.5 source plan now has a 211-case implementation
 packet in its isolated author worktree. Independent fixture review found
 an unsupported-facility guard gap in all 77 negative contracts and a
-C765 binding contrast that also violated C784. The requested corrections retain the
-211 IDs and add a non-passed defining-type dummy to both sides of that
-one contrast, keeping only the intended selected-dummy type change.
-No approval or main-checkout coverage is claimed for that packet.
-The 7.5.5 source inventory has been reviewed, including 39 base and 145
-fine units. Its 151-case implementation remains unapproved: independent
-coordinator review found overbroad diagnostic-cause routes and permanent
-draft-status assertions/prose, which are being corrected. All 94 valid
-sources, 57 repair pairs and nine runtime oracles were reviewed against
-the original source; that eligibility does not approve the faulty cause
-contracts. The packet still has 90 direct and 66 pending facets outside
-the main-checkout counts.
+C765 binding contrast that also violated C784. Correction `503563f` retains
+the 211 IDs, hardens the 77 guards and adds a non-passed defining-type dummy
+to both sides of that one contrast. It refreshed 99 requirement-bound
+fingerprints, including related C765 oracle wording, without changing native
+outcomes. Independent correction closeout is queued; no approval or
+main-checkout coverage is claimed for that packet.
 
-Two subsequent infrastructure commits close specific review and reuse
+The infrastructure commits preceding type-bound integration close review and reuse
 gaps without adding coverage. Native compiler `error: Internal:` reports
 now override otherwise accepted warnings, without treating filenames,
 source echoes or application output as compiler failures. Explicit finite
@@ -506,6 +500,28 @@ renewed; old receipts were not silently expanded to new source anchors.
 This changes no case count or credited facet and does not impose a fatal
 diagnostic policy.
 
+The thirteenth batch integrates 7.5.5: 39 base and 145 fine units,
+33 requirements, 90 directly represented facets and 151 new cases.
+Independent source/fixture/correction review supports 126 reference-validated
+and 25 source-reviewed cases. All 94 valid programs passed both reference
+configurations; Flang f2018 is still not f2023 corroboration.
+
+The three review findings are closed: finite role/property diagnostic
+routes replace broad fragments, native internal failures override accepted
+warnings, and generated review status remains truthful after adjudication.
+C784's INTEGER-only interface explicitly retains its unavoidable C765
+coupling; adding a typed witness there would defeat C784's antecedent.
+Twenty metadata-bound cases were freshly observed; 131 unchanged current
+rows retain their actual earlier report provenance.
+
+The measured whole-target checkpoint now has **1,546 cases**:
+**982 PASS, 559 XFAIL, four SKIPs and one NEEDS_ORACLE**. All 1,395 prior
+IDs, fingerprints and target outcomes/phases are unchanged. There are
+66 catalogues, 334 requirements, 1,410 direct and four linked facets,
+and 283 pending facets. The source, cause, oracle and exact-binding
+decisions are recorded in `doc/source_audits/batch_013.json`. No new semantic
+link was registered, and the C783 mixed-access question remains explicit.
+
 The source-only finalization packet is under independent review; the
 extension packet awaits its source review. Neither is included in committed
 source or execution totals, and neither may proceed to fixture generation
@@ -515,6 +531,10 @@ A further source-only packet covers 7.5.8 and 7.5.9 with 13 base units,
 canonical witnesses and explicitly accounts for the value-set definition
 without inventing a no-op execution. Its four-file author commit `1fada1e`
 also awaits independent review; no main-checkout coverage is credited.
+Source-only constructor authoring in 7.5.10 is also under way. It must
+preserve the existing four C7107 programs and their primary ownership;
+new detailed source metadata requires explicit future review and rebinding,
+not automatic renewal of their dependent evidence.
 The broader meta-evidence contract, including mixed FORMAT
 diagnostic contexts, is not complete merely because one link type exists.
 Meta-level definitions must not become fabricated passing programs.

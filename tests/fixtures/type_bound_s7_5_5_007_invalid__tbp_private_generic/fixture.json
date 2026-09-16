@@ -1,0 +1,68 @@
+{
+  "schema_version": 1,
+  "id": "S7_5_5_007_invalid__tbp_private_generic",
+  "rule": "S7.5.5-007",
+  "facets": [
+    "private-generic-name-call"
+  ],
+  "evidence": "effect",
+  "standard": "f2023",
+  "files": [
+    "provider.f90",
+    "client.f90"
+  ],
+  "build": [
+    {
+      "id": "provider",
+      "source": "provider.f90",
+      "language": "fortran",
+      "form": "free",
+      "output": "provider.o",
+      "depends_on": []
+    },
+    {
+      "id": "client",
+      "source": "client.f90",
+      "language": "fortran",
+      "form": "free",
+      "output": "client.o",
+      "depends_on": [
+        "provider"
+      ]
+    }
+  ],
+  "expect": {
+    "phase": "compile",
+    "outcome": "diagnose",
+    "step": "client",
+    "diagnostic": {
+      "file": "client.f90",
+      "line": 6,
+      "contains_any": [
+        "'g' of 'record' is PRIVATE at (1)",
+        "PRIVATE generic binding 'g' cannot be referenced from this client scope"
+      ],
+      "excludes_any": [
+        "not implemented",
+        "not yet implemented",
+        "unimplemented",
+        "unsupported",
+        "not supported",
+        "implementation limitation",
+        "internal compiler error",
+        "ASR verify",
+        "ASR verifier",
+        "unexpected end of file",
+        "unexpected eof",
+        "missing end",
+        "out of memory",
+        "segmentation fault",
+        "stack trace",
+        "obsolescent",
+        "obsolete feature",
+        "private component",
+        "Component 'g'"
+      ]
+    }
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "id": "C772_invalid__tbp_submodule_private",
+  "rule": "C772",
+  "facets": [
+    "submodule-local-type"
+  ],
+  "evidence": "effect",
+  "standard": "f2023",
+  "files": [
+    "ancestor.f90",
+    "descendant.f90"
+  ],
+  "build": [
+    {
+      "id": "ancestor",
+      "source": "ancestor.f90",
+      "language": "fortran",
+      "form": "free",
+      "output": "ancestor.o",
+      "depends_on": []
+    },
+    {
+      "id": "descendant",
+      "source": "descendant.f90",
+      "language": "fortran",
+      "form": "free",
+      "output": "descendant.o",
+      "depends_on": [
+        "ancestor"
+      ]
+    }
+  ],
+  "expect": {
+    "phase": "compile",
+    "outcome": "diagnose",
+    "step": "descendant",
+    "diagnostic": {
+      "file": "descendant.f90",
+      "line": 5,
+      "contains_any": [
+        "PRIVATE statement in a type-bound procedure part is only allowed in a module",
+        "PRIVATE statement at (1) is only allowed in the specification part of a module",
+        "PRIVATE is only allowed in a derived type that is in a module"
+      ],
+      "excludes_any": [
+        "not implemented",
+        "not yet implemented",
+        "unimplemented",
+        "unsupported",
+        "not supported",
+        "implementation limitation",
+        "internal compiler error",
+        "ASR verify",
+        "ASR verifier",
+        "unexpected end of file",
+        "unexpected eof",
+        "missing end",
+        "out of memory",
+        "segmentation fault",
+        "stack trace",
+        "obsolescent",
+        "obsolete feature"
+      ]
+    }
+  }
+}

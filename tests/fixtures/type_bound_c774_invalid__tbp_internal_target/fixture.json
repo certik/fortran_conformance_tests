@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "id": "C774_invalid__tbp_internal_target",
+  "rule": "C774",
+  "facets": [
+    "internal-target-category"
+  ],
+  "evidence": "effect",
+  "standard": "f2023",
+  "files": [
+    "provider.f90",
+    "client.f90"
+  ],
+  "build": [
+    {
+      "id": "provider",
+      "source": "provider.f90",
+      "language": "fortran",
+      "form": "free",
+      "output": "provider.o",
+      "depends_on": []
+    },
+    {
+      "id": "client",
+      "source": "client.f90",
+      "language": "fortran",
+      "form": "free",
+      "output": "client.o",
+      "depends_on": [
+        "provider"
+      ]
+    }
+  ],
+  "expect": {
+    "phase": "compile",
+    "outcome": "diagnose",
+    "step": "client",
+    "diagnostic": {
+      "file": "client.f90",
+      "line": 6,
+      "contains_any": [
+        "'internal_work' must be a module procedure or an external procedure with an explicit interface",
+        "The binding of 'act' ('internal_work') must be either an accessible module procedure or an external procedure with an explicit interface"
+      ],
+      "excludes_any": [
+        "not implemented",
+        "not yet implemented",
+        "unimplemented",
+        "unsupported",
+        "not supported",
+        "implementation limitation",
+        "internal compiler error",
+        "ASR verify",
+        "ASR verifier",
+        "unexpected end of file",
+        "unexpected eof",
+        "missing end",
+        "out of memory",
+        "segmentation fault",
+        "stack trace",
+        "obsolescent",
+        "obsolete feature"
+      ]
+    }
+  }
+}
