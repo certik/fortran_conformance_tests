@@ -1,0 +1,164 @@
+{
+  "schema_version": 1,
+  "review_type": "independent-finalization-process-runtime-oracle-review",
+  "review_date": "2026-09-16",
+  "baseline_commit": "a2f1346ced59cd670475027944b74faa3356626f",
+  "state": "reviewed-and-integrated-with-prior-oracle-block",
+  "source": {
+    "document": "J3/24-007",
+    "edition": "F2023",
+    "date": "2023-12-18",
+    "sha256": "7371e889f231cfb0316d30365d5083fb5af34cbb6d5f7cb1e01855c73021bfa2",
+    "section": "7.5.6.2",
+    "pdf_pages": [102, 103],
+    "base_units_reviewed": 3,
+    "additional_base_units_accounted": 3,
+    "fine_units_reviewed": 19,
+    "accounting_records": 22,
+    "requirements": 4,
+    "catalogue_fingerprint": "b6c8e48a05f08020c6f61ca3825c0dcbbc63ce9eb11ba92fae5bbe391c04b6d2",
+    "whole_pdf_ratification": false
+  },
+  "author_handoffs": {
+    "source": "80f125088619a8b520a64a61bbbff843225c1f2a",
+    "corrected_source": "57ba04c24354a1ef30ef41cb19bf890ac2ba18c5",
+    "fixtures": "7a4aa005bb11c44f92d50d5e2e789d0e11b759b6",
+    "fixture_author_base": "92609aad5d6c4711ccaa93ae3da157ccb0a8f01a",
+    "handoff_sha256": "40e7e102074239cbba56c1a3892fe14609b5da17fc900e2e5f008541911c56eb"
+  },
+  "independent_review": {
+    "artifact": "final-process-fixture-review.json",
+    "sha256": "1c3d10cdc7f02ae16f7909a099563d92a992046ca287a52529b603e823763392",
+    "context": "Retained independent reviewer context, separate from the author. Original source and all17 current type/callback/main bodies and manifests were read; the shared observer was read once and verified byte-identical across inputs.",
+    "source_dependencies": [
+      "7.5.6.1/C791-C794 and7.5.6.3/.4, PDF102-104, for finalizability, signatures, mandatory events and termination boundaries.",
+      "9.7.3.1-.3, PDF165-166, for successful whole-allocation deallocation and pointer-target restrictions.",
+      "15.7-15.9, PDF359-363, for impure/elemental conditions;15.8 is not the elemental section.",
+      "19.6.1-.6, PDF562-566, for defined state and lifetime; BLOCK was reviewed but is not the event selected in these programs."
+    ],
+    "findings": [],
+    "required_corrections": [],
+    "reference_validation_eligible_cases": 17,
+    "source_only_cases": 0,
+    "held_cases": 0,
+    "approvals_written_by_author_or_reviewer": 0
+  },
+  "finite_boundaries": {
+    "new_catalogues": 1,
+    "new_requirements": 4,
+    "new_cases": 17,
+    "run_effects": 16,
+    "run_positive_controls": 1,
+    "mandatory_event_checkpoints": 29,
+    "generated_files": 34,
+    "fortran_input_files": 17,
+    "direct_facets": 17,
+    "pending_facets": 5,
+    "new_canonical_links": 0,
+    "selected_event": "Every actual checkpoint follows successful whole-allocatable DEALLOCATE, not an explicit final-procedure CALL or END BLOCK."
+  },
+  "source_and_oracle_premises": [
+    "Allocation and deallocation status are checked, and every primitive token is defined through its named component/element before the event. Setup does not assign a finalizable whole object, construct a result or use a structure constructor.",
+    "Final dummies are nonpolymorphic TYPE, nonoptional, nonpointer, nonallocatable and noncoarray, with legal INOUT and all LEN parameters assumed. KIND tags are abstract type parameters, not intrinsic representation selectors.",
+    "Own selection compares the full KIND tuple and rank before elemental/assumed-rank fallback. An ordinary scalar final is not an elemental fallback; an assumed-rank final does not coexist with another same-KIND final.",
+    "An exact array final has one invocation on its array even when zero-sized. A zero-element elemental fallback has no scalar calls; nonzero exact and elemental controls make absence nonvacuous.",
+    "Each scalar or array-valued component of each outer array element is finalized separately. No aggregated component array is substituted.",
+    "Own processing precedes declared eligible components, and those precede the actual recursive parent process. Inherited components are not traversed twice and parent finals are not inherited own finals. Parent-order fixtures use ordinary scalar objects and parents.",
+    "Callbacks read only current self, safe SIZE/RANK/type-parameter properties and separate saved nonfinalizable INTEGER logs. They do not read or define a peer already finalized.",
+    "The pointer exclusion has a positive containing callback and an independently reachable, allocated ALLOCATABLE TARGET. A later legal deallocation proves the target observer; no saved nonallocated target is deallocated through a pointer.",
+    "Private final procedure names remain available to automatic finalization; the client neither imports nor explicitly calls the private procedure.",
+    "S7.5.6.2-004 is correctly a run positive control for legal independent callbacks, not evidence of a forbidden-access effect, a mandatory report or a trap."
+  ],
+  "observer_and_countermodels": {
+    "common_observer_lines": 62,
+    "common_observer_sha256": "6ee87ec9a99e246e0d30c18bb7103c55f4255064829295e6d4a3099d275988bc",
+    "log_capacity": 64,
+    "largest_expected_checkpoint_records": 9,
+    "source_bridge": "The independent reviewer checked the actual Fortran guard implementation, its exact multisets/multiplicities and required before-edges against the Python models and all declared checkpoints, rather than treating a standalone Python model as execution evidence.",
+    "enumerated_orders": {
+      "own_before_two_siblings": {"permutations": 6, "accepted": 2},
+      "own_component_parent_chain": {"permutations": 6, "accepted": 1},
+      "child_component_parent_pair": {"permutations": 2, "accepted": 1},
+      "recursive_parent": {"permutations": 5040, "accepted": 4},
+      "four_elemental_token_records": {"permutations": 24, "accepted": 24}
+    },
+    "guards": "Missing, duplicate, extra, wrong-token, wrong-KIND, wrong-stage and aggregated-child events are rejected. Exact array versus elemental zero-size cases and pointer/no-own-match controls retain positive evidence.",
+    "side_effect_order_limit": "No total order on impure elemental saved-log side effects is invented. Every permutation of the four fallback token records is accepted."
+  },
+  "source_equivalent_refresh": {
+    "original_report": "001-final-process-original",
+    "current_report": "002-process-isolation-refresh",
+    "changed_source_files": 17,
+    "changed_fingerprints": 17,
+    "unchanged_manifests": 17,
+    "unchanged_complete_case_specs": 17,
+    "unchanged_main_program_bodies": 17,
+    "change": "Four multi-name FINAL lists were split into permitted separate FINAL statements, isolating process behavior from comma-list parsing. The common failure observer was refined without changing expected events, multisets, edges or success behavior.",
+    "raw_target_before": {"compile_fail": 6, "runtime_fail": 4, "pass": 7},
+    "raw_target_after": {"compile_fail": 4, "runtime_fail": 6, "pass": 7},
+    "preservation": "Two former compile failures now reach runtime and fail their first count assertion. Their earlier rows remain historical and are not relabelled as runtime attempts or merged with later checkpoints. FINAL declaration coverage is not credited by this refinement."
+  },
+  "observation_provenance": {
+    "preserved_original_report": {
+      "path": "reports/001-final-process-original.json",
+      "sha256": "2f2cd6145b37d1f66c4e10109ffaa8db20645a7eb135aad9c066721680208e66",
+      "processor_records": 51,
+      "actual_trace_steps": 139,
+      "use": "Historical only; every source fingerprint differs from current."
+    },
+    "current_report": {
+      "path": "reports/002-process-isolation-refresh.json",
+      "sha256": "51d13ceb1e13c574700531ad1ac1563a192bbd9c65984575fe25f178b1a22180",
+      "cases": 17,
+      "processor_records": 51,
+      "actual_trace_steps": 143,
+      "lfortran": {"pass": 7, "fail": 10},
+      "gnu_f2023": {"pass": 17, "fail": 0},
+      "flang_f2018": {"pass": 16, "fail": 1}
+    },
+    "selection": "Only report002 supplies all51 current processor records and17 qualifying GNU executions. Both original report/input/selection/log sets remain separately preserved.",
+    "failure_log_qualification": "ACTUAL_COUNT and ACTUAL_EVENT are read only from an actually executed run step's stdout with anchored record syntax. Matching string constants in a compiler IR dump are not runtime events.",
+    "qualification_limit": "LFortran failures and the Flang PDT failure preserve the valid sources and run phases. Flang f2018 is not F2023 validation. No later checkpoint is inferred after an earlier failed assertion."
+  },
+  "validation": {
+    "python_regressions": 407,
+    "post_adjudication_targeted_regressions": 85,
+    "new_measured_baseline_entries": 10,
+    "retained_prior_baseline_lines_byte_identical": true,
+    "unchanged_prior_case_fingerprints": 1821,
+    "full_target_checkpoint": "verified",
+    "full_target_report": "batch016-full-target.json",
+    "full_report_sha256": "f396e57e664dcbe141c65e37f247233873a3ea773b665f4d202bfa3f9c36d887",
+    "full_case_count": 1838,
+    "normal_statuses": {"PASS": 1142, "XFAIL": 691, "SKIP": 4, "NEEDS_ORACLE": 1},
+    "raw_target_outcomes": {"pass": 1143, "fail": 691, "skip": 4},
+    "actual_full_run_exit": 1,
+    "expected_nonzero_reason": "The pre-existing real-BOZ case remains needs-oracle.",
+    "unchanged_prior_ids_fingerprints_metadata_outcomes_phases": 1821,
+    "run_consistency_errors": 0,
+    "lfortran": "0.65.0-411-ga0afaa840b-dirty; f23; frozen installation",
+    "lfortran_binary_sha256": "a0e77e3e5f2dd3b940318df215dbbd5d55529ce05ac66362b6ffb05e9d61a54e",
+    "gnu": "16.1.0; f2023",
+    "flang": "22.0.0git cb6ee6cb49e4e6b4969f98ba9129b64094387279; f2018"
+  },
+  "current_corpus": {
+    "detailed_catalogues": 73,
+    "structured_requirements": 376,
+    "direct_facets": 1567,
+    "linked_facets": 4,
+    "pending_facets": 332,
+    "declared_facets": 1903,
+    "accounted_base_units": 1481,
+    "unresolved_base_units": 4992,
+    "unresolved_fine_units": 7,
+    "fixture_review_groups": {"reference-validated": 1563, "source-reviewed": 228, "needs-oracle": 1}
+  },
+  "remaining_boundaries": [
+    "All five local source/use graphs remain pending; no new canonical link is registered.",
+    "Allocation-event definitions, dynamic-type/inheritance connections, PURE-result observers and image termination retain their separate source owners and qualifications.",
+    "The complete1838-member observational inventory retains the real-BOZ needs-oracle case without approving it or awarding a qualified passing effect.",
+    "The source-only values/specifier and constructor gates and the ordinary inheritance/overriding author packets remain outside this checkpoint.",
+    "The global census is not independently ratified, and whole-standard completion remains false."
+  ],
+  "whole_standard_complete": false
+}

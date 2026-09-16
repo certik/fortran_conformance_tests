@@ -1,0 +1,294 @@
+{
+  "schema_version": 1,
+  "section": "7.5.6.2",
+  "review_state": "reviewed",
+  "subunits": {
+    "p1": [
+      "p1.finalizable-only",
+      "p1.ordered-steps",
+      "p1.exact-kind-rank-selection",
+      "p1.elemental-fallback",
+      "p1.assumed-rank-fallback",
+      "p1.no-selected-procedure",
+      "p1.nonallocatable-finalizable-components",
+      "p1.components-in-type-definition",
+      "p1.component-order-choice",
+      "p1.array-components-per-element",
+      "p1.extended-type-condition",
+      "p1.finalizable-parent-condition",
+      "p1.parent-last"
+    ],
+    "p2": [
+      "p2.multiple-entity-event",
+      "p2.entity-order-choice",
+      "p2.no-reference-to-finalized-other",
+      "p2.no-definition-of-finalized-other"
+    ],
+    "note-unnumbered": [
+      "note-unnumbered.coarray-deallocation-order",
+      "note-unnumbered.all-images-context"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S7.5.6.2-001",
+      "title": "Finalization selects a matching own final or a qualified fallback",
+      "source": "7.5.6.2, p1.finalizable-only, p1.exact-kind-rank-selection, p1.elemental-fallback, p1.assumed-rank-fallback, p1.no-selected-procedure; J3/24-007, 18 December 2023, PDF 102-103.",
+      "source_units": [
+        "p1.finalizable-only",
+        "p1.exact-kind-rank-selection",
+        "p1.elemental-fallback",
+        "p1.assumed-rank-fallback",
+        "p1.no-selected-procedure"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For a finalizable entity, first select an own final of its dynamic type whose dummy has equal KIND parameter values and rank. Otherwise select a same-KIND elemental final or a same-KIND assumed-rank final. If neither condition applies, no procedure is called at this step. This does not omit the subsequent component or parent steps.",
+      "facets": [
+        "scalar-exact-match",
+        "array-exact-match",
+        "kind-tuple-dispatch",
+        "exact-array-before-elemental",
+        "assumed-rank-fallback",
+        "no-matching-own-final",
+        "private-final-name",
+        "dynamic-type-selection-graph"
+      ],
+      "pending": {
+        "dynamic-type-selection-graph": "Pending canonical allocation/dynamic-type/finalizability and inherited-final relationships with complete current type states."
+      },
+      "oracle": "Use distinct finalizer counters and defined primitive tokens. Compare callback kind/rank identity and counts rather than addresses. Use separate ordinary saved integer logs/counters, not reads of other objects already finalized. Initialize payloads through primitive named components rather than unintended whole-object assignments that themselves finalize the old left side. Keep every callback argument and accessed component defined. Pointer association and allocation inquiries require independently established valid states. Counter/order observers are IMPURE where side effects require it; do not silently place an impure finalizer behind a PURE function or procedure.\n\nFinite process implementation: 7 run-phase cases represent 7 finite facets with mandatory guarded whole-allocatable DEALLOCATE events before observations. Exact log multisets and required partial-order edges are checked without peeking at finalized peers. 1 source/use graph facets remain pending. Source/case/evidence adjudications are separate content-bound records; authorship and observations do not confer approval.",
+      "oracle_limitation": "Do not construct an illegal assumed-rank/exact-rank competition. Ordinary scalar finals are not elemental fallbacks, and finalizability alone is not a guarantee that this own-procedure step calls anything.",
+      "dependencies": "C791-C794;7.3.2.3 and7.3.3;15.9.1/15.9.3, PDF362-363;7.5.6.1 p2;9.7.3 and19.6."
+    },
+    {
+      "id": "S7.5.6.2-002",
+      "title": "Declared nonallocatable finalizable components are finalized separately",
+      "source": "7.5.6.2, p1.nonallocatable-finalizable-components, p1.components-in-type-definition, p1.component-order-choice, p1.array-components-per-element; J3/24-007, 18 December 2023, PDF 102-103.",
+      "source_units": [
+        "p1.nonallocatable-finalizable-components",
+        "p1.components-in-type-definition",
+        "p1.component-order-choice",
+        "p1.array-components-per-element"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "After the own-procedure step, finalize the nonallocatable finalizable components appearing in the type definition. Their order is processor dependent. For an array entity, finalize each such component of each element separately, not one synthetic whole component array.",
+      "facets": [
+        "plain-component-recursion",
+        "sibling-order-independent",
+        "array-element-components",
+        "zero-sized-outer-array",
+        "pointer-target-exclusion",
+        "allocatable-component-event-graph"
+      ],
+      "pending": {
+        "allocatable-component-event-graph": "Pending separate9.7.3.2 automatic-deallocation evidence; the excluded allocatable component may still finalize through its own event after the containing final procedure."
+      },
+      "oracle": "Use per-token occurrence counts and only the specified partial order. Use separate ordinary saved integer logs/counters, not reads of other objects already finalized. Initialize payloads through primitive named components rather than unintended whole-object assignments that themselves finalize the old left side. Keep every callback argument and accessed component defined. Pointer association and allocation inquiries require independently established valid states. Counter/order observers are IMPURE where side effects require it; do not silently place an impure finalizer behind a PURE function or procedure.\n\nFinite process implementation: 5 run-phase cases represent 5 finite facets with mandatory guarded whole-allocatable DEALLOCATE events before observations. Exact log multisets and required partial-order edges are checked without peeking at finalized peers. 1 source/use graph facets remain pending. Source/case/evidence adjudications are separate content-bound records; authorship and observations do not confer approval.",
+      "oracle_limitation": "The implicit parent component has its own later step; pointer targets are not ordinary nonallocatable components for value purposes. Never assert that allocatable children produce no cleanup callbacks in every context.",
+      "dependencies": "7.5.6.1 p2;3.30;7.5.7.2;9.4.2 p5;9.7.3.2 p8-p9, PDF166."
+    },
+    {
+      "id": "S7.5.6.2-003",
+      "title": "Own processing, declared components and finalizable parent processing are ordered stages",
+      "source": "7.5.6.2, p1.ordered-steps, p1.extended-type-condition, p1.finalizable-parent-condition, p1.parent-last; J3/24-007, 18 December 2023, PDF 102-103.",
+      "source_units": [
+        "p1.ordered-steps",
+        "p1.extended-type-condition",
+        "p1.finalizable-parent-condition",
+        "p1.parent-last"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Finalization follows the specified step sequence: own selected final, declared nonallocatable finalizable components, then the parent component when the entity is extended and the parent type is finalizable. The parent step invokes its own complete finalization process. Final subroutines are not inherited into the earlier own-selection step.",
+      "facets": [
+        "own-before-components",
+        "components-before-parent",
+        "parent-without-own-child-final",
+        "recursive-parent-process",
+        "stage-and-inheritance-use-graph"
+      ],
+      "pending": {
+        "stage-and-inheritance-use-graph": "Pending canonical parent-component accessibility/inheritance, allocation and explicit event links; no declaration/storage ordering is substituted."
+      },
+      "oracle": "Distinct integer tokens identify stage membership. Validate partial orders and exact multiplicities, not arbitrary total log sequences. Use separate ordinary saved integer logs/counters, not reads of other objects already finalized. Initialize payloads through primitive named components rather than unintended whole-object assignments that themselves finalize the old left side. Keep every callback argument and accessed component defined. Pointer association and allocation inquiries require independently established valid states. Counter/order observers are IMPURE where side effects require it; do not silently place an impure finalizer behind a PURE function or procedure.\n\nFinite process implementation: 4 run-phase cases represent 4 finite facets with mandatory guarded whole-allocatable DEALLOCATE events before observations. Exact log multisets and required partial-order edges are checked without peeking at finalized peers. 1 source/use graph facets remain pending. Source/case/evidence adjudications are separate content-bound records; authorship and observations do not confer approval.",
+      "oracle_limitation": "Parent processing is conditional on actual finalizability. An absence of an own child callback cannot justify skipping its components or parent.",
+      "dependencies": "7.5.6.1 note2;7.5.7.2, PDF104;9.7.3.2 p9;7.5.6.3 events."
+    },
+    {
+      "id": "S7.5.6.2-004",
+      "title": "Finalizers must not access other event entities already finalized",
+      "source": "7.5.6.2, p2.multiple-entity-event, p2.no-reference-to-finalized-other, p2.no-definition-of-finalized-other; J3/24-007, 18 December 2023, PDF 102-103.",
+      "source_units": [
+        "p2.multiple-entity-event",
+        "p2.no-reference-to-finalized-other",
+        "p2.no-definition-of-finalized-other"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "When an event finalizes several entities, their ordering is processor dependent. A final subroutine for one entity must not reference or define another of those entities after that other entity has been finalized. An assumed declaration or deallocation-list order cannot justify such access.",
+      "facets": [
+        "independent-entity-control",
+        "reference-context-graph",
+        "definition-context-graph"
+      ],
+      "pending": {
+        "reference-context-graph": "Pending source/use evidence for the prohibition on references to already-finalized other entities, without executing an undefined/dangling read or demanding a runtime trap.",
+        "definition-context-graph": "Pending the separately accounted prohibited definition contexts and aliases, with no fabricated output for a nonconforming program."
+      },
+      "oracle": "Allowed controls check an order-independent set of own-token callbacks. No event callback is allowed to inspect the other finalized objects.\n\nFinite process implementation: 1 run-phase cases represent 1 finite facets with mandatory guarded whole-allocatable DEALLOCATE events before observations. Exact log multisets and required partial-order edges are checked without peeking at finalized peers. These are positive controls for the restriction, not forbidden-access effects. 2 source/use graph facets remain pending. Source/case/evidence adjudications are separate content-bound records; authorship and observations do not confer approval.",
+      "oracle_limitation": "There is no general standard-required diagnostic for this prose restriction. Do not create a must-crash negative, infer a deterministic order, or conflate pointer association status with the finalized target value.",
+      "dependencies": "7.5.6.2 p2;7.5.6.3;9.4.2;19.5.2/19.6.6."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "structural",
+      "rationale": "The complete three-step process is mapped to the own-selection, component and parent/stage requirements."
+    },
+    {
+      "unit": "p2",
+      "disposition": "structural",
+      "rationale": "Separates processor-dependent multi-entity order from restrictions on access to already-finalized entities."
+    },
+    {
+      "unit": "note-unnumbered",
+      "disposition": "structural",
+      "rationale": "Complete implementation note about coarray deallocation ordering, with canonical multi-image rules left separate."
+    },
+    {
+      "unit": "p1.finalizable-only",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.6.2-001"
+      ]
+    },
+    {
+      "unit": "p1.ordered-steps",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.6.2-003"
+      ]
+    },
+    {
+      "unit": "p1.exact-kind-rank-selection",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.6.2-001"
+      ]
+    },
+    {
+      "unit": "p1.elemental-fallback",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.6.2-001"
+      ]
+    },
+    {
+      "unit": "p1.assumed-rank-fallback",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.6.2-001"
+      ]
+    },
+    {
+      "unit": "p1.no-selected-procedure",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.6.2-001"
+      ]
+    },
+    {
+      "unit": "p1.nonallocatable-finalizable-components",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.6.2-002"
+      ]
+    },
+    {
+      "unit": "p1.components-in-type-definition",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.6.2-002"
+      ]
+    },
+    {
+      "unit": "p1.component-order-choice",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.6.2-002"
+      ]
+    },
+    {
+      "unit": "p1.array-components-per-element",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.6.2-002"
+      ]
+    },
+    {
+      "unit": "p1.extended-type-condition",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.6.2-003"
+      ]
+    },
+    {
+      "unit": "p1.finalizable-parent-condition",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.6.2-003"
+      ]
+    },
+    {
+      "unit": "p1.parent-last",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.6.2-003"
+      ]
+    },
+    {
+      "unit": "p2.multiple-entity-event",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.6.2-004"
+      ]
+    },
+    {
+      "unit": "p2.entity-order-choice",
+      "disposition": "permission",
+      "rationale": "No total ordering among several entities is prescribed. Future valid observers must accept every source-permitted order while preserving per-entity stage conditions; a chosen order is not universal coverage."
+    },
+    {
+      "unit": "p2.no-reference-to-finalized-other",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.6.2-004"
+      ]
+    },
+    {
+      "unit": "p2.no-definition-of-finalized-other",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.6.2-004"
+      ]
+    },
+    {
+      "unit": "note-unnumbered.coarray-deallocation-order",
+      "disposition": "informative",
+      "rationale": "The note points to implementation coordination. Actual coarray ordering/collective obligations come from9.7.3 and image rules; no additional mandatory rule or one-image proof is manufactured from this note."
+    },
+    {
+      "unit": "note-unnumbered.all-images-context",
+      "disposition": "informative",
+      "rationale": "The note points to implementation coordination. Actual coarray ordering/collective obligations come from9.7.3 and image rules; no additional mandatory rule or one-image proof is manufactured from this note."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_7_5_6_2.md"
+  },
+  "review_fingerprint": "b6c8e48a05f08020c6f61ca3825c0dcbbc63ce9eb11ba92fae5bbe391c04b6d2",
+  "review_rationale": "Independent original-source, concrete17-case process/oracle and refresh review in doc/source_audits/batch_016.json. The3base/19fine units and4requirements retain all source conditions. Seventeen finite facets have actual guarded DEALLOCATE witnesses; all5source-use graphs remain pending. This does not add a finalizability-classification, event-owned duplicate, termination/PURE observer or universal finalization guarantee."
+}

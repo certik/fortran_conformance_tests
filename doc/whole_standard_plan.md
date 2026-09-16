@@ -22,7 +22,7 @@ The readiness refactoring now supplies:
   context case.
 
 This is infrastructure readiness, not completed conformance coverage.
-The current census still has 4,995 unresolved base units and seven unresolved
+The current census still has 4,992 unresolved base units and seven unresolved
 fine-grained units inside the catalogues. Its independent visual
 review is still pending. Automatic PDF extraction is not semantic review,
 and list items/table rows require additional audited subdivisions.
@@ -545,25 +545,47 @@ Seventeen actual KIND-tuple/rank signature fixtures were also checked
 against independent finite conflict models. These declarations do not
 claim callback execution, runtime classification or termination evidence.
 
-The current measured whole-target checkpoint has **1,821 cases**:
+The fifteenth-batch measured whole-target checkpoint has **1,821 cases**:
 **1,135 PASS, 681 XFAIL, four SKIPs and one NEEDS_ORACLE**.
 All 1,757 prior IDs, fingerprints and target outcomes/phases are unchanged.
 There are 72 catalogues, 372 requirements, 1,550 direct and four linked
 facets, and 327 pending facets. The source/case/signature and exact
 processor decisions are recorded in `doc/source_audits/batch_015.json`.
 
-The separate 17-case finalization-process packet is under independent
-fixture/oracle review. Classification/source-use facets and conditional
-PURE/ERROR STOP/termination observers remain unimplemented, not executable
-completion claims. Extension source review found no blocking defect;
-bounded inheritance runtime authoring is now under way for 7.5.7.1/.2.
-Overriding policies and the added passed-object parameter-domain question
-remain explicitly pending.
+The sixteenth batch integrates the independently reviewed finalization
+process packet: **17 runs**, comprising **16 effects and one positive
+control**, with **29 mandatory-event checkpoints**. All seventeen have
+qualifying GNU f2023 executions. Named setup, live-state guards, exact
+multisets/multiplicities and required partial orders prevent constructor
+cancellation, vacuous absence checks and invented sibling ordering.
+Every actual event is a successful whole-allocatable DEALLOCATE.
+
+The source-equivalent refresh split four FINAL lists into permitted
+separate statements and improved failure logging without changing main
+bodies, expected event sets or success behavior. The original and refreshed
+runs remain separate. All current evidence comes from the refreshed run;
+the two earlier compile failures that later reached runtime are not
+retrospectively counted as executions.
+
+The current measured whole-target checkpoint has **1,838 cases**:
+**1,142 PASS, 691 XFAIL, four SKIPs and one NEEDS_ORACLE**.
+All 1,821 prior IDs, fingerprints and target outcomes/phases are unchanged.
+There are 73 catalogues, 376 requirements, 1,567 direct and four linked
+facets, and 332 pending facets. Full source/oracle/observer and provenance
+decisions are recorded in `doc/source_audits/batch_016.json`.
+Classification/source-use facets and conditional PURE/ERROR STOP/termination
+observers remain unimplemented, not completion claims.
+
+Inheritance packet `f371acd` has eleven unapproved runtime cases covering
+eighteen finite facets, with thirty-five pending. Independent fixture
+review is next. Ordinary overriding runtime authoring is also under way;
+optional diagnostic policies, source graphs and the added passed-object
+parameter-domain question remain explicitly pending.
 A further source-only packet covers 7.5.8 and 7.5.9 with 13 base units,
 50 fine units, 14 requirements and 72 pending facets. It preserves existing
 canonical witnesses and explicitly accounts for the value-set definition
 without inventing a no-op execution. Its four-file author commit `1fada1e`
-also awaits independent review; no main-checkout coverage is credited.
+is under independent source review; no main-checkout coverage is credited.
 Source-only constructor packet `8ba944c` in 7.5.10 covers 28 base and
 114 fine units, with 22 requirements and 98 facets: two already represented
 C7107 facets and 96 pending. The four existing C7107 programs and their
