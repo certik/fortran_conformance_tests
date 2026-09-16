@@ -22,7 +22,7 @@ The readiness refactoring now supplies:
   context case.
 
 This is infrastructure readiness, not completed conformance coverage.
-The current census still has 4,949 unresolved base units and eight unresolved
+The current census still has 4,934 unresolved base units and eight unresolved
 fine-grained units inside the catalogues. Its independent visual
 review is still pending. Automatic PDF extraction is not semantic review,
 and list items/table rows require additional audited subdivisions.
@@ -704,13 +704,31 @@ KIND comparisons never cross definitions or assume a numeric identifier.
 Forty-four separately bound wrong-oracle runs built successfully and failed
 at their predicted guards, without becoming conformance negatives.
 
-The current measured checkpoint has **1,909 cases: 1,170 PASS,
+The twenty-second-batch measured checkpoint has **1,909 cases: 1,170 PASS,
 734 XFAIL, four SKIPs and one NEEDS_ORACLE**. All 1,907 prior fingerprints,
 outcomes, nine link receipts and baseline bytes are unchanged. There are
 79 catalogues, 429 requirements, 1,646 direct and nine linked facets, and
 514 pending facets out of 2,169. The 57 local followups include named enum,
 BOZ, companion/representation and source-use work. Review and exact
 provenance are in `doc/source_audits/batch_022.json`.
+
+The twenty-third batch adds 28 reviewed compile-only constructor cases,
+with 13 minimal repairs and 15 positive controls. Twenty newly authored
+facets and two C7107 facets represented by existing programs now appear in
+the detailed catalogue; those retained facets are not new executions.
+All 17 controls, including two retained C7107 repairs, compile with GNU.
+Three negatives remain source-only because their f2023 evidence is generic
+recovery, incorrect component/parameter attribution or silent acceptance.
+
+The current measured checkpoint has **1,937 cases: 1,181 PASS,
+751 XFAIL, four SKIPs and one NEEDS_ORACLE**. All 1,909 old inputs, IDs,
+metadata and target outcomes/phases are unchanged. Four C7107 fingerprints
+and three dependent links have explicit renewals; the other 1,905 case
+fingerprints and six link receipts are unchanged. The baseline adds only
+17 measured failures among new cases, preserving every old line.
+There are 80 catalogues, 451 requirements, 1,668 direct and nine linked
+facets, and 590 pending facets out of 2,267. Full source/cause and renewal
+decisions are in `doc/source_audits/batch_023.json`.
 A further source-only packet covers 7.5.8 and 7.5.9 with 13 base units,
 50 fine units, 14 requirements and 72 pending facets. It preserves existing
 canonical witnesses and explicitly accounts for the value-set definition
@@ -729,9 +747,11 @@ has passed, not automatically renewed those receipts. Constructor packet
 representing 20 new facets alongside the two existing C7107 facets and
 retaining 76 pending. Independent fixture/cause review found no blockers:
 all 17 valid controls compile with GNU, with 29 reference-eligible selections
-and three source-only negatives among the 32 selected cases. Integration
-still requires explicit current-main renewal of the four existing C7107
-metadata fingerprints and three dependent link receipts.
+and three source-only negatives among the 32 selected cases. Batch023
+records their integration and the explicit four-case/three-link renewals.
+All 76 remaining facets, including 48 facets of eight S-owned runtime
+requirements, stay pending without source-use or runtime credit from these
+compile controls.
 
 The enum/enumeration source packet `fa1fbf02` also passed independent
 eligibility review: 39 base units, 147 fine units, 28 requirements and
