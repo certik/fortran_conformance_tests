@@ -1,0 +1,566 @@
+{
+  "schema_version": 1,
+  "section": "7.5.6.3",
+  "review_state": "reviewed",
+  "subunits": {
+    "p1": [
+      "p1.intrinsic-assignment-event",
+      "p1.unallocated-allocatable-exclusion",
+      "p1.after-expression-evaluation",
+      "p1.before-variable-definition",
+      "p1.allocated-variable-before-deallocation",
+      "p1.allocated-subobject-before-deallocation"
+    ],
+    "p2": [
+      "p2.pointer-target-on-deallocation",
+      "p2.allocatable-on-deallocation",
+      "p2.intrinsic-assignment-variable-exception",
+      "p2.deallocation-error-choice"
+    ],
+    "p3": [
+      "p3.nonpointer-nonallocatable-object",
+      "p3.not-dummy-or-result",
+      "p3.return-or-end-event",
+      "p3.before-would-become-undefined"
+    ],
+    "p4": [
+      "p4.block-local-object",
+      "p4.nonpointer-nonallocatable",
+      "p4.block-termination",
+      "p4.before-would-become-undefined"
+    ],
+    "p5": [
+      "p5.nonpointer-function-reference",
+      "p5.result-finalization",
+      "p5.after-innermost-executable-construct"
+    ],
+    "p6": [
+      "p6.specification-expression-reference",
+      "p6.function-result",
+      "p6.before-executable-constructs"
+    ],
+    "p7": [
+      "p7.invocation-event",
+      "p7.nonpointer-nonallocatable-intent-out",
+      "p7.before-undefined",
+      "p7.within-invoked-procedure",
+      "p7.elemental-scalar-context",
+      "p7.actual-rank-not-selector"
+    ],
+    "p8": [
+      "p8.pointer-allocation-condition",
+      "p8.all-associations-lost",
+      "p8.whether-finalized-choice",
+      "p8.when-finalized-choice"
+    ],
+    "note-unnumbered": [
+      "note-unnumbered.storage-management",
+      "note-unnumbered.defined-assignment-connection"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S7.5.6.3-001",
+      "title": "Intrinsic assignment finalizes the old variable between RHS evaluation and definition",
+      "source": "7.5.6.3, p1, p1.intrinsic-assignment-event, p1.unallocated-allocatable-exclusion, p1.after-expression-evaluation, p1.before-variable-definition, p1.allocated-variable-before-deallocation, p1.allocated-subobject-before-deallocation; J3/24-007, 18 December 2023, PDF 103.",
+      "source_units": [
+        "p1",
+        "p1.intrinsic-assignment-event",
+        "p1.unallocated-allocatable-exclusion",
+        "p1.after-expression-evaluation",
+        "p1.before-variable-definition",
+        "p1.allocated-variable-before-deallocation",
+        "p1.allocated-subobject-before-deallocation"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Intrinsic assignment finalizes its variable unless that variable is an unallocated allocatable variable. Finalization follows RHS evaluation and precedes definition of the left side. If assignment would deallocate an allocated variable or allocated allocatable subobject, finalization precedes that deallocation.",
+      "facets": [
+        "old-value-before-definition",
+        "rhs-evaluation-before-final",
+        "unallocated-left-exclusion",
+        "allocated-left-reallocation",
+        "allocated-subobject-before-release",
+        "assignment-and-deallocation-use-graph"
+      ],
+      "pending": {
+        "assignment-and-deallocation-use-graph": "Pending canonical intrinsic component assignment, reallocation, default and defined-assignment relationships; defined assignment may independently finalize an INTENT(OUT) dummy and is not a no-callback control by name alone."
+      },
+      "oracle": "Primitive member assignments establish old values without unintended setup finalization. Log RHS timing using only a nonfinalizable INTEGER result. Use separate ordinary saved integer logs/counters, not reads of other objects already finalized. Initialize payloads through primitive named components rather than unintended whole-object assignments that themselves finalize the old left side. Keep every callback argument and accessed component defined. Pointer association and allocation inquiries require independently established valid states. Counter/order observers are IMPURE where side effects require it; do not silently place an impure finalizer behind a PURE function or procedure.\n\nFinite ordinary-event implementation: 4 run-phase programs represent 5 direct facets using qualified events and before/inside/after checkpoints. Exact saved INTEGER log multisets, required partial-order edges and live primitive value/state checks distinguish missing, early, late, duplicate and vacuous events. No extra order of event peers is imposed. 1 source/use graph facet remains pending. Source/case/evidence adjudications are separate content-bound records; generation and processor observations do not confer approval.",
+      "oracle_limitation": "Do not confuse constructor expressions with generic function references or count unspecified compiler temporaries as language objects. Error-condition deallocation choices are separate.",
+      "dependencies": "10.2.1.3;7.5.10/C7108;9.7.3.2 p7-p9, PDF165-166;7.5.6.2;19.6."
+    },
+    {
+      "id": "S7.5.6.3-002",
+      "title": "Successful deallocation finalizes pointer targets and qualifying allocatable entities",
+      "source": "7.5.6.3, p2.pointer-target-on-deallocation, p2.allocatable-on-deallocation, p2.intrinsic-assignment-variable-exception; J3/24-007, 18 December 2023, PDF 103.",
+      "source_units": [
+        "p2.pointer-target-on-deallocation",
+        "p2.allocatable-on-deallocation",
+        "p2.intrinsic-assignment-variable-exception"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Deallocating a pointer finalizes its target. Deallocating an allocatable entity finalizes it except when it is the variable in intrinsic assignment, whose finalization is governed by p1. Pointer association, whole-allocation and argument/construct-association restrictions remain necessary.",
+      "facets": [
+        "allocated-pointer-target",
+        "allocated-allocatable-entity",
+        "automatic-allocatable-scope-exit",
+        "allocatable-subobject-cleanup",
+        "assignment-no-double-finalization",
+        "deallocation-event-use-graph"
+      ],
+      "pending": {
+        "allocated-pointer-target": "Pending one whole allocated target with a defined scalar token, a valid associated pointer and STAT-checked deallocation; finalizer records the target, not pointer status.",
+        "allocated-allocatable-entity": "Pending a defined allocated record and successful STAT-checked deallocation, with a callback before the object is released.",
+        "automatic-allocatable-scope-exit": "Pending an unsaved allocated local leaving a procedure or BLOCK; this is the canonical automatic-deallocation path, not the nonallocatable direct-return rule.",
+        "allocatable-subobject-cleanup": "Pending a finalizable outer object with an allocated finalizable component: own outer final precedes the automatic component deallocation/finalizer under9.7.3.2p9.",
+        "assignment-no-double-finalization": "Pending exact linkage to p1/9.7.3.2 assignment deallocation so the left variable is not counted again merely because it is subsequently deallocated.",
+        "deallocation-event-use-graph": "Pending pointer aliases, actual/construct associations, C descriptors and collective coarray deallocation qualifications before broadening the finite witness family."
+      },
+      "oracle": "Use bounded successful allocations and initialized named payloads, with STAT checked before any subsequent state/value query. Use separate ordinary saved integer logs/counters, not reads of other objects already finalized. Initialize payloads through primitive named components rather than unintended whole-object assignments that themselves finalize the old left side. Keep every callback argument and accessed component defined. Pointer association and allocation inquiries require independently established valid states. Counter/order observers are IMPURE where side effects require it; do not silently place an impure finalizer behind a PURE function or procedure.",
+      "oracle_limitation": "Never deallocate through a pointer to an allocatable object, a partial target or an undefined association. Other aliases become undefined after deallocation and are not queried. Error cases are not mandatory callback oracles.",
+      "dependencies": "9.7.1.4;9.7.3.2-.3, PDF164-166;7.5.6.3 p1;19.5.2."
+    },
+    {
+      "id": "S7.5.6.3-003",
+      "title": "Qualifying procedure locals finalize before RETURN or END makes them undefined",
+      "source": "7.5.6.3, p3, p3.nonpointer-nonallocatable-object, p3.not-dummy-or-result, p3.return-or-end-event, p3.before-would-become-undefined; J3/24-007, 18 December 2023, PDF 103.",
+      "source_units": [
+        "p3",
+        "p3.nonpointer-nonallocatable-object",
+        "p3.not-dummy-or-result",
+        "p3.return-or-end-event",
+        "p3.before-would-become-undefined"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A nonpointer nonallocatable object that is neither a dummy argument nor a function result is finalized immediately before it would become undefined because a RETURN or END statement is executed. A saved object does not satisfy that would-become-undefined condition.",
+      "facets": [
+        "explicit-return-local",
+        "end-subprogram-local",
+        "multiple-locals-unordered",
+        "saved-local-exclusion-control",
+        "dummy-result-and-auto-deallocation-graph"
+      ],
+      "pending": {
+        "dummy-result-and-auto-deallocation-graph": "Pending canonical links separating dummy/result exclusions and automatic allocated-local cleanup from the direct p3 event."
+      },
+      "oracle": "The caller checks only nonfinalizable saved logs, never returned pointers to dead locals. Use separate ordinary saved integer logs/counters, not reads of other objects already finalized. Initialize payloads through primitive named components rather than unintended whole-object assignments that themselves finalize the old left side. Keep every callback argument and accessed component defined. Pointer association and allocation inquiries require independently established valid states. Counter/order observers are IMPURE where side effects require it; do not silently place an impure finalizer behind a PURE function or procedure.\n\nFinite ordinary-event implementation: 4 run-phase programs represent 4 direct facets using qualified events and before/inside/after checkpoints. Exact saved INTEGER log multisets, required partial-order edges and live primitive value/state checks distinguish missing, early, late, duplicate and vacuous events. No extra order of event peers is imposed. 1 source/use graph facet remains pending. Source/case/evidence adjudications are separate content-bound records; generation and processor observations do not confer approval.",
+      "oracle_limitation": "The END of a main program is image termination, not this event. Default component initialization alone does not imply SAVE; object declaration initialization can, so do not accidentally save the intended local.",
+      "dependencies": "19.6.6(3), PDF565;8.5.16;7.5.4.6;9.7.3.2p2;7.5.6.4."
+    },
+    {
+      "id": "S7.5.6.3-004",
+      "title": "Qualifying BLOCK locals finalize before becoming undefined at block termination",
+      "source": "7.5.6.3, p4, p4.block-local-object, p4.nonpointer-nonallocatable, p4.block-termination, p4.before-would-become-undefined; J3/24-007, 18 December 2023, PDF 103.",
+      "source_units": [
+        "p4",
+        "p4.block-local-object",
+        "p4.nonpointer-nonallocatable",
+        "p4.block-termination",
+        "p4.before-would-become-undefined"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A nonpointer nonallocatable BLOCK-local object is finalized immediately before BLOCK termination would make it undefined. The condition is distinct from automatic deallocation of allocatable locals and from saved objects whose definition status persists.",
+      "facets": [
+        "ordinary-end-block",
+        "nested-block-timing",
+        "saved-block-exclusion-control",
+        "block-exit-use-graph"
+      ],
+      "pending": {
+        "block-exit-use-graph": "Pending canonical permitted branch/construct-termination and automatic-deallocation paths before extra EXIT/branch fixtures are authored."
+      },
+      "oracle": "Check the actual nesting boundary and completed callback counts. Use separate ordinary saved integer logs/counters, not reads of other objects already finalized. Initialize payloads through primitive named components rather than unintended whole-object assignments that themselves finalize the old left side. Keep every callback argument and accessed component defined. Pointer association and allocation inquiries require independently established valid states. Counter/order observers are IMPURE where side effects require it; do not silently place an impure finalizer behind a PURE function or procedure.\n\nFinite ordinary-event implementation: 3 run-phase programs represent 3 direct facets using qualified events and before/inside/after checkpoints. Exact saved INTEGER log multisets, required partial-order edges and live primitive value/state checks distinguish missing, early, late, duplicate and vacuous events. No extra order of event peers is imposed. 1 source/use graph facet remains pending. Source/case/evidence adjudications are separate content-bound records; generation and processor observations do not confer approval.",
+      "oracle_limitation": "No unspecified sibling-local total ordering or deallocated-alias inquiry is part of the oracle. A saved local is not a direct END BLOCK finalization case.",
+      "dependencies": "19.6.6(23), PDF566;8.5.16;11.1.4;9.7.3.2p3."
+    },
+    {
+      "id": "S7.5.6.3-005",
+      "title": "A nonpointer function result finalizes after its innermost executable construct",
+      "source": "7.5.6.3, p5, p5.nonpointer-function-reference, p5.result-finalization, p5.after-innermost-executable-construct; J3/24-007, 18 December 2023, PDF 103.",
+      "source_units": [
+        "p5",
+        "p5.nonpointer-function-reference",
+        "p5.result-finalization",
+        "p5.after-innermost-executable-construct"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A nonpointer function result referenced by an executable construct is finalized after execution of the innermost executable construct containing that reference. A function result is not an ordinary local finalized merely by returning from its function. Pointer function results and their targets must remain distinct.",
+      "facets": [
+        "statement-result-boundary",
+        "if-construct-boundary",
+        "do-control-boundary",
+        "pointer-result-exclusion-control",
+        "allocated-result-and-construct-use-graph"
+      ],
+      "pending": {
+        "allocated-result-and-construct-use-graph": "Pending complete allocated-result/subobject state and executable-construct nesting relationships. Avoid unallocated result values or syntax that dereferences a function result as an unsupported data-ref."
+      },
+      "oracle": "Produce the result by primitive component definitions, not whole-result assignment that invokes unrelated finalization. Use an ordinary INTEGER getter where direct function-result component syntax is not permitted. Use separate ordinary saved integer logs/counters, not reads of other objects already finalized. Initialize payloads through primitive named components rather than unintended whole-object assignments that themselves finalize the old left side. Keep every callback argument and accessed component defined. Pointer association and allocation inquiries require independently established valid states. Counter/order observers are IMPURE where side effects require it; do not silently place an impure finalizer behind a PURE function or procedure.\n\nFinite ordinary-event implementation: 4 run-phase programs represent 4 direct facets using qualified events and before/inside/after checkpoints. Exact saved INTEGER log multisets, required partial-order edges and live primitive value/state checks distinguish missing, early, late, duplicate and vacuous events. No extra order of event peers is imposed. 1 source/use graph facet remains pending. Source/case/evidence adjudications are separate content-bound records; generation and processor observations do not confer approval.",
+      "oracle_limitation": "Avoid short-circuit or unevaluated inquiry contexts whose function result might not be created. A structure constructor is not automatically a function reference, and dummy arguments are not local-result cleanup objects.",
+      "dependencies": "7.5.10/C7108;11.1.1 and executable-construct grammar;9.7.3.2p4;19.6.6(15);7.5.6.3p3."
+    },
+    {
+      "id": "S7.5.6.3-006",
+      "title": "Specification-expression function results finalize before execution begins",
+      "source": "7.5.6.3, p6, p6.specification-expression-reference, p6.function-result, p6.before-executable-constructs; J3/24-007, 18 December 2023, PDF 103.",
+      "source_units": [
+        "p6",
+        "p6.specification-expression-reference",
+        "p6.function-result",
+        "p6.before-executable-constructs"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A function result referenced in a specification expression of a scoping unit is finalized before the executable constructs of that scoping unit execute. The expression and specification-function purity/interface/order restrictions still apply; this is not permission to call an impure logging factory or to hide an impure finalizer behind a PURE function.",
+      "facets": [
+        "pure-final-before-body-candidate",
+        "specification-function-purity-graph",
+        "unevaluated-inquiry-and-result-state-graph"
+      ],
+      "pending": {
+        "pure-final-before-body-candidate": "Pending independent validation of a module PURE record factory and PURE INTEGER getter used as an automatic array bound in an ordinary subroutine. The record FINAL must itself be PURE. A PURE finalizer using ERROR STOP with constant code/QUIET may provide an external before-body oracle because ERROR STOP is not an11.7.1image-control statement; independently qualify process status/output before implementation.",
+        "specification-function-purity-graph": "Pending exact C1593/C1596/C15105 and10.1.11 source/use relationships, including the prohibition on an impure finalizer for a PURE function result.",
+        "unevaluated-inquiry-and-result-state-graph": "Pending proof that a candidate actually creates the finalizable result rather than only inquiring about fixed properties; preserve allocated/nonpointer result and canonical attribute evaluation conditions."
+      },
+      "oracle": "This is a conditional source plan, not an approved executable. A before-body termination witness must have an independently qualified external oracle and a body marker that would reveal missed/delayed finalization. Do not use a module counter from a PURE final subroutine.",
+      "oracle_limitation": "C1593 explicitly forbids a PURE function result whose finalization would reference an impure procedure. Any ERROR STOP profile is separate from Fortran finalization timing; a nonzero process status is not universally prescribed and no runtime or optional-profile skip is invented here.",
+      "dependencies": "10.1.11, PDF185-187;15.7/C1593/C15105/C15109, PDF359-361;11.7.1, PDF230;11.4, PDF228-229;9.7.3.2p5."
+    },
+    {
+      "id": "S7.5.6.3-007",
+      "title": "INTENT OUT finalization occurs in the invoked procedure before undefinition",
+      "source": "7.5.6.3, p7, p7.invocation-event, p7.nonpointer-nonallocatable-intent-out, p7.before-undefined, p7.within-invoked-procedure, p7.elemental-scalar-context, p7.actual-rank-not-selector; J3/24-007, 18 December 2023, PDF 103.",
+      "source_units": [
+        "p7",
+        "p7.invocation-event",
+        "p7.nonpointer-nonallocatable-intent-out",
+        "p7.before-undefined",
+        "p7.within-invoked-procedure",
+        "p7.elemental-scalar-context",
+        "p7.actual-rank-not-selector"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Invocation finalizes a nonpointer nonallocatable INTENT(OUT) dummy before it becomes undefined. That finalization is considered to occur within the invoked procedure. For an elemental procedure this means scalar or elemental final availability governs the invocation regardless of actual-argument rank.",
+      "facets": [
+        "ordinary-intent-out-old-value",
+        "elemental-scalar-selection",
+        "elemental-array-only-no-entry-final",
+        "pure-and-allocatable-pointer-context-graph"
+      ],
+      "pending": {
+        "pure-and-allocatable-pointer-context-graph": "Pending canonical purity, pointer/allocatable dummy exclusions, automatic deallocation and default-initialization relationships; allocated actuals associated with allocatable OUT dummies use their deallocation path instead."
+      },
+      "oracle": "Initialize actual payloads by primitive member assignments and log old values only during the valid callback. Check the body and caller phases separately rather than allowing later cleanup to cancel an entry mistake. Use separate ordinary saved integer logs/counters, not reads of other objects already finalized. Initialize payloads through primitive named components rather than unintended whole-object assignments that themselves finalize the old left side. Keep every callback argument and accessed component defined. Pointer association and allocation inquiries require independently established valid states. Counter/order observers are IMPURE where side effects require it; do not silently place an impure finalizer behind a PURE function or procedure.\n\nFinite ordinary-event implementation: 3 run-phase programs represent 3 direct facets using qualified events and before/inside/after checkpoints. Exact saved INTEGER log multisets, required partial-order edges and live primitive value/state checks distinguish missing, early, late, duplicate and vacuous events. No extra order of event peers is imposed. 1 source/use graph facet remains pending. Source/case/evidence adjudications are separate content-bound records; generation and processor observations do not confer approval.",
+      "oracle_limitation": "A non-elemental array final is not a scalar final merely because the actual argument is an array. PURE callees cannot conceal impure finalization.",
+      "dependencies": "C791-C794;7.5.6.2;19.6.6(15), PDF566;7.5.4.6;9.7.3.2p6;15.7/C1596 and15.9.1/15.9.3, PDF362-363."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.6.3-001"
+      ]
+    },
+    {
+      "unit": "p2",
+      "disposition": "structural",
+      "rationale": "Separates successful pointer-target/allocatable deallocation finalization from processor-dependent behavior on a deallocation error."
+    },
+    {
+      "unit": "p3",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.6.3-003"
+      ]
+    },
+    {
+      "unit": "p4",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.6.3-004"
+      ]
+    },
+    {
+      "unit": "p5",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.6.3-005"
+      ]
+    },
+    {
+      "unit": "p6",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.6.3-006"
+      ]
+    },
+    {
+      "unit": "p7",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.6.3-007"
+      ]
+    },
+    {
+      "unit": "p8",
+      "disposition": "permission",
+      "rationale": "For the specified unreachable pointer-allocated object, both whether finalization happens and its timing are processor choices. There is no mandatory garbage collection, immediate callback or final-at-program-exit rule."
+    },
+    {
+      "unit": "note-unnumbered",
+      "disposition": "structural",
+      "rationale": "Complete advisory note connecting finalization-based storage management to defined assignment."
+    },
+    {
+      "unit": "p1.intrinsic-assignment-event",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.6.3-001"
+      ]
+    },
+    {
+      "unit": "p1.unallocated-allocatable-exclusion",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.6.3-001"
+      ]
+    },
+    {
+      "unit": "p1.after-expression-evaluation",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.6.3-001"
+      ]
+    },
+    {
+      "unit": "p1.before-variable-definition",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.6.3-001"
+      ]
+    },
+    {
+      "unit": "p1.allocated-variable-before-deallocation",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.6.3-001"
+      ]
+    },
+    {
+      "unit": "p1.allocated-subobject-before-deallocation",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.6.3-001"
+      ]
+    },
+    {
+      "unit": "p2.pointer-target-on-deallocation",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.6.3-002"
+      ]
+    },
+    {
+      "unit": "p2.allocatable-on-deallocation",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.6.3-002"
+      ]
+    },
+    {
+      "unit": "p2.intrinsic-assignment-variable-exception",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.6.3-002"
+      ]
+    },
+    {
+      "unit": "p2.deallocation-error-choice",
+      "disposition": "permission",
+      "rationale": "If deallocation has an error condition, whether finalization occurs is processor dependent. No fixed callback count, deliberate memory exhaustion, invalid pointer operation or arbitrary crash/status oracle is imposed. Any later observation must preserve this freedom and independently qualify safe error handling."
+    },
+    {
+      "unit": "p3.nonpointer-nonallocatable-object",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.6.3-003"
+      ]
+    },
+    {
+      "unit": "p3.not-dummy-or-result",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.6.3-003"
+      ]
+    },
+    {
+      "unit": "p3.return-or-end-event",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.6.3-003"
+      ]
+    },
+    {
+      "unit": "p3.before-would-become-undefined",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.6.3-003"
+      ]
+    },
+    {
+      "unit": "p4.block-local-object",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.6.3-004"
+      ]
+    },
+    {
+      "unit": "p4.nonpointer-nonallocatable",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.6.3-004"
+      ]
+    },
+    {
+      "unit": "p4.block-termination",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.6.3-004"
+      ]
+    },
+    {
+      "unit": "p4.before-would-become-undefined",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.6.3-004"
+      ]
+    },
+    {
+      "unit": "p5.nonpointer-function-reference",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.6.3-005"
+      ]
+    },
+    {
+      "unit": "p5.result-finalization",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.6.3-005"
+      ]
+    },
+    {
+      "unit": "p5.after-innermost-executable-construct",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.6.3-005"
+      ]
+    },
+    {
+      "unit": "p6.specification-expression-reference",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.6.3-006"
+      ]
+    },
+    {
+      "unit": "p6.function-result",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.6.3-006"
+      ]
+    },
+    {
+      "unit": "p6.before-executable-constructs",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.6.3-006"
+      ]
+    },
+    {
+      "unit": "p7.invocation-event",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.6.3-007"
+      ]
+    },
+    {
+      "unit": "p7.nonpointer-nonallocatable-intent-out",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.6.3-007"
+      ]
+    },
+    {
+      "unit": "p7.before-undefined",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.6.3-007"
+      ]
+    },
+    {
+      "unit": "p7.within-invoked-procedure",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.6.3-007"
+      ]
+    },
+    {
+      "unit": "p7.elemental-scalar-context",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.6.3-007"
+      ]
+    },
+    {
+      "unit": "p7.actual-rank-not-selector",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.6.3-007"
+      ]
+    },
+    {
+      "unit": "p8.pointer-allocation-condition",
+      "disposition": "permission",
+      "rationale": "The permission applies only to an object created by pointer allocation that becomes unreachable after all associated pointers change status. A chosen finalization follows7.5.6.2, but no choice or timing is mandated; no fake passing runtime or leak/OOM stress test is created."
+    },
+    {
+      "unit": "p8.all-associations-lost",
+      "disposition": "permission",
+      "rationale": "The permission applies only to an object created by pointer allocation that becomes unreachable after all associated pointers change status. A chosen finalization follows7.5.6.2, but no choice or timing is mandated; no fake passing runtime or leak/OOM stress test is created."
+    },
+    {
+      "unit": "p8.whether-finalized-choice",
+      "disposition": "permission",
+      "rationale": "The permission applies only to an object created by pointer allocation that becomes unreachable after all associated pointers change status. A chosen finalization follows7.5.6.2, but no choice or timing is mandated; no fake passing runtime or leak/OOM stress test is created."
+    },
+    {
+      "unit": "p8.when-finalized-choice",
+      "disposition": "permission",
+      "rationale": "The permission applies only to an object created by pointer allocation that becomes unreachable after all associated pointers change status. A chosen finalization follows7.5.6.2, but no choice or timing is mandated; no fake passing runtime or leak/OOM stress test is created."
+    },
+    {
+      "unit": "note-unnumbered.storage-management",
+      "disposition": "informative",
+      "rationale": "Storage-management design advice does not create a new mandatory defined-assignment implementation or bypass the actual intrinsic-assignment/finalization conditions."
+    },
+    {
+      "unit": "note-unnumbered.defined-assignment-connection",
+      "disposition": "informative",
+      "rationale": "Storage-management design advice does not create a new mandatory defined-assignment implementation or bypass the actual intrinsic-assignment/finalization conditions."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_7_5_6_3.md"
+  },
+  "review_fingerprint": "54379228424e85c2f5fd2af2b03140f3578f5fe264fda5364589922a1f18070c",
+  "review_rationale": "Independent original source review and FSRC001 elemental dependency correction followed by the complete ordinary-event source/fixture/oracle/provenance review in doc/source_audits/batch_019.json. All nine base/36fine units,45accounting rows and seven requirement conditions are preserved. Eighteen programs represent19finite facets at44guard sites. Failed-deallocation and unreachable-target choices remain permissions. All14pending facets remain: six deallocation-owned, three conditional specification expression and five source-use graph plans. No termination observer, diagnostic policy or synthetic-log-as-event credit is introduced."
+}

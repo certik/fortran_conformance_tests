@@ -22,7 +22,7 @@ The readiness refactoring now supplies:
   context case.
 
 This is infrastructure readiness, not completed conformance coverage.
-The current census still has 4,974 unresolved base units and eight unresolved
+The current census still has 4,965 unresolved base units and eight unresolved
 fine-grained units inside the catalogues. Its independent visual
 review is still pending. Automatic PDF extraction is not semantic review,
 and list items/table rows require additional audited subdivisions.
@@ -609,7 +609,7 @@ rejection; a supplementary Flang f2018 run is not f2023 qualification.
 All 50 remaining facets and the additional passed-object parameter-domain
 question stay open.
 
-The current measured whole-target checkpoint has **1,855 cases**:
+The eighteenth-batch measured whole-target checkpoint has **1,855 cases**:
 **1,151 PASS, 699 XFAIL, four SKIPs and one NEEDS_ORACLE**.
 All 1,849 prior IDs, fingerprints and target outcomes/phases are unchanged.
 There are 76 catalogues, 396 requirements, 1,592 direct and four linked facets,
@@ -618,10 +618,39 @@ question brings main's unresolved fine units to eight, rather than being
 silently settled by ordinary non-PDT programs. Review and exact provenance
 are recorded in `doc/source_audits/batch_018.json`.
 
-The ordinary finalization-event author returned 18 programs representing 19
-facets, with 14 pending. Independent fixture/oracle review is queued after
-the constructor source review; original IF/DO timing disagreements remain
-unchanged and unapproved until that gate closes.
+The nineteenth batch integrates 18 independently reviewed ordinary
+finalization-event programs representing 19 facets, with 14 still pending.
+Old-value/RHS order, allocation replacement, local and BLOCK lifetimes,
+whole-construct result timing and ordinary/elemental OUT entry have separate
+conditions and nonvacuous observers. Sixteen cases are reference-validated;
+IF/DO result cases retain source-only approval and unchanged whole-construct
+oracles. GNU misses their callback, Flang finalizes in the header, and
+LFortran already has an unexpected callback at consumer entry.
+
+The coordinator verified 64 full-program countermodels over the 16
+GNU-positive parents and the exact 44-site primitive guard matrix, then
+independently rebuilt its driver and reran all 448 probes. Synthetic logs
+are not successful automatic-finalization executions for IF/DO, and none of
+these controls becomes another conformance case. The source/observer and
+exact provenance decisions are in `doc/source_audits/batch_019.json`.
+
+The current measured whole-target checkpoint has **1,873 cases**:
+**1,159 PASS, 709 XFAIL, four SKIPs and one NEEDS_ORACLE**.
+All 1,855 prior IDs, fingerprints and target outcomes/phases are unchanged.
+There are 77 catalogues, 403 requirements, 1,611 direct and four linked
+facets, and 431 pending facets. All deallocation-owned, conditional
+specification-expression and source-use followups remain explicit.
+
+A separate coordinator-authored binding-reuse candidate, `6f064df`,
+refreshes the four earlier proposals and adds the default-public connection.
+Five draft links reuse six canonical cases without another program. Its
+generator distinguishes direct, registered-linked and pending facets; only
+three existing cases acquire changed requirement-metadata fingerprints,
+with fresh observations and no input-byte changes. The candidate remains
+outside main awaiting independent connection review. Its source, case and
+inventory staleness must be explicitly adjudicated before integration;
+neither its 79 regressions nor the nine selected processor observations per
+compiler count as link approval or new main coverage.
 A further source-only packet covers 7.5.8 and 7.5.9 with 13 base units,
 50 fine units, 14 requirements and 72 pending facets. It preserves existing
 canonical witnesses and explicitly accounts for the value-set definition
