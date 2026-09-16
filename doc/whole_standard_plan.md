@@ -22,7 +22,7 @@ The readiness refactoring now supplies:
   context case.
 
 This is infrastructure readiness, not completed conformance coverage.
-The current census still has 5,016 unresolved base units and seven unresolved
+The current census still has 4,999 unresolved base units and seven unresolved
 fine-grained units inside the catalogues. Its independent visual
 review is still pending. Automatic PDF extraction is not semantic review,
 and list items/table rows require additional audited subdivisions.
@@ -467,16 +467,6 @@ outcomes are 886 pass, 505 fail and four skip. All 1,239 prior case
 fingerprints and target outcomes are unchanged; the one existing oracle
 block still makes the normal whole-suite gate nonzero.
 
-The reviewed 7.5.4.1-7.5.4.5 source plan now has a 211-case implementation
-packet in its isolated author worktree. Independent fixture review found
-an unsupported-facility guard gap in all 77 negative contracts and a
-C765 binding contrast that also violated C784. Correction `503563f` retains
-the 211 IDs, hardens the 77 guards and adds a non-passed defining-type dummy
-to both sides of that one contrast. It refreshed 99 requirement-bound
-fingerprints, including related C765 oracle wording, without changing native
-outcomes. Independent correction closeout is queued; no approval or
-main-checkout coverage is claimed for that packet.
-
 The infrastructure commits preceding type-bound integration close review and reuse
 gaps without adding coverage. Native compiler `error: Internal:` reports
 now override otherwise accepted warnings, without treating filenames,
@@ -514,7 +504,7 @@ coupling; adding a typed witness there would defeat C784's antecedent.
 Twenty metadata-bound cases were freshly observed; 131 unchanged current
 rows retain their actual earlier report provenance.
 
-The measured whole-target checkpoint now has **1,546 cases**:
+The thirteenth-batch whole-target checkpoint has **1,546 cases**:
 **982 PASS, 559 XFAIL, four SKIPs and one NEEDS_ORACLE**. All 1,395 prior
 IDs, fingerprints and target outcomes/phases are unchanged. There are
 66 catalogues, 334 requirements, 1,410 direct and four linked facets,
@@ -522,19 +512,46 @@ and 283 pending facets. The source, cause, oracle and exact-binding
 decisions are recorded in `doc/source_audits/batch_013.json`. No new semantic
 link was registered, and the C783 mixed-access question remains explicit.
 
-The source-only finalization packet is under independent review; the
-extension packet awaits its source review. Neither is included in committed
-source or execution totals, and neither may proceed to fixture generation
-before that gate.
+The fourteenth batch integrates the reviewed 211-case component packet in
+7.5.4.1-7.5.4.5: 43 base and 145 fine units, 32 requirements, 103 direct
+facets and 33 pending facets. Independent correction review closed the
+unsupported-wrapper guard gap across all 77 negatives and isolated the
+C765 other-type binding with a non-passed defining-type witness. Exactly
+99 bindings were freshly observed; 112 unchanged bindings retain their
+original observations, with no old-row relabelling.
+
+The packet has 160 reference-validated and 51 source-reviewed cases.
+Six of the latter are valid programs retained despite unqualified reference
+results, including the ENUM/ENUMERATION, all-assumed-LEN and TYPEOF examples.
+Four corank effects preserve actual guarded GNU one-image execution;
+they are not compile-only or multi-image substitutes. Full decisions and
+the 633-record/905-trace provenance are in `doc/source_audits/batch_014.json`.
+
+The current measured whole-target checkpoint has **1,757 cases**:
+**1,108 PASS, 644 XFAIL, four SKIPs and one NEEDS_ORACLE**.
+All 1,546 prior IDs, fingerprints and target outcomes/phases are unchanged.
+There are 71 catalogues, 366 requirements, 1,513 direct and four linked
+facets, and 316 pending facets. The real-BOZ oracle and broader source
+closure remain open; these measured counts are not whole-standard completion.
+
+Independent review qualified the ordinary finalization plans after
+FSRC-001 corrected three elemental references from 15.8 (Simple procedures)
+to 15.9.1/15.9.3. The correction is preserved in `1bdbfbf` and `57ba04c`.
+Separate authors are implementing only the bounded FINAL declaration and
+finalization-process subsets. Classification/source-use facets and the
+conditional PURE/ERROR STOP/termination observers are not executable
+completion claims. The extension source packet is under independent review.
 A further source-only packet covers 7.5.8 and 7.5.9 with 13 base units,
 50 fine units, 14 requirements and 72 pending facets. It preserves existing
 canonical witnesses and explicitly accounts for the value-set definition
 without inventing a no-op execution. Its four-file author commit `1fada1e`
 also awaits independent review; no main-checkout coverage is credited.
-Source-only constructor authoring in 7.5.10 is also under way. It must
-preserve the existing four C7107 programs and their primary ownership;
-new detailed source metadata requires explicit future review and rebinding,
-not automatic renewal of their dependent evidence.
+Source-only constructor packet `8ba944c` in 7.5.10 covers 28 base and
+114 fine units, with 22 requirements and 98 facets: two already represented
+C7107 facets and 96 pending. The four existing C7107 programs and their
+primary ownership remain; the new detailed metadata intentionally exposes
+four stale case bindings and three stale links. Its source gate is still
+pending, not an automatic renewal or additional execution credit.
 The broader meta-evidence contract, including mixed FORMAT
 diagnostic contexts, is not complete merely because one link type exists.
 Meta-level definitions must not become fabricated passing programs.

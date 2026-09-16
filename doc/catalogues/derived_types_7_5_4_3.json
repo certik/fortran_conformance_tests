@@ -1,0 +1,130 @@
+{
+  "schema_version": 1,
+  "section": "7.5.4.3",
+  "review_state": "reviewed",
+  "subunits": {
+    "p1": [
+      "p1.coarray-by-declarator",
+      "p1.coarray-by-codimension",
+      "p1.individual-corank",
+      "p1.fallback-corank"
+    ],
+    "note-unnumbered": [
+      "note-unnumbered.grid-definition",
+      "note-unnumbered.rank-versus-corank",
+      "note-unnumbered.object-not-coarray",
+      "note-unnumbered.object-not-pointer"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S7.5.4.3-001",
+      "title": "An individual coarray specification determines a component's corank before CODIMENSION",
+      "source": "7.5.4.3 p1; J3/24-007, 18 December 2023, PDF 95, printed 81, lines 2-4.",
+      "source_units": [
+        "p1",
+        "p1.coarray-by-declarator",
+        "p1.coarray-by-codimension",
+        "p1.individual-corank",
+        "p1.fallback-corank"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A component is a coarray if its declarator has a coarray-spec or the statement has a CODIMENSION clause. An individual coarray-spec determines its corank when present; otherwise the statement specification determines corank. Components have deferred coshape and ALLOCATABLE under C751. Array rank and runtime cobounds are separate from the corank selected here.",
+      "facets": [
+        "individual-corank",
+        "shared-corank",
+        "individual-corank-override",
+        "array-rank-independent"
+      ],
+      "pending": {},
+      "oracle": "Four actual corank runs guard NUM_IMAGES()==1 before allocation. Each uses a saved scalar nonpointer noncoarray containing object, deferred component declarations, reviewed small collective allocations, STAT handling, successful allocation before LCOBOUND, defined payloads and matching deallocations. SIZE(LCOBOUND(component)) determines corank independently from array rank; a type-only compile cannot replace the run.",
+      "oracle_limitation": "Each run must actually meet its one-image guard and complete collective allocation/deallocation; an independently recorded GNU -fcoarray=single execution establishes a setup premise, not blanket processor conformance. Missing facilities, launcher failures, allocation failures, crashes, verifier failures and timeouts stay failures, never optional-unavailability skips. LCOBOUND is used only after allocation on a final part with nonzero corank; no remote access or opaque team value is needed.",
+      "dependencies": "C751-C753 (PDF 93); R809-R811/C822-C828 (PDF 121-122); allocation R929-R941/C936-C955 and 9.7.1.2 p3-p5 (PDF 160-163); deallocation (PDF 165-166); LCOBOUND (PDF 425-426); ALLOCATED (PDF 379-380); 19.6 (PDF 562-563); 4.2 p2(1) (PDF 46)."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.4.3-001"
+      ]
+    },
+    {
+      "unit": "p1.coarray-by-declarator",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.4.3-001"
+      ]
+    },
+    {
+      "unit": "p1.coarray-by-codimension",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.4.3-001"
+      ]
+    },
+    {
+      "unit": "p1.individual-corank",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.4.3-001"
+      ]
+    },
+    {
+      "unit": "p1.fallback-corank",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.4.3-001"
+      ]
+    },
+    {
+      "unit": "note-unnumbered",
+      "disposition": "informative",
+      "rationale": "PDF 95 below p1: GRID_TYPE illustrates a rank-three allocatable coarray component of corank three, then cites object-context restrictions. It supplies no initialized grid values or C-style layout."
+    },
+    {
+      "unit": "note-unnumbered.grid-definition",
+      "disposition": "informative",
+      "requirements": [
+        "R738",
+        "C750",
+        "C751"
+      ],
+      "rationale": "The component independently needs deferred array shape, deferred coshape and ALLOCATABLE. Default REAL is used in the example without prescribing a representation."
+    },
+    {
+      "unit": "note-unnumbered.rank-versus-corank",
+      "disposition": "informative",
+      "requirements": [
+        "S7.5.4.2-001",
+        "S7.5.4.3-001",
+        "C822"
+      ],
+      "rationale": "The two independent lists happen to each have three colons; this is not a requirement that rank equal corank. Their sum remains subject to C822."
+    },
+    {
+      "unit": "note-unnumbered.object-not-coarray",
+      "disposition": "informative",
+      "requirements": [
+        "C825",
+        "C826"
+      ],
+      "rationale": "C825 forbids a coarray object whose type has a coarray potential subobject, and C826 additionally qualifies permitted object contexts. A future finite canonical pair must retain those owners, not invent a local note-derived diagnostic."
+    },
+    {
+      "unit": "note-unnumbered.object-not-pointer",
+      "disposition": "informative",
+      "requirements": [
+        "C825"
+      ],
+      "rationale": "The containing-object POINTER exclusion is canonical C825. It is distinct from the component declaration restriction C753 and from the initially undefined state of an otherwise permitted pointer."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_7_5_4_3.md"
+  },
+  "review_fingerprint": "cee9954c3e3fa019c05b3cb6e0af6c1150a9c1040f23aaf205bc1b065903817b",
+  "review_rationale": "Independent original-source, complete A211 fixture and correction review in doc/source_audits/batch_014.json. All43base/145fine units,32requirements and source partitions are preserved. DCFR-001 guards all77negatives; DCFR-002 adds the non-passed defining-type witness only to the C765 binding pair. Sourced constant-inquiry, TYPEOF/CLASSOF, all-assumed LEN and one-image corank qualifications remain explicit. The33pending facets are not completed by this review."
+}
