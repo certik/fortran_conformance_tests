@@ -468,8 +468,12 @@ fingerprints and target outcomes are unchanged; the one existing oracle
 block still makes the normal whole-suite gate nonzero.
 
 The reviewed 7.5.4.1-7.5.4.5 source plan now has a 211-case implementation
-packet in its isolated author worktree. Independent fixture review is in
-progress; no approval or main-checkout coverage is claimed for that packet.
+packet in its isolated author worktree. Independent fixture review found
+an unsupported-facility guard gap in all 77 negative contracts and a
+C765 binding contrast that also violated C784. The requested corrections retain the
+211 IDs and add a non-passed defining-type dummy to both sides of that
+one contrast, keeping only the intended selected-dummy type change.
+No approval or main-checkout coverage is claimed for that packet.
 The 7.5.5 source inventory has been reviewed, including 39 base and 145
 fine units. Its 151-case implementation remains unapproved: independent
 coordinator review found overbroad diagnostic-cause routes and permanent
@@ -492,10 +496,20 @@ and the observational inventory are unchanged. Four actual type-bound
 connections over six existing cases have been structurally checked, but
 remain unregistered and clear no pending facet.
 
-The isolated component-name reporting-duty correction and the source-only
-finalization and extension packets still require independent review before
-integration or fixture generation. Their unapproved contents are not
-included in the committed source or execution totals.
+The component-name reporting-duty correction is now independently reviewed
+and integrated, with the source chain from 19.3.4 p5/p6 to 4.2 p2(6) recorded
+in `doc/source_audits/component_scope_duty_001.json`. Three legal controls
+have renewed requirement-bound fingerprints and qualifying reference
+adjudications, with no Fortran or manifest changes. The dependent source,
+three component links and complete observational inventory were explicitly
+renewed; old receipts were not silently expanded to new source anchors.
+This changes no case count or credited facet and does not impose a fatal
+diagnostic policy.
+
+The source-only finalization packet is under independent review; the
+extension packet awaits its source review. Neither is included in committed
+source or execution totals, and neither may proceed to fixture generation
+before that gate.
 The broader meta-evidence contract, including mixed FORMAT
 diagnostic contexts, is not complete merely because one link type exists.
 Meta-level definitions must not become fabricated passing programs.

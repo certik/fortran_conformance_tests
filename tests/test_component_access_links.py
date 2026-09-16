@@ -34,7 +34,8 @@ class ComponentAccessLinksTests(unittest.TestCase):
             self.assertEqual(link["target"]["requirement"], rule)
             self.assertEqual(link["target"]["facet"], facet)
             self.assertNotIn(facet, self.registry.requirements[rule]["pending"])
-            self.assertEqual(self.registry.requirements[rule]["diagnostic_obligation"], "not-required")
+            expected_duty = "required" if rule == "S7.5.4.8-002" else "not-required"
+            self.assertEqual(self.registry.requirements[rule]["diagnostic_obligation"], expected_duty)
             self.assertEqual({member["role"] for member in link["cases"]},
                              {"diagnostic", "positive-control"})
             self.assertEqual({member["id"] for member in link["cases"]}, {
@@ -73,6 +74,14 @@ class ComponentAccessLinksTests(unittest.TestCase):
         owner_cases = [case for case in self.cases if case.rule == "S7.5.4.8-002"]
         self.assertEqual(len(owner_cases), 3)
         self.assertTrue(all(case.meta.evidence == "positive-control" for case in owner_cases))
+
+    def test_private_component_name_reporting_has_the_clause19_basis(self):
+        requirement = self.registry.requirements["S7.5.4.8-002"]
+        self.assertEqual(requirement["diagnostic_obligation"], "required")
+        self.assertIn("19.3.4 p5", requirement["dependencies"])
+        self.assertIn("4.2 p2(6)", requirement["dependencies"])
+        self.assertEqual(self.registry.requirements["S7.5.4.8-001"]["diagnostic_obligation"],
+                         "not-required")
 
 
 if __name__ == "__main__":
