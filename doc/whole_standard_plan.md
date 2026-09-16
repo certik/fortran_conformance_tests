@@ -510,6 +510,11 @@ The source-only finalization packet is under independent review; the
 extension packet awaits its source review. Neither is included in committed
 source or execution totals, and neither may proceed to fixture generation
 before that gate.
+A further source-only packet covers 7.5.8 and 7.5.9 with 13 base units,
+50 fine units, 14 requirements and 72 pending facets. It preserves existing
+canonical witnesses and explicitly accounts for the value-set definition
+without inventing a no-op execution. Its four-file author commit `1fada1e`
+also awaits independent review; no main-checkout coverage is credited.
 The broader meta-evidence contract, including mixed FORMAT
 diagnostic contexts, is not complete merely because one link type exists.
 Meta-level definitions must not become fabricated passing programs.
