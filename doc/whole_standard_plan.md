@@ -22,7 +22,7 @@ The readiness refactoring now supplies:
   context case.
 
 This is infrastructure readiness, not completed conformance coverage.
-The current census still has 4,992 unresolved base units and seven unresolved
+The current census still has 4,979 unresolved base units and seven unresolved
 fine-grained units inside the catalogues. Its independent visual
 review is still pending. Automatic PDF extraction is not semantic review,
 and list items/table rows require additional audited subdivisions.
@@ -567,7 +567,7 @@ runs remain separate. All current evidence comes from the refreshed run;
 the two earlier compile failures that later reached runtime are not
 retrospectively counted as executions.
 
-The current measured whole-target checkpoint has **1,838 cases**:
+The sixteenth-batch measured whole-target checkpoint has **1,838 cases**:
 **1,142 PASS, 691 XFAIL, four SKIPs and one NEEDS_ORACLE**.
 All 1,821 prior IDs, fingerprints and target outcomes/phases are unchanged.
 There are 73 catalogues, 376 requirements, 1,567 direct and four linked
@@ -576,11 +576,28 @@ decisions are recorded in `doc/source_audits/batch_016.json`.
 Classification/source-use facets and conditional PURE/ERROR STOP/termination
 observers remain unimplemented, not completion claims.
 
-Inheritance packet `f371acd` has eleven unapproved runtime cases covering
-eighteen finite facets, with thirty-five pending. Independent fixture
-review is next. Ordinary overriding runtime authoring is also under way;
-optional diagnostic policies, source graphs and the added passed-object
-parameter-domain question remain explicitly pending.
+The seventeenth batch integrates eleven reviewed inheritance runs covering
+eighteen facets, with thirty-five pending. M shares all25 ordered ancestry
+inquiries, N shares parent-name/access observations and G shares generic
+extension/override observations. Ten cases are reference-validated; the
+private-parent/public-child homonym retains source-only approval despite
+both reference rejections. Its justification follows normative identifier
+scope and inherited accessibility, not the target's successful run or an
+informative note alone.
+
+Sixty separately preserved one-span runtime oracle perturbations built
+successfully and failed at their expected checkpoints. They strengthen the
+oracle assessment without becoming negative conformance cases or adopted
+diagnostic policies. Exact source, namespace, association and provenance
+decisions are in `doc/source_audits/batch_017.json`.
+
+The current measured whole-target checkpoint has **1,849 cases**:
+**1,146 PASS, 698 XFAIL, four SKIPs and one NEEDS_ORACLE**.
+All 1,838 prior IDs, fingerprints and target outcomes/phases are unchanged.
+There are 75 catalogues, 385 requirements, 1,585 direct and four linked
+facets, and 367 pending facets. Ordinary finalization-event and overriding
+runtime authoring are under way; optional diagnostic policies, source
+graphs and the added passed-object parameter-domain question remain pending.
 A further source-only packet covers 7.5.8 and 7.5.9 with 13 base units,
 50 fine units, 14 requirements and 72 pending facets. It preserves existing
 canonical witnesses and explicitly accounts for the value-set definition
