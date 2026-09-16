@@ -297,6 +297,28 @@ class FixtureTests(unittest.TestCase):
         self.assertEqual(result.input_hashes['source.f'], hashlib.sha256(self.raw).hexdigest())
         self.assertEqual((self.root / 'source.f').read_bytes(), self.raw)
 
+    def test_qualified_warning_cannot_hide_a_later_native_internal_error(self):
+        self.reporting_fixture()
+        comp = runner.Compiler('flang', 'flang', 'f2018')
+        for token in ('PUBLIC', 'PRIVATE', 'DEFERRED', 'NON_OVERRIDABLE', 'NOPASS', 'PASS'):
+            warning = f"Attribute '{token}' cannot be used more than once [-Wredundant-attribute]"
+            self.data['expect']['diagnostic'].update(
+                contains_any=[warning],
+                allow_nonfatal=[dict(compiler='flang', severity='warning', equals_any=[warning])])
+            fixture = self.fixture()
+            ordinary = f'source.f:2:7: warning: {warning}\n'
+            for status in (0, 1):
+                with self.subTest(token=token, status=status):
+                    with patch.object(runner, 'run', return_value=runner.ProcessResult(status, ordinary)):
+                        self.assertEqual(runner.check_fixture(fixture, comp).outcome, 'pass')
+                    for origin in ('source.f:2:29: ', 'other.inc:8:1: ', ''):
+                        output = ordinary + origin + "error: Internal: no symbol found for 'self'\n"
+                        with patch.object(runner, 'run', return_value=runner.ProcessResult(status, output)):
+                            result = runner.check_fixture(fixture, comp)
+                        self.assertEqual(result.outcome, 'fail')
+                        self.assertIn('compiler internal error', result.note)
+                        self.assertEqual(result.output, output)
+
     def test_declared_included_cycle_report_is_matched_without_host_attribution(self):
         self.reporting_fixture()
         (self.root / 'loop.inc').write_text("include 'loop.inc'\n")

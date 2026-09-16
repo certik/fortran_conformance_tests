@@ -43,6 +43,7 @@ DECLARED_REF_LOC = re.compile(r'^(.*?):(\d+):(\d+)(?:-(\d+))?(?::|\s|$)')
 REF_LOC_HEADER = re.compile(r'^(.*?):(\d+(?:-\d+)?):')
 REF_SOURCE_RECORD = re.compile(r'^\s*(?:\d+\s*)?\|(?:\s|$)')
 REF_MESSAGE = re.compile(r'^(Error|Fatal Error|Warning|portability):\s*(.*)', re.I)
+REF_INTERNAL_ERROR = re.compile(r'^(?:fatal\s+)?error:\s*Internal:\s*\S', re.I)
 REF_QUOTED_CONTENT = re.compile(r"""(?<!\w)(?:'[^']*'|"[^"]*")(?!\w)""")
 INCLUDE_CONTEXT = re.compile(
     r'^\s*(?:In file included from\b|from\s+.+:\d+(?::\d+)?[:,]?\s*$)', re.I)
@@ -308,6 +309,8 @@ def failure(result, phase, compiler_process=True):
     if result.returncode < 0 or (compiler_process and (result.returncode >= 128 or ICE.search(result.output))):
         return Check('fail', f'{phase} crashed (exit {result.returncode})',
                      phase, result.output)
+    if compiler_process and native_internal_error(result.output):
+        return Check('fail', f'{phase} reported a compiler internal error', phase, result.output)
     if compiler_process and RESOURCE_FAILURE.search(result.output):
         return Check('fail', f'{phase} exhausted compiler resources', phase, result.output)
     return None
@@ -473,6 +476,21 @@ def reference_location(text, pattern, header):
             and not 1 <= int(location.group(3)) <= int(location.group(4))):
         return None
     return location
+
+
+def native_internal_error(output):
+    for text in output.splitlines():
+        if REF_SOURCE_RECORD.match(text) or INCLUDE_CONTEXT.match(text):
+            continue
+        header = reference_location_header(text)
+        if header:
+            location = reference_location(text, DECLARED_REF_LOC, header)
+            if location is None:
+                continue
+            text = text[location.end():].lstrip()
+        if REF_INTERNAL_ERROR.match(text):
+            return True
+    return False
 
 
 def reference_messages(output, filename=None):

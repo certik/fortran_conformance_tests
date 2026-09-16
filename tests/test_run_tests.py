@@ -222,6 +222,39 @@ case.f90:5-5:1-20: semantic warning [C801]: repeated
         self.assertEqual(runner.failure(result, 'compile').outcome, 'fail')
         self.assertIsNone(runner.failure(result, 'run', compiler_process=False))
 
+    def test_native_internal_error_is_a_compiler_failure_at_any_normal_status(self):
+        for output in (
+            "source.f90:2:29: error: Internal: no symbol found for 'self'\n",
+            "source.f90:2:5-29: fatal error: Internal: no symbol found for 'self'\n",
+            "payload.inc:2:29: error: Internal: no symbol found for 'self'\n",
+            "payload:2:29: error: Internal: no symbol found for 'self'\n",
+            "error: Internal: no symbol found for 'self'\n",
+            "source.f90:2:29:\nError: Internal: no symbol found for 'self'\n",
+        ):
+            for status in (0, 1):
+                with self.subTest(output=output, status=status):
+                    result = runner.ProcessResult(status, output)
+                    check = runner.failure(result, 'compile')
+                    self.assertEqual(check.outcome, 'fail')
+                    self.assertIn('compiler internal error', check.note)
+                    self.assertEqual(check.output, output)
+                    self.assertIsNone(runner.failure(result, 'run', compiler_process=False))
+
+    def test_native_internal_error_detection_uses_message_not_source_or_filename(self):
+        for output in (
+            "    2 | error: Internal: no symbol found for 'self'\n",
+            "      | error: Internal: no symbol found for 'self'\n",
+            "error: Internal:2:29: error: ordinary source error\n",
+            "prefix error: Internal: source.f90:2:29: error: ordinary source error\n",
+            "source.f90:2:29: error: Unknown symbol 'error: Internal:'\n",
+            "Error: Unknown symbol 'error: Internal:'\n",
+            "Error: token 'source.f90:2:29: error: Internal:' is not valid\n",
+            "source.f90:2:29: warning: Internal: optional advisory\n",
+            "note: compiler output can contain error: Internal: messages\n",
+        ):
+            with self.subTest(output=output):
+                self.assertIsNone(runner.failure(runner.ProcessResult(1, output), 'compile'))
+
     def test_successful_exit_does_not_count_as_rejection(self):
         result = runner.ProcessResult(0, 'case.f90:2-2:1-20: semantic error [C801]: repeated')
         self.assertEqual(self.invalid(result).outcome, 'fail')

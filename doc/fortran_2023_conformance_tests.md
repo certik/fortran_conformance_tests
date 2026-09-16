@@ -376,6 +376,13 @@ Flang's `[-Wlong-names]` portability diagnostic. This is shown as
 severity. Arbitrary warnings and unlocated compiler failures do not
 corroborate a case.
 
+A native `error: Internal: ...` report is a compiler failure, even after an
+otherwise qualified warning and even with exit status zero. The guard uses
+the native diagnostic message after its source location, or an unlocated
+error record; occurrences in source echoes, filenames or quoted diagnostic
+content are not internal-error reports. As with the other compiler-failure
+guards, application output is not classified this way.
+
 Reference results never decide pass or fail for LFortran. They are printed
 next to every case and summarised, so that the authoring rule can be applied:
 
