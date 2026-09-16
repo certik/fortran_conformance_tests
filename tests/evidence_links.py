@@ -1,4 +1,4 @@
-"""Finite diagnostic/control links to canonical cases, never new executions."""
+"""Finite role-preserving links to canonical cases, never new executions."""
 from dataclasses import asdict
 import json
 from pathlib import Path
@@ -8,7 +8,11 @@ from suite_data import (Review, SuiteError, canonical_evidence_path, digest, fie
                         read_json, string, strings, write_json)
 
 
-ROLES = {'diagnostic', 'positive-control'}
+PATTERNS = {
+    'diagnostic-control': {'diagnostic', 'positive-control'},
+    'runtime-effect': {'runtime-effect'},
+    'positive-control': {'positive-control'},
+}
 LINK_REVIEW_STATES = {'source-reviewed', 'unreviewed', 'disputed', 'needs-oracle'}
 
 
@@ -54,10 +58,14 @@ class EvidenceLinks:
         return self.registry.source_material(anchor)
 
     def _link(self, link):
-        fields(link, ('id', 'target', 'basis', 'claim', 'limitation', 'cases'), ('review',), 'evidence link')
+        fields(link, ('id', 'target', 'basis', 'claim', 'limitation', 'cases'),
+               ('pattern', 'review'), 'evidence link')
         name = string(link['id'], 'link ID')
         if not re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9_.:-]*', name):
             raise SuiteError(f'{name}: invalid link ID')
+        pattern = string(link.get('pattern', 'diagnostic-control'), f'{name}.pattern')
+        if pattern not in PATTERNS:
+            raise SuiteError(f'{name}: unknown canonical evidence pattern {pattern}')
         target = link['target']
         fields(target, ('requirement', 'facet', 'source_units'), (), f'{name}.target')
         rule = string(target['requirement'], f'{name}.target.requirement')
@@ -89,21 +97,30 @@ class EvidenceLinks:
             path = self._path(member['path'])
             if identifier in identifiers or role in roles or path in paths:
                 raise SuiteError(f'{name}: duplicate case ID, role, or path')
-            if role not in ROLES:
-                raise SuiteError(f'{name}: unknown canonical case role {role}')
-            if primary not in self.registry.numbered:
-                raise SuiteError(f'{name}: primary rule must be a canonical R/C item, not linked evidence')
+            if role not in PATTERNS[pattern]:
+                raise SuiteError(f'{name}: canonical case role {role} does not match pattern {pattern}')
+            if primary == rule:
+                raise SuiteError(f'{name}: a link cannot reuse its target requirement as its primary')
             source = self._source(member['source'])
-            if (source['unit'] != primary or source['source']['kind'] != 'numbered-item'
-                    or member['source'] not in basis):
+            if primary in self.registry.numbered:
+                primary_sources = {member['source']} if (
+                    source['unit'] == primary and source['source']['kind'] == 'numbered-item') else set()
+            else:
+                primary_requirement = self.registry.requirements.get(primary)
+                if not primary_requirement or 'pattern' not in link:
+                    raise SuiteError(f'{name}: an S-owned canonical case needs a known requirement and explicit pattern')
+                primary_section = self.registry.requirement_sections[primary]
+                primary_sources = {primary_section + '#' + unit
+                                   for unit in primary_requirement['source_units']}
+            if member['source'] not in primary_sources or member['source'] not in basis:
                 raise SuiteError(f'{name}: incorrect primary/source relation or missing basis')
             if phase not in ('compile', 'link', 'run'):
                 raise SuiteError(f'{name}: unknown canonical case phase {phase}')
             identifiers.add(identifier)
             roles.add(role)
             paths.add(path)
-        if roles != ROLES:
-            raise SuiteError(f'{name}: requires exactly one diagnostic and one positive-control role')
+        if roles != PATTERNS[pattern]:
+            raise SuiteError(f'{name}: requires exactly the canonical roles for {pattern}')
         if len({member['primary_rule'] for member in link['cases']}) != 1:
             raise SuiteError(f'{name}: the diagnostic/control pair must have the same primary rule')
         if 'review' in link:
@@ -131,10 +148,16 @@ class EvidenceLinks:
                     raise SuiteError(f"{link['id']}: canonical case primary rule or path does not match {case.name}")
                 if member['phase'] != expected_phase(case):
                     raise SuiteError(f"{link['id']}: declared phase does not match canonical case {case.name}")
-                diagnostic = member['role'] == 'diagnostic'
-                if ((diagnostic and (case.kind != 'invalid' or member['phase'] != 'compile'
-                                     or case.meta.evidence != 'effect'))
-                        or (not diagnostic and (case.kind != 'valid' or case.meta.evidence != 'positive-control'))):
+                role = member['role']
+                if role == 'diagnostic':
+                    matches = (case.kind == 'invalid' and member['phase'] == 'compile'
+                               and case.meta.evidence == 'effect')
+                elif role == 'positive-control':
+                    matches = case.kind == 'valid' and case.meta.evidence == 'positive-control'
+                else:
+                    matches = (case.kind == 'valid' and member['phase'] == 'run'
+                               and case.meta.evidence == 'effect')
+                if not matches:
                     raise SuiteError(f"{link['id']}: role does not match canonical case {case.name}")
                 if case.meta.oracle_basis != 'standard':
                     raise SuiteError(f'{case.name}: a canonical link cannot import an additional diagnostic policy')
@@ -198,6 +221,7 @@ class EvidenceLinks:
                 review = Review(state, rationale, fingerprint, record['state'], record['sources'])
             result.append(dict(
                 id=link['id'], target=link['target'], basis=link['basis'],
+                pattern=link.get('pattern', 'diagnostic-control'),
                 claim=link['claim'], limitation=link['limitation'],
                 state='current' if review.approved else review.state if record else 'draft',
                 review=asdict(review), blockers=blockers, source_reviews=source_reviews, cases=members,

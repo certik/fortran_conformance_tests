@@ -478,20 +478,32 @@ These records are not fixtures and are never discovered as executions.
 | `target` | Exactly `requirement`, `facet`, `source_units`; a known supplementary S requirement, one declared facet and nonempty qualified anchors belonging to that requirement |
 | `basis` | Nonempty, unique `section#unit` anchors in the pinned census or its declared subdivisions |
 | `claim`, `limitation` | Nonempty finite semantic claim and its boundary |
-| `cases` | Exactly one `diagnostic` and one `positive-control`, each with `id`, `role`, `primary_rule`, `source`, `path`, `phase` |
+| `pattern` | Optional for legacy R/C pairs; otherwise explicit `diagnostic-control`, `runtime-effect`, or `positive-control` |
+| `cases` | Exact members for the pattern, each with `id`, `role`, `primary_rule`, `source`, `path`, `phase` |
 | `review` | Optional existing-style `state`, `rationale`, `sources`, `fingerprint` adjudication; absent means draft/unreviewed |
 
-Each member names an actual canonical R/C execution ID and its exact
-repository-relative source/manifest path. Both members retain the same
-primary rule, whose numbered source anchor must be in `basis`. Roles
-must agree with the case kind/evidence; the diagnostic must be compile
-phase and the control explicitly positive-control. Declared phases must
-match the original case contract. Additional diagnostic-policy oracles
-cannot be imported through a link. Paths, IDs and roles cannot repeat
-within a pair. Unknown fields (including duplicate JSON keys), anchors,
-facets, members, noncanonical/escaping paths and self/circular evidence
-are errors. This first schema deliberately supports diagnostic/control
-pairs, not arbitrary documentary, use-graph or aggregate contracts.
+Each member names an actual canonical R/C or S execution ID and its exact
+repository-relative source/manifest path. The primary rule must differ from
+the target requirement. An R/C member uses its numbered source anchor; an
+S member uses an anchor belonging to its own requirement and requires an
+explicit `pattern`. The member anchor must be in `basis`.
+
+The default `diagnostic-control` pattern retains exactly one compile-phase
+`diagnostic` and one explicit `positive-control` with the same primary
+rule. `runtime-effect` requires exactly one valid run-phase effect case;
+`positive-control` requires exactly one valid case already classified as a
+positive control, at its original phase. A compile control cannot become
+a runtime effect through a link. Each connection needs independent source
+review: internal allowed use, for example, does not establish outside
+inaccessibility merely because a target facet concerns privacy.
+
+Declared phases must match the original case contract. Additional
+diagnostic-policy oracles cannot be imported through a link. Paths, IDs
+and roles cannot repeat within a record. Unknown fields (including
+duplicate JSON keys), anchors, facets, members, noncanonical/escaping paths
+and self-reuse are errors. Links cannot stand in for actual directly owned
+cases or provide circular case approval. These finite patterns do not add
+numbered-wrapper, arbitrary documentary, use-graph or aggregate contracts.
 
 A facet has either direct authored cases or one link, not both. Pending
 facets must exactly match the remainder. Removing a link without restoring

@@ -114,7 +114,8 @@ class EvidenceLinkTests(unittest.TestCase):
 
         def execute(case, comp, *args):
             return (checks or {}).get((case.name, comp.command),
-                                      runner.Check('pass', phase='compile' if case.fixture else 'run'))
+                                      runner.Check('pass', phase=case.fixture.expectation.phase
+                                                   if case.fixture else 'run'))
 
         with patch.object(runner, 'HERE', str(self.tests)), \
                 patch.object(runner, 'Registry', return_value=registry), \
@@ -589,6 +590,190 @@ class EvidenceLinkTests(unittest.TestCase):
                 patch.object(runner, 'Registry', side_effect=self.registry):
             errors = runner.confirm_snapshot([], selected, fingerprints, evidence_snapshot=snapshot)
         self.assertEqual(errors, ['canonical evidence links, dependencies, or reviews changed during the run'])
+
+    def reuse(self, pattern, supplementary=True):
+        link = copy.deepcopy(self.link)
+        link['pattern'] = pattern
+        if pattern != 'diagnostic-control':
+            link['cases'] = [link['cases'][1]]
+            link['cases'][0]['role'] = pattern
+        if supplementary:
+            self.change('source.json', lambda data: data['sections'].update({
+                '1.3': dict(sha256='1' * 64, units={
+                    'p1': dict(kind='paragraph', sha256='2' * 64)})}))
+            write_json(self.root / 'primary.json', dict(
+                schema_version=1, section='1.3', requirements=[
+                    dict(id='S1.3-001', title='Canonical prose requirement', source='1.3 p1',
+                         source_units=['p1'], category='effect' if pattern == 'runtime-effect' else 'restriction',
+                         diagnostic_obligation='not-required' if pattern == 'runtime-effect' else 'required',
+                         definition='Independently reviewed original source.', facets=['canonical'], pending={},
+                         oracle='A finite independent oracle or a source-minimal diagnostic/control contrast.')],
+                accounting=[dict(unit='p1', disposition='requirements', requirements=['S1.3-001'])]))
+            self.change('index.json', lambda data: data['catalogues'].append('primary.json'))
+            link['basis'] = ['1.3#p1']
+        for member in link['cases']:
+            if supplementary:
+                member.update(id=member['id'].replace('C601', 'S1_3_001'),
+                              primary_rule='S1.3-001', source='1.3#p1')
+            phase = 'run' if pattern == 'runtime-effect' else 'compile'
+            member['phase'] = phase
+            def modify(data):
+                data.update(id=member['id'], rule=member['primary_rule'], standard='f2023',
+                            facets=['canonical'] if supplementary else [])
+                if pattern == 'runtime-effect':
+                    data.update(evidence='effect',
+                                link=dict(objects=['source.o'], output='program'),
+                                expect=dict(phase='run', outcome='success', exit_code=0))
+            self.change(member['path'], modify)
+            if pattern == 'runtime-effect':
+                (self.root / member['path']).with_name('source.f90').write_text(
+                    'program canonical\nend program canonical\n')
+        self.write_links([link])
+        return link
+
+    def test_supplementary_diagnostic_pair_retains_its_direct_owner_and_review_gates(self):
+        link = self.reuse('diagnostic-control')
+        registry = self.registry()
+        cases = self.cases(registry)
+        self.assertEqual(len(cases), 3)
+        self.assertEqual({case.rule for case in cases}, {'S1.1-001', 'S1.3-001'})
+        report = self.report(registry, cases)
+        self.assertEqual(report['pattern'], 'diagnostic-control')
+        self.assertEqual(report['state'], 'draft')
+        self.assertEqual({member['primary_rule'] for member in report['cases']}, {'S1.3-001'})
+        self.assertEqual({member['source'] for member in report['cases']}, {'1.3#p1'})
+        self.assertIn('1.3', report['source_reviews'])
+        with self.assertRaisesRegex(SuiteError, 'catalogue source review'):
+            registry.evidence.record_review(cases, link['id'], 'source-reviewed', 'Premature.')
+        self.approve()
+        self.assertEqual(self.report()['state'], 'current')
+
+    def test_supplementary_runtime_reuse_preserves_effect_phase_and_mode(self):
+        self.reuse('runtime-effect')
+        registry, cases = self.approve()
+        member = self.report(registry, cases)['cases'][0]
+        self.assertEqual((member['role'], member['kind'], member['evidence'], member['phase']),
+                         ('runtime-effect', 'valid', 'effect', 'run'))
+        case = next(case for case in cases if case.name == member['id'])
+        for phase, mode in (('compile', 'f2023'), ('run', 'f2018')):
+            observation = dict(case=case.name, compiler='gfortran', version='synthetic',
+                               standard=mode, phase=phase, outcome='pass')
+            registry.record_review(case.review_key, case.fingerprint(registry), 'reference-validated',
+                                   'Incomplete reference qualification.', ['1.3#p1'], [observation])
+            with self.assertRaisesRegex(SuiteError, 'required phase and supported mode'):
+                registry.evidence.record_review(cases, 'length-link', 'source-reviewed', 'Cannot bypass.')
+        registry.record_review(case.review_key, case.fingerprint(registry), 'reference-validated',
+                               'Correct phase and mode.', ['1.3#p1'],
+                               [dict(observation, phase='run', standard='f2023')])
+        registry.evidence.record_review(cases, 'length-link', 'source-reviewed', 'Separate connection review.')
+        self.assertEqual(self.report(registry, cases)['state'], 'current')
+        self.assertEqual(self.report(registry, cases)['observation_aggregation'], 'not-computed')
+        registry.record_review(case.review_key, case.fingerprint(registry), 'source-reviewed',
+                               'Review of the wrong source.', ['1.2#C601'])
+        with self.assertRaisesRegex(SuiteError, 'fixture review lacks its canonical source'):
+            registry.evidence.record_review(cases, 'length-link', 'source-reviewed', 'Cannot bypass.')
+
+    def test_positive_only_reuse_does_not_promote_control_to_runtime_effect(self):
+        link = self.reuse('positive-control')
+        registry, cases = self.approve()
+        member = self.report(registry, cases)['cases'][0]
+        self.assertEqual((member['role'], member['evidence'], member['phase']),
+                         ('positive-control', 'positive-control', 'compile'))
+        self.assertEqual(len(cases), 3)
+        link['pattern'] = 'runtime-effect'
+        link['cases'][0]['role'] = 'runtime-effect'
+        self.write_links([link])
+        with self.assertRaisesRegex(SuiteError, 'role does not match'):
+            self.cases(self.registry())
+
+    def test_numbered_runtime_can_be_reused_without_changing_primary_ownership(self):
+        self.reuse('runtime-effect', supplementary=False)
+        registry, cases = self.approve()
+        member = self.report(registry, cases)['cases'][0]
+        self.assertEqual((member['primary_rule'], member['source'], member['phase']),
+                         ('C601', '1.2#C601', 'run'))
+        self.assertEqual(len(cases), 3)
+
+    def test_supplementary_reuse_requires_explicit_pattern_and_its_own_source(self):
+        original = self.reuse('diagnostic-control')
+        for modify in (
+            lambda link: link.pop('pattern'),
+            lambda link: link.update(pattern=None),
+            lambda link: link.update(pattern=[]),
+            lambda link: link.update(pattern='aggregate'),
+            lambda link: link['cases'][0].update(primary_rule='S1.3-099'),
+            lambda link: link['cases'][0].update(source='1.1#p1'),
+            lambda link: link['cases'][0].update(source='1.2#C601'),
+            lambda link: link['cases'][0].update(id='length-link'),
+            lambda link: link['target'].update(requirement='S1.3-001', facet='canonical',
+                                               source_units=['1.3#p1']),
+        ):
+            with self.subTest(modify=modify):
+                link = copy.deepcopy(original)
+                modify(link)
+                self.write_links([link])
+                with self.assertRaises(SuiteError):
+                    self.cases(self.registry())
+
+    def test_singleton_patterns_require_exact_role_count_and_original_case_policy(self):
+        original = self.reuse('runtime-effect')
+        for modify in (
+            lambda link: link.update(cases=[]),
+            lambda link: link['cases'].append(copy.deepcopy(link['cases'][0])),
+            lambda link: link['cases'][0].update(role='positive-control'),
+            lambda link: link.update(pattern='positive-control'),
+            lambda link: link['cases'][0].update(phase='compile'),
+        ):
+            with self.subTest(modify=modify):
+                link = copy.deepcopy(original)
+                modify(link)
+                self.write_links([link])
+                with self.assertRaises(SuiteError):
+                    self.cases(self.registry())
+        self.write_links([original])
+        self.change(original['cases'][0]['path'], lambda data: data.update(oracle_basis='lfortran-policy'))
+        with self.assertRaisesRegex(SuiteError, 'additional diagnostic policy'):
+            self.cases(self.registry())
+
+    def test_supplementary_owner_definition_and_review_stale_reused_evidence(self):
+        self.reuse('runtime-effect')
+        self.approve()
+        self.change('primary.json', lambda data: data['requirements'][0].update(definition='Changed source meaning.'))
+        report = self.report()
+        self.assertEqual(report['state'], 'stale')
+        self.assertEqual(report['source_reviews']['1.3']['state'], 'stale')
+        self.assertEqual(report['cases'][0]['review']['state'], 'stale')
+
+    def test_multiple_links_reuse_one_runtime_without_execution_fanout_or_aggregation(self):
+        link = self.reuse('runtime-effect')
+        other = copy.deepcopy(link)
+        other['id'] = 'second-link'
+        other['target']['facet'] = 'linked-again'
+        self.change('target.json', lambda data: data['requirements'][0]['facets'].append('linked-again'))
+        self.write_links([link, other])
+        path = self.root / 'reuse-report.json'
+        result, output, _, _, calls = self.cli(
+            '--allow-unreviewed', '-t', link['cases'][0]['id'], '--reference', 'gfortran',
+            '--reference', 'flang', '--report', str(path))
+        self.assertEqual((result, calls), (0, 3))
+        report = json.loads(path.read_text())
+        self.assertEqual(len(report['results']), 1)
+        self.assertEqual(report['results'][0]['rule'], 'S1.3-001')
+        self.assertEqual(report['results'][0]['check']['phase'], 'run')
+        self.assertEqual(report['source_audit']['linked_facets'], 2)
+        self.assertEqual(report['source_audit']['current_linked_facets'], 0)
+        self.assertEqual(len(report['evidence_links']), 2)
+        for item in report['evidence_links']:
+            self.assertEqual(item['pattern'], 'runtime-effect')
+            self.assertEqual(item['observation_aggregation'], 'not-computed')
+            self.assertEqual(item['cases'][0]['target_observation']['phase'], 'run')
+            self.assertEqual([obs['standard'] for obs in item['cases'][0]['reference_observations']],
+                             ['f2023', 'f2018'])
+        self.assertIn('no derived pass/effect count', output)
+        result, _, _, _, calls = self.cli('--allow-unreviewed', '-t', 'S1.1-001', '--report', str(path))
+        self.assertEqual((result, calls), (0, 1))
+        self.assertTrue(all(item['cases'][0]['observation_state'] == 'not-selected'
+                            for item in json.loads(path.read_text())['evidence_links']))
 
 
 if __name__ == '__main__':
