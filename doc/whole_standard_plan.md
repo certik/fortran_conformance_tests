@@ -22,7 +22,7 @@ The readiness refactoring now supplies:
   context case.
 
 This is infrastructure readiness, not completed conformance coverage.
-The current census still has 4,979 unresolved base units and seven unresolved
+The current census still has 4,974 unresolved base units and eight unresolved
 fine-grained units inside the catalogues. Its independent visual
 review is still pending. Automatic PDF extraction is not semantic review,
 and list items/table rows require additional audited subdivisions.
@@ -591,24 +591,53 @@ oracle assessment without becoming negative conformance cases or adopted
 diagnostic policies. Exact source, namespace, association and provenance
 decisions are in `doc/source_audits/batch_017.json`.
 
-The current measured whole-target checkpoint has **1,849 cases**:
+The seventeenth-batch measured whole-target checkpoint has **1,849 cases**:
 **1,146 PASS, 698 XFAIL, four SKIPs and one NEEDS_ORACLE**.
 All 1,838 prior IDs, fingerprints and target outcomes/phases are unchanged.
 There are 75 catalogues, 385 requirements, 1,585 direct and four linked
-facets, and 367 pending facets. Ordinary finalization-event and overriding
-runtime authoring are under way; optional diagnostic policies, source
-graphs and the added passed-object parameter-domain question remain pending.
+facets, and 367 pending facets.
+
+The eighteenth batch adds six ordinary overriding runs representing seven
+facets and 24 independently checked literal observations. Same-name accessible
+overrides, different-name additions, accessible/private homonyms and both
+two-generation correspondence orders have distinct concrete oracles.
+Named primitive receiver setup and complete matched interfaces avoid
+constructor, undefined-value or unrelated interface assumptions.
+Five cases are reference-validated. The unrelated private-binding homonym
+retains source-only approval and its 7/7/9 oracle despite GNU/LFortran compile
+rejection; a supplementary Flang f2018 run is not f2023 qualification.
+All 50 remaining facets and the additional passed-object parameter-domain
+question stay open.
+
+The current measured whole-target checkpoint has **1,855 cases**:
+**1,151 PASS, 699 XFAIL, four SKIPs and one NEEDS_ORACLE**.
+All 1,849 prior IDs, fingerprints and target outcomes/phases are unchanged.
+There are 76 catalogues, 396 requirements, 1,592 direct and four linked facets,
+and 417 pending facets. The newly imported explicit additional-parameter
+question brings main's unresolved fine units to eight, rather than being
+silently settled by ordinary non-PDT programs. Review and exact provenance
+are recorded in `doc/source_audits/batch_018.json`.
+
+The ordinary finalization-event author returned 18 programs representing 19
+facets, with 14 pending. Independent fixture/oracle review is queued after
+the constructor source review; original IF/DO timing disagreements remain
+unchanged and unapproved until that gate closes.
 A further source-only packet covers 7.5.8 and 7.5.9 with 13 base units,
 50 fine units, 14 requirements and 72 pending facets. It preserves existing
 canonical witnesses and explicitly accounts for the value-set definition
 without inventing a no-op execution. Its four-file author commit `1fada1e`
-is under independent source review; no main-checkout coverage is credited.
+has passed independent source-eligibility review; no main-checkout coverage
+is credited yet. A bounded compile-only 7.5.9 author is implementing 28 facets
+with 31 pending, excluding 7.5.8 and S-owned runtime effects.
 Source-only constructor packet `8ba944c` in 7.5.10 covers 28 base and
 114 fine units, with 22 requirements and 98 facets: two already represented
 C7107 facets and 96 pending. The four existing C7107 programs and their
 primary ownership remain; the new detailed metadata intentionally exposes
 four stale case bindings and three stale links. Its source gate is still
-pending, not an automatic renewal or additional execution credit.
+under independent review, not an automatic renewal or additional execution
+credit. A new source-only author packet for 7.6.1/.2 is limited to 39 base units
+on original PDF109-113, with two catalogues and two views; it does not start
+fixtures or change the pending source gate.
 The broader meta-evidence contract, including mixed FORMAT
 diagnostic contexts, is not complete merely because one link type exists.
 Meta-level definitions must not become fabricated passing programs.

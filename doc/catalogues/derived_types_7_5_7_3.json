@@ -1,0 +1,731 @@
+{
+  "schema_version": 1,
+  "section": "7.5.7.3",
+  "review_state": "reviewed",
+  "subunits": {
+    "p1": [
+      "p1.local-specific",
+      "p1.local-type-definition",
+      "p1.same-binding-name",
+      "p1.accessible-parent-binding",
+      "p1.overriding-definition"
+    ],
+    "p2": [
+      "p2.override-pair",
+      "p2.b01-passed-parity",
+      "p2.b02-parent-pure",
+      "p2.b02-child-pure",
+      "p2.b03-parent-simple",
+      "p2.b03-child-simple",
+      "p2.b04-elemental-parity",
+      "p2.b05-dummy-count",
+      "p2.b06-passed-present",
+      "p2.b06-passed-name",
+      "p2.b06-passed-position",
+      "p2.b07-position-correspondence",
+      "p2.b07-dummy-names",
+      "p2.b07-dummy-characteristics",
+      "p2.b07-passed-type-exception",
+      "p2.b07-additional-parameter-domain",
+      "p2.b08-subroutine-pair",
+      "p2.b08-function-pair",
+      "p2.b08-result-characteristics",
+      "p2.b09-parent-public",
+      "p2.b09-child-not-private"
+    ],
+    "p3": [
+      "p3.binding-of-type",
+      "p3.binding-of-extension",
+      "p3.same-binding",
+      "p3.overrides-corresponding",
+      "p3.inherits-corresponding"
+    ],
+    "note-unnumbered": [
+      "note-unnumbered.point-extension",
+      "note-unnumbered.added-z",
+      "note-unnumbered.same-length-binding-name",
+      "note-unnumbered.different-target-procedure",
+      "note-unnumbered.passed-a-child-type",
+      "note-unnumbered.nonpassed-b-parent-type",
+      "note-unnumbered.class-is-guard",
+      "note-unnumbered.real-distance-expression",
+      "note-unnumbered.incomplete-context"
+    ],
+    "note-unnumbered.2": [
+      "note-unnumbered.2.same-note-continuation",
+      "note-unnumbered.2.successful-return",
+      "note-unnumbered.2.guard-fallthrough",
+      "note-unnumbered.2.message-and-stop",
+      "note-unnumbered.2.end-function"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S7.5.7.3-001",
+      "title": "An accessible parent binding with the same local specific binding name is overridden",
+      "source": "7.5.7.3 p1; PDF105, printed91, lines2-4.",
+      "source_units": [
+        "p1.local-specific",
+        "p1.local-type-definition",
+        "p1.same-binding-name",
+        "p1.accessible-parent-binding",
+        "p1.overriding-definition"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A specific type-bound procedure specified in a type definition overrides a same-binding-name accessible type-bound procedure from the parent type, subject to the other binding and interface restrictions. Implementation procedure names need not match. An inaccessible private parent binding is inherited but is not overridden by a homonym in an unrelated module. The paragraph's parent wording is read with the binding taxonomy, generic-extension and name-collision rules: it is not permission to replace a generic or FINAL binding by a specific or to override a procedure-pointer component.",
+      "facets": [
+        "same-binding-different-target",
+        "explicit-parent-component-call",
+        "different-binding-name",
+        "inaccessible-private-homonym",
+        "accessible-private-parent",
+        "binding-kind-boundary-source-use"
+      ],
+      "pending": {
+        "binding-kind-boundary-source-use": "PENDING \u2014 Source-use: 7.5.5 p4-p5/NOTE1, 7.5.7.2 p3 and 19.3.1 class(2) govern generic/specific collisions; 7.5.6 owns final bindings and R741/R742 own procedure-pointer components. Before any mixed-kind negative, isolate its actual canonical name/category cause and repair only that declaration. No local blanket 'same spelling always overrides' oracle."
+      },
+      "oracle": "The exact planned observations are dynamic child22 versus parent component11, distinct names11/33, inaccessible identities7/9, and accessible private override22. Declarations establish binding identity; results test the selected implementation and do not themselves prove identity by equality. Shared premises P1-P7 in doc/fortran_2023_7_5_7_1.md apply. All read data and function results are defined, objects remain live, and the selected type/kind/rank/interface and accessibility conditions are established from original source, not processor representation.\n\nFinite runtime implementation: 4 run-phase effect cases represent 5 facets using ordinary nonparameterized, nonabstract types. Primitive setup uses named components; every selected implementation verifies its defined receiver fields before returning an independent integer literal. Both dynamic and required explicit ancestor-view results are checked. All other facet plans remain pending. Separate content-bound source/case/evidence adjudications, not authorship or compiler outcomes, determine approval.",
+      "oracle_limitation": "Use nonabstract parents for whole-parent-component calls; C911 forbids the tempting abstract-parent substitute. C789/C790 remain canonical DEFERRED/NON_OVERRIDABLE constraints. Private inheritance does not make an unrelated child module a descendant module.",
+      "dependencies": "7.5.5/C774/C789/C790/p4-p9 (PDF100-101); 7.5.7.2 (PDF104); 19.3.1/.4 (PDF549-550); 15.5.1/.2/.6 (PDF335/337-341/352); C765 (PDF96); C911 (PDF152); 7.5.6 (PDF102-103)."
+    },
+    {
+      "id": "S7.5.7.3-002",
+      "title": "Overriding interfaces either both have a passed object or both lack one",
+      "source": "7.5.7.3 p2, first bullet; PDF105, printed91, line6.",
+      "source_units": [
+        "p2.override-pair",
+        "p2.b01-passed-parity"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "The overriding and overridden interfaces both have a passed-object dummy argument, or neither does. Presence is semantic: default PASS counts just as bare PASS or PASS(name) does, whereas NOPASS suppresses the implicit object. This is distinct from existence or eligibility of a selected dummy under C784/C785/C765.",
+      "facets": [
+        "pass-default-explicit-admission",
+        "nopass-parity-admission",
+        "presence-mismatch-source-contrast"
+      ],
+      "pending": {
+        "pass-default-explicit-admission": "PENDING \u2014 Compile admission/positive control: parent omits PASS/NOPASS and child uses PASS(self); each first dummy is named self, CLASS of its declaring type, scalar nonpointer nonallocatable IN. Both have a passed object and all other corresponding characteristics agree. No executed effect is inferred from acceptance.",
+        "nopass-parity-admission": "PENDING \u2014 Compile admission/positive control: both corresponding bindings use NOPASS and the same zero-dummy interface with concrete module targets. Both need NOPASS under C784; no receiver argument is invented.",
+        "presence-mismatch-source-contrast": "PENDING \u2014 Optional-policy/source contrast: parent explicitly PASS, child NOPASS, but both actual procedure interfaces deliberately have the identical CLASS(parent), IN dummy self. Child NOPASS therefore satisfies C784 and avoids a C765 child-type error. Repair only the parent's PASS to NOPASS, leaving both identical interfaces unchanged. Cause must be passed-object presence disagreement, not type or missing-dummy recovery."
+      },
+      "oracle": "Two valid declaration configurations and one single-attribute source repair isolate semantic presence. The repaired pair is NOPASS/NOPASS; no invalid invocation or runtime effect is proposed.",
+      "oracle_limitation": "Do not repair child NOPASS to PASS without changing its CLASS(parent) dummy: that would violate child C765 and would not be the source-minimal conforming repair selected here. This is an unnumbered overriding restriction, not an independent mandatory diagnostic under 4.2 p2(3). The invalid form and source-minimal repair are a bounded source contrast. Any later diagnostic fixture requires an explicitly additional lfortran-policy basis, independent authorization and a role-specific contract; no such policy is adopted here. A conforming compile admission is only a positive control, not evidence that violations are reported. No fatal rejection, printed rule code or exact diagnostic prose is required. Wrong-context recovery, wrong argument/attribute roles, unavailable facilities, crashes, ASR/verifier failures, timeouts and resource errors cannot corroborate the intended cause.",
+      "dependencies": "7.5.4.5 p2-p4/C765 (PDF96); C784-C786 (PDF100); 15.5.2.1-.2 (PDF337-338); 4.1.2/4.2 (PDF45-46)."
+    },
+    {
+      "id": "S7.5.7.3-003",
+      "title": "A pure overridden binding requires a pure overriding binding",
+      "source": "7.5.7.3 p2, second bullet; PDF105, printed91, line7.",
+      "source_units": [
+        "p2.override-pair",
+        "p2.b02-parent-pure",
+        "p2.b02-child-pure"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "Purity is preserved in the direction from an overridden pure binding to its override. The converse is not required: an impure binding can acquire a pure override, provided all other overriding conditions hold. Purity is not inferred merely from a side-effect-free body, and this condition is separate from SIMPLE and ELEMENTAL status.",
+      "facets": [
+        "pure-pair-admission",
+        "purity-strengthening-admission",
+        "lost-purity-source-contrast"
+      ],
+      "pending": {
+        "pure-pair-admission": "PENDING \u2014 Compile admission/positive control: both nonelemental module functions are PURE, with CLASS(parent)/CLASS(child) self IN, default INTEGER result and only result=17. The result is scalar nonallocatable and no host variable, impure call, I/O or forbidden definition appears.",
+        "purity-strengthening-admission": "PENDING \u2014 Compile admission/positive control: parent is ordinary nonelemental impure by classification, child is PURE; both bodies are result-only and interfaces otherwise match. Do not demand identical top-level procedure purity in both directions.",
+        "lost-purity-source-contrast": "PENDING \u2014 Optional-policy/source contrast: PURE nonelemental parent, child without PURE/SIMPLE/ELEMENTAL, both otherwise pure-safe and interface-compatible. Insert only PURE on the child's procedure definition to repair. There is no pure caller, I/O or impure-callee violation to confuse the cause: it must be an impure override of a pure binding."
+      },
+      "oracle": "A keyword insertion repairs the pure-to-impure mismatch; two source-valid admissions establish equality and permitted strengthening, with no compiler-body heuristic or effect claim.",
+      "oracle_limitation": "Do not use ELEMENTAL without IMPURE as an intended impure child, since it is pure. A separate C15105 impure-call diagnostic does not establish this overriding relation. This is an unnumbered overriding restriction, not an independent mandatory diagnostic under 4.2 p2(3). The invalid form and source-minimal repair are a bounded source contrast. Any later diagnostic fixture requires an explicitly additional lfortran-policy basis, independent authorization and a role-specific contract; no such policy is adopted here. A conforming compile admission is only a positive control, not evidence that violations are reported. No fatal rejection, printed rule code or exact diagnostic prose is required. Wrong-context recovery, wrong argument/attribute roles, unavailable facilities, crashes, ASR/verifier failures, timeouts and resource errors cannot corroborate the intended cause.",
+      "dependencies": "15.7 p1-p2/C1592-C15110 (PDF359-361); 15.6.2.1 p4 and C1553 (PDF353); 15.3.1 (PDF324); 7.5.4.5/C765 (PDF96)."
+    },
+    {
+      "id": "S7.5.7.3-004",
+      "title": "A simple overridden binding requires a simple overriding binding",
+      "source": "7.5.7.3 p2, third bullet; PDF105, printed91, line8.",
+      "source_units": [
+        "p2.override-pair",
+        "p2.b03-parent-simple",
+        "p2.b03-child-simple"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "SIMPLE is preserved from an overridden simple binding to its override. SIMPLE also implies PURE, but a PURE procedure is not automatically SIMPLE. A parent not specified simple does not prohibit strengthening its override to SIMPLE. Body, interface and referenced-procedure restrictions from 15.8 and 15.7 remain necessary.",
+      "facets": [
+        "simple-pair-admission",
+        "simple-strengthening-admission",
+        "lost-simple-source-contrast"
+      ],
+      "pending": {
+        "simple-pair-admission": "PENDING \u2014 Compile admission/positive control requiring F2023: both functions use SIMPLE, scalar CLASS self IN and scalar INTEGER result assigned a literal. No use/host-associated variable reference, nonsimple call, saved local, external I/O or image control is present.",
+        "simple-strengthening-admission": "PENDING \u2014 Compile admission/positive control: PURE nonsimple parent and SIMPLE child, neither elemental, with all other characteristics matched. The child's stronger classification is allowed; SIMPLE need not appear on the parent.",
+        "lost-simple-source-contrast": "PENDING \u2014 Optional-policy/source contrast: SIMPLE parent and PURE but nonsimple child with identical pure-safe result-only bodies. Replace the child's PURE prefix by SIMPLE. This preserves purity in both versions and isolates loss of SIMPLE; unsupported F2023 syntax or an impure-call report is not its cause."
+      },
+      "oracle": "The comparison separates SIMPLE from PURE by holding purity true on both sides. The single-prefix repair is valid because the complete child body already obeys simple-procedure constraints.",
+      "oracle_limitation": "F2018-only or unsupported-SIMPLE observations cannot diagnose this mismatch. No SIMPLE capability probe or compiler invocation is performed; the future mode requirement remains explicit. This is an unnumbered overriding restriction, not an independent mandatory diagnostic under 4.2 p2(3). The invalid form and source-minimal repair are a bounded source contrast. Any later diagnostic fixture requires an explicitly additional lfortran-policy basis, independent authorization and a role-specific contract; no such policy is adopted here. A conforming compile admission is only a positive control, not evidence that violations are reported. No fatal rejection, printed rule code or exact diagnostic prose is required. Wrong-context recovery, wrong argument/attribute roles, unavailable facilities, crashes, ASR/verifier failures, timeouts and resource errors cannot corroborate the intended cause.",
+      "dependencies": "15.8 p1-p3/C15111-C15117 (PDF361-362); 15.7 (PDF359-361); 15.6.2.1 p4/C1553 (PDF353); 15.3.1 (PDF324)."
+    },
+    {
+      "id": "S7.5.7.3-005",
+      "title": "Overriding interfaces agree on whether they are elemental",
+      "source": "7.5.7.3 p2, fourth bullet; PDF105, printed91, line9.",
+      "source_units": [
+        "p2.override-pair",
+        "p2.b04-elemental-parity"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "Either both procedures are elemental or neither is. This parity is independent of the one-way PURE and SIMPLE requirements. An elemental procedure is pure unless IMPURE is specified; its scalar data dummies and scalar nonpointer nonallocatable function result also obey the canonical elemental restrictions.",
+      "facets": [
+        "elemental-pair-admission",
+        "parent-elemental-mismatch",
+        "child-elemental-mismatch",
+        "elemental-call-source-use"
+      ],
+      "pending": {
+        "elemental-pair-admission": "PENDING \u2014 Compile admission/positive control: both ELEMENTAL functions have scalar CLASS self IN, scalar INTEGER result, no pointer/allocatable/coarray dummies and pure-safe result-only bodies. Matched non-elemental configurations are already supplied by the other interface controls, not duplicated here.",
+        "parent-elemental-mismatch": "PENDING \u2014 Optional-policy/source contrast: parent IMPURE ELEMENTAL, child ordinary nonelemental impure, with scalar IN dummies and pure-safe bodies. Add only ELEMENTAL to child to repair; it becomes pure, an allowed strengthening of the impure parent. Initial mismatch is elemental parity, not lost purity.",
+        "child-elemental-mismatch": "PENDING \u2014 Optional-policy/source contrast: parent PURE nonelemental, child explicitly PURE ELEMENTAL. Remove only ELEMENTAL from child, retaining PURE. Require elemental status disagreement between bindings, not a pure-attribute or actual-argument-rank error.",
+        "elemental-call-source-use": "PENDING \u2014 Source-use at 15.9.2/.3 and C1529: a future canonical elemental bound-call effect may map defined child payloads3/7 to exact results25/29 with child body self%value+22. Use explicit PASS, conformable two-element arrays and matched elemental declarations. No new array-call program or S-runtime link is supplied by this parity constraint."
+      },
+      "oracle": "The two directions have one-keyword repairs that do not create a secondary purity error. Elemental array execution remains a separate canonical effect plan rather than a compile-only substitute.",
+      "oracle_limitation": "A rank/POINTER/ALLOCATABLE-invalid elemental declaration would test C15118/C15119, not merely override parity. Keep those independent constraints satisfied in both variants. This is an unnumbered overriding restriction, not an independent mandatory diagnostic under 4.2 p2(3). The invalid form and source-minimal repair are a bounded source contrast. Any later diagnostic fixture requires an explicitly additional lfortran-policy basis, independent authorization and a role-specific contract; no such policy is adopted here. A conforming compile admission is only a positive control, not evidence that violations are reported. No fatal rejection, printed rule code or exact diagnostic prose is required. Wrong-context recovery, wrong argument/attribute roles, unavailable facilities, crashes, ASR/verifier failures, timeouts and resource errors cannot corroborate the intended cause.",
+      "dependencies": "15.9.1-.3/C15118-C15121 (PDF362-363); 15.7 p2 (PDF359); 15.6.2.1 p4 (PDF353); C1529 (PDF335); 15.5.2.14 (PDF347-348)."
+    },
+    {
+      "id": "S7.5.7.3-006",
+      "title": "The two interfaces have the same number of dummy arguments",
+      "source": "7.5.7.3 p2, fifth bullet; PDF105, printed91, line10.",
+      "source_units": [
+        "p2.override-pair",
+        "p2.b05-dummy-count"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "The number of dummy arguments agrees between overriding and overridden procedures. Optional dummies still count; a reduced list used at a bound call does not replace the complete procedure interface for this comparison. Passed-object presence and name/position conditions apply independently.",
+      "facets": [
+        "matched-count-admission",
+        "extra-optional-source-contrast",
+        "missing-dummy-source-contrast"
+      ],
+      "pending": {
+        "matched-count-admission": "PENDING \u2014 Compile admission/positive control: both interfaces have self plus one nonoptional default INTEGER argument n with the same names, positions, INTENT and corresponding self types. Counting includes self even though a bound call omits it from its explicit actual list.",
+        "extra-optional-source-contrast": "PENDING \u2014 Optional-policy/source contrast: child adds unused OPTIONAL INTEGER spare IN to an otherwise matching interface. Remove only spare from the child dummy list and its declaration; bodies do not reference it. Require extra dummy count in the override, not a bad call or optional-argument omission.",
+        "missing-dummy-source-contrast": "PENDING \u2014 Optional-policy/source contrast: child's interface omits the parent's nonpassed n while retaining a valid self. Restore n in its corresponding list position and matching declaration; result-only body is unchanged. No procedure is invoked while interfaces differ."
+      },
+      "oracle": "Two coherent interface-list/declaration repairs isolate cardinality; the valid control is compile admission, not an assertion that every invocation or mismatch must be diagnosed.",
+      "oracle_limitation": "A procedure call with missing actual arguments belongs to 15.5.2; it is not the declaration-level override count tested by these source contrasts. This is an unnumbered overriding restriction, not an independent mandatory diagnostic under 4.2 p2(3). The invalid form and source-minimal repair are a bounded source contrast. Any later diagnostic fixture requires an explicitly additional lfortran-policy basis, independent authorization and a role-specific contract; no such policy is adopted here. A conforming compile admission is only a positive control, not evidence that violations are reported. No fatal rejection, printed rule code or exact diagnostic prose is required. Wrong-context recovery, wrong argument/attribute roles, unavailable facilities, crashes, ASR/verifier failures, timeouts and resource errors cannot corroborate the intended cause.",
+      "dependencies": "15.3.2 (PDF324); 15.4.1 (PDF325); 15.5.2.1-.2 (PDF337-338); C765 (PDF96)."
+    },
+    {
+      "id": "S7.5.7.3-007",
+      "title": "Passed objects correspond by both dummy name and full-interface position",
+      "source": "7.5.7.3 p2, sixth bullet; PDF105, printed91, line11.",
+      "source_units": [
+        "p2.override-pair",
+        "p2.b06-passed-present",
+        "p2.b06-passed-name",
+        "p2.b06-passed-position"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "If the procedures have passed-object dummies, those dummies correspond by name and position in the complete dummy lists. PASS(name) can select a nonfirst dummy, but moving it only in an override does not preserve correspondence. The condition is vacuous when neither has a passed object. Name/position mismatches can necessarily overlap the following bullet's position-based name/characteristic conditions.",
+      "facets": [
+        "matching-nonfirst-pass-admission",
+        "passed-name-source-contrast",
+        "passed-position-source-contrast"
+      ],
+      "pending": {
+        "matching-nonfirst-pass-admission": "PENDING \u2014 Compile admission/positive control: both procedures have (n,self) and both bindings say PASS(self); n is INTEGER IN, self is scalar CLASS of the declaring type IN. Position2 is valid on both sides and reduced actual correspondence is not mistaken for full-interface position1.",
+        "passed-name-source-contrast": "PENDING \u2014 Optional-policy/source contrast: both use default first PASS, but child names that otherwise eligible dummy receiver rather than parent's self. Rename only child's formal/declaration occurrences receiver to self; result-only bodies need no data-use edit. The name mismatch also falls under the next bullet, so no uniquely isolated bullet-six diagnostic is claimed.",
+        "passed-position-source-contrast": "PENDING \u2014 Optional-policy/source contrast: parent has (self,n), child (n,self), with explicit PASS(self) and each valid self type. Restore only the child's formal order to (self,n); declarations remain. This repairs the passed-position and necessarily coupled positional name/type mismatches together. Require actual passed-object correspondence, not wrong-context recovery."
+      },
+      "oracle": "A matched nonfirst selection is admissible. Two explicit source repairs retain each dummy's eligibility, but the overlap with bullet seven remains visible rather than producing duplicate policy fixtures.",
+      "oracle_limitation": "No invalid PASS(name) selector or mismatching call is introduced. C785's nonexistent-name diagnosis cannot establish disagreement between two existing passed dummies. This is an unnumbered overriding restriction, not an independent mandatory diagnostic under 4.2 p2(3). The invalid form and source-minimal repair are a bounded source contrast. Any later diagnostic fixture requires an explicitly additional lfortran-policy basis, independent authorization and a role-specific contract; no such policy is adopted here. A conforming compile admission is only a positive control, not evidence that violations are reported. No fatal rejection, printed rule code or exact diagnostic prose is required. Wrong-context recovery, wrong argument/attribute roles, unavailable facilities, crashes, ASR/verifier failures, timeouts and resource errors cannot corroborate the intended cause.",
+      "dependencies": "7.5.4.5 p3-p4/C765 (PDF96); C785 (PDF100); 15.5.2.1-.2 (PDF337-338); 7.5.7.3 p2 next bullet (PDF105); 15.3.2.2 (PDF324)."
+    },
+    {
+      "id": "S7.5.7.3-008",
+      "title": "Position-corresponding dummies preserve names and characteristics except passed-object type",
+      "source": "7.5.7.3 p2, seventh bullet; PDF105, printed91, lines12-13; characteristic definitions at PDF324.",
+      "source_units": [
+        "p2.override-pair",
+        "p2.b07-position-correspondence",
+        "p2.b07-dummy-names",
+        "p2.b07-dummy-characteristics",
+        "p2.b07-passed-type-exception",
+        "p2.b07-additional-parameter-domain"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "Dummy arguments corresponding by position have the same names and characteristics, except the type of passed-object dummies. The exception is not permission to alter the type of another dummy, kind or length properties, rank/shape, intent, optionality or pointer/allocatable status. Canonical 15.3.2 distinguishes data, procedure and asterisk dummies. Data characteristics include declared type/type parameters, shape unless assumed-rank, corank/codimensions, intent, OPTIONAL, ALLOCATABLE, ASYNCHRONOUS, CONTIGUOUS, VALUE, VOLATILE, polymorphism, POINTER and TARGET, plus exact dependence of nonconstant bounds/parameters and assumed/deferred properties. Dummy procedures retain interface explicitness, explicit procedure characteristics, POINTER and OPTIONAL. The comparison domain for newly added passed-object PDT parameters is separately unresolved; no blanket parameter waiver is asserted.",
+      "facets": [
+        "nonpassed-name-source-contrast",
+        "nonpassed-type-kind-source-contrasts",
+        "length-properties-source-contrasts",
+        "rank-shape-source-contrasts",
+        "dependent-bound-source-contrast",
+        "intent-optional-value-source-contrasts",
+        "pointer-allocatable-target-source-contrasts",
+        "async-volatile-contiguous-source-contrasts",
+        "corank-codimension-source-contrasts",
+        "dummy-procedure-characteristics-source-use",
+        "passed-type-exception-admission",
+        "added-passed-parameter-domain-question"
+      ],
+      "pending": {
+        "nonpassed-name-source-contrast": "PENDING \u2014 Optional-policy/source contrast: keep both self dummies valid; rename child's nonpassed n to m in its formal/declaration only, with result-only body. Repair m to n. Cause must be corresponding dummy-name disagreement, not an unknown keyword at a call. Passed-name overlap is already planned under S7.5.7.3-007, not duplicated here.",
+        "nonpassed-type-kind-source-contrasts": "PENDING \u2014 Optional-policy/source family of two: child nonpassed INTEGER instead of parent's REAL, repaired to REAL; separately TYPE(token(k=2)) instead of TYPE(token(k=1)), repaired only 2 to1. Token's KIND parameter is an abstract integer tag, never an intrinsic representation selector. Both token declarations and controller bindings otherwise conform.",
+        "length-properties-source-contrasts": "PENDING \u2014 Optional-policy/source family: nonpassed CHARACTER(3) versus parent's CHARACTER(2), repaired 3 to2; and fixed CHARACTER(2) versus parent's CHARACTER(*), repaired 2 to*. Default character kinds agree. Ordinary argument length association exceptions do not waive declaration-level characteristic equality.",
+        "rank-shape-source-contrasts": "PENDING \u2014 Optional-policy/source family: child nonpassed scalar x versus parent's x(2), repaired by adding (2); child x(3) versus x(2), repaired 3 to2. A separate matched INTEGER x(..) admission uses no forbidden operations on assumed-rank x. Assumed-rank is a characteristic, not permission to replace every other rank/shape form.",
+        "dependent-bound-source-contrast": "PENDING \u2014 Optional-policy/source contrast: n is a prior nonoptional INTEGER IN dummy on both sides; parent nonpassed x(n), child x(n+1), otherwise matching rank/type/intent. Remove only +1 to repair. Compare exact dependence, not source-token identity or agreement at one chosen call; no body invocation is needed.",
+        "intent-optional-value-source-contrasts": "PENDING \u2014 Optional-policy/source family: on a nonpassed scalar INTEGER dummy independently change IN to INOUT, add OPTIONAL, or add VALUE where parent lacks it. Restore IN, remove OPTIONAL, or remove VALUE respectively. Use impure nonelemental interfaces, no bodies/calls that define IN data, and never put VALUE on the passed dummy.",
+        "pointer-allocatable-target-source-contrasts": "PENDING \u2014 Optional-policy/source family: nonpassed scalar INTEGER dummy independently differs only by POINTER, ALLOCATABLE or TARGET. Remove that differing attribute to match the parent; hold other attributes compatible (no POINTER+TARGET/ALLOCATABLE). Declaration-only deferred NOPASS interface pairs avoid querying or dereferencing nonexistent targets.",
+        "async-volatile-contiguous-source-contrasts": "PENDING \u2014 Optional-policy/source family: independently omit parent's ASYNCHRONOUS, VOLATILE or CONTIGUOUS on the child dummy, repaired by restoring that attribute. VOLATILE case has no INTENT(IN), VALUE or PURE; CONTIGUOUS case uses an otherwise matching rank-one assumed-shape dummy. No invalid attribute combination, external interference or layout inquiry is an oracle.",
+        "corank-codimension-source-contrasts": "PENDING \u2014 Optional-policy/source family using declaration-only impure NOPASS interfaces: parent INTEGER x[*], child x[1,*], repaired by removing first codimension; separately x[2,*] versus x[3,*], repaired 3 to2. No coarray objects/calls/images execute. Canonical coshape/dummy constraints and future required coarray mode remain prerequisites; unsupported coarrays cannot satisfy the policy cause.",
+        "dummy-procedure-characteristics-source-use": "PENDING \u2014 Source-use: 15.3.2.1/.3/.4 distinguishes data/procedure/asterisk dummies and requires matching interface explicitness, explicit procedure characteristics, POINTER and OPTIONAL. A prospective nested-interface PURE mismatch must restore the nested procedure declaration, not strengthen only the enclosing binding. Author a specific canonical interface contrast before any policy case; no alternate-return or procedure-pointer invocation is invented.",
+        "passed-type-exception-admission": "PENDING \u2014 Compile admission/positive control: parent self CLASS(parent), child self CLASS(child), both scalar nonpointer nonallocatable IN, same name/position, and no type parameters. The permitted type change is deliberate. All other C765 premises remain required; no automatic covariance for nonpassed dummies or results follows.",
+        "added-passed-parameter-domain-question": "PENDING \u2014 Source-use, unresolved fine unit: read 'same characteristics except type' together with C765's assumed-length rule and inherited/additional KIND/LEN parameters. Establish precisely how the comparison applies when child adds parameters before authorizing such an override fixture. Initial controls use unparameterized declaring types, so they neither settle nor hide this domain question."
+      },
+      "oracle": "Finite source contrasts mutate one named characteristic or one coherent declaration at a time, with repairs specified above. Advanced dummy-procedure and added-PDT-parameter domains remain source-use gates. Matched declarations are only positive admission controls, never runtime/diagnosis proof.",
+      "oracle_limitation": "Where feasible, compare nonpassed dummies in ABSTRACT parent/child DEFERRED NOPASS interfaces, with matching imports and no objects or calls; this keeps C765, C788 and C789 out of the intended mismatch. Do not borrow 15.5 actual-argument relaxations or generic distinguishability as an equality rule for overrides. This is an unnumbered overriding restriction, not an independent mandatory diagnostic under 4.2 p2(3). The invalid form and source-minimal repair are a bounded source contrast. Any later diagnostic fixture requires an explicitly additional lfortran-policy basis, independent authorization and a role-specific contract; no such policy is adopted here. A conforming compile admission is only a positive control, not evidence that violations are reported. No fatal rejection, printed rule code or exact diagnostic prose is required. Wrong-context recovery, wrong argument/attribute roles, unavailable facilities, crashes, ASR/verifier failures, timeouts and resource errors cannot corroborate the intended cause.",
+      "dependencies": "15.3.2.1-.4 (PDF324); 7.2/7.5.3 (PDF76/91-92); 7.4.4.2/C726 (PDF84-85); 8.5.6-.8, INTENT/OPTIONAL/POINTER/TARGET/VALUE/VOLATILE (PDF121-134); 10.1.11 (PDF185-186); C765 (PDF96); C788/C789 (PDF101); 15.4.3.2 and IMPORT (PDF326-327/143-144)."
+    },
+    {
+      "id": "S7.5.7.3-009",
+      "title": "Procedure category and all applicable function-result characteristics agree",
+      "source": "7.5.7.3 p2, eighth bullet; PDF105, printed91, line14; full result characteristics at PDF324.",
+      "source_units": [
+        "p2.override-pair",
+        "p2.b08-subroutine-pair",
+        "p2.b08-function-pair",
+        "p2.b08-result-characteristics"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "Both procedures are subroutines, or both are functions with the same result characteristics under 15.3.3. Result declared type, type parameters, rank, polymorphism, ALLOCATABLE, POINTER, CONTIGUOUS and procedure-pointer status matter. Shape is a characteristic of an array result only when neither allocatable nor a pointer; exact dependence of nonconstant bounds/parameters, which parameters are deferred, and whether character result length is assumed are retained. Result variable names are not listed result characteristics. The passed-object type exception does not permit covariant function-result types.",
+      "facets": [
+        "matched-category-source-use",
+        "function-subroutine-source-contrast",
+        "result-type-no-covariance",
+        "result-kind-source-contrast",
+        "result-character-length",
+        "result-rank-and-fixed-shape",
+        "result-pointer-allocatable",
+        "result-polymorphism",
+        "result-contiguous-and-procedure-pointer",
+        "result-deferred-parameter",
+        "result-dependent-shape",
+        "result-shape-exception-source-use",
+        "assumed-character-result-source-use"
+      ],
+      "pending": {
+        "matched-category-source-use": "PENDING \u2014 Source-use: S7.5.7.3-001's scalar INTEGER function overrides and existing C738_valid__concrete_override's subroutine control supply distinct positive contexts. Preserve their primary ownership rather than duplicate them to clear a declaration facet.",
+        "function-subroutine-source-contrast": "PENDING \u2014 Optional-policy/source contrast: ABSTRACT parent/child have DEFERRED NOPASS binding work; parent's named interface is zero-argument INTEGER FUNCTION, child's is SUBROUTINE. Repair only the child's interface body to the corresponding zero-argument INTEGER function interface (opening, result declaration and ending). No call/definition category error is introduced elsewhere.",
+        "result-type-no-covariance": "PENDING \u2014 Optional-policy/source contrast: both deferred interfaces are functions, but parent result TYPE(value_parent), child TYPE(value_child) with value_child an ordinary extension of value_parent. Change only child's result type name to value_parent. Compatible extension is not identical result type; no abstract result object or invocation is created.",
+        "result-kind-source-contrast": "PENDING \u2014 Optional-policy/source contrast: results TYPE(token(k=1)) and TYPE(token(k=2)) share declared token type but differ in a user KIND tag never used as an intrinsic kind selector. Repair child's 2 to1. Cause is function-result kind-parameter mismatch, not unsupported machine kind.",
+        "result-character-length": "PENDING \u2014 Optional-policy/source contrast: default CHARACTER(2) versus CHARACTER(3) result in two otherwise matching interfaces; repair 3 to2. Length is a result characteristic despite not participating in ordinary generic resolution.",
+        "result-rank-and-fixed-shape": "PENDING \u2014 Optional-policy/source family: scalar INTEGER result versus child r(2), repaired by removing (2); rank-one nonpointer nonallocatable r(2) versus r(3), repaired 3 to2. Keep no allocation/pointer attributes so shape comparison really applies.",
+        "result-pointer-allocatable": "PENDING \u2014 Optional-policy/source contrast: both results are rank-one deferred-shape INTEGER, but parent POINTER and child ALLOCATABLE. Replace child's ALLOCATABLE by POINTER. Interfaces are declaration-only; no result association/allocation status, dereference or lifetime effect is queried.",
+        "result-polymorphism": "PENDING \u2014 Optional-policy/source contrast: parent CLASS(value_type), ALLOCATABLE result and child TYPE(value_type), ALLOCATABLE, both impure nonelemental interfaces. Replace TYPE by CLASS in child. Retain ALLOCATABLE so C708 holds, and avoid PURE's independent C1594 prohibition.",
+        "result-contiguous-and-procedure-pointer": "PENDING \u2014 Optional-policy/source family: parent INTEGER, POINTER, CONTIGUOUS r(:), child omits CONTIGUOUS; add it. Separately parent PROCEDURE(callback), POINTER result versus child INTEGER, POINTER result; restore child's PROCEDURE(callback) declaration, with callback imported in both variants. Require the actual result category/attribute; no undefined pointer query or callback invocation.",
+        "result-deferred-parameter": "PENDING \u2014 Optional-policy/source contrast: parent CHARACTER(:), ALLOCATABLE result and child CHARACTER(2), ALLOCATABLE; replace child's 2 by colon. Both declarations are independently eligible, but which parameters are deferred differs.",
+        "result-dependent-shape": "PENDING \u2014 Optional-policy/source contrast: both have prior INTEGER, INTENT(IN) n and nonpointer nonallocatable rank-one INTEGER result; parent r(n), child r(n+1). Remove +1 to repair. Exact dependence is compared, not just rank or a coincidental extent from one actual call.",
+        "result-shape-exception-source-use": "PENDING \u2014 Source-use at 15.3.3: rank still matters for POINTER/ALLOCATABLE array results, but their runtime shape is not the fixed-shape characteristic. Matched deferred-shape interfaces only prove admission. A separate canonical runtime with fully defined allocated results of different sizes would need result-lifetime/assignment review; no size or pointer-status success claim is made here.",
+        "assumed-character-result-source-use": "PENDING \u2014 Source-use: retain assumed-character-length result status as a characteristic, but C727/C728 restrict such function names/results (including pure/elemental/pointer/array cases). Isolate an eligible external/dummy interface context before a contrast; an illegal assumed-length module or abstract interface is not authorized as the negative."
+      },
+      "oracle": "The finite declaration contrasts distinguish result type, KIND/LEN, rank/shape, allocation/pointer and other attributes, with explicit minimal repairs. Runtime shape exceptions and assumed-length contexts are conditional canonical-use plans rather than fabricated passing result inquiries.",
+      "oracle_limitation": "Declaration-only function interfaces do not create, return or inspect objects. C765's exception concerns the passed dummy, never these results. A shape difference for an allocatable/pointer result cannot be rejected merely by misapplying the nonallocatable nonpointer shape rule. This is an unnumbered overriding restriction, not an independent mandatory diagnostic under 4.2 p2(3). The invalid form and source-minimal repair are a bounded source contrast. Any later diagnostic fixture requires an explicitly additional lfortran-policy basis, independent authorization and a role-specific contract; no such policy is adopted here. A conforming compile admission is only a positive control, not evidence that violations are reported. No fatal rejection, printed rule code or exact diagnostic prose is required. Wrong-context recovery, wrong argument/attribute roles, unavailable facilities, crashes, ASR/verifier failures, timeouts and resource errors cannot corroborate the intended cause.",
+      "dependencies": "15.3.3 and 15.3.2.2 (PDF324); 15.4.3.2/R1512/R1516 (PDF326-327/332-333); C727/C728 (PDF85); C708/C706 (PDF77); C816/C830/C834 (PDF120/123/126); C1593/C1594/C15119 (PDF359/362); 7.2 (PDF76); 10.1.11 (PDF185-186)."
+    },
+    {
+      "id": "S7.5.7.3-010",
+      "title": "A public overridden binding cannot acquire a private override",
+      "source": "7.5.7.3 p2, ninth bullet; PDF105, printed91, line15.",
+      "source_units": [
+        "p2.override-pair",
+        "p2.b09-parent-public",
+        "p2.b09-child-not-private"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "If the overridden binding is PUBLIC, the overriding binding is not PRIVATE. This is a one-way restriction on binding accessibility, not on the accessibility of the implementation procedure name or the type name. A PRIVATE parent binding that is accessible in the child's definition scope can be overridden with PRIVATE or PUBLIC, subject to the other conditions.",
+      "facets": [
+        "public-to-public-admission",
+        "public-to-private-source-contrast",
+        "private-parent-admission"
+      ],
+      "pending": {
+        "public-to-public-admission": "PENDING \u2014 Compile admission/positive control: parent/child definitions are in a module, both corresponding bindings explicitly PUBLIC and all interface properties valid. Implementation procedure names can remain private in the module.",
+        "public-to-private-source-contrast": "PENDING \u2014 Optional-policy/source contrast: change only child's binding access PUBLIC to PRIVATE while parent remains PUBLIC; repair PRIVATE to PUBLIC. No client reference to a private binding is included, so the cause is lost public accessibility on override, not an independent Clause19 access violation.",
+        "private-parent-admission": "PENDING \u2014 Compile admission/positive-control family: child defined in the parent's own module can override its accessible PRIVATE binding with either PRIVATE or PUBLIC. In an unrelated module the inaccessible private binding is not overridden at all; that different identity case remains S7.5.7.3-001's runtime plan."
+      },
+      "oracle": "The single-access-attribute contrast is declaration-only, keeping implementation/type-name access constant. The two permitted private-parent choices do not assert a reverse equality requirement.",
+      "oracle_limitation": "Do not add an outside private call merely to obtain a mandatory Clause19 report and misattribute it to this prose-only override restriction. Parent accessibility is assessed in the defining scope. This is an unnumbered overriding restriction, not an independent mandatory diagnostic under 4.2 p2(3). The invalid form and source-minimal repair are a bounded source contrast. Any later diagnostic fixture requires an explicitly additional lfortran-policy basis, independent authorization and a role-specific contract; no such policy is adopted here. A conforming compile admission is only a positive control, not evidence that violations are reported. No fatal rejection, printed rule code or exact diagnostic prose is required. Wrong-context recovery, wrong argument/attribute roles, unavailable facilities, crashes, ASR/verifier failures, timeouts and resource errors cannot corroborate the intended cause.",
+      "dependencies": "7.5.5 p8-p9 (PDF101); 7.5.7.3 p1 (PDF105); 7.5.2.2/8.5.2 (PDF89/120); 19.3.4 (PDF550); 4.2 p2(3)/(6) (PDF46)."
+    },
+    {
+      "id": "S7.5.7.3-011",
+      "title": "Binding correspondence follows identity, overriding and inheritance",
+      "source": "7.5.7.3 p3; PDF105, printed91, lines16-17.",
+      "source_units": [
+        "p3.binding-of-type",
+        "p3.binding-of-extension",
+        "p3.same-binding",
+        "p3.overrides-corresponding",
+        "p3.inherits-corresponding"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A binding of a type corresponds to a binding of an extension when the latter is the same binding, overrides a corresponding binding, or inherits a corresponding binding. The relation composes across generations and includes the same binding through reflexive type extension. It is about binding identity and its declared relationships, not equal target procedure names, equal results or storage addresses.",
+      "facets": [
+        "same-binding-source-use",
+        "override-then-inherit",
+        "inherit-then-override",
+        "distinct-identity-and-generic-source-use"
+      ],
+      "pending": {
+        "same-binding-source-use": "PENDING \u2014 Source-use: reflexive extension and the same inherited binding establish the identity branch. No reflection/inquiry exists here to prove binding identity from a procedure address or equal result; use the explicit source graph plus the canonical reference selection rules.",
+        "distinct-identity-and-generic-source-use": "PENDING \u2014 Source-use: two differently named bindings may target one NOPASS procedure and return equal values without corresponding. Inaccessible private homonyms keep different identities; generic selection first chooses a specific and then follows its correspondence. Reuse S7.5.7.3-001 and S7.5.7.2-005 only through a future supported mechanism, not duplicate programs."
+      },
+      "oracle": "Two finite three-generation paths have expected observations22/11 and33/11, predicted from their source binding graphs. Equality of unrelated observed values never becomes an identity oracle. Shared premises P1-P7 in doc/fortran_2023_7_5_7_1.md apply. All read data and function results are defined, objects remain live, and the selected type/kind/rank/interface and accessibility conditions are established from original source, not processor representation.\n\nFinite runtime implementation: 2 run-phase effect cases represent 2 facets using ordinary nonparameterized, nonabstract types. Primitive setup uses named components; every selected implementation verifies its defined receiver fields before returning an independent integer literal. Both dynamic and required explicit ancestor-view results are checked. All other facet plans remain pending. Separate content-bound source/case/evidence adjudications, not authorship or compiler outcomes, determine approval.",
+      "oracle_limitation": "No FINAL or procedure-pointer component is smuggled into ordinary overriding correspondence. All whole ancestor-component calls here use accessible nonabstract types and no pointer/allocatable object.",
+      "dependencies": "7.5.7.1 p3 and 7.5.7.2 p1-p2 (PDF104); 7.5.7.3 p1-p2 (PDF105); 7.5.5 p4-p5 (PDF101); 15.5.6 (PDF352); C765/C911 (PDF96/152); 19.6.5 (PDF563)."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "structural",
+      "rationale": "Original p1, physical PDF105, printed91; all fine conditions, alternatives, definitions, permissions and informative content are separately accounted. Continued notes retain both pinned base identities."
+    },
+    {
+      "unit": "p1.local-specific",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.7.3-001"
+      ]
+    },
+    {
+      "unit": "p1.local-type-definition",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.7.3-001"
+      ]
+    },
+    {
+      "unit": "p1.same-binding-name",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.7.3-001"
+      ]
+    },
+    {
+      "unit": "p1.accessible-parent-binding",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.7.3-001"
+      ]
+    },
+    {
+      "unit": "p1.overriding-definition",
+      "disposition": "definition",
+      "rationale": "This fine unit names the relation defined by the preceding local-specific/same-name/accessible-parent conditions, with the other canonical binding constraints retained.",
+      "requirements": [
+        "S7.5.7.3-001"
+      ]
+    },
+    {
+      "unit": "p2",
+      "disposition": "structural",
+      "rationale": "Original p2, physical PDF105, printed91; all fine conditions, alternatives, definitions, permissions and informative content are separately accounted. Continued notes retain both pinned base identities."
+    },
+    {
+      "unit": "p2.override-pair",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.7.3-002",
+        "S7.5.7.3-003",
+        "S7.5.7.3-004",
+        "S7.5.7.3-005",
+        "S7.5.7.3-006",
+        "S7.5.7.3-007",
+        "S7.5.7.3-008",
+        "S7.5.7.3-009",
+        "S7.5.7.3-010"
+      ]
+    },
+    {
+      "unit": "p2.b01-passed-parity",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.7.3-002"
+      ]
+    },
+    {
+      "unit": "p2.b02-parent-pure",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.7.3-003"
+      ]
+    },
+    {
+      "unit": "p2.b02-child-pure",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.7.3-003"
+      ]
+    },
+    {
+      "unit": "p2.b03-parent-simple",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.7.3-004"
+      ]
+    },
+    {
+      "unit": "p2.b03-child-simple",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.7.3-004"
+      ]
+    },
+    {
+      "unit": "p2.b04-elemental-parity",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.7.3-005"
+      ]
+    },
+    {
+      "unit": "p2.b05-dummy-count",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.7.3-006"
+      ]
+    },
+    {
+      "unit": "p2.b06-passed-present",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.7.3-007"
+      ]
+    },
+    {
+      "unit": "p2.b06-passed-name",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.7.3-007"
+      ]
+    },
+    {
+      "unit": "p2.b06-passed-position",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.7.3-007"
+      ]
+    },
+    {
+      "unit": "p2.b07-position-correspondence",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.7.3-008"
+      ]
+    },
+    {
+      "unit": "p2.b07-dummy-names",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.7.3-008"
+      ]
+    },
+    {
+      "unit": "p2.b07-dummy-characteristics",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.7.3-008"
+      ]
+    },
+    {
+      "unit": "p2.b07-passed-type-exception",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.7.3-008"
+      ]
+    },
+    {
+      "unit": "p2.b07-additional-parameter-domain",
+      "disposition": "unresolved",
+      "rationale": "The original passed-object type exception is retained. Its application to characteristic comparison when a child adds KIND/LEN parameters needs independent interpretation with C765 and 15.3.2.2. Initial unparameterized controls do not settle that domain, and no parameter waiver or candidate fixture is asserted.",
+      "requirements": [
+        "S7.5.7.3-008"
+      ]
+    },
+    {
+      "unit": "p2.b08-subroutine-pair",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.7.3-009"
+      ]
+    },
+    {
+      "unit": "p2.b08-function-pair",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.7.3-009"
+      ]
+    },
+    {
+      "unit": "p2.b08-result-characteristics",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.7.3-009"
+      ]
+    },
+    {
+      "unit": "p2.b09-parent-public",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.7.3-010"
+      ]
+    },
+    {
+      "unit": "p2.b09-child-not-private",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.7.3-010"
+      ]
+    },
+    {
+      "unit": "p3",
+      "disposition": "structural",
+      "rationale": "Original p3, physical PDF105, printed91; all fine conditions, alternatives, definitions, permissions and informative content are separately accounted. Continued notes retain both pinned base identities."
+    },
+    {
+      "unit": "p3.binding-of-type",
+      "disposition": "definition",
+      "rationale": "The paragraph defines the source binding-correspondence relation; planned runtime checks observe canonical procedure selection, not a fictitious binding-identity inquiry.",
+      "requirements": [
+        "S7.5.7.3-011"
+      ]
+    },
+    {
+      "unit": "p3.binding-of-extension",
+      "disposition": "definition",
+      "rationale": "The paragraph defines the source binding-correspondence relation; planned runtime checks observe canonical procedure selection, not a fictitious binding-identity inquiry.",
+      "requirements": [
+        "S7.5.7.3-011"
+      ]
+    },
+    {
+      "unit": "p3.same-binding",
+      "disposition": "definition",
+      "rationale": "The paragraph defines the source binding-correspondence relation; planned runtime checks observe canonical procedure selection, not a fictitious binding-identity inquiry.",
+      "requirements": [
+        "S7.5.7.3-011"
+      ]
+    },
+    {
+      "unit": "p3.overrides-corresponding",
+      "disposition": "definition",
+      "rationale": "The paragraph defines the source binding-correspondence relation; planned runtime checks observe canonical procedure selection, not a fictitious binding-identity inquiry.",
+      "requirements": [
+        "S7.5.7.3-011"
+      ]
+    },
+    {
+      "unit": "p3.inherits-corresponding",
+      "disposition": "definition",
+      "rationale": "The paragraph defines the source binding-correspondence relation; planned runtime checks observe canonical procedure selection, not a fictitious binding-identity inquiry.",
+      "requirements": [
+        "S7.5.7.3-011"
+      ]
+    },
+    {
+      "unit": "note-unnumbered",
+      "disposition": "structural",
+      "rationale": "Original note-unnumbered, physical PDF105, printed91; all fine conditions, alternatives, definitions, permissions and informative content are separately accounted. Continued notes retain both pinned base identities."
+    },
+    {
+      "unit": "note-unnumbered.point-extension",
+      "disposition": "informative",
+      "rationale": "The example extends POINT, an ordinary parent from 7.5.5 NOTE3."
+    },
+    {
+      "unit": "note-unnumbered.added-z",
+      "disposition": "informative",
+      "rationale": "The additional REAL Z is a local component, not a replacement of inherited X/Y."
+    },
+    {
+      "unit": "note-unnumbered.same-length-binding-name",
+      "disposition": "informative",
+      "rationale": "LENGTH is the same binding name and therefore the overriding name under the stated accessibility premises."
+    },
+    {
+      "unit": "note-unnumbered.different-target-procedure",
+      "disposition": "informative",
+      "rationale": "POINT_3D_LENGTH is a different implementation name; matching target names are not required."
+    },
+    {
+      "unit": "note-unnumbered.passed-a-child-type",
+      "disposition": "informative",
+      "rationale": "A remains the first passed dummy and becomes CLASS(POINT_3D), INTENT(IN), using the passed-type exception."
+    },
+    {
+      "unit": "note-unnumbered.nonpassed-b-parent-type",
+      "disposition": "informative",
+      "rationale": "B remains CLASS(POINT), INTENT(IN); the passed-object type exception does not allow B to change to CLASS(POINT_3D)."
+    },
+    {
+      "unit": "note-unnumbered.class-is-guard",
+      "disposition": "informative",
+      "rationale": "Only the matching CLASS IS(POINT_3D) block permits B%Z here; the guard's dynamic-type/kind conditions belong to 11.1.11."
+    },
+    {
+      "unit": "note-unnumbered.real-distance-expression",
+      "disposition": "informative",
+      "rationale": "The real SQRT expression illustrates an implementation, not a bit-exact numerical oracle or an override signature test."
+    },
+    {
+      "unit": "note-unnumbered.incomplete-context",
+      "disposition": "informative",
+      "rationale": "Ellipses and external POINT definitions mean the fragment is not a standalone fixture."
+    },
+    {
+      "unit": "note-unnumbered.2",
+      "disposition": "structural",
+      "rationale": "Original note-unnumbered.2, physical PDF106, printed92; all fine conditions, alternatives, definitions, permissions and informative content are separately accounted. Continued notes retain both pinned base identities."
+    },
+    {
+      "unit": "note-unnumbered.2.same-note-continuation",
+      "disposition": "informative",
+      "rationale": "PDF106's NOTE (cont.) continues the same note; it is not a new requirement or part of 7.5.8."
+    },
+    {
+      "unit": "note-unnumbered.2.successful-return",
+      "disposition": "informative",
+      "rationale": "RETURN follows assignment of the function result in the guarded branch."
+    },
+    {
+      "unit": "note-unnumbered.2.guard-fallthrough",
+      "disposition": "informative",
+      "rationale": "If the CLASS IS guard does not match, execution continues after END SELECT; B's declared interface still permits the original POINT argument."
+    },
+    {
+      "unit": "note-unnumbered.2.message-and-stop",
+      "disposition": "informative",
+      "rationale": "The example prints and STOPs on that path. This is implementation behavior, not a mandatory interface diagnostic or a conforming false-valued result inquiry."
+    },
+    {
+      "unit": "note-unnumbered.2.end-function",
+      "disposition": "informative",
+      "rationale": "The continued function ends before the actual 7.5.8 heading; both source census units remain separate and informative."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_7_5_7_3.md"
+  },
+  "review_fingerprint": "7325dbd121d3ac9d169efc48f00308823dcfdf5f1ed73f385a80396c130c5355",
+  "review_rationale": "Independent original extension/overriding source review followed by complete six-case source/oracle and exact execution review in doc/source_audits/batch_018.json. All five base/45fine units and11requirements retain their conditions. Six ordinary non-PDT runtime cases represent seven finite facets and24literal observations. All50admission/source-use/optional-policy plans stay pending; the additional passed-object parameter-domain fine unit remains unresolved. The private binding homonym is judged by accessibility and correspondence, not target behavior or reference agreement. No optional rejection policy is adopted."
+}
