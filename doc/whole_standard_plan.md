@@ -22,7 +22,7 @@ The readiness refactoring now supplies:
   context case.
 
 This is infrastructure readiness, not completed conformance coverage.
-The current census still has 4,999 unresolved base units and seven unresolved
+The current census still has 4,995 unresolved base units and seven unresolved
 fine-grained units inside the catalogues. Its independent visual
 review is still pending. Automatic PDF extraction is not semantic review,
 and list items/table rows require additional audited subdivisions.
@@ -527,7 +527,7 @@ Four corank effects preserve actual guarded GNU one-image execution;
 they are not compile-only or multi-image substitutes. Full decisions and
 the 633-record/905-trace provenance are in `doc/source_audits/batch_014.json`.
 
-The current measured whole-target checkpoint has **1,757 cases**:
+The fourteenth-batch measured whole-target checkpoint has **1,757 cases**:
 **1,108 PASS, 644 XFAIL, four SKIPs and one NEEDS_ORACLE**.
 All 1,546 prior IDs, fingerprints and target outcomes/phases are unchanged.
 There are 71 catalogues, 366 requirements, 1,513 direct and four linked
@@ -537,10 +537,28 @@ closure remain open; these measured counts are not whole-standard completion.
 Independent review qualified the ordinary finalization plans after
 FSRC-001 corrected three elemental references from 15.8 (Simple procedures)
 to 15.9.1/15.9.3. The correction is preserved in `1bdbfbf` and `57ba04c`.
-Separate authors are implementing only the bounded FINAL declaration and
-finalization-process subsets. Classification/source-use facets and the
-conditional PURE/ERROR STOP/termination observers are not executable
-completion claims. The extension source packet is under independent review.
+The fifteenth batch now integrates the FINAL declaration subset:
+**64 compile-only cases**, representing **37 facets**, with **11 pending**.
+Independent review supports 55 reference-validated and nine source-reviewed
+cases; GNU f2023 compiled every one of the 39 valid controls/admissions.
+Seventeen actual KIND-tuple/rank signature fixtures were also checked
+against independent finite conflict models. These declarations do not
+claim callback execution, runtime classification or termination evidence.
+
+The current measured whole-target checkpoint has **1,821 cases**:
+**1,135 PASS, 681 XFAIL, four SKIPs and one NEEDS_ORACLE**.
+All 1,757 prior IDs, fingerprints and target outcomes/phases are unchanged.
+There are 72 catalogues, 372 requirements, 1,550 direct and four linked
+facets, and 327 pending facets. The source/case/signature and exact
+processor decisions are recorded in `doc/source_audits/batch_015.json`.
+
+The separate 17-case finalization-process packet is under independent
+fixture/oracle review. Classification/source-use facets and conditional
+PURE/ERROR STOP/termination observers remain unimplemented, not executable
+completion claims. Extension source review found no blocking defect;
+bounded inheritance runtime authoring is now under way for 7.5.7.1/.2.
+Overriding policies and the added passed-object parameter-domain question
+remain explicitly pending.
 A further source-only packet covers 7.5.8 and 7.5.9 with 13 base units,
 50 fine units, 14 requirements and 72 pending facets. It preserves existing
 canonical witnesses and explicitly accounts for the value-set definition
