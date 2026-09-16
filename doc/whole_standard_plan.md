@@ -22,7 +22,7 @@ The readiness refactoring now supplies:
   context case.
 
 This is infrastructure readiness, not completed conformance coverage.
-The current census still has 5,051 unresolved base units and six unresolved
+The current census still has 5,029 unresolved base units and six unresolved
 fine-grained units inside the catalogues. Its independent visual
 review is still pending. Automatic PDF extraction is not semantic review,
 and list items/table rows require additional audited subdivisions.
@@ -448,10 +448,30 @@ Twenty-three new canonical-use, inventory and interpretation
 facets remain pending. Forty-three character and 41 numeric facets also
 remain explicit follow-ups.
 
-The next source-only packets cover 7.5.4.1-7.5.4.8: 74 base units,
-245 subdivisions, 56 requirements and 284 pending facets. Both drafts are
-committed in isolated author worktrees and are under independent source
-review; no component fixture generation or approval is claimed yet.
+The twelfth batch covers component initialization, order and accessibility
+in 7.5.4.6-7.5.4.8: 24 requirements, 113 directly authored facets and
+156 new executions. Independent review supports 145 reference-validated
+and eleven source-reviewed cases. It corrected a shared-order cancellation
+in two output tests: named-member assignments now establish values
+independently of positional constructor order.
+
+Three independently adjudicated C7107 links reuse four primary compile
+cases without adding executions or manufacturing an S-level diagnostic
+obligation. General source-use and classification graphs remain pending.
+The source, fixture, correction and exact-binding decisions are recorded
+in `doc/source_audits/batch_012.json`; source-only cases retain their
+unweakened programs and explicit lack of qualifying reference evidence.
+The normal full frozen-target run now reports 885 PASS, 505 XFAIL,
+four SKIPs and one NEEDS_ORACLE across 1,395 executions. Raw target
+outcomes are 886 pass, 505 fail and four skip. All 1,239 prior case
+fingerprints and target outcomes are unchanged; the one existing oracle
+block still makes the normal whole-suite gate nonzero.
+
+The reviewed 7.5.4.1-7.5.4.5 source plan now has a 211-case implementation
+packet in its isolated author worktree. Independent fixture review is in
+progress; no approval or main-checkout coverage is claimed for that packet.
+A separate source-only inventory of the 39 base units in 7.5.5 is under
+construction, before fixture generation or source adjudication.
 The broader meta-evidence contract, including mixed FORMAT
 diagnostic contexts, is not complete merely because one link type exists.
 Meta-level definitions must not become fabricated passing programs.

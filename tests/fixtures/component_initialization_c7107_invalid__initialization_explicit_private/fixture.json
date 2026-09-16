@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "id": "C7107_invalid__initialization_explicit_private",
+  "rule": "C7107",
+  "facets": [
+    "private-component-explicit"
+  ],
+  "standard": "f2023",
+  "evidence": "effect",
+  "files": [
+    "provider.f90",
+    "main.f90"
+  ],
+  "build": [
+    {
+      "id": "provider",
+      "source": "provider.f90",
+      "language": "fortran",
+      "form": "free",
+      "output": "provider.o"
+    },
+    {
+      "id": "main",
+      "source": "main.f90",
+      "language": "fortran",
+      "form": "free",
+      "output": "main.o"
+    }
+  ],
+  "expect": {
+    "phase": "compile",
+    "outcome": "diagnose",
+    "step": "main",
+    "diagnostic": {
+      "file": "main.f90",
+      "line": 5,
+      "contains_any": [
+        "Component 'hidden' is PRIVATE in this structure constructor",
+        "Component 'hidden' at (1) is a PRIVATE component of 'record'",
+        "PRIVATE component 'hidden' is not accessible in a structure constructor",
+        "Private component 'hidden' is not accessible",
+        "PRIVATE name 'hidden' is accessible only within module 'access_provider'"
+      ],
+      "excludes_any": [
+        "not implemented",
+        "not yet implemented",
+        "unimplemented",
+        "not supported",
+        "unsupported",
+        "internal compiler error"
+      ]
+    }
+  }
+}

@@ -1,0 +1,159 @@
+{
+  "schema_version": 1,
+  "section": "7.5.4.7",
+  "review_state": "reviewed",
+  "subunits": {
+    "p1": [
+      "p1.nonparent-component-ordering",
+      "p1.formatted-input-output-use",
+      "p1.positional-constructor-use",
+      "p1.parent-components-excluded"
+    ],
+    "p2": [
+      "p2.nonextended-declaration-order",
+      "p2.extended-parent-order-prefix",
+      "p2.extended-local-declaration-suffix"
+    ],
+    "note-unnumbered": [
+      "note-unnumbered.parent-payload-order",
+      "note-unnumbered.child-local-suffix",
+      "note-unnumbered.parent-component-excluded"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S7.5.4.7-001",
+      "title": "Nonextended component order follows component declarations",
+      "source": "7.5.4.7, p2.nonextended-declaration-order; J3/24-007, 18 December 2023, PDF 98.",
+      "source_units": [
+        "p2.nonextended-declaration-order"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The component order of a nonextended type follows the order in which its components are declared in the type definition. This is the source-defined ordering used by the named consumers, not a numerical ordering, parameter order, address order or portable physical-layout claim.",
+      "facets": [
+        "positional-constructor-order",
+        "same-statement-declaration-list",
+        "formatted-output-order",
+        "formatted-input-order",
+        "consumer-use-graph"
+      ],
+      "pending": {
+        "consumer-use-graph": "Pending canonical constructor and formatted-I/O expansion evidence, including recursion/arrays and explicit consumer restrictions; one record is not a complete graph."
+      },
+      "oracle": "Use exact small integers and explicit-format internal records to avoid processor-dependent list-directed whitespace, binary I/O layout and real rounding.",
+      "oracle_limitation": "A constructor keyword changes association under7.5.10 rather than changing component order. Unformatted aggregate representation is not generally an ordered list of component values.",
+      "dependencies": "7.5.4.7 p1/p2;R401 list convention;7.5.10 p2, PDF107;12.6.3 p8-p10, PDF263-264."
+    },
+    {
+      "id": "S7.5.4.7-002",
+      "title": "Extended component order preserves the inherited prefix and excludes parent components",
+      "source": "7.5.4.7, p1.parent-components-excluded, p2.extended-parent-order-prefix, p2.extended-local-declaration-suffix; J3/24-007, 18 December 2023, PDF 98.",
+      "source_units": [
+        "p1.parent-components-excluded",
+        "p2.extended-parent-order-prefix",
+        "p2.extended-local-declaration-suffix"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "An extended type uses its parent type component order first, then its additional components in their declaration order. Parent components themselves do not participate in this ordering; inherited nonparent components do. The definition applies recursively and does not duplicate inherited data by adding a parent component as an extra positional value.",
+      "facets": [
+        "inherited-prefix-constructor",
+        "multi-generation-order",
+        "no-new-components",
+        "parent-keyword-control",
+        "formatted-inherited-order",
+        "inheritance-and-consumer-use-graph"
+      ],
+      "pending": {
+        "inheritance-and-consumer-use-graph": "Pending canonical7.5.7.2 inheritance association,7.5.10 constructor keywords and12.6.3 expansion links; storage order remains outside the claim."
+      },
+      "oracle": "A finite flat payload makes duplication, omission and prefix/suffix errors observable without assuming an object layout. All consumer preconditions must be true for the actual extended object.",
+      "oracle_limitation": "Nonparent component order and the accessible named parent component are different relations. Parent/ancestor constructor values require keywords, and constructor constraints prevent double specification of inherited data.",
+      "dependencies": "7.5.4.7 p1/p2;7.5.7.2 p1/p2, PDF104;7.5.10 C7102/C7103/p2/note2, PDF107-108;12.6.3 p8, PDF263-264."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "structural",
+      "rationale": "Definition and named uses of nonparent component order, with the parent exclusion separately mapped."
+    },
+    {
+      "unit": "p2",
+      "disposition": "structural",
+      "rationale": "Separately mapped nonextended declaration order and extended inherited-prefix/local-suffix order."
+    },
+    {
+      "unit": "note-unnumbered",
+      "disposition": "structural",
+      "rationale": "The complete note refers to the earlier T1/T2 example and illustrates all three ordering facts."
+    },
+    {
+      "unit": "p1.nonparent-component-ordering",
+      "disposition": "definition",
+      "rationale": "Component order is an ordering of nonparent components, not the ordering of type parameters or physical addresses."
+    },
+    {
+      "unit": "p1.formatted-input-output-use",
+      "disposition": "definition",
+      "rationale": "Intrinsic formatted I/O is a canonical user of the order;12.6.3 retains expansion, accessibility, allocation/pointer and defined-I/O restrictions."
+    },
+    {
+      "unit": "p1.positional-constructor-use",
+      "disposition": "definition",
+      "rationale": "Constructors without component keywords use component order;7.5.10 retains association/default/keyword rules.",
+      "requirements": [
+        "R756"
+      ]
+    },
+    {
+      "unit": "p1.parent-components-excluded",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.4.7-002"
+      ]
+    },
+    {
+      "unit": "p2.nonextended-declaration-order",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.4.7-001"
+      ]
+    },
+    {
+      "unit": "p2.extended-parent-order-prefix",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.4.7-002"
+      ]
+    },
+    {
+      "unit": "p2.extended-local-declaration-suffix",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.4.7-002"
+      ]
+    },
+    {
+      "unit": "note-unnumbered.parent-payload-order",
+      "disposition": "informative",
+      "rationale": "Illustrative inheritance ordering only; no new layout or portable kind-code requirement is created by the referenced example."
+    },
+    {
+      "unit": "note-unnumbered.child-local-suffix",
+      "disposition": "informative",
+      "rationale": "Illustrative inheritance ordering only; no new layout or portable kind-code requirement is created by the referenced example."
+    },
+    {
+      "unit": "note-unnumbered.parent-component-excluded",
+      "disposition": "informative",
+      "rationale": "Illustrative inheritance ordering only; no new layout or portable kind-code requirement is created by the referenced example."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_7_5_4_7.md"
+  },
+  "review_fingerprint": "add7c67775d50c66dd1e39084cc351e1baf8f724ab7cf46344f16ac201049be0",
+  "review_rationale": "Independent original-source, concrete fixture and CIFR-001 correction review documented in doc/source_audits/batch_012.json. All source conditions, safe state/event and oracle premises retain their canonical ownership. Three finite C7107 connections were independently judged and serialized without new executions; broader source-use and classification facets remain pending. Source/case/connection approval does not ratify the whole PDF census."
+}

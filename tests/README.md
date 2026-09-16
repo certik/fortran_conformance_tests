@@ -692,7 +692,9 @@ and all unrelated default metadata are unchanged.
 
 Only observed failures are recorded by `--update-xfail`. Filtered-out,
 skipped, and harness-error entries are preserved rather than silently
-removed. The update command still returns the pre-update verdict; run again
+removed. Newly generated baseline lines omit trailing whitespace; original
+diagnostic notes/output and retained entries are not rewritten.
+The update command still returns the pre-update verdict; run again
 to check the new baseline. Review fixtures and reference disagreements
 before updating it.
 

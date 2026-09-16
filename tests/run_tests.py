@@ -995,7 +995,8 @@ def update_xfail(path, results):
         raise SuiteError('cannot update xfails for unapproved fixtures: ' + ', '.join(unapproved))
     ran = {r['name'] for r in results if r['check'].outcome in ('pass', 'fail')}
     kept = [line for line in read_xfail(path) if line.split('#')[0].strip() not in ran]
-    new = [f"{r['name']}  # {r['check'].note}" for r in results if r['check'].outcome == 'fail']
+    new = [f"{r['name']}  # {r['check'].note}".rstrip()
+           for r in results if r['check'].outcome == 'fail']
     Path(path).write_text('\n'.join(sorted(kept + new)) + '\n')
 
 

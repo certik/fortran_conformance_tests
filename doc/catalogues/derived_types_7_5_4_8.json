@@ -1,0 +1,347 @@
+{
+  "schema_version": 1,
+  "section": "7.5.4.8",
+  "review_state": "reviewed",
+  "subunits": {
+    "C771": [
+      "C771.private-components-statement",
+      "C771.type-definition-context",
+      "C771.module-specification-part"
+    ],
+    "p1": [
+      "p1.local-component-part",
+      "p1.private-default-condition",
+      "p1.public-default-otherwise",
+      "p1.explicit-access-spec",
+      "p1.default-when-unspecified",
+      "p1.original-defining-type"
+    ],
+    "p2": [
+      "p2.private-component-name",
+      "p2.defining-module-access",
+      "p2.descendant-access",
+      "p2.only-these-scopes"
+    ],
+    "note1": [
+      "note1.parameters-not-components",
+      "note1.parameter-publicness"
+    ],
+    "note2": [
+      "note2.type-name-access-independent",
+      "note2.four-accessibility-combinations"
+    ],
+    "note3": [
+      "note3.public-type-use-association",
+      "note3.private-component-scope"
+    ],
+    "note4": [
+      "note4.private-default",
+      "note4.public-override",
+      "note4.distinct-client-access"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "R745",
+      "title": "The private component default statement is the bare PRIVATE form",
+      "source": "7.5.4.8, R745; J3/24-007, 18 December 2023, PDF 99.",
+      "source_units": [
+        "R745"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "A private-components-stmt consists of PRIVATE alone. It is the statement inside a type definition that supplies a component default, not a type-header access attribute, a per-component access-spec or a named module access statement.",
+      "facets": [
+        "bare-private-component-statement",
+        "named-list-excluded",
+        "component-versus-binding-private"
+      ],
+      "pending": {
+        "component-versus-binding-private": "Pending a finite canonical link distinguishing this statement from PRIVATE in a type-bound-procedure part; no broad PRIVATE diagnostic is sufficient."
+      },
+      "oracle": "The grammar contrast stays in one valid module type and does not rely on an invalid out-of-module context, repeated PRIVATE or header access attribute.",
+      "oracle_limitation": "R726/C743 retain placement/repetition ownership, and C771 retains the module context. The same keyword in another syntactic role is not this requirement. Every planned negative needs a source-minimal conforming repair and a subject-specific primary diagnostic at its actual point or independently justified bounded relation. Required reporting need not be fatal. Unsupported facilities, unrelated recovery, crashes, verifier/resource failures and timeouts do not establish the intended condition. Native diagnostic routes are limited to their observed or explicitly prospective source-specific conditions. These definitions do not supply fixture approval.",
+      "dependencies": "R726/R729/C743, PDF88-89;R737/R738;R745/C771;7.5.5 private bindings."
+    },
+    {
+      "id": "C771",
+      "title": "A private component default statement requires a module specification context",
+      "source": "7.5.4.8, C771, C771.private-components-statement, C771.type-definition-context, C771.module-specification-part; J3/24-007, 18 December 2023, PDF 99.",
+      "source_units": [
+        "C771",
+        "C771.private-components-statement",
+        "C771.type-definition-context",
+        "C771.module-specification-part"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "A private-components-stmt is permitted only when its type definition is within the specification part of a module. A procedure body does not become that specification part merely because its procedure is contained in a module.",
+      "facets": [
+        "module-specification-control",
+        "main-program-excluded",
+        "external-procedure-excluded",
+        "module-procedure-body-excluded",
+        "context-boundary-use-graph"
+      ],
+      "pending": {
+        "context-boundary-use-graph": "Pending canonical module/submodule/interface-body specification-context analysis before any additional boundary case is authorized."
+      },
+      "oracle": "All body components and type endings are valid. The intended condition is the private-components statement context, not type-name accessibility.",
+      "oracle_limitation": "Do not silently interpret every physically enclosing module as its specification part or claim unexamined interface/submodule boundary cases. Every planned negative needs a source-minimal conforming repair and a subject-specific primary diagnostic at its actual point or independently justified bounded relation. Required reporting need not be fatal. Unsupported facilities, unrelated recovery, crashes, verifier/resource failures and timeouts do not establish the intended condition. Native diagnostic routes are limited to their observed or explicitly prospective source-specific conditions. These definitions do not supply fixture approval.",
+      "dependencies": "C771/R745;R726, PDF88;14.2 module/submodule structure, PDF318-321;4.2 p2(3)."
+    },
+    {
+      "id": "S7.5.4.8-001",
+      "title": "Local component accessibility follows explicit attributes or the defining type default",
+      "source": "7.5.4.8, p1, p1.local-component-part, p1.private-default-condition, p1.public-default-otherwise, p1.explicit-access-spec, p1.default-when-unspecified, p1.original-defining-type; J3/24-007, 18 December 2023, PDF 99.",
+      "source_units": [
+        "p1",
+        "p1.local-component-part",
+        "p1.private-default-condition",
+        "p1.public-default-otherwise",
+        "p1.explicit-access-spec",
+        "p1.default-when-unspecified",
+        "p1.original-defining-type"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Components declared in a type component-part are private by default when the definition contains a private-components-stmt and public otherwise. An explicit component access-spec takes precedence; without it, the component uses the default of the type definition in which it was declared. Type-name accessibility and type-bound binding accessibility are separate properties.",
+      "facets": [
+        "public-default-client-use",
+        "private-default-owner-use",
+        "public-overrides-private-default",
+        "private-overrides-public-default",
+        "inherited-original-default-graph",
+        "type-name-and-component-independence",
+        "private-default-constructor-link"
+      ],
+      "pending": {
+        "inherited-original-default-graph": "Pending canonical inheritance links proving that later child defaults do not relabel attributes retained from the original defining type.",
+        "type-name-and-component-independence": "Pending complete source-valid client/owner cases separating type-name visibility from component visibility; an inaccessible type name is not a private-component diagnostic."
+      },
+      "oracle": "Accessible runtime paths have explicitly defined values and complete separate module/client contexts. Inaccessible paths need their own canonical diagnostic obligation or a separately labelled processor policy.",
+      "oracle_limitation": "An accepted owner-side reference alone does not prove foreign inaccessibility. A private type name, hidden binding or retained inherited attribute cannot substitute for the actual local component default.",
+      "dependencies": "7.5.4.8 p1;R745/C771;7.5.7.2 p1, PDF104;7.5.10 C7107, PDF107;14.2, PDF318-321."
+    },
+    {
+      "id": "S7.5.4.8-002",
+      "title": "Private component names are accessible only in the defining module and its descendants",
+      "source": "7.5.4.8, p2, p2.private-component-name, p2.defining-module-access, p2.descendant-access, p2.only-these-scopes; J3/24-007, 18 December 2023, PDF 99.",
+      "source_units": [
+        "p2",
+        "p2.private-component-name",
+        "p2.defining-module-access",
+        "p2.descendant-access",
+        "p2.only-these-scopes"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "A private component name is accessible only within the module containing its type definition and within descendants of that module. Access to an object or public type name does not by itself expose the private component name. Whole-object operations and name-based component access are distinct.",
+      "facets": [
+        "defining-module-reference",
+        "child-submodule-reference",
+        "grandchild-submodule-reference",
+        "foreign-constructor-exclusion-link",
+        "whole-object-control",
+        "component-name-use-graph"
+      ],
+      "pending": {
+        "component-name-use-graph": "Pending canonical use/host/inheritance and reference/constructor/defined-I/O relationships. No general mandatory S-level rejection policy is inferred from this prose restriction."
+      },
+      "oracle": "Use complete modules and descendant module-procedure definitions, not textual proximity as a visibility proof. Opaque client-side objects are observed only through valid whole-object operations and owner-accessible procedures.",
+      "oracle_limitation": "This source restriction alone does not manufacture the4.2 p2(3) diagnostic obligation for every illegal component reference. A compiler extension or missing submodule implementation is not its oracle.",
+      "dependencies": "7.5.4.8 p2;14.2.2-.3, PDF318-321;7.5.10 C7107, PDF107;9.4.2, PDF151-153;19.5 host/use association."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "R745",
+      "disposition": "requirements",
+      "requirements": [
+        "R745"
+      ]
+    },
+    {
+      "unit": "C771",
+      "disposition": "requirements",
+      "requirements": [
+        "C771"
+      ]
+    },
+    {
+      "unit": "p1",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.4.8-001"
+      ]
+    },
+    {
+      "unit": "p2",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.4.8-002"
+      ]
+    },
+    {
+      "unit": "note1",
+      "disposition": "structural",
+      "rationale": "Complete informative note, with the stated distinction and example paths separately accounted."
+    },
+    {
+      "unit": "note2",
+      "disposition": "structural",
+      "rationale": "Complete informative note, with the stated distinction and example paths separately accounted."
+    },
+    {
+      "unit": "note3",
+      "disposition": "structural",
+      "rationale": "Complete informative note, with the stated distinction and example paths separately accounted."
+    },
+    {
+      "unit": "note4",
+      "disposition": "structural",
+      "rationale": "Complete informative note, with the stated distinction and example paths separately accounted."
+    },
+    {
+      "unit": "C771.private-components-statement",
+      "disposition": "requirements",
+      "requirements": [
+        "C771"
+      ]
+    },
+    {
+      "unit": "C771.type-definition-context",
+      "disposition": "requirements",
+      "requirements": [
+        "C771"
+      ]
+    },
+    {
+      "unit": "C771.module-specification-part",
+      "disposition": "requirements",
+      "requirements": [
+        "C771"
+      ]
+    },
+    {
+      "unit": "p1.local-component-part",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.4.8-001"
+      ]
+    },
+    {
+      "unit": "p1.private-default-condition",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.4.8-001"
+      ]
+    },
+    {
+      "unit": "p1.public-default-otherwise",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.4.8-001"
+      ]
+    },
+    {
+      "unit": "p1.explicit-access-spec",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.4.8-001"
+      ]
+    },
+    {
+      "unit": "p1.default-when-unspecified",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.4.8-001"
+      ]
+    },
+    {
+      "unit": "p1.original-defining-type",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.4.8-001"
+      ]
+    },
+    {
+      "unit": "p2.private-component-name",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.4.8-002"
+      ]
+    },
+    {
+      "unit": "p2.defining-module-access",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.4.8-002"
+      ]
+    },
+    {
+      "unit": "p2.descendant-access",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.4.8-002"
+      ]
+    },
+    {
+      "unit": "p2.only-these-scopes",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.4.8-002"
+      ]
+    },
+    {
+      "unit": "note1.parameters-not-components",
+      "disposition": "informative",
+      "rationale": "Illustrates the component/type-name/parameter accessibility distinctions. Normative ownership remains in p1/p2 and the defining parameter, inheritance and module rules, not a requirement manufactured from a note."
+    },
+    {
+      "unit": "note1.parameter-publicness",
+      "disposition": "informative",
+      "rationale": "Illustrates the component/type-name/parameter accessibility distinctions. Normative ownership remains in p1/p2 and the defining parameter, inheritance and module rules, not a requirement manufactured from a note."
+    },
+    {
+      "unit": "note2.type-name-access-independent",
+      "disposition": "informative",
+      "rationale": "Illustrates the component/type-name/parameter accessibility distinctions. Normative ownership remains in p1/p2 and the defining parameter, inheritance and module rules, not a requirement manufactured from a note."
+    },
+    {
+      "unit": "note2.four-accessibility-combinations",
+      "disposition": "informative",
+      "rationale": "Illustrates the component/type-name/parameter accessibility distinctions. Normative ownership remains in p1/p2 and the defining parameter, inheritance and module rules, not a requirement manufactured from a note."
+    },
+    {
+      "unit": "note3.public-type-use-association",
+      "disposition": "informative",
+      "rationale": "Illustrates the component/type-name/parameter accessibility distinctions. Normative ownership remains in p1/p2 and the defining parameter, inheritance and module rules, not a requirement manufactured from a note."
+    },
+    {
+      "unit": "note3.private-component-scope",
+      "disposition": "informative",
+      "rationale": "Illustrates the component/type-name/parameter accessibility distinctions. Normative ownership remains in p1/p2 and the defining parameter, inheritance and module rules, not a requirement manufactured from a note."
+    },
+    {
+      "unit": "note4.private-default",
+      "disposition": "informative",
+      "rationale": "Illustrates the component/type-name/parameter accessibility distinctions. Normative ownership remains in p1/p2 and the defining parameter, inheritance and module rules, not a requirement manufactured from a note."
+    },
+    {
+      "unit": "note4.public-override",
+      "disposition": "informative",
+      "rationale": "Illustrates the component/type-name/parameter accessibility distinctions. Normative ownership remains in p1/p2 and the defining parameter, inheritance and module rules, not a requirement manufactured from a note."
+    },
+    {
+      "unit": "note4.distinct-client-access",
+      "disposition": "informative",
+      "rationale": "Illustrates the component/type-name/parameter accessibility distinctions. Normative ownership remains in p1/p2 and the defining parameter, inheritance and module rules, not a requirement manufactured from a note."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_7_5_4_8.md"
+  },
+  "review_fingerprint": "4ad230fd97809bc7db999a46e4726463df061e37f0ede1cf4d444faa83353d0a",
+  "review_rationale": "Independent original-source, concrete fixture and CIFR-001 correction review documented in doc/source_audits/batch_012.json. All source conditions, safe state/event and oracle premises retain their canonical ownership. Three finite C7107 connections were independently judged and serialized without new executions; broader source-use and classification facets remain pending. Source/case/connection approval does not ratify the whole PDF census."
+}

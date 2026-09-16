@@ -539,6 +539,18 @@ case.f90:5-5:1-20: semantic warning [C801]: repeated
         self.assertEqual(Path(path).read_text(),
                          'broken  # old\nnew  # reason\nskipped  # old\nunrun  # old\n')
 
+    def test_xfail_update_trims_generated_lines_without_altering_evidence(self):
+        path = self.source('xfail.txt', 'unrun  # retained \t\n')
+        check = runner.Check('fail', 'reason \t', output='original output \t')
+        results = [
+            {'name': 'new', 'check': check, 'review': runner.Review('source-reviewed')},
+            {'name': 'empty', 'check': runner.Check('fail'), 'review': runner.Review('source-reviewed')},
+        ]
+        runner.update_xfail(path, results)
+        self.assertEqual(Path(path).read_text(), 'empty  #\nnew  # reason\nunrun  # retained \t\n')
+        self.assertEqual(check.note, 'reason \t')
+        self.assertEqual(check.output, 'original output \t')
+
     def test_reference_rejection_of_valid_program_is_not_agreement(self):
         self.source('C601_valid.f90', 'end\n')
         output = io.StringIO()

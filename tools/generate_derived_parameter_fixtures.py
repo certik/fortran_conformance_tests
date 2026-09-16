@@ -24,12 +24,14 @@ def definition(header, declarations, prefix=""):
 
 
 class Corpus:
-    def __init__(self):
+    def __init__(self, namespace="parameter", root=ROOT):
+        self.namespace = namespace
+        self.root = root
         self.files = {}
         self.cases = {}
 
     def put(self, relative, content):
-        path = ROOT / relative
+        path = self.root / relative
         if path in self.files:
             raise ValueError(f"duplicate generated path: {relative}")
         raw = content.encode("ascii")
@@ -37,10 +39,10 @@ class Corpus:
             raise ValueError(f"unintended line-length boundary: {relative}")
         self.files[path] = raw
 
-    def compile(self, rule, variant, facets, text, diagnostic=None):
+    def compile(self, rule, variant, facets, text, diagnostic=None, requires=()):
         kind = "invalid" if diagnostic else "valid"
-        name = rule + "_" + kind + "__parameter_" + variant
-        folder = "tests/fixtures/derived_parameter_" + rule.lower() + "_" + variant + "_" + kind
+        name = rule + "_" + kind + "__" + self.namespace + "_" + variant
+        folder = "tests/fixtures/derived_" + self.namespace + "_" + rule.lower() + "_" + variant + "_" + kind
         expectation = dict(phase="compile", step="source", outcome="diagnose" if diagnostic else "success")
         if diagnostic:
             expectation["diagnostic"] = diagnostic
@@ -49,6 +51,8 @@ class Corpus:
             evidence="effect" if diagnostic else "positive-control", files=["source.f90"],
             build=[dict(id="source", source="source.f90", language="fortran", form="free", output="source.o")],
             expect=expectation)
+        if requires:
+            manifest["requires"] = list(requires)
         self.put(folder + "/source.f90", text)
         self.put(folder + "/fixture.json", json.dumps(manifest, indent=2) + "\n")
         self.cases[name] = dict(rule=rule, facets=facets, kind=kind, phase="compile",
@@ -56,7 +60,7 @@ class Corpus:
         return name
 
     def pair(self, rule, variant, facets, bad, wrong, repaired, location, messages,
-             relation=False, last_occurrence=False):
+             relation=False, last_occurrence=False, requires=()):
         if bad.count(wrong) != 1:
             raise ValueError(f"{rule}/{variant}: repair is not unique")
         lines = bad.splitlines()
@@ -67,13 +71,16 @@ class Corpus:
                           contains_any=messages, excludes_any=EXCLUDED)
         if relation:
             diagnostic["end_line"] = lines.index("end type") + 1
-        self.compile(rule, variant, facets, bad, diagnostic)
-        self.compile(rule, variant + "_repair", facets, bad.replace(wrong, repaired, 1))
+        self.compile(rule, variant, facets, bad, diagnostic, requires=requires)
+        self.compile(rule, variant + "_repair", facets, bad.replace(wrong, repaired, 1),
+                     requires=requires)
 
-    def run(self, rule, variant, facets, body):
+    def run(self, rule, variant, facets, body, evidence="effect", requires=()):
         name = rule.replace(".", "_").replace("-", "_") + "_valid__" + variant
         header = (f"! rule: {rule}\n! covers: {' '.join(facets)}\n"
-                  "! evidence: effect\n! standard: f2023\n")
+                  f"! evidence: {evidence}\n! standard: f2023\n")
+        if requires:
+            header += "! requires: " + " ".join(requires) + "\n"
         path = "tests/clause07/" + name + ".f90"
         self.put(path, header + source(body))
         self.cases[name] = dict(rule=rule, facets=facets, kind="valid", phase="run", path=path)
