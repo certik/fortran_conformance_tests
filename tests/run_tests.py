@@ -1124,7 +1124,7 @@ def tool_version(command, timeout):
 
 
 def confirm_snapshot(compilers, cases, fingerprints, timeout=30, companion=None, evidence_snapshot=None,
-                     execution_snapshot=None):
+                     execution_snapshot=None, source_use_snapshot=None):
     errors = []
     try:
         current_registry = Registry()
@@ -1145,6 +1145,8 @@ def confirm_snapshot(compilers, cases, fingerprints, timeout=30, companion=None,
             if (execution_snapshot is not None
                     and current_registry.execution.snapshot(current_cases) != execution_snapshot):
                 errors.append('execution aggregate, complete case universe, source census, or reviews changed during the run')
+        if source_use_snapshot is not None and current_registry.source_uses.snapshot() != source_use_snapshot:
+            errors.append('source-use inventory, source scope, dependencies, or reviews changed during the run')
     except (SuiteError, OSError) as error:
         errors.append('cannot confirm fixture snapshot: ' + str(error))
     for comp in compilers:
@@ -1196,6 +1198,17 @@ def print_execution_aggregates(aggregates):
               ' no new execution, facet completion, or universal conformance credit]')
         if aggregate['blockers']:
             print('  blockers: ' + '; '.join(aggregate['blockers']))
+
+
+def print_source_uses(inventories):
+    for inventory in inventories:
+        counts = inventory['disposition_counts']
+        print(f"SOURCE-USE {inventory['state'].upper()} {inventory['id']}"
+              f" [{inventory['source_unit_count']} source units;"
+              f" {counts['pending']} pending; {counts['missing']} missing;"
+              ' no new execution or facet-completion credit]')
+        if inventory['blockers']:
+            print('  blockers: ' + '; '.join(inventory['blockers']))
 
 
 def evidence_observations(links, results, compilers, reference_only):
@@ -1250,6 +1263,8 @@ def main():
                     help='independently adjudicate a canonical case link after source and fixture reviews')
     ap.add_argument('--record-execution-review', metavar='AGGREGATE',
                     help='independently review a finite execution aggregate and its complete case inventory')
+    ap.add_argument('--record-source-use-review', metavar='INVENTORY',
+                    help='independently review a finite source-use inventory without compiler evidence')
     ap.add_argument('--review-state', choices=['source-reviewed', 'reference-validated', 'unreviewed', 'disputed', 'needs-oracle'])
     ap.add_argument('--review-rationale')
     ap.add_argument('--review-source', action='append', default=[])
@@ -1265,11 +1280,11 @@ def main():
         ap.error('--require-complete-source must be used with --audit')
     if sum(bool(value) for value in (
             a.record_review, a.record_catalogue_review, a.record_evidence_review,
-            a.record_execution_review, a.audit, a.list)) > 1:
+            a.record_execution_review, a.record_source_use_review, a.audit, a.list)) > 1:
         ap.error('--record-review, --record-catalogue-review, --record-evidence-review, --audit,'
-                 ' --record-execution-review, and --list are separate operations')
+                 ' --record-execution-review, --record-source-use-review, and --list are separate operations')
     if a.update_xfail and (a.record_review or a.record_catalogue_review or a.record_evidence_review
-                          or a.record_execution_review or a.audit or a.list):
+                          or a.record_execution_review or a.record_source_use_review or a.audit or a.list):
         ap.error('--update-xfail is a separate execution operation')
     if a.update_xfail and (a.allow_unreviewed or a.reference_only):
         ap.error('--update-xfail is only for approved LFortran fixtures')
@@ -1289,14 +1304,23 @@ def main():
             ap.error('--record-execution-review needs --review-state and --review-rationale')
         if a.review_state == 'reference-validated' or a.review_source or a.review_report:
             ap.error('aggregate adjudication uses source and the complete inventory, not a compiler report')
+    if a.record_source_use_review:
+        if not a.review_state or not a.review_rationale:
+            ap.error('--record-source-use-review needs --review-state and --review-rationale')
+        if a.review_state == 'reference-validated' or a.review_source or a.review_report:
+            ap.error('source-use adjudication uses its complete source universe, not a compiler report')
     if not (a.record_review or a.record_catalogue_review or a.record_evidence_review
-            or a.record_execution_review) and (
+            or a.record_execution_review or a.record_source_use_review) and (
             a.review_state or a.review_rationale or a.review_source or a.review_report):
         ap.error('review options require a review operation')
     xfail_path = os.path.join(HERE, 'expected_failures.txt')
     xfail = set() if a.reference_only else {line.split('#')[0].strip() for line in read_xfail(xfail_path)}
     try:
         registry = Registry()
+        if a.record_source_use_review:
+            registry.source_uses.record_review(a.record_source_use_review, a.review_state, a.review_rationale)
+            print('Recorded independent finite source-use review:', a.record_source_use_review, a.review_state)
+            return 0
         all_cases = collect_cases(HERE, registry)
         selected = select_cases(all_cases, a.test)
         if not selected:
@@ -1326,6 +1350,7 @@ def main():
             return 0
         links = registry.evidence.report(all_cases)
         aggregates = registry.execution.report(all_cases)
+        source_uses = registry.source_uses.report()
         selected_links = relevant_links(links, selected)
         unapproved_links = any(link['state'] != 'current' for link in selected_links)
         unapproved_execution = any(item['state'] != 'current' for item in aggregates)
@@ -1333,6 +1358,7 @@ def main():
                              for link in links}
         execution_snapshot = {item['id']: dict(fingerprint=item['review']['fingerprint'], state=item['state'])
                               for item in aggregates}
+        source_use_snapshot = registry.source_uses.snapshot()
         if a.audit:
             registry.render()
             audit = registry.audit(all_cases)
@@ -1345,7 +1371,7 @@ def main():
             unapproved = any(not review.approved for review in reviews.values())
             return int((a.require_complete_source and not audit['complete_source'])
                        or ((unapproved or any(link['state'] != 'current' for link in links)
-                            or unapproved_execution)
+                            or unapproved_execution or any(item['state'] != 'current' for item in source_uses))
                            and not a.allow_unreviewed))
         if a.list:
             for case in selected:
@@ -1353,6 +1379,7 @@ def main():
                       f' [{case.meta.evidence}; review={reviews[case.review_key].state}]')
             print_links(selected_links)
             print_execution_aggregates(aggregates)
+            print_source_uses(source_uses)
             return 0
         if a.update_xfail:
             pending = [case.review_key for case in selected if not reviews[case.review_key].approved]
@@ -1395,7 +1422,7 @@ def main():
                             metadata=case.meta, references=references,
                             review=reviews[case.review_key], review_key=case.review_key))
     run_errors = (confirm_snapshot(compilers, selected, fingerprints, a.timeout, companion,
-                                   evidence_snapshot, execution_snapshot)
+                                   evidence_snapshot, execution_snapshot, source_use_snapshot)
                   if a.report or a.update_xfail else [])
     compiler_records = [
         dict(command=c.command, family=c.family, standard=c.standard,
@@ -1448,6 +1475,7 @@ def main():
         print(f'reference compilers all agree with the test on {agree}/{len(results)} cases')
     print_links(selected_links)
     print_execution_aggregates(aggregates)
+    print_source_uses(source_uses)
     if a.update_xfail:
         if run_errors:
             print('Expected failures were not modified because the run was not a consistent snapshot.')
@@ -1486,6 +1514,7 @@ def main():
             'source_audit': registry.audit(all_cases),
             'evidence_links': evidence_observations(links, results, compilers, a.reference_only),
             'execution_aggregates': execution_reports,
+            'source_use_inventories': source_uses,
             'results': result_records,
         }
         Path(a.report).write_text(json.dumps(report, indent=2) + '\n')

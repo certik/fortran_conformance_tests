@@ -763,7 +763,7 @@ truly empty-body diagnostics. Twenty negatives remain source-only. Flang's
 f2023 qualification. Generic recovery retains conservative noncredit rather
 than being declared universal processor nonconformance.
 
-The current measured checkpoint has **1,972 cases: 1,189 PASS,
+The twenty-fifth-batch measured checkpoint has **1,972 cases: 1,189 PASS,
 778 XFAIL, four SKIPs and one NEEDS_ORACLE**. All 1,937 prior case bindings,
 reviews, outcomes/phases and nine link receipts are unchanged. Only 27
 observed failures among the 35 new cases were added to the baseline.
@@ -772,6 +772,26 @@ facets, and 793 pending facets out of 2,490**. Source accounting covers
 1,562 base units; 4,911 base and eight fine units remain unresolved.
 The two source and 35 case reviews, exact historical/current joins and
 explicit inventory renewal are in `doc/source_audits/batch_025.json`.
+
+The twenty-sixth checkpoint integrates independently reviewed, non-executable
+source-use inventory infrastructure. Explicit complete source sections
+determine its denominator; missing and pending entries remain visible.
+Targets stay pending and receive no new execution or coverage credit. The
+committed registry is empty, not an approved assumed-term census.
+
+Independent review found SULR-001: a rationale-only re-adjudication could
+evade the report/baseline snapshot. The closed correction separately binds
+the complete persisted review record, including hidden stale-record fields,
+and uses one pre/post snapshot representation. Stable draft/stale inventories
+still do not veto independently approved executions. These transaction
+guarantees do not create a recursive semantic approval fingerprint.
+
+The current measured checkpoint remains **1,972 cases: 1,189 PASS,
+778 XFAIL, four SKIPs and one NEEDS_ORACLE**. All case, source, review, link,
+execution-inventory and baseline bindings remain unchanged. The 83 catalogues,
+499 requirements, 1,688 direct/nine linked/793 pending facets and remaining
+source gaps are unchanged. Independent closeout and complete integration
+evidence are in `doc/source_audits/batch_026.json`.
 
 A further source-only packet covers 7.5.8 and 7.5.9 with 13 base units,
 50 fine units, 14 requirements and 72 pending facets. It preserves existing
@@ -821,18 +841,23 @@ fingerprint but stales the observational inventory through source context.
 The real-BOZ representation bridge remains unresolved; this is not a
 profile, fixture or oracle approval. Binary/octal packet `7634eddd` is now
 integrated in batch025 for 12 compile facets, retaining 52 pending and the
-separate real-BOZ block. Array-constructor source is integrated as batch024;
-a bounded author is implementing ten integer-sequence, ordinary implied-DO
-and empty-value facets, retaining 97 pending in that unapproved worktree.
-A source-only author covers the 28 base units of 8.1 and 8.2; existing
-declaration cases and their potential metadata staleness must be accounted
-for before integration.
+separate real-BOZ block. Array-constructor source is integrated as batch024.
+Its five-program value packet `5161d38e` remains unapproved after AVFR-001
+identified invalid direct RANK constructor-expression observers. Correction
+uses genuine assumed-rank dummy data objects without removing rank checks
+or changing the ten selected value facets and literal oracles. Its 35 old
+probe runs are preserved, not treated as proof of source validity.
 
-A coordinator-authored non-executable source-use inventory prototype,
-`29fc461`, awaits independent code review outside main. It preserves
-section-derived source denominators, missing/pending entries and
-content-bound source review without new execution or facet credit.
-Its empty committed registry is not an actual completed use graph.
+Source-only declaration packet `ad515fc` passed independent source review:
+28 base units, 116 fine units, 23 requirements and 124 pending facets.
+Six existing C801 executions need per-case metadata, five source-minimal
+controls and fresh fingerprint-bound adjudication; native collection is
+deliberately blocked until that integration work. All later main cases and
+the nine links must be preserved. Separate source authoring covers 8.3/8.4.
+
+Source-use candidate `29fc461` and correction `b9150e82` are integrated as
+batch026 after independent SULR-001 closeout. No actual use graph has been
+completed by the empty registry.
 The broader meta-evidence contract, including mixed FORMAT
 diagnostic contexts, is not complete merely because one link type exists.
 Meta-level definitions must not become fabricated passing programs.

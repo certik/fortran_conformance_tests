@@ -592,6 +592,7 @@ case.f90:5-5:1-20: semantic warning [C801]: repeated
         registry.legacy = {}
         registry.evidence.report.return_value = []
         registry.execution.report.return_value = []
+        registry.source_uses.report.return_value = []
         registry.fingerprint.return_value = '0' * 64
         registry.review.return_value = runner.Review('source-reviewed')
         with patch.object(runner, 'HERE', str(self.root)), \

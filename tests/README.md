@@ -700,6 +700,80 @@ cases and the 7.2 catalogue review; it does not change their source inputs
 or refresh approvals. The case/metadata/requirement fingerprint algorithm
 and all unrelated default metadata are unchanged.
 
+## Finite source-use inventories (non-executable prototype)
+
+The optional `source_uses` index entry names a canonical repository-relative
+JSON registry. `doc/evidence/source_uses.json` initially has no inventories:
+this is infrastructure, not completion of any pending source-use facet.
+An inventory connects occurrences in the pinned source to their defining
+requirement or an explicit overriding production. It does not create,
+select, approve, or execute a Fortran case.
+
+Each inventory has an `id`, a structured R/C/S `target` with `requirement`,
+`facet` and `source_units`, a nonempty `basis` of dependency anchors, explicit
+`sections`, `claim`, `limitation`, `entries`, and `coverage_credit: "none"`.
+The target facet must remain pending. The denominator is every current
+base and fine source unit in those complete sections, derived from the
+pinned census and catalogue subdivisions rather than from the supplied
+entries. An omitted entry is reported as `missing`; an empty entries array
+therefore cannot shrink the denominator. Adding or removing source units
+changes the content binding. Base and fine counts remain separate.
+`occurrence_record_count` counts declared records, not distinct physical
+text occurrences across overlapping parent and fine source anchors.
+
+An entry has an exact `source` anchor, `disposition` (`mapped`,
+`not-applicable`, or `pending`), substantive `rationale` and `occurrences`.
+Mapped entries need occurrences, not-applicable entries cannot have them,
+and pending entries may retain already identified occurrences. Each
+occurrence declares the exact `term`, its positive one-based `ordinal`
+within that source unit, `resolution` (`target` or `explicit-override`),
+`definition`, `dependencies` and `rationale`. The ordinal distinguishes
+repeated occurrences of the same term, not source line numbers. A target
+resolution must use a declared target anchor; an override must use another
+defining anchor. All definitions and dependencies must be explicit in the
+target or basis. These are authored source judgments, not parser-generated
+proofs: independent review must inspect the original passages, contexts,
+exceptions and omitted occurrences.
+
+Source review binds the complete finite universe, all entries and
+occurrences, target requirement, dependency source material and relevant
+catalogue reviews. Missing, draft or stale prerequisite catalogues block
+approval. Explicitly pending and missing entries may remain in a current,
+honestly incomplete inventory. `classified_scope` concerns only its
+declared finite section set, is separate from review state, and cannot
+clear the target facet or ratify the whole standard. Changing that set,
+an occurrence, a source subdivision or relevant source review makes the
+receipt stale; historical review anchors are retained for readjudication,
+not treated as a current denominator.
+
+```sh
+python3 tests/run_tests.py --record-source-use-review INVENTORY_ID \
+    --review-state source-reviewed \
+    --review-rationale 'Independent review of the exact source-use scope and remaining gaps.'
+```
+
+This operation needs neither selected fixtures nor a compiler. It cannot
+accept reference validation or a compiler report, and writes only the
+source-use registry. `--audit`, `--list` and JSON reports expose inventories,
+missing/pending members and current review status without execution or
+passing-effect counts. A case selector never filters the source universe.
+Draft or stale inventories make the ordinary audit incomplete, but do not
+veto an independently approved case run or baseline update: they supply no
+executable evidence. A change during a report/baseline run nevertheless
+makes the snapshot provisional and prevents updating expected failures.
+The transaction snapshot separately binds the exact persisted inventory
+review record, including its presence, state, rationale, sources and stored
+fingerprint. A rationale-only re-review is therefore detected even when
+semantic content and effective review state are unchanged, including a stale
+receipt whose rendered rationale is generic. This does not put the review
+record recursively into its own semantic approval fingerprint.
+
+This prototype does not implement documentary processor qualifications,
+reporting-capability configurations, graph-to-case reuse, or a complete
+assumed-term census. Canonical case links and the execution ledger retain
+their existing roles and fingerprints. All 29 foundational pending facets
+remain pending until their actual evidence and completion gates are met.
+
 ## Expected failures and coverage
 
 Only observed failures are recorded by `--update-xfail`. Filtered-out,

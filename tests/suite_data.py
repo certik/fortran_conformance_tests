@@ -174,7 +174,7 @@ class Registry:
         fields(self.index, ('schema_version', 'standard', 'source_inventory', 'rule_inventory',
                             'catalogues', 'reviews'),
                ('legacy_requirements', 'source_inventory_review', 'evidence_links',
-                'execution_aggregates'), 'catalogue index')
+                'execution_aggregates', 'source_uses'), 'catalogue index')
         if self.index['schema_version'] != 1:
             raise SuiteError('unsupported catalogue-index schema')
         self.source = read_json(safe_path(self.root, self.index['source_inventory']))
@@ -237,6 +237,10 @@ class Registry:
         if 'execution_aggregates' in self.index:
             string(self.index['execution_aggregates'], 'execution aggregate registry path')
         self.execution = ExecutionAggregates(self, self.index.get('execution_aggregates'))
+        from source_uses import SourceUses
+        if 'source_uses' in self.index:
+            string(self.index['source_uses'], 'source-use registry path')
+        self.source_uses = SourceUses(self, self.index.get('source_uses'))
 
     def source_material(self, anchor):
         string(anchor, 'evidence source')
@@ -485,6 +489,7 @@ class Registry:
         catalogue_reviews = {section: self.catalogue_review_state(section) for section in self.catalogues}
         links = self.evidence.report(cases)
         aggregates = self.execution.report(cases, include_members=False)
+        source_uses = self.source_uses.report()
         return dict(
             sections=len(self.sections), base_source_units=total, accounted_base_units=accounted,
             unresolved_base_units=unresolved, detailed_catalogues=len(self.catalogues),
@@ -496,6 +501,8 @@ class Registry:
             evidence_links=links, linked_observation_aggregation='not-computed',
             execution_aggregates=aggregates, observational_aggregates=len(aggregates),
             current_observational_aggregates=sum(item['state'] == 'current' for item in aggregates),
+            source_use_inventories=source_uses,
+            current_source_use_inventories=sum(item['state'] == 'current' for item in source_uses),
             pending_facets=sum(len(item['pending']) for item in self.requirements.values()),
             fine_source_units=len(fine), unresolved_fine_units=unresolved_fine,
             source_inventory_review=self.source_review_state,
@@ -504,7 +511,8 @@ class Registry:
             and unresolved_fine == 0 and not sections_without_catalogues
             and all(state == 'reviewed' for state in catalogue_reviews.values())
             and all(link['state'] == 'current' for link in links)
-            and all(item['state'] == 'current' for item in aggregates))
+            and all(item['state'] == 'current' for item in aggregates)
+            and all(item['state'] == 'current' for item in source_uses))
 
     def render(self, write=False):
         errors = []
