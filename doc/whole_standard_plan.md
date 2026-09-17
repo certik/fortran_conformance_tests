@@ -22,7 +22,7 @@ The readiness refactoring now supplies:
   context case.
 
 This is infrastructure readiness, not completed conformance coverage.
-The current census still has 4,840 unresolved base units and eight unresolved
+The current census still has 4,831 unresolved base units and eight unresolved
 fine-grained units inside the catalogues. Its independent visual
 review is still pending. Automatic PDF extraction is not semantic review,
 and list items/table rows require additional audited subdivisions.
@@ -1080,6 +1080,22 @@ batch040 remains the last actual full main execution. BIND-common SAVE
 authoring may now resume as a separate reviewed source/fixture task.
 See `doc/source_audits/batch_042.json`.
 
+The forty-third checkpoint adds independently reviewed assumed-size and
+implied-shape source:17 base and70 fine units,15 requirements and all59
+new facets pending. Conceptual sequence size is not an available whole
+array inquiry. Safe reads remain partial evidence; zero-length character
+maximums and distinct C-character-kind reconciliation stay explicit gates.
+Named-constant rank, initialization, bound constancy and empty-dimension
+inquiry rules are not replaced with assumed-size or allocation semantics.
+
+The corpus now has **102 catalogues, 614 requirements, 1,726 direct and
+nine linked facets, and1,366 pending facets out of3,101**. Source accounting
+covers1,642 base units;4,831 base and eight fine units remain unresolved.
+All2,009 case bindings,1,973 stored reviews, nine links, R402, parser,
+role support and baseline are preserved. Two source reviews and one
+inventory-context renewal create no new compiler run; batch040 retains
+its actual98-catalogue context. See `doc/source_audits/batch_043.json`.
+
 A further source-only packet covers 7.5.8 and 7.5.9 with 13 base units,
 50 fine units, 14 requirements and 72 pending facets. It preserves existing
 canonical witnesses and explicitly accounts for the value-set definition
@@ -1159,8 +1175,9 @@ pending. CONTIGUOUS source `542612ce` is integrated as batch038, with all36
 facets pending. DIMENSION general/explicit-shape source `b3475d41` is
 integrated as batch039, with all78 facets pending. Assumed/deferred-shape
 source `b2df630` is integrated as batch041, with all49 facets and the
-pointer-bound canonical-mechanism coverage gates pending. Assumed-size/implied-shape source
-in8.5.8.5/.6 is the next bounded author packet.
+pointer-bound canonical-mechanism coverage gates pending. Assumed-size/
+implied-shape source `b0f9d2b` is integrated as batch043 with all59 facets
+pending. Assumed-rank source8.5.8.7 is the next bounded author packet.
 
 Bound-COMMON SAVE runtime authoring stopped before any fixture or compiler
 run at BCS-ROLE-001: an explicit-SAVE confirmation needs a positive-control
