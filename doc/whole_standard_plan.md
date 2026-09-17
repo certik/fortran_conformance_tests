@@ -22,7 +22,7 @@ The readiness refactoring now supplies:
   context case.
 
 This is infrastructure readiness, not completed conformance coverage.
-The current census still has 4,897 unresolved base units and eight unresolved
+The current census still has 4,890 unresolved base units and eight unresolved
 fine-grained units inside the catalogues. Its independent visual
 review is still pending. Automatic PDF extraction is not semantic review,
 and list items/table rows require additional audited subdivisions.
@@ -865,7 +865,7 @@ Current evidence joins five freshly observed negative rows with six unchanged
 positive rows; all eleven have qualifying GNU f2023 evidence. No combined
 invocation or f2023 Flang configuration is invented.
 
-The current measured checkpoint has **1,987 cases: 1,204 PASS,
+The thirtieth-batch measured checkpoint has **1,987 cases: 1,204 PASS,
 778 XFAIL, four SKIPs and one NEEDS_ORACLE**. All 1,982 prior outcomes and
 phases, 1,976 unaffected case fingerprints, nine links and baseline bytes
 are preserved. There are **87 catalogues, 529 requirements, 1,711 direct
@@ -875,6 +875,22 @@ unresolved. The new source exposes 118 pending 8.2 facets rather than hiding
 them behind the six represented C801 facets. Exact source, cause, provenance,
 retired-history and integration evidence is in
 `doc/source_audits/batch_030.json`.
+
+The thirty-first checkpoint is source-only: reviewed ALLOCATABLE and
+ASYNCHRONOUS catalogues account for seven base and 34 fine units.
+ALLOCATABLE remains definition-only; three ASYNCHRONOUS requirements
+retain all **22 facets pending**. Exact scoped predicates, implicit
+attribute routes, completion/definedness, BLOCK identity, subobjects and
+processor-qualified foreign communication remain separate evidence plans.
+
+There are now **89 catalogues, 532 requirements, 1,711 direct and nine
+linked facets, and 969 pending facets out of 2,689**. Source accounting
+covers 1,583 base units; 4,890 base and eight fine units remain unresolved.
+All 1,987 case bindings, 1,946 stored review records, nine links and baseline
+bytes are unchanged. Only source and observational-inventory reviews were
+renewed. The last actual full compiler report remains batch030 with its
+original 87-catalogue context; it was not relabelled as a new run.
+Exact source and preservation evidence is in `doc/source_audits/batch_031.json`.
 
 A further source-only packet covers 7.5.8 and 7.5.9 with 13 base units,
 50 fine units, 14 requirements and 72 pending facets. It preserves existing
@@ -945,12 +961,17 @@ C814 pending facet is cleared by that assignment. Source8.5.1/8.5.2 passed
 independent review with six C815 metadata and six source-dependent link
 staleness gates. C815 packet `61f4eaed` has six migrations and five exact
 second-statement deletion controls under independent review, without
-renewing those records. Separate source work covers
-ALLOCATABLE/ASYNCHRONOUS8.5.3/8.5.4.
+renewing those records. ALLOCATABLE/ASYNCHRONOUS source `f20d7d53` is
+integrated as batch031, with no fixture or source-use credit. The next
+bounded source packet covers BIND data entities in8.5.5.
 
 Source-use candidate `29fc461` and correction `b9150e82` are integrated as
 batch026 after independent SULR-001 closeout. No actual use graph has been
 completed by the empty registry.
+One bounded R402 declaration-name census is being prepared outside main.
+It distinguishes assumed `function-name` from explicitly defined
+`object-name` in the complete8.2 source scope. Its source and inventory
+approval remain separate gates; no census is yet credited or committed.
 The broader meta-evidence contract, including mixed FORMAT
 diagnostic contexts, is not complete merely because one link type exists.
 Meta-level definitions must not become fabricated passing programs.
