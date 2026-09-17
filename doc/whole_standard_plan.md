@@ -22,7 +22,7 @@ The readiness refactoring now supplies:
   context case.
 
 This is infrastructure readiness, not completed conformance coverage.
-The current census still has 4,906 unresolved base units and eight unresolved
+The current census still has 4,897 unresolved base units and eight unresolved
 fine-grained units inside the catalogues. Its independent visual
 review is still pending. Automatic PDF extraction is not semantic review,
 and list items/table rows require additional audited subdivisions.
@@ -839,7 +839,7 @@ length/payload/entry-count oracles. All five parents run with GNU f2023,
 the frozen target and Flang f2018; all 39 bound wrong-oracle probes reach
 their intended guards on GNU f2023.
 
-The current measured checkpoint has **1,982 cases: 1,199 PASS,
+The twenty-ninth-batch measured checkpoint has **1,982 cases: 1,199 PASS,
 778 XFAIL, four SKIPs and one NEEDS_ORACLE**. Every prior case binding,
 review/outcome/phase, nine links and baseline bytes are unchanged. There
 are **85 catalogues, 506 requirements, 1,705 direct and nine linked facets,
@@ -847,6 +847,34 @@ and 829 pending facets out of 2,543**. All nine C814 and two other local
 entry-capture facets remain pending; source census counts do not change.
 Complete source/oracle/probe and integration evidence is in
 `doc/source_audits/batch_029.json`.
+
+The thirtieth checkpoint registers the reviewed 8.1/8.2 source and integrates
+the C801 metadata migration with five exact duplicate-attribute deletion
+controls. Six retained execution IDs and their original program bodies remain;
+the valid run gains only a facet header. Five negative review keys become
+per-execution keys, the valid key is explicitly renewed, and the old invalid
+group remains retired history rather than approval of the new bindings.
+
+Independent review closed all three C801 findings. Valid-key renewal and
+generated lifecycle states are no longer tied to permanent draft assumptions.
+The corrected predicates reject the demonstrated unsupported/Internal
+wrappers: the same 270-vector matrix has zero false credits, versus 105
+with the old contracts. Four genuine Flang warning noncredits remain an
+explicit sidecar limitation, not a claim that the compiler did not report.
+Current evidence joins five freshly observed negative rows with six unchanged
+positive rows; all eleven have qualifying GNU f2023 evidence. No combined
+invocation or f2023 Flang configuration is invented.
+
+The current measured checkpoint has **1,987 cases: 1,204 PASS,
+778 XFAIL, four SKIPs and one NEEDS_ORACLE**. All 1,982 prior outcomes and
+phases, 1,976 unaffected case fingerprints, nine links and baseline bytes
+are preserved. There are **87 catalogues, 529 requirements, 1,711 direct
+and nine linked facets, and 947 pending facets out of 2,667**. Source
+accounting covers 1,576 base units; 4,897 base and eight fine units remain
+unresolved. The new source exposes 118 pending 8.2 facets rather than hiding
+them behind the six represented C801 facets. Exact source, cause, provenance,
+retired-history and integration evidence is in
+`doc/source_audits/batch_030.json`.
 
 A further source-only packet covers 7.5.8 and 7.5.9 with 13 base units,
 50 fine units, 14 requirements and 72 pending facets. It preserves existing
@@ -904,23 +932,20 @@ independent review, with valid assumed-rank observers and unchanged literal
 oracles. The old 35 probe runs do not qualify the corrected sources; three
 current target scalar-CHARACTER probe gaps remain explicit.
 
-Source-only declaration packet `ad515fc` passed independent source review:
-28 base units, 116 fine units, 23 requirements and 124 pending facets.
-Six existing C801 executions need per-case metadata, five source-minimal
-controls and fresh fingerprint-bound adjudication. Packet `0a7331bc` and
-correction `02633cd0` passed the administrative closeout: the valid review
-key supports explicit renewal and generated text is no longer permanently
-draft/unapproved. Full review then found C801R-003, which could credit
-unsupported/Internal wrappers. Narrow correction `4fa94cdb` and its genuine
-five-negative refresh await independent closeout; held contracts remain
-unapproved. Earlier eleven-case observations and all old reports are
-preserved, not relabelled. All later
-main cases and nine links must be preserved. Source-only 8.3/8.4 is integrated
+Declaration packet `ad515fc`, C801 packet `0a7331bc` and corrections
+`02633cd0`/`4fa94cdb` are integrated in batch030 after all three independent
+closeouts. The 28 base and 116 fine units retain 23 requirements, six
+represented facets and 118 pending facets. Earlier observations and retired
+reviews remain historical, not relabelled. All later main cases and nine
+links are preserved. Source-only 8.3/8.4 is integrated
 as batch027; seven local type-parameter capture facets are integrated in
-batch029, while initialization8.4 remains pending. Source8.5.1/8.5.2 passed
+batch029, while initialization8.4 remains pending. A bounded ten-case C814
+automatic-object SAVE subset is being authored separately; no current
+C814 pending facet is cleared by that assignment. Source8.5.1/8.5.2 passed
 independent review with six C815 metadata and six source-dependent link
-staleness gates. Bounded C815 controls/migration are now being authored
-without renewing those records. Separate source work covers
+staleness gates. C815 packet `61f4eaed` has six migrations and five exact
+second-statement deletion controls under independent review, without
+renewing those records. Separate source work covers
 ALLOCATABLE/ASYNCHRONOUS8.5.3/8.5.4.
 
 Source-use candidate `29fc461` and correction `b9150e82` are integrated as

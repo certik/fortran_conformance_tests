@@ -1,3 +1,4 @@
+! covers: distinct-attributes-admission
 ! C801 (R801) The same attr-spec shall not appear more than once in a given
 ! type-declaration-stmt.  Valid: each attribute appears at most once.
 program c801_valid
