@@ -286,6 +286,13 @@ class AutomaticSaveFixturesTests(unittest.TestCase):
         targets = [case for case in cases if case.name in self.specs]
         files_before = generated.build_corpus()[0]
         original_reviews = copy.deepcopy(registry.reviews)
+        original_catalogues = copy.deepcopy(registry.catalogues)
+        original_inventories = copy.deepcopy(registry.execution.aggregates)
+        original_links = copy.deepcopy(registry.evidence.links)
+        original_source_uses = copy.deepcopy(registry.source_uses.data)
+        target_keys = {case.review_key for case in targets}
+        unrelated_members = {member["id"]: member for member in registry.execution._members(cases)
+                             if member["id"] not in self.specs}
         for case in targets:
             fingerprint = case.fingerprint(registry)
             record = dict(state="source-reviewed", fingerprint=fingerprint, sources=["C814"],
@@ -309,17 +316,79 @@ class AutomaticSaveFixturesTests(unittest.TestCase):
             self.assertIn(f"**Source review: {state}.**", generated.render_view(candidate))
         registry.catalogues["8.3"] = candidate
         candidate["review_fingerprint"] = registry.catalogue_fingerprint("8.3")
-        report = registry.execution.report(cases)
-        for item in report:
-            aggregate = registry.execution.aggregates[item["id"]]
-            record = copy.deepcopy(aggregate["review"])
-            record.update(fingerprint=item["review"]["fingerprint"], state="source-reviewed",
-                          rationale="In-memory current inventory regression; no disk approval.")
-            aggregate["review"] = record
-            registry.execution._validate(aggregate)
-        self.assertTrue(all(item["state"] == "current" for item in registry.execution.report(cases)))
+
+        def check_inventory_binding(universe):
+            registry.validate_cases(universe)
+            before = {item["id"]: item for item in registry.execution.report(universe)}
+            self.assertEqual(set(before), set(registry.execution.aggregates))
+            for item in before.values():
+                self.assertEqual(item["member_count"], len(universe))
+                self.assertEqual(item["member_ids"], sorted(case.name for case in universe))
+                aggregate = registry.execution.aggregates[item["id"]]
+                aggregate["review"] = dict(
+                    fingerprint=item["review"]["fingerprint"], state="source-reviewed",
+                    sources=sorted(set(aggregate["target"]["source_units"] + aggregate["basis"])),
+                    rationale="In-memory inventory binding regression; no disk approval.")
+                registry.execution._validate(aggregate)
+            bound = {item["id"]: item for item in registry.execution.report(universe)}
+            self.assertEqual(set(bound), set(before))
+            for name, item in bound.items():
+                expected = before[name]
+                self.assertEqual({key: value for key, value in item.items() if key not in ("state", "review")},
+                                 {key: value for key, value in expected.items() if key not in ("state", "review")})
+                self.assertEqual(item["review"]["fingerprint"], expected["review"]["fingerprint"])
+                self.assertEqual(item["review"]["fingerprint"], registry.execution.aggregates[name]["review"]["fingerprint"])
+                self.assertEqual(item["review"]["recorded_state"], "source-reviewed")
+                self.assertEqual(item["review"]["state"], "stale" if expected["blockers"] else "source-reviewed")
+                self.assertEqual(item["state"], "stale" if expected["blockers"] else "current")
+                registry.execution.aggregates[name]["review"]["fingerprint"] = "0" * 64
+            for item in registry.execution.report(universe):
+                self.assertEqual(item["state"], "stale")
+                self.assertEqual(item["review"]["fingerprint"], bound[item["id"]]["review"]["fingerprint"])
+                self.assertNotEqual(item["review"]["fingerprint"],
+                                    registry.execution.aggregates[item["id"]]["review"]["fingerprint"])
+                self.assertEqual(item["members"], bound[item["id"]]["members"])
+                self.assertEqual(item["blockers"], bound[item["id"]]["blockers"])
+            return bound
+
+        actual = check_inventory_binding(cases)
+        for member in unrelated_members.values():
+            if member["review"]["state"] == "unreviewed":
+                for item in actual.values():
+                    self.assertIn(f"{member['id']}: fixture review is unreviewed", item["blockers"])
+        self.assertEqual({member["id"]: member for member in registry.execution._members(cases)
+                          if member["id"] not in self.specs}, unrelated_members)
+        self.assertEqual({key: record for key, record in registry.reviews.items() if key not in target_keys},
+                         {key: record for key, record in original_reviews.items() if key not in target_keys})
+        self.assertEqual({section: data for section, data in registry.catalogues.items() if section != "8.3"},
+                         {section: data for section, data in original_catalogues.items() if section != "8.3"})
+
+        # Add a distinct unreviewed in-memory probe; never omit or adjudicate a real foreign member.
+        outside = next(case for case in cases if case.rule != "C814" and case.fixture is not None)
+        probe_id = outside.name + "__automatic_save_inventory_probe"
+        self.assertNotIn(probe_id, {case.name for case in cases} | set(registry.reviews))
+        probe = replace(outside, name=probe_id, review_key=probe_id,
+                        fixture=replace(outside.fixture, name=probe_id))
+        blocked = check_inventory_binding([*cases, probe])
+        for name, item in blocked.items():
+            self.assertEqual(item["state"], "stale")
+            self.assertEqual(item["member_count"], actual[name]["member_count"] + 1)
+            self.assertEqual(sorted(item["blockers"]),
+                             sorted([*actual[name]["blockers"], f"{probe_id}: fixture review is unreviewed"]))
+            self.assertEqual([member for member in item["members"] if member["id"] != probe_id],
+                             actual[name]["members"])
+            self.assertEqual(next(member for member in item["members"] if member["id"] == probe_id)["review"]["state"],
+                             "unreviewed")
+        self.assertNotIn(probe_id, registry.reviews)
         self.assertEqual(generated.build_corpus()[0], files_before)
-        self.assertEqual(Registry(ROOT).reviews, original_reviews)
+        for path, raw in files_before.items():
+            self.assertEqual(path.read_bytes(), raw)
+        fresh = Registry(ROOT)
+        self.assertEqual(fresh.reviews, original_reviews)
+        self.assertEqual(fresh.catalogues, original_catalogues)
+        self.assertEqual(fresh.execution.aggregates, original_inventories)
+        self.assertEqual(fresh.evidence.links, original_links)
+        self.assertEqual(fresh.source_uses.data, original_source_uses)
 
     def test_shared_entry_requirement_generator_and_native_view_remain_consistent(self):
         catalogue = self.registry.catalogues["8.3"]

@@ -980,6 +980,23 @@ covers1,607 base units;4,866 base and eight fine units remain unresolved.
 Baseline bytes and the current R402 inventory are unchanged. Exact native,
 historical, repair and renewal evidence is in `doc/source_audits/batch_036.json`.
 
+The thirty-seventh checkpoint adds seven independently reviewed C819
+compile cases: one module admission and three wrong-context declarations
+with exact BIND-only repairs. The protected C814 lifecycle test now
+preserves unrelated inventory members and unreviewed blockers rather than
+forcing whole-suite approval. No source, native row or foreign review was
+changed to make that test pass.
+
+All seven cases have GNU f2023 corroboration. Four compile on the frozen
+target; three silent-acceptance failures are explicitly baselined.
+The current measured checkpoint has **2,009 cases: 1,219 PASS,
+785 XFAIL, four SKIPs and one NEEDS_ORACLE**. Every prior outcome,
+binding, input hash, link receipt and current R402 snapshot is unchanged.
+There are **1,726 direct, nine linked and1,144 pending facets out of2,879**;
+source counts do not change. The remaining three C819 and48other local
+facets stay pending. Exact source, repair, compatibility and native evidence
+is in `doc/source_audits/batch_037.json`.
+
 A further source-only packet covers 7.5.8 and 7.5.9 with 13 base units,
 50 fine units, 14 requirements and 72 pending facets. It preserves existing
 canonical witnesses and explicitly accounts for the value-set definition

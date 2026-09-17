@@ -1,0 +1,6 @@
+subroutine external_local()
+  use, intrinsic :: iso_c_binding, only: c_int
+  implicit none
+  integer(c_int) :: bound_value
+  bound_value=1_c_int
+end subroutine external_local
