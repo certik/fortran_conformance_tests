@@ -22,7 +22,7 @@ The readiness refactoring now supplies:
   context case.
 
 This is infrastructure readiness, not completed conformance coverage.
-The current census still has 4,890 unresolved base units and eight unresolved
+The current census still has 4,886 unresolved base units and eight unresolved
 fine-grained units inside the catalogues. Its independent visual
 review is still pending. Automatic PDF extraction is not semantic review,
 and list items/table rows require additional audited subdivisions.
@@ -883,7 +883,7 @@ retain all **22 facets pending**. Exact scoped predicates, implicit
 attribute routes, completion/definedness, BLOCK identity, subobjects and
 processor-qualified foreign communication remain separate evidence plans.
 
-There are now **89 catalogues, 532 requirements, 1,711 direct and nine
+The thirty-first-batch corpus has **89 catalogues, 532 requirements, 1,711 direct and nine
 linked facets, and 969 pending facets out of 2,689**. Source accounting
 covers 1,583 base units; 4,890 base and eight fine units remain unresolved.
 All 1,987 case bindings, 1,946 stored review records, nine links and baseline
@@ -891,6 +891,22 @@ bytes are unchanged. Only source and observational-inventory reviews were
 renewed. The last actual full compiler report remains batch030 with its
 original 87-catalogue context; it was not relabelled as a new run.
 Exact source and preservation evidence is in `doc/source_audits/batch_031.json`.
+
+The thirty-second checkpoint is also source-only: reviewed BIND data/common
+source accounts for nine base and 37 fine units, with seven requirements
+and all **55 facets pending**. Companion identity, ISO kind availability,
+variable versus C-counterpart criteria, COMMON membership, label semantics
+and the bound-common SAVE effect retain their separate evidence gates.
+The actual successor is CODIMENSION8.5.6, not the earlier CONTIGUOUS shorthand.
+
+There are now **90 catalogues, 539 requirements, 1,711 direct and nine
+linked facets, and 1,024 pending facets out of 2,744**. Source accounting
+covers 1,587 base units; 4,886 base and eight fine units remain unresolved.
+All 1,987 case bindings, 1,946 stored reviews, nine links and baseline bytes
+are unchanged. One source review and the separate observational-inventory
+review were written. Batch030 remains the last actual full compiler report
+with its original context, not a new90-catalogue run. Details are in
+`doc/source_audits/batch_032.json`.
 
 A further source-only packet covers 7.5.8 and 7.5.9 with 13 base units,
 50 fine units, 14 requirements and 72 pending facets. It preserves existing
@@ -955,15 +971,19 @@ represented facets and 118 pending facets. Earlier observations and retired
 reviews remain historical, not relabelled. All later main cases and nine
 links are preserved. Source-only 8.3/8.4 is integrated
 as batch027; seven local type-parameter capture facets are integrated in
-batch029, while initialization8.4 remains pending. A bounded ten-case C814
-automatic-object SAVE subset is being authored separately; no current
-C814 pending facet is cleared by that assignment. Source8.5.1/8.5.2 passed
+batch029, while initialization8.4 remains pending. C814 packet `1397017b`
+contains ten source-supported compile cases for five facets, but independent
+review holds three negative oracles under ASFR-001: a short-format Internal
+wrapper could be credited as the intended report. Separate predicate and
+cross-owner pending-count test corrections are required; no current C814
+facet is approved through that packet. Source8.5.1/8.5.2 passed
 independent review with six C815 metadata and six source-dependent link
 staleness gates. C815 packet `61f4eaed` has six migrations and five exact
 second-statement deletion controls under independent review, without
 renewing those records. ALLOCATABLE/ASYNCHRONOUS source `f20d7d53` is
-integrated as batch031, with no fixture or source-use credit. The next
-bounded source packet covers BIND data entities in8.5.5.
+integrated as batch031, with no fixture or source-use credit. BIND data
+source `3a7df6a8` is integrated as batch032, also with no new cases.
+The next bounded source packet covers CODIMENSION8.5.6.1-.3.
 
 Source-use candidate `29fc461` and correction `b9150e82` are integrated as
 batch026 after independent SULR-001 closeout. No actual use graph has been
