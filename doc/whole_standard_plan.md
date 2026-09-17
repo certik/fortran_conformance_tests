@@ -22,7 +22,7 @@ The readiness refactoring now supplies:
   context case.
 
 This is infrastructure readiness, not completed conformance coverage.
-The current census still has 4,934 unresolved base units and eight unresolved
+The current census still has 4,920 unresolved base units and eight unresolved
 fine-grained units inside the catalogues. Its independent visual
 review is still pending. Automatic PDF extraction is not semantic review,
 and list items/table rows require additional audited subdivisions.
@@ -720,7 +720,7 @@ All 17 controls, including two retained C7107 repairs, compile with GNU.
 Three negatives remain source-only because their f2023 evidence is generic
 recovery, incorrect component/parameter attribution or silent acceptance.
 
-The current measured checkpoint has **1,937 cases: 1,181 PASS,
+The twenty-third-batch measured checkpoint has **1,937 cases: 1,181 PASS,
 751 XFAIL, four SKIPs and one NEEDS_ORACLE**. All 1,909 old inputs, IDs,
 metadata and target outcomes/phases are unchanged. Four C7107 fingerprints
 and three dependent links have explicit renewals; the other 1,905 case
@@ -729,6 +729,25 @@ fingerprints and six link receipts are unchanged. The baseline adds only
 There are 80 catalogues, 451 requirements, 1,668 direct and nine linked
 facets, and 590 pending facets out of 2,267. Full source/cause and renewal
 decisions are in `doc/source_audits/batch_023.json`.
+
+The twenty-fourth batch registers the independently reviewed **7.8 array
+constructor source catalogue**: 31 base units, 100 fine units and 26
+requirements, with all **107 facets still pending**. It adds no test program
+or completed facet. Typed/inferred characteristics, rank-one flattening,
+statement-entity scope, ordinary DO execution, zero-trip character lengths
+and BOZ representation conditions remain explicit future fixture gates.
+
+The current measured checkpoint still has **1,937 cases: 1,181 PASS,
+751 XFAIL, four SKIPs and one NEEDS_ORACLE**. Every case input, fingerprint,
+review, outcome/phase, all nine link receipts and baseline bytes are
+unchanged. Source context alone required an explicit inventory renewal;
+a separate full frozen-target run retained all results. There are now
+**81 catalogues, 477 requirements, 1,668 direct and nine linked facets,
+and 697 pending facets out of 2,374**. Source accounting covers 1,553
+base units; 4,920 base and eight fine units remain unresolved. The three
+prior draft source catalogues are not silently approved. Source judgments,
+preservation and measured evidence are in `doc/source_audits/batch_024.json`.
+
 A further source-only packet covers 7.5.8 and 7.5.9 with 13 base units,
 50 fine units, 14 requirements and 72 pending facets. It preserves existing
 canonical witnesses and explicitly accounts for the value-set definition
@@ -761,10 +780,12 @@ inventory through its changed source context. That renewal remains explicit.
 The conditional range of the note's12345 example, NEXT's endpoint error
 termination, and outstanding companion/representation/BOZ qualifications
 are preserved rather than turned into unqualified positive tests.
-The unnamed-enum subset is integrated as batch022. A separate 7.6.2 author
-is implementing eight enumeration-type ordinal/constructor/access effects,
-with 44 facets pending; it does not substitute INTEGER constants or C/BOZ
-representation for enumeration values.
+The unnamed-enum subset is integrated as batch022. Separate 7.6.2 packet
+`90ae55e` has three run-contract programs for eight enumeration-type
+ordinal/constructor/access facets, with 44 pending. All nine compiler
+attempts stopped at syntax; there is no successful native runtime or
+reference validation. Independent source/oracle review is active, without
+an INTEGER substitute or invented runtime evidence.
 
 BOZ source packet `c0c9e5de` passed independent review: ten base units,
 83 fine units, nine requirements and 64 pending facets. It preserves exact
@@ -773,8 +794,18 @@ distinction between STORAGE_SIZE's array-element quantity and physical
 isolated-scalar width. Its source-only registration changes no case or link
 fingerprint but stales the observational inventory through source context.
 The real-BOZ representation bridge remains unresolved; this is not a
-profile, fixture or oracle approval. Array-constructor source work in 7.8
-is now bounded to its 31 base units on PDF114-116 before Clause8 on117.
+profile, fixture or oracle approval. A bounded binary/octal lexical author
+is implementing 12 compile facets, retaining 52 pending facets and the
+separate real-BOZ block. Array-constructor source is now integrated as
+batch024, with every fixture facet pending. A new source-only author covers
+the 28 base units of 8.1 and 8.2; existing declaration cases and their
+potential metadata staleness must be accounted for before integration.
+
+A coordinator-authored non-executable source-use inventory prototype,
+`29fc461`, awaits independent code review outside main. It preserves
+section-derived source denominators, missing/pending entries and
+content-bound source review without new execution or facet credit.
+Its empty committed registry is not an actual completed use graph.
 The broader meta-evidence contract, including mixed FORMAT
 diagnostic contexts, is not complete merely because one link type exists.
 Meta-level definitions must not become fabricated passing programs.
