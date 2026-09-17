@@ -100,6 +100,19 @@ def validate_nonfatal_diagnostics(value, context):
             raise SuiteError(f'{context}: single-source driver warnings need exact GNU message predicates')
 
 
+def validate_diagnostic_messages(diagnostic, context, required=False):
+    keys = set(diagnostic) & {'contains_any', 'equals_any'}
+    if len(keys) > 1 or (required and not keys):
+        raise SuiteError(f'{context}: choose exactly one message predicate')
+    for key in keys:
+        messages = strings(diagnostic[key], context + '.' + key,
+                           nonempty=required or key == 'equals_any')
+        for message in messages:
+            string(message, context + '.' + key)
+        if key == 'equals_any' and len({message.strip().lower() for message in messages}) != len(messages):
+            raise SuiteError(f'{context}.equals_any: duplicate normalized alternatives')
+
+
 def load_fixture(path, profiles):
     path = Path(path).resolve()
     data = read_json(path)
@@ -195,6 +208,9 @@ def load_fixture(path, profiles):
         raise SuiteError(f'{path}: invalid expected phase/outcome')
     if expectation.outcome == 'diagnose' and expectation.phase != 'compile':
         raise SuiteError(f'{path}: diagnostic reporting expectations require a compile phase')
+    if (isinstance(expectation.diagnostic, dict) and 'equals_any' in expectation.diagnostic
+            and (expectation.phase != 'compile' or expectation.outcome != 'diagnose')):
+        raise SuiteError(f'{path}: diagnostic.equals_any requires compile-phase diagnose')
     if expectation.phase == 'compile' and expectation.step not in seen:
         raise SuiteError(f'{path}: compile expectations must name a build step')
     if expectation.phase == 'compile' and (expectation.step != steps[-1].id or link is not None):
@@ -210,7 +226,7 @@ def load_fixture(path, profiles):
     if expectation.outcome in ('reject', 'diagnose'):
         if expectation.outcome == 'diagnose':
             fields(expectation.diagnostic, ('file', 'line'),
-                   ('end_line', 'contains_any', 'excludes_any', 'allow_nonfatal'),
+                   ('end_line', 'contains_any', 'equals_any', 'excludes_any', 'allow_nonfatal'),
                    f'{path}.diagnostic')
             validate_nonfatal_diagnostics(expectation.diagnostic.get('allow_nonfatal', []),
                                           f'{path}.diagnostic.allow_nonfatal')
@@ -236,9 +252,8 @@ def load_fixture(path, profiles):
                 raise SuiteError(f'{path}: invalid diagnostic statement span')
         if line is None and anchor not in ('file', 'eof') and expectation.phase != 'link':
             raise SuiteError(f'{path}: a diagnostic line or external anchor is required')
-        messages = strings(expectation.diagnostic.get('contains_any', []), 'diagnostic.contains_any')
-        for message in messages:
-            string(message, 'diagnostic.contains_any')
+        validate_diagnostic_messages(expectation.diagnostic, f'{path}.diagnostic')
+        messages = expectation.diagnostic.get('contains_any', [])
         if 'excludes_any' in expectation.diagnostic:
             for message in strings(expectation.diagnostic['excludes_any'], 'diagnostic.excludes_any', nonempty=True):
                 string(message, 'diagnostic.excludes_any')

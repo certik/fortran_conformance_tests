@@ -463,6 +463,23 @@ def diagnostic_filename_matches(actual, expected):
     return bool(expected.parts) and actual.parts[-len(expected.parts):] == expected.parts
 
 
+def diagnostic_origin_matches(actual, expected, workspace=None):
+    if workspace is None:
+        return diagnostic_filename_matches(actual, expected)
+    try:
+        root = Path(workspace)
+        if not root.is_absolute():
+            return False
+        root = root.resolve(strict=True)
+        source = safe_path(root, expected).resolve(strict=True)
+        origin = Path(actual)
+        if not origin.is_absolute():
+            origin = root / origin
+        return source.is_file() and origin.resolve(strict=True) == source
+    except (OSError, RuntimeError, ValueError, SuiteError):
+        return False
+
+
 def reference_location_header(text):
     if REF_SOURCE_RECORD.match(text):
         return None
@@ -512,7 +529,7 @@ def native_internal_error(output):
     return False
 
 
-def reference_messages(output, filename=None):
+def reference_diagnostics(output, declared_input=False):
     pending = None
     origin = ''
     for line in output.splitlines():
@@ -527,7 +544,7 @@ def reference_messages(output, filename=None):
             pending = None
             origin = ''
             location = reference_location(
-                line, DECLARED_REF_LOC if filename is not None else REF_LOC, header)
+                line, DECLARED_REF_LOC if declared_input else REF_LOC, header)
             if location is None:
                 continue
             origin = location.group(1)
@@ -535,11 +552,18 @@ def reference_messages(output, filename=None):
             message = line[location.end():].lstrip()
         diagnostic = REF_MESSAGE.match(message)
         if diagnostic:
-            if pending is not None and (filename is None or diagnostic_filename_matches(origin, filename)):
-                yield pending, diagnostic.group(1).lower(), diagnostic.group(2)
+            if pending is not None:
+                yield Diagnostic(pending, pending, set(), diagnostic.group(2),
+                                 origin, diagnostic.group(1).lower())
             pending = None
         elif location and message:
             pending = None
+
+
+def reference_messages(output, filename=None):
+    for item in reference_diagnostics(output, declared_input=filename is not None):
+        if filename is None or diagnostic_filename_matches(item.file, filename):
+            yield item.first, item.severity, item.message
 
 
 def reference_error_lines(output, filename=None, messages=None):
@@ -637,17 +661,18 @@ def check_invalid(path, source, line, rule, bounds, comp, meta, codes=False, tim
         command = syntax_command(comp.configuration(), asdict(meta), isolated)
         source_hash = hashlib.sha256(Path(isolated).read_bytes()).hexdigest()
         result = run(command, tmp, timeout)
-    if contract is None:
-        check = judge_rejection(result, comp, meta, rule, line, bounds, codes)
-    else:
-        check = judge_diagnostic(result, comp, rule, contract['diagnostic'], codes)
+        if contract is None:
+            check = judge_rejection(result, comp, meta, rule, line, bounds, codes)
+        else:
+            check = judge_diagnostic(result, comp, rule, contract['diagnostic'], codes,
+                                     primary_source=isolated, workspace=Path(tmp).resolve())
     check.trace = [trace_entry(command, result, 'compile', 'source')]
     check.input_hashes = {os.path.basename(path): source_hash}
     check.execution_context = execution_context(tmp)
     return check
 
 
-def driver_warning_diagnostics(output, filename, primary_source):
+def driver_warning_diagnostics(output, filename, primary_source, workspace=None):
     if not primary_source:
         raise SuiteError('single-source driver attribution needs the staged compilation input')
     primary = Path(primary_source)
@@ -660,7 +685,10 @@ def driver_warning_diagnostics(output, filename, primary_source):
             if location is None:
                 return []
             origin = Path(location.group(1))
-            if ((origin.is_absolute() and origin != primary)
+            if workspace is not None:
+                if not diagnostic_origin_matches(str(origin), filename, workspace):
+                    return []
+            elif ((origin.is_absolute() and origin != primary)
                     or (not origin.is_absolute() and str(origin) not in (filename, primary.name))):
                 return []
     reported = []
@@ -673,39 +701,46 @@ def driver_warning_diagnostics(output, filename, primary_source):
     return reported
 
 
+def diagnostic_message_matches(message, predicate, normalize_exact=False):
+    if 'equals_any' in predicate:
+        normalized = message.strip().lower() if normalize_exact else message.lower()
+        return any(normalized == (value.strip().lower() if normalize_exact else value.lower())
+                   for value in predicate['equals_any'])
+    messages = predicate.get('contains_any', [])
+    return any(value.lower() in message.lower() for value in messages)
+
+
 def nonfatal_matches(item, predicate, family):
     if predicate['compiler'] != family or predicate['severity'] != item.severity:
         return False
     if item.attribution != 'located' and predicate.get('attribution', 'located') != item.attribution:
         return False
-    if 'equals_any' in predicate:
-        return any(message.lower() == item.message.lower() for message in predicate['equals_any'])
-    return any(message.lower() in item.message.lower() for message in predicate['contains_any'])
+    return diagnostic_message_matches(item.message, predicate)
 
 
-def judge_diagnostic(result, comp, rule, diagnostic, codes=False, primary_source=None):
+def judge_diagnostic(result, comp, rule, diagnostic, codes=False, primary_source=None, *, workspace=None):
     failed = failure(result, 'compile')
     if failed:
         return failed
     filename = diagnostic['file']
     line = diagnostic['line']
-    messages = diagnostic.get('contains_any', [])
     nonfatal = diagnostic.get('allow_nonfatal', [])
     if comp.family == 'lfortran':
-        reported = [item for item in lfortran_diagnostics(result.output)
-                    if diagnostic_filename_matches(item.file, filename)]
+        reported = lfortran_diagnostics(result.output)
     else:
-        reported = [Diagnostic(location, location, set(), message, filename, severity)
-                    for location, severity, message in reference_messages(result.output, filename)]
+        reported = list(reference_diagnostics(result.output, declared_input=True))
     if comp.family == 'gfortran' and any(
             predicate.get('attribution') == 'single-source-driver' for predicate in nonfatal):
-        reported += driver_warning_diagnostics(result.output, filename, primary_source)
+        reported += driver_warning_diagnostics(result.output, filename, primary_source, workspace)
     matching = []
     for item in reported:
+        if not diagnostic_origin_matches(item.file, filename, workspace):
+            continue
         located = line <= item.first <= item.last <= diagnostic.get('end_line', line)
         if not located:
             continue
-        if messages and not any(message.lower() in item.message.lower() for message in messages):
+        if (('equals_any' in diagnostic or diagnostic.get('contains_any'))
+                and not diagnostic_message_matches(item.message, diagnostic, normalize_exact=True)):
             continue
         if any(message.lower() in item.message.lower() for message in diagnostic.get('excludes_any', [])):
             continue
@@ -729,6 +764,8 @@ def judge_rejection(result, comp, meta, rule, line=None, bounds=None, codes=Fals
     if failed:
         return failed
     diagnostic = diagnostic or {}
+    if 'equals_any' in diagnostic:
+        raise SuiteError('diagnostic.equals_any requires compile-phase diagnose')
     filename = diagnostic.get('file')
     messages = diagnostic.get('contains_any', [])
     external = diagnostic.get('anchor') in ('eof', 'file') or phase == 'link'
@@ -901,7 +938,8 @@ def check_fixture(fixture, comp, cc='cc', timeout=30, codes=False):
                     judged_comp = comp if step.language == 'fortran' else Compiler(cc, 'c', '')
                     if expectation.outcome == 'diagnose':
                         return finish(judge_diagnostic(result, judged_comp, fixture.rule,
-                                                       diagnostic, codes, primary_source=source))
+                                                       diagnostic, codes, primary_source=source,
+                                                       workspace=workspace))
                     return finish(judge_rejection(
                         result, judged_comp, meta, fixture.rule, diagnostic.get('line'),
                         codes=codes, diagnostic=diagnostic))

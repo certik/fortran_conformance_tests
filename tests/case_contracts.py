@@ -2,6 +2,7 @@
 from dataclasses import replace
 from pathlib import Path
 
+from fixture_support import validate_diagnostic_messages
 from suite_data import SuiteError, fields, read_json, strings
 
 
@@ -38,8 +39,9 @@ def apply_case_contracts(cases, known_profiles, root, fixture_roots=()):
             if contract['outcome'] != 'diagnose':
                 raise SuiteError(f'{case.name}: per-case contracts currently require compile-phase diagnose')
             diagnostic = dict(contract['diagnostic']) if isinstance(contract['diagnostic'], dict) else None
-            fields(diagnostic, ('contains_any',), ('excludes_any', 'line', 'end_line'), f'{case.name}.diagnostic')
-            strings(diagnostic['contains_any'], f'{case.name}.contains_any', nonempty=True)
+            fields(diagnostic, (), ('contains_any', 'equals_any', 'excludes_any', 'line', 'end_line'),
+                   f'{case.name}.diagnostic')
+            validate_diagnostic_messages(diagnostic, f'{case.name}.diagnostic', required=True)
             if 'excludes_any' in diagnostic:
                 strings(diagnostic['excludes_any'], f'{case.name}.excludes_any', nonempty=True)
             marker = case.isolated[0]

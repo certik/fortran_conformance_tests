@@ -847,6 +847,112 @@ case.f90:5-5:1-20: semantic warning [C801]: repeated
         registry.record_review.assert_not_called()
 
 
+class DiagnosticPrecisionTests(unittest.TestCase):
+    def setUp(self):
+        directory = tempfile.TemporaryDirectory()
+        self.addCleanup(directory.cleanup)
+        self.root = Path(directory.name).resolve()
+        (self.root / 'expected').mkdir()
+        (self.root / 'other').mkdir()
+        for name in ('source.f90', 'expected/payload', 'other/payload'):
+            (self.root / name).write_text('synthetic input\n')
+
+    def test_bound_origin_preserves_paths_aliases_and_unbound_api(self):
+        target = self.root / 'expected/payload'
+        alias = self.root / 'workspace-alias'
+        alias.symlink_to(self.root, target_is_directory=True)
+        for origin in ('expected/payload', './expected/payload', str(target),
+                       str(alias / 'expected/payload')):
+            with self.subTest(origin=origin):
+                self.assertTrue(runner.diagnostic_origin_matches(origin, 'expected/payload', self.root))
+        for origin in ('payload', 'other/payload', '../expected/payload',
+                       str(self.root.parent / 'expected/payload'), '/foreign/expected/payload'):
+            with self.subTest(origin=origin):
+                self.assertFalse(runner.diagnostic_origin_matches(origin, 'expected/payload', self.root))
+        self.assertTrue(runner.diagnostic_filename_matches('/foreign/expected/payload', 'expected/payload'))
+        self.assertFalse(runner.diagnostic_origin_matches(str(target), 'expected/payload', 'relative'))
+        self.assertFalse(runner.diagnostic_origin_matches('source.f90', 'missing', self.root))
+        target.unlink()
+        self.assertFalse(runner.diagnostic_origin_matches(str(target), 'expected/payload', self.root))
+
+    def test_reference_extraction_retains_true_origin_and_legacy_tuple_shape(self):
+        output = ('/foreign/source.f90:3:1:\n    3 | source text\n'
+                  "Error: Symbol 'subject' is invalid\n")
+        parsed = list(runner.reference_diagnostics(output, declared_input=True))
+        self.assertEqual([(item.file, item.first, item.severity, item.message) for item in parsed],
+                         [('/foreign/source.f90', 3, 'error', "Symbol 'subject' is invalid")])
+        self.assertEqual(list(runner.reference_messages(output, 'source.f90')),
+                         [(3, 'error', "Symbol 'subject' is invalid")])
+        extensionless = "expected/payload:1:0: error: bad input\n"
+        self.assertEqual(list(runner.reference_messages(extensionless)), [])
+        self.assertEqual(list(runner.reference_messages(extensionless, 'expected/payload')),
+                         [(1, 'error', 'bad input')])
+
+    def test_exact_message_normalization_does_not_change_legacy_nonfatal_matching(self):
+        predicate = dict(equals_any=["  Symbol 'subject' is invalid  "])
+        self.assertTrue(runner.diagnostic_message_matches(
+            "SYMBOL 'SUBJECT' IS INVALID", predicate, normalize_exact=True))
+        for message in ("Example: Symbol 'subject' is invalid", "Symbol 'subject'  is invalid",
+                        'Unknown symbol "Symbol \'subject\' is invalid"'):
+            self.assertFalse(runner.diagnostic_message_matches(message, predicate, normalize_exact=True))
+        old = dict(compiler='flang', severity='portability', equals_any=['message'])
+        item = runner.Diagnostic(1, 1, set(), 'message ', 'source.f90', 'portability')
+        self.assertFalse(runner.nonfatal_matches(item, old, 'flang'))
+        item.message = 'MESSAGE'
+        self.assertTrue(runner.nonfatal_matches(item, old, 'flang'))
+        for selector in ('contains_any', 'equals_any'):
+            empty = dict(compiler='flang', severity='portability', **{selector: []})
+            self.assertFalse(runner.nonfatal_matches(item, empty, 'flang'))
+
+    def test_origin_and_exact_cause_are_independent_conjunctive_guards(self):
+        message = "'subject' has the wrong attribute"
+        for family, standard in (('lfortran', 'f23'), ('gfortran', 'f2023'), ('flang', 'f2018')):
+            comp = runner.Compiler(family, family, standard)
+            for status in (0, 1, 2):
+                for codes in (False, True):
+                    for selector in ('contains_any', 'equals_any'):
+                        diagnostic = dict(file='source.f90', line=3, **{selector: [message]})
+                        for origin in (str(self.root / 'source.f90'), '/foreign/source.f90'):
+                            for body in (message, f'Unknown symbol "{message}"'):
+                                if family == 'lfortran':
+                                    text = f'{origin}:3-3:1-80: semantic\terror [C830]: {body}'
+                                else:
+                                    text = f'{origin}:3:1: error: {body}'
+                                expected = ('pass' if origin == str(self.root / 'source.f90')
+                                            and (body == message or selector == 'contains_any') else 'fail')
+                                with self.subTest(family=family, status=status, codes=codes,
+                                                  selector=selector, origin=origin, body=body):
+                                    check = runner.judge_diagnostic(
+                                        runner.ProcessResult(status, text), comp, 'C830', diagnostic,
+                                        codes=codes, workspace=self.root)
+                                    self.assertEqual(check.outcome, expected)
+
+    def test_foreign_native_failure_still_vetoes_and_runtime_and_version_boundaries_hold(self):
+        diagnostic = dict(file='source.f90', line=3, equals_any=['genuine cause'])
+        comp = runner.Compiler('lfortran', 'lfortran', 'f23')
+        good = 'source.f90:3-3:1-9: semantic error [C830]: genuine cause\n'
+        for tail in ('/foreign/source.f90:1:1: error: Internal: failed\n',
+                     '/foreign/source.f90:1-1:1-8: semantic error: Internal: failed\n',
+                     'ASR verify pass error\n', 'out of memory\n', 'LLVM ERROR: failed\n'):
+            result = runner.ProcessResult(0, good + tail)
+            self.assertEqual(runner.judge_diagnostic(
+                result, comp, 'C830', diagnostic, workspace=self.root).outcome, 'fail')
+        for status in (0, 1, 2):
+            text = '/foreign/source.f90:1:1: error: Internal: failed\n'
+            for phase in ('compile', 'link', 'version'):
+                self.assertIsNotNone(runner.failure(runner.ProcessResult(status, text), phase))
+            self.assertIsNone(runner.failure(
+                runner.ProcessResult(status, text), 'run', compiler_process=False))
+        with patch.object(runner, 'run', return_value=runner.ProcessResult(
+                0, 'LFortran version: synthetic\n/foreign/source.f90:1:1: error: Internal: failed\n')):
+            with self.assertRaises(runner.SuiteError):
+                runner.compiler('lfortran', True, 'f23', [], 5)
+        for diagnostic in (dict(equals_any=['cause']), dict(contains_any=['cause'], equals_any=['cause'])):
+            with self.assertRaisesRegex(runner.SuiteError, 'compile-phase diagnose'):
+                runner.judge_rejection(runner.ProcessResult(1, 'Error: cause'), comp,
+                                       runner.Metadata(), 'C830', diagnostic=diagnostic, phase='link')
+
+
 class CorpusTests(unittest.TestCase):
     root = Path(__file__).resolve().parent
 

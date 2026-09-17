@@ -162,6 +162,152 @@ class CaseContractTests(unittest.TestCase):
             self.assertEqual(result.trace[0]['returncode'], 0)
             self.assertIn('C601_invalid.f90', result.input_hashes)
 
+    def test_exact_selector_is_shared_and_retains_sidecar_marker_and_filename_rules(self):
+        first = self.data['cases']['first']['diagnostic']
+        first['equals_any'] = first.pop('contains_any')
+        write_json(self.path, self.data)
+        cases = self.cases()
+        self.assertEqual(cases[0].contract['diagnostic']['file'], self.source.name)
+        self.assertEqual(cases[0].contract['diagnostic']['line'], 3)
+        self.assertEqual(cases[0].contract['diagnostic']['equals_any'], ['synthetic problem'])
+        original = copy.deepcopy(self.data)
+        for change in (
+                {'equals_any': []}, {'equals_any': ['']}, {'equals_any': [' ']},
+                {'equals_any': None}, {'equals_any': ['cause', 'CAUSE']},
+                {'contains_any': ['cause']}, {'file': 'other.f90'},
+                {'line': 4}, {'line': 1, 'end_line': 2}):
+            candidate = copy.deepcopy(original)
+            candidate['cases']['first']['diagnostic'].update(change)
+            write_json(self.path, candidate)
+            with self.subTest(change=change), self.assertRaises(SuiteError):
+                self.cases()
+
+    def test_exact_retained_diagnose_uses_actual_staging_not_a_foreign_basename(self):
+        diagnostic = self.data['cases']['first']['diagnostic']
+        diagnostic['equals_any'] = diagnostic.pop('contains_any')
+        write_json(self.path, self.data)
+        case = self.cases()[0]
+        for family, mode in (('lfortran', 'f23'), ('gfortran', 'f2023'), ('flang', 'f2018')):
+            comp = runner.Compiler(family, family, mode)
+            for status in (0, 1, 2):
+                for codes in (False, True):
+                    for foreign in (False, True):
+                        for message in ('synthetic problem', 'Quoted diagnostic: "synthetic problem"'):
+                            def transport(command, cwd, timeout=30, stdin=None):
+                                staged = Path(command[-1])
+                                self.assertEqual(staged.name, self.source.name)
+                                self.assertEqual(staged.read_text(), case.isolated[-1])
+                                self.assertIn('! {error C601 first}', staged.read_text())
+                                location = '/foreign/' + staged.name if foreign else str(staged)
+                                text = (f'{location}:3-3:1-40: semantic error [C601]: {message}'
+                                        if family == 'lfortran' else f'{location}:3:1: error: {message}')
+                                return runner.ProcessResult(status, text)
+
+                            with self.subTest(family=family, status=status, codes=codes,
+                                              foreign=foreign, message=message), patch.object(
+                                    runner, 'run', side_effect=transport):
+                                result = runner.execute_case(case, comp, codes=codes)
+                            self.assertEqual(result.outcome,
+                                             'pass' if not foreign and message == 'synthetic problem' else 'fail')
+                            self.assertEqual((len(result.trace), result.phase), (1, 'compile'))
+        self.assertEqual(self.source.read_text(), self.original)
+
+    def test_exact_selector_changes_only_its_sidecar_fingerprint_and_snapshot(self):
+        registry = self.registry()
+        before_cases = self.cases(registry)
+        before = {case.name: case.fingerprint(registry) for case in before_cases}
+        diagnostic = self.data['cases']['first']['diagnostic']
+        diagnostic['equals_any'] = diagnostic.pop('contains_any')
+        write_json(self.path, self.data)
+        after = {case.name: case.fingerprint(registry) for case in self.cases(registry)}
+        self.assertNotEqual(before[before_cases[0].name], after[before_cases[0].name])
+        self.assertEqual(before[before_cases[1].name], after[before_cases[1].name])
+        with patch.object(runner, 'HERE', str(self.tests)), \
+                patch.object(runner, 'Registry', side_effect=self.registry):
+            errors = runner.confirm_snapshot([], [before_cases[0]], before)
+        self.assertTrue(any('inputs or requirement changed' in error for error in errors))
+
+    def test_mid_run_manifest_selector_or_source_origin_change_prevents_baseline_update(self):
+        directory = self.tests / 'fixtures/precision'
+        directory.mkdir(parents=True)
+        (directory / 'source.f90').write_text('synthetic primary\n')
+        (directory / 'included').write_text('synthetic included\n')
+        manifest = directory / 'fixture.json'
+        baseline = self.tests / 'expected_failures.txt'
+        baseline.write_text('# synthetic unchanged baseline\n')
+        for mutation in ('selector', 'origin'):
+            data = dict(
+                schema_version=1, id='C601_invalid__precision', rule='C601', facets=['one'],
+                files=['source.f90', 'included'],
+                build=[dict(id='source', source='source.f90', language='fortran', output='source.o')],
+                expect=dict(phase='compile', step='source', outcome='diagnose',
+                            diagnostic=dict(file='source.f90', line=1, contains_any=['actual cause'])))
+            write_json(manifest, data)
+            registry = self.registry()
+            cases = self.cases(registry)
+            selected = next(case for case in cases if case.name == data['id'])
+            runner.record_fixture_review(registry, cases, selected.review_key, 'source-reviewed',
+                                         'Synthetic original fixture contract, not a real approval.', [])
+            report = self.root / (mutation + '-snapshot.json')
+
+            def compiler(command, target, standard, launcher, timeout):
+                return runner.Compiler(command, 'lfortran', 'f23', version='fixed', launcher=launcher)
+
+            def transport(command, cwd, timeout=30, stdin=None):
+                source = command[command.index('-c') + 1]
+                diagnostic = data['expect']['diagnostic']
+                if mutation == 'selector':
+                    diagnostic['equals_any'] = diagnostic.pop('contains_any')
+                else:
+                    diagnostic['file'] = 'included'
+                write_json(manifest, data)
+                return runner.ProcessResult(0, f'{source}:1-1:1-20: semantic error: actual cause')
+
+            with self.subTest(mutation=mutation), patch.object(runner, 'HERE', str(self.tests)), \
+                    patch.object(runner, 'Registry', side_effect=self.registry), \
+                    patch.object(runner, 'compiler', side_effect=compiler), \
+                    patch.object(runner, 'run', side_effect=transport), \
+                    patch.object(runner, 'update_xfail') as update, \
+                    patch.object(sys, 'argv', ['run_tests.py', '-t', data['id'],
+                                              '--update-xfail', '--report', str(report)]), \
+                    contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
+                status = runner.main()
+            self.assertEqual(status, 2)
+            update.assert_not_called()
+            recorded = json.loads(report.read_text())
+            self.assertEqual(recorded['results'][0]['check']['outcome'], 'pass')
+            self.assertTrue(recorded['run_errors'])
+            self.assertEqual(baseline.read_text(), '# synthetic unchanged baseline\n')
+
+    def test_mid_run_exact_sidecar_selector_cannot_write_baseline(self):
+        registry = self.registry()
+        cases = self.cases(registry)
+        for case in cases:
+            runner.record_fixture_review(registry, cases, case.review_key, 'source-reviewed',
+                                         'Synthetic sidecar snapshot, not a real approval.', [])
+        report = self.root / 'exact-sidecar-change.json'
+
+        def compiler(command, target, standard, launcher, timeout):
+            return runner.Compiler(command, 'lfortran', 'f23', version='fixed', launcher=launcher)
+
+        def transport(command, cwd, timeout=30, stdin=None):
+            diagnostic = self.data['cases']['first']['diagnostic']
+            diagnostic['equals_any'] = diagnostic.pop('contains_any')
+            write_json(self.path, self.data)
+            return runner.ProcessResult(0, f'{command[-1]}:3-3:1-30: semantic error: synthetic problem')
+
+        with patch.object(runner, 'HERE', str(self.tests)), \
+                patch.object(runner, 'Registry', side_effect=self.registry), \
+                patch.object(runner, 'compiler', side_effect=compiler), \
+                patch.object(runner, 'run', side_effect=transport), \
+                patch.object(runner, 'update_xfail') as update, \
+                patch.object(sys, 'argv', ['run_tests.py', '-t', 'C601_invalid:first',
+                                          '--update-xfail', '--report', str(report)]), \
+                contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
+            self.assertEqual(runner.main(), 2)
+        update.assert_not_called()
+        self.assertTrue(json.loads(report.read_text())['run_errors'])
+
 
 if __name__ == '__main__':
     unittest.main()

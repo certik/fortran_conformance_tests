@@ -289,11 +289,24 @@ case-insensitive message-substring predicates:
 Each nonfatal predicate must choose exactly one of those message forms.
 Optional top-level
 `diagnostic.contains_any` further restricts every matching diagnostic.
+Compile-phase `diagnose` also supports top-level `diagnostic.equals_any`
+instead of `contains_any`. It requires a nonempty list of nonblank strings,
+unique after normalization, and matches the entire extracted message
+case-insensitively after trimming leading/trailing whitespace. Internal
+whitespace, punctuation and quoted subject names remain significant.
+The two top-level selectors are mutually exclusive. Omitting `equals_any`
+retains the existing substring policy; no existing case opts in implicitly.
+Exact matching is not supported for success, `reject`, link or run
+expectations. It does not parse raw output or turn a quoted example inside
+an unrelated error into its own diagnostic.
 For `diagnose`, optional `diagnostic.excludes_any` rejects a candidate
 message containing any of its nonempty case-insensitive substrings. The
 C1514 length-only pair uses this to exclude unsupported/unimplemented
 feature reports even when they mention ambiguity. This is opt-in;
 unrelated fixture predicates and fingerprints are unchanged.
+The top-level selector and exclusions remain conjunctive with the existing
+nonfatal compiler/severity/message opt-in, code flag and native-failure gates.
+The pre-existing exact nonfatal matching policy is unchanged.
 Predicates match the located diagnostic message, not source echoes or
 other output. A wrong file/line, unlocated message, unrelated warning,
 earlier build failure, crash, verifier failure, or timeout cannot pass.
@@ -341,6 +354,22 @@ resembles a severity or driver prefix, as in `Error:9:1:` or
 borrow an earlier location or preserve single-source-driver attribution.
 This is a conservative text-format qualification, not a prohibition on
 extensionless or severity-named assets; original output is retained.
+
+Actual manifest and retained per-case `diagnose` executions additionally
+bind each located report to the declared diagnostic input in its live
+staging workspace. An included diagnostic input can differ from the
+primary compilation input. Absolute origins and workspace-relative paths
+(including `./`) are resolved to that actual file, including real filesystem
+aliases such as macOS `/var` and `/private/var`. Foreign absolute paths,
+foreign relative directories and parent/sibling files cannot borrow a
+matching basename. A missing or unresolvable source origin remains
+unqualified, even when a trace hashes the correct compilation input.
+Reference extraction retains the reported origin until this check.
+Unbound parser calls without staging context retain their existing API and
+filename policy. Native Internal/ASR/crash/resource detection remains global:
+a genuine compiler failure in any file vetoes diagnostic credit. This
+source binding does not change external rejection/link policy or classify
+compiler-shaped application runtime output as a compiler failure.
 Classification and extraction must select the same first unshielded
 coordinate. A mixed record cannot be classified using one coordinate and
 then qualify an earlier quoted coordinate or skip a malformed first
@@ -408,7 +437,8 @@ An adjacent `<RULE>_invalid.cases.json` can give a retained container
 per-execution contracts without moving its source or changing execution
 IDs. It contains `schema_version: 1` and a `cases` object whose keys exactly
 match every original marker name. Each entry supplies its own `facets`,
-`outcome: "diagnose"`, and `diagnostic.contains_any`; optional
+`outcome: "diagnose"`, and exactly one of `diagnostic.contains_any` or
+`diagnostic.equals_any`; optional
 `diagnostic.excludes_any` excludes known wrong causes. An optional `profiles`
 list explicitly replaces the inherited file-level list. The initial
 sidecar contract deliberately supports only compile-phase reporting,

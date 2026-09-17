@@ -353,11 +353,141 @@ class FixtureTests(unittest.TestCase):
         self.data['expect']['diagnostic'] = dict(file='expected/payload.inc', line=1)
         fixture = self.fixture()
         for filename, expected in (('expected/payload.inc', 'pass'), ('other/payload.inc', 'fail')):
-            output = f'/workspace/{filename}:1-1:1-7: syntax error: invalid input\n'
+            def transport(command, cwd, timeout, stdin=None):
+                output = f'{Path(cwd).resolve() / filename}:1-1:1-7: syntax error: invalid input\n'
+                return runner.ProcessResult(1, output)
+
             with self.subTest(filename=filename):
-                with patch.object(runner, 'run', return_value=runner.ProcessResult(1, output)):
+                with patch.object(runner, 'run', side_effect=transport):
                     result = runner.check_fixture(fixture, self.compiler)
                 self.assertEqual(result.outcome, expected)
+
+    def test_exact_diagnostic_selector_schema_and_unsupported_expectations(self):
+        self.reporting_fixture()
+        original = json.loads(json.dumps(self.data))
+        for value in ([], '', None, {}, [None], [''], [' '], ['cause', 'cause'], ['cause', ' CAUSE ']):
+            self.data = json.loads(json.dumps(original))
+            self.data['expect']['diagnostic']['equals_any'] = value
+            with self.subTest(value=value), self.assertRaises(SuiteError):
+                self.fixture()
+        self.data = json.loads(json.dumps(original))
+        self.data['expect']['diagnostic'].update(contains_any=['cause'], equals_any=['cause'])
+        with self.assertRaises(SuiteError):
+            self.fixture()
+        for phase, outcome in (('compile', 'success'), ('compile', 'reject'),
+                               ('link', 'success'), ('link', 'reject'), ('run', 'success')):
+            self.data = json.loads(json.dumps(original))
+            self.data['expect'] = dict(
+                phase=phase, outcome=outcome, step='source',
+                diagnostic=dict(file='source.f', line=2, equals_any=['cause']))
+            if phase != 'compile':
+                self.data['link'] = dict(objects=['source.o'], output='program')
+            with self.subTest(phase=phase, outcome=outcome), self.assertRaisesRegex(
+                    SuiteError, 'compile-phase diagnose'):
+                self.fixture()
+
+    def test_exact_cause_nonfatal_codes_and_exclusions_use_actual_staging(self):
+        self.reporting_fixture()
+        cause = "'subject' has the wrong attribute"
+        self.data['expect']['diagnostic'].update(
+            equals_any=[cause, 'unsupported: ' + cause], excludes_any=['unsupported'],
+            allow_nonfatal=[dict(compiler='flang', severity='portability', equals_any=[cause])])
+        fixture = self.fixture()
+        for family, mode in (('lfortran', 'f23'), ('gfortran', 'f2023'), ('flang', 'f2018')):
+            for status in (0, 1, 2):
+                for codes in (False, True):
+                    for severity in ('error', 'warning', 'portability'):
+                        for message in (cause, f'Unknown symbol "{cause}"', 'unsupported: ' + cause):
+                            def transport(command, cwd, timeout, stdin=None):
+                                source = Path(command[command.index('-c') + 1])
+                                self.assertEqual(source.read_bytes(), self.raw)
+                                if family == 'lfortran':
+                                    text = f'{source}:2-2:1-80: semantic {severity} [R601]: {message}\n'
+                                else:
+                                    text = f'{source}:2:1: {severity}: {message}\n'
+                                return runner.ProcessResult(status, text, stdout='', stderr=text)
+
+                            expected = ('pass' if message == cause and (severity == 'error'
+                                        or (family, severity) == ('flang', 'portability')) else 'fail')
+                            with self.subTest(family=family, status=status, codes=codes,
+                                              severity=severity, message=message), patch.object(
+                                    runner, 'run', side_effect=transport):
+                                check = runner.check_fixture(
+                                    fixture, runner.Compiler(family, family, mode), codes=codes)
+                            self.assertEqual(check.outcome, expected)
+                            self.assertEqual((check.phase, len(check.trace)), ('compile', 1))
+                            self.assertEqual(check.input_hashes, {'source.f': hashlib.sha256(self.raw).hexdigest()})
+
+    def test_bound_included_extensionless_origins_and_primary_input_remain_distinct(self):
+        self.reporting_fixture()
+        (self.root / 'expected').mkdir()
+        payload = b'integer :: subject, subject\n'
+        (self.root / 'expected/Error').write_bytes(payload)
+        self.data['files'].append('expected/Error')
+        self.data['expect']['diagnostic'] = dict(file='expected/Error', line=1, equals_any=['duplicate subject'])
+        fixture = self.fixture()
+        for family, mode in (('lfortran', 'f23'), ('gfortran', 'f2023'), ('flang', 'f2018')):
+            for origin, expected in (
+                    ('expected/Error', 'pass'), ('./expected/Error', 'pass'), ('absolute', 'pass'),
+                    ('alias', 'pass'), ('Error', 'fail'), ('other/Error', 'fail'), ('source.f', 'fail'),
+                    ('../expected/Error', 'fail'), ('/foreign/expected/Error', 'fail')):
+                def transport(command, cwd, timeout, stdin=None):
+                    workspace = Path(cwd).resolve()
+                    self.assertEqual(Path(command[command.index('-c') + 1]), workspace / 'source.f')
+                    self.assertEqual((workspace / 'expected/Error').read_bytes(), payload)
+                    location = origin
+                    if origin == 'absolute':
+                        location = str(workspace / 'expected/Error')
+                    elif origin == 'alias':
+                        (workspace / 'alias').symlink_to(workspace, target_is_directory=True)
+                        location = str(workspace / 'alias/expected/Error')
+                    if family == 'lfortran':
+                        text = f'{location}:1-1:1-50: semantic error: duplicate subject\n'
+                    else:
+                        text = f'{location}:1:1: error: duplicate subject\n'
+                    return runner.ProcessResult(0, text)
+
+                with self.subTest(family=family, origin=origin), patch.object(runner, 'run', side_effect=transport):
+                    check = runner.check_fixture(fixture, runner.Compiler(family, family, mode))
+                self.assertEqual(check.outcome, expected)
+                self.assertEqual(set(check.input_hashes), {'source.f', 'expected/Error'})
+
+    def test_bound_reports_do_not_accept_echoes_quotes_or_missing_live_sources(self):
+        self.reporting_fixture()
+        self.data['expect']['diagnostic']['equals_any'] = ['actual cause']
+        fixture = self.fixture()
+        for family, mode in (('lfortran', 'f23'), ('gfortran', 'f2023'), ('flang', 'f2018')):
+            for kind in ('source', 'caret', 'include', 'quoted', 'missing'):
+                def transport(command, cwd, timeout, stdin=None):
+                    source = Path(command[command.index('-c') + 1])
+                    location = (f'{source}:2-2:1-40: semantic error: actual cause'
+                                if family == 'lfortran' else f'{source}:2:1: error: actual cause')
+                    text = dict(source=f' 2 | {location}', caret=f'   | ^ {location}',
+                                include=f'In file included from {source}:2:1:\nerror: actual cause',
+                                quoted=f'note: "{location}"', missing=location)[kind]
+                    if kind == 'missing':
+                        source.unlink()
+                    return runner.ProcessResult(0, text)
+
+                with self.subTest(family=family, kind=kind), patch.object(runner, 'run', side_effect=transport):
+                    self.assertEqual(runner.check_fixture(
+                        fixture, runner.Compiler(family, family, mode)).outcome, 'fail')
+
+    def test_bound_driver_attribution_keeps_real_workspace_aliases_and_exact_gate(self):
+        self.driver_reporting_fixture()
+        self.data['expect']['diagnostic']['equals_any'] = ["'&' not allowed by itself"]
+        fixture = self.fixture()
+        comp = runner.Compiler('gfortran', 'gfortran', 'f2023')
+        for foreign in (False, True):
+            def transport(command, cwd, timeout, stdin=None):
+                workspace = Path(cwd).resolve()
+                (workspace / 'alias').symlink_to(workspace, target_is_directory=True)
+                location = '/foreign/source.f' if foreign else str(workspace / 'alias/source.f')
+                return runner.ProcessResult(
+                    0, f"{location}:2:1:\nf951: Warning: '&' not allowed by itself in line 2\n")
+
+            with self.subTest(foreign=foreign), patch.object(runner, 'run', side_effect=transport):
+                self.assertEqual(runner.check_fixture(fixture, comp).outcome, 'fail' if foreign else 'pass')
 
     def test_reporting_requires_matching_file_line_severity_and_message(self):
         fixture = self.reporting_fixture()

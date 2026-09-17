@@ -1096,6 +1096,23 @@ role support and baseline are preserved. Two source reviews and one
 inventory-context renewal create no new compiler run; batch040 retains
 its actual98-catalogue context. See `doc/source_audits/batch_043.json`.
 
+The forty-fourth checkpoint adds opt-in exact diagnostic causes and actual
+staged-source attribution. Quoted examples inside unrelated errors cannot
+satisfy an exact selector, and foreign files cannot borrow a matching
+basename. Existing nonfatal, source-span, code and native-failure gates
+remain conjunctive; unbound parsing and external rejection policies retain
+their separate contracts.
+
+A new actual full main run, using the same frozen Fortran and Apple-clang
+configuration as batch040, preserves **2,009 cases: 1,219 PASS, 785 XFAIL,
+four SKIPs and one NEEDS_ORACLE**. All3,062 case command traces and the
+complete observational projection were validated. The current combined
+precision/role selection has320 passing methods; the author's689-method
+full Python run retains its own100-catalogue context. No real exact
+selector, case, facet, approval or baseline entry is added here.
+Batch044 is the latest actual full run with102 catalogues. See
+`doc/source_audits/batch_044.json`.
+
 A further source-only packet covers 7.5.8 and 7.5.9 with 13 base units,
 50 fine units, 14 requirements and 72 pending facets. It preserves existing
 canonical witnesses and explicitly accounts for the value-set definition
@@ -1187,8 +1204,11 @@ actual BIND requirement still needs its explicit source-reviewed opt-in
 and two complete programs. The confirmation will not be silently retagged
 as an effect. Shared SHORT correction `0c7161ba` is integrated as batch040
 after independent closeout. The separate C830 eligibility candidate
-`ce23c2d` remains outside main:12 compile cases for seven facets, awaiting
-independent fixture/cause review. Its assumed-size facet stays pending at
+`ce23c2d` remains outside main:12 compile cases for seven facets. Independent
+review found quoted-cause and same-basename origin false-credit paths.
+Batch044 supplies reviewed exact-cause/origin infrastructure; the real
+fixture predicates still need correction, new bound observations and
+independent closeout. Its assumed-size facet stays pending at
 C830-ANCHOR-001 because the legitimate procedure-header and declaration
 diagnostic locations need a precise disjoint-anchor contract; no source
 coalescing, widened span or false GNU conformance failure is introduced.
