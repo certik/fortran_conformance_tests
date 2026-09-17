@@ -1,3 +1,4 @@
+! covers: mixed-single-specification
 ! C815 An entity shall not be explicitly given any attribute more than once
 ! in a scoping unit.  Valid: each attribute given exactly once, using both
 ! the attr-spec and the attribute-statement forms for different entities.

@@ -22,7 +22,7 @@ The readiness refactoring now supplies:
   context case.
 
 This is infrastructure readiness, not completed conformance coverage.
-The current census still has 4,873 unresolved base units and eight unresolved
+The current census still has 4,866 unresolved base units and eight unresolved
 fine-grained units inside the catalogues. Its independent visual
 review is still pending. Automatic PDF extraction is not semantic review,
 and list items/table rows require additional audited subdivisions.
@@ -958,6 +958,28 @@ execution-context renewal are explicit; batch034 remains the last actual
 full main run with its own90-catalogue context. See
 `doc/source_audits/batch_035.json`.
 
+The thirty-sixth checkpoint integrates corrected C815 metadata and five
+syntax-only second-statement deletion controls. All31 source lines,
+comments and padding are retained. The 210 demonstrated unsupported/Internal
+false credits are closed; historical whole-line controls remain valid old
+Fortran evidence, not relabelled current inputs. All eleven changed
+fingerprints have fresh GNU f2023 observations.
+
+Six previously current canonical links genuinely became source-stale under
+the new8.5.2 catalogue. Their source prerequisites and six link reviews were
+explicitly renewed, preserving every canonical input, role and phase and
+the other three receipts. Retired C815 invalid-group history remains separate
+from its five new per-execution review keys.
+
+The current measured checkpoint has **2,002 cases: 1,215 PASS,
+782 XFAIL, four SKIPs and one NEEDS_ORACLE**. Every prior execution's
+outcome and phase is unchanged, and all five new controls compile on the
+target. There are **95 catalogues, 568 requirements, 1,722 direct and nine
+linked facets, and1,148 pending facets out of2,879**. Source accounting
+covers1,607 base units;4,866 base and eight fine units remain unresolved.
+Baseline bytes and the current R402 inventory are unchanged. Exact native,
+historical, repair and renewal evidence is in `doc/source_audits/batch_036.json`.
+
 A further source-only packet covers 7.5.8 and 7.5.9 with 13 base units,
 50 fine units, 14 requirements and 72 pending facets. It preserves existing
 canonical witnesses and explicitly accounts for the value-set definition
@@ -1026,9 +1048,10 @@ and corrections `0fb7640e`/`aa7d8cc0` are integrated in batch034 after
 independent predicate and test-ownership closeout. Its five facets have
 ten compile cases; four other C814 facets remain pending. Source8.5.1/8.5.2 passed
 independent review with six C815 metadata and six source-dependent link
-staleness gates. C815 packet `61f4eaed` has six migrations and five exact
-second-statement deletion controls under independent review, without
-renewing those records. ALLOCATABLE/ASYNCHRONOUS source `f20d7d53` is
+staleness gates. C815 packet `61f4eaed` and correction `d1c3bf6b` are now
+integrated as batch036 after both independent closeouts and explicit
+source/case/six-link/inventory renewals. All49remaining packet facets stay
+pending. ALLOCATABLE/ASYNCHRONOUS source `f20d7d53` is
 integrated as batch031, with no fixture or source-use credit. BIND data
 source `3a7df6a8` is integrated as batch032, also with no new cases.
 CODIMENSION source `a2dd92aa` is integrated as batch035 with all80facets
