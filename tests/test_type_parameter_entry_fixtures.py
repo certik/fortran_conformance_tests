@@ -301,14 +301,21 @@ class TypeParameterEntryFixturesTests(unittest.TestCase):
         catalogue = self.registry.catalogues["8.3"]
         self.assertEqual(len(catalogue["requirements"]), 2)
         self.assertEqual(sum(len(r["facets"]) for r in catalogue["requirements"]), 18)
-        self.assertEqual(sum(len(r["pending"]) for r in catalogue["requirements"]), 11)
         self.assertEqual(sum(map(len, catalogue["subunits"].values())), 19)
         self.assertEqual(len(catalogue["accounting"]), 22)
         c814, entry = catalogue["requirements"]
-        self.assertEqual(set(c814["pending"]), set(c814["facets"]))
-        self.assertEqual(set(entry["pending"]), {"pdt-length-snapshot", "fixed-length-descriptor-snapshot"})
+        entry_pending = {"pdt-length-snapshot", "fixed-length-descriptor-snapshot"}
+        self.assertEqual(set(entry["pending"]), entry_pending)
+        self.assertEqual(set(entry["facets"]) - entry_pending,
+                         {facet for facets in PARTITION.values() for facet in facets})
+        self.assertLessEqual(set(c814["pending"]), set(c814["facets"]))
+        self.assertEqual(sum(len(r["pending"]) for r in catalogue["requirements"]),
+                         len(c814["pending"]) + len(entry_pending))
+        preserved_c814 = copy.deepcopy(c814)
+        updated = generated.synced_catalogue(catalogue)
+        self.assertEqual(next(r for r in updated["requirements"] if r["id"] == "C814"), preserved_c814)
         self.assertEqual(sum(len(r["pending"]) for r in self.registry.catalogues["8.4"]["requirements"]), 35)
-        self.assertEqual(generated.synced_catalogue(catalogue), catalogue)
+        self.assertEqual(updated, catalogue)
         self.assertEqual(generated.render_view(catalogue, self.specs), (ROOT / generated.VIEW).read_text())
         native = Registry(ROOT)
         native.catalogues = {"8.3": catalogue}
@@ -318,22 +325,42 @@ class TypeParameterEntryFixturesTests(unittest.TestCase):
         self.assertEqual(generated.synced_catalogue(reviewed)["review_rationale"], reviewed["review_rationale"])
 
     def test_view_tracks_source_state_without_inventing_fixture_adjudication(self):
-        for state in ("draft", "reviewed", "stale"):
-            with self.subTest(state=state):
-                catalogue = copy.deepcopy(self.registry.catalogues["8.3"])
-                catalogue["review_state"] = "draft" if state == "draft" else "reviewed"
-                catalogue["review_rationale"] = "Synthetic source state; no persisted approval."
-                registry = Registry(ROOT)
-                registry.catalogues["8.3"] = catalogue
-                catalogue["review_fingerprint"] = (
-                    "0" * 64 if state == "stale" else registry.catalogue_fingerprint("8.3"))
-                view = generated.render_view(catalogue, self.specs)
-                self.assertIn(f"**Source review: {state}.**", view)
-                self.assertNotIn("fixture packet UNAPPROVED", view)
-                self.assertIn("Current fixture/evidence adjudications are separate", view)
-                self.assertIn("9 C814 facets and 2 other S8.3-001 facets remain PENDING.", view)
-                self.assertIn("This packet changes no8.4source, fixture or facet.", view)
-                self.assertEqual(generated.synced_catalogue(catalogue), catalogue)
+        remaining_c814 = {"pdt-length-save", "fixed-length-allocatable-save",
+                          "fixed-length-pointer-save", "inquiry-dependent-bound-save"}
+        for coverage, pending_facets, c814_count, total_count in (
+            ("all-C814-pending", None, 9, 11),
+            ("selected-C814-implemented", remaining_c814, 4, 6),
+        ):
+            for state in ("draft", "reviewed", "stale"):
+                with self.subTest(coverage=coverage, state=state):
+                    catalogue = copy.deepcopy(self.registry.catalogues["8.3"])
+                    c814 = next(r for r in catalogue["requirements"] if r["id"] == "C814")
+                    # Model unrelated-owner coverage without writing synthetic source plans.
+                    c814["pending"] = {
+                        facet: c814["pending"].get(facet, f"PENDING in-memory C814 coverage fixture: {facet}.")
+                        for facet in c814["facets"] if pending_facets is None or facet in pending_facets
+                    }
+                    preserved_c814 = copy.deepcopy(c814)
+                    self.assertEqual(len(c814["pending"]), c814_count)
+                    self.assertEqual(sum(len(r["pending"]) for r in catalogue["requirements"]), total_count)
+                    entry = next(r for r in catalogue["requirements"] if r["id"] == "S8.3-001")
+                    self.assertEqual(set(entry["pending"]), {"pdt-length-snapshot", "fixed-length-descriptor-snapshot"})
+                    catalogue["review_state"] = "draft" if state == "draft" else "reviewed"
+                    catalogue["review_rationale"] = "Synthetic source state; no persisted approval."
+                    registry = Registry(ROOT)
+                    registry.catalogues["8.3"] = catalogue
+                    catalogue["review_fingerprint"] = (
+                        "0" * 64 if state == "stale" else registry.catalogue_fingerprint("8.3"))
+                    self.assertEqual(registry.catalogue_review_state("8.3"), state)
+                    view = generated.render_view(catalogue, self.specs)
+                    self.assertIn(f"**Source review: {state}.**", view)
+                    self.assertNotIn("fixture packet UNAPPROVED", view)
+                    self.assertIn("Current fixture/evidence adjudications are separate", view)
+                    self.assertIn(f"{c814_count} C814 facets and 2 other S8.3-001 facets remain PENDING.", view)
+                    self.assertIn("This packet changes no8.4source, fixture or facet.", view)
+                    updated = generated.synced_catalogue(catalogue)
+                    self.assertEqual(next(r for r in updated["requirements"] if r["id"] == "C814"), preserved_c814)
+                    self.assertEqual(updated, catalogue)
 
 
 if __name__ == "__main__":

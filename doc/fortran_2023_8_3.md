@@ -1,6 +1,6 @@
 # Fortran 2023 8.3: Local type-parameter entry capture
 
-**Source review: reviewed.** Current fixture/evidence adjudications are separate content-bound records. This generated subset has five shared valid/effect/run/f2023 programs representing seven S8.3-001 facets. 9 C814 facets and 2 other S8.3-001 facets remain PENDING. This packet changes no8.4source, fixture or facet.
+**Source review: reviewed.** Current fixture/evidence adjudications are separate content-bound records. This generated subset has five shared valid/effect/run/f2023 programs representing seven S8.3-001 facets. 4 C814 facets and 2 other S8.3-001 facets remain PENDING. This packet changes no8.4source, fixture or facet.
 
 Authority: J3/24-007,18December2023,688physical PDF pages,
 SHA-256 `7371e889f231cfb0316d30365d5083fb5af34cbb6d5f7cb1e01855c73021bfa2`.
@@ -45,13 +45,31 @@ SAVE specification. Numbered reporting capability permits an ordinary0 or nonzer
 with a real located causal report; neither fatal rejection nor particular English
 wording is mandated.
 
-**Oracle limitation:** All facets are pending, with no fixtures or reports. A valid control is not made by
-turning the object into a dummy or function result, which C862 separately excludes from
-explicit SAVE. C808/C880 initializer prohibitions and main/module
-nonconstant-specification restrictions must not be used as substitute causes. Reject
-bare SAVE/constant words, source echoes, unrelated declarations, unsupported facilities,
-Internal/ASR/crash/resource failures and generic recovery. No unsaved-value trap, forced
-memory clearing, stack layout or byte-width oracle.
+Bounded automatic-SAVE implementation: ten compile/f2023 fixtures represent five
+selected facets. Three complete procedures put SAVE on a nondummy automatic CHARACTER
+selector-length local, a CHARACTER individual *(n) local, and an ordinary INTEGER a(n),
+with previously typed nonoptional INTEGER INTENT(IN) n. Their exact controls delete only
+', save', retaining the same automatic local, dummy and executable body. Three distinct
+constant-specification controls use a prior INTEGER PARAMETER, LEN of a previously
+fixed-length CHARACTER object, or SIZE of a previously fixed-shape ordinary INTEGER
+array; neither inquiry reads payload. The seventh positive control has one no-list SAVE
+in a procedure: allowed-item filtering excludes the automatic local, without a retention
+claim. Reporting uses actual located automatic-object/SAVE causes, permits ordinary
+zero/nonzero and qualified nonfatal reporting, and requires no printed rule code or
+fatal-return policy.
+
+**Oracle limitation:** Four C814 facets remain pending: PDT length, fixed-length ALLOCATABLE, fixed-length
+POINTER, and inquiry-dependent-bound negatives. The three selected controls remain
+automatic locals, not dummies, results or constants. No declaration initialization,
+pointer/allocatable/deferred/assumed shape, BLOCK no-list SAVE, retention run,
+bound/parameter-capture effect or definition-use credit is added. Fixed LEN/SIZE inquiry
+arguments have known declared properties; their uninitialized payload is never read.
+Bare SAVE/nonconstant words, echoes, wrong entities/attributes, malformed suffixes,
+unrelated initializer/eligibility/interface errors, unsupported/unimplemented
+facilities, Internal/verifier/resource failures and recovery do not corroborate C814.
+Generation preserves independent source/case/inventory adjudications; representation and
+processor agreement are not approval, and actual unsupported/reference failures remain
+recorded observations.
 
 **Dependencies:** 3.151.2; 4.1.2/4.2; 7.2 C701/C702; 7.4.4.2 R723; 7.5.3; 8.2 C805/C808; 8.5.8.2/.4,
 8.5.13 C853, 8.5.16 C861/C862; 8.6.7 C880; 8.6.14 R859/C893; 8.7; 10.1.11 R1029/C1011
@@ -159,15 +177,10 @@ Expected completed primitive guards: `11`. Guard spans bind the actual scalar ex
 
 ### C814
 
-* **`character-selector-save`** - PENDING compile diagnostic/control plan. In a complete procedure, a previously typed nonoptional INTEGER INTENT(IN) dummy n supplies CHARACTER(LEN=n) for a nondummy local with SAVE and no initializer. Remove only SAVE and its comma. Require a located automatic/nonconstant-length entity versus SAVE cause, not a generic complaint that n is nonconstant.
-* **`character-entity-length-save`** - PENDING the same qualified dummy-value context with an individual entity length *(n), correct R723 parentheses and SAVE. Remove only SAVE. Keep this declaration position distinct from the CHARACTER selector and do not accept a malformed suffix or unsupported CHARACTER facility as the intended diagnostic.
-* **`explicit-bound-save`** - PENDING ordinary INTEGER local a(n) with SAVE, where n is a previously typed eligible dummy value. Delete only SAVE; the repair remains a nondummy automatic array. It has no initializer, deferred shape, POINTER or ALLOCATABLE attribute, so no C808/C834 defect masks this relation.
 * **`pdt-length-save`** - PENDING a complete visible PDT with one LEN parameter and an ordinary INTEGER array component bounded by it; a local TYPE(t(n)) object has SAVE and no initializer. Remove only SAVE. Its KIND parameters, if any, are constant and never guessed intrinsic kind codes. Unsupported PDT machinery or a wrong component specification is not C814 evidence.
 * **`fixed-length-allocatable-save`** - PENDING scalar CHARACTER(LEN=n), ALLOCATABLE, SAVE with eligible nonconstant n and no initialization. Remove only SAVE. The nondeferred length, not the later allocation, gives the automatic-object premise. Do not introduce an illegal explicit-shape allocatable array or read unallocated data.
 * **`fixed-length-pointer-save`** - PENDING scalar CHARACTER(LEN=n), POINTER, SAVE with no initialization. Remove only SAVE; its nondeferred length is the selected premise. No pointer target, association inquiry or C770 lifetime defect is introduced. A POINTER attribute is not a universal exemption from automatic classification.
 * **`inquiry-dependent-bound-save`** - PENDING local INTEGER a(SIZE(arg)) with SAVE, where arg is an assumed-shape INTEGER dummy in a complete explicit-interface procedure. Its extent is not a constant expression. Remove only SAVE; distinguish the actual automatic/SAVE cause from missing-interface, wrong-rank or unsupported inquiry reports.
-* **`constant-specification-admission`** - PENDING compile controls with SAVE on ordinary locals whose lengths/bounds use a prior INTEGER PARAMETER, LEN of a previously fixed-length CHARACTER object, or SIZE of a previously fixed-shape ordinary array. Those inquiries can be constant expressions without reading payload. Contrast the formal inquiry premises, not observed values or a named constant itself given SAVE.
-* **`bare-save-admission`** - PENDING complete procedure with a permitted automatic local and a SAVE statement with no list, but no other SAVE specification. R859/8.6.14p1 include only allowed items; C893 remains satisfied. This is not a BLOCK control: C1108 requires a list in BLOCK. A SAVE outside a BLOCK does not save that BLOCK's local construct entities.
 
 ### S8.3-001
 

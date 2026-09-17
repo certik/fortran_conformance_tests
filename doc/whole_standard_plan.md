@@ -923,6 +923,25 @@ wording in current attribute documentation was made timeless, with explicit
 source and execution-context renewal; the old compiler report remains
 untouched. Details are in `doc/source_audits/batch_033.json`.
 
+The thirty-fourth checkpoint adds ten independently reviewed C814 compile
+cases for five automatic-object SAVE facets. Three exact SAVE-only repairs,
+three prior constant-expression inquiry controls and the no-list SAVE
+admission retain complete valid contexts. ASFR-001's nine demonstrated
+Internal-wrapper false credits and both directions of cross-owner
+pending-count test assumptions are closed without changing the Fortran
+sources or importing the separate shared-parser candidate.
+
+All ten cases have qualifying GNU f2023 evidence. Six compile on the frozen
+target; four demonstrated failures are explicitly added to the baseline,
+including the source-valid no-list SAVE abort. The current measured
+checkpoint has **1,997 cases: 1,210 PASS, 782 XFAIL, four SKIPs and one
+NEEDS_ORACLE**. All1,987 prior outcomes, bindings and input hashes remain,
+as do nine links and the current R402 inventory. There are **1,716 direct,
+nine linked and1,019 pending facets out of2,744**; source census counts
+are unchanged. Four C814 and two entry-capture facets remain pending.
+Evidence and exact correction/provenance limits are in
+`doc/source_audits/batch_034.json`.
+
 A further source-only packet covers 7.5.8 and 7.5.9 with 13 base units,
 50 fine units, 14 requirements and 72 pending facets. It preserves existing
 canonical witnesses and explicitly accounts for the value-set definition
@@ -987,11 +1006,9 @@ reviews remain historical, not relabelled. All later main cases and nine
 links are preserved. Source-only 8.3/8.4 is integrated
 as batch027; seven local type-parameter capture facets are integrated in
 batch029, while initialization8.4 remains pending. C814 packet `1397017b`
-contains ten source-supported compile cases for five facets, but independent
-review holds three negative oracles under ASFR-001: a short-format Internal
-wrapper could be credited as the intended report. Separate predicate and
-cross-owner pending-count test corrections are required; no current C814
-facet is approved through that packet. Source8.5.1/8.5.2 passed
+and corrections `0fb7640e`/`aa7d8cc0` are integrated in batch034 after
+independent predicate and test-ownership closeout. Its five facets have
+ten compile cases; four other C814 facets remain pending. Source8.5.1/8.5.2 passed
 independent review with six C815 metadata and six source-dependent link
 staleness gates. C815 packet `61f4eaed` has six migrations and five exact
 second-statement deletion controls under independent review, without
