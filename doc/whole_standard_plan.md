@@ -1113,6 +1113,23 @@ selector, case, facet, approval or baseline entry is added here.
 Batch044 is the latest actual full run with102 catalogues. See
 `doc/source_audits/batch_044.json`.
 
+The forty-fifth checkpoint integrates the12 corrected C830 compile cases
+after independent closure of both cause/origin false-credit findings.
+Four invalid categories have exact CONTIGUOUS-only repairs; four additional
+admissions cover the eligible categories, including an ALLOCATABLE
+assumed-rank dummy. The eight positives remain compile controls, not
+runtime contiguity effects. Exact predicates preserve genuine nonfatal
+reporting and actual source attribution without prescribing English.
+
+The measured corpus is now **2,021 cases: 1,227 PASS, 789 XFAIL,
+four SKIPs and one NEEDS_ORACLE**. All2,009 prior outcomes and bindings
+are unchanged; only the four reviewed target reporting failures were added
+to the baseline. There are **1,733 direct, nine linked and1,359 pending
+facets out of3,101**; source counts are unchanged. All733 Python methods
+passed, and the new full main report has3,074 validated case command traces.
+The assumed-size anchor facet and28S-owned CONTIGUOUS facets remain pending.
+See `doc/source_audits/batch_045.json`.
+
 A further source-only packet covers 7.5.8 and 7.5.9 with 13 base units,
 50 fine units, 14 requirements and 72 pending facets. It preserves existing
 canonical witnesses and explicitly accounts for the value-set definition
@@ -1203,12 +1220,10 @@ support is now independently reviewed and integrated in batch042; the
 actual BIND requirement still needs its explicit source-reviewed opt-in
 and two complete programs. The confirmation will not be silently retagged
 as an effect. Shared SHORT correction `0c7161ba` is integrated as batch040
-after independent closeout. The separate C830 eligibility candidate
-`ce23c2d` remains outside main:12 compile cases for seven facets. Independent
-review found quoted-cause and same-basename origin false-credit paths.
-Batch044 supplies reviewed exact-cause/origin infrastructure; the real
-fixture predicates still need correction, new bound observations and
-independent closeout. Its assumed-size facet stays pending at
+after independent closeout. The original C830 candidate `ce23c2d` remains
+immutable historical evidence; correction `0b62b0e` is integrated in batch045
+after independent source, repair, cause/origin and native-evidence closeout.
+Twelve compile cases represent seven facets. Its assumed-size facet stays pending at
 C830-ANCHOR-001 because the legitimate procedure-header and declaration
 diagnostic locations need a precise disjoint-anchor contract; no source
 coalescing, widened span or false GNU conformance failure is introduced.
