@@ -22,7 +22,7 @@ The readiness refactoring now supplies:
   context case.
 
 This is infrastructure readiness, not completed conformance coverage.
-The current census still has 4,850 unresolved base units and eight unresolved
+The current census still has 4,840 unresolved base units and eight unresolved
 fine-grained units inside the catalogues. Its independent visual
 review is still pending. Automatic PDF extraction is not semantic review,
 and list items/table rows require additional audited subdivisions.
@@ -1046,6 +1046,23 @@ Batch040 is now the latest actual main run with its98-catalogue context;
 neither the older1,987-case candidate report nor batch037 was relabelled.
 Exact closeout and execution evidence is in `doc/source_audits/batch_040.json`.
 
+The forty-first checkpoint reaches **100 detailed catalogues** by integrating
+independently reviewed assumed/deferred-shape source:14 base and63 fine
+units,11 requirements and all49 new facets pending. Rank, lower bounds,
+effective extents, inactive properties, inquiry exceptions and allocation/
+association/lifetime conditions stay distinct. The pointer-bound permission
+list retains explicit canonical mechanism/source follow-ups; classifying
+the text does not claim those mechanisms are tested.
+
+There are now **599 requirements, 1,726 direct and nine linked facets, and
+1,307 pending facets out of3,042**. Source accounting covers1,633 base units;
+4,840 base and eight fine units remain unresolved. All2,009 case bindings,
+1,973 stored reviews, nine links, the R402 snapshot, parser and baseline
+are unchanged. Only two source reviews and one inventory-context renewal
+were written. Batch040 remains the last actual full run with its98-catalogue
+context, not a fabricated100-catalogue execution. See
+`doc/source_audits/batch_041.json`.
+
 A further source-only packet covers 7.5.8 and 7.5.9 with 13 base units,
 50 fine units, 14 requirements and 72 pending facets. It preserves existing
 canonical witnesses and explicitly accounts for the value-set definition
@@ -1124,8 +1141,8 @@ CODIMENSION source `a2dd92aa` is integrated as batch035 with all80facets
 pending. CONTIGUOUS source `542612ce` is integrated as batch038, with all36
 facets pending. DIMENSION general/explicit-shape source `b3475d41` is
 integrated as batch039, with all78 facets pending. Assumed/deferred-shape
-source `b2df630` is frozen for independent review:14 base and63 fine units,
-11 requirements and49 pending facets. Assumed-size/implied-shape source
+source `b2df630` is integrated as batch041, with all49 facets and the
+pointer-bound canonical-mechanism coverage gates pending. Assumed-size/implied-shape source
 in8.5.8.5/.6 is the next bounded author packet.
 
 Bound-COMMON SAVE runtime authoring stopped before any fixture or compiler
