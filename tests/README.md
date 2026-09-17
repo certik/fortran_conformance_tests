@@ -146,6 +146,39 @@ to dependencies mentioned in the source.
 | `oracle-basis: lfortran-policy` | An explicitly additional diagnostic expectation |
 | `oracle-basis: processor-profile` | An expectation qualified by the named `oracle-profile` |
 
+A supplementary S-owned `category: effect` requirement may explicitly
+declare source-supported admission/control facets:
+
+```json
+"facets": ["result", "confirmation"],
+"positive_control_facets": ["confirmation"]
+```
+
+`positive_control_facets` is optional. When present it must be a nonempty,
+unique list of nonempty strings naming existing facets, and is permitted
+only on supplementary effect requirements. It is not available for
+numbered R/C requirements or other categories. Without it, the existing
+role rules are unchanged: valid S-effect cases require `evidence: effect`.
+
+Every listed facet requires a **valid positive-control** case; it cannot
+be labelled `effect` or `context-only`. Unlisted S-effect facets still
+require `effect`. One case cannot mix facets requiring incompatible roles,
+and an invalid case cannot cover a listed control facet, even with an
+additional diagnostic-policy basis. Within an opted-in requirement, an
+invalid case on unlisted facets still requires `effect` and its original
+diagnostic basis; policy does not bypass the facet's role. Compile, link
+and run controls retain their actual declared phase. A successful run/positive-control remains in
+the positive-control cohort and never contributes `runtime_effect_pass`.
+
+The designation needs independent source review; adding it does not
+approve a source, case or inventory. It appears in generated definitions
+and is part of the existing complete requirement/source fingerprint
+material, so adding or changing it stales dependent adjudications.
+Declaring a control facet does not author a case, clear its pending plan,
+prove its oracle or supply an observed pass. Authored facet counts, case
+roles, qualified observations, source review and global coverage remain
+separate.
+
 Profiles live in `tests/profiles/` and are not discovered as conformance
 cases. Their names are discovered from the files rather than hard-coded
 in Python. Their result is cached
@@ -512,6 +545,14 @@ positive control, at its original phase. A compile control cannot become
 a runtime effect through a link. Each connection needs independent source
 review: internal allowed use, for example, does not establish outside
 inaccessibility merely because a target facet concerns privacy.
+
+A target facet listed in `positive_control_facets` requires the explicit
+`positive-control` pattern. Neither a runtime-effect link nor a
+diagnostic/control pair can promote other evidence into that control
+facet. Canonical S-owned marked controls can be reused only with their
+actual positive-control role and phase; mixed-role cases cannot bypass
+the direct-case rules through a link. Unmarked targets retain the
+existing pattern contracts.
 
 Declared phases must match the original case contract. Additional
 diagnostic-policy oracles cannot be imported through a link. Paths, IDs

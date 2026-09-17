@@ -147,6 +147,38 @@ def case_review_bindings(cases, registry):
     return groups, fingerprints
 
 
+def facet_evidence_roles(requirement, facet, numbered=False):
+    if numbered:
+        return {'effect', 'positive-control'}
+    if facet in requirement.get('positive_control_facets', []):
+        return {'positive-control'}
+    return {
+        'effect': {'effect'}, 'restriction': {'positive-control'},
+        'undefined-result': {'context-only'}, 'syntax': {'positive-control'},
+    }[requirement['category']]
+
+
+def validate_case_requirement(case, requirement, numbered=False):
+    """Check one case's facet, role and diagnostic contract without a coverage census."""
+    facets = case.meta.facets
+    if not facets or len(facets) != len(set(facets)) or set(facets) - set(requirement['facets']):
+        raise SuiteError(f'{case.name}: missing, duplicate, or unknown catalogue facets')
+    controls = set(requirement.get('positive_control_facets', []))
+    if case.kind != 'valid' and set(facets) & controls:
+        raise SuiteError(f'{case.name}: invalid cases cannot cover positive-control facets')
+    if case.kind == 'valid' or controls:
+        allowed = set.intersection(*(facet_evidence_roles(requirement, facet, numbered) for facet in facets))
+        if not allowed:
+            raise SuiteError(f'{case.name}: cannot mix facets with incompatible evidence roles')
+        if case.meta.evidence not in allowed:
+            raise SuiteError(f'{case.name}: requires {" or ".join(sorted(allowed))} evidence')
+    if case.kind != 'valid':
+        if requirement['category'] == 'undefined-result':
+            raise SuiteError(f'{case.name}: an undefined value is not a rejection oracle')
+        if requirement['diagnostic_obligation'] != 'required' and case.meta.oracle_basis != 'lfortran-policy':
+            raise SuiteError(f'{case.name}: a prose rejection case needs an explicit diagnostic-policy basis')
+
+
 def render_requirement(requirement):
     def prose(value):
         return '\n\n'.join(textwrap.fill(paragraph, width=88, break_long_words=False,
@@ -160,6 +192,9 @@ def render_requirement(requirement):
         '**Diagnostic obligation:** ' + requirement['diagnostic_obligation'] + '.',
         '**Facets:** ' + ', '.join(f'`{facet}`' for facet in requirement['facets']) + '.',
     ]
+    if 'positive_control_facets' in requirement:
+        result.append('**Positive-control facets:** '
+                      + ', '.join(f'`{facet}`' for facet in requirement['positive_control_facets']) + '.')
     for key, label in (('oracle', 'Oracle'), ('oracle_limitation', 'Oracle limitation'),
                        ('dependencies', 'Dependencies')):
         if requirement.get(key):
@@ -261,7 +296,8 @@ class Registry:
     def _requirement(self, requirement, section):
         fields(requirement, ('id', 'title', 'source', 'source_units', 'category', 'diagnostic_obligation',
                              'definition', 'facets', 'pending'),
-               ('oracle', 'oracle_limitation', 'dependencies'), f'requirement in {section}')
+               ('oracle', 'oracle_limitation', 'dependencies', 'positive_control_facets'),
+               f'requirement in {section}')
         name = requirement['id']
         if name not in self.numbered and not re.fullmatch(re.escape('S' + section + '-') + r'\d{3}', name):
             raise SuiteError(f'{name}: unknown numbered rule or S ID inconsistent with {section}')
@@ -275,6 +311,15 @@ class Registry:
         if requirement['diagnostic_obligation'] not in ('required', 'not-required', 'context-dependent'):
             raise SuiteError(f'{name}: invalid diagnostic obligation')
         facets = strings(requirement['facets'], f'{name}.facets', nonempty=True)
+        if 'positive_control_facets' in requirement:
+            if name in self.numbered or requirement['category'] != 'effect':
+                raise SuiteError(f'{name}: positive_control_facets is only for supplementary effect requirements')
+            controls = strings(requirement['positive_control_facets'], f'{name}.positive_control_facets',
+                               nonempty=True)
+            for facet in controls:
+                string(facet, f'{name}.positive_control_facets entry')
+            if set(controls) - set(facets):
+                raise SuiteError(f'{name}: positive_control_facets must name declared facets')
         pending = requirement['pending']
         if not isinstance(pending, dict) or set(pending) - set(facets):
             raise SuiteError(f'{name}: pending entries must name declared facets')
@@ -439,21 +484,8 @@ class Registry:
             requirement = self.requirements.get(case.rule)
             if not requirement:
                 continue
-            facets = case.meta.facets
-            if not facets or len(facets) != len(set(facets)) or set(facets) - set(requirement['facets']):
-                raise SuiteError(f'{case.name}: missing, duplicate, or unknown catalogue facets')
-            if case.kind == 'valid':
-                allowed = ({'effect', 'positive-control'} if case.rule in self.numbered else {
-                    'effect': {'effect'}, 'restriction': {'positive-control'},
-                    'undefined-result': {'context-only'}, 'syntax': {'positive-control'},
-                }[requirement['category']])
-                if case.meta.evidence not in allowed:
-                    raise SuiteError(f'{case.name}: requires {" or ".join(sorted(allowed))} evidence')
-            elif requirement['category'] == 'undefined-result':
-                raise SuiteError(f'{case.name}: an undefined value is not a rejection oracle')
-            elif requirement['diagnostic_obligation'] != 'required' and case.meta.oracle_basis != 'lfortran-policy':
-                raise SuiteError(f'{case.name}: a prose rejection case needs an explicit diagnostic-policy basis')
-            covered[case.rule].update(facets)
+            validate_case_requirement(case, requirement, case.rule in self.numbered)
+            covered[case.rule].update(case.meta.facets)
         linked = self.evidence.validate_cases(cases)
         for name, requirement in self.requirements.items():
             linked_facets = set(linked.get(name, {}))

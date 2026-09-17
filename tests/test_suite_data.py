@@ -6,7 +6,9 @@ import tempfile
 from types import SimpleNamespace
 import unittest
 
-from suite_data import Metadata, Registry, SuiteError, safe_path, write_json
+import run_tests as runner
+from fixture_support import load_fixture
+from suite_data import Metadata, Registry, SuiteError, render_requirement, safe_path, write_json
 
 
 class CatalogueTests(unittest.TestCase):
@@ -52,6 +54,242 @@ class CatalogueTests(unittest.TestCase):
     def cases(self):
         return [SimpleNamespace(name='one', rule='S1.1-001', kind='valid',
                                 meta=Metadata(facets=['one']))]
+
+    def fixture_case(self, name='control', rule='S1.1-001', facets=None,
+                     evidence='positive-control', phase='run', outcome='success', oracle_basis='standard'):
+        directory = self.root / 'fixtures' / name
+        directory.mkdir(parents=True, exist_ok=True)
+        (directory / 'source.f90').write_text('program synthetic_metadata\nend program synthetic_metadata\n')
+        expectation = dict(phase=phase, outcome=outcome)
+        data = dict(
+            schema_version=1, id=name, rule=rule, facets=['one'] if facets is None else facets,
+            evidence=evidence, standard='f2023', oracle_basis=oracle_basis, files=['source.f90'],
+            build=[dict(id='source', source='source.f90', language='fortran', output='source.o')],
+            expect=expectation)
+        if phase == 'compile':
+            expectation['step'] = 'source'
+            if outcome in ('diagnose', 'reject'):
+                expectation['diagnostic'] = dict(file='source.f90', line=1, contains_any=['synthetic'])
+        else:
+            data['link'] = dict(objects=['source.o'], output='program')
+            if phase == 'run':
+                expectation['exit_code'] = 0
+        write_json(directory / 'fixture.json', data)
+        fixture = load_fixture(directory / 'fixture.json', runner.PROFILES)
+        return runner.SuiteCase(fixture.name, fixture.rule, fixture.kind, str(fixture.path),
+                                fixture.meta, fixture.name, fixture=fixture)
+
+    def test_positive_control_facets_are_nonempty_unique_declared_strings(self):
+        for value in (None, False, 0, 'one', {}, [], [''], [' '], [None], [1], [[]],
+                      ['one', 'one'], ['missing'], ['one', 'missing']):
+            with self.subTest(value=value):
+                self.a['requirements'][0]['positive_control_facets'] = value
+                self.save()
+                with self.assertRaises(SuiteError):
+                    self.registry()
+        self.a['requirements'][0]['positive_control_facets'] = ['one']
+        self.save()
+        self.assertEqual(self.registry().requirements['S1.1-001']['positive_control_facets'], ['one'])
+
+    def test_positive_control_facets_are_only_for_supplementary_effects(self):
+        original = copy.deepcopy(self.a)
+        for category in ('restriction', 'syntax', 'undefined-result'):
+            with self.subTest(category=category):
+                self.a = copy.deepcopy(original)
+                self.a['requirements'][0].update(category=category, positive_control_facets=['one'])
+                self.save()
+                with self.assertRaisesRegex(SuiteError, 'only for supplementary effect'):
+                    self.registry()
+        self.a = copy.deepcopy(original)
+        self.a['requirements'][0].update(id='R601', source_units=['R601'], positive_control_facets=['one'])
+        self.a['accounting'][0]['requirements'] = ['R601']
+        self.save()
+        with self.assertRaisesRegex(SuiteError, 'only for supplementary effect'):
+            self.registry()
+
+    def test_default_supplementary_and_numbered_evidence_roles_are_unchanged(self):
+        original = copy.deepcopy(self.a)
+        defaults = {'effect': 'effect', 'restriction': 'positive-control',
+                    'syntax': 'positive-control', 'undefined-result': 'context-only'}
+        for numbered in (False, True):
+            for category, default in defaults.items():
+                self.a = copy.deepcopy(original)
+                self.a['requirements'][0]['category'] = category
+                if numbered:
+                    self.a['requirements'][0].update(id='R601', source_units=['R601'])
+                    self.a['accounting'][0]['requirements'] = ['R601']
+                self.save()
+                registry = self.registry()
+                requirement = registry.requirements['R601' if numbered else 'S1.1-001']
+                before = copy.deepcopy(requirement)
+                for evidence in ('effect', 'positive-control', 'context-only'):
+                    case = self.cases()[0]
+                    case.rule = requirement['id']
+                    case.meta.evidence = evidence
+                    with self.subTest(numbered=numbered, category=category, evidence=evidence):
+                        allowed = evidence in {'effect', 'positive-control'} if numbered else evidence == default
+                        if allowed:
+                            registry.validate_cases([case])
+                        else:
+                            with self.assertRaisesRegex(SuiteError, 'requires .* evidence'):
+                                registry.validate_cases([case])
+                self.assertEqual(requirement, before)
+                self.assertNotIn('positive_control_facets', requirement)
+
+    def test_marked_controls_and_unmarked_effects_require_each_facets_role(self):
+        self.a['requirements'][0].update(facets=['one', 'other'], positive_control_facets=['one'])
+        self.save()
+        registry = self.registry()
+        control = self.fixture_case()
+        effect = self.fixture_case('effect', facets=['other'], evidence='effect')
+        self.assertEqual(registry.validate_cases([control, effect])['S1.1-001'], {'one', 'other'})
+        for wrong in ('effect', 'context-only'):
+            control.meta.evidence = wrong
+            with self.subTest(control_evidence=wrong), self.assertRaisesRegex(SuiteError, 'requires positive-control'):
+                registry.validate_cases([control, effect])
+        control.meta.evidence = 'positive-control'
+        for wrong in ('positive-control', 'context-only'):
+            effect.meta.evidence = wrong
+            with self.subTest(effect_evidence=wrong), self.assertRaisesRegex(SuiteError, 'requires effect'):
+                registry.validate_cases([control, effect])
+        for evidence in ('effect', 'positive-control', 'context-only'):
+            for facets in (['one', 'other'], ['other', 'one']):
+                mixed = self.fixture_case('mixed', facets=facets, evidence=evidence)
+                with self.subTest(evidence=evidence, facets=facets), self.assertRaisesRegex(SuiteError, 'incompatible evidence roles'):
+                    registry.validate_cases([mixed])
+        self.a['requirements'][0]['positive_control_facets'] = ['one', 'other']
+        self.save()
+        self.registry().validate_cases([self.fixture_case('both', facets=['one', 'other'])])
+
+    def test_control_cases_keep_compile_link_and_run_phases_and_reject_unknown_facets(self):
+        self.a['requirements'][0]['positive_control_facets'] = ['one']
+        self.save()
+        for phase in ('compile', 'link', 'run'):
+            case = self.fixture_case(phase=phase)
+            self.registry().validate_cases([case])
+            self.assertEqual(case.fixture.expectation.phase, phase)
+            self.assertEqual(case.meta.evidence, 'positive-control')
+        for facets in ([], ['missing'], ['one', 'missing'], ['one', 'one']):
+            with self.subTest(facets=facets), self.assertRaises(SuiteError):
+                self.registry().validate_cases([self.fixture_case(facets=facets)])
+
+    def test_invalid_control_facets_reject_standard_and_policy_oracles(self):
+        for obligation in ('not-required', 'required'):
+            self.a['requirements'][0].update(positive_control_facets=['one'], diagnostic_obligation=obligation)
+            self.save()
+            for basis in ('standard', 'lfortran-policy'):
+                for outcome in ('diagnose', 'reject'):
+                    case = self.fixture_case(phase='compile', outcome=outcome, evidence='effect', oracle_basis=basis)
+                    with self.subTest(obligation=obligation, basis=basis, outcome=outcome):
+                        self.assertEqual(case.kind, 'invalid')
+                        with self.assertRaisesRegex(SuiteError, 'invalid cases cannot cover positive-control'):
+                            self.registry().validate_cases([case])
+
+    def test_opted_in_invalid_effect_facets_cannot_bypass_roles_with_policy(self):
+        requirement = self.a['requirements'][0]
+        requirement.update(facets=['one', 'control'], pending={'control': 'No control case yet.'})
+        for opted_in in (False, True):
+            if opted_in:
+                requirement['positive_control_facets'] = ['control']
+            for obligation in ('not-required', 'required'):
+                requirement['diagnostic_obligation'] = obligation
+                self.save()
+                for basis in ('standard', 'lfortran-policy'):
+                    for evidence in ('effect', 'positive-control', 'context-only'):
+                        case = self.fixture_case(phase='compile', outcome='diagnose',
+                                                 evidence=evidence, oracle_basis=basis)
+                        with self.subTest(opted_in=opted_in, obligation=obligation, basis=basis, evidence=evidence):
+                            if opted_in and evidence != 'effect':
+                                with self.assertRaisesRegex(SuiteError, 'requires effect evidence'):
+                                    self.registry().validate_cases([case])
+                            elif obligation != 'required' and basis == 'standard':
+                                with self.assertRaisesRegex(SuiteError, 'diagnostic-policy basis'):
+                                    self.registry().validate_cases([case])
+                            else:
+                                self.registry().validate_cases([case])
+
+    def test_control_designation_does_not_clear_pending_or_approve_anything(self):
+        self.a['requirements'][0].update(positive_control_facets=['one'], pending={'one': 'Not authored.'})
+        self.save()
+        registry = self.registry()
+        pending = copy.deepcopy(registry.requirements['S1.1-001']['pending'])
+        registry.validate_cases([])
+        self.assertEqual(registry.requirements['S1.1-001']['pending'], pending)
+        self.assertEqual(registry.catalogue_review_state('1.1'), 'draft')
+        self.assertEqual(registry.reviews, {})
+        case = self.fixture_case()
+        with self.assertRaisesRegex(SuiteError, 'declared pending'):
+            registry.validate_cases([case])
+        self.a['requirements'][0]['pending'] = {}
+        self.save()
+        registry = self.registry()
+        registry.validate_cases([case])
+        self.assertEqual(registry.review(case.review_key, case.fingerprint(registry)).state, 'unreviewed')
+        self.assertEqual(registry.catalogue_review_state('1.1'), 'draft')
+
+    def test_rendered_control_facets_are_explicit_and_absent_by_default(self):
+        requirement = self.a['requirements'][0]
+        before = render_requirement(requirement)
+        self.assertNotIn('Positive-control facets', before)
+        requirement['positive_control_facets'] = ['one']
+        rendered = render_requirement(requirement)
+        line = '**Positive-control facets:** `one`.'
+        self.assertIn(line, rendered)
+        self.assertEqual(rendered.replace(line + '\n\n', ''), before)
+
+    def test_added_and_changed_control_designations_stale_case_and_source_fingerprints(self):
+        self.a['requirements'][0].update(
+            facets=['one', 'control', 'other-control'],
+            pending={'control': 'No control case yet.', 'other-control': 'No other control case yet.'})
+        self.save()
+        case = self.fixture_case('effect', evidence='effect')
+        input_bytes = case.fixture.inputs()
+        registry = self.registry()
+        registry.validate_cases([case])
+        for controls in (['control'], ['control', 'other-control']):
+            registry.record_catalogue_review('1.1', 'Synthetic independent source review before mutation.')
+            fingerprint = case.fingerprint(registry)
+            registry.record_review(case.review_key, fingerprint, 'source-reviewed',
+                                   'Synthetic independent fixture review.', ['1.1#p1'])
+            source_fingerprint = registry.catalogue_fingerprint('1.1')
+            self.a = json.loads((self.root / 'a.json').read_text())
+            self.a['requirements'][0]['positive_control_facets'] = controls
+            self.save()
+            registry = self.registry()
+            registry.validate_cases([case])
+            self.assertEqual(case.fixture.inputs(), input_bytes)
+            self.assertNotEqual(case.fingerprint(registry), fingerprint)
+            self.assertNotEqual(registry.catalogue_fingerprint('1.1'), source_fingerprint)
+            self.assertEqual(registry.catalogue_review_state('1.1'), 'stale')
+            self.assertEqual(registry.review(case.review_key, case.fingerprint(registry)).state, 'stale')
+            self.assertEqual(registry.requirements['S1.1-001']['pending'],
+                             {'control': 'No control case yet.', 'other-control': 'No other control case yet.'})
+
+    def test_synthetic_BCS_run_control_requires_explicit_opt_in_without_retention_execution(self):
+        self.source['sections']['8.5.5'] = {'units': {'p3': {'kind': 'paragraph'}}}
+        self.index['catalogues'].append('bcs.json')
+        catalogue = self.catalogue('8.5.5', 'explicit-save-confirmation')
+        requirement = catalogue['requirements'][0]
+        requirement.update(id='S8.5.5-002', source_units=['p3'],
+                           definition='Synthetic evidence-role preflight, not a COMMON retention assertion.',
+                           facets=['named-common-retention', 'explicit-save-confirmation'],
+                           pending={'named-common-retention': 'No retention program is authored by this test.'})
+        catalogue['accounting'] = [dict(unit='p3', disposition='requirements', requirements=['S8.5.5-002'])]
+        write_json(self.root / 'bcs.json', catalogue)
+        self.save()
+        case = self.fixture_case('synthetic_bcs_control', rule='S8.5.5-002', facets=['explicit-save-confirmation'])
+        with self.assertRaisesRegex(SuiteError, 'requires effect evidence'):
+            self.registry().validate_cases([*self.cases(), case])
+        requirement['positive_control_facets'] = ['explicit-save-confirmation']
+        write_json(self.root / 'bcs.json', catalogue)
+        registry = self.registry()
+        registry.validate_cases([*self.cases(), case])
+        self.assertEqual((case.fixture.expectation.phase, case.fixture.expectation.exit_code), ('run', 0))
+        self.assertEqual(case.meta.evidence, 'positive-control')
+        self.assertEqual(registry.catalogue_review_state('8.5.5'), 'draft')
+        self.assertFalse(registry.review(case.review_key, case.fingerprint(registry)).approved)
+        self.assertEqual(registry.requirements['S8.5.5-002']['pending'],
+                         {'named-common-retention': 'No retention program is authored by this test.'})
 
     def test_multiple_catalogues_are_data_driven(self):
         registry = self.registry()

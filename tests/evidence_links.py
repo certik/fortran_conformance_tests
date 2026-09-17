@@ -5,7 +5,7 @@ from pathlib import Path
 import re
 
 from suite_data import (Review, SuiteError, canonical_evidence_path, digest, fields,
-                        read_json, string, strings, write_json)
+                        read_json, string, strings, validate_case_requirement, write_json)
 
 
 PATTERNS = {
@@ -57,6 +57,11 @@ class EvidenceLinks:
     def _source(self, anchor):
         return self.registry.source_material(anchor)
 
+    def _control_target_pattern(self, link, requirement):
+        if (requirement and link['target']['facet'] in requirement.get('positive_control_facets', [])
+                and link.get('pattern') != 'positive-control'):
+            raise SuiteError(f"{link['id']}: a positive-control target facet requires an explicit positive-control pattern")
+
     def _link(self, link):
         fields(link, ('id', 'target', 'basis', 'claim', 'limitation', 'cases'),
                ('pattern', 'review'), 'evidence link')
@@ -75,6 +80,7 @@ class EvidenceLinks:
         facet = string(target['facet'], f'{name}.target.facet')
         if facet not in requirement['facets']:
             raise SuiteError(f'{name}: unknown target facet {facet}')
+        self._control_target_pattern(link, requirement)
         section = self.registry.requirement_sections[rule]
         anchors = {section + '#' + unit for unit in requirement['source_units']}
         sources = strings(target['source_units'], f'{name}.target.source_units', nonempty=True)
@@ -140,6 +146,7 @@ class EvidenceLinks:
             raise SuiteError('duplicate execution ID in canonical case set')
         covered = {}
         for link in self.links.values():
+            self._control_target_pattern(link, self.registry.requirements.get(link['target']['requirement']))
             for member in link['cases']:
                 case = by_id.get(member['id'])
                 if case is None:
@@ -149,6 +156,9 @@ class EvidenceLinks:
                 if member['phase'] != expected_phase(case):
                     raise SuiteError(f"{link['id']}: declared phase does not match canonical case {case.name}")
                 role = member['role']
+                requirement = self.registry.requirements.get(case.rule)
+                if requirement:
+                    validate_case_requirement(case, requirement, case.rule in self.registry.numbered)
                 if role == 'diagnostic':
                     matches = (case.kind == 'invalid' and member['phase'] == 'compile'
                                and case.meta.evidence == 'effect')

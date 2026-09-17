@@ -1063,6 +1063,23 @@ were written. Batch040 remains the last actual full run with its98-catalogue
 context, not a fabricated100-catalogue execution. See
 `doc/source_audits/batch_041.json`.
 
+The forty-second checkpoint adds explicit `positive_control_facets` for
+source-supported controls within supplementary effect requirements.
+Direct and canonical cases share the same per-facet role validation.
+Independent finding ECFR-001 caught graph reapproval after a control
+designation moved or disappeared; the corrected guard rejects that path
+before changing a review. Marked targets retain an explicit control
+pattern, and run controls never become runtime-effect passes.
+
+No real requirement opts in yet. All2,009 case bindings,100 catalogues,
+1,973 stored reviews, nine links, R402 and inventory snapshots and the
+baseline remain unchanged. The corrected author's full690-method run
+and current main's247-method role/parser selection have distinct recorded
+contexts. No compiler invocation or new conformance facet is claimed;
+batch040 remains the last actual full main execution. BIND-common SAVE
+authoring may now resume as a separate reviewed source/fixture task.
+See `doc/source_audits/batch_042.json`.
+
 A further source-only packet covers 7.5.8 and 7.5.9 with 13 base units,
 50 fine units, 14 requirements and 72 pending facets. It preserves existing
 canonical witnesses and explicitly accounts for the value-set definition
@@ -1148,7 +1165,9 @@ in8.5.8.5/.6 is the next bounded author packet.
 Bound-COMMON SAVE runtime authoring stopped before any fixture or compiler
 run at BCS-ROLE-001: an explicit-SAVE confirmation needs a positive-control
 role under an S-owned effect requirement. Separate opt-in per-facet role
-support is being developed; the confirmation will not be silently retagged
+support is now independently reviewed and integrated in batch042; the
+actual BIND requirement still needs its explicit source-reviewed opt-in
+and two complete programs. The confirmation will not be silently retagged
 as an effect. Shared SHORT correction `0c7161ba` is integrated as batch040
 after independent closeout. The separate C830 eligibility candidate
 `ce23c2d` remains outside main:12 compile cases for seven facets, awaiting

@@ -199,6 +199,77 @@ class SourceUseTests(unittest.TestCase):
             self.registry().source_uses.record_review('assumed-list-uses', 'source-reviewed', 'Too early.')
         self.assertEqual(self.report(self.approve())['state'], 'current')
 
+    def test_effect_control_target_designations_stale_source_uses_without_coverage_or_approval(self):
+        self.change('source.json', lambda data: data['sections']['1.1']['units'].update(
+            p1=dict(kind='paragraph', sha256='9' * 64)))
+        def add_target(data):
+            data['requirements'].append(dict(
+                id='S1.1-001', title='Synthetic effect/control source target', source='1.1 p1',
+                source_units=['p1'], category='effect', diagnostic_obligation='not-required',
+                definition='Synthetic source-use classification, not a runtime observation.',
+                facets=['uses', 'alternate'], pending={'uses': 'Still pending.', 'alternate': 'Still pending.'},
+                oracle_limitation='A source-use inventory supplies no execution or completion credit.'))
+            data['accounting'].append(dict(unit='p1', disposition='requirements', requirements=['S1.1-001']))
+        self.change('target.json', add_target)
+        self.inventory['target'] = dict(requirement='S1.1-001', facet='uses', source_units=['1.1#p1'])
+        for entry in self.inventory['entries']:
+            for occurrence in entry['occurrences']:
+                if occurrence['resolution'] == 'target':
+                    occurrence['definition'] = '1.1#p1'
+        self.write_inventories([self.inventory])
+        for controls in (['uses'], ['uses', 'alternate']):
+            registry = self.approve()
+            before = self.report(registry)
+            cases = runner.collect_cases(self.tests, registry)
+            bindings = case_review_bindings(cases, registry)
+            raw_review = copy.deepcopy(registry.source_uses.inventories[self.inventory['id']]['review'])
+            self.change('target.json', lambda data: data['requirements'][1].update(
+                positive_control_facets=controls))
+            registry = self.registry()
+            after = self.report(registry)
+            self.assertEqual(after['state'], 'stale')
+            self.assertEqual(after['source_reviews']['1.1']['state'], 'stale')
+            self.assertNotEqual(after['review']['fingerprint'], before['review']['fingerprint'])
+            self.assertEqual(registry.source_uses.inventories[self.inventory['id']]['review'], raw_review)
+            self.assertEqual(after['members'], before['members'])
+            self.assertEqual(after['source_unit_count'], before['source_unit_count'])
+            self.assertEqual(after['coverage_credit'], 'none')
+            self.assertEqual(after['facet_completion'], 'pending')
+            self.assertEqual(after['new_executions'], 0)
+            self.assertEqual(after['observation_aggregation'], 'not-applicable')
+            self.assertEqual(registry.requirements['S1.1-001']['pending'],
+                             {'uses': 'Still pending.', 'alternate': 'Still pending.'})
+            self.assertEqual(registry.reviews, {})
+            self.assertEqual(case_review_bindings(runner.collect_cases(self.tests, registry), registry), bindings)
+            self.assertEqual(registry.audit(cases)['authored_facets'], 0)
+            with self.assertRaisesRegex(SuiteError, 'catalogue source review is stale'):
+                registry.source_uses.record_review(self.inventory['id'], 'source-reviewed', 'Cannot auto-renew.')
+
+    def test_control_designation_in_a_used_section_stales_its_source_dependency(self):
+        def add_effect(data):
+            data['requirements'].append(dict(
+                id='S2.1-001', title='Synthetic dependent effect', source='2.1 p1', source_units=['p1'],
+                category='effect', diagnostic_obligation='not-required', definition='A synthetic source premise.',
+                facets=['control'], pending={'control': 'No fixture is supplied.'},
+                oracle_limitation='No effect evidence from source classification.'))
+            next(row for row in data['accounting'] if row['unit'] == 'p1').update(
+                disposition='requirements', requirements=['S2.1-001'])
+        self.change('use.json', add_effect)
+        registry = self.approve()
+        before = self.report(registry)
+        self.change('use.json', lambda data: data['requirements'][0].update(positive_control_facets=['control']))
+        registry = self.registry()
+        after = self.report(registry)
+        self.assertEqual(after['state'], 'stale')
+        self.assertEqual(after['source_reviews']['2.1']['state'], 'stale')
+        self.assertNotEqual(after['review']['fingerprint'], before['review']['fingerprint'])
+        self.assertEqual(after['members'], before['members'])
+        self.assertEqual(after['coverage_credit'], 'none')
+        self.assertEqual(after['facet_completion'], 'pending')
+        self.assertEqual(registry.requirements['R401']['pending'], {'uses': 'A complete source-use census remains pending.'})
+        self.assertEqual(registry.requirements['S2.1-001']['pending'], {'control': 'No fixture is supplied.'})
+        self.assertFalse(registry.reviews)
+
     def test_every_inventory_and_target_change_invalidates_the_review(self):
         mutations = [
             ('claim', lambda value: value['inventories'][0].update(claim='A different claim.')),

@@ -11,6 +11,7 @@ import unittest
 from unittest.mock import patch
 
 import run_tests as runner
+from fixture_support import load_fixture
 from suite_data import Metadata, Registry, SuiteError, write_json
 
 
@@ -685,6 +686,300 @@ class EvidenceLinkTests(unittest.TestCase):
         self.write_links([link])
         with self.assertRaisesRegex(SuiteError, 'role does not match'):
             self.cases(self.registry())
+
+    def marked_control_reuse(self, phase='run', mark_target=True):
+        link = self.reuse('positive-control')
+        self.change('primary.json', lambda data: data['requirements'][0].update(
+            category='effect', diagnostic_obligation='not-required',
+            facets=['canonical', 'effect'], positive_control_facets=['canonical'],
+            pending={'effect': 'A separate effect case is not authored.'}))
+        if mark_target:
+            self.change('target.json', lambda data: data['requirements'][0].update(
+                positive_control_facets=['linked']))
+        self.control_phase(link, phase)
+        return link
+
+    def control_phase(self, link, phase):
+        member = link['cases'][0]
+        member['phase'] = phase
+        def modify(data):
+            data['expect'] = dict(phase=phase, outcome='success')
+            if phase == 'compile':
+                data['expect']['step'] = 'source'
+                data.pop('link', None)
+            else:
+                data['link'] = dict(objects=['source.o'], output='program')
+                if phase == 'run':
+                    data['expect']['exit_code'] = 0
+        self.change(member['path'], modify)
+        (self.root / member['path']).with_name('source.f90').write_text(
+            'program synthetic_control\nend program synthetic_control\n')
+        self.write_links([link])
+
+    def test_marked_target_rejects_implicit_and_explicit_diagnostic_pairs(self):
+        self.cases(self.registry())
+        self.change('target.json', lambda data: data['requirements'][0].update(
+            positive_control_facets=['linked']))
+        for explicit in (False, True):
+            link = copy.deepcopy(self.link)
+            if explicit:
+                link['pattern'] = 'diagnostic-control'
+            self.write_links([link])
+            with self.subTest(explicit=explicit), self.assertRaisesRegex(SuiteError, 'explicit positive-control pattern'):
+                self.registry()
+
+    def test_marked_target_cannot_promote_a_genuine_runtime_effect_pattern(self):
+        self.reuse('runtime-effect')
+        registry = self.registry()
+        self.cases(registry)
+        self.change('target.json', lambda data: data['requirements'][0].update(
+            positive_control_facets=['linked']))
+        with self.assertRaisesRegex(SuiteError, 'explicit positive-control pattern'):
+            self.registry()
+
+    def test_loaded_target_designation_cannot_leave_current_evidence_after_a_rejected_review(self):
+        link = self.reuse('runtime-effect')
+        registry, cases = self.approve()
+        registry.requirements['S1.1-001']['positive_control_facets'] = ['linked']
+        registry.record_catalogue_review('1.1', 'Independent synthetic control-facet source review.')
+        original = copy.deepcopy(registry.evidence.links[link['id']]['review'])
+        for operation in (
+                lambda: registry.validate_cases(cases),
+                lambda: registry.evidence.validate_cases(cases),
+                lambda: registry.evidence.report(cases),
+                lambda: registry.evidence.snapshot(cases),
+                lambda: registry.evidence.record_review(cases, link['id'], 'source-reviewed', 'Cannot promote.')):
+            with self.subTest(operation=operation), self.assertRaisesRegex(SuiteError, 'explicit positive-control pattern'):
+                operation()
+            self.assertEqual(registry.evidence.links[link['id']]['review'], original)
+
+    def test_marked_control_links_preserve_compile_link_run_and_review_prerequisites(self):
+        link = self.marked_control_reuse(phase='compile')
+        registry = self.registry()
+        cases = self.cases(registry)
+        self.assertFalse(registry.reviews)
+        with self.assertRaisesRegex(SuiteError, 'catalogue source review'):
+            registry.evidence.record_review(cases, link['id'], 'source-reviewed', 'Premature.')
+        for section in registry.catalogues:
+            registry.record_catalogue_review(section, 'Independent synthetic source review only.')
+        with self.assertRaisesRegex(SuiteError, 'fixture review is unreviewed'):
+            registry.evidence.record_review(cases, link['id'], 'source-reviewed', 'Still premature.')
+        for phase in ('compile', 'link', 'run'):
+            with self.subTest(phase=phase):
+                self.control_phase(link, phase)
+                registry, cases = self.approve()
+                report = self.report(registry, cases)
+                member = report['cases'][0]
+                self.assertEqual(report['pattern'], 'positive-control')
+                self.assertEqual((member['role'], member['evidence'], member['phase'], member['kind']),
+                                 ('positive-control', 'positive-control', phase, 'valid'))
+                self.assertEqual(report['state'], 'current')
+                self.assertEqual(report['observation_aggregation'], 'not-computed')
+                self.assertEqual(len(cases), 3)
+                self.assertEqual(registry.requirements['S1.3-001']['pending'],
+                                 {'effect': 'A separate effect case is not authored.'})
+                wrong = copy.deepcopy(link)
+                wrong['cases'][0]['phase'] = 'compile' if phase != 'compile' else 'run'
+                self.write_links([wrong])
+                with self.assertRaisesRegex(SuiteError, 'declared phase does not match'):
+                    self.cases(self.registry())
+                self.write_links([link])
+
+    def test_marked_source_controls_cannot_be_promoted_or_mix_roles_through_links(self):
+        link = self.marked_control_reuse(mark_target=False)
+        registry = self.registry()
+        cases = self.cases(registry)
+        control = next(case for case in cases if case.name == link['cases'][0]['id'])
+        promoted = copy.deepcopy(link)
+        promoted['pattern'] = 'runtime-effect'
+        promoted['cases'][0]['role'] = 'runtime-effect'
+        self.write_links([promoted])
+        with self.assertRaisesRegex(SuiteError, 'role does not match'):
+            self.cases(self.registry())
+        registry = self.registry()
+        for evidence, facets, kind, error in (
+                ('effect', ['canonical'], 'valid', 'requires positive-control evidence'),
+                ('positive-control', ['canonical', 'effect'], 'valid', 'incompatible evidence roles'),
+                ('effect', ['canonical'], 'invalid', 'invalid cases cannot cover positive-control')):
+            metadata = copy.deepcopy(control.meta)
+            metadata.evidence, metadata.facets = evidence, facets
+            changed = replace(control, meta=metadata, kind=kind)
+            replaced = [changed if case.name == control.name else case for case in cases]
+            with self.subTest(evidence=evidence, facets=facets, kind=kind):
+                with self.assertRaisesRegex(SuiteError, error):
+                    registry.evidence.validate_cases(replaced)
+        self.write_links([link])
+        registry = self.registry()
+        mixed = replace(control, meta=Metadata(facets=['canonical', 'effect'], evidence='positive-control'))
+        with self.assertRaisesRegex(SuiteError, 'incompatible evidence roles'):
+            registry.evidence.validate_cases([mixed if case.name == control.name else case for case in cases])
+        self.cases(registry)
+
+    def test_marked_source_control_keeps_its_role_in_an_unmarked_target_diagnostic_pair(self):
+        self.reuse('diagnostic-control')
+        self.change('primary.json', lambda data: data['requirements'][0].update(
+            category='effect', facets=['violation', 'control'], positive_control_facets=['control']))
+        self.change('tests/bad/fixture.json', lambda data: data.update(facets=['violation']))
+        self.change('tests/control/fixture.json', lambda data: data.update(facets=['control']))
+        registry, cases = self.approve()
+        report = self.report(registry, cases)
+        self.assertEqual(report['pattern'], 'diagnostic-control')
+        self.assertEqual(report['state'], 'current')
+        self.assertEqual([(member['role'], member['evidence'], member['phase']) for member in report['cases']],
+                         [('diagnostic', 'effect', 'compile'), ('positive-control', 'positive-control', 'compile')])
+        self.assertNotIn('positive_control_facets', registry.requirements['S1.1-001'])
+
+    def assert_source_requirement_rejected(self, registry, cases, error):
+        original = {name: copy.deepcopy(link.get('review')) for name, link in registry.evidence.links.items()}
+        disk = registry.evidence.path.read_bytes()
+        name = next(iter(registry.evidence.links))
+        for label, operation in (
+                ('direct', lambda: registry.validate_cases(cases)),
+                ('canonical', lambda: registry.evidence.validate_cases(cases)),
+                ('report', lambda: registry.evidence.report(cases)),
+                ('snapshot', lambda: registry.evidence.snapshot(cases)),
+                ('review', lambda: registry.evidence.record_review(
+                    cases, name, 'source-reviewed', 'Incompatible source must not become current.'))):
+            with self.subTest(operation=label), self.assertRaisesRegex(SuiteError, error):
+                operation()
+            self.assertEqual({key: link.get('review') for key, link in registry.evidence.links.items()}, original)
+            self.assertEqual(registry.evidence.path.read_bytes(), disk)
+
+    def test_moved_and_removed_source_controls_reject_loaded_and_reloaded_graph_operations(self):
+        link = self.marked_control_reuse()
+        registry, cases = self.approve()
+        source = next(case for case in cases if case.name == link['cases'][0]['id'])
+        seed = {path: (self.root / path).read_bytes() for path in ('primary.json', 'reviews.json', 'links.json')}
+        original_inputs = source.fixture.inputs()
+        original_metadata = copy.deepcopy(source.meta)
+        original_phase = source.fixture.expectation.phase
+        for mutation in ('move', 'remove'):
+            for path, raw in seed.items():
+                (self.root / path).write_bytes(raw)
+            loaded = self.registry()
+            requirement = loaded.requirements[source.rule]
+            if mutation == 'move':
+                requirement['positive_control_facets'] = ['effect']
+            else:
+                requirement.pop('positive_control_facets')
+            loaded.record_catalogue_review('1.3', 'Independent synthetic changed source designation.')
+            loaded.record_review(source.review_key, source.fingerprint(loaded), 'source-reviewed',
+                                 'Synthetic refreshed fingerprint cannot bypass the required role.', ['1.3#p1'])
+            for mode, current in (('loaded', loaded), ('reloaded', self.registry())):
+                with self.subTest(mutation=mutation, mode=mode):
+                    self.assertEqual(current.catalogue_review_state('1.3'), 'reviewed')
+                    self.assertEqual(current.review(source.review_key, source.fingerprint(current)).state, 'source-reviewed')
+                    self.assertEqual(source.fixture.inputs(), original_inputs)
+                    self.assertEqual(source.meta, original_metadata)
+                    self.assertEqual(source.fixture.expectation.phase, original_phase)
+                    self.assert_source_requirement_rejected(current, cases, 'requires effect evidence')
+                    with self.assertRaisesRegex(SuiteError, 'requires effect evidence'):
+                        self.cases(current)
+
+    def test_canonical_source_facet_and_role_validation_has_direct_case_parity(self):
+        link = self.marked_control_reuse()
+        registry, cases = self.approve()
+        source = next(case for case in cases if case.name == link['cases'][0]['id'])
+        for facets, evidence, error in (
+                ([], 'positive-control', 'missing, duplicate, or unknown catalogue facets'),
+                (['canonical', 'canonical'], 'positive-control', 'missing, duplicate, or unknown catalogue facets'),
+                (['missing'], 'positive-control', 'missing, duplicate, or unknown catalogue facets'),
+                (['canonical', 'missing'], 'positive-control', 'missing, duplicate, or unknown catalogue facets'),
+                (['canonical', 'effect'], 'positive-control', 'incompatible evidence roles'),
+                (['effect', 'canonical'], 'effect', 'incompatible evidence roles'),
+                (['canonical'], 'effect', 'requires positive-control evidence'),
+                (['canonical'], 'context-only', 'requires positive-control evidence'),
+                (['effect'], 'positive-control', 'requires effect evidence')):
+            metadata = copy.deepcopy(source.meta)
+            metadata.facets, metadata.evidence = facets, evidence
+            changed = replace(source, meta=metadata)
+            current_cases = [changed if case.name == source.name else case for case in cases]
+            with self.subTest(facets=facets, evidence=evidence):
+                self.assert_source_requirement_rejected(registry, current_cases, error)
+
+    def test_invalid_marked_source_controls_and_policy_do_not_reach_graph_reviews(self):
+        link = self.marked_control_reuse(phase='compile')
+        registry, cases = self.approve()
+        source = next(case for case in cases if case.name == link['cases'][0]['id'])
+        original = json.loads(source.fixture.path.read_text())
+        for basis in ('standard', 'lfortran-policy'):
+            data = copy.deepcopy(original)
+            data.update(evidence='effect', oracle_basis=basis,
+                        expect=dict(phase='compile', step='source', outcome='diagnose',
+                                    diagnostic=dict(file='source.f90', line=1, contains_any=['synthetic'])))
+            write_json(source.fixture.path, data)
+            fixture = load_fixture(source.fixture.path, runner.PROFILES)
+            changed = runner.SuiteCase(fixture.name, fixture.rule, fixture.kind, str(fixture.path),
+                                       fixture.meta, fixture.name, fixture=fixture)
+            current_cases = [changed if case.name == source.name else case for case in cases]
+            for mode, current in (('loaded', registry), ('reloaded', self.registry())):
+                with self.subTest(basis=basis, mode=mode):
+                    self.assertEqual(changed.kind, 'invalid')
+                    self.assert_source_requirement_rejected(
+                        current, current_cases, 'invalid cases cannot cover positive-control facets')
+
+    def test_marked_run_control_reference_qualification_does_not_change_its_role(self):
+        link = self.marked_control_reuse()
+        registry, cases = self.approve()
+        control = next(case for case in cases if case.name == link['cases'][0]['id'])
+        for phase, mode in (('compile', 'f2023'), ('run', 'f2018')):
+            observation = dict(case=control.name, compiler='gfortran', version='synthetic',
+                               standard=mode, phase=phase, outcome='pass')
+            registry.record_review(control.review_key, control.fingerprint(registry), 'reference-validated',
+                                   'Synthetic but unqualified phase/mode.', ['1.3#p1'], [observation])
+            with self.assertRaisesRegex(SuiteError, 'required phase and supported mode'):
+                registry.evidence.record_review(cases, link['id'], 'source-reviewed', 'Cannot bypass.')
+        registry.record_review(control.review_key, control.fingerprint(registry), 'reference-validated',
+                               'Synthetic correctly shaped reference.', ['1.3#p1'],
+                               [dict(observation, standard='f2023', phase='run')])
+        registry.evidence.record_review(cases, link['id'], 'source-reviewed', 'Independent synthetic connection review.')
+        report = self.report(registry, cases)
+        self.assertEqual(report['state'], 'current')
+        self.assertEqual(report['cases'][0]['role'], 'positive-control')
+        self.assertEqual(report['cases'][0]['evidence'], 'positive-control')
+        self.assertEqual(report['observation_aggregation'], 'not-computed')
+
+    def test_adding_a_target_control_designation_stales_source_case_and_link_material(self):
+        self.reuse('positive-control')
+        registry, cases = self.approve()
+        before = self.report(registry, cases)
+        direct = next(case for case in cases if case.rule == 'S1.1-001')
+        fingerprint = direct.fingerprint(registry)
+        self.change('target.json', lambda data: data['requirements'][0].update(
+            positive_control_facets=['linked']))
+        registry = self.registry()
+        cases = self.cases(registry)
+        report = self.report(registry, cases)
+        self.assertEqual(report['state'], 'stale')
+        self.assertEqual(report['source_reviews']['1.1']['state'], 'stale')
+        self.assertNotEqual(report['review']['fingerprint'], before['review']['fingerprint'])
+        self.assertNotEqual(direct.fingerprint(registry), fingerprint)
+        self.assertEqual(registry.review(direct.review_key, direct.fingerprint(registry)).state, 'stale')
+        self.assertEqual(report['cases'][0]['role'], 'positive-control')
+        self.assertEqual(report['cases'][0]['review']['state'], before['cases'][0]['review']['state'])
+
+    def test_adding_and_changing_source_control_designations_stales_existing_canonical_evidence(self):
+        link = self.reuse('runtime-effect')
+        self.change('primary.json', lambda data: data['requirements'][0].update(
+            facets=['canonical', 'control', 'other-control'],
+            pending={'control': 'Not authored.', 'other-control': 'Not authored.'}))
+        for controls in (['control'], ['control', 'other-control']):
+            registry, cases = self.approve()
+            before = self.report(registry, cases)
+            canonical = next(case for case in cases if case.name == link['cases'][0]['id'])
+            fingerprint = canonical.fingerprint(registry)
+            original_inputs = canonical.fixture.inputs()
+            self.change('primary.json', lambda data: data['requirements'][0].update(
+                positive_control_facets=controls))
+            registry = self.registry()
+            report = self.report(registry, self.cases(registry))
+            self.assertEqual(canonical.fixture.inputs(), original_inputs)
+            self.assertNotEqual(canonical.fingerprint(registry), fingerprint)
+            self.assertEqual(report['state'], 'stale')
+            self.assertEqual(report['source_reviews']['1.3']['state'], 'stale')
+            self.assertEqual(report['cases'][0]['review']['state'], 'stale')
+            self.assertNotEqual(report['review']['fingerprint'], before['review']['fingerprint'])
+            self.assertEqual(report['cases'][0]['role'], 'runtime-effect')
 
     def test_numbered_runtime_can_be_reused_without_changing_primary_ownership(self):
         self.reuse('runtime-effect', supplementary=False)

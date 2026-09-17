@@ -328,6 +328,95 @@ class ExecutionAggregateTests(unittest.TestCase):
         self.assertEqual(bad['outcome'], 'pass')
         self.assertNotIn('missing-successful-declared-phase-trace', bad['qualification_issues'])
 
+    def add_supplementary_effect_control(self):
+        self.change('direct.json', lambda data: data['requirements'][0].update(
+            facets=['effect', 'control'], positive_control_facets=['control']))
+        directory = self.tests / 'supplementary-control'
+        directory.mkdir()
+        (directory / 'source.f90').write_text('program synthetic_control\nend program synthetic_control\n')
+        write_json(directory / 'fixture.json', dict(
+            schema_version=1, id='S1_2_001_control', rule='S1.2-001',
+            facets=['control'], evidence='positive-control', standard='f2023', files=['source.f90'],
+            build=[dict(id='source', source='source.f90', language='fortran', output='source.o')],
+            link=dict(objects=['source.o'], output='program'),
+            expect=dict(phase='run', outcome='success', exit_code=0)))
+
+    def test_marked_run_control_never_enters_runtime_effect_cohorts_even_when_qualified(self):
+        self.add_supplementary_effect_control()
+        registry, cases = self.approve()
+        aggregate = self.report(registry, cases)
+        self.assertEqual(aggregate['member_count'], 6)
+        self.assertEqual(aggregate['cohort_counts']['runtime-effect'], 1)
+        self.assertEqual(aggregate['cohort_counts']['positive-control'], 3)
+        control = next(member for member in aggregate['members'] if member['id'] == 'S1_2_001_control')
+        self.assertEqual((control['cohort'], control['expected_phase'], control['metadata']['evidence']),
+                         ('positive-control', 'run', 'positive-control'))
+        identities = {'gfortran': self.identity('gfortran', 'f2023'), 'flang': self.identity('flang', 'f2018')}
+        rows = self.results(aggregate, references=list(identities), identities=identities)
+        report = self.project(aggregate, rows, [self.identity(), *identities.values()])
+        for projection in report['observations']:
+            member = next(item for item in projection['members'] if item['id'] == control['id'])
+            self.assertEqual(member['outcome'], 'pass')
+            self.assertTrue(member['runtime_attempted'])
+            self.assertEqual(member['cohort'], 'positive-control')
+            self.assertFalse(member['runtime_effect_pass'])
+            self.assertEqual(projection['cohorts']['positive-control']['runtime_effect_pass'], 0)
+            self.assertEqual(projection['cohorts']['runtime-effect']['population'], 1)
+            self.assertEqual(projection['cohorts']['runtime-effect']['runtime_effect_pass'], 1)
+            if projection['compiler']['family'] == 'flang':
+                self.assertFalse(member['qualified_pass'])
+                self.assertIn('unsupported-standard-mode', member['qualification_issues'])
+            else:
+                self.assertTrue(member['qualified_pass'])
+        self.assertEqual(aggregate['coverage_credit'], 'none')
+        self.assertEqual(aggregate['facet_completion'], 'pending')
+        self.assertEqual(aggregate['universal_conformance'], 'not-established')
+
+    def test_marked_controls_do_not_bypass_source_case_inventory_or_observation_bindings(self):
+        self.add_supplementary_effect_control()
+        registry = self.registry()
+        cases = self.cases(registry)
+        self.assertFalse(registry.reviews)
+        with self.assertRaisesRegex(SuiteError, 'catalogue source review'):
+            registry.execution.record_review(cases, 'whole-suite', 'source-reviewed', 'Premature.')
+        for section in registry.catalogues:
+            registry.record_catalogue_review(section, 'Independent synthetic source review.')
+        with self.assertRaisesRegex(SuiteError, 'fixture review is unreviewed'):
+            registry.execution.record_review(cases, 'whole-suite', 'source-reviewed', 'Still premature.')
+        aggregate = self.report(registry, cases)
+        projection = self.project(aggregate, self.results(aggregate))['observations'][0]
+        control = next(row for row in projection['members'] if row['id'] == 'S1_2_001_control')
+        self.assertFalse(control['qualified_pass'])
+        self.assertFalse(control['runtime_effect_pass'])
+        self.assertIn('aggregate-not-current', control['qualification_issues'])
+        self.assertIn('fixture-not-approved', control['qualification_issues'])
+        registry, cases = self.approve()
+        aggregate = self.report(registry, cases)
+        rows = self.results(aggregate)
+        next(row for row in rows if row['name'] == 'S1_2_001_control')['metadata']['evidence'] = 'effect'
+        with self.assertRaisesRegex(SuiteError, 'observation does not match the aggregate input binding'):
+            self.project(aggregate, rows)
+
+    def test_control_designation_alone_stales_the_whole_inventory_without_new_members(self):
+        self.change('direct.json', lambda data: data['requirements'][0].update(
+            facets=['effect', 'control'], pending={'control': 'No control fixture exists.'}))
+        registry, cases = self.approve()
+        before = self.report(registry, cases)
+        self.change('direct.json', lambda data: data['requirements'][0].update(
+            positive_control_facets=['control']))
+        registry = self.registry()
+        cases = self.cases(registry)
+        after = self.report(registry, cases)
+        self.assertEqual(after['member_ids'], before['member_ids'])
+        self.assertEqual(after['cohort_counts'], before['cohort_counts'])
+        self.assertEqual(after['member_count'], before['member_count'])
+        self.assertNotEqual(after['review']['fingerprint'], before['review']['fingerprint'])
+        self.assertEqual(after['state'], 'stale')
+        self.assertEqual(after['source_context']['catalogues']['1.2']['state'], 'stale')
+        self.assertEqual(registry.requirements['S1.2-001']['pending'], {'control': 'No control fixture exists.'})
+        with self.assertRaisesRegex(SuiteError, 'fixture review is stale'):
+            registry.execution.record_review(cases, 'whole-suite', 'source-reviewed', 'Cannot auto-renew.')
+
     def test_valid_population_presence_does_not_claim_all_diagnostics_were_observed(self):
         registry, cases = self.approve()
         aggregate = self.report(registry, cases)
