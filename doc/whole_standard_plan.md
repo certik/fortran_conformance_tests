@@ -22,7 +22,7 @@ The readiness refactoring now supplies:
   context case.
 
 This is infrastructure readiness, not completed conformance coverage.
-The current census still has 4,920 unresolved base units and eight unresolved
+The current census still has 4,911 unresolved base units and eight unresolved
 fine-grained units inside the catalogues. Its independent visual
 review is still pending. Automatic PDF extraction is not semantic review,
 and list items/table rows require additional audited subdivisions.
@@ -737,7 +737,7 @@ or completed facet. Typed/inferred characteristics, rank-one flattening,
 statement-entity scope, ordinary DO execution, zero-trip character lengths
 and BOZ representation conditions remain explicit future fixture gates.
 
-The current measured checkpoint still has **1,937 cases: 1,181 PASS,
+The twenty-fourth-batch measured checkpoint has **1,937 cases: 1,181 PASS,
 751 XFAIL, four SKIPs and one NEEDS_ORACLE**. Every case input, fingerprint,
 review, outcome/phase, all nine link receipts and baseline bytes are
 unchanged. Source context alone required an explicit inventory renewal;
@@ -747,6 +747,31 @@ and 697 pending facets out of 2,374**. Source accounting covers 1,553
 base units; 4,920 base and eight fine units remain unresolved. The three
 prior draft source catalogues are not silently approved. Source judgments,
 preservation and measured evidence are in `doc/source_audits/batch_024.json`.
+
+The twenty-fifth checkpoint combines two separately reviewed neighboring
+packets. Three enumeration-type programs represent eight facets with
+**source-only run contracts**: all nine original compiler attempts stopped
+at syntax, and all 36 source-coded checks remain without native runtime or
+sensitivity qualification. Their enumeration identities, access, ordinal
+and named-member constructor oracles are retained without INTEGER substitutes.
+
+The binary/octal packet adds 32 compile-only cases for 12 lexical facets:
+24 isolated negatives and eight shared INTEGER DATA controls. Every control
+compiles in all sampled configurations; GNU f2023 corroborates the four
+truly empty-body diagnostics. Twenty negatives remain source-only. Flang's
+14 additional exact token/character reports are f2018 observations, not
+f2023 qualification. Generic recovery retains conservative noncredit rather
+than being declared universal processor nonconformance.
+
+The current measured checkpoint has **1,972 cases: 1,189 PASS,
+778 XFAIL, four SKIPs and one NEEDS_ORACLE**. All 1,937 prior case bindings,
+reviews, outcomes/phases and nine link receipts are unchanged. Only 27
+observed failures among the 35 new cases were added to the baseline.
+There are **83 catalogues, 499 requirements, 1,688 direct and nine linked
+facets, and 793 pending facets out of 2,490**. Source accounting covers
+1,562 base units; 4,911 base and eight fine units remain unresolved.
+The two source and 35 case reviews, exact historical/current joins and
+explicit inventory renewal are in `doc/source_audits/batch_025.json`.
 
 A further source-only packet covers 7.5.8 and 7.5.9 with 13 base units,
 50 fine units, 14 requirements and 72 pending facets. It preserves existing
@@ -781,11 +806,11 @@ The conditional range of the note's12345 example, NEXT's endpoint error
 termination, and outstanding companion/representation/BOZ qualifications
 are preserved rather than turned into unqualified positive tests.
 The unnamed-enum subset is integrated as batch022. Separate 7.6.2 packet
-`90ae55e` has three run-contract programs for eight enumeration-type
-ordinal/constructor/access facets, with 44 pending. All nine compiler
-attempts stopped at syntax; there is no successful native runtime or
-reference validation. Independent source/oracle review is active, without
-an INTEGER substitute or invented runtime evidence.
+`90ae55e` is integrated in batch025 after independent source/oracle review:
+three source-only run contracts, eight represented facets and 44 pending.
+All nine original attempts and the three checkpoint target attempts stopped
+at compilation. There is no successful native runtime, reference execution
+or runtime sensitivity, and no INTEGER substitute.
 
 BOZ source packet `c0c9e5de` passed independent review: ten base units,
 83 fine units, nine requirements and 64 pending facets. It preserves exact
@@ -794,12 +819,14 @@ distinction between STORAGE_SIZE's array-element quantity and physical
 isolated-scalar width. Its source-only registration changes no case or link
 fingerprint but stales the observational inventory through source context.
 The real-BOZ representation bridge remains unresolved; this is not a
-profile, fixture or oracle approval. A bounded binary/octal lexical author
-is implementing 12 compile facets, retaining 52 pending facets and the
-separate real-BOZ block. Array-constructor source is now integrated as
-batch024, with every fixture facet pending. A new source-only author covers
-the 28 base units of 8.1 and 8.2; existing declaration cases and their
-potential metadata staleness must be accounted for before integration.
+profile, fixture or oracle approval. Binary/octal packet `7634eddd` is now
+integrated in batch025 for 12 compile facets, retaining 52 pending and the
+separate real-BOZ block. Array-constructor source is integrated as batch024;
+a bounded author is implementing ten integer-sequence, ordinary implied-DO
+and empty-value facets, retaining 97 pending in that unapproved worktree.
+A source-only author covers the 28 base units of 8.1 and 8.2; existing
+declaration cases and their potential metadata staleness must be accounted
+for before integration.
 
 A coordinator-authored non-executable source-use inventory prototype,
 `29fc461`, awaits independent code review outside main. It preserves

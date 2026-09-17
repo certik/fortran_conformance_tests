@@ -1,0 +1,459 @@
+# Fortran 2023: 7.7 BOZ literals - binary/octal lexical implementation
+
+**Catalogue source review: reviewed.** Current case/evidence adjudications remain separate content-bound records.
+
+The finite corpus has **32 compile-only cases**, **24 diagnostic inputs** and **8 shared controls**. **12 of 64 facets are represented; 52 remain PENDING.** No runtime numeric or representation effect is claimed.
+
+## Source and exact finite scope
+
+Authority: J3/24-007, 18 December 2023,688 physical PDF pages,
+SHA-256 `7371e889f231cfb0316d30365d5083fb5af34cbb6d5f7cb1e01855c73021bfa2`.
+Original7.7 on PDF113-114 was read through the actual7.8 boundary before the
+concrete inputs. All10base/83fine/93accounting units,9requirements and64facet IDs
+are preserved. The independent source gate qualifies these plans; it does not
+approve fixtures or processor observations.
+
+Only R773/C7117/R774/C7118's twelve selected lexical facets advance. All files
+are compile phase. A complete program declares ordinary default-INTEGER
+scalars before its DATA statements. Each scalar has exactly one separate
+DATA value, no other initialization, and no POINTER, ALLOCATABLE, dummy or
+automatic-object condition. Source8.6.7p11 specifically requires INTEGER and
+defines destination-kind INT conversion; no numerical result is checked here.
+
+R773/R774 controls include the requested B"0"/B"1"/B"101" or
+O"0"/O"7"/O"157" admissions on distinct scalars. Both closed empty quote forms
+are repaired only by inserting0. Closed A, underscore, plus and minus bodies
+are Fortran characters outside the decimal digit class and retain R773/R774
+ownership. They are not C7117/C7118 decimal-value cases.
+
+C7117 includes every disallowed decimal2..9 and the interior1021->1011
+replacement. Its controls admit0/1 and mixed bodies in both quote forms.
+C7118 controls contain every digit0..7 and a multidigit form;8/9 are repaired
+to7, and1781->1771 changes only the interior8. No value is assigned by the
+model or oracle to any invalid literal. The source position of the sole
+offending character is explicit and all other body characters are valid.
+
+Exactly identical same-primary controls are shared. Admitted prelude DATA
+pairs are independent valid statements, never repeated initialization of the
+target object. Only the subject DATA line changes in a repair. Existing
+R605/S6/S10BOZ cases keep their owners and bytes; no copy is made to clear an
+unselected wrapper, prefix or source-form facet.
+
+## Cause and reporting qualification
+
+Prospective predicates identify the BOZ/radix and empty-body, nondigit or
+excluded-decimal property. Actual native wording is calibrated only when its
+located message establishes that cause. Generic punctuation, syntax,
+expected/error text, missing quote/EOF/END recovery, DATA count or receiver
+errors, source echoes, unsupported wrappers and Internal/verifier/resource/
+timeout failures are not corroboration. Reporting can occur with exit0 or a
+nonzero exit; no fatal or printed-rule-code policy is introduced. Nonfatal
+warnings require an explicit exact family/message/severity allowance if a
+legitimate native observation warrants one.
+
+The current manifest mechanism checks the source file and the one target
+DATA line. Exact token columns, body offsets and offending-character
+positions are preserved with source/repair metadata; this is not a claim
+that a nonexistent column matcher was added to the shared harness.
+
+Native calibration retains GNU's empty-set-of-digits message only for the
+four actually empty bodies, not for its nonempty invalid-body recoveries.
+Flang's qualified digit messages name the offending character and the entire
+canonical BOZ token, including its radix prefix and body; they do not rely
+on a source echo to supply the token. Generic illegal-character, unexpected
+string and expected-DATA-delimiter reports remain uncredited. No warning
+allowance or broader exclusion policy was added.
+
+R772, R775/R776, C7119 and S7.7-001 remain pending. Source-form,
+continuation/prefix/delimiter ambiguity, reuse/capacity/profile and numeric
+interpretation contexts are not implemented. The source review's typed-REAL
+array C7127 condition, REAL physical width/order and maximum-kind/enum
+qualifications remain pending. No7.8 body or REAL/enum interpretation is
+authored. The real-BOZ needs-oracle case and its profile are untouched.
+
+## Definitions
+
+<!-- BEGIN GENERATED 7.7 -->
+
+### R772: BOZ literal syntax consists of the binary, octal and hexadecimal alternatives
+
+**Source:** 7.7 R772; J3/24-007, 18 December 2023, physical PDF114, printed100. **Class:** Syntax.
+
+**Definition:** A boz-literal-constant is a binary-constant, octal-constant or hex-constant. The
+defining quoted forms remain R773, R774 and R775, their digit conditions remain
+C7117/C7118/R776, and occurrence restrictions remain C7119. The p1 definition makes a
+BOZ an ordered bit sequence with no type, not an INTEGER or CHARACTER constant.
+
+**Diagnostic obligation:** required.
+
+**Facets:** `binary-alternative-source-use`, `octal-alternative-source-use`, `hexadecimal-alternative-source-use`, `literal-category-and-context-union`.
+
+**Oracle:** Use the actual canonical lexical/assignment witnesses only after checking their complete
+sources, roles and current fingerprints. Wrapper union and literal classification are
+not a new executable value test. Definitions remain normative accounting entries without
+no-op supplementary requirements.
+
+**Oracle limitation:** No bare BOZ/expected/error/punctuation predicate can establish an alternative-specific
+cause. A BOZ has no type or literal kind selector; enclosing INTEGER usage does not make
+it an INTEGER expression everywhere. All new facets remain pending.
+
+**Dependencies:** 7.7 p1/p2, R773-R776/C7117-C7119;6.2.3/R605;3.21;6.1.2;8.6.7p11;10.2.1.3p9.
+
+### R773: Binary BOZ forms use B and a nonempty decimal-digit token sequence inside matching quotes
+
+**Source:** 7.7 R773; J3/24-007, 18 December 2023, physical PDF114, printed100. **Class:** Syntax.
+
+**Definition:** A binary constant has prefix B and either apostrophe delimiters or quotation-mark
+delimiters. There is one required digit and zero or more further digits, with the same
+delimiter at each end. The digit class comes from 6.1.3; C7117 separately restricts
+those digits to values zero and one. Lower-case b follows 6.1.2 because a BOZ is not a
+character context.
+
+**Diagnostic obligation:** required.
+
+**Facets:** `apostrophe-form`, `quotation-mark-form`, `lowercase-prefix`, `nonempty-digit-sequence`, `nondigit-body`, `delimiter-pair-boundary`, `binary-source-form-use-graph`.
+
+**Oracle:** Conforming admissions are controls, not runtime conversion evidence. Every future
+negative retains a one-token repair, legal closed delimiters where the digit is the
+defect, valid binary digits where the delimiter is the defect, and an allowed C7119
+occurrence. Required reporting capability is not fatal rejection or printed rule codes.
+
+Finite binary/octal implementation: 8 compile-only cases represent 3 facets, with 6
+diagnostic inputs and 2 shared positive controls. Distinct default-INTEGER scalars each
+have exactly one separate DATA value. Every negative changes only one target body
+character, or inserts0 into one closed empty body. Exact positions and
+decimal-versus-nondigit ownership are source-bound; no runtime numeric result or
+representation is asserted. Source/case/link/inventory adjudications are separate
+content-bound records.
+
+**Oracle limitation:** No generic punctuation, expected-token, missing-quote or unsupported-facility report
+corroborates a binary-literal property. A different legal BOZ prefix is not an invalid
+binary-use test. Source-form, lexical digit class and binary digit value are separate
+owners.
+
+**Dependencies:** C7117;6.1.2/6.1.3;3.21;6.3.2.1-.4
+and6.3.3.1;R772/C7119;8.6.7/R840/R841/C878-C880/p8/p9/p11;4.1/4.2.
+
+### C7117: Decimal digits in a binary BOZ body have only values zero or one
+
+**Source:** 7.7 C7117 associated with R773; J3/24-007, 18 December 2023, physical PDF114. **Class:** Restriction.
+
+**Definition:** Each digit in the R773 binary body shall have value zero or one. The antecedent is the
+decimal digit class, not an arbitrary graphic character. A body letter or punctuation
+violates the defining digit syntax instead.
+
+**Diagnostic obligation:** required.
+
+**Facets:** `zero-and-one-admissions`, `other-decimal-digit-exclusion`, `interior-invalid-digit`.
+
+**Oracle:** Each bad symbol remains a legal decimal digit, so prefix, delimiter, nonemptiness and
+lexical digit-class conditions already hold. The exact binary alphabet and focused
+repair supply the intended property; future cause-specific native diagnostics and the
+positive control need independent review.
+
+Finite binary/octal implementation: 11 compile-only cases represent 3 facets, with 9
+diagnostic inputs and 2 shared positive controls. Distinct default-INTEGER scalars each
+have exactly one separate DATA value. Every negative changes only one target body
+character, or inserts0 into one closed empty body. Exact positions and
+decimal-versus-nondigit ownership are source-bound; no runtime numeric result or
+representation is asserted. Source/case/link/inventory adjudications are separate
+content-bound records.
+
+**Oracle limitation:** A-F, blanks, signs, Unicode digits and missing delimiters are not isolated C7117 cases.
+Crashes, unsupported features, resource errors, source echoes and generic recovery do
+not corroborate the cause.
+
+**Dependencies:** R773;6.1.3;C7119;8.6.7p11;16.9.110;4.2p2(3).
+
+### R774: Octal BOZ forms use O and a nonempty decimal-digit sequence inside matching quotes
+
+**Source:** 7.7 R774; J3/24-007, 18 December 2023, physical PDF114, printed100. **Class:** Syntax.
+
+**Definition:** An octal constant has letter O as prefix, matching apostrophes or matching quotation
+marks, and at least one digit followed optionally by further digits. C7118 separately
+limits decimal digit values to zero through seven. Lower-case o is the corresponding
+permitted prefix, not digit zero.
+
+**Diagnostic obligation:** required.
+
+**Facets:** `apostrophe-form`, `quotation-mark-form`, `lowercase-prefix`, `nonempty-digit-sequence`, `nondigit-body`, `delimiter-and-prefix-boundary`, `octal-source-form-use-graph`.
+
+**Oracle:** Use legal octal digits for quoted-form controls and a complete C7119-allowed surrounding
+construct. Finite syntax changes do not establish any target-kind conversion, storage
+convention or valid result for an invalid token.
+
+Finite binary/octal implementation: 8 compile-only cases represent 3 facets, with 6
+diagnostic inputs and 2 shared positive controls. Distinct default-INTEGER scalars each
+have exactly one separate DATA value. Every negative changes only one target body
+character, or inserts0 into one closed empty body. Exact positions and
+decimal-versus-nondigit ownership are source-bound; no runtime numeric result or
+representation is asserted. Source/case/link/inventory adjudications are separate
+content-bound records.
+
+**Oracle limitation:** No broad prefix, punctuation, expected, error or octal word match is a diagnostic
+oracle. Reporting does not require rejection or printed rule codes. Keep R774 digit
+syntax distinct from C7118 digit values and6.3 source form.
+
+**Dependencies:** C7118;6.1.2/6.1.3;3.21;6.3;R772/C7119;8.6.7p8/p9/p11;4.1/4.2.
+
+### C7118: Decimal digits in an octal BOZ body have values zero through seven
+
+**Source:** 7.7 C7118 associated with R774; J3/24-007, 18 December 2023, physical PDF114. **Class:** Restriction.
+
+**Definition:** Each digit in an octal constant shall have one of the decimal values zero through seven
+inclusive. Decimal digits eight and nine are excluded; letters and punctuation are
+separately outside R774's digit syntax.
+
+**Diagnostic obligation:** required.
+
+**Facets:** `zero-through-seven-admissions`, `eight-and-nine-exclusion`, `interior-invalid-digit`.
+
+**Oracle:** The interval is inclusive and applies to every digit. All planned invalid symbols remain
+decimal digits, isolating the C7118 value condition instead of R774 syntax.
+
+Finite binary/octal implementation: 5 compile-only cases represent 3 facets, with 3
+diagnostic inputs and 2 shared positive controls. Distinct default-INTEGER scalars each
+have exactly one separate DATA value. Every negative changes only one target body
+character, or inserts0 into one closed empty body. Exact positions and
+decimal-versus-nondigit ownership are source-bound; no runtime numeric result or
+representation is asserted. Source/case/link/inventory adjudications are separate
+content-bound records.
+
+**Oracle limitation:** No letter, sign, whitespace, missing delimiter or unsupported character is mislabelled
+as this constraint. Required reporting is not mandatory fatal rejection, fixed wording
+or printed rule codes.
+
+**Dependencies:** R774;6.1.3;C7119;8.6.7p11;4.2p2(3).
+
+### R775: Hexadecimal BOZ forms use Z and a nonempty hex-digit sequence inside matching quotes
+
+**Source:** 7.7 R775; J3/24-007, 18 December 2023, physical PDF114, printed100. **Class:** Syntax.
+
+**Definition:** A hexadecimal constant has prefix Z and a nonempty sequence of hex-digits delimited by
+matching apostrophes or matching quotation marks. R776 defines the digit alternatives;
+p2 supplies their meanings and lowercase letter equivalents. Lower-case z is permitted
+by6.1.2. Neither a literal kind suffix nor another prefix is specified by this form.
+
+**Diagnostic obligation:** required.
+
+**Facets:** `apostrophe-form`, `quotation-mark-form`, `lowercase-prefix`, `nonempty-hex-digit-sequence`, `Z-prefix-boundary`, `delimiter-pair-boundary`, `kind-suffix-and-source-form-graph`.
+
+**Oracle:** Use a legal integer occurrence for lexical controls, retain the actual R776 alphabet,
+and separate each quoted-form, prefix, body and source-form condition. A successful REAL
+use cannot establish hexadecimal lexical meaning independently of its representation
+premise.
+
+**Oracle limitation:** The grammar does not impose a universal maximum digit count or authorize interpreting
+every pattern as an INTEGER value. p2's minimum nonzero-position capacity and each
+consumer's separate length/value conditions apply.
+
+**Dependencies:** R776;7.7p1/p2/C7119;6.1.2/6.1.3;3.21;6.3;R605;8.6.7p11;S10.2.1.3-017 source context;4.2.
+
+### R776: A hex digit is a decimal digit or one of A through F
+
+**Source:** 7.7 R776; J3/24-007, 18 December 2023, physical PDF114, printed100. **Class:** Syntax.
+
+**Definition:** The alternatives are the decimal digit class and the six letters A, B, C, D, E and F.
+Their respective numerical meanings ten through fifteen and lowercase equivalents are
+defined/permitted in p2, not by a processor's character encoding. Other letters or
+special characters do not become hex digits.
+
+**Diagnostic obligation:** required.
+
+**Facets:** `decimal-digit-admissions`, `uppercase-letter-admissions`, `lowercase-hex-source-use`, `other-letter-exclusion`, `nonalphanumeric-body-exclusion`.
+
+**Oracle:** The explicit finite alphabet and focused repairs define the lexical oracle. Abstract bit
+interpretations use the p2 digit meanings and a specifically authorized bit consumer,
+not a claim that BOZ has INTEGER type.
+
+**Oracle limitation:** No Unicode/character-set limitation, EOF recovery, source echo, crash, unsupported
+feature or resource failure establishes R776. Numeric character codes do not define
+hexadecimal digit values.
+
+**Dependencies:** R775;6.1.2/6.1.3;7.7p1/p2/C7119;16.3.1/.2;16.9.45/.46;8.6.7p11;4.2.
+
+### C7119: BOZ occurrences are confined to the explicitly listed context roles
+
+**Source:** 7.7 C7119 associated with R772; J3/24-007, 18 December 2023, physical PDF114. **Class:** Restriction.
+
+**Definition:** A BOZ literal may occur only as a data-stmt-constant in DATA; as the initialization for
+an INTEGER or REAL named constant or variable; as the expr in intrinsic assignment to an
+INTEGER or REAL variable; as an ac-value in an array constructor with explicit INTEGER
+or REAL type-spec; as the scalar-expr in an enum constructor; or as an intrinsic actual
+argument at a position explicitly allowed by16.9. These are occurrence roles, not a
+blanket permission for every subexpression inside an allowed outer statement. Each
+enclosing construct retains its own grammar, type, range, state and interpretation
+requirements.
+
+**Diagnostic obligation:** required.
+
+**Facets:** `integer-DATA-admission`, `integer-named-constant-initialization`, `integer-variable-initialization`, `real-named-constant-initialization`, `real-variable-initialization`, `integer-assignment-canonical-use`, `real-assignment-oracle-gate`, `typed-integer-array-constructor`, `typed-real-array-constructor`, `enum-constructor-permission-and-range`, `INT-argument-admission`, `REAL-argument-oracle-gate`, `DBLE-and-CMPLX-argument-graph`, `BGE-BGT-BOZ-arguments`, `ordinary-procedure-actual-exclusion`, `nonpermitted-intrinsic-argument`, `noninteger-real-initialization`, `noninteger-real-assignment`, `untyped-or-other-typed-array-boundary`, `embedded-expression-boundary`, `enumerator-and-enumeration-constructor-boundaries`, `consumer-length-sign-and-representability`, `remaining-consumer-and-reuse-graph`.
+
+**Oracle:** Occurrence permission is necessary, not sufficient for a complete conforming use.
+Prospective diagnostics identify the actual forbidden BOZ role and preserve lexical
+legality plus a source-minimal typed repair. Admissions retain recipient type, shape,
+declaration order, initialization, actual-argument and representability premises.
+Required reporting under4.2 does not prescribe fatal rejection, exact wording or printed
+rule codes.
+
+**Oracle limitation:** No global only-DATA or BOZ-is-INTEGER shortcut is accepted. Generic
+expected/error/unsupported/EOF text and source echoes do not identify the context cause.
+REAL/internal-storage and enum-specific representation qualifications remain explicit;
+no conversion under test supplies its own profile.
+
+**Dependencies:** 7.7p1/p2/R772-R776;8.2/R805/C806-C811/p4;8.5.13;8.6.7p8-p11;10.1.12p1;10.2.1.3p9/Table10.9;7.8/C7122/C7123/p2/p3/p6;7.6.1/R762/R765/C7113/p3/p6/p7;7.6.2/R771/p5;16.3.1-.3/C1601;16.9.1/.45/.46/.47/.53/.70/.110/.172;4.2.
+
+### S7.7-001: Processors provide at least the specified BOZ leftmost-nonzero-bit capacity
+
+**Source:** 7.7 p2 final sentence; J3/24-007, 18 December 2023, physical PDF114, printed100, lines25-28. **Class:** Effect.
+
+**Definition:** The processor shall allow a BOZ literal's leftmost nonzero bit position to be at least
+Z-1, where Z is the maximum STORAGE_SIZE result for an argument that is a REAL or
+INTEGER scalar of any kind supported by that processor. This is a minimum capacity
+guarantee, not a maximum allowed literal length. This Z has a different role from the
+earlier per-digit model width1/3/4. STORAGE_SIZE's result concerns an array element of
+the argument's dynamic type/parameters even when its argument is scalar.
+
+**Diagnostic obligation:** not-required.
+
+**Facets:** `default-integer-storage-bound`, `default-real-storage-bound`, `qualified-other-kind-bound`, `leftmost-set-position-and-source-form`, `complete-kind-maximum-and-extra-capacity`.
+
+**Oracle:** The only new supplementary requirement is the explicit processor shall-allow sentence.
+Independent size/support facts and exact literal positions supply the threshold; BGT's
+source-defined abstract sequence comparisons can provide nonvacuous finite observations
+without INTEGER sign or REAL storage assumptions. Pure bit definitions and allowed forms
+are not separate no-op S requirements.
+
+**Oracle limitation:** Use actual STORAGE_SIZE results for the stated scalar REAL/INTEGER argument domain, not
+BIT_SIZE, model DIGITS, largest numeric KIND, COMPLEX/derived-object size, register
+width or presumed physical scalar layout. The inquiry's result must itself be
+representable; any optional result KIND must be independently supported, constant and
+safe to use before dependent declarations. No extra result carrier is assumed. All
+size/support/source-form and maximum-repertoire evidence remains pending. A
+processor-dependent capacity beyond the minimum is not a mandatory negative policy.
+
+**Dependencies:** 7.7p1/p2 digit construction and position
+definitions;16.9.200p3-p5/NOTE1/NOTE2;16.9.1p2;16.9.45/.46;16.3.2;6.3.2.1/.2/.4/.6
+and6.3.3.1;4.2p2(1)/p5-p8.
+
+<!-- END GENERATED 7.7 -->
+
+## Exact finite lexical case and repair census
+
+| Case | Primary / evidence | Subject token | Target line / body position | Minimal control |
+| --- | --- | --- | --- | --- |
+| `R773_valid__boz_binary_octal_apostrophe_control` | R773 / positive-control | `B'0'` | 10 / valid | `positive control` |
+| `R773_valid__boz_binary_octal_quotation_control` | R773 / positive-control | `B"0"` | 10 / valid | `positive control` |
+| `R773_invalid__boz_binary_octal_empty_apostrophe` | R773 / effect | `B''` | 10 / insert0 | `R773_valid__boz_binary_octal_apostrophe_control` |
+| `R773_invalid__boz_binary_octal_empty_quotation` | R773 / effect | `B""` | 10 / insert0 | `R773_valid__boz_binary_octal_quotation_control` |
+| `R773_invalid__boz_binary_octal_nondigit_letter` | R773 / effect | `B'A'` | 10 / 1 | `R773_valid__boz_binary_octal_apostrophe_control` |
+| `R773_invalid__boz_binary_octal_nondigit_underscore` | R773 / effect | `B'_'` | 10 / 1 | `R773_valid__boz_binary_octal_apostrophe_control` |
+| `R773_invalid__boz_binary_octal_nondigit_plus` | R773 / effect | `B'+'` | 10 / 1 | `R773_valid__boz_binary_octal_apostrophe_control` |
+| `R773_invalid__boz_binary_octal_nondigit_minus` | R773 / effect | `B'-'` | 10 / 1 | `R773_valid__boz_binary_octal_apostrophe_control` |
+| `C7117_valid__boz_binary_octal_digit_control` | C7117 / positive-control | `B'0'` | 16 / valid | `positive control` |
+| `C7117_valid__boz_binary_octal_interior_control` | C7117 / positive-control | `B'1011'` | 16 / valid | `positive control` |
+| `C7117_invalid__boz_binary_octal_digit_2` | C7117 / effect | `B'2'` | 16 / 1 | `C7117_valid__boz_binary_octal_digit_control` |
+| `C7117_invalid__boz_binary_octal_digit_3` | C7117 / effect | `B'3'` | 16 / 1 | `C7117_valid__boz_binary_octal_digit_control` |
+| `C7117_invalid__boz_binary_octal_digit_4` | C7117 / effect | `B'4'` | 16 / 1 | `C7117_valid__boz_binary_octal_digit_control` |
+| `C7117_invalid__boz_binary_octal_digit_5` | C7117 / effect | `B'5'` | 16 / 1 | `C7117_valid__boz_binary_octal_digit_control` |
+| `C7117_invalid__boz_binary_octal_digit_6` | C7117 / effect | `B'6'` | 16 / 1 | `C7117_valid__boz_binary_octal_digit_control` |
+| `C7117_invalid__boz_binary_octal_digit_7` | C7117 / effect | `B'7'` | 16 / 1 | `C7117_valid__boz_binary_octal_digit_control` |
+| `C7117_invalid__boz_binary_octal_digit_8` | C7117 / effect | `B'8'` | 16 / 1 | `C7117_valid__boz_binary_octal_digit_control` |
+| `C7117_invalid__boz_binary_octal_digit_9` | C7117 / effect | `B'9'` | 16 / 1 | `C7117_valid__boz_binary_octal_digit_control` |
+| `C7117_invalid__boz_binary_octal_interior_digit` | C7117 / effect | `B'1021'` | 16 / 3 | `C7117_valid__boz_binary_octal_interior_control` |
+| `R774_valid__boz_binary_octal_apostrophe_control` | R774 / positive-control | `O'0'` | 10 / valid | `positive control` |
+| `R774_valid__boz_binary_octal_quotation_control` | R774 / positive-control | `O"0"` | 10 / valid | `positive control` |
+| `R774_invalid__boz_binary_octal_empty_apostrophe` | R774 / effect | `O''` | 10 / insert0 | `R774_valid__boz_binary_octal_apostrophe_control` |
+| `R774_invalid__boz_binary_octal_empty_quotation` | R774 / effect | `O""` | 10 / insert0 | `R774_valid__boz_binary_octal_quotation_control` |
+| `R774_invalid__boz_binary_octal_nondigit_letter` | R774 / effect | `O'A'` | 10 / 1 | `R774_valid__boz_binary_octal_apostrophe_control` |
+| `R774_invalid__boz_binary_octal_nondigit_underscore` | R774 / effect | `O'_'` | 10 / 1 | `R774_valid__boz_binary_octal_apostrophe_control` |
+| `R774_invalid__boz_binary_octal_nondigit_plus` | R774 / effect | `O'+'` | 10 / 1 | `R774_valid__boz_binary_octal_apostrophe_control` |
+| `R774_invalid__boz_binary_octal_nondigit_minus` | R774 / effect | `O'-'` | 10 / 1 | `R774_valid__boz_binary_octal_apostrophe_control` |
+| `C7118_valid__boz_binary_octal_digit_control` | C7118 / positive-control | `O'7'` | 22 / valid | `positive control` |
+| `C7118_valid__boz_binary_octal_interior_control` | C7118 / positive-control | `O'1771'` | 22 / valid | `positive control` |
+| `C7118_invalid__boz_binary_octal_digit_8` | C7118 / effect | `O'8'` | 22 / 1 | `C7118_valid__boz_binary_octal_digit_control` |
+| `C7118_invalid__boz_binary_octal_digit_9` | C7118 / effect | `O'9'` | 22 / 1 | `C7118_valid__boz_binary_octal_digit_control` |
+| `C7118_invalid__boz_binary_octal_interior_digit` | C7118 / effect | `O'1781'` | 22 / 3 | `C7118_valid__boz_binary_octal_interior_control` |
+
+## Complete finite pending plans
+
+The following maps remain PENDING exactly as stored in canonical JSON. No canonical source or observation is automatically linked.
+
+### Pending R772
+
+* **`binary-alternative-source-use`** - PENDING - Source-use: connect the R773 forms and C7117 digit predicate to this wrapper only with an explicit supported evidence mechanism. Preserve S6_2_1_001_valid__boz and the binary occurrences in S10_2_1_3_017_valid; no renamed R772 duplicate or automatic numbered-wrapper credit.
+* **`octal-alternative-source-use`** - PENDING - Source-use: retain R774/C7118 ownership and the actual o'157' occurrence in the canonical S10.2.1.3-017 integer assignment case. A combined assignment program is not already a registered R772 wrapper connection.
+* **`hexadecimal-alternative-source-use`** - PENDING - Source-use: retain R775/R776 and R605_valid__boz, whose actual Z'2A' is an INTEGER DATA value. Current finite links do not turn a numbered R772 target or a family union into evidence.
+* **`literal-category-and-context-union`** - PENDING - Documentary/source-use: preserve the p1 no-type and ordered-sequence definitions and C7119's exact occurrence roles. Removing a prefix can produce a CHARACTER literal; changing B to O or Z can produce another valid BOZ class. Such category changes are not standalone R772 rejection oracles.
+
+### Pending R773
+
+* **`apostrophe-form`** - PENDING - Admission/source-use: B'0', B'1' and a bounded multidigit B'101' in a complete INTEGER DATA context. Reuse S6_2_1_001_valid__boz where its exact form suffices rather than clone it. One ordinary local INTEGER object, one DATA value, no other initialization and no pointer/allocatable/dummy object.
+* **`lowercase-prefix`** - PENDING - Admission/source-use: b'101' is already present in S6_3_2_2_001_valid__boz_repair. Its lowercase prefix is supported by 6.1.2 and3.21, not optional processor behavior. Preserve the source-form primary; any later new form must be a genuinely absent lexical variant, not a renamed copy.
+* **`delimiter-pair-boundary`** - PENDING - Conditional syntax/source-use: both admitted forms have matching delimiters. A one-delimiter repair may be considered only with a binary-BOZ-specific token-span cause and an independently complete repaired statement. Generic unterminated-string, missing-END or EOF recovery supplies no oracle and must not be promoted to a passing negative.
+* **`binary-source-form-use-graph`** - PENDING - Canonical source-form graph: S6_3_2_2_001_invalid__boz and its unchanged repair own the free-form interior-blank contrast. BOZ is not a character context; lexical-token continuation needs the appropriate6.3.2.4p2/p3 markers. Fixed-form blank rules differ. No whitespace/continuation failure is relabelled as C7117 or cloned under R773.
+
+### Pending R774
+
+* **`apostrophe-form`** - PENDING - Admission/source-use: retain the existing o'157' direct INTEGER assignment in S10_2_1_3_017_valid under its actual primary. A new absent uppercase form such as O'01' may use a complete simple INTEGER DATA control; do not duplicate the old assignment program for R774 ownership.
+* **`lowercase-prefix`** - PENDING - Source-use/admission: o is equivalent to O under6.1.2 outside character context. The canonical integer assignment already contains lower-case o. Keep its ID and consumer meaning; numbered-target reuse is not supplied by this catalogue.
+* **`delimiter-and-prefix-boundary`** - PENDING - Source-use/conditional diagnostic design: O/o and matching delimiters define this alternative. Zero is not letter O, but a wrong-prefix candidate must first isolate BOZ-token recognition from other literal categories. A B/Z literal is not an invalid BOZ merely because it is not octal. Generic quote or expression recovery is not evidence.
+* **`octal-source-form-use-graph`** - PENDING - Source-use: preserve free/fixed-form distinctions, full token continuity and source length limits under6.3. Existing source-form fixtures keep their owners; no copied blank/continuation program or speculative EOF diagnostic clears R774.
+
+### Pending R775
+
+* **`apostrophe-form`** - PENDING - Canonical admission/source-use: R605_valid__boz already has Z'2A' in INTEGER DATA. Preserve that complete source and its positive-control role rather than rename it. New absent one/multidigit variants may be designed only where they add a distinct lexical condition or serve a minimal negative repair.
+* **`quotation-mark-form`** - PENDING - Compile admission: Z"0", Z"A" and a bounded multidigit form in a complete simple INTEGER DATA statement. No REAL/IEEE interpretation or arbitrary supported kind is needed for lexical admission.
+* **`lowercase-prefix`** - PENDING - Source-use: the canonical integer and real S10.2.1.3-017 sources already use z. Preserve both and their distinct adjudications. Lowercase z legality follows6.1.2/3.21; it does not renew the real oracle or provide a new numbered-target link.
+* **`nonempty-hex-digit-sequence`** - PENDING - Diagnostic/control: closed Z'' and Z"" repaired only by inserting0. Require an empty hexadecimal BOZ digit-sequence cause; empty CHARACTER syntax, missing quotes or EOF recovery do not supply it.
+* **`Z-prefix-boundary`** - PENDING - Conditional source-use/diagnostic design: a complete candidate with the legacy-looking X'F' versus Z'F' needs exact BOZ-prefix attribution and one changed prefix character before it can become a fixture. Do not use permissive flags, treat valid B/O alternatives as invalid, or promote a generic unknown-name/character-expression report.
+* **`delimiter-pair-boundary`** - PENDING - Source-use/conditional design: the opener and closer belong to the same quoted form. A focused delimiter repair is useful only when its diagnosis is specific to that BOZ token and the repaired statement is otherwise complete. Generic missing-quote, EOF or missing-END reports remain uncorroborated.
+* **`kind-suffix-and-source-form-graph`** - PENDING - Source-use: no BOZ type or literal kind suffix exists here. A missing prefix can create a different valid CHARACTER category, and quote doubling is not the CHARACTER escape rule for a hex body. Keep any suffix/adjacency/blank/continuation counterexample at its actual lexical/source-form owner, with no renamed canonical program.
+
+### Pending R776
+
+* **`decimal-digit-admissions`** - PENDING - Finite controls for0 through9 within closed Z-prefixed literals in legal INTEGER DATA contexts. A letter/digit is assessed by the Fortran source alphabet, never IACHAR/ASCII code, machine word size or an intrinsic numeric kind code.
+* **`uppercase-letter-admissions`** - PENDING - Six bounded admission controls for A,B,C,D,E,F, with the p2 mapping retained separately as a normative definition. A later abstract-bit observer may compare the corresponding BOZ binary sequences using BGE/BGT under16.9.45/.46 and16.3.2; no program or numeric model is executed here.
+* **`lowercase-hex-source-use`** - PENDING - Admission/source-use for a,b,c,d,e,f and one mixed-case body, using p2's explicit equivalent-letter permission and6.1.2. This is not optional processor support. Any future bit comparison must use source-defined abstract sequences, not a REAL conversion or a circular representation profile.
+* **`other-letter-exclusion`** - PENDING - Finite diagnostic/control family over G through Z and their lowercase counterparts inside otherwise legal closed Z-prefixed tokens; replace only the bad letter by F. Bound attribution to the actual hex-digit alphabet and source point; do not use an unrelated identifier or invalid type as the cause.
+* **`nonalphanumeric-body-exclusion`** - PENDING - Closed Z'_' and Z'+' body candidates repaired by changing only the special character to0. Keep source-form blanks, quote termination and unsupported processor characters out of this alphabet test. The report must identify a non-hex character in the BOZ body, not bare punctuation recovery.
+
+### Pending C7119
+
+* **`integer-DATA-admission`** - PENDING - Canonical admission/source-use: preserve R605_valid__boz and S6_2_1_001_valid__boz. The simple valid context is one previously declared local nonpointer nonallocatable INTEGER scalar, one DATA value and no other initialization.8.6.7p11 specifically requires INTEGER and uses destination-kind INT. REAL DATA is not authorized merely because other REAL contexts are listed in C7119; its separate p11 restriction is not a new C7119 negative.
+* **`integer-named-constant-initialization`** - PENDING - Compile admission: a declaration such as INTEGER, PARAMETER :: n=B'1', with one constant initializer and otherwise valid8.2/8.5.13 conditions. The literal is a constant but has no type; destination interpretation is contextual, not proof that arbitrary scalar-int-constant-expr consumers admit BOZ.
+* **`integer-variable-initialization`** - PENDING - Compile admission: one ordinary INTEGER scalar declaration initialized by a short valid BOZ, with double colon, no POINTER/ALLOCATABLE/dummy/result/automatic-object conflict and no DATA double initialization. Do not add a runtime assignment/default-value claim or use a separate kind code without qualification.
+* **`real-named-constant-initialization`** - PENDING - Conditional admission: a REAL PARAMETER initializer is an explicitly allowed context, but its finite BOZ pattern must independently denote a representable value for the actual destination kind. Keep16.9.172,16.9.1p2 and any C1601 truncation premise; the ieee-binary arithmetic/size profile is not a sufficient encoding certificate.
+* **`real-variable-initialization`** - PENDING - Conditional admission: a legal ordinary REAL declaration with a destination-kind representation-qualified BOZ pattern and no conflicting initialization attributes. No fixed IEEE pattern, all-zero numeric value, extra kind, byte order or REAL numeric oracle is inferred merely from acceptance.
+* **`integer-assignment-canonical-use`** - PENDING - Source-use: keep S10_2_1_3_017_valid unchanged. It directly assigns binary/octal/hex literals and checks45/111/123/255 under the existing independent integer source justification.10.2.1.3p9/Table10.9 and16.9.110 own the destination-kind conversion; no cloned C7119 program, new linked facet or renewed case review is supplied.
+* **`real-assignment-oracle-gate`** - PENDING - Preserve S10_2_1_3_017_valid__real and tests/profiles/ieee_binary.f90 byte-for-byte and keep needs-oracle.7.7 defines ordered abstract bits, not their REAL physical position mapping. BOZ-PREMISE-001's independent processor/configuration representation bridge remains missing; neither a tested REAL conversion, TRANSFER repetition, IEEE model inquiries nor compiler consensus closes it.
+* **`typed-integer-array-constructor`** - PENDING - Compile admission: a one-element explicitly typed INTEGER constructor with one valid short BOZ ac-value, used to initialize or assign a declared rank-one INTEGER array of extent one.7.8p3 specifies the constructor type and intrinsic-assignment conversion; preserve its own shape/type rules and avoid cloning an existing array-constructor case.
+* **`typed-real-array-constructor`** - PENDING - Conditional admission: one BOZ ac-value in an explicitly typed REAL constructor only after an independently valid destination-kind pattern and C1601 length conditions are established. A no-type-spec or COMPLEX/enum/derived type-spec does not inherit this permission. No real numeric result is promised by a compile control.
+* **`enum-constructor-permission-and-range`** - PENDING - Source-use/conditional admission: C7113 explicitly admits BOZ only for a named enum constructor R765, with a previous named enum and separate7.6.1p7 representability. For bounded0/1 candidates, establish the actual corresponding INTEGER kind and all needed sequence-length/internal-representation premises without presuming C_INT, default kind or global INT/REAL padding for an enum constructor. ENS-Q03 in immutable fa1fbf02 remains a consumer gate, not an approval or automatic connection.
+* **`INT-argument-admission`** - PENDING - Compile admission/source-use: INT accepts BOZ as A; optional KIND must independently be a supported scalar INTEGER constant expression for the result. Preserve16.3.3 left zero-padding/left truncation and16.9.110p5 case(vi), with processor-dependent most-significant-one interpretation. Small nonnegative numeric checks belong to a separately qualified INT/assignment consumer, not a blanket BOZ-is-INTEGER rule.
+* **`REAL-argument-oracle-gate`** - PENDING - Source-use/conditional admission: REAL accepts BOZ as A, not as an arbitrary typed argument or KIND selector. Destination-kind representation and result representability must be independently justified. Discarded bits on REAL truncation must all be zero under canonical C1601. No source-only field becomes a portable IEEE-value test.
+* **`DBLE-and-CMPLX-argument-graph`** - PENDING - Directed source-use: DBLE's A may be BOZ and its result is REAL(A,KIND(0.0D0)); CMPLX's noncomplex-X form permits BOZ X and Y and defines its parts through REAL. Keep their exact signatures, supported result kind, absent-Y semantics and REAL/C1601/representability conditions. This does not authorize direct BOZ assignment to a COMPLEX variable or every argument of every intrinsic.
+* **`BGE-BGT-BOZ-arguments`** - PENDING - Finite admission/bit-oracle plan: both I and J may be BOZ in BGE/BGT. Use only source-defined sequences, for example BGE(B'1010',Z'A') and its reverse true, BGT(Z'10',Z'01') true and its reverse false, with nonvacuous zero/nonzero controls.16.3.2 zero-extends only the shorter comparison sequence; no INTEGER/REAL conversion, sign convention, extra kind or physical representation is involved. Do not mistake comparison equality after padding for equality of original sequence lengths.
+* **`ordinary-procedure-actual-exclusion`** - PENDING - Conditional diagnostic/control: a complete ordinary module subroutine with one scalar INTEGER dummy, called with B'1' directly, versus INT(B'1') as the sole repaired actual. C7119's intrinsic exception does not apply to ordinary procedures. Require BOZ-actual/context attribution, not an unsupported interface or generic argument mismatch; retain argument-association ownership and conditions.
+* **`nonpermitted-intrinsic-argument`** - PENDING - Diagnostic/control design using the originally read BIT_SIZE signature: BIT_SIZE(B'1') versus BIT_SIZE(INT(B'1')) in a complete INTEGER expression context. BIT_SIZE requires INTEGER and does not explicitly admit BOZ. The inner INT repair is the allowed BOZ consumer. Report the actual BOZ argument-role exclusion, not a generic unknown type. KIND arguments of otherwise BOZ-aware intrinsics remain a separate typed-argument source-use boundary.
+* **`noninteger-real-initialization`** - PENDING - Focused declaration-initializer contrasts for ordinary scalar LOGICAL, CHARACTER and COMPLEX destinations. Keep the BOZ token lexically valid; replace it only by an independently valid typed logical/character/complex constant for the repaired declaration. No ASCII value, complex-from-BOZ shortcut or consumer representation claim. Require BOZ initializer/destination-type attribution and separate8.2 constraints.
+* **`noninteger-real-assignment`** - PENDING - Focused intrinsic-assignment contrasts for scalar LOGICAL/CHARACTER/COMPLEX variables, with one lexically legal BOZ expr replaced by a matching typed constant. Table10.9's general complex row does not broaden the p9 BOZ INTEGER/REAL antecedent. Do not substitute a defined assignment or turn the allowed CMPLX(BOZ) argument form into direct-BOZ permission.
+* **`untyped-or-other-typed-array-boundary`** - PENDING - Canonical context graph: omitted type-spec and non-INTEGER/REAL type-spec cases need7.8's type/shape/assignment conditions as well as C7119. Inserting INTEGER :: into a one-element constructor may be a focused repair, but no invalid-constructor runtime type is inferred and no outer INTEGER initialization/assignment licenses an otherwise untyped BOZ ac-value.
+* **`embedded-expression-boundary`** - PENDING - Source-use: a BOZ nested as an arithmetic operand, output item or other subexpression is not automatically the expr/initialization role just because an outer statement has an INTEGER/REAL destination. Any later negative must isolate its actual occurrence and canonical operator/I/O condition, with a complete one-focused-repair control; generic untyped-expression recovery is insufficient.
+* **`enumerator-and-enumeration-constructor-boundaries`** - PENDING - Canonical R762/R771 graph, not C7113 leakage: ENUMERATOR initialization requires scalar-int-constant-expr, and ENUMERATION TYPE construction requires scalar-int-expr plus1-through-N range. A BOZ has no type; treating an interoperable enumerator as PARAMETER does not erase R762. Any BOZ contrast retains the defining grammar and global occurrence/type couplings, repaired to a known representable/in-range INTEGER expression. No enum draft or existing fixture is modified or approved.
+* **`consumer-length-sign-and-representability`** - PENDING - Source-use: separate abstract digit length from16.3.2 comparison extension and16.3.3 INT/REAL result-size normalization. REAL's discarded bits must be zero (C1601); INT's most-significant-one interpretation and negative INTEGER bit interpretation are processor dependent. No all-ones=-1, scalar-memory/array-element-size equality, two's complement, endianness or overflow/trap oracle is assumed.
+* **`remaining-consumer-and-reuse-graph`** - PENDING - Documentary/canonical graph: this packet reads selected exact consumers, not all16.9 or all initialization/array/default-component contexts. General procedure names, any-type inquiry wording or a family mention do not grant BOZ permission. Bind each future singleton/role/context independently and preserve every existing primary ID/path/fingerprint; no link or inventory renewal is authored.
+
+### Pending S7.7-001
+
+* **`default-integer-storage-bound`** - PENDING - Qualified admission/runtime-capacity plan: independently establish W=STORAGE_SIZE of an initialized ordinary default INTEGER scalar, without any BOZ conversion. A legal literal with its sole set bit at position W-1 must be supported. Plan binary/octal/hex textual realizations and BGT(high,zero) true plus BGT(zero,high) false, using two BOZ arguments, so the observer needs no signed INTEGER/REAL interpretation. No profile, literal generator, model or fixture is executed here.
+* **`default-real-storage-bound`** - PENDING - Same finite lower-bound plan using an independently established default REAL STORAGE_SIZE W, never an assumed32-bit width or an IEEE model inquiry substituted for the required quantity. The high-bit witness is consumed by BGT, not REAL. If two qualified bounds/patterns coincide, share a real witness rather than duplicate it to count facets; no global-largest-kind claim follows.
+* **`qualified-other-kind-bound`** - PENDING - Conditional finite plan for one explicitly supported, independently qualified additional REAL or INTEGER kind, with dependent declarations gated safely before compilation. Determine its actual STORAGE_SIZE, not numeric KIND ordering, and test the corresponding highest-set-position witness with abstract-bit comparison controls. Absence or missing support evidence leaves the plan pending; no extra supported kind is assumed or silently replaced.
+* **`leftmost-set-position-and-source-form`** - PENDING - Source/profile graph: with group width1/3/4, ensure the first digit's unused high bits are zero when W is not a group multiple, so the leftmost nonzero position is exactly W-1. Leading zero digits increase sequence length but do not increase that position. Respect the actual free/fixed form and legal token continuation/statement-length budget. Do not misattribute a source-form or resource failure to the capacity requirement or require unlimited leading-zero source text.
+* **`complete-kind-maximum-and-extra-capacity`** - PENDING - Documentary/profile-use graph: a finite set of known kind sizes establishes lower-bound witnesses, not the maximum over every supported REAL/INTEGER kind. A complete repertoire certificate is needed for a claimed exact Z. Support above the minimum is not forbidden; neither rejection nor a numeric/trap result beyond it is mandated. No observational inventory or source-use graph is renewed by this plan.
+
+## Reproduction and remaining gates
+
+`python3 -B tools/generate_boz_binary_octal_fixtures.py --check` checks generated inputs, phase/facet/pending metadata and both document regions. Targeted regressions verify source digit tables, exact repairs/positions, DATA contexts, shared controls and role/location/nonfatal/failure predicates. Original and refreshed reports retain their exact fingerprints, modes, input hashes and command contexts. An index of current rows is not a combined processor run; f2018 passes are not f2023 qualification.
+
+This generator does not register the catalogue or renew source, fixture, link, inventory or baseline records. The original author packet excluded its local index overlay and preserved its1937 existing case bindings and nine links. Subsequent main registration and adjudication belong to the coordinator; their current states are in the registry and reports, not inferred from authorship.
