@@ -1176,6 +1176,23 @@ combined selection and the author's697-method full run have distinct
 recorded contexts; batch046 remains the latest actual full main execution.
 See `doc/source_audits/batch_048.json`.
 
+The forty-ninth checkpoint adds two actual local-array bound-capture
+programs for six facets: procedure/BLOCK entry, source redefinition and
+undefinition, fresh activations and nested BLOCK lifetimes. Independent
+literal oracles and complete-program probes preserve valid semantics
+instead of weakening them to match the target. Both target programs reach
+runtime and fail their first post-redefinition UBOUND check.
+
+All477 full-program probes reached runtime. GNU has159 qualified reference
+sensitivity results and Flang159 supplementary results; the target has
+**zero qualified sensitivity** because its unchanged parents fail.
+The full corpus is **2,025 cases: 1,229 PASS, 791 XFAIL, four SKIPs
+and one NEEDS_ORACLE**. All2,023 prior results and bindings are preserved,
+and only the two reviewed runtime failures were added to the baseline.
+There are **1,741 direct, nine linked and1,383 pending facets out of3,133**;
+source counts are unchanged. The767-method Python suite passed.
+See `doc/source_audits/batch_049.json`.
+
 A further source-only packet covers 7.5.8 and 7.5.9 with 13 base units,
 50 fine units, 14 requirements and 72 pending facets. It preserves existing
 canonical witnesses and explicitly accounts for the value-set definition
