@@ -908,6 +908,21 @@ review were written. Batch030 remains the last actual full compiler report
 with its original context, not a new90-catalogue run. Details are in
 `doc/source_audits/batch_032.json`.
 
+The thirty-third checkpoint integrates the first independently reviewed
+finite source-use inventory: `R402.declaration-name-uses-8.2`. All127
+units of8.2 are classified, with30 mapped and97 not applicable. Its31
+contextual records retain seven physical parent occurrences, distinguishing
+assumed `function-name` from explicitly defined `object-name`. The original
+502 numbered production heads were checked independently of the known-rule
+whitelist; this is not global paragraph/list/table ratification.
+
+The inventory is current but grants **no execution or facet-completion
+credit**. R402's whole-standard census remains pending. Corpus source and
+facet counts and all1,987 case bindings are unchanged. Literal empty-registry
+wording in current attribute documentation was made timeless, with explicit
+source and execution-context renewal; the old compiler report remains
+untouched. Details are in `doc/source_audits/batch_033.json`.
+
 A further source-only packet covers 7.5.8 and 7.5.9 with 13 base units,
 50 fine units, 14 requirements and 72 pending facets. It preserves existing
 canonical witnesses and explicitly accounts for the value-set definition
@@ -986,12 +1001,11 @@ source `3a7df6a8` is integrated as batch032, also with no new cases.
 The next bounded source packet covers CODIMENSION8.5.6.1-.3.
 
 Source-use candidate `29fc461` and correction `b9150e82` are integrated as
-batch026 after independent SULR-001 closeout. No actual use graph has been
-completed by the empty registry.
-One bounded R402 declaration-name census is being prepared outside main.
-It distinguishes assumed `function-name` from explicitly defined
-`object-name` in the complete8.2 source scope. Its source and inventory
-approval remain separate gates; no census is yet credited or committed.
+batch026 after independent SULR-001 closeout. That infrastructure checkpoint
+contained no actual inventory. The first finite R402 declaration-name census
+is now independently reviewed and integrated as batch033. It distinguishes
+assumed `function-name` from explicitly defined `object-name` in the
+complete8.2 scope, while leaving the whole-standard target pending.
 The broader meta-evidence contract, including mixed FORMAT
 diagnostic contexts, is not complete merely because one link type exists.
 Meta-level definitions must not become fabricated passing programs.
