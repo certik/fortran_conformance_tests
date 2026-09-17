@@ -1029,6 +1029,23 @@ snapshot and baseline are unchanged. Two source reviews and one inventory
 source-context renewal create no new compiler observation; batch037 is
 still the last actual full main run. See `doc/source_audits/batch_039.json`.
 
+The fortieth checkpoint integrates the shared SHORT diagnostic guard after
+independent closure of SIGR-001/002/003 and the bounded unlocated-content
+edge. Extraction and native-Internal detection use the same first unshielded
+header, normalize severity whitespace consistently, and do not borrow
+quoted examples. Application output remains outside compiler classification;
+fatal exits, message wording, codes and warning policies are unchanged.
+
+The new actual full main run retains **2,009 cases: 1,219 PASS, 785 XFAIL,
+four SKIPs and one NEEDS_ORACLE**, with3,062 case command traces validated.
+All verdicts, phases, inputs, approvals,98 catalogues, nine links, the R402
+snapshot and baseline are unchanged. The12 new harness methods do not add
+Fortran cases or facets. The complete Python suite has674 methods; the full
+parser-file selector has89, distinct from the independent76-method subset.
+Batch040 is now the latest actual main run with its98-catalogue context;
+neither the older1,987-case candidate report nor batch037 was relabelled.
+Exact closeout and execution evidence is in `doc/source_audits/batch_040.json`.
+
 A further source-only packet covers 7.5.8 and 7.5.9 with 13 base units,
 50 fine units, 14 requirements and 72 pending facets. It preserves existing
 canonical witnesses and explicitly accounts for the value-set definition
@@ -1106,15 +1123,22 @@ source `3a7df6a8` is integrated as batch032, also with no new cases.
 CODIMENSION source `a2dd92aa` is integrated as batch035 with all80facets
 pending. CONTIGUOUS source `542612ce` is integrated as batch038, with all36
 facets pending. DIMENSION general/explicit-shape source `b3475d41` is
-integrated as batch039, with all78 facets pending. The next bounded source
-packet covers assumed-shape and deferred-shape source in8.5.8.3/.4.
+integrated as batch039, with all78 facets pending. Assumed/deferred-shape
+source `b2df630` is frozen for independent review:14 base and63 fine units,
+11 requirements and49 pending facets. Assumed-size/implied-shape source
+in8.5.8.5/.6 is the next bounded author packet.
 
 Bound-COMMON SAVE runtime authoring stopped before any fixture or compiler
 run at BCS-ROLE-001: an explicit-SAVE confirmation needs a positive-control
 role under an S-owned effect requirement. Separate opt-in per-facet role
 support is being developed; the confirmation will not be silently retagged
-as an effect. Shared SHORT correction `0c7161ba` is frozen for independent
-closeout and remains outside main.
+as an effect. Shared SHORT correction `0c7161ba` is integrated as batch040
+after independent closeout. The separate C830 eligibility candidate
+`ce23c2d` remains outside main:12 compile cases for seven facets, awaiting
+independent fixture/cause review. Its assumed-size facet stays pending at
+C830-ANCHOR-001 because the legitimate procedure-header and declaration
+diagnostic locations need a precise disjoint-anchor contract; no source
+coalescing, widened span or false GNU conformance failure is introduced.
 
 Source-use candidate `29fc461` and correction `b9150e82` are integrated as
 batch026 after independent SULR-001 closeout. That infrastructure checkpoint

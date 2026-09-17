@@ -264,6 +264,22 @@ unrelated fixture predicates and fingerprints are unchanged.
 Predicates match the located diagnostic message, not source echoes or
 other output. A wrong file/line, unlocated message, unrelated warning,
 earlier build failure, crash, verifier failure, or timeout cannot pass.
+Native compiler `Internal:` errors also fail before a matching cause is
+considered, including LFortran's short `file:first-last:columns` format.
+This does not require each fixture to repeat that exclusion. Warning
+messages, quoted examples, source echoes and application runtime output
+remain distinct; the first unshielded location still governs extraction.
+The short-format severity is a header phrase, not a search through the
+message: a quoted error example after a note or warning delimiter cannot
+be reclassified as the outer diagnostic's severity.
+Both the native failure guard and diagnostic extraction use that same
+first-unshielded-header check. Severity normalization accepts the same
+space/tab separators as the header grammar; quoted inner locations cannot
+borrow the expected filename or statement marker.
+Complete quoted examples in recognized unlocated diagnostic, note, remark
+and help messages are likewise content, including driver-prefixed messages.
+Unquoted coordinates in severity-like filenames retain their existing
+location interpretation.
 `--codes` still requires the LFortran rule reference when requested.
 The existing `reject` outcome and ordinary isolated-negative rejection
 policy are unchanged; no arbitrary warning allowance is added to them.

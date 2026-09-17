@@ -36,13 +36,16 @@ RULE = r'(?:[RC]\d+|S\d+(?:\.\d+)+(?:-\d{3})?)'
 MARK = re.compile(r'!\s*\{error\s+(' + RULE + r')(?:\s+([\w-]+))?\}')
 NAME = re.compile(r'^([RC]\d+|S[\d_]+)_(valid|invalid)(?:__([a-z][\w-]*))?\.f(90)?$')
 SHORT = re.compile(
-    r'^(.*?):(\d+)-(\d+):(\d+)-(\d+): (.*? (?:error|warning))'
+    r'^(.*?):(\d+)-(\d+):(\d+)-(\d+): ([\w-]+(?:[ \t]+[\w-]+)*[ \t]+(?:error|warning))'
     r'(?: \[([\w.-]+)\])?(?: \(F2023 ([^)]+)\))?: (.*)$', re.I)
 REF_LOC = re.compile(r'^(.*?\.(?:f90|f|c|h)):(\d+):(\d+)(?:-(\d+))?(?::|\s|$)')
 DECLARED_REF_LOC = re.compile(r'^(.*?):(\d+):(\d+)(?:-(\d+))?(?::|\s|$)')
 REF_LOC_HEADER = re.compile(r'^(.*?):(\d+(?:-\d+)?):')
 REF_SOURCE_RECORD = re.compile(r'^\s*(?:\d+\s*)?\|(?:\s|$)')
 REF_MESSAGE = re.compile(r'^(Error|Fatal Error|Warning|portability):\s*(.*)', re.I)
+CONTENT_MESSAGE = re.compile(
+    r'^(?:[\w.+-]+:[ \t]*)?(?:[\w-]+[ \t]+)*(?:error|warning|note|remark|help|portability)'
+    r'(?: \[[\w.-]+\])?(?: \(F2023 [^)]+\))?:', re.I)
 REF_INTERNAL_ERROR = re.compile(r'^(?:fatal\s+)?error:\s*Internal:\s*\S', re.I)
 REF_QUOTED_CONTENT = re.compile(r"""(?<!\w)(?:'[^']*'|"[^"]*")(?!\w)""")
 INCLUDE_CONTEXT = re.compile(
@@ -387,7 +390,7 @@ def cases(path):
 def lfortran_diagnostics(output):
     found = []
     for line in output.splitlines():
-        m = SHORT.match(line)
+        m = short_diagnostic_match(line)
         if m:
             first, last = int(m.group(2)), int(m.group(3))
             if first < 1 or last < first:
@@ -395,7 +398,7 @@ def lfortran_diagnostics(output):
             codes = set(re.findall(RULE, m.group(8) or ''))
             if m.group(7):
                 codes.add(m.group(7))
-            severity = 'warning' if m.group(6).lower().endswith('warning') else 'error'
+            severity = m.group(6).split()[-1].lower()
             found.append(Diagnostic(first, last, codes, m.group(9),
                                     m.group(1), severity))
     return found
@@ -463,7 +466,7 @@ def diagnostic_filename_matches(actual, expected):
 def reference_location_header(text):
     if REF_SOURCE_RECORD.match(text):
         return None
-    if REF_MESSAGE.match(text) or GNU_DRIVER_MESSAGE.match(text):
+    if REF_MESSAGE.match(text) or GNU_DRIVER_MESSAGE.match(text) or CONTENT_MESSAGE.match(text):
         text = REF_QUOTED_CONTENT.sub(lambda match: ' ' * len(match.group()), text)
     return REF_LOC_HEADER.match(text)
 
@@ -478,12 +481,28 @@ def reference_location(text, pattern, header):
     return location
 
 
+def short_diagnostic_match(text):
+    if REF_SOURCE_RECORD.match(text) or INCLUDE_CONTEXT.match(text):
+        return None
+    header = reference_location_header(text)
+    match = SHORT.match(text)
+    if header and match and header.span(2) == (match.start(2), match.end(3)):
+        return match
+    return None
+
+
 def native_internal_error(output):
     for text in output.splitlines():
         if REF_SOURCE_RECORD.match(text) or INCLUDE_CONTEXT.match(text):
             continue
         header = reference_location_header(text)
         if header:
+            short = short_diagnostic_match(text)
+            if short:
+                severity = short.group(6).split()[-1]
+                if REF_INTERNAL_ERROR.match(severity + ': ' + short.group(9)):
+                    return True
+                continue
             location = reference_location(text, DECLARED_REF_LOC, header)
             if location is None:
                 continue

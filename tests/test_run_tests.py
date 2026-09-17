@@ -14,6 +14,18 @@ from unittest.mock import Mock, patch
 
 import run_tests as runner
 
+SHORT_NOTE_MESSAGES = (
+    'note: example "semantic error: Internal: quoted only"',
+    'semantic note: example "semantic error: Internal: quoted only"',
+    'warning: example "semantic error: Internal: quoted only"',
+    "note: example 'syntax error: Internal: quoted only'",
+    'note: see nested.f90:7-7:1-60: semantic error: Internal: cited example',
+)
+SHORT_SEVERITY_HEADERS = (
+    'semantic error', 'semantic\terror', 'semantic \terror', 'semantic\t error',
+    'code-generation\tERROR', 'code_generation\terror', 'code generation\terror',
+)
+
 
 class RunnerTests(unittest.TestCase):
     def setUp(self):
@@ -254,6 +266,172 @@ case.f90:5-5:1-20: semantic warning [C801]: repeated
         ):
             with self.subTest(output=output):
                 self.assertIsNone(runner.failure(runner.ProcessResult(1, output), 'compile'))
+
+    def test_short_internal_errors_fail_at_every_ordinary_status(self):
+        for output in (
+            "source.f90:4-4:1-60: semantic error: Internal: duplicate attribute\n",
+            "source.f90:4-5:1-60: syntax error [E0123] (F2023 C801): Internal: duplicate attribute\n",
+            "payload.inc:4-4:1-60: code generation error: internal: unexpected node\n",
+            "payload:4-4:1-60: SEMANTIC ERROR: INTERNAL: unexpected node\n",
+        ):
+            for status in (0, 1, 2):
+                with self.subTest(output=output, status=status):
+                    result = runner.ProcessResult(status, output)
+                    check = runner.failure(result, 'compile')
+                    self.assertEqual(check.outcome, 'fail')
+                    self.assertIn('compiler internal error', check.note)
+                    self.assertEqual(check.output, output)
+                    self.assertIsNone(runner.failure(result, 'run', compiler_process=False))
+
+    def test_short_internal_detection_preserves_message_location_and_content_boundaries(self):
+        short = "source.f90:4-4:1-60: semantic error: Internal: duplicate attribute"
+        for output in (
+            "  4 | " + short,
+            "    | " + short,
+            "In file included from " + short,
+            "error: Internal:4-4:1-60: semantic error: ordinary source error",
+            "dir/Internal: source.f90:4-4:1-60: semantic error: ordinary source error",
+            "source.f90:4-4:1-60: semantic warning: Internal: optional advisory",
+            "source.f90:4-4:1-60: semantic error: Unknown symbol 'Internal: duplicate attribute'",
+            "Error: token '" + short + "' is not valid",
+            'Warning: example "' + short + '" is only content',
+            "f951: Error: token '" + short + "' is not valid",
+            "prefix:2:3:source.f90:4-4:1-60: semantic error: Internal: duplicate attribute",
+            "source.f90:4-4:1-60: semantic error: Internal:   ",
+        ):
+            with self.subTest(output=output):
+                self.assertIsNone(runner.failure(runner.ProcessResult(1, output), 'compile'))
+
+    def test_short_internal_wrapper_cannot_satisfy_a_diagnose_cause(self):
+        compiler = runner.Compiler('mock-lfortran', 'lfortran', 'f23')
+        diagnostic = dict(file='source.f90', line=4, end_line=4,
+                          contains_any=["Automatic object 'text' at (1) cannot have the SAVE attribute"])
+        message = diagnostic['contains_any'][0]
+        for status in (0, 1, 2):
+            for prefix, expected in (('', 'pass'), ('Internal: ', 'fail')):
+                with self.subTest(status=status, prefix=prefix):
+                    output = f'source.f90:4-4:1-60: semantic error: {prefix}{message}\n'
+                    check = runner.judge_diagnostic(
+                        runner.ProcessResult(status, output), compiler, 'C814', diagnostic)
+                    self.assertEqual(check.outcome, expected)
+
+    def test_short_notes_do_not_promote_payloads_to_compiler_errors(self):
+        for message in SHORT_NOTE_MESSAGES:
+            output = 'source.f90:4-4:1-60: ' + message + '\n'
+            for status in (0, 1, 2):
+                for phase in ('compile', 'link', 'version query'):
+                    with self.subTest(message=message, status=status, phase=phase):
+                        result = runner.ProcessResult(status, output)
+                        self.assertIsNone(runner.failure(result, phase))
+                        self.assertIsNone(runner.failure(result, 'run', compiler_process=False))
+            actual = output + 'source.f90:5-5:1-60: semantic error: Internal: actual failure\n'
+            self.assertEqual(runner.failure(runner.ProcessResult(0, actual), 'compile').outcome, 'fail')
+
+    def test_short_note_payloads_do_not_replace_an_actual_judge_cause(self):
+        diagnostic = dict(file='source.f90', line=4, end_line=4, contains_any=['selected cause'])
+        cause = 'source.f90:4-4:1-60: semantic error [C801]: selected cause\n'
+        for message in SHORT_NOTE_MESSAGES:
+            note = 'source.f90:4-4:1-60: ' + message + '\n'
+            for status in (0, 1, 2):
+                for codes in (False, True):
+                    with self.subTest(message=message, status=status, codes=codes):
+                        result = runner.ProcessResult(status, cause + note)
+                        diagnosed = runner.judge_diagnostic(result, self.lf, 'C801', diagnostic, codes=codes)
+                        self.assertEqual(diagnosed.outcome, 'pass')
+                        rejected = runner.judge_rejection(
+                            result, self.lf, runner.Metadata(), 'C801', line=4, diagnostic=diagnostic, codes=codes)
+                        self.assertEqual(rejected.outcome, 'pass' if status else 'fail')
+                        only_note = note.replace('quoted only', 'selected cause')
+                        self.assertEqual(runner.judge_diagnostic(
+                            runner.ProcessResult(status, only_note), self.lf, 'C801', diagnostic).outcome, 'fail')
+
+    def test_short_note_payloads_do_not_fail_a_successful_version_query(self):
+        for message in SHORT_NOTE_MESSAGES:
+            output = 'LFortran version: synthetic probe\nsource.f90:4-4:1-60: ' + message + '\n'
+            with self.subTest(message=message), patch.object(
+                    runner, 'run', return_value=runner.ProcessResult(0, output)):
+                compiler = runner.compiler('synthetic-lfortran', True, 'f23', [], 1)
+                self.assertEqual(compiler.version, 'LFortran version: synthetic probe')
+
+    def test_short_severity_separators_have_consistent_guard_and_judge_meaning(self):
+        diagnostic = dict(file='source.f90', line=4, end_line=4, contains_any=['selected cause'])
+        for header in SHORT_SEVERITY_HEADERS:
+            for status in (0, 1, 2):
+                for prefix in ('', 'Internal: '):
+                    text = f'source.f90:4-4:1-60: {header} [C801] (F2023 C801): {prefix}selected cause\n'
+                    with self.subTest(header=header, status=status, prefix=prefix):
+                        parsed = runner.lfortran_diagnostics(text)
+                        self.assertEqual(len(parsed), 1)
+                        self.assertEqual(parsed[0].severity, 'error')
+                        result = runner.ProcessResult(status, text)
+                        for phase in ('compile', 'link', 'version query'):
+                            self.assertEqual(runner.failure(result, phase) is not None, bool(prefix))
+                        self.assertIsNone(runner.failure(result, 'run', compiler_process=False))
+                        for codes in (False, True):
+                            self.assertEqual(runner.judge_diagnostic(
+                                result, self.lf, 'C801', diagnostic, codes=codes).outcome,
+                                'fail' if prefix else 'pass')
+                            self.assertEqual(runner.judge_rejection(
+                                result, self.lf, runner.Metadata(), 'C801', line=4,
+                                diagnostic=diagnostic, codes=codes).outcome,
+                                'pass' if status and not prefix else 'fail')
+
+    def test_short_extraction_cannot_borrow_quoted_inner_location(self):
+        diagnostic = dict(file='source.f90', line=4, end_line=4, contains_any=['selected cause'])
+        actual = 'source.f90:4-4:1-60: semantic error [C801]: selected cause\n'
+        for category in ('note', 'semantic note', 'warning'):
+            for filename in ('examples/source.f90', '/example/source.f90'):
+                for quote in ('"', "'"):
+                    text = (f'source.f90:9-9:1-60: {category}: example {quote}'
+                            f'{filename}:4-4:1-60: semantic error [C801]: selected cause{quote}\n')
+                    for status in (0, 1, 2):
+                        for codes in (False, True):
+                            with self.subTest(category=category, filename=filename,
+                                              quote=quote, status=status, codes=codes):
+                                self.assertEqual(runner.lfortran_diagnostics(text), [])
+                                result = runner.ProcessResult(status, text)
+                                self.assertEqual(runner.judge_diagnostic(
+                                    result, self.lf, 'C801', diagnostic, codes=codes).outcome, 'fail')
+                                self.assertEqual(runner.judge_rejection(
+                                    result, self.lf, runner.Metadata(), 'C801', line=4,
+                                    diagnostic=diagnostic, codes=codes).outcome, 'fail')
+                                self.assertEqual(runner.judge_diagnostic(
+                                    runner.ProcessResult(status, text + actual), self.lf,
+                                    'C801', diagnostic, codes=codes).outcome, 'pass')
+        self.assertEqual(runner.lfortran_diagnostics('Error: quoted "' + actual.rstrip() + '"\n'), [])
+        self.assertEqual(runner.lfortran_diagnostics('  4 | ' + actual), [])
+        self.assertEqual(runner.lfortran_diagnostics('In file included from ' + actual), [])
+
+    def test_tab_internal_cannot_pass_compiler_version_discovery(self):
+        for header in SHORT_SEVERITY_HEADERS:
+            output = ('LFortran version: synthetic probe\n'
+                      f'source.f90:4-4:1-60: {header}: Internal: actual failure\n')
+            with self.subTest(header=header), patch.object(
+                    runner, 'run', return_value=runner.ProcessResult(0, output)):
+                with self.assertRaisesRegex(runner.SuiteError, 'version query failed'):
+                    runner.compiler('synthetic-lfortran', True, 'f23', [], 1)
+
+    def test_unlocated_message_prefixes_shield_quoted_diagnostic_examples(self):
+        diagnostic = dict(file='source.f90', line=4, end_line=4, contains_any=['selected cause'])
+        actual = 'source.f90:4-4:1-60: semantic error [C801]: selected cause\n'
+        prefixes = ('note:', 'semantic note:', 'remark:', 'help:', 'semantic warning:',
+                    'semantic error [C801] (F2023 C801):', 'compiler-driver: note:', 'f951: note:')
+        for prefix in prefixes:
+            for quote in ('"', "'"):
+                text = prefix + ' example ' + quote + (
+                    'examples/source.f90:4-4:1-60: semantic error: Internal: selected cause') + quote + '\n'
+                for status in (0, 1, 2):
+                    with self.subTest(prefix=prefix, quote=quote, status=status):
+                        self.assertIsNone(runner.reference_location_header(text))
+                        self.assertEqual(runner.lfortran_diagnostics(text), [])
+                        self.assertIsNone(runner.failure(runner.ProcessResult(status, text), 'compile'))
+                        self.assertEqual(runner.judge_diagnostic(
+                            runner.ProcessResult(status, text), self.lf, 'C801', diagnostic).outcome, 'fail')
+                        self.assertEqual(runner.judge_diagnostic(
+                            runner.ProcessResult(status, text + actual), self.lf, 'C801',
+                            diagnostic, codes=True).outcome, 'pass')
+                unquoted = prefix + 'examples/source.f90:4-4:1-60: semantic error: Internal: actual failure\n'
+                self.assertTrue(runner.native_internal_error(unquoted))
 
     def test_successful_exit_does_not_count_as_rejection(self):
         result = runner.ProcessResult(0, 'case.f90:2-2:1-20: semantic error [C801]: repeated')
@@ -671,6 +849,116 @@ case.f90:5-5:1-20: semantic warning [C801]: repeated
 
 class CorpusTests(unittest.TestCase):
     root = Path(__file__).resolve().parent
+
+    def test_short_severity_and_quoted_location_matrices_use_real_manifest_staging(self):
+        from dataclasses import asdict
+        from execution_validation import validate_case_trace
+
+        registry = runner.Registry()
+        cases = runner.collect_cases(self.root, registry)
+        by_id = {case.name: case for case in cases}
+        names = ('C1514_invalid__length_only', 'C701_invalid__assumed:asterisk',
+                 'C701_invalid__deferred:colon')
+        members = {item['id']: item for item in registry.execution._members(cases)}
+        compiler = runner.Compiler('synthetic-lfortran', 'lfortran', 'f23', 'synthetic transport')
+
+        def staged_check(case, status, make_text, codes=False):
+            fixture = case.fixture
+            self.assertEqual(fixture.files, ['source.f90'])
+            self.assertFalse(case.meta.profiles)
+            source_bytes = (fixture.root / 'source.f90').read_bytes()
+            calls = []
+
+            def transport(command, cwd, timeout, stdin=None):
+                staged = Path(command[command.index('-c') + 1])
+                self.assertEqual(staged.parent, Path(cwd).resolve())
+                self.assertEqual(staged.read_bytes(), source_bytes)
+                self.assertEqual(timeout, 5)
+                self.assertIsNone(stdin)
+                text = make_text(staged)
+                calls.append(text)
+                return runner.ProcessResult(status, text, False, '', text, b'', text.encode())
+
+            with patch.object(runner, 'run', side_effect=transport):
+                check = runner.check_fixture(fixture, compiler, timeout=5, codes=codes)
+            self.assertEqual(len(calls), 1)
+            self.assertFalse(validate_case_trace(
+                members[case.name], asdict(check), compiler.configuration(), self.root.parent, None, False))
+            return check
+
+        tab_vectors = quoted_vectors = 0
+        for name in names:
+            case = by_id[name]
+            diagnostic = case.fixture.expectation.diagnostic
+            line, cause = diagnostic['line'], diagnostic['contains_any'][0]
+            for header in SHORT_SEVERITY_HEADERS:
+                for status in (0, 1, 2):
+                    for prefix in ('', 'Internal: '):
+                        with self.subTest(case=name, header=header, status=status, prefix=prefix):
+                            check = staged_check(case, status, lambda path:
+                                f'{path}:{line}-{line}:1-60: {header} [{case.rule}]: {prefix}{cause}\n')
+                            self.assertEqual(check.outcome, 'fail' if prefix else 'pass')
+                            tab_vectors += 1
+            for category in ('note', 'semantic note', 'warning'):
+                for status in (0, 1, 2):
+                    for codes in (False, True):
+                        with self.subTest(case=name, category=category, status=status, codes=codes):
+                            check = staged_check(case, status, lambda path:
+                                f'{path}:{line + 1}-{line + 1}:1-60: {category}: example '
+                                f'"examples/source.f90:{line}-{line}:1-60: '
+                                f'semantic error [{case.rule}]: {cause}"\n', codes=codes)
+                            self.assertEqual(check.outcome, 'fail')
+                            quoted_vectors += 1
+        self.assertEqual((tab_vectors, quoted_vectors), (126, 54))
+
+    def test_short_note_payloads_preserve_manifest_compile_link_and_runtime(self):
+        from dataclasses import asdict
+        from execution_validation import validate_case_trace
+
+        registry = runner.Registry()
+        cases = runner.collect_cases(self.root, registry)
+        by_id = {case.name: case for case in cases}
+        members = {item['id']: item for item in registry.execution._members(cases)}
+        compiler = runner.Compiler('synthetic-lfortran', 'lfortran', 'f23', 'synthetic transport')
+        selections = (
+            ('C801_valid__c801_declaration_intent_control', 'compile'),
+            ('C738_valid__concrete_override', 'link'),
+            ('C738_valid__concrete_override', 'run'),
+        )
+        for name, insertion_phase in selections:
+            fixture = by_id[name].fixture
+            expected_sources = {step.source: (fixture.root / step.source).read_bytes() for step in fixture.build}
+            for message in SHORT_NOTE_MESSAGES:
+                calls = []
+
+                def transport(command, cwd, timeout, stdin=None):
+                    self.assertEqual(timeout, 5)
+                    workspace = Path(cwd).resolve()
+                    source = workspace / fixture.build[0].source
+                    if '-c' in command:
+                        phase = 'compile'
+                        staged = Path(command[command.index('-c') + 1])
+                        relative = staged.relative_to(workspace).as_posix()
+                        self.assertEqual(staged.read_bytes(), expected_sources[relative])
+                        Path(command[command.index('-o') + 1]).write_bytes(b'synthetic object')
+                    elif '-o' in command:
+                        phase = 'link'
+                        Path(command[command.index('-o') + 1]).write_bytes(b'synthetic executable')
+                    else:
+                        phase = 'run'
+                    text = f'{source}:4-4:1-60: {message}\n' if phase == insertion_phase else ''
+                    calls.append(phase)
+                    return runner.ProcessResult(0, text, False, '', text, b'', text.encode())
+
+                with self.subTest(case=name, phase=insertion_phase, message=message), \
+                        patch.object(runner, 'run', side_effect=transport):
+                    check = runner.check_fixture(fixture, compiler, timeout=5)
+                    self.assertEqual(check.outcome, 'pass', check.note)
+                    self.assertEqual(check.phase, fixture.expectation.phase)
+                    self.assertEqual(calls, ['compile'] if insertion_phase == 'compile' else ['compile', 'link', 'run'])
+                    attempted = validate_case_trace(
+                        members[name], asdict(check), compiler.configuration(), self.root.parent, None, False)
+                    self.assertEqual(attempted, insertion_phase != 'compile')
 
     def test_all_catalogue_requirements_have_typed_case_coverage(self):
         registry = runner.Registry()
