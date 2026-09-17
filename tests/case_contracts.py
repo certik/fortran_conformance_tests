@@ -2,7 +2,7 @@
 from dataclasses import replace
 from pathlib import Path
 
-from fixture_support import validate_diagnostic_messages
+from fixture_support import validate_additional_diagnostic_spans, validate_diagnostic_messages
 from suite_data import SuiteError, fields, read_json, strings
 
 
@@ -39,7 +39,7 @@ def apply_case_contracts(cases, known_profiles, root, fixture_roots=()):
             if contract['outcome'] != 'diagnose':
                 raise SuiteError(f'{case.name}: per-case contracts currently require compile-phase diagnose')
             diagnostic = dict(contract['diagnostic']) if isinstance(contract['diagnostic'], dict) else None
-            fields(diagnostic, (), ('contains_any', 'equals_any', 'excludes_any', 'line', 'end_line'),
+            fields(diagnostic, (), ('contains_any', 'equals_any', 'excludes_any', 'line', 'end_line', 'additional_spans'),
                    f'{case.name}.diagnostic')
             validate_diagnostic_messages(diagnostic, f'{case.name}.diagnostic', required=True)
             if 'excludes_any' in diagnostic:
@@ -51,6 +51,8 @@ def apply_case_contracts(cases, known_profiles, root, fixture_roots=()):
                     or last > len(case.isolated[-1].splitlines())):
                 raise SuiteError(f'{case.name}: per-case diagnostic span must contain its original marker')
             diagnostic.update(file=Path(source_path).name, line=first)
+            validate_additional_diagnostic_spans(
+                diagnostic, f'{case.name}.diagnostic', len(case.isolated[-1].splitlines()) + 1)
             case.meta = replace(case.meta, facets=list(facets), profiles=list(profiles))
             case.review_key = case.name
             case.contract = dict(schema_version=1, outcome='diagnose', diagnostic=diagnostic)

@@ -1162,6 +1162,20 @@ control designation and baseline remain unchanged. Source and inventory
 context review add no compiler observation; batch046 retains its actual
 102-catalogue context. See `doc/source_audits/batch_047.json`.
 
+The forty-eighth checkpoint supplies reviewed `additional_spans` for exact
+disjoint diagnostic anchors. A report must fit wholly within one declared
+interval; gaps and ranges bridging two intervals remain unqualified. The
+primary marker, common cause, staged source, nonfatal and failure gates
+are preserved. The held C830 header4/declaration6 relation was exercised
+without merging it into a4..6span or changing the original program.
+
+No real fixture opts in yet, and no case, facet, approval or baseline entry
+is added. All2,023 current case bindings,103 catalogues,1,987 reviews, nine
+links, R402 and inventory snapshots remain unchanged. The current357-method
+combined selection and the author's697-method full run have distinct
+recorded contexts; batch046 remains the latest actual full main execution.
+See `doc/source_audits/batch_048.json`.
+
 A further source-only packet covers 7.5.8 and 7.5.9 with 13 base units,
 50 fine units, 14 requirements and 72 pending facets. It preserves existing
 canonical witnesses and explicitly accounts for the value-set definition
@@ -1259,9 +1273,9 @@ after independent closeout. The original C830 candidate `ce23c2d` remains
 immutable historical evidence; correction `0b62b0e` is integrated in batch045
 after independent source, repair, cause/origin and native-evidence closeout.
 Twelve compile cases represent seven facets. Its assumed-size facet stays pending at
-C830-ANCHOR-001 because the legitimate procedure-header and declaration
-diagnostic locations need a precise disjoint-anchor contract; no source
-coalescing, widened span or false GNU conformance failure is introduced.
+C830-ANCHOR-001 until a real source-qualified case/control is registered and
+adjudicated. Batch048 supplies its disjoint-anchor infrastructure, without
+source coalescing, a widened span or a false GNU conformance failure.
 
 Source-use candidate `29fc461` and correction `b9150e82` are integrated as
 batch026 after independent SULR-001 closeout. That infrastructure checkpoint

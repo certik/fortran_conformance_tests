@@ -22,7 +22,7 @@ import sys
 import tempfile
 from typing import Dict, List, Optional, Set
 
-from fixture_support import Fixture, load_fixture, uses_c_companion
+from fixture_support import Fixture, diagnostic_spans, load_fixture, uses_c_companion
 from case_contracts import apply_case_contracts
 from evidence_links import qualifying_reference
 from execution_aggregates import observations as execution_observations
@@ -723,7 +723,7 @@ def judge_diagnostic(result, comp, rule, diagnostic, codes=False, primary_source
     if failed:
         return failed
     filename = diagnostic['file']
-    line = diagnostic['line']
+    spans = diagnostic_spans(diagnostic)
     nonfatal = diagnostic.get('allow_nonfatal', [])
     if comp.family == 'lfortran':
         reported = lfortran_diagnostics(result.output)
@@ -736,7 +736,7 @@ def judge_diagnostic(result, comp, rule, diagnostic, codes=False, primary_source
     for item in reported:
         if not diagnostic_origin_matches(item.file, filename, workspace):
             continue
-        located = line <= item.first <= item.last <= diagnostic.get('end_line', line)
+        located = any(first <= item.first <= item.last <= last for first, last in spans)
         if not located:
             continue
         if (('equals_any' in diagnostic or diagnostic.get('contains_any'))
@@ -764,8 +764,9 @@ def judge_rejection(result, comp, meta, rule, line=None, bounds=None, codes=Fals
     if failed:
         return failed
     diagnostic = diagnostic or {}
-    if 'equals_any' in diagnostic:
-        raise SuiteError('diagnostic.equals_any requires compile-phase diagnose')
+    for field in ('equals_any', 'additional_spans'):
+        if field in diagnostic:
+            raise SuiteError(f'diagnostic.{field} requires compile-phase diagnose')
     filename = diagnostic.get('file')
     messages = diagnostic.get('contains_any', [])
     external = diagnostic.get('anchor') in ('eof', 'file') or phase == 'link'

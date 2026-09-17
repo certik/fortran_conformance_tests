@@ -260,7 +260,26 @@ A specifically reviewed span may include a compiler's one-past-final-record
 EOF position. This does not invent another physical source record or
 authorize unlocated scan/parse summaries.
 Without `end_line`, a point is exact: a multi-line recovery range merely
-enclosing it cannot pass. Compile-phase `reject` manifests also support
+enclosing it cannot pass.
+Compile-phase `diagnose` may additionally declare `diagnostic.additional_spans`
+as a nonempty list of `{"line": N, "end_line": M}` objects; `end_line` is
+optional and defaults to that object's line. The original primary span
+remains required. These are separate, nonoverlapping anchors in the same
+declared diagnostic input, not one encompassing range. Each reported range
+must fit entirely inside one anchor; points in gaps or ranges crossing
+anchors cannot pass. All anchors share the same nonempty top-level causal
+selector, exclusions, origin, severity and code conditions.
+
+Additional spans require explicit source review of the relation, for example
+a dummy's procedure-header occurrence and its separate attribute declaration.
+They cannot specify other files, overlap or repeat, extend beyond the source's
+one-past-final-record position, or bypass the diagnostic-source binding.
+Omitting the field preserves existing contracts and fingerprints. It is not
+supported for success, `reject`, link or run expectations. Retained per-case
+contracts support the same field, but their primary span must still contain
+the original marker; an additional anchor cannot replace it.
+
+Compile-phase `reject` manifests also support
 an explicitly declared span while retaining their rejection requirement.
 A relational rule such as matching PROGRAM/END names can declare both
 endpoints and require a name-mismatch message. That qualified relation is

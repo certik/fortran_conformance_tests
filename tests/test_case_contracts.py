@@ -235,7 +235,7 @@ class CaseContractTests(unittest.TestCase):
         manifest = directory / 'fixture.json'
         baseline = self.tests / 'expected_failures.txt'
         baseline.write_text('# synthetic unchanged baseline\n')
-        for mutation in ('selector', 'origin'):
+        for mutation in ('selector', 'origin', 'span'):
             data = dict(
                 schema_version=1, id='C601_invalid__precision', rule='C601', facets=['one'],
                 files=['source.f90', 'included'],
@@ -258,8 +258,10 @@ class CaseContractTests(unittest.TestCase):
                 diagnostic = data['expect']['diagnostic']
                 if mutation == 'selector':
                     diagnostic['equals_any'] = diagnostic.pop('contains_any')
-                else:
+                elif mutation == 'origin':
                     diagnostic['file'] = 'included'
+                else:
+                    diagnostic['additional_spans'] = [dict(line=2)]
                 write_json(manifest, data)
                 return runner.ProcessResult(0, f'{source}:1-1:1-20: semantic error: actual cause')
 
@@ -307,6 +309,82 @@ class CaseContractTests(unittest.TestCase):
             self.assertEqual(runner.main(), 2)
         update.assert_not_called()
         self.assertTrue(json.loads(report.read_text())['run_errors'])
+
+    def test_additional_sidecar_spans_preserve_the_original_primary_marker(self):
+        first = self.data['cases']['first']['diagnostic']
+        first.update(additional_spans=[dict(line=2)])
+        write_json(self.path, self.data)
+        cases = self.cases()
+        self.assertEqual(cases[0].contract['diagnostic']['line'], 3)
+        self.assertEqual(cases[0].contract['diagnostic']['additional_spans'], [dict(line=2)])
+        original = copy.deepcopy(self.data)
+        for change in (
+                dict(line=2, additional_spans=[dict(line=3)]),
+                dict(line=1, end_line=2, additional_spans=[dict(line=3)]),
+                dict(additional_spans=[]), dict(additional_spans=[dict(line=3)]),
+                dict(additional_spans=[dict(line=0)]),
+                dict(additional_spans=[dict(line=2, end_line=3)]),
+                dict(additional_spans=[dict(line=2), dict(line=2)]),
+                dict(additional_spans=[dict(line=len(self.original.splitlines()) + 2)]),
+                dict(additional_spans=[dict(line=2, file='other.f90')])):
+            candidate = copy.deepcopy(original)
+            candidate['cases']['first']['diagnostic'].update(change)
+            write_json(self.path, candidate)
+            with self.subTest(change=change), self.assertRaises(SuiteError):
+                self.cases()
+
+    def test_disjoint_sidecar_reporting_and_per_case_fingerprints(self):
+        before = self.cases()
+        fingerprints = {case.name: case.fingerprint(self.registry()) for case in before}
+        diagnostic = self.data['cases']['first']['diagnostic']
+        diagnostic.update(equals_any=diagnostic.pop('contains_any'), additional_spans=[dict(line=1)])
+        write_json(self.path, self.data)
+        registry = self.registry()
+        cases = self.cases(registry)
+        self.assertNotEqual(cases[0].fingerprint(registry), fingerprints[before[0].name])
+        self.assertEqual(cases[1].fingerprint(registry), fingerprints[before[1].name])
+        compiler = runner.Compiler('lfortran', 'lfortran', 'f23')
+        for first, last, expected in ((1, 1, 'pass'), (3, 3, 'pass'), (2, 2, 'fail'), (1, 3, 'fail')):
+            def transport(command, cwd, timeout=30, stdin=None):
+                staged = Path(command[-1])
+                self.assertEqual(staged.read_text(), cases[0].isolated[-1])
+                text = f'{staged}:{first}-{last}:1-30: semantic error [C601]: synthetic problem'
+                return runner.ProcessResult(0, text)
+            with self.subTest(first=first, last=last), patch.object(runner, 'run', side_effect=transport):
+                self.assertEqual(runner.execute_case(cases[0], compiler, codes=True).outcome, expected)
+        with patch.object(runner, 'HERE', str(self.tests)), patch.object(runner, 'Registry', side_effect=self.registry):
+            errors = runner.confirm_snapshot([], [before[0]], fingerprints)
+        self.assertTrue(any('inputs or requirement changed' in error for error in errors))
+
+    def test_mid_run_sidecar_anchor_change_cannot_write_baseline(self):
+        registry = self.registry()
+        cases = self.cases(registry)
+        for case in cases:
+            runner.record_fixture_review(registry, cases, case.review_key, 'source-reviewed',
+                                         'Synthetic original span contract only.', [])
+        report = self.root / 'changed-spans.json'
+
+        def compiler(command, target, standard, launcher, timeout):
+            return runner.Compiler(command, 'lfortran', 'f23', version='fixed', launcher=launcher)
+
+        def transport(command, cwd, timeout=30, stdin=None):
+            self.data['cases']['first']['diagnostic']['additional_spans'] = [dict(line=1)]
+            write_json(self.path, self.data)
+            return runner.ProcessResult(0, f'{command[-1]}:3-3:1-30: semantic error: synthetic problem')
+
+        with patch.object(runner, 'HERE', str(self.tests)), \
+                patch.object(runner, 'Registry', side_effect=self.registry), \
+                patch.object(runner, 'compiler', side_effect=compiler), \
+                patch.object(runner, 'run', side_effect=transport), \
+                patch.object(runner, 'update_xfail') as update, \
+                patch.object(sys, 'argv', ['run_tests.py', '-t', 'C601_invalid:first',
+                                          '--update-xfail', '--report', str(report)]), \
+                contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
+            self.assertEqual(runner.main(), 2)
+        update.assert_not_called()
+        value = json.loads(report.read_text())
+        self.assertTrue(value['run_errors'])
+        self.assertEqual(value['results'][0]['check']['outcome'], 'pass')
 
 
 if __name__ == '__main__':

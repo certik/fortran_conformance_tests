@@ -113,6 +113,31 @@ def validate_diagnostic_messages(diagnostic, context, required=False):
             raise SuiteError(f'{context}.equals_any: duplicate normalized alternatives')
 
 
+def diagnostic_spans(diagnostic):
+    primary = (diagnostic['line'], diagnostic.get('end_line', diagnostic['line']))
+    return [primary] + [(span['line'], span.get('end_line', span['line']))
+                        for span in diagnostic.get('additional_spans', [])]
+
+
+def validate_additional_diagnostic_spans(diagnostic, context, last_position):
+    if 'additional_spans' not in diagnostic:
+        return
+    additional = diagnostic['additional_spans']
+    if not isinstance(additional, list) or not additional:
+        raise SuiteError(f'{context}.additional_spans: expected a nonempty list')
+    validate_diagnostic_messages(diagnostic, context, required=True)
+    for span in additional:
+        fields(span, ('line',), ('end_line',), f'{context}.additional_spans')
+    spans = diagnostic_spans(diagnostic)
+    for first, last in spans:
+        if (type(first) is not int or type(last) is not int
+                or not 1 <= first <= last <= last_position):
+            raise SuiteError(f'{context}: diagnostic spans must be within the declared source positions')
+    ordered = sorted(spans)
+    if any(left[1] >= right[0] for left, right in zip(ordered, ordered[1:])):
+        raise SuiteError(f'{context}: diagnostic spans must not overlap or repeat')
+
+
 def load_fixture(path, profiles):
     path = Path(path).resolve()
     data = read_json(path)
@@ -211,6 +236,9 @@ def load_fixture(path, profiles):
     if (isinstance(expectation.diagnostic, dict) and 'equals_any' in expectation.diagnostic
             and (expectation.phase != 'compile' or expectation.outcome != 'diagnose')):
         raise SuiteError(f'{path}: diagnostic.equals_any requires compile-phase diagnose')
+    if (isinstance(expectation.diagnostic, dict) and 'additional_spans' in expectation.diagnostic
+            and (expectation.phase != 'compile' or expectation.outcome != 'diagnose')):
+        raise SuiteError(f'{path}: diagnostic.additional_spans requires compile-phase diagnose')
     if expectation.phase == 'compile' and expectation.step not in seen:
         raise SuiteError(f'{path}: compile expectations must name a build step')
     if expectation.phase == 'compile' and (expectation.step != steps[-1].id or link is not None):
@@ -226,7 +254,7 @@ def load_fixture(path, profiles):
     if expectation.outcome in ('reject', 'diagnose'):
         if expectation.outcome == 'diagnose':
             fields(expectation.diagnostic, ('file', 'line'),
-                   ('end_line', 'contains_any', 'equals_any', 'excludes_any', 'allow_nonfatal'),
+                   ('end_line', 'additional_spans', 'contains_any', 'equals_any', 'excludes_any', 'allow_nonfatal'),
                    f'{path}.diagnostic')
             validate_nonfatal_diagnostics(expectation.diagnostic.get('allow_nonfatal', []),
                                           f'{path}.diagnostic.allow_nonfatal')
@@ -252,6 +280,10 @@ def load_fixture(path, profiles):
                 raise SuiteError(f'{path}: invalid diagnostic statement span')
         if line is None and anchor not in ('file', 'eof') and expectation.phase != 'link':
             raise SuiteError(f'{path}: a diagnostic line or external anchor is required')
+        if 'additional_spans' in expectation.diagnostic:
+            source = safe_path(path.parent, diagnostic_file).read_bytes()
+            validate_additional_diagnostic_spans(
+                expectation.diagnostic, f'{path}.diagnostic', len(source.splitlines()) + 1)
         validate_diagnostic_messages(expectation.diagnostic, f'{path}.diagnostic')
         messages = expectation.diagnostic.get('contains_any', [])
         if 'excludes_any' in expectation.diagnostic:

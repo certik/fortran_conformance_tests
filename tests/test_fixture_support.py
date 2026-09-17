@@ -489,6 +489,136 @@ class FixtureTests(unittest.TestCase):
             with self.subTest(foreign=foreign), patch.object(runner, 'run', side_effect=transport):
                 self.assertEqual(runner.check_fixture(fixture, comp).outcome, 'fail' if foreign else 'pass')
 
+    def disjoint_reporting_fixture(self):
+        self.reporting_fixture()
+        self.raw = (
+            b'module eligibility_scope\n  implicit none\ncontains\n'
+            b'  subroutine declaration_context(subject)\n    implicit none\n'
+            b'    integer, contiguous :: subject(*)\n'
+            b'  end subroutine declaration_context\nend module eligibility_scope\n')
+        (self.root / 'source.f').write_bytes(self.raw)
+        self.data['build'][0]['form'] = 'free'
+        self.data['expect']['diagnostic'] = dict(
+            file='source.f', line=6, equals_any=["'subject' has an ineligible attribute"],
+            additional_spans=[dict(line=4)], excludes_any=['unsupported'],
+            allow_nonfatal=[dict(compiler='flang', severity='portability',
+                                equals_any=["'subject' has an ineligible attribute"])])
+        return self.fixture()
+
+    def test_additional_spans_are_nonempty_separate_and_source_bounded(self):
+        self.disjoint_reporting_fixture()
+        original = json.loads(json.dumps(self.data))
+        for spans in ([], None, False, 4, {}, '4', [4], [None], [{}],
+                      [dict(line=0)], [dict(line=True)], [dict(line='4')],
+                      [dict(line=4, end_line=None)], [dict(line=4, end_line=True)],
+                      [dict(line=4, end_line=3)], [dict(line=6)],
+                      [dict(line=4, end_line=6)], [dict(line=4), dict(line=4, end_line=4)],
+                      [dict(line=3, end_line=4), dict(line=4, end_line=5)],
+                      [dict(line=10)], [dict(line=4, end_line=10)],
+                      [dict(line=4, file='other.f')], [dict(line=4, contains_any=['other cause'])]):
+            self.data = json.loads(json.dumps(original))
+            self.data['expect']['diagnostic']['additional_spans'] = spans
+            with self.subTest(spans=spans), self.assertRaises(SuiteError):
+                self.fixture()
+        self.data = json.loads(json.dumps(original))
+        self.data['expect']['diagnostic']['additional_spans'] = [dict(line=9), dict(line=4)]
+        before = json.loads(json.dumps(self.data['expect']['diagnostic']))
+        self.assertEqual(self.fixture().expectation.diagnostic, before)
+        self.data['expect']['diagnostic']['line'] = 10
+        with self.assertRaises(SuiteError):
+            self.fixture()
+        for selector in ({}, {'contains_any': []}):
+            self.data = json.loads(json.dumps(original))
+            self.data['expect']['diagnostic'].pop('equals_any')
+            self.data['expect']['diagnostic'].update(selector)
+            with self.subTest(selector=selector), self.assertRaises(SuiteError):
+                self.fixture()
+
+    def test_additional_spans_reject_unsupported_success_reject_link_and_run(self):
+        self.disjoint_reporting_fixture()
+        original = json.loads(json.dumps(self.data))
+        for phase, outcome in (('compile', 'success'), ('compile', 'reject'),
+                               ('link', 'success'), ('link', 'reject'), ('run', 'success')):
+            self.data = json.loads(json.dumps(original))
+            self.data['expect'].update(phase=phase, outcome=outcome)
+            self.data['expect']['diagnostic'].pop('equals_any')
+            self.data['expect']['diagnostic']['contains_any'] = ['cause']
+            if phase != 'compile':
+                self.data['link'] = dict(objects=['source.o'], output='program')
+            with self.subTest(phase=phase, outcome=outcome), self.assertRaisesRegex(
+                    SuiteError, 'additional_spans requires compile-phase diagnose'):
+                self.fixture()
+        with self.assertRaisesRegex(SuiteError, 'additional_spans requires compile-phase diagnose'):
+            runner.judge_rejection(runner.ProcessResult(1, 'error: cause'), self.compiler,
+                                   runner.Metadata(), 'R601', diagnostic=dict(additional_spans=[dict(line=4)]))
+
+    def test_disjoint_points_do_not_accept_a_gap_or_a_cross_anchor_range(self):
+        fixture = self.disjoint_reporting_fixture()
+        vectors = []
+        for family, mode in (('lfortran', 'f23'), ('gfortran', 'f2023'), ('flang', 'f2018')):
+            for code in (0, 1, 2):
+                for codes in (False, True):
+                    ranges = ((4, 4), (6, 6), (5, 5), (3, 3), (7, 7), (4, 6), (5, 6), (6, 5))
+                    if family != 'lfortran':
+                        ranges = tuple((line, line) for line in (3, 4, 5, 6, 7))
+                    for first, last in ranges:
+                        def transport(command, cwd, timeout, stdin=None):
+                            source = Path(command[command.index('-c') + 1])
+                            self.assertEqual(source.read_bytes(), self.raw)
+                            message = "'subject' has an ineligible attribute"
+                            severity = 'portability' if family == 'flang' else 'error'
+                            text = (f'{source}:{first}-{last}:1-70: semantic {severity} [R601]: {message}\n'
+                                    if family == 'lfortran' else f'{source}:{first}:1: {severity}: {message}\n')
+                            return runner.ProcessResult(code, text, False, '', text, b'', text.encode())
+
+                        with self.subTest(family=family, code=code, codes=codes, first=first, last=last), \
+                                patch.object(runner, 'run', side_effect=transport):
+                            check = runner.check_fixture(fixture, runner.Compiler(family, family, mode), codes=codes)
+                        self.assertEqual(check.outcome, 'pass' if first == last and first in (4, 6) else 'fail')
+                        self.assertEqual((check.phase, len(check.trace)), ('compile', 1))
+                        self.assertEqual(check.input_hashes, {'source.f': hashlib.sha256(self.raw).hexdigest()})
+                        vectors.append((family, code, codes, first, last))
+        self.assertEqual(len(vectors), 108)
+
+    def test_all_anchors_keep_cause_origin_nonfatal_code_and_native_failure_gates(self):
+        fixture = self.disjoint_reporting_fixture()
+        for line in (4, 6):
+            for scenario in ('genuine', 'wrong-cause', 'quoted', 'foreign', 'warning', 'no-code',
+                             'native', 'timeout', 'crash'):
+                def transport(command, cwd, timeout, stdin=None):
+                    source = Path(command[command.index('-c') + 1])
+                    origin = '/foreign/source.f' if scenario == 'foreign' else str(source)
+                    cause = "'subject' has an ineligible attribute"
+                    if scenario == 'wrong-cause':
+                        cause = "'other' has an ineligible attribute"
+                    if scenario == 'quoted':
+                        cause = 'Example: "' + cause + '"'
+                    severity = 'warning' if scenario == 'warning' else 'error'
+                    label = '' if scenario == 'no-code' else ' [R601]'
+                    text = f'{origin}:{line}-{line}:1-70: semantic {severity}{label}: {cause}\n'
+                    if scenario == 'native':
+                        text += '/foreign/source.f:1-1:1-2: semantic error: Internal: failed\n'
+                    return runner.ProcessResult(-11 if scenario == 'crash' else 0, text,
+                                                scenario == 'timeout', '', text, b'', text.encode())
+
+                with self.subTest(line=line, scenario=scenario), patch.object(runner, 'run', side_effect=transport):
+                    check = runner.check_fixture(fixture, self.compiler, codes=True)
+                self.assertEqual(check.outcome, 'pass' if scenario == 'genuine' else 'fail')
+
+    def test_additional_spans_are_contained_individually_not_merged_when_adjacent(self):
+        self.disjoint_reporting_fixture()
+        self.data['expect']['diagnostic'].update(
+            line=5, end_line=6, additional_spans=[dict(line=3, end_line=4)])
+        fixture = self.fixture()
+        for first, last, expected in ((3, 4, 'pass'), (5, 6, 'pass'), (4, 5, 'fail'), (3, 6, 'fail')):
+            def transport(command, cwd, timeout, stdin=None):
+                source = command[command.index('-c') + 1]
+                text = (f"{source}:{first}-{last}:1-70: semantic error: "
+                        "'subject' has an ineligible attribute\n")
+                return runner.ProcessResult(0, text)
+            with self.subTest(first=first, last=last), patch.object(runner, 'run', side_effect=transport):
+                self.assertEqual(runner.check_fixture(fixture, self.compiler).outcome, expected)
+
     def test_reporting_requires_matching_file_line_severity_and_message(self):
         fixture = self.reporting_fixture()
         comp = runner.Compiler('flang', 'flang', 'f2018')
