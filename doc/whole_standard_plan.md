@@ -22,7 +22,7 @@ The readiness refactoring now supplies:
   context case.
 
 This is infrastructure readiness, not completed conformance coverage.
-The current census still has 4,886 unresolved base units and eight unresolved
+The current census still has 4,873 unresolved base units and eight unresolved
 fine-grained units inside the catalogues. Its independent visual
 review is still pending. Automatic PDF extraction is not semantic review,
 and list items/table rows require additional audited subdivisions.
@@ -942,6 +942,22 @@ are unchanged. Four C814 and two entry-capture facets remain pending.
 Evidence and exact correction/provenance limits are in
 `doc/source_audits/batch_034.json`.
 
+The thirty-fifth checkpoint registers independently reviewed CODIMENSION
+source:26 base and85 fine units,22 requirements and all **80 facets
+pending**. The empty structural parent receives no artificial catalogue.
+Rank/corank, allocation/association, undefined properties, permitted
+inquiries, entry capture and image/team boundaries remain distinct plans.
+No compiler, launcher or new multi-image execution is inferred.
+
+The corpus now has **93 catalogues, 561 requirements, 1,716 direct and nine
+linked facets, and1,099 pending facets out of2,824**. Source accounting
+covers1,600 base units;4,873 base and eight fine units remain unresolved.
+All1,997 case bindings,1,956 stored reviews, nine links, the current R402
+inventory and baseline bytes are unchanged. Three source reviews and one
+execution-context renewal are explicit; batch034 remains the last actual
+full main run with its own90-catalogue context. See
+`doc/source_audits/batch_035.json`.
+
 A further source-only packet covers 7.5.8 and 7.5.9 with 13 base units,
 50 fine units, 14 requirements and 72 pending facets. It preserves existing
 canonical witnesses and explicitly accounts for the value-set definition
@@ -1015,7 +1031,8 @@ second-statement deletion controls under independent review, without
 renewing those records. ALLOCATABLE/ASYNCHRONOUS source `f20d7d53` is
 integrated as batch031, with no fixture or source-use credit. BIND data
 source `3a7df6a8` is integrated as batch032, also with no new cases.
-The next bounded source packet covers CODIMENSION8.5.6.1-.3.
+CODIMENSION source `a2dd92aa` is integrated as batch035 with all80facets
+pending. The next bounded source packet covers CONTIGUOUS8.5.7.
 
 Source-use candidate `29fc461` and correction `b9150e82` are integrated as
 batch026 after independent SULR-001 closeout. That infrastructure checkpoint
