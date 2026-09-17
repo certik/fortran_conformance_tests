@@ -1130,6 +1130,23 @@ passed, and the new full main report has3,074 validated case command traces.
 The assumed-size anchor facet and28S-owned CONTIGUOUS facets remain pending.
 See `doc/source_audits/batch_045.json`.
 
+The forty-sixth checkpoint adds two complete BIND-common SAVE programs.
+An actual writer and reader are the only scopes declaring the block;
+literal11/13 and17/19 values survive complete returns. The confirmation
+differs only by two block SAVE statements. Its first real
+`positive_control_facets` designation has independent source approval:
+the confirmation is a run control, not a second runtime effect.
+
+Both programs were independently reexecuted with target/GNU/Flang, and
+all72 full-program sensitivity records were checked through their actual
+inputs and216 command traces. The full main run now has **2,023 cases:
+1,229 PASS, 789 XFAIL, four SKIPs and one NEEDS_ORACLE**. All2,021
+previous outcomes and bindings and the baseline are unchanged. The corpus
+has **1,735 direct, nine linked and1,357 pending facets out of3,101**;
+source counts remain unchanged. The746-method Python suite passed, and
+the qualified execution projection counts exactly one new effect pass
+and one new positive-control pass. See `doc/source_audits/batch_046.json`.
+
 A further source-only packet covers 7.5.8 and 7.5.9 with 13 base units,
 50 fine units, 14 requirements and 72 pending facets. It preserves existing
 canonical witnesses and explicitly accounts for the value-set definition
@@ -1217,9 +1234,10 @@ Bound-COMMON SAVE runtime authoring stopped before any fixture or compiler
 run at BCS-ROLE-001: an explicit-SAVE confirmation needs a positive-control
 role under an S-owned effect requirement. Separate opt-in per-facet role
 support is now independently reviewed and integrated in batch042; the
-actual BIND requirement still needs its explicit source-reviewed opt-in
-and two complete programs. The confirmation will not be silently retagged
-as an effect. Shared SHORT correction `0c7161ba` is integrated as batch040
+actual BIND source opt-in and two complete programs are integrated in
+batch046 after independent source/fixture/oracle review. Three S2 facets
+remain pending, and the confirmation is not retagged as an effect.
+Shared SHORT correction `0c7161ba` is integrated as batch040
 after independent closeout. The original C830 candidate `ce23c2d` remains
 immutable historical evidence; correction `0b62b0e` is integrated in batch045
 after independent source, repair, cause/origin and native-evidence closeout.
