@@ -22,7 +22,7 @@ The readiness refactoring now supplies:
   context case.
 
 This is infrastructure readiness, not completed conformance coverage.
-The current census still has 4,859 unresolved base units and eight unresolved
+The current census still has 4,850 unresolved base units and eight unresolved
 fine-grained units inside the catalogues. Its independent visual
 review is still pending. Automatic PDF extraction is not semantic review,
 and list items/table rows require additional audited subdivisions.
@@ -1012,6 +1012,23 @@ snapshot and baseline bytes are unchanged. One source and one execution
 context review were written; batch037 remains the last actual full main
 run with its own95-catalogue context. See `doc/source_audits/batch_038.json`.
 
+The thirty-ninth checkpoint is also source-only: DIMENSION general and
+explicit-shape source accounts for18 base and87 fine units, with15
+requirements and all **78 facets pending**. Scalar/list/vector grammar,
+constant size versus constant values, broadcasting, empty extents and
+entry capture retain their separate premises. C831 main/module reporting
+overlap with implicit SAVE remains a gate, not an isolated negative.
+One informative-note rationale was clarified to state the exact maximum
+rank formula.
+
+There are now **98 catalogues, 588 requirements, 1,726 direct and nine
+linked facets, and1,258 pending facets out of2,993**. Source accounting
+covers1,623 base units;4,850 base and eight fine units remain unresolved.
+All2,009 case bindings,1,973 stored reviews, nine links, the current R402
+snapshot and baseline are unchanged. Two source reviews and one inventory
+source-context renewal create no new compiler observation; batch037 is
+still the last actual full main run. See `doc/source_audits/batch_039.json`.
+
 A further source-only packet covers 7.5.8 and 7.5.9 with 13 base units,
 50 fine units, 14 requirements and 72 pending facets. It preserves existing
 canonical witnesses and explicitly accounts for the value-set definition
@@ -1088,8 +1105,16 @@ integrated as batch031, with no fixture or source-use credit. BIND data
 source `3a7df6a8` is integrated as batch032, also with no new cases.
 CODIMENSION source `a2dd92aa` is integrated as batch035 with all80facets
 pending. CONTIGUOUS source `542612ce` is integrated as batch038, with all36
-facets pending. The next bounded source packet covers DIMENSION general
-and explicit-shape source in8.5.8.1/.2.
+facets pending. DIMENSION general/explicit-shape source `b3475d41` is
+integrated as batch039, with all78 facets pending. The next bounded source
+packet covers assumed-shape and deferred-shape source in8.5.8.3/.4.
+
+Bound-COMMON SAVE runtime authoring stopped before any fixture or compiler
+run at BCS-ROLE-001: an explicit-SAVE confirmation needs a positive-control
+role under an S-owned effect requirement. Separate opt-in per-facet role
+support is being developed; the confirmation will not be silently retagged
+as an effect. Shared SHORT correction `0c7161ba` is frozen for independent
+closeout and remains outside main.
 
 Source-use candidate `29fc461` and correction `b9150e82` are integrated as
 batch026 after independent SULR-001 closeout. That infrastructure checkpoint
