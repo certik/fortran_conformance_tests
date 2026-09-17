@@ -22,7 +22,7 @@ The readiness refactoring now supplies:
   context case.
 
 This is infrastructure readiness, not completed conformance coverage.
-The current census still has 4,866 unresolved base units and eight unresolved
+The current census still has 4,859 unresolved base units and eight unresolved
 fine-grained units inside the catalogues. Its independent visual
 review is still pending. Automatic PDF extraction is not semantic review,
 and list items/table rows require additional audited subdivisions.
@@ -997,6 +997,21 @@ source counts do not change. The remaining three C819 and48other local
 facets stay pending. Exact source, repair, compatibility and native evidence
 is in `doc/source_audits/batch_037.json`.
 
+The thirty-eighth checkpoint is source-only: reviewed CONTIGUOUS source
+accounts for eight base and44 fine units, with five requirements and all
+**36 facets pending**. Attribute eligibility, actual contiguity, simple
+syntax, inquiry availability and residual processor choices remain
+separate; no stride/address/size formula or temporary/copy-count oracle is
+introduced.
+
+There are now **96 catalogues, 573 requirements, 1,726 direct and nine
+linked facets, and1,180 pending facets out of2,915**. Source accounting
+covers1,614 base units;4,859 base and eight fine units remain unresolved.
+All2,009 case bindings,1,973 stored reviews, nine links, the current R402
+snapshot and baseline bytes are unchanged. One source and one execution
+context review were written; batch037 remains the last actual full main
+run with its own95-catalogue context. See `doc/source_audits/batch_038.json`.
+
 A further source-only packet covers 7.5.8 and 7.5.9 with 13 base units,
 50 fine units, 14 requirements and 72 pending facets. It preserves existing
 canonical witnesses and explicitly accounts for the value-set definition
@@ -1072,7 +1087,9 @@ pending. ALLOCATABLE/ASYNCHRONOUS source `f20d7d53` is
 integrated as batch031, with no fixture or source-use credit. BIND data
 source `3a7df6a8` is integrated as batch032, also with no new cases.
 CODIMENSION source `a2dd92aa` is integrated as batch035 with all80facets
-pending. The next bounded source packet covers CONTIGUOUS8.5.7.
+pending. CONTIGUOUS source `542612ce` is integrated as batch038, with all36
+facets pending. The next bounded source packet covers DIMENSION general
+and explicit-shape source in8.5.8.1/.2.
 
 Source-use candidate `29fc461` and correction `b9150e82` are integrated as
 batch026 after independent SULR-001 closeout. That infrastructure checkpoint
