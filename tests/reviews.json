@@ -58696,6 +58696,154 @@
           "outcome": "fail"
         }
       ]
+    },
+    "S7_8_001_valid__array_constructor_value_sequence": {
+      "state": "source-reviewed",
+      "rationale": "Independent complete repaired-source/oracle review and AVFR-001 closeout in doc/source_audits/batch_028.json. The actual matrix is explicit-shape2x2 and all four cells are assigned individually: m(1,1)=11,m(2,1)=13,m(1,2)=17,m(2,2)=19. No constructor, expected array or RESHAPE initializes it. The scalar constructor contributes11/13/17. The mixed scalar/matrix constructor must contribute5, then the four matrix elements in Fortran element order, then23. Both unconstrained observers first test actual dummy rank, then branch to rank1, verify sizes and compare every indexed value to independent scalar literals. The actual assumed-rank dummy data object is queried before SELECT RANK and all indexed reads. Literal values and all87primitive/five completion counts remain independent; the old direct RANK expression packet is not qualification. Current phase/mode/input-bound reference evidence is retained. Flangf2018 is not f2023 qualification. The three target scalar-CHARACTER rank-probe gaps remain unqualified and do not turn these correct rank-one parents into proof of general rank discrimination.",
+      "sources": [
+        "7.8#p1.array-value-result",
+        "7.8#p1.rank-one-result",
+        "7.8#p6.scalar-expression-condition",
+        "7.8#p6.one-element-from-scalar",
+        "7.8#p6.array-expression-condition",
+        "7.8#p6.array-elements-in-array-element-order",
+        "7.8#p6.corresponding-sequence-contribution"
+      ],
+      "fingerprint": "f8e70347005d7609b3d58d9187a1a69052a0d15d74f07eaea690ae4e1de7ae0a",
+      "references": [
+        {
+          "case": "S7_8_001_valid__array_constructor_value_sequence",
+          "compiler": "gfortran",
+          "version": "GNU Fortran (conda-forge gcc 16.1.0-3) 16.1.0",
+          "standard": "f2023",
+          "phase": "run",
+          "outcome": "fail"
+        },
+        {
+          "case": "S7_8_001_valid__array_constructor_value_sequence",
+          "compiler": "flang",
+          "version": "flang version 22.0.0git (https://github.com/llvm/llvm-project.git cb6ee6cb49e4e6b4969f98ba9129b64094387279)",
+          "standard": "f2018",
+          "phase": "run",
+          "outcome": "pass"
+        }
+      ]
+    },
+    "S7_8_008_valid__array_constructor_value_dependent_bodies": {
+      "state": "source-reviewed",
+      "rationale": "Independent complete repaired-source/oracle review and AVFR-001 closeout in doc/source_audits/batch_028.json. Scalar INTEGER i/j supply inferred types, not host values. Distinct nested entities satisfy the nesting restriction. For outer i=1,2,3, the already defined outer value bounds inner j=1..i, producing11;21,22;31,32,33. It never uses j as its own undefined bound. Vector cells31/37 are independently assigned by name. vector+i contributes both array elements in each iteration, giving32,38 then33,39. Both observers preserve actual rank/size and check every literal index after the guards. The actual assumed-rank dummy data object is queried before SELECT RANK and all indexed reads. Literal values and all87primitive/five completion counts remain independent; the old direct RANK expression packet is not qualification. Current phase/mode/input-bound reference evidence is retained. Flangf2018 is not f2023 qualification. The three target scalar-CHARACTER rank-probe gaps remain unqualified and do not turn these correct rank-one parents into proof of general rank discrimination.",
+      "sources": [
+        "7.8#p6.implied-do-expansion",
+        "7.8#p6.ac-do-variable-control-as-do",
+        "7.8#p7.implied-do-initialization",
+        "7.8#p7.implied-do-execution",
+        "7.8#p7.same-as-do-construct"
+      ],
+      "fingerprint": "5bf3685635620265af016ecf994d12e315760f51e85fbe404bdebe07e6473b8d",
+      "references": [
+        {
+          "case": "S7_8_008_valid__array_constructor_value_dependent_bodies",
+          "compiler": "gfortran",
+          "version": "GNU Fortran (conda-forge gcc 16.1.0-3) 16.1.0",
+          "standard": "f2023",
+          "phase": "run",
+          "outcome": "fail"
+        },
+        {
+          "case": "S7_8_008_valid__array_constructor_value_dependent_bodies",
+          "compiler": "flang",
+          "version": "flang version 22.0.0git (https://github.com/llvm/llvm-project.git cb6ee6cb49e4e6b4969f98ba9129b64094387279)",
+          "standard": "f2018",
+          "phase": "run",
+          "outcome": "pass"
+        }
+      ]
+    },
+    "S7_8_008_valid__array_constructor_value_ordinary_loops": {
+      "state": "reference-validated",
+      "rationale": "Independent complete repaired-source/oracle review and AVFR-001 closeout in doc/source_audits/batch_028.json. Containing scalar INTEGER i provides the statement entities' type only. Each constructor has its own implied-DO scope, finite limits and a nonzero step. The host is not read or inspected afterward. Default step1 gives1/2/3; positive2 gives1/3/5; negative-2 gives5/3/1. The two body values are emitted per iteration as1/10 then2/20, not all first-body values followed by all second-body values. All four received ranks, sizes and indexed elements are checked safely. The actual assumed-rank dummy data object is queried before SELECT RANK and all indexed reads. Literal values and all87primitive/five completion counts remain independent; the old direct RANK expression packet is not qualification. Current phase/mode/input-bound reference evidence is retained. Flangf2018 is not f2023 qualification. The three target scalar-CHARACTER rank-probe gaps remain unqualified and do not turn these correct rank-one parents into proof of general rank discrimination.",
+      "sources": [
+        "7.8#p6.implied-do-expansion",
+        "7.8#p6.ac-do-variable-control-as-do",
+        "7.8#p7.implied-do-initialization",
+        "7.8#p7.implied-do-execution",
+        "7.8#p7.same-as-do-construct"
+      ],
+      "fingerprint": "1d5a54c2b3da158a7d716527dc49efb97f82767b2bef6645254b4510a3984dbc",
+      "references": [
+        {
+          "case": "S7_8_008_valid__array_constructor_value_ordinary_loops",
+          "compiler": "gfortran",
+          "version": "GNU Fortran (conda-forge gcc 16.1.0-3) 16.1.0",
+          "standard": "f2023",
+          "phase": "run",
+          "outcome": "pass"
+        },
+        {
+          "case": "S7_8_008_valid__array_constructor_value_ordinary_loops",
+          "compiler": "flang",
+          "version": "flang version 22.0.0git (https://github.com/llvm/llvm-project.git cb6ee6cb49e4e6b4969f98ba9129b64094387279)",
+          "standard": "f2018",
+          "phase": "run",
+          "outcome": "pass"
+        }
+      ]
+    },
+    "S7_8_009_valid__array_constructor_value_character_empty": {
+      "state": "source-reviewed",
+      "rationale": "Independent complete repaired-source/oracle review and AVFR-001 closeout in doc/source_audits/batch_028.json. n is an ordinary scalar INTEGER assigned3, not a PARAMETER or absent deferred length. The fixed and n-dependent typed-empty forms have no ac-value and retain length3 at size0. The nonempty abc constructor has matching source/result length3 and supplies a real indexed value control. Direct SIZE/LEN and the actual CHARACTER(LEN=*),INTENT(IN),assumed-rank dummies preserve rank and inherited length without fixed-destination masking. Dummy length checks precede the sole character element read; both empty observers have no indexed read. The actual assumed-rank dummy data object is queried before SELECT RANK and all indexed reads. Literal values and all87primitive/five completion counts remain independent; the old direct RANK expression packet is not qualification. Current phase/mode/input-bound reference evidence is retained. Flangf2018 is not f2023 qualification. The three target scalar-CHARACTER rank-probe gaps remain unqualified and do not turn these correct rank-one parents into proof of general rank discrimination.",
+      "sources": [
+        "7.8#p8",
+        "7.8#p8.empty-sequence-condition",
+        "7.8#p8.zero-sized-array-result"
+      ],
+      "fingerprint": "d6ccb94f02bbe1c1809be50c82b8758b34dad546ea2317e096bec47d6057e7f9",
+      "references": [
+        {
+          "case": "S7_8_009_valid__array_constructor_value_character_empty",
+          "compiler": "gfortran",
+          "version": "GNU Fortran (conda-forge gcc 16.1.0-3) 16.1.0",
+          "standard": "f2023",
+          "phase": "compile",
+          "outcome": "fail"
+        },
+        {
+          "case": "S7_8_009_valid__array_constructor_value_character_empty",
+          "compiler": "flang",
+          "version": "flang version 22.0.0git (https://github.com/llvm/llvm-project.git cb6ee6cb49e4e6b4969f98ba9129b64094387279)",
+          "standard": "f2018",
+          "phase": "run",
+          "outcome": "pass"
+        }
+      ]
+    },
+    "S7_8_009_valid__array_constructor_value_integer_empty": {
+      "state": "source-reviewed",
+      "rationale": "Independent complete repaired-source/oracle review and AVFR-001 closeout in doc/source_audits/batch_028.json. empty(0) is always defined without an allocation or element initialization. [INTEGER ::] is valid typed-empty syntax. [(i,i=1,0)] has a nonempty syntactic body but zero iterations; the statement entity's INTEGER type is inferred without a host read. Both construct rank1/size0. The nonempty[7] control and[11,empty,13] value checks prevent an empty assertion loop or a zero-sized destination from standing in for the effect. Empty observers never index a. The actual assumed-rank dummy data object is queried before SELECT RANK and all indexed reads. Literal values and all87primitive/five completion counts remain independent; the old direct RANK expression packet is not qualification. Current phase/mode/input-bound reference evidence is retained. Flangf2018 is not f2023 qualification. The three target scalar-CHARACTER rank-probe gaps remain unqualified and do not turn these correct rank-one parents into proof of general rank discrimination.",
+      "sources": [
+        "7.8#p8",
+        "7.8#p8.empty-sequence-condition",
+        "7.8#p8.zero-sized-array-result"
+      ],
+      "fingerprint": "14c40acc6ffac81c405f1416fde577a3d5771b77b25d0d2d28f937f257d78aca",
+      "references": [
+        {
+          "case": "S7_8_009_valid__array_constructor_value_integer_empty",
+          "compiler": "gfortran",
+          "version": "GNU Fortran (conda-forge gcc 16.1.0-3) 16.1.0",
+          "standard": "f2023",
+          "phase": "run",
+          "outcome": "fail"
+        },
+        {
+          "case": "S7_8_009_valid__array_constructor_value_integer_empty",
+          "compiler": "flang",
+          "version": "flang version 22.0.0git (https://github.com/llvm/llvm-project.git cb6ee6cb49e4e6b4969f98ba9129b64094387279)",
+          "standard": "f2018",
+          "phase": "run",
+          "outcome": "pass"
+        }
+      ]
     }
   }
 }

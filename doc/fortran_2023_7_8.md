@@ -1,319 +1,90 @@
-# Fortran 2023: 7.8 Construction of array values
-
-**Catalogue source review: independently reviewed. Fixture authoring has not begun.**
-
-**31 base units**, **100 fine units**, **131 accounting rows**, **26 requirements**, and **107 pending facets**. **New cases, executable models and compiler probes: 0.**
-
-## Source-only boundary and exact original binding
-
-This is a **source-reviewed catalogue and unimplemented finite plan**.
-Independent source and current-corpus judgments are recorded in
-`doc/source_audits/batch_024.json`. No fixture, executable model, compiler
-probe, profile or fixture approval is produced.
-
-Authority: J3/24-007, **18 December 2023**, **688 physical PDF pages**, SHA-256
-`7371e889f231cfb0316d30365d5083fb5af34cbb6d5f7cb1e01855c73021bfa2`.
-Original7.8 on PDF114-116 was read first. PDF117 was used only to check the
-actual Clause8 heading. The existing checksum-pinned typography helpers were
-then applied only to these bounded original pages. All31 base-unit hashes and
-section hash `f4bd8ea5b5740846f5c0bfa5503d17069172239036001096ba44c84fe606978c`
-match the committed census. NOTE1-NOTE6 retain their original identities.
-Original excerpts remain only in session evidence, not copied into this view.
-
-## Source distinctions and required authoring qualifications
-
-* Matched `(/ ... /)` and `[ ... ]` forms enclose the actual R778 ac-spec.
-  Typed-empty syntax is different from untyped inference or a nonempty body
-  whose expansion happens to be empty. Empty derived-type arrays need no
-  scalar structure-constructor component arguments, but their type-spec still
-  satisfies type/access/abstract/parameter constraints.
-* Implicit type/KIND agreement is C7120; implicit corresponding LEN agreement
-  is the separate p2 prose restriction. Different input ranks/shapes are
-  permitted and flattened. There is no longest-character-literal rule.
-* Explicit intrinsic/enum type conformance, derived declared-type/KIND equality,
-  enumeration identity and full p3 assignment compatibility remain distinct.
-  C7121's BOZ alternative never waives C7126/C7127 or global C7119.
-* Scalar ac-values contribute one element; arrays contribute all elements in
-  array element order to one rank-one result. A matrix is initialized by named
-  indices, not another RESHAPE/constructor that could cancel an order defect.
-  User defined assignment is not a general constructor coercion.
-* The ac-do-variable is a **statement entity**, with its own implied-DO scope,
-  scalar INTEGER type/parameters and no other attributes. Inline typing does
-  not declare a containing-scope variable. Nested reuse is forbidden; separate
-  nonnested uses have separate scopes. Host scalar names may be shadowed, but
-  a named constant/array/global-name collision is not the same permission.
-* Control initialization/execution follows the ordinary DO rules, not DO
-  CONCURRENT. Default step1, nonzero step, typed controls and finite iteration
-  counts are kept separate from syntax and constant-expression predicates.
-  Bounds use separately defined names, not an uninitialized self-reference.
-* Required element sequence is not a prescribed function-evaluation order.
-  10.1.4p3's control evaluation,10.1.4's side-effect restrictions,10.1.7's
-  optional operand evaluation and19.6.6's resulting undefined statuses are
-  retained. No empty-array callback-absence or mutable-counter shortcut is used.
-* Zero-trip CHARACTER lengths must satisfy both p5 conditions, including the
-  ac-do-variable condition even when10.1.12 permits that index as a constant
-  expression. A dynamic LEN on typed-empty syntax has no ac-value and a
-  different antecedent. No absent deferred parameter is queried.
-* ENUM enumerators are INTEGER; named enum-type values and ordinal ENUMERATION
-  TYPE values are different nonintrinsic types. Enum/integer primary provenance,
-  same-definition type identity and INT/KIND applicability retain their owners.
-* Colon/asterisk parameter contexts, pointer/allocatable value availability,
-  limited versus unlimited polymorphism and declared abstractness are checked
-  at the actual source role. Neither parent ancestry nor a component's
-  polymorphism is a recursive blanket ban on an otherwise ordinary ac-value.
-
-## Reporting, representation and deferred questions
-
-R/C reporting capability follows4.1.2/4.1.3 and4.2p2(3), not fatal rejection,
-fixed wording or rule codes. Name-scope and nonstandard intrinsic duties retain
-4.2p2(6)/(7). Plain LEN, assignment-compatibility and zero-trip length
-restrictions do not acquire automatic fatal-diagnostic policies.
-Every prospective negative has a bounded source/repair or an explicit
-processor/causal gate. Wrong properties, source echo, generic recovery,
-unsupported facilities, Internal/verifier/resource failures, crashes and
-timeouts cannot supply another rule's evidence.
-
-BOZsource `c0c9e5de` remains **unapproved** and is not imported as authority.
-Only necessary original7.7/16.3/INT/assignment dependencies were read.
-C7126's typed INTEGER/REAL requirement is not enough for C7127's REAL validity;
-C1601's nonzero discarded bits are a different condition. No C_INT, numeric
-KIND identifier, minimum width, IEEE bit layout, invalid NaN or arbitrary
-raw-representation oracle is assumed. All existing profiles and the realBOZ
-needs-oracle record remain unchanged.
-
-The finite qualifications ACS-Q01 through ACS-Q07 are recorded in the handoff:
-evaluation/state, zero-trip length, polymorphic diagnostic isolation,
-REAL-BOZ representation, processor kind/parameter context, direct-observer/
-canonical-use boundaries, and ordinary numeric approximation. REAL/CMPLX
-conversion does not become universally exact through a default-REAL precision
-recommendation. No blocking normative source defect is asserted;
-conditional concrete designs still require independent review.
-
-## Complete source accounting
-
-### `C7120` (PDF115)
-
-* `C7120`: **requirements** - C7120
-* `C7120.type-spec-absent-condition`: **requirements** - C7120
-* `C7120.same-declared-type`: **requirements** - C7120
-* `C7120.same-kind-parameter-values`: **requirements** - C7120
-
-### `C7121` (PDF115)
-
-* `C7121`: **requirements** - C7121
-* `C7121.intrinsic-type-antecedent`: **requirements** - C7121
-* `C7121.enum-type-antecedent`: **requirements** - C7121
-* `C7121.each-value-type-conformance`: **requirements** - C7121
-* `C7121.table10.8-owner`: **requirements** - C7121
-* `C7121.conditional-boz-alternative`: **permission** - The BOZ alternative is conditional on all other consumer rules, especially C7126/C7127 and C7119. It does not authorize LOGICAL, CHARACTER or enum typed BOZ constructors. Associated defining owner: C7121.
-
-### `C7122` (PDF115)
-
-* `C7122`: **requirements** - C7122
-* `C7122.derived-type-spec-condition`: **requirements** - C7122
-* `C7122.each-value-expression`: **requirements** - C7122
-* `C7122.same-declared-derived-type`: **requirements** - C7122
-* `C7122.matching-kind-tuple`: **requirements** - C7122
-
-### `C7123` (PDF115)
-
-* `C7123`: **requirements** - C7123
-* `C7123.enumeration-type-spec-condition`: **requirements** - C7123
-* `C7123.same-enumeration-type-values`: **requirements** - C7123
-
-### `C7124` (PDF115)
-
-* `C7124`: **requirements** - C7124
-* `C7124.unlimited-polymorphic-ac-value-exclusion`: **requirements** - C7124
-
-### `C7125` (PDF115)
-
-* `C7125`: **requirements** - C7125
-* `C7125.declared-abstract-type-exclusion`: **requirements** - C7125
-
-### `C7126` (PDF115)
-
-* `C7126`: **requirements** - C7126
-* `C7126.boz-ac-value-condition`: **requirements** - C7126
-* `C7126.explicit-type-spec-required`: **requirements** - C7126
-* `C7126.integer-or-real-only`: **requirements** - C7126
-
-### `C7127` (PDF115)
-
-* `C7127`: **requirements** - C7127
-* `C7127.boz-ac-value-condition`: **requirements** - C7127
-* `C7127.real-type-spec-condition`: **requirements** - C7127
-* `C7127.valid-internal-representation`: **requirements** - C7127
-* `C7127.specified-real-kind`: **requirements** - C7127
-
-### `C7128` (PDF115)
-
-* `C7128`: **requirements** - C7128
-* `C7128.nested-implied-do-condition`: **requirements** - C7128
-* `C7128.inner-control-variable`: **requirements** - C7128
-* `C7128.containing-control-variable-exclusion`: **requirements** - C7128
-
-### `R777` (PDF114)
-
-* `R777`: **requirements** - R777
-* `R777.slash-parenthesis-form`: **requirements** - R777
-* `R777.square-bracket-form`: **requirements** - R777
-
-### `R778` (PDF114)
-
-* `R778`: **requirements** - R778
-* `R778.typed-empty-alternative`: **requirements** - R778
-* `R778.required-double-colon-with-type`: **requirements** - R778
-* `R778.optional-type-before-values`: **requirements** - R778
-* `R778.nonempty-value-list-alternative`: **requirements** - R778
-
-### `R779` (PDF114)
-
-* `R779`: **requirements** - R779
-* `R779.opening-square-bracket`: **requirements** - R779
-
-### `R780` (PDF114)
-
-* `R780`: **requirements** - R780
-* `R780.closing-square-bracket`: **requirements** - R780
-
-### `R781` (PDF115)
-
-* `R781`: **requirements** - R781
-* `R781.expression-alternative`: **requirements** - R781
-* `R781.implied-do-alternative`: **requirements** - R781
-
-### `R782` (PDF115)
-
-* `R782`: **requirements** - R782
-* `R782.parenthesized-form`: **requirements** - R782
-* `R782.nonempty-body-value-list`: **requirements** - R782
-* `R782.comma-before-control`: **requirements** - R782
-* `R782.implied-do-control`: **requirements** - R782
-
-### `R783` (PDF115)
-
-* `R783`: **requirements** - R783
-* `R783.optional-integer-type-spec`: **requirements** - R783
-* `R783.type-spec-double-colon`: **requirements** - R783
-* `R783.control-variable-and-equals`: **requirements** - R783
-* `R783.initial-scalar-integer`: **requirements** - R783
-* `R783.terminal-scalar-integer`: **requirements** - R783
-* `R783.optional-increment`: **requirements** - R783
-* `R783.control-separators`: **requirements** - R783
-
-### `R784` (PDF115)
-
-* `R784`: **requirements** - R784
-* `R784.do-variable-name`: **requirements** - R784
-
-### `note1` (PDF116)
-
-* `note1`: **informative** - Original NOTE1 on PDF116 is an illustrative RESHAPE consumer and displayed matrix, not a new local RESHAPE requirement.
-* `note1.rank-one-constructor-inputs`: **informative** - The constructors in the RESHAPE example are rank one; nested array-valued expressions contribute an element sequence.
-* `note1.reshape-has-separate-owner`: **informative** - RESHAPE supplies the allowable rank-two shape; the constructor does not itself acquire that shape.
-* `note1.illustrated-matrix-order`: **informative** - The displayed3-by-2 values use the input sequence2.0,4.5,4.5,3.2,4.01,6.5 in array element order. A future flattening oracle must use independently named inputs, not a second RESHAPE setup/comparison that can cancel the same error.
-
-### `note2` (PDF116)
-
-* `note2`: **informative** - Original NOTE2, PDF116 contains two incomplete-context examples, not extra constraints or a prescribed evaluation order.
-* `note2.integer-implied-do-example`: **informative** - The first example illustrates a complete initial/terminal integer sequence through1075; host typing must still be valid in a full context.
-* `note2.mixed-scalar-and-loop-example`: **informative** - The second example combines one scalar REAL value and an implied-DO contribution.
-* `note2.n-and-variable-context`: **informative** - N and I need their actual type/definition/scope premises; the fragment is not an undefined-bound, division-trap or callback-order oracle.
-
-### `note3` (PDF116)
-
-* `note3`: **informative** - Original NOTE3 is the PERSON derived-array illustration.
-* `note3.derived-scalar-element-values`: **informative** - PERSON scalar structure-constructor values form the derived-type array.
-* `note3.person-definition-and-constructor-owners`: **informative** - The cited PERSON definition and7.5.10 access/component/type conditions remain necessary. This example does not approve every structure constructor or type identity by layout.
-
-### `note4` (PDF116)
-
-* `note4`: **informative** - Original NOTE4 illustrates nested constructor/RESHAPE consumers and keeps the outer scalar/inner array distinction.
-* `note4.inner-array-constructor`: **informative** - The inner list constructs a rank-one REAL sequence.
-* `note4.reshape-to-rank-two-component`: **informative** - RESHAPE changes that sequence to the component's2-by-2 array value.
-* `note4.outer-line-is-scalar-structure`: **informative** - LINE constructs a scalar derived value with an array component; it is not a rank-two array constructor.
-* `note4.application-units-example`: **informative** - Line coordinates, width0.1 and solid-pattern interpretation are example/application context, not an internal REAL layout or new local effect oracle.
-
-### `note5` (PDF116)
-
-* `note5`: **informative** - Original NOTE5 gives two distinct ways to obtain zero size, without waiving inference, scope or loop conditions.
-* `note5.typed-empty-example`: **informative** - [INTEGER ::] illustrates R778's typed-empty alternative.
-* `note5.zero-trip-example`: **informative** - [(I,I=1,0)] has a nonempty ac-value-list with an empty expansion; it is not the same syntax as untyped[].
-* `note5.implicit-do-typing-context`: **informative** - A complete IMPLICIT NONE context must declare the appropriate containing INTEGER name or use inline INTEGER specification. The fragment does not implicitly declare a host variable.
-
-### `note6` (PDF116)
-
-* `note6`: **informative** - Original NOTE6 demonstrates explicit CHARACTER length and the separate implicit-LEN restriction.
-* `note6.explicit-character-length`: **informative** - CHARACTER(LEN=7) fixes the constructor length.
-* `note6.different-source-lengths`: **informative** - The six/six/seven-character source literals may be used under that explicit length.
-* `note6.omitted-type-needs-length-agreement`: **informative** - Without the type-spec their differing lengths would violate p2, not a type/kind mismatch under C7120. The example does not choose a longest-string inference rule.
-
-### `p1` (PDF114)
-
-* `p1`: **structural** - Original PDF114: fine accounting separates every condition, definition, effect and source-use premise.
-* `p1.array-value-result`: **requirements** - S7.8-001
-* `p1.rank-one-result`: **requirements** - S7.8-001
-* `p1.scalar-value-source-class`: **definition** - Scalar values are one source category; R781 and p6 specify their actual contribution.
-* `p1.array-value-source-class`: **definition** - Array values are permitted sources; their input rank does not become the result rank.
-* `p1.implied-do-source-class`: **definition** - Implied DO is the third source category; it is not a DO CONCURRENT construct.
-
-### `p2` (PDF115)
-
-* `p2`: **structural** - Original PDF115: fine accounting separates every condition, definition, effect and source-use premise.
-* `p2.type-spec-omitted`: **requirements** - S7.8-002, S7.8-003
-* `p2.corresponding-length-parameters`: **requirements** - S7.8-002
-* `p2.length-values-agree`: **requirements** - S7.8-002
-* `p2.inferred-declared-type`: **requirements** - S7.8-003
-* `p2.inferred-type-parameter-values`: **requirements** - S7.8-003
-
-### `p3` (PDF115)
-
-* `p3`: **structural** - Original PDF115: fine accounting separates every condition, definition, effect and source-use premise.
-* `p3.type-spec-present`: **requirements** - S7.8-003, S7.8-004, S7.8-005
-* `p3.specified-declared-type-and-parameters`: **requirements** - S7.8-003
-* `p3.every-expression-intrinsic-assignment-compatible`: **requirements** - S7.8-004
-* `p3.each-value-converted`: **requirements** - S7.8-005
-* `p3.intrinsic-assignment-conversion-rules`: **requirements** - S7.8-005
-
-### `p4` (PDF115)
-
-* `p4`: **requirements** - S7.8-006
-* `p4.constructor-dynamic-type`: **requirements** - S7.8-006
-* `p4.same-as-declared-type`: **requirements** - S7.8-006
-
-### `p5` (PDF115)
-
-* `p5`: **requirements** - S7.8-007
-* `p5.character-ac-value-in-implied-do`: **requirements** - S7.8-007
-* `p5.zero-iteration-count-condition`: **requirements** - S7.8-007
-* `p5.length-independent-of-ac-do-variable`: **requirements** - S7.8-007
-* `p5.length-independent-of-nonconstant-expression`: **requirements** - S7.8-007
-
-### `p6` (PDF115)
-
-* `p6`: **structural** - Original PDF115: fine accounting separates every condition, definition, effect and source-use premise.
-* `p6.scalar-expression-condition`: **requirements** - S7.8-001
-* `p6.one-element-from-scalar`: **requirements** - S7.8-001
-* `p6.array-expression-condition`: **requirements** - S7.8-001
-* `p6.array-elements-in-array-element-order`: **requirements** - S7.8-001
-* `p6.corresponding-sequence-contribution`: **requirements** - S7.8-001
-* `p6.implied-do-expansion`: **requirements** - S7.8-008
-* `p6.ac-do-variable-control-as-do`: **requirements** - S7.8-008
-
-### `p7` (PDF115)
-
-* `p7`: **structural** - Original PDF115: fine accounting separates every condition, definition, effect and source-use premise.
-* `p7.implied-do-initialization`: **requirements** - S7.8-008
-* `p7.implied-do-execution`: **requirements** - S7.8-008
-* `p7.same-as-do-construct`: **requirements** - S7.8-008
-* `p7.scope-and-attributes-canonical-reference`: **definition** - 19.4 supplies statement-entity scope, INTEGER type/parameters and no other attributes. The ac-do variable is not a construct entity, not a containing-scope declaration, and not an I/O implied-DO variable whose host value is reused.
-
-### `p8` (PDF115)
-
-* `p8`: **requirements** - S7.8-009
-* `p8.empty-sequence-condition`: **requirements** - S7.8-009
-* `p8.zero-sized-array-result`: **requirements** - S7.8-009
+# Fortran 2023: 7.8 Array constructors - ordinary value implementation
+
+**Catalogue source review: reviewed.** Source and case/evidence adjudications remain separate content-bound records.
+
+The corpus has **5 shared valid run/effect programs**, **87 primitive value/shape/length guards** and one completion guard per program. **10 of 107 facets are represented; 97 remain PENDING.** No source/case/link/inventory approval is implied.
+
+## Source and oracle qualifications
+
+Authority is J3/24-007,18December2023,688 physical PDF pages,
+SHA-256 `7371e889f231cfb0316d30365d5083fb5af34cbb6d5f7cb1e01855c73021bfa2`.
+Original7.8 occupies PDF114-116 and ends before Clause8 on PDF117.
+The31base/100fine/131accounting units,26requirements and107facet IDs remain.
+The independently reviewed source was already registered on main; its review
+state/fingerprint/rationale are preserved, not replaced by author approval.
+
+Only S7.8-001's first two, S7.8-008's first five and S7.8-009's first three
+facets are represented. S001.mixed-shapes-and-empty-source remains pending
+even though the separately owned empty-source case uses mixed scalar/empty
+values. No R/C, other S, conversion/type/dynamic/representation/source-use
+claim or diagnostic policy is added.
+
+All payloads and limits are small default INTEGER values, or ordinary default
+CHARACTER. Matrix cells11/13/17/19 and vector cells31/37 are assigned individually
+by name. No expected Fortran array or setup constructor, RESHAPE, PACK, matching
+reordered construction or processor inquiry supplies an expected sequence.
+Element order follows9.5.3.3, not a memory-layout or function-call-order claim.
+
+Ordinary implied DO initiation/execution follows11.1.7.4.1/.3. The optional
+inline INTEGER type-spec is omitted; containing-scope scalar INTEGER i/j
+declarations supply type/parameters under19.4p1/p2/p5. The ac-do names remain
+separate statement entities and inherit no other attributes. Their host values
+are neither needed nor read, including after scope. Steps are nonzero. Inner
+j=1:i reads the defined outer i; no own uninitialized bound, mutable function-order
+counter, DO CONCURRENT or optional-evaluation absence oracle is used. This is a
+separate grammar-alternative change: the original inline syntax was valid and
+its observed processor failures remain history. No R783 facet is claimed.
+
+RANK16.9.171p3 requires a DATA OBJECT. Under5.4.3.2.1/.2/.3,6.2.3R604/R605
+and9.2R902/C901/C902, a constructor computation is not a constant or variable.
+Its result is a data entity under5.4.3.3, not automatically a data object.
+Each exact constructor expression is instead passed to a complete internal
+INTEGER or CHARACTER(LEN=*),INTENT(IN) dummy a(..), without POINTER,
+ALLOCATABLE,CODIMENSION or VALUE. It is a real assumed-rank dummy data object
+under8.5.8.7p1/R827/C839. RANK(a) is checked before SELECT RANK(a); only RANK(1)
+enables the size/length/indexed guards, and RANK DEFAULT explicitly fails.
+C840 permits the inquiry/selection. No declared rank-one dummy or destination
+is used as a rank proxy. All87 primitive expectations and five completion
+counts remain unchanged; guard locations are regenerated.
+
+SIZE16.9.194 and LEN16.9.122 still inspect actual constructor expressions:
+their own argument paragraphs permit an array or a CHARACTER entity,
+respectively, unlike RANK's DATA OBJECT restriction. Internal explicit
+interfaces meet15.4.2.1/.2. Ordinary argument association under15.5.2.4/.5
+permits any actual rank for an assumed-rank dummy and preserves actual rank,
+extents, element order and assumed length. Lower bounds are one. SELECT RANK
+under11.1.10.1/.2/.3 and19.5.1.6 preserves type/parameters and selects the
+rank-specific entity with those bounds;11.1.3.3 forbids defining the read-only
+association. Dummy SIZE/LEN and indexed guards are inside RANK(1), with size
+guards before element reads. An assumed CHARACTER length is inherited under
+7.4.4.2/15.5.2.5p5, never masked by a fixed-length destination.
+
+The ordinary INTEGER empty(0) is always defined under19.6.2. Typed-empty
+[INTEGER ::] and a syntactically nonempty zero-trip implied DO both have
+rank1/size0. The [7] and [11,empty,13] controls ensure actual nonempty value
+observations. Empty CHARACTER(LEN=3) and runtime n=3 have no ac-value, so they
+do not invoke the zero-trip CHARACTER ac-value length restriction. The abc
+control has matching source/target length3 and makes no padding/conversion claim.
+
+Each primitive expected value is a scalar literal at its real source guard.
+Each program also checks its completed guard count. Separate single-span
+wrong-oracle probes are permitted only on a processor that genuinely runs the
+current parent program; successful compile/link and the intended failed runtime
+guard are required. Separate bounded scalar/rank-two actual-argument probes exercise
+the unconstrained descriptor and must fail at RANK(a) before any element access.
+Such finite sensitivity is not universal intrinsic correctness, a conformance
+case, or approval.
+
+AVFR-001 invalidates the15direct RANK expression sites in the frozen5161d38e
+parent packet. Its original15processor rows and35wrong-oracle executions remain
+unchanged empirical history, not qualification of these corrected programs.
+The original inline-type syntax rejections, GNU CHARACTER ICE and LF empty
+CHARACTER LEN failure are separate observations; no claim attributes them to RANK.
+
+Source-valid compiler failures keep run-phase expectations. Actual f2018
+reference modes are not relabelled f2023. No optional kind/profile, BOZ,
+REAL/COMPLEX accuracy, dynamic/PDT/pointer/allocatable state, C/image or compiler
+work is introduced. Candidate29fc461 is outside this packet and is not used.
 
 ## Definitions
 
@@ -781,12 +552,26 @@ order.
 direct constructor value/rank/size observations. Permitted array element order fixes
 sequence positions, not the order of evaluating unrelated source functions.
 
-**Oracle limitation:** No runtime witness is implemented. Use independently fixed small values, named element
-setup and direct constructor observations; a destination declaration or a second use of
-the same operation is not an independent oracle. Source sequence order is not an
-unspecified function-evaluation order. Read only defined values with established
-allocation/association and valid parameter state. No C_INT, KIND-number, extra-kind,
-byte-width, IEEE-layout, arbitrary-bit or processor-choice premise is assumed.
+Finite value implementation: 1 shared valid run-phase programs represent 2 selected
+facets using independent default-INTEGER/default-CHARACTER literal guards. Direct
+constructor SIZE/LEN retain their own argument rules. RANK requires a data object: each
+actual constructor expression is associated with an explicit INTENT(IN) assumed-rank
+dummy a(..), and RANK(a) is checked before SELECT RANK permits rank-one
+size/length/indexed observations. There is an explicit unexpected-rank failure branch,
+not a rank-one dummy/destination proxy. Ordinary implied DO indices infer INTEGER from
+containing scalar i/j declarations, which supply types only; no host value or inherited
+attributes are used and R783 remains pending. Source setup never uses another
+constructor, RESHAPE or PACK. Empty contexts retain nonempty controls. Every other plan
+stays pending and all administrative review fields are preserved; changed source
+material may make the existing source review stale, never silently renewed.
+
+**Oracle limitation:** Finite runtime witnesses do not confer independent adjudication. Use independently fixed
+small values, named element setup and direct constructor observations; a destination
+declaration or a second use of the same operation is not an independent oracle. Source
+sequence order is not an unspecified function-evaluation order. Read only defined values
+with established allocation/association and valid parameter state. No C_INT,
+KIND-number, extra-kind, byte-width, IEEE-layout, arbitrary-bit or processor-choice
+premise is assumed.
 
 **Dependencies:** 7.8p1/p6;9.5.3.3/Table9.1;10.1.4/10.1.7;7.5.8/7.5.10;9.7.1;19.6.1-.2;16.9.171
 RANK/16.9.194 SIZE.
@@ -973,14 +758,27 @@ rules in19.4.
 order of resulting elements distinct from an unprescribed total order of unrelated
 function evaluations.
 
-**Oracle limitation:** No runtime witness is implemented. Use independently fixed small values, named element
-setup and direct constructor observations; a destination declaration or a second use of
-the same operation is not an independent oracle. Source sequence order is not an
-unspecified function-evaluation order. Read only defined values with established
-allocation/association and valid parameter state. No C_INT, KIND-number, extra-kind,
-byte-width, IEEE-layout, arbitrary-bit or processor-choice premise is assumed. No DO
-CONCURRENT, post-scope index read, zero-step trap or compiler-produced sequence is an
-oracle.
+Finite value implementation: 2 shared valid run-phase programs represent 5 selected
+facets using independent default-INTEGER/default-CHARACTER literal guards. Direct
+constructor SIZE/LEN retain their own argument rules. RANK requires a data object: each
+actual constructor expression is associated with an explicit INTENT(IN) assumed-rank
+dummy a(..), and RANK(a) is checked before SELECT RANK permits rank-one
+size/length/indexed observations. There is an explicit unexpected-rank failure branch,
+not a rank-one dummy/destination proxy. Ordinary implied DO indices infer INTEGER from
+containing scalar i/j declarations, which supply types only; no host value or inherited
+attributes are used and R783 remains pending. Source setup never uses another
+constructor, RESHAPE or PACK. Empty contexts retain nonempty controls. Every other plan
+stays pending and all administrative review fields are preserved; changed source
+material may make the existing source review stale, never silently renewed.
+
+**Oracle limitation:** Finite runtime witnesses do not confer independent adjudication. Use independently fixed
+small values, named element setup and direct constructor observations; a destination
+declaration or a second use of the same operation is not an independent oracle. Source
+sequence order is not an unspecified function-evaluation order. Read only defined values
+with established allocation/association and valid parameter state. No C_INT,
+KIND-number, extra-kind, byte-width, IEEE-layout, arbitrary-bit or processor-choice
+premise is assumed. No DO CONCURRENT, post-scope index read, zero-step trap or
+compiler-produced sequence is an oracle.
 
 **Dependencies:** 7.8p6/p7;11.1.7.4.1/.3/.5;R1124/C1121;19.4p1-p2/p5;10.1.4p2-p3/10.1.7;19.6.5(4).
 
@@ -1000,20 +798,106 @@ and unallocated or disassociated state are different.
 control. Merely allocating a zero-size destination or checking a declared rank-one
 variable is not a constructor-only oracle.
 
-**Oracle limitation:** No runtime witness is implemented. Use independently fixed small values, named element
-setup and direct constructor observations; a destination declaration or a second use of
-the same operation is not an independent oracle. Source sequence order is not an
-unspecified function-evaluation order. Read only defined values with established
-allocation/association and valid parameter state. No C_INT, KIND-number, extra-kind,
-byte-width, IEEE-layout, arbitrary-bit or processor-choice premise is assumed.
+Finite value implementation: 2 shared valid run-phase programs represent 3 selected
+facets using independent default-INTEGER/default-CHARACTER literal guards. Direct
+constructor SIZE/LEN retain their own argument rules. RANK requires a data object: each
+actual constructor expression is associated with an explicit INTENT(IN) assumed-rank
+dummy a(..), and RANK(a) is checked before SELECT RANK permits rank-one
+size/length/indexed observations. There is an explicit unexpected-rank failure branch,
+not a rank-one dummy/destination proxy. Ordinary implied DO indices infer INTEGER from
+containing scalar i/j declarations, which supply types only; no host value or inherited
+attributes are used and R783 remains pending. Source setup never uses another
+constructor, RESHAPE or PACK. Empty contexts retain nonempty controls. Every other plan
+stays pending and all administrative review fields are preserved; changed source
+material may make the existing source review stale, never silently renewed.
+
+**Oracle limitation:** Finite runtime witnesses do not confer independent adjudication. Use independently fixed
+small values, named element setup and direct constructor observations; a destination
+declaration or a second use of the same operation is not an independent oracle. Source
+sequence order is not an unspecified function-evaluation order. Read only defined values
+with established allocation/association and valid parameter state. No C_INT,
+KIND-number, extra-kind, byte-width, IEEE-layout, arbitrary-bit or processor-choice
+premise is assumed.
 
 **Dependencies:** 7.8p8/p1/p2/p5;R778;19.6.2;9.7.1;16.9.122 LEN/16.9.171 RANK/16.9.194 SIZE;10.1.7;19.6.6.
 
 <!-- END GENERATED 7.8 -->
 
+## Exact finite constructor and guard plans
+
+### `S7_8_001_valid__array_constructor_value_sequence`
+
+**Primary:** S7.8-001; **phase/evidence:** run / effect.
+
+**Facets:** `rank-one-and-scalar-sequence`, `higher-rank-flattening`.
+
+The four matrix cells are independently assigned by name. Direct SIZE inspects actual constructor expressions; complete assumed-rank dummy data objects receive those expressions and expose their actual rank. RANK(a) precedes SELECT RANK; only RANK(1) permits size and literal-index observations. No constructor, RESHAPE, PACK or expected array initializes the matrix or derives the oracle.
+
+* `scalars`: actual `[11,13,17]`; independent indexed literals `[11, 13, 17]`.
+* `matrix`: actual `[5,m,23]`; independent indexed literals `[5, 11, 13, 17, 19, 23]`.
+
+The exact completed primitive guard count is `15`. Guard families: `constructor-size-nonempty`, `assumed-rank-argument`, `argument-size-nonempty`, `integer-element`, `completion-count`.
+
+### `S7_8_008_valid__array_constructor_value_ordinary_loops`
+
+**Primary:** S7.8-008; **phase/evidence:** run / effect.
+
+**Facets:** `default-increment-sequence`, `positive-and-negative-strides`, `multiple-body-values`.
+
+Separate ordinary implied DO scopes infer default INTEGER from the containing scalar declaration, with finite limits and nonzero increments. The independent literals distinguish default, positive, negative and per-iteration multiple-body placement. The statement entity inherits only type/parameters, not host attributes or a host value. No uninitialized host read, post-scope read or callback-evaluation order is used. R783 remains pending.
+
+* `default_step`: actual `[(i,i=1,3)]`; independent indexed literals `[1, 2, 3]`.
+* `positive_step`: actual `[(i,i=1,5,2)]`; independent indexed literals `[1, 3, 5]`.
+* `negative_step`: actual `[(i,i=5,1,-2)]`; independent indexed literals `[5, 3, 1]`.
+* `multiple_body`: actual `[(i,10*i,i=1,2)]`; independent indexed literals `[1, 10, 2, 20]`.
+
+The exact completed primitive guard count is `25`. Guard families: `constructor-size-nonempty`, `assumed-rank-argument`, `argument-size-nonempty`, `integer-element`, `completion-count`.
+
+### `S7_8_008_valid__array_constructor_value_dependent_bodies`
+
+**Primary:** S7.8-008; **phase/evidence:** run / effect.
+
+**Facets:** `nested-dependent-bounds`, `array-valued-body-sequence`.
+
+The inner j limit reads the already defined outer i, never its own uninitialized statement entity. Containing scalar INTEGER i/j declarations supply types only; their values are never read. Array-valued vector+i bodies contribute their two elements per iteration. Vector setup and all six/four result markers are independent named scalar literals.
+
+* `nested`: actual `[((10*i+j,j=1,i),i=1,3)]`; independent indexed literals `[11, 21, 22, 31, 32, 33]`.
+* `array_body`: actual `[(vector+i,i=1,2)]`; independent indexed literals `[32, 38, 33, 39]`.
+
+The exact completed primitive guard count is `16`. Guard families: `constructor-size-nonempty`, `assumed-rank-argument`, `argument-size-nonempty`, `integer-element`, `completion-count`.
+
+### `S7_8_009_valid__array_constructor_value_integer_empty`
+
+**Primary:** S7.8-009; **phase/evidence:** run / effect.
+
+**Facets:** `typed-empty-and-zero-trip`, `zero-sized-array-ac-value`.
+
+The ordinary explicit-shape empty(0) is always defined. Typed-empty syntax and a nonempty zero-trip body are separate operations within one program. Direct zero size and associated assumed-rank observations, plus nonempty [7]/[11,empty,13] checks, are nonvacuous. Scalar INTEGER i supplies a type only; no unallocated source, empty assertion loop, host value or host final-index query is used.
+
+* `integer_control`: actual `[7]`; independent indexed literals `[7]`.
+* `typed_empty`: actual `[integer ::]`; independent indexed literals `[]`.
+* `zero_trip`: actual `[(i,i=1,0)]`; independent indexed literals `[]`.
+* `empty_source`: actual `[11,empty,13]`; independent indexed literals `[11, 13]`.
+
+The exact completed primitive guard count is `15`. Guard families: `constructor-size-nonempty`, `assumed-rank-argument`, `argument-size-nonempty`, `integer-element`, `constructor-size-empty`, `argument-size-empty`, `completion-count`.
+
+### `S7_8_009_valid__array_constructor_value_character_empty`
+
+**Primary:** S7.8-009; **phase/evidence:** run / effect.
+
+**Facets:** `empty-character-parameters`.
+
+Runtime n is an ordinary separately defined INTEGER, not PARAMETER. Both empty expressions have no ac-value, so no zero-trip index-dependent character-length premise is introduced. Direct SIZE/LEN and complete assumed-rank, assumed-length CHARACTER data-object consumers preserve actual rank and length. RANK(a) precedes SELECT RANK and any rank-specific access; a nonempty abc control validates the observer without fixed-length destination masking or character conversion claims.
+
+* `character_control`: actual `[character(len=3) :: 'abc']`; independent indexed literals `['abc']`; actual LEN must be `3`.
+* `character_fixed`: actual `[character(len=3) ::]`; independent indexed literals `[]`; actual LEN must be `3`.
+* `character_runtime`: actual `[character(len=n) ::]`; independent indexed literals `[]`; actual LEN must be `3`.
+
+The exact completed primitive guard count is `16`. Guard families: `constructor-size-nonempty`, `constructor-character-length`, `assumed-rank-argument`, `argument-size-nonempty`, `argument-character-length`, `character-element`, `constructor-size-empty`, `argument-size-empty`, `completion-count`.
+
 ## Complete finite pending plans
 
-All facets remain pending. Phase labels and expected values below are plans, not programs, native observations or represented coverage.
+Every unselected map below is retained exactly from the canonical source; incidental feature use does not clear it.
 
 ### Pending R777
 
@@ -1134,8 +1018,6 @@ All facets remain pending. Phase labels and expected values below are plans, not
 
 ### Pending S7.8-001
 
-* **`rank-one-and-scalar-sequence`** - PENDING - Runtime plan: direct observations of [11,13,17] establish rank1, size3 and those three indexed values. Do not infer result rank solely from an independently rank-one destination declaration.
-* **`higher-rank-flattening`** - PENDING - Runtime plan: set m(1,1)=11,m(2,1)=13,m(1,2)=17,m(2,2)=19 by names, then directly inspect [5,m,23] as the rank-one sequence[5,11,13,17,19,23]. No RESHAPE or constructor supplies the expected ordering or matrix setup.
 * **`mixed-shapes-and-empty-source`** - PENDING - Runtime plan: defined rank-one sources of lengths1 and3 plus an actual defined zero-size array contribute concatenated values and no elements for the empty source. Check exact size and indexed markers; neither equal source shapes nor scalar broadcast is required.
 * **`value-expression-state-source-use`** - PENDING - Source-use plan: a live associated pointer or allocated allocatable array ac-value contributes its defined data values, not its association/allocation status. Before any new witness, establish complete state and parameters; a pointer-containing derived element retains its scalar-constructor/assignment owners and no pointer broadcasting is inferred.
 * **`evaluation-order-and-shared-consumer-graph`** - PENDING - Source-use graph:10.1.4/10.1.7 retain control-expression evaluation, side-effect restrictions and optional operand evaluation. Do not use mutable callback order or absence as the flattening oracle. Existing R702/S10 witnesses retain their primaries; a future direct sequence witness is not a renamed assignment program.
@@ -1185,61 +1067,15 @@ All facets remain pending. Phase labels and expected values below are plans, not
 
 ### Pending S7.8-008
 
-* **`default-increment-sequence`** - PENDING - Runtime plan: [(i,INTEGER :: i=1,3)] produces the independent sequence[1,2,3], with no host final-index assertion.
-* **`positive-and-negative-strides`** - PENDING - Runtime plan: bounds1,5,2 produce[1,3,5]; bounds5,1,-2 produce[5,3,1]. Small values and increments avoid overflow; a second execution of the same implied DO is not the expected oracle.
-* **`multiple-body-values`** - PENDING - Runtime plan: body values i and10*i over1:2 produce[1,10,2,20], checking per-iteration body placement rather than grouping all first values before second values.
-* **`nested-dependent-bounds`** - PENDING - Runtime plan: distinct outer i=1:3 and inner j=1:i produce10*i+j values[11,21,22,31,32,33]. The inner bound reads an already defined outer statement entity, never its own not-yet-defined control variable. All outer iterations are nonzero in this finite plan.
-* **`array-valued-body-sequence`** - PENDING - Runtime plan: define vector entries31/37 by names, then body vector+i over i=1:2 contributes[32,38,33,39] in order. This remains a rank-one result, not a rank-two block or an elemental structure constructor.
 * **`kind-and-host-scope-source-use`** - PENDING - Source-use graph:19.4 says the index is a scalar INTEGER statement entity with specified or inferred type/parameters and no other attributes. A future host i=99 witness checks that host value separately remains99; an inline INTEGER control does not declare a host name. Kind differentiation needs actually supported distinct selectors, not assumed codes.
 * **`control-evaluation-and-zero-step-source-use`** - PENDING - Source-use graph:10.1.4p3 requires control-expression evaluation, while10.1.4p2/10.1.7 constrain side effects/optional operand evaluation. Use defined literal or separate named bounds in ordinary witnesses; nested-zero/side-effect counts and self-referential limits are not inferred. Zero step is the canonical DO prose restriction, not a new R783/C7128 diagnostic policy.
 
 ### Pending S7.8-009
 
-* **`typed-empty-and-zero-trip`** - PENDING - Runtime plan: directly inspect [INTEGER ::] and [(i,INTEGER :: i=1,0)] for size0 and rank1, with a nonempty [7] control of size1/rank1/value7. The latter has a nonempty ac-value-list whose expansion is empty; untyped[] remains a syntax error.
-* **`zero-sized-array-ac-value`** - PENDING - Runtime plan: a defined ordinary INTEGER empty(0) contributes no values in [11,empty,13]; check size2 and exact[11,13]. Use an actually allocated zero-size source only after status is established; do not substitute an unallocated object.
-* **`empty-character-parameters`** - PENDING - Runtime plan: direct observation of typed-empty CHARACTER(LEN=3) has size0 and LEN3. A separately defined runtime n=3 in [CHARACTER(LEN=n) ::] is a distinct valid no-ac-value context; a zero-trip CHARACTER ac-value still needs p5's conditions.
 * **`state-and-optional-evaluation-source-use`** - PENDING - Source-use graph:19.6.2's always-defined zero-size values do not permit reading absent allocation data or deferred lengths. SIZE/LEN have their actual argument conditions. Preserve10.1.7/19.6.6 undefined-status consequences rather than using a side-effect counter to assert that an unneeded operand was never evaluated.
 
-## Canonical cases and integration boundary
+## Reproduction and remaining gates
 
-All1907 base execution IDs, input bytes and fingerprints remain protected. There are no existing primary R777-R784/C7120-C7128 cases at this base. Existing type/declaration, assignment, conversion and BOZ witnesses are not renamed, weakened or granted new local facet credit.
+`python3 -B tools/generate_array_constructor_value_fixtures.py --check` checks exact inputs, case/facet partition and both source-view regions. Targeted regressions independently check literal sequences, source setup, scope/definedness, direct SIZE/LEN, assumed-rank data objects and real guard spans. Full-program sensitivity records retain original/mutated bytes and exact actual execution contexts.
 
-* `R605_valid__boz` - primary `R605`, `positive-control`, `tests/clause06/R605_valid__boz.f90`.
-* `R702_valid__derived` - primary `R702`, `positive-control`, `tests/clause07/R702_valid__derived.f90`.
-* `R702_valid__enum` - primary `R702`, `positive-control`, `tests/clause07/R702_valid__enum.f90`.
-* `R702_valid__enumeration` - primary `R702`, `positive-control`, `tests/clause07/R702_valid__enumeration.f90`.
-* `R702_valid__intrinsic` - primary `R702`, `positive-control`, `tests/clause07/R702_valid__intrinsic.f90`.
-* `R703_valid__class_derived` - primary `R703`, `positive-control`, `tests/clause07/R703_valid__class_derived.f90`.
-* `R703_valid__class_unlimited` - primary `R703`, `positive-control`, `tests/clause07/R703_valid__class_unlimited.f90`.
-* `R703_valid__classof` - primary `R703`, `positive-control`, `tests/clause07/R703_valid__classof.f90`.
-* `R703_valid__intrinsic` - primary `R703`, `positive-control`, `tests/clause07/R703_valid__intrinsic.f90`.
-* `R703_valid__type_assumed` - primary `R703`, `positive-control`, `tests/clause07/R703_valid__type_assumed.f90`.
-* `R703_valid__type_derived` - primary `R703`, `positive-control`, `tests/clause07/R703_valid__type_derived.f90`.
-* `R703_valid__type_enum` - primary `R703`, `positive-control`, `tests/clause07/R703_valid__type_enum.f90`.
-* `R703_valid__type_enumeration` - primary `R703`, `positive-control`, `tests/clause07/R703_valid__type_enumeration.f90`.
-* `R703_valid__type_intrinsic` - primary `R703`, `positive-control`, `tests/clause07/R703_valid__type_intrinsic.f90`.
-* `R703_valid__typeof` - primary `R703`, `positive-control`, `tests/clause07/R703_valid__typeof.f90`.
-* `S10_2_1_3_009_valid` - primary `S10.2.1.3-009`, `effect`, `tests/clause10/S10_2_1_3_009_valid.f90`.
-* `S10_2_1_3_010_valid` - primary `S10.2.1.3-010`, `effect`, `tests/clause10/S10_2_1_3_010_valid.f90`.
-* `S10_2_1_3_011_valid` - primary `S10.2.1.3-011`, `effect`, `tests/clause10/S10_2_1_3_011_valid.f90`.
-* `S10_2_1_3_022_valid` - primary `S10.2.1.3-022`, `effect`, `tests/clause10/S10_2_1_3_022_valid.f90`.
-* `S6_2_1_001_valid__boz` - primary `S6.2.1-001`, `positive-control`, `tests/clause06/S6_2_1_001_valid__boz.f90`.
-* `S6_3_2_2_001_invalid__boz:line7` - primary `S6.3.2.2-001`, `effect`, `tests/clause06/S6_3_2_2_001_invalid__boz.f90`.
-* `S6_3_2_2_001_valid__boz_repair` - primary `S6.3.2.2-001`, `positive-control`, `tests/clause06/S6_3_2_2_001_valid__boz_repair.f90`.
-* `S10_2_1_3_017_valid` - primary `S10.2.1.3-017`, `effect`, `tests/clause10/S10_2_1_3_017_valid.f90`.
-* `S10_2_1_3_017_valid__real` - primary `S10.2.1.3-017`, `effect`, `tests/clause10/S10_2_1_3_017_valid__real.f90`.
-* `S10_2_1_3_012_valid` - primary `S10.2.1.3-012`, `effect`, `tests/clause10/S10_2_1_3_012_valid.f90`.
-* `S10_2_1_3_013_valid` - primary `S10.2.1.3-013`, `effect`, `tests/clause10/S10_2_1_3_013_valid.f90`.
-* `S10_2_1_3_014_valid` - primary `S10.2.1.3-014`, `effect`, `tests/clause10/S10_2_1_3_014_valid.f90`.
-* `S10_2_1_3_014_valid__kinds` - primary `S10.2.1.3-014`, `effect`, `tests/clause10/S10_2_1_3_014_valid__kinds.f90`.
-* `S10_2_1_3_015_valid` - primary `S10.2.1.3-015`, `effect`, `tests/clause10/S10_2_1_3_015_valid.f90`.
-* `S10_2_1_3_015_valid__precision` - primary `S10.2.1.3-015`, `effect`, `tests/clause10/S10_2_1_3_015_valid__precision.f90`.
-* `S10_2_1_3_016_valid` - primary `S10.2.1.3-016`, `effect`, `tests/clause10/S10_2_1_3_016_valid.f90`.
-* `S10_2_1_3_019_valid` - primary `S10.2.1.3-019`, `effect`, `tests/clause10/S10_2_1_3_019_valid.f90`.
-* `S10_2_1_3_020_valid` - primary `S10.2.1.3-020`, `effect`, `tests/clause10/S10_2_1_3_020_valid.f90`.
-
-`S10_2_1_3_017_valid__real` remains needs-oracle with its existing ieee-binary profile. Its arithmetic-model check is not a REAL(BOZ) representation proof. The exact1907-case/nine-link and observational-inventory comparison is recorded in `array-constructors-source-handoff.json`; no stale receipt is renewed here.
-
-## Validation and stop point
-
-Only pinned-source/hash/boundary, schema, reciprocal accounting, append-only ownership, complete pending-plan and render/binding checks are performed. `Registry.render(write=True)` generates the owned definitions; check-only rendering verifies them afterward. This is not a fixture test, executable model, whole-standard audit or approval. Only this catalogue and view are committed; the local index overlay is excluded. Independent source review precedes fixtures.
+The1937-case base and nine links stay intact. The existing reviewed source record can become stale after the implementation metadata changes, and the observational inventory changes through new cases/context; neither is renewed. Independent source/fixture/oracle adjudication remains separate.

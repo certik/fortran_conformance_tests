@@ -786,7 +786,7 @@ and uses one pre/post snapshot representation. Stable draft/stale inventories
 still do not veto independently approved executions. These transaction
 guarantees do not create a recursive semantic approval fingerprint.
 
-The latest actual full target run, in batch026, has **1,972 cases: 1,189 PASS,
+The batch026 full target run has **1,972 cases: 1,189 PASS,
 778 XFAIL, four SKIPs and one NEEDS_ORACLE**. All case, source, review, link,
 execution-inventory and baseline bindings were unchanged in that checkpoint.
 Its 83 catalogues, 499 requirements and 1,688 direct/nine linked/793 pending
@@ -807,6 +807,29 @@ Only source and observational-inventory reviews were renewed. No compiler
 was rerun for this source-only registration: the last actual full report
 remains batch026 and was not relabelled to the new source-context fingerprint.
 The source and metadata evidence is in `doc/source_audits/batch_027.json`.
+
+The twenty-eighth checkpoint adds five fully reviewed corrected
+array-constructor runtime programs for ten facets. AVFR-001 is closed:
+the fifteen rank observations now use real assumed-rank dummy data objects,
+with SELECT RANK and size guards before element access, rather than invalid
+direct RANK constructor-expression arguments. All 87 primitive literal
+expectations and five completion counts are preserved.
+
+All five programs run successfully on the frozen target. One GNU f2023
+parent qualifies for reference validation; four programs remain source-only
+with their failed GNU observations retained. The 35 wrong-oracle probes
+demonstrate their intended failures; 57 of 60 rank probes do so. Three
+target scalar-CHARACTER probes remain unqualified, not silently counted
+as successful rank discrimination. Actual Flang f2018 evidence is not
+promoted to f2023.
+
+The current measured checkpoint has **1,977 cases: 1,194 PASS,
+778 XFAIL, four SKIPs and one NEEDS_ORACLE**. Every prior case binding,
+review and outcome/phase, nine link receipts and baseline bytes are
+unchanged. There are **85 catalogues, 506 requirements, 1,698 direct and
+nine linked facets, and 836 pending facets out of 2,543**; source census
+counts do not change. Source/oracle closeout, exact provenance and remaining
+probe limitations are in `doc/source_audits/batch_028.json`.
 
 A further source-only packet covers 7.5.8 and 7.5.9 with 13 base units,
 50 fine units, 14 requirements and 72 pending facets. It preserves existing
@@ -857,19 +880,24 @@ The real-BOZ representation bridge remains unresolved; this is not a
 profile, fixture or oracle approval. Binary/octal packet `7634eddd` is now
 integrated in batch025 for 12 compile facets, retaining 52 pending and the
 separate real-BOZ block. Array-constructor source is integrated as batch024.
-Its five-program value packet `5161d38e` remains unapproved after AVFR-001
-identified invalid direct RANK constructor-expression observers. Correction
-uses genuine assumed-rank dummy data objects without removing rank checks
-or changing the ten selected value facets and literal oracles. Its 35 old
-probe runs are preserved, not treated as proof of source validity.
+Its original value packet `5161d38e` remains unapproved historical evidence
+after AVFR-001 identified invalid direct RANK constructor-expression
+observers. Correction `583dcb6d` is integrated in batch028 after complete
+independent review, with valid assumed-rank observers and unchanged literal
+oracles. The old 35 probe runs do not qualify the corrected sources; three
+current target scalar-CHARACTER probe gaps remain explicit.
 
 Source-only declaration packet `ad515fc` passed independent source review:
 28 base units, 116 fine units, 23 requirements and 124 pending facets.
 Six existing C801 executions need per-case metadata, five source-minimal
-controls and fresh fingerprint-bound adjudication; that bounded work is now
-being authored, without premature registration or approval. All later main
-cases and the nine links must be preserved. Source-only 8.3/8.4 is integrated
-as batch027, with every fixture facet pending. Separate source authoring
+controls and fresh fingerprint-bound adjudication. Packet `0a7331bc` and
+correction `02633cd0` are under independent full review: the valid review
+key must support explicit renewal, and generated text must not stay
+permanently draft/unapproved. The corrected C801 metadata has a genuine
+eleven-case observation refresh; old reports are not relabelled. All later
+main cases and nine links must be preserved. Source-only 8.3/8.4 is integrated
+as batch027; seven local type-parameter capture facets are now being authored
+without clearing any main pending facet. Separate source authoring
 covers 8.5.1/8.5.2 and must account for existing cases and source-dependent
 link receipts becoming stale rather than silently renewing them.
 
