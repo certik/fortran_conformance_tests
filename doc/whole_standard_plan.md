@@ -22,7 +22,7 @@ The readiness refactoring now supplies:
   context case.
 
 This is infrastructure readiness, not completed conformance coverage.
-The current census still has 4,911 unresolved base units and eight unresolved
+The current census still has 4,906 unresolved base units and eight unresolved
 fine-grained units inside the catalogues. Its independent visual
 review is still pending. Automatic PDF extraction is not semantic review,
 and list items/table rows require additional audited subdivisions.
@@ -786,12 +786,27 @@ and uses one pre/post snapshot representation. Stable draft/stale inventories
 still do not veto independently approved executions. These transaction
 guarantees do not create a recursive semantic approval fingerprint.
 
-The current measured checkpoint remains **1,972 cases: 1,189 PASS,
+The latest actual full target run, in batch026, has **1,972 cases: 1,189 PASS,
 778 XFAIL, four SKIPs and one NEEDS_ORACLE**. All case, source, review, link,
-execution-inventory and baseline bindings remain unchanged. The 83 catalogues,
-499 requirements, 1,688 direct/nine linked/793 pending facets and remaining
-source gaps are unchanged. Independent closeout and complete integration
+execution-inventory and baseline bindings were unchanged in that checkpoint.
+Its 83 catalogues, 499 requirements and 1,688 direct/nine linked/793 pending
+facets were unchanged. Independent closeout and complete integration
 evidence are in `doc/source_audits/batch_026.json`.
+
+The twenty-seventh checkpoint is source-only: reviewed 8.3 automatic-object
+and 8.4 initialization catalogues account for six base and 46 fine units,
+with seven requirements and all **53 facets pending**. Exact entry-capture,
+DATA/default, initial-value, overlap/shape, association and SAVE conditions
+retain their implementation and oracle qualifications.
+
+The corpus now has **85 catalogues, 506 requirements, 1,688 direct and nine
+linked facets, and 846 pending facets out of 2,543**. Source accounting covers
+1,567 base units; 4,906 base and eight fine units remain unresolved. All
+1,972 case bindings, approvals, links and baseline bytes are unchanged.
+Only source and observational-inventory reviews were renewed. No compiler
+was rerun for this source-only registration: the last actual full report
+remains batch026 and was not relabelled to the new source-context fingerprint.
+The source and metadata evidence is in `doc/source_audits/batch_027.json`.
 
 A further source-only packet covers 7.5.8 and 7.5.9 with 13 base units,
 50 fine units, 14 requirements and 72 pending facets. It preserves existing
@@ -851,9 +866,12 @@ probe runs are preserved, not treated as proof of source validity.
 Source-only declaration packet `ad515fc` passed independent source review:
 28 base units, 116 fine units, 23 requirements and 124 pending facets.
 Six existing C801 executions need per-case metadata, five source-minimal
-controls and fresh fingerprint-bound adjudication; native collection is
-deliberately blocked until that integration work. All later main cases and
-the nine links must be preserved. Separate source authoring covers 8.3/8.4.
+controls and fresh fingerprint-bound adjudication; that bounded work is now
+being authored, without premature registration or approval. All later main
+cases and the nine links must be preserved. Source-only 8.3/8.4 is integrated
+as batch027, with every fixture facet pending. Separate source authoring
+covers 8.5.1/8.5.2 and must account for existing cases and source-dependent
+link receipts becoming stale rather than silently renewing them.
 
 Source-use candidate `29fc461` and correction `b9150e82` are integrated as
 batch026 after independent SULR-001 closeout. No actual use graph has been
