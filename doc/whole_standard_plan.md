@@ -1357,6 +1357,27 @@ unchanged. This adds no compiler observation and does not relabel either
 batch056's full-run context or batch057's selected observations. The192-method
 source/evidence selection passed. See `doc/source_audits/batch_058.json`.
 
+The fifty-ninth checkpoint registers four C851 compile cases for three
+ordinary OPTIONAL eligibility facets. Complete data and nonpointer-procedure
+nondummy declarations are repaired only by dummy-list insertion. GNU f2023
+corroborates all four contracts; Flang's actual f2018 warnings are narrowly
+calibrated supplementary evidence. The target silently accepts both invalid
+declarations, so those reporting failures remain explicit.
+
+The first full Python run exposed a fixed four-foreign-link assumption in
+the earlier type-bound regression. It now preserves the actual foreign
+records and effective fingerprints across all32owned subsets, rather than
+replacing four with seventeen. The failed log and initial native report are
+retained, and both full jobs were repeated after this test-only correction.
+
+The final full corpus is **2,041 cases: 1,238 PASS, 798 XFAIL, four SKIPs
+and one NEEDS_ORACLE**, in the actual110-catalogue/655-requirement/22-link
+context. All2,037 prior outcomes and bindings are preserved; only the two
+reviewed reporting failures were added to the baseline. There are
+**1,750 direct,22 linked and1,532 pending facets out of3,304**; source
+counts are unchanged. All837 Python tests pass. One other C851 facet and
+all seven OPTIONAL S facets remain pending. See `doc/source_audits/batch_059.json`.
+
 A further source-only packet covers 7.5.8 and 7.5.9 with 13 base units,
 50 fine units, 14 requirements and 72 pending facets. It preserves existing
 canonical witnesses and explicitly accounts for the value-set definition

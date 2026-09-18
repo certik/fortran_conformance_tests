@@ -271,7 +271,13 @@ class TypeBoundFixturesTests(unittest.TestCase):
         outside = [link for link in self.registry.evidence.data["links"]
                    if link["target"]["requirement"] not in LINKED]
         self.assertEqual(len(scoped), 5)
-        self.assertEqual(len(outside), 4)
+        outside_records = {link["id"]: link for link in outside}
+        original_snapshot = self.registry.evidence.snapshot(
+            runner.collect_cases(ROOT / "tests", self.registry))
+        outside_snapshot = {name: original_snapshot[name] for name in outside_records}
+        self.assertEqual(set(outside_records) | {link["id"] for link in scoped},
+                         set(self.registry.evidence.links))
+        self.assertTrue(set(outside_records).isdisjoint(link["id"] for link in scoped))
         original_admin = {k: v for k, v in self.catalogue.items() if k.startswith("review_")}
         states = 0
         for choices in itertools.product((False, True), repeat=len(scoped)):
@@ -304,6 +310,12 @@ class TypeBoundFixturesTests(unittest.TestCase):
                 registry = Registry(ROOT)
                 actual_cases = runner.collect_cases(ROOT / "tests", registry)
                 self.assertEqual({case.name for case in actual_cases}, self.all_case_ids)
+                self.assertEqual(
+                    {name: link for name, link in registry.evidence.links.items() if name in outside_records},
+                    outside_records)
+                current_snapshot = registry.evidence.snapshot(actual_cases)
+                self.assertEqual({name: current_snapshot[name] for name in outside_records},
+                                 outside_snapshot)
                 partitions = generated.facet_partitions(updated, self.specs)
                 self.assertEqual({r: p["linked"] for r, p in partitions.items() if p["linked"]}, active)
                 self.assertEqual(generated.synced_catalogue(updated, self.specs), updated)
