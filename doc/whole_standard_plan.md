@@ -1492,6 +1492,26 @@ The172-method metadata selection passes; this source-only registration
 adds no compiler invocation and does not relabel batch065's selected
 observations or batch059's full report. See `doc/source_audits/batch_066.json`.
 
+The sixty-seventh checkpoint adds two independently reviewed SAVE runtime
+effects. An explicitly saved INTEGER local without an initializer retains
+11then17 across three actual RETURNs. A second program proves sharing while
+the outer recursive instance remains active: the inner instance reads11
+and writes17, which the resumed outer instance reads directly. Independent
+snapshots and lifecycle/check totals make missing work observable.
+
+All50wrong-oracle and12omission programs were independently reconstructed;
+186fresh processor runs reached the intended failures after six passing
+parents. No undefined SAVE-removed program is used. The current main
+selection adds two target/GNUf2023qualified effects, while actualFlangf2018
+passes remain supplementary. This is not a new full-suite result.
+
+There are now **2,049cases**, with **1,756direct,22linked and1,771pending
+facets out of3,549**; source counts are unchanged. All2,047prior case
+bindings,2,011reviews,22links,R402andbaseline survive. The later readable
+source-status header is preserved when composing the new SAVE view.
+The41-method focused selection passes. Six other S1facets and24other
+local SAVE facets remain pending. See `doc/source_audits/batch_067.json`.
+
 A further source-only packet covers 7.5.8 and 7.5.9 with 13 base units,
 50 fine units, 14 requirements and 72 pending facets. It preserves existing
 canonical witnesses and explicitly accounts for the value-set definition
