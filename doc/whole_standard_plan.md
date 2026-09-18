@@ -1651,10 +1651,28 @@ metadata methods pass without compiler invocations; source/inventory
 adjudication is not an execution or representation-profile approval.
 See `doc/source_audits/batch_075.json`.
 
-POINTER/PROTECTED correction
-`396598d` awaits independent PPSR-001 closeout. SAVE/TARGET and VALUE/VOLATILE
-statement source authoring remains isolated. None of these pending packets
-receives case, execution or source credit here.
+The seventy-sixth checkpoint registers independently reviewed POINTER and
+PROTECTED statement source after PPSR-001 closeout. Correction `396598d`
+changes exactly two C892 references and one generated line to the actual
+dummy-procedure owner15.5.2.10, rather than the coarray owner15.5.2.9. The
+initial blocked proposal and review remain immutable. Seven base/25fine
+units contain four numbered requirements and33pending facets; three base
+units are newly accounted. Actual EXTERNAL-conferring routes, data versus
+procedure identity, canonical C855 reuse, protection scope and pointer
+state/lifetime conditions remain explicit future fixture gates.
+
+There remain **2,056cases**, now with **129catalogues,756requirements,
+1,761direct,22linked and2,141pending facets out of3,924**. Source accounting
+covers1,732base units;4,741base and six fine units remain unresolved.
+All old case/review/link/R402/baseline bindings survive. The original
+independent172-method review, narrow14-method closeout and current main
+172-method selection retain their separate scopes. No compiler observation
+or missing-EXTERNAL negative/control is supplied. Source registration is not
+fixture approval. See `doc/source_audits/batch_076.json`.
+
+SAVE/TARGET and VALUE/VOLATILE statement source authoring remains isolated
+and requires independent review. PARAMETER value effects and all wider
+source/oracle/processor gates remain unfinished.
 
 A further source-only packet covers 7.5.8 and 7.5.9 with 13 base units,
 50 fine units, 14 requirements and 72 pending facets. It preserves existing
