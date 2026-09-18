@@ -1605,11 +1605,27 @@ and R402 survive. The45-method focused selection and current observations
 retain their exact contexts; no new full-suite execution is claimed.
 See `doc/source_audits/batch_072.json`.
 
-DATA, DIMENSION/INTENT and OPTIONAL/PARAMETER source packets have independent
-eligibility and await serialized registration. POINTER/PROTECTED is blocked
-by PPSR-001: its dummy-procedure cross-reference needs correction and
-independent closeout. SAVE/TARGET statement source authoring remains isolated.
-None of these pending packets receives case, execution or source credit here.
+The seventy-third checkpoint registers independently reviewed DATA statement
+source:37base/184fine units,33requirements and185pending facets. Twenty-five
+numbered units were already counted; the eleven paragraphs and complete note
+newly account **12base units**, not37. Initialization, expanded sequence/count
+rules, pointer/state/SAVE conditions and representation-dependent oracles
+remain explicitly qualified. The failed broad annex read is not claimed
+complete; the required dependencies were separately checked.
+
+There remain **2,056cases**, now with **123catalogues,743requirements,
+1,761direct,22linked and2,041pending facets out of3,824**. Source accounting
+covers1,718base units;4,755base and six fine units remain unresolved.
+All case bindings,2,020raw reviews,22links,R402andbaseline are unchanged.
+The172-method metadata selection passes without compiler invocations;
+batch072's actual four-case selection retains its122-catalogue context.
+See `doc/source_audits/batch_073.json`.
+
+DIMENSION/INTENT and OPTIONAL/PARAMETER source packets have independent
+eligibility and await serialized registration. POINTER/PROTECTED correction
+`396598d` awaits independent PPSR-001 closeout. SAVE/TARGET and VALUE/VOLATILE
+statement source authoring remains isolated. None of these pending packets
+receives case, execution or source credit here.
 
 A further source-only packet covers 7.5.8 and 7.5.9 with 13 base units,
 50 fine units, 14 requirements and 72 pending facets. It preserves existing
