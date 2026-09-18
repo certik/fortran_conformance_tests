@@ -22,7 +22,7 @@ The readiness refactoring now supplies:
   context case.
 
 This is infrastructure readiness, not completed conformance coverage.
-The current census still has 4,772 unresolved base units and six unresolved
+The current census still has 4,771 unresolved base units and six unresolved
 fine-grained units inside the catalogues. Its independent visual
 review is still pending. Automatic PDF extraction is not semantic review,
 and list items/table rows require additional audited subdivisions.
@@ -1527,6 +1527,21 @@ The172-method metadata selection passes. This source-only registration
 adds no compiler invocation and preserves the actual contexts of batch067's
 selected observations and batch059's full report.
 See `doc/source_audits/batch_068.json`.
+
+The sixty-ninth checkpoint registers independently reviewed CONTIGUOUS
+statement source: two base/seven fine units, R839 and10pending facets.
+Only p1 is newly accounted; R839 was already counted. Its actual
+object-name-list uses explicit R804/C810, and C830 eligibility remains
+separate from naming, actual contiguity or scalar effective rank.
+
+There remain **2,049cases**, now with **121catalogues,702requirements,
+1,756direct,22linked and1,819pending facets out of3,597**. Source accounting
+covers1,702base units;4,771base and six fine units remain unresolved.
+All case bindings,2,013reviews,22links,R402andbaseline are preserved.
+The14C830 cases and two prior contiguity effects use type attributes, not
+standalone statement occurrences; their failures, ICE and26UNTESTED plans
+are not promoted or relabelled. The172-method metadata selection passes,
+with no compiler invocation. See `doc/source_audits/batch_069.json`.
 
 A further source-only packet covers 7.5.8 and 7.5.9 with 13 base units,
 50 fine units, 14 requirements and 72 pending facets. It preserves existing

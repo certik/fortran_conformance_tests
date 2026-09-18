@@ -1,0 +1,122 @@
+{
+  "schema_version": 1,
+  "section": "8.6.6",
+  "review_state": "reviewed",
+  "subunits": {
+    "R839": [
+      "R839.keyword",
+      "R839.optional-double-colon",
+      "R839.object-name-list"
+    ],
+    "p1": [
+      "p1.statement-route",
+      "p1.contiguous-attribute",
+      "p1.listed-objects",
+      "p1.canonical-attribute-reference"
+    ]
+  },
+  "accounting": [
+    {
+      "unit": "R839",
+      "disposition": "requirements",
+      "requirements": [
+        "R839"
+      ]
+    },
+    {
+      "unit": "R839.keyword",
+      "disposition": "requirements",
+      "requirements": [
+        "R839"
+      ]
+    },
+    {
+      "unit": "R839.optional-double-colon",
+      "disposition": "requirements",
+      "requirements": [
+        "R839"
+      ]
+    },
+    {
+      "unit": "R839.object-name-list",
+      "disposition": "requirements",
+      "requirements": [
+        "R839"
+      ],
+      "rationale": "The actual original production says object-name-list, not array-name-list. R401 supplies a nonempty comma-separated list. Explicit R804/C810 govern object-name and override the assumed R402 name convention under4.1.3p2. Neither an array/coarray specification nor a component designator is part of this production."
+    },
+    {
+      "unit": "p1",
+      "disposition": "definition",
+      "rationale": "The original normative paragraph defines the statement-to-attribute route for the listed objects and cites8.5.7. C830 and the canonical S8.5.7 requirements retain eligibility, dummy contiguity, pointer-target and other contiguity semantics. No duplicate local S effect, executable operation or no-op classifier is introduced."
+    },
+    {
+      "unit": "p1.statement-route",
+      "disposition": "definition",
+      "rationale": "8.5.1 permits an attribute specification statement as an explicit route. R839 is not an ALLOCATE, pointer assignment, actual-argument conversion, contiguity inquiry or transfer operation. A CONTIGUOUS spelling inside a type declaration is a different grammar occurrence."
+    },
+    {
+      "unit": "p1.contiguous-attribute",
+      "disposition": "definition",
+      "rationale": "C830 permits an array pointer, an assumed-shape array or an assumed-rank dummy data object. Actual contiguity, an ordinary dummy role or scalar RANK(0) does not create eligibility. A genuinely assumed-rank dummy can have a scalar effective argument; that is not an ordinary fixed-rank scalar or scalar pointer."
+    },
+    {
+      "unit": "p1.listed-objects",
+      "disposition": "definition",
+      "rationale": "Each named object receives the attribute subject to its actual declaration and scope. Type, rank and array category must be established by their proper declarations; R839 supplies no shape or pointer attribute. Each list member separately meets C830, C815 and relevant use/host/BLOCK conditions. No blanket rule requiring every attribute statement to follow its type declaration is invented."
+    },
+    {
+      "unit": "p1.canonical-attribute-reference",
+      "disposition": "definition",
+      "rationale": "PENDING finite source relations to8.5.7,9.5.4, pointer assignment and actual/dummy/state rules. The existing14C830 compile cases and2S8.5.7-001 runtime cases retain owners, source bytes, evidence roles, fingerprints and reviews. Their CONTIGUOUS occurrences are in type declarations, not R839 statements; existing failures, ICEs or UNTESTED plans cannot become statement evidence through this catalogue."
+    }
+  ],
+  "requirements": [
+    {
+      "id": "R839",
+      "title": "A CONTIGUOUS statement has an optional double colon and a nonempty object-name list",
+      "source": "8.6.6 R839, J3/24-007, 18 December 2023, physical PDF136, printed122.",
+      "source_units": [
+        "R839",
+        "R839.keyword",
+        "R839.optional-double-colon",
+        "R839.object-name-list"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "The CONTIGUOUS keyword is followed by an optional double colon and a nonempty comma-separated list of object names. R804/C810 supplies the explicit object-name production, rather than an assumed R402 or an array-name production. R839 specifies the existing CONTIGUOUS attribute; it supplies no type, array/coarray specification, pointer association or executable contiguity test. Every subject must independently satisfy C830 and the declaration/scope rules.",
+      "facets": [
+        "double-colon-form",
+        "no-double-colon-form",
+        "multiple-distinct-eligible-objects",
+        "missing-object-list",
+        "list-separator-repair",
+        "bare-name-not-declarator-or-designator",
+        "entity-category-and-rank-source",
+        "single-specification-and-order-source",
+        "use-host-block-source-identity",
+        "attribute-and-runtime-evidence-boundary"
+      ],
+      "pending": {
+        "double-colon-form": "PENDING compile/positive-control: a complete ordinary program declares INTEGER, POINTER :: p(:), then one CONTIGUOUS :: p statement in its specification part. Do not also put CONTIGUOUS in the type declaration. The independently established array-pointer category satisfies C830; no initializer, association inquiry, payload read, allocation or runtime claim is needed.",
+        "no-double-colon-form": "PENDING the otherwise equivalent complete CONTIGUOUS p form on a separately declared eligible array pointer. Preserve normal free-form token separation and the same declaration/category conditions. The separator is optional but the object list is not.",
+        "multiple-distinct-eligible-objects": "PENDING a complete program with separately declared INTEGER pointer arrays p(:), q(:), each named once in CONTIGUOUS :: p, q. A separate qualified mixed-category control uses an explicit-interface module procedure with nonallocatable nonpointer dummy x(:) and local array pointer p(:), then CONTIGUOUS :: x, p. Every object is independently eligible; no undefined pointer or dummy payload is inspected and list syntax is not a runtime effect.",
+        "missing-object-list": "PENDING two complete specification-part contrasts, CONTIGUOUS alone and CONTIGUOUS :: alone, each with a valid independently declared array pointer p available. Insert only p, with required token separation, for the paired valid control. Unlike the accessibility/default or SAVE forms, R839 has no listless all-objects alternative. Require the actual missing-object-list cause at a legitimate source origin, not generic EOF/missing-END or an unsupported attribute.",
+        "list-separator-repair": "PENDING a complete source with two distinct eligible pointer-array names and one missing comma, repaired only by inserting that comma; separately, a trailing-comma contrast is repaired only by deleting the trailing comma. R401 owns the assumed list convention. Hold entity identity, pointer/rank declarations and the single explicit CONTIGUOUS specification fixed, so duplicate attributes or invalid subject categories cannot masquerade as list errors.",
+        "bare-name-not-declarator-or-designator": "PENDING a complete INTEGER pointer-array context containing CONTIGUOUS :: p(:), repaired by removing only the suffix while retaining p's actual deferred-shape declaration elsewhere. The syntax here has no array/coarray declarator groups. Component designators, array elements/sections and function references are not object-name; keep their exact owners. In particular, deleting %member from an ordinary derived scalar does not give an eligible C830 control, so such component-specific negatives remain gated until a complete role-valid single-predicate repair exists. Do not copy another attribute statement's permissive declarator grammar.",
+        "entity-category-and-rank-source": "PENDING canonical C830 and8.5.8 source relations: separately declared array pointers, true assumed-shape dummies, ordinary assumed-rank dummies and ALLOCATABLE assumed-rank dummies retain their exact categories. Ordinary scalars, scalar pointers, explicit-shape arrays, fixed-rank allocatable arrays and assumed-size dummies are not admitted merely by naming them. RANK(0) makes an ordinary entity scalar under8.5.17p2; dummy status alone is insufficient. A genuine x(..) dummy may receive a scalar effective argument, but that is not an array-name shortcut or a new IS_CONTIGUOUS effect. The existing14type-declaration C830 cases remain source prerequisites, not statement witnesses or templates to clone into duplicate eligibility credit.",
+        "single-specification-and-order-source": "PENDING complete local source contrasts with exactly one explicit CONTIGUOUS route. A type-declaration CONTIGUOUS plus a separate CONTIGUOUS statement, or repetition of the same entity in statements/lists, belongs to C815's attribute-uniqueness rule, not a new R839 grammar defect. Initial controls establish type/rank first for clarity; any alternate attribute/type/shape ordering must follow8.2/8.5.1 rather than an invented universal prior-type requirement. Array or RANK-clause declarations must be mutually compatible and remain under C834/C863/C864.",
+        "use-host-block-source-identity": "PENDING finite source/interface controls with complete provider and scope definitions.14.2.2p9 does not permit a CONTIGUOUS statement to respecify a USE-associated object's attributes. For host names, resolve19.5.1.4p1/p2 rather than assuming this statement alone introduces a fresh local array or authorizes a change of host attributes; confirmation/change variants stay source-gated until that relation is established.11.1.4p2 makes CONTIGUOUS a nonexceptional BLOCK specification, unlike ASYNCHRONOUS/IMPORT/VOLATILE. A clear BLOCK control declares its own typed pointer array before the statement; it does not re-attribute the enclosing scalar or array merely through a shared name.",
+        "attribute-and-runtime-evidence-boundary": "PENDING exact canonical8.5.7/9.5.4 and15.5.2 relations, not new local effect programs. A CONTIGUOUS assumed-shape/assumed-rank dummy can have a permitted noncontiguous actual, but explicit interfaces, matching type/kind/rank, INOUT definability, nonvector actuals and applicable C1548/C1549 conditions remain. A CONTIGUOUS pointer dummy has the separate C1550 simply-contiguous-actual rule, and pointer assignment retains10.2.2.3p6. IS_CONTIGUOUS requires an assumed-rank object or array and an associated pointer if POINTER; rank-zero truth alone is not attribute evidence. Preserve the two complete S8.5.7-001 runtime parents, their actual inquiries/guarded payloads, real failures and parent-qualified or UNTESTED sensitivity plans. They use type-declaration attributes, so neither their runs nor the14C830 compile controls are relabelled R839 statement tests. No copy-in/out, address, descriptor, stride or allocation strategy is promised."
+      },
+      "oracle": "Complete compile/positive-controls for actual standalone statement forms, plus source-minimal missing-list, list-separator and whole-name grammar contrasts with valid C830 subjects. Full cases must isolate the intended syntax relation and retain required source/interface prerequisites. The explicit name production and canonical attribute/shape/state owners remain separate; all source/use relationships require independent adjudication before credit.",
+      "oracle_limitation": "All facets are pending. Numbered syntax reporting capability does not mandate fatal rejection, a printed R839 or specific English. Bare array/CONTIGUOUS words, wrong entity categories, incompatible shape, missing modules/interfaces, unrelated state/definability failures, unsupported facilities, source echoes, quoted examples, Internal/ASR/verifier errors, crashes and resource failures cannot qualify. Optional colons do not make the list optional or admit inline rank/shape syntax. Declaration admission is not association, allocation, defined payload, simply-contiguous actual availability or runtime IS_CONTIGUOUS evidence. Unallocated/disassociated/undefined objects are not read or queried without the intrinsic's exact premises, and no runtime requirement is downgraded to compile-only. Existing source, case, role, link, SourceUses, baseline and observation records are neither changed nor renewed.",
+      "dependencies": "4.1.1;4.1.3R401/R402/p2;4.2p2;8.1p1;8.2R802-R804/C810;8.5.1p1/C815;8.5.7C830/p1-p4/note3;8.5.8.1-.5/.7;8.5.17p2/C863/C864;7.5.4.1C757;9.5.4;10.2.2.3p6;11.1.4p2;14.2.2p9;15.4.2.2;15.5.2.4/.5/.8/.13;16.9.115;19.4p3;19.5.1.4;19.5.2.2/.5."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_8_6_6.md"
+  },
+  "review_fingerprint": "cc232a9f594bb8e32e12e28dfe7822f8ee0682c96a7bd7f1612a38366accb0dc",
+  "review_rationale": "Independent complete original2base/7fine CONTIGUOUS-statement source and10pending-facet reviewabe276ce653461bacbd85e8385a61ab6939c483ffab03afa4735998232d3c095, registered in doc/source_audits/batch_069.json. R839actuallyusesobject-name-list;explicitR804/C810overridesassumedR402,andR401suppliesnonemptylist. C830categoryeligibility is independent of naming, actualcontiguity, dummyrole or fixedRANK0. Genuineassumed-rank scalar-effective contexts remain distinct. Scope/type/rank/single-explicit-route and live-state prerequisites are retained, including HOST/BLOCK boundaries and C1548/C1549/C1550. IS_CONTIGUOUSrank0truth is not attribute evidence. P1is a normative attribute-definition route, not a duplicated S effect. All14C830cases/twoS8.5.7runtimeprograms use type attributes, not statement occurrences; their roles/FPs/reviews and genuine failures/ICE/UNTESTED evidence remain unchanged."
+}
