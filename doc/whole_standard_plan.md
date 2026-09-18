@@ -22,7 +22,7 @@ The readiness refactoring now supplies:
   context case.
 
 This is infrastructure readiness, not completed conformance coverage.
-The current census still has 4,716 unresolved base units and six unresolved
+The current census still has 4,710 unresolved base units and six unresolved
 fine-grained units inside the catalogues. Its independent visual
 review is still pending. Automatic PDF extraction is not semantic review,
 and list items/table rows require additional audited subdivisions.
@@ -1774,13 +1774,21 @@ All old case/review/link/R402/baseline bindings are preserved. The172main
 metadata methods pass; no new native observation or fixture approval is
 supplied. See `doc/source_audits/batch_082.json`.
 
-The remaining NAMELIST source proposal is frozen in its isolated author
-context. **It is not registered main coverage.** Independent source
-eligibility has passed; source/inventory registration remains separate.
+The eighty-third checkpoint registers independently reviewed NAMELIST
+source:11base/40fine units, five numbered and five S requirements, and
+47pending facets. Six base units are newly accounted. The review verifies
+470original units across53sections. Enumeration/direct-component restrictions,
+whole-group transfer state and defined-I/O requirements remain distinct;
+READ-back equality is not an oracle for output order or multiplicity.
+All output-parser, full-I/O lifecycle and sensitivity plans stay pending.
 
-| Proposal | Bounded scope | Author evidence and limits |
-| --- | --- | --- |
-| `836c650` NAMELIST |11base/40fine units,10requirements including five S rules,47pending facets | Independent review `299b5512` finds no source blockers. No fixtures, I/O parser or native runs; output order/multiplicity, recursive direct components and transfer-state conditions remain pending. |
+There remain **2,065cases**, now with **136catalogues,801requirements,
+1,770direct,22linked and2,384pending facets out of4,176**. Source accounting
+covers1,763base units;4,710base and six fine units remain unresolved.
+All old cases,2,029reviews,22links,R402andbaseline survive unchanged.
+The172main metadata methods pass without compiler invocations. Last actual
+main selection remains batch080 in its133-catalogue context; no source
+registration is a new full-suite execution. See `doc/source_audits/batch_083.json`.
 
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
