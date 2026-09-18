@@ -1492,8 +1492,9 @@ independent source review: six base/24fine units, four requirements and
 POINTER source `010e6f5` is registered as batch058 after independent review,
 with all38 facets pending. Frozen PROTECTED/SAVE source `bc5a85fc` and STOP
 source completion `00269110` remain under independent review, without main
-coverage or approval. TARGET/VALUE in8.5.17/.18 are the next isolated
-source-authoring scope.
+coverage or approval. TARGET/VALUE in8.5.18/.19 are the next isolated
+source-authoring scope. The intervening8.5.17 is the RANK clause, not TARGET;
+it and8.5.20 VOLATILE form a separate source-only authoring scope.
 
 Bound-COMMON SAVE runtime authoring stopped before any fixture or compiler
 run at BCS-ROLE-001: an explicit-SAVE confirmation needs a positive-control
