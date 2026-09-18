@@ -1297,6 +1297,29 @@ Corpus counts remain108catalogues/647requirements/1,512pending facets;
 the179-method metadata selection passed. See
 `doc/source_audits/batch_055.json`.
 
+The fifty-sixth checkpoint registers two CONTIGUOUS dummy runtime effects
+after independent source/oracle review and CIDR-001/002 correction closeout.
+The generator now preserves supplied unselected lifecycle state instead
+of forcing every other facet pending, and its foreign-state prose is
+timeless. The Fortran programs and literal oracles are unchanged. A
+limitation-text change genuinely changed both fingerprints, so all six
+parents and124 attempted full-program probes were freshly observed.
+
+The assumed-shape case has GNU f2023 corroboration; the assumed-rank case
+remains source-reviewed because GNU fails a payload check and Flang's
+successful f2018 runs are supplementary. Neither target case passes:
+one fails contiguity at runtime and one encounters a compile ICE.
+The26 unrun target rank probes remain UNTESTED; only24 GNU probes and50
+supplementary Flang probes qualify sensitivity.
+
+The full corpus is **2,037 cases: 1,236 PASS, 796 XFAIL, four SKIPs and
+one NEEDS_ORACLE** in the actual108-catalogue/647-requirement context.
+All2,035 prior results/bindings and the fourteen-case C830 contract are
+preserved; only the two reviewed target failures were added to the baseline.
+There are **1,747 direct, nine linked and1,510 pending facets out of3,266**;
+source counts are unchanged. The800-method Python suite passed. No new
+target runtime-effect pass is claimed. See `doc/source_audits/batch_056.json`.
+
 A further source-only packet covers 7.5.8 and 7.5.9 with 13 base units,
 50 fine units, 14 requirements and 72 pending facets. It preserves existing
 canonical witnesses and explicitly accounts for the value-set definition
@@ -1406,7 +1429,8 @@ disjoint-anchor infrastructure, and batch050 closes C830-ANCHOR-001 with the
 original source-qualified assumed-size pair and explicit fourteen-case
 adjudication. Fourteen compile cases now represent eight finite facets,
 without source coalescing, a widened span or a false GNU conformance failure.
-The28 surrounding S facets remain pending.
+Batch056 adds two independently reviewed S1runtime-effect facets with
+preserved target failures;26 other local S facets remain pending.
 
 Source-use candidate `29fc461` and correction `b9150e82` are integrated as
 batch026 after independent SULR-001 closeout. That infrastructure checkpoint
