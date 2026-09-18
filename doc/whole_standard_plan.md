@@ -22,7 +22,7 @@ The readiness refactoring now supplies:
   context case.
 
 This is infrastructure readiness, not completed conformance coverage.
-The current census still has 4,810 unresolved base units and eight unresolved
+The current census still has 4,802 unresolved base units and eight unresolved
 fine-grained units inside the catalogues. Its independent visual
 review is still pending. Automatic PDF extraction is not semantic review,
 and list items/table rows require additional audited subdivisions.
@@ -1342,6 +1342,21 @@ source/evidence selection passed. This was a selected observation, not a
 replacement for batch056's full run or its original nine-link context.
 See `doc/source_audits/batch_057.json`.
 
+The fifty-eighth checkpoint registers independently reviewed PARAMETER and
+POINTER source:12 base units,49 fine units, eight requirements and all38
+new facets pending. Four numbered units were already accounted; the actual
+reduction in unresolved base units is eight. Named-constant expression and
+ordering rules, pointer-entity exclusions, named-procedure EXTERNAL routes
+and association/target/value/lifetime distinctions retain their exact gates.
+
+There are now **110 catalogues, 655 requirements, 1,747 direct,22 linked
+and1,535 pending facets out of3,304**. Source accounting covers1,671 base
+units;4,802 base and eight fine units remain unresolved. All2,037 case
+bindings,2,001 case reviews,22 current links, R402 and the baseline are
+unchanged. This adds no compiler observation and does not relabel either
+batch056's full-run context or batch057's selected observations. The192-method
+source/evidence selection passed. See `doc/source_audits/batch_058.json`.
+
 A further source-only packet covers 7.5.8 and 7.5.9 with 13 base units,
 50 fine units, 14 requirements and 72 pending facets. It preserves existing
 canonical witnesses and explicitly accounts for the value-set definition
@@ -1434,7 +1449,9 @@ numbered units were already globally accounted; registration newly accounts
 INTRINSIC/OPTIONAL source packet `14c607c` is registered as batch054 after
 independent source review: six base/24fine units, four requirements and
 23pending facets, with no fixtures or compiler observations. PARAMETER and
-POINTER source in8.5.13/.14 are the next isolated author scope.
+POINTER source `010e6f5` is registered as batch058 after independent review,
+with all38 facets pending. PROTECTED/SAVE in8.5.15/.16 are the next isolated
+source author scope.
 
 Bound-COMMON SAVE runtime authoring stopped before any fixture or compiler
 run at BCS-ROLE-001: an explicit-SAVE confirmation needs a positive-control
