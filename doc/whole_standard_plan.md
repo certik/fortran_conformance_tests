@@ -1583,6 +1583,34 @@ renewals, all22current links and R402 remain unchanged. The41-method
 focused selection passes. This is a selected three-case observation, not
 a new full-suite report. See `doc/source_audits/batch_071.json`.
 
+The seventy-second checkpoint adds four independently reviewed R839
+standalone CONTIGUOUS cases, representing three facets. Each missing-list
+form has a one-name-insertion compile control. Independent review corrected
+an oracle that admitted only one compiler's wording: the exact expected-name
+reports now qualify in both fixed contexts, and the exact premature-newline
+report qualifies only after the double colon. Source, location, shielding
+and native-failure safeguards remain unchanged. Generated prose no longer
+reinstates historical verdicts after correction or approval.
+
+The current target selection reports **three PASS and one XFAIL**. The
+bare-form unsupported-attribute report remains a failure; it is not silent
+acceptance. GNU actual f2023 passes all four expectations; Flang's four
+passes remain supplementary f2018 evidence. Only the one approved current
+target failure was added to the baseline. Original reports and all four
+Fortran sources remain unchanged.
+
+There are now **2,056cases**, with **1,761direct,22linked and1,856pending
+facets out of3,639**. All2,052prior case bindings,2,016raw reviews,22links
+and R402 survive. The45-method focused selection and current observations
+retain their exact contexts; no new full-suite execution is claimed.
+See `doc/source_audits/batch_072.json`.
+
+DATA, DIMENSION/INTENT and OPTIONAL/PARAMETER source packets have independent
+eligibility and await serialized registration. POINTER/PROTECTED is blocked
+by PPSR-001: its dummy-procedure cross-reference needs correction and
+independent closeout. SAVE/TARGET statement source authoring remains isolated.
+None of these pending packets receives case, execution or source credit here.
+
 A further source-only packet covers 7.5.8 and 7.5.9 with 13 base units,
 50 fine units, 14 requirements and 72 pending facets. It preserves existing
 canonical witnesses and explicitly accounts for the value-set definition
