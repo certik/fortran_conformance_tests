@@ -22,7 +22,7 @@ The readiness refactoring now supplies:
   context case.
 
 This is infrastructure readiness, not completed conformance coverage.
-The current census still has 4,775 unresolved base units and six unresolved
+The current census still has 4,772 unresolved base units and six unresolved
 fine-grained units inside the catalogues. Its independent visual
 review is still pending. Automatic PDF extraction is not semantic review,
 and list items/table rows require additional audited subdivisions.
@@ -1511,6 +1511,22 @@ bindings,2,011reviews,22links,R402andbaseline survive. The later readable
 source-status header is preserved when composing the new SAVE view.
 The41-method focused selection passes. Six other S1facets and24other
 local SAVE facets remain pending. See `doc/source_audits/batch_067.json`.
+
+The sixty-eighth checkpoint registers independently reviewed BIND and
+CODIMENSION statement source: eight base/30fine units, five numbered
+requirements and38pending facets. Three base units are newly accounted;
+five numbered units were already counted. NAME presence remains distinct
+from label existence, a COMMON block from its members, and ordinary rank
+from corank. Declaration admission supplies no C ABI or multi-image result.
+
+There remain **2,049cases**, now with **120catalogues,701requirements,
+1,756direct,22linked and1,809pending facets out of3,587**. Source accounting
+covers1,701base units;4,772base and six fine units remain unresolved.
+All prior case bindings,2,013reviews,22links,R402andbaseline are preserved.
+The172-method metadata selection passes. This source-only registration
+adds no compiler invocation and preserves the actual contexts of batch067's
+selected observations and batch059's full report.
+See `doc/source_audits/batch_068.json`.
 
 A further source-only packet covers 7.5.8 and 7.5.9 with 13 base units,
 50 fine units, 14 requirements and 72 pending facets. It preserves existing
