@@ -22,7 +22,7 @@ The readiness refactoring now supplies:
   context case.
 
 This is infrastructure readiness, not completed conformance coverage.
-The current census still has 4,784 unresolved base units and six unresolved
+The current census still has 4,778 unresolved base units and six unresolved
 fine-grained units inside the catalogues. Its independent visual
 review is still pending. Automatic PDF extraction is not semantic review,
 and list items/table rows require additional audited subdivisions.
@@ -1442,6 +1442,22 @@ All prior case bindings/reviews,22links,R402andbaseline are preserved.
 The172-method metadata selection passes, with no compiler invocation or
 historical-report relabelling. See `doc/source_audits/batch_063.json`.
 
+The sixty-fourth checkpoint registers independently reviewed TARGET/VALUE
+source at the correct8.5.18/.19 sections:11base/48fine units, seven
+requirements and37pending facets. The initial section-title guard stopped
+before authoring; its blocker receipt is retained byte-for-byte. Six base
+units are newly accounted after five numbered units already counted.
+Target eligibility, subobject inheritance, pointer lifetime, anonymous VALUE
+effective arguments and interoperable dummy restrictions stay distinct.
+
+There remain **2,043cases**, now with **116catalogues,693requirements,
+1,752direct,22linked and1,746pending facets out of3,520**. Source accounting
+covers1,695base units;4,778base and six fine units remain unresolved.
+All prior case bindings/reviews,22links,R402andbaseline are preserved.
+The172-method metadata selection passes; no compiler invocation, automatic
+canonical reuse or duplicated VALUE copy-effect requirement is added.
+See `doc/source_audits/batch_064.json`.
+
 A further source-only packet covers 7.5.8 and 7.5.9 with 13 base units,
 50 fine units, 14 requirements and 72 pending facets. It preserves existing
 canonical witnesses and explicitly accounts for the value-set definition
@@ -1541,7 +1557,7 @@ as batch061 after independent review, with all90facets pending. STOP source
 completion `00269110` is registered as batch062 with38new facets pending
 and the original calibration unchanged. RANK/VOLATILE `deb25880` is
 registered as batch063 with51facets pending. Correctly numbered TARGET/VALUE
-in8.5.18/.19 are independently eligible at `e2cef4b8` and await registration. The intervening
+in8.5.18/.19 are registered from `e2cef4b8` as batch064 with37facets pending. The intervening
 8.5.17 is the RANK clause, not TARGET. Source eligibility is not fixture or
 execution approval.
 
