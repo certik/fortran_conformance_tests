@@ -1686,13 +1686,32 @@ All old cases,2,020reviews,22links,R402andbaseline remain unchanged. The172
 main metadata methods pass; no compiler, copying/ABI effect, timing oracle
 or fixture approval is supplied. See `doc/source_audits/batch_077.json`.
 
-SAVE/TARGET source is under independent review. A separate isolated
+The seventy-eighth checkpoint registers independently reviewed SAVE and
+TARGET statement source:11base/46fine units, seven numbered requirements
+and44pending facets. Four base units are newly accounted. SAVE's nested
+optional list/colon group, same-scope C893 antecedent and actual procedure
+pointer/COMMON roles remain distinct. TARGET's array/coarray declaration
+groups retain category, scope and lifetime conditions rather than a
+CONTIGUOUS-style name-only interpretation. Eight complete existing inputs
+were checked for actual standalone occurrences without adding canonical
+connections or changing their roles.
+
+There remain **2,056cases**, now with **133catalogues,765requirements,
+1,761direct,22linked and2,208pending facets out of3,991**. Source accounting
+covers1,738base units;4,735base and six fine units remain unresolved.
+All old case/review/link/R402/baseline bindings are preserved. Independent
+and main172-method metadata selections pass without compiler invocations.
+No SAVE retention, TARGET lifetime or new grammar observation is supplied.
+See `doc/source_audits/batch_078.json`.
+
+A separate isolated
 PARAMETER proposal `c4be9b2` adds six finite value-effect programs and is
 under independent source/oracle/native review, not integrated here. Its
 author observations retain a truncation runtime failure and a scalar-array
 compiler failure; no baseline update or successful effect credit is
 inferred from this source checkpoint. IMPLICIT8.7 source authoring remains
-isolated. All wider source/oracle/processor gates remain unfinished.
+isolated; IMPORT source accounting is the next bounded coordinator scope.
+All wider source/oracle/processor gates remain unfinished.
 
 A further source-only packet covers 7.5.8 and 7.5.9 with 13 base units,
 50 fine units, 14 requirements and 72 pending facets. It preserves existing
