@@ -1723,30 +1723,49 @@ pending. The186main metadata methods pass. The current selected execution is
 suite remain batch059's2,041cases and837methods, not current full runs.
 See `doc/source_audits/batch_079.json`.
 
-The following proposals are frozen in isolated author contexts.
-**They are not registered main coverage.** DATA has passed independent
-review and awaits serialized integration; the source reviews remain queued.
+The eightieth checkpoint integrates three independently reviewed DATA
+position/initial-state programs from `36e9f1b`: scalar correspondence,
+rank-two array element order, and initialization despite physical placement
+after RETURN. Actual DATA subjects have independent literal/coordinate
+oracles; all mutations retain initialization, including defined-result
+omission models. Independent review reproduces nine passing parents and
+129sensitive mutations. Current main gives three target and three GNUf2023
+qualified effect passes; three Flangf2018passes remain supplementary.
+The actual GNU obsolescence warning is preserved without new reporting credit.
+
+There are now **2,065cases,133catalogues,765requirements,1,770direct,
+22linked and2,199pending facets out of3,991**. All2,062old case bindings,
+2,026old reviews,22links,R402and the `b153c75b` baseline survive unchanged.
+The other182DATA facets remain pending. The184main metadata methods pass,
+and `batch080-selected-native.json` is the actual latest main selection in
+its2,065-case context. Source accounting remains1,738/6,473; last actual full
+execution/Python results remain the historical batch059 results.
+See `doc/source_audits/batch_080.json`.
+
+The following source proposals are frozen in isolated author contexts.
+**They are not registered main coverage.** IMPORT and NAMELIST have passed
+independent review; IMPLICIT's coordinator review is in progress.
 
 | Proposal | Bounded scope | Author evidence and limits |
 | --- | --- | --- |
-| `36e9f1b` DATA | Three S8.6.7-004 position/initial-state programs and three facets | Independent review `57ac4e0f` finds no blockers: nine fresh parents pass and129mutations are sensitive. DATA after RETURN remains obsolescent but conforming, and every mutation preserves initialization. |
-| `c713ce4` IMPORT |18base/71fine units,15requirements including seven S rules,79pending facets | No fixtures or native runs. BLOCK versus ordinary host access, interface defaults, implicit mapping and no-hiding conditions remain explicit. |
-| `836c650` NAMELIST |11base/40fine units,10requirements including five S rules,47pending facets | No fixtures, I/O parser or native runs. Output order/multiplicity/concatenation, recursive direct components and exact transfer-state conditions remain pending. |
+| `e9aae0c8` IMPLICIT |18base/111fine units,11requirements and59pending facets | No fixtures or native runs. Complete note continuation, mapping/type, scope, ordering and EXTERNAL qualification await independent review. |
+| `c713ce4` IMPORT |18base/71fine units,15requirements including seven S rules,79pending facets | Independent review `74b54792` finds no source blockers. No fixtures or native runs; BLOCK/host access, interface defaults, implicit mapping and no-hiding conditions remain pending. |
+| `836c650` NAMELIST |11base/40fine units,10requirements including five S rules,47pending facets | Independent review `299b5512` finds no source blockers. No fixtures, I/O parser or native runs; output order/multiplicity, recursive direct components and transfer-state conditions remain pending. |
 
-The historical PARAMETER author context is batch076's2,056cases/129catalogues.
-DATA, IMPORT and NAMELIST use batch078's2,056cases/133catalogues; their separate
-candidate counts must not be added to main or conflated with each other.
+The historical PARAMETER and current IMPLICIT author contexts are
+batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
+from batch078's2,056cases/133catalogues; their separate candidate counts must
+not be conflated with current main or with each other.
 The original PARAMETER native capture completed before a Python3.9 proof-join
 error; its unchanged report was joined using the existing Python3.12
 environment, with no rerun and no invented runner-return value.
 
-IMPLICIT8.7 source authoring remains isolated from batch076, followed by
-independent IMPORT and NAMELIST reviews by that other author. A distinct
-EQUIVALENCE8.10.1.1-.5 source author starts from `ddb0952`, covering25base
-units with all executable facets pending. None of these unintegrated
+Distinct EQUIVALENCE8.10.1.1-.5 and COMMON/storage-association8.10.2.1-.5/8.10.3
+source authors start from `ddb0952` and `cb45d6a`, respectively, covering25
+and29base units with all executable facets pending. None of these unintegrated
 proposals grants source, case, link, SourceUse or inventory approval.
-The new main baseline is `b153c75b`; its only changes are the two approved
-PARAMETER failures. All wider source/oracle/processor gates remain unfinished.
+The main baseline remains `b153c75b`, including the two approved PARAMETER
+failures. All wider source/oracle/processor gates remain unfinished.
 
 A further source-only packet covers 7.5.8 and 7.5.9 with 13 base units,
 50 fine units, 14 requirements and 72 pending facets. It preserves existing
