@@ -1458,6 +1458,25 @@ The172-method metadata selection passes; no compiler invocation, automatic
 canonical reuse or duplicated VALUE copy-effect requirement is added.
 See `doc/source_audits/batch_064.json`.
 
+The sixty-fifth checkpoint registers four C839/C840 compile cases for two
+finite exclusions. A nondummy assumed-rank declaration is repaired only by
+dummy-list insertion; direct `PRINT *, x` is repaired only to
+`PRINT *, RANK(x)` in an otherwise identical complete program. Independent
+review accepts the target's exact located PRINT prohibition, not generic
+unsupported-feature wording. Flang's actualf2018silent acceptance remains
+a reporting failure; GNUf2023corroborates all four cases.
+
+The corpus is now **2,047cases**, with **1,754direct,22linked and1,744pending
+facets out of3,520**; source counts are unchanged. The current selection has
+four targetPASS results and12compile records, not a new full-suite run.
+Two valid controls are qualified conforming admissions; two diagnostic-only
+successes are not runtime effects or additional qualified valid members.
+An auxiliary verifier initially confused those counts; the production
+report was already correct and remains immutable. The56-method focused
+selection passes, including the independently reviewed standalone-generator
+test-scope correction. All prior case bindings,22links,R402and the failure
+baseline survive. See `doc/source_audits/batch_065.json`.
+
 A further source-only packet covers 7.5.8 and 7.5.9 with 13 base units,
 50 fine units, 14 requirements and 72 pending facets. It preserves existing
 canonical witnesses and explicitly accounts for the value-set definition

@@ -456,26 +456,23 @@ class AssumedRankEffectFixturesTests(unittest.TestCase):
             foreign.mkdir()
             parent = self.specs[generated.identifier("ordinary")]
             manifest = copy.deepcopy(parent["manifest"])
-            manifest.update(id="S8_5_8_7_001_valid__foreign_owner", facets=[foreign_facet])
+            manifest.update(id="S8_5_8_7_001_valid__foreign_owner", facets=[foreign_facet],
+                            evidence="positive-control" if foreign_facet in owner.get("positive_control_facets", [])
+                            else "effect")
             write_json(foreign / "fixture.json", manifest)
             (foreign / "source.f90").write_text(parent["source"])
-            write_json(root / "source.json", dict(
-                self.registry.standard, sections={generated.SECTION: self.registry.sections[generated.SECTION]}))
-            (root / "rules.txt").write_text("R827 test inventory\nC839 test inventory\nC840 test inventory\nC841 test inventory\n")
             write_json(root / "reviews.json", dict(schema_version=1, fixtures={}))
-            write_json(root / "index.json", dict(
-                schema_version=1, standard=self.registry.standard, source_inventory="source.json",
-                rule_inventory="rules.txt", reviews="reviews.json", catalogues=[generated.CATALOGUE]))
-            registry = Registry(root, "index.json")
-            cases = runner.collect_cases(root / "tests", registry)
-            self.assertEqual({case.name for case in cases}, set(self.cases) | {manifest["id"]})
-            self.assertTrue(all(row["review"]["state"] == "unreviewed" for row in registry.execution._members(cases)))
+            fixtures = [runner.load_fixture(path, runner.PROFILES) for path in root.rglob("fixture.json")]
+            self.assertEqual({fixture.name for fixture in fixtures}, set(self.cases) | {manifest["id"]})
+            for fixture in fixtures:
+                case = runner.SuiteCase(fixture.name, fixture.rule, fixture.kind, str(fixture.path),
+                                        fixture.meta, fixture.name, fixture=fixture)
+                validate_case_requirement(case, owner)
             before = {path.relative_to(root): path.read_bytes() for path in root.rglob("*") if path.is_file()}
             with patch.object(runner, "run", side_effect=AssertionError("generation must not execute a compiler")):
                 for _ in range(2):
                     generated.generate(root, sync_catalogue=True)
                     generated.generate(root, check=True)
-                registry.render()
             self.assertEqual({path.relative_to(root): path.read_bytes() for path in root.rglob("*") if path.is_file()}, before)
 
     def test_only_owned_oracle_paragraphs_are_upserted_and_raw_source_records_are_retained(self):
