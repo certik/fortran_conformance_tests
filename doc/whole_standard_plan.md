@@ -22,7 +22,7 @@ The readiness refactoring now supplies:
   context case.
 
 This is infrastructure readiness, not completed conformance coverage.
-The current census still has 4,828 unresolved base units and eight unresolved
+The current census still has 4,814 unresolved base units and eight unresolved
 fine-grained units inside the catalogues. Its independent visual
 review is still pending. Automatic PDF extraction is not semantic review,
 and list items/table rows require additional audited subdivisions.
@@ -1247,6 +1247,23 @@ batch051 retains its actual103-catalogue/619-requirement full-run context.
 The172-method source/evidence selection passed. See
 `doc/source_audits/batch_052.json`.
 
+The fifty-third checkpoint registers independently reviewed EXTERNAL and
+INTENT source:23 base units,104 fine units,21 requirements and all97 new
+facets pending. Nine numbered units were already accounted; the actual
+base-unit reduction is14. Pointer association, target data, OUT entry
+undefinedness, actual-argument requirements and invocation-statement
+interference remain distinct. Continued note4.2 and the global always-defined
+zero-size/zero-length boundary are retained without new trap/value oracles.
+
+The corpus now has **106 catalogues, 643 requirements, 1,745 direct,
+nine linked and1,489 pending facets out of3,243**. Source accounting covers
+1,659 base units;4,814 base and eight fine units remain unresolved.
+All2,035 case bindings,1,999 stored reviews, nine links, R402 and the baseline
+are unchanged. Only source and inventory context are renewed; batch051
+remains the actual last full run in its103-catalogue/619-requirement context.
+The172-method source/evidence selection passed. See
+`doc/source_audits/batch_053.json`.
+
 A further source-only packet covers 7.5.8 and 7.5.9 with 13 base units,
 50 fine units, 14 requirements and 72 pending facets. It preserves existing
 canonical witnesses and explicitly accounts for the value-set definition
@@ -1331,14 +1348,14 @@ pointer-bound canonical-mechanism coverage gates pending. Assumed-size/
 implied-shape source `b0f9d2b` is integrated as batch043 with all59 facets
 pending. Assumed-rank source `7e010106` is integrated as batch047 with all32
 facets pending. Coordinator-authored EXTERNAL/INTENT source packet
-`da6cf5d` is frozen unapproved:23base/104fine units,21requirements and
-97pending facets. Nine numbered units were already globally accounted;
-registration would newly account14base units, not23. Its independent source
-review is open, and it supplies no fixture or compiler observation.
+`da6cf5d` is registered as batch053 after independent source eligibility
+review:23base/104fine units,21requirements and97pending facets. Nine
+numbered units were already globally accounted; registration newly accounts
+14base units, not23. It supplies no fixture or compiler observation.
 INTRINSIC/OPTIONAL source packet `14c607c` is separately frozen unapproved:
 six base/24fine units, four requirements and23pending facets, with no
-fixtures or compiler observations. Independent source review and shared
-registration are still required.
+fixtures or compiler observations. Independent source eligibility has
+passed; explicit shared registration and all implementation remain pending.
 
 Bound-COMMON SAVE runtime authoring stopped before any fixture or compiler
 run at BCS-ROLE-001: an explicit-SAVE confirmation needs a positive-control
