@@ -1320,6 +1320,28 @@ There are **1,747 direct, nine linked and1,510 pending facets out of3,266**;
 source counts are unchanged. The800-method Python suite passed. No new
 target runtime-effect pass is claimed. See `doc/source_audits/batch_056.json`.
 
+The fifty-seventh checkpoint registers13 independently reviewed singleton
+runtime connections for7.5.8 over **five unchanged canonical programs**.
+Each link keeps its S10primary owner, source/role/phase and complete-program
+oracle. Pointer association, allocated-only characteristics and ordinary
+values have separate finite proofs; no p2classifier, copied program,
+multi-program fragment combination or extra execution is created.
+
+The five parents were independently reexecuted, then observed again on main
+under the current connection context:15 processor attempts and30 actual
+compile-link/run traces, not13 executions per configuration. GNU f2023 and
+Flang f2018 pass all five under their unchanged required-standard contracts;
+LFortran passes four and fails S024's array-pointer guard. **All four pointer
+connections retain that complete-parent failure.** The shared reporter
+still does not compute passing linked-effect aggregates.
+
+There remain **2,037 cases**, with **1,747 direct,22 current linked and1,497
+pending facets out of3,266**. All existing case fingerprints/reviews, nine
+old link records, R402 and the baseline are unchanged. The192-method
+source/evidence selection passed. This was a selected observation, not a
+replacement for batch056's full run or its original nine-link context.
+See `doc/source_audits/batch_057.json`.
+
 A further source-only packet covers 7.5.8 and 7.5.9 with 13 base units,
 50 fine units, 14 requirements and 72 pending facets. It preserves existing
 canonical witnesses and explicitly accounts for the value-set definition
@@ -1327,8 +1349,9 @@ without inventing a no-op execution. Its four-file author commit `1fada1e`
 has passed independent source-eligibility review; no main-checkout coverage
 was credited by the source-only packet. The 7.5.9 compile subset is now
 integrated separately as batch020. The unchanged7.5.8source half is now
-registered as batch052; its13value facets remain pending in main, without
-a fabricated value-set classifier execution or automatic canonical links.
+registered as batch052. Batch057 now represents its13value facets through
+independently reviewed finite connections over five unchanged programs,
+without a fabricated value-set classifier or duplicated execution.
 Source-only constructor packet `8ba944c` in 7.5.10 covers 28 base and
 114 fine units, with 22 requirements and 98 facets: two already represented
 C7107 facets and 96 pending. The four existing C7107 programs and their
