@@ -1378,6 +1378,24 @@ reviewed reporting failures were added to the baseline. There are
 counts are unchanged. All837 Python tests pass. One other C851 facet and
 all seven OPTIONAL S facets remain pending. See `doc/source_audits/batch_059.json`.
 
+The sixtieth checkpoint adds two independently reviewed assumed-rank runtime
+effects. A genuine `INTEGER, INTENT(IN) :: x(..)` observer sees ranks0/1/2
+from named scalar/vector/matrix actuals and ranks1/2 from zero-sized arrays.
+Literal oracles, entry/category/return/check totals and exact completion
+output do not substitute a fixed-rank observer or read empty-array elements.
+All25whole-program mutations were independently reconstructed;75fresh
+processor probes reached their intended failures after six passing parents.
+
+There are now **2,043 registered cases**, with **1,752 direct,22 current linked
+and1,530 pending facets out of3,304**. Both new target cases and GNUf2023
+references pass; actualFlangf2018passes remain supplementary. The current
+main selection contains two cases, six processor executions and18commands,
+not a new full-suite run. Batch059 remains the last actual2,041-case full
+observation. All prior case bindings/reviews,22links,R402and the baseline
+are preserved;43focused metadata/lifecycle checks pass. Thirty local facets
+remain pending, including four other S1facets. Source accounting is unchanged.
+See `doc/source_audits/batch_060.json`.
+
 A further source-only packet covers 7.5.8 and 7.5.9 with 13 base units,
 50 fine units, 14 requirements and 72 pending facets. It preserves existing
 canonical witnesses and explicitly accounts for the value-set definition
@@ -1461,8 +1479,9 @@ integrated as batch039, with all78 facets pending. Assumed/deferred-shape
 source `b2df630` is integrated as batch041, with all49 facets and the
 pointer-bound canonical-mechanism coverage gates pending. Assumed-size/
 implied-shape source `b0f9d2b` is integrated as batch043 with all59 facets
-pending. Assumed-rank source `7e010106` is integrated as batch047 with all32
-facets pending. Coordinator-authored EXTERNAL/INTENT source packet
+pending. Assumed-rank source `7e010106` was integrated as batch047 with all32
+facets pending; batch060 now represents two ordinary rank-effect facets,
+without closing the other30. Coordinator-authored EXTERNAL/INTENT source packet
 `da6cf5d` is registered as batch053 after independent source eligibility
 review:23base/104fine units,21requirements and97pending facets. Nine
 numbered units were already globally accounted; registration newly accounts
@@ -1471,8 +1490,10 @@ INTRINSIC/OPTIONAL source packet `14c607c` is registered as batch054 after
 independent source review: six base/24fine units, four requirements and
 23pending facets, with no fixtures or compiler observations. PARAMETER and
 POINTER source `010e6f5` is registered as batch058 after independent review,
-with all38 facets pending. PROTECTED/SAVE in8.5.15/.16 are the next isolated
-source author scope.
+with all38 facets pending. Frozen PROTECTED/SAVE source `bc5a85fc` and STOP
+source completion `00269110` remain under independent review, without main
+coverage or approval. TARGET/VALUE in8.5.17/.18 are the next isolated
+source-authoring scope.
 
 Bound-COMMON SAVE runtime authoring stopped before any fixture or compiler
 run at BCS-ROLE-001: an explicit-SAVE confirmation needs a positive-control
