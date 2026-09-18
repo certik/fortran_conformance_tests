@@ -22,7 +22,7 @@ The readiness refactoring now supplies:
   context case.
 
 This is infrastructure readiness, not completed conformance coverage.
-The current census still has 4,726 unresolved base units and six unresolved
+The current census still has 4,716 unresolved base units and six unresolved
 fine-grained units inside the catalogues. Its independent visual
 review is still pending. Automatic PDF extraction is not semantic review,
 and list items/table rows require additional audited subdivisions.
@@ -1758,13 +1758,28 @@ metadata methods pass; there is no new compiler observation or fixture
 approval. The last actual selected execution remains batch080 in its
 133-catalogue context. See `doc/source_audits/batch_081.json`.
 
-The following source proposals are frozen in isolated author contexts.
-**They are not registered main coverage.** Both have passed independent
-review and await serialized source/inventory registration.
+The eighty-second checkpoint registers independently reviewed IMPORT
+source:18base/71fine units, eight numbered and seven S requirements, and
+79pending facets. Ten base units are newly accounted. Ordinary versus BLOCK
+filters, five default scope categories, actual interface identity, statement
+ordering, implicit mappings and named/ALL no-hiding conditions retain their
+original limits. Basic named-list leads and real value/graph observers stay
+pending. The independent review's corrected metadata guard did not change
+the candidate or introduce compiler execution.
+
+There remain **2,065cases**, now with **135catalogues,791requirements,
+1,770direct,22linked and2,337pending facets out of4,129**. Source accounting
+covers1,757base units;4,716base and six fine units remain unresolved.
+All old case/review/link/R402/baseline bindings are preserved. The172main
+metadata methods pass; no new native observation or fixture approval is
+supplied. See `doc/source_audits/batch_082.json`.
+
+The remaining NAMELIST source proposal is frozen in its isolated author
+context. **It is not registered main coverage.** Independent source
+eligibility has passed; source/inventory registration remains separate.
 
 | Proposal | Bounded scope | Author evidence and limits |
 | --- | --- | --- |
-| `c713ce4` IMPORT |18base/71fine units,15requirements including seven S rules,79pending facets | Independent review `74b54792` finds no source blockers. No fixtures or native runs; BLOCK/host access, interface defaults, implicit mapping and no-hiding conditions remain pending. |
 | `836c650` NAMELIST |11base/40fine units,10requirements including five S rules,47pending facets | Independent review `299b5512` finds no source blockers. No fixtures, I/O parser or native runs; output order/multiplicity, recursive direct components and transfer-state conditions remain pending. |
 
 The historical PARAMETER and IMPLICIT author contexts are
