@@ -22,7 +22,7 @@ The readiness refactoring now supplies:
   context case.
 
 This is infrastructure readiness, not completed conformance coverage.
-The current census still has 4,767 unresolved base units and six unresolved
+The current census still has 4,735 unresolved base units and six unresolved
 fine-grained units inside the catalogues. Its independent visual
 review is still pending. Automatic PDF extraction is not semantic review,
 and list items/table rows require additional audited subdivisions.
@@ -1704,31 +1704,49 @@ and main172-method metadata selections pass without compiler invocations.
 No SAVE retention, TARGET lifetime or new grammar observation is supplied.
 See `doc/source_audits/batch_078.json`.
 
-The following proposals are frozen in isolated author contexts and queued
-for independent review. **They are not registered main coverage.**
+The seventy-ninth checkpoint integrates six independently reviewed PARAMETER
+value-effect programs from `c4be9b2`. Actual named constants, not mutable
+stand-ins, are observed against independent integer, logical, character and
+array values. Full-program guard and omission review retains230sensitive
+mutation runs and34target plans untested behind failed parents. Current main
+reproduces four target passes, a CHARACTER-truncation runtime failure and a
+scalar-array initialization internal compiler error. Only those two approved
+failures enter the baseline after fresh reproduction; GNUf2023qualifies all
+six effects, while Flangf2018success remains supplementary.
+
+There are now **2,062cases,133catalogues,765requirements,1,767direct,
+22linked and2,202pending facets out of3,991**. Source accounting remains
+1,738/6,473base units. All2,056old case bindings,2,020old reviews,22links and
+R402survive unchanged. Simple-derived and numeric-kind/BOZ gates remain
+pending. The186main metadata methods pass. The current selected execution is
+`batch079-selected-native.json`; last actual full execution and full Python
+suite remain batch059's2,041cases and837methods, not current full runs.
+See `doc/source_audits/batch_079.json`.
+
+The following proposals are frozen in isolated author contexts.
+**They are not registered main coverage.** DATA has passed independent
+review and awaits serialized integration; the source reviews remain queued.
 
 | Proposal | Bounded scope | Author evidence and limits |
 | --- | --- | --- |
-| `c4be9b2` PARAMETER | Six S8.6.11-004 value-effect programs and six facets | Target4passes, one truncation runtime failure and one scalar-array internal compiler error; GNUf2023six passes, Flangf2018six supplementary passes.230mutation runs reach intended failures;34target plans stay unexecuted behind failed parents. |
-| `36e9f1b` DATA | Three S8.6.7-004 position/initial-state programs and three facets | Nine complete parents pass across three processors;129wrong-oracle/omission runs reach intended failures. DATA after RETURN remains obsolescent but conforming, and every mutation preserves initialization. |
+| `36e9f1b` DATA | Three S8.6.7-004 position/initial-state programs and three facets | Independent review `57ac4e0f` finds no blockers: nine fresh parents pass and129mutations are sensitive. DATA after RETURN remains obsolescent but conforming, and every mutation preserves initialization. |
 | `c713ce4` IMPORT |18base/71fine units,15requirements including seven S rules,79pending facets | No fixtures or native runs. BLOCK versus ordinary host access, interface defaults, implicit mapping and no-hiding conditions remain explicit. |
 | `836c650` NAMELIST |11base/40fine units,10requirements including five S rules,47pending facets | No fixtures, I/O parser or native runs. Output order/multiplicity/concatenation, recursive direct components and exact transfer-state conditions remain pending. |
 
-The PARAMETER author context is batch076's2,056cases/129catalogues. DATA,
-IMPORT and NAMELIST use batch078's2,056cases/133catalogues; their separate
+The historical PARAMETER author context is batch076's2,056cases/129catalogues.
+DATA, IMPORT and NAMELIST use batch078's2,056cases/133catalogues; their separate
 candidate counts must not be added to main or conflated with each other.
 The original PARAMETER native capture completed before a Python3.9 proof-join
 error; its unchanged report was joined using the existing Python3.12
 environment, with no rerun and no invented runner-return value.
 
-Independent fixture/source/oracle/native review is processing PARAMETER
-before DATA. IMPLICIT8.7 source authoring remains isolated from batch076,
-followed by independent IMPORT and NAMELIST reviews by that other author.
-No proposal grants source, case, link, SourceUse or inventory approval, and
-the main `c3b55716` baseline is unchanged. Last actual main selected execution
-remains batch072 in its122-catalogue context; the candidate observations above
-are not later main or full-suite runs. All wider source/oracle/processor
-gates remain unfinished.
+IMPLICIT8.7 source authoring remains isolated from batch076, followed by
+independent IMPORT and NAMELIST reviews by that other author. A distinct
+EQUIVALENCE8.10.1.1-.5 source author starts from `ddb0952`, covering25base
+units with all executable facets pending. None of these unintegrated
+proposals grants source, case, link, SourceUse or inventory approval.
+The new main baseline is `b153c75b`; its only changes are the two approved
+PARAMETER failures. All wider source/oracle/processor gates remain unfinished.
 
 A further source-only packet covers 7.5.8 and 7.5.9 with 13 base units,
 50 fine units, 14 requirements and 72 pending facets. It preserves existing
