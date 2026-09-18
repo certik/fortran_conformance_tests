@@ -1621,8 +1621,22 @@ The172-method metadata selection passes without compiler invocations;
 batch072's actual four-case selection retains its122-catalogue context.
 See `doc/source_audits/batch_073.json`.
 
-DIMENSION/INTENT and OPTIONAL/PARAMETER source packets have independent
-eligibility and await serialized registration. POINTER/PROTECTED correction
+The seventy-fourth checkpoint registers independently reviewed DIMENSION
+and INTENT statement source: six base/34fine units, two syntax requirements
+and23pending facets. Four base units are newly accounted. The explicit
+DIMENSION repetition and zero-rank bounds-vector route stay distinct from
+ordinary zero-extent arrays. INTENT uses explicit R1534 dummy names and
+retains data/procedure-pointer eligibility and canonical IN/OUT state rules.
+
+There remain **2,056cases**, now with **125catalogues,745requirements,
+1,761direct,22linked and2,064pending facets out of3,847**. Source accounting
+covers1,722base units;4,751base and six fine units remain unresolved.
+All case/review/link/R402/baseline bindings survive. The172-method metadata
+selection passes; no compiler, rank/state effect or numbered-wrapper
+connection is added. See `doc/source_audits/batch_074.json`.
+
+OPTIONAL/PARAMETER has independent source eligibility and awaits registration.
+POINTER/PROTECTED correction
 `396598d` awaits independent PPSR-001 closeout. SAVE/TARGET and VALUE/VOLATILE
 statement source authoring remains isolated. None of these pending packets
 receives case, execution or source credit here.
