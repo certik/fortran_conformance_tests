@@ -1564,6 +1564,25 @@ The177-method metadata/link selection includes all32type-bound ownership
 subsets and passes without compiler invocations.
 See `doc/source_audits/batch_070.json`.
 
+The seventy-first checkpoint registers the independently reviewed C877
+empty/blank-NAME cardinality cases. Both invalid declarations are repaired
+by deleting only the NAME clause and converge to **one shared compile
+positive control**. GNUf2023corroborates all three expectations. The frozen
+target and actualFlangf2018silently accept both invalids; those reporting
+failures remain explicit rather than being normalized into allowed results.
+
+There are now **2,052cases**, with **1,758direct,22linked and1,859pending
+facets out of3,639**; source counts are unchanged. Only the two reviewed,
+currently observed target failure IDs were added to the baseline, preserving
+every old line, note and ordering. A separate normal selection reports
+**one PASS and two XFAILs**, with one control compile per configuration and
+no runtime effect. These remain target failures, not conformance passes.
+
+All2,049prior case bindings,2,013raw reviews, the three batch070 link
+renewals, all22current links and R402 remain unchanged. The41-method
+focused selection passes. This is a selected three-case observation, not
+a new full-suite report. See `doc/source_audits/batch_071.json`.
+
 A further source-only packet covers 7.5.8 and 7.5.9 with 13 base units,
 50 fine units, 14 requirements and 72 pending facets. It preserves existing
 canonical witnesses and explicitly accounts for the value-set definition
