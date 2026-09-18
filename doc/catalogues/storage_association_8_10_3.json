@@ -1,0 +1,250 @@
+{
+  "schema_version": 1,
+  "section": "8.10.3",
+  "review_state": "reviewed",
+  "subunits": {
+    "p1": [
+      "p1.equivalence-cause",
+      "p1.two-different-blocks",
+      "p1.storage-sequence-association"
+    ],
+    "p2": [
+      "p2.equivalence-association-cause",
+      "p2.derived-type-object",
+      "p2.default-initialization-condition",
+      "p2.common-associated-object"
+    ],
+    "p3": [
+      "p3.equivalence-cause",
+      "p3.common-block-sequence",
+      "p3.added-storage-units",
+      "p3.preceding-first-unit",
+      "p3.first-specified-object",
+      "p3.common-statement-order"
+    ]
+  },
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "requirements",
+      "requirements": [
+        "S8.10.3-001"
+      ],
+      "rationale": "EQUIVALENCE cannot cause the storage sequences of two different common blocks to be associated."
+    },
+    {
+      "unit": "p1.equivalence-cause",
+      "disposition": "requirements",
+      "requirements": [
+        "S8.10.3-001"
+      ],
+      "rationale": "The cause is an EQUIVALENCE statement."
+    },
+    {
+      "unit": "p1.two-different-blocks",
+      "disposition": "requirements",
+      "requirements": [
+        "S8.10.3-001"
+      ],
+      "rationale": "The blocks are different, including named versus blank."
+    },
+    {
+      "unit": "p1.storage-sequence-association",
+      "disposition": "requirements",
+      "requirements": [
+        "S8.10.3-001"
+      ],
+      "rationale": "Association of their sequences is prohibited."
+    },
+    {
+      "unit": "p2",
+      "disposition": "requirements",
+      "requirements": [
+        "S8.10.3-002"
+      ],
+      "rationale": "Equivalence association cannot place a default-initialized derived object in association with a COMMON object."
+    },
+    {
+      "unit": "p2.equivalence-association-cause",
+      "disposition": "requirements",
+      "requirements": [
+        "S8.10.3-002"
+      ],
+      "rationale": "The prohibition concerns association through EQUIVALENCE."
+    },
+    {
+      "unit": "p2.derived-type-object",
+      "disposition": "requirements",
+      "requirements": [
+        "S8.10.3-002"
+      ],
+      "rationale": "The relevant associated object is of derived type."
+    },
+    {
+      "unit": "p2.default-initialization-condition",
+      "disposition": "requirements",
+      "requirements": [
+        "S8.10.3-002"
+      ],
+      "rationale": "Its type has default initialization under7.5.4.6p8."
+    },
+    {
+      "unit": "p2.common-associated-object",
+      "disposition": "requirements",
+      "requirements": [
+        "S8.10.3-002"
+      ],
+      "rationale": "It must not thereby associate with an object in common."
+    },
+    {
+      "unit": "p3",
+      "disposition": "requirements",
+      "requirements": [
+        "S8.10.3-003"
+      ],
+      "rationale": "Equivalence extension of a common block cannot add storage units before the first unit of its first listed object."
+    },
+    {
+      "unit": "p3.equivalence-cause",
+      "disposition": "requirements",
+      "requirements": [
+        "S8.10.3-003"
+      ],
+      "rationale": "The condition is caused by equivalence association."
+    },
+    {
+      "unit": "p3.common-block-sequence",
+      "disposition": "requirements",
+      "requirements": [
+        "S8.10.3-003"
+      ],
+      "rationale": "The sequence being extended belongs to a common block."
+    },
+    {
+      "unit": "p3.added-storage-units",
+      "disposition": "requirements",
+      "requirements": [
+        "S8.10.3-003"
+      ],
+      "rationale": "The prohibited addition concerns storage units, not bytes."
+    },
+    {
+      "unit": "p3.preceding-first-unit",
+      "disposition": "requirements",
+      "requirements": [
+        "S8.10.3-003"
+      ],
+      "rationale": "No added unit may precede the relevant first unit."
+    },
+    {
+      "unit": "p3.first-specified-object",
+      "disposition": "requirements",
+      "requirements": [
+        "S8.10.3-003"
+      ],
+      "rationale": "The reference point is the first object specified for that block."
+    },
+    {
+      "unit": "p3.common-statement-order",
+      "disposition": "requirements",
+      "requirements": [
+        "S8.10.3-003"
+      ],
+      "rationale": "The first object is determined from the actual COMMON declarations."
+    }
+  ],
+  "requirements": [
+    {
+      "id": "S8.10.3-001",
+      "title": "EQUIVALENCE does not join two different common blocks",
+      "source": "8.10.3 p1, J3/24-007, 18 December 2023, physical PDF149.",
+      "source_units": [
+        "p1",
+        "p1.equivalence-cause",
+        "p1.two-different-blocks",
+        "p1.storage-sequence-association"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "An EQUIVALENCE statement cannot cause the storage sequences of two different common blocks to become associated. Direct and indirect association consequences matter; repeated declarations of one block name within a scope are not two different blocks.",
+      "facets": [
+        "two-named-blocks",
+        "named-and-blank",
+        "transitive-bridge"
+      ],
+      "pending": {
+        "two-named-blocks": "PENDING a complete INTEGER-only program declares COMMON /left_block/ a and COMMON /right_block/ b, then EQUIVALENCE(a,b). Delete only EQUIVALENCE for the control. Keep both distinct block declarations and no initialization, TARGET, pointer, SAVE conflict or payload read.",
+        "named-and-blank": "PENDING the same complete structure has a in named COMMON and b in blank COMMON. Remove only their EQUIVALENCE for the valid control. The result cannot be justified by different named/blank size rules or by a linker merging symbols.",
+        "transitive-bridge": "PENDING a complete source uses the same two blocks plus a local INTEGER bridge and EQUIVALENCE(a,bridge),(bridge,b). Remove only the second set to stop joining the blocks, preserving a valid first set. Source-review the whole chain, C8110-C8120 and8.10.1.5; do not count only pairs containing two textual COMMON member names."
+      },
+      "oracle": "Complete source association closure and a valid minimal repair; the invalid relationship is not a program to execute.",
+      "oracle_limitation": "This prose restriction does not by itself require fatal rejection or a diagnostic. Keep nonconforming programs as source counterexamples unless a separately identified numbered/Clause19 obligation or an explicit diagnostic-policy basis is implemented and reviewed. Compiler acceptance, a linker layout choice or a generic COMMON warning cannot adjudicate the relationship. Never execute an invalid source as a value oracle. All proposed evidence remains PENDING. No case, direct/linked facet, SourceUse relationship, inventory renewal, source approval, baseline change or universal conformance credit is created. Each reference/target/configuration is separate; f2018 success cannot corroborate an f2023 expectation. Numerical-kind, real/BOZ/IEEE, coarray and companion/CFI-header gates remain with their actual owners. Missing or unsupported prerequisite evidence cannot be treated as success.",
+      "dependencies": "8.10.1.1/.2/.5;8.10.2.1p3/p4;8.10.2.2;19.5.3.1-.4;4.2."
+    },
+    {
+      "id": "S8.10.3-002",
+      "title": "A default-initialized derived object is not equivalenced into COMMON",
+      "source": "8.10.3 p2, J3/24-007, 18 December 2023, physical PDF149.",
+      "source_units": [
+        "p2",
+        "p2.equivalence-association-cause",
+        "p2.derived-type-object",
+        "p2.default-initialization-condition",
+        "p2.common-associated-object"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "Equivalence association cannot associate a derived object with default initialization with an object in COMMON. Direct listing under C8124 is a different source route. Default initialization is determined from the full applicable type definition, not merely an outer declaration or whether the program later overwrites the value.",
+      "facets": [
+        "direct-default-initializer",
+        "nested-default-initializer",
+        "indirect-association-and-overlap"
+      ],
+      "pending": {
+        "direct-default-initializer": "PENDING a complete program defines a SEQUENCE type with INTEGER :: field=7, declares an object local_record, puts an ordinary INTEGER member in named COMMON, and uses EQUIVALENCE(member,local_record). Remove only =7 from the type component for the control. The derived object is not itself an R877 list entry; no explicit initialization or undefined value read is added.",
+        "nested-default-initializer": "PENDING complete nested numeric SEQUENCE definitions have a default-initialized INTEGER behind a nonpointer nonallocatable derived component. Equivalence to an ordinary COMMON member is the same forbidden condition; remove only the nested initializer. Retain the recursive direct-component/default-init source proof.",
+        "indirect-association-and-overlap": "PENDING extend a complete ordinary-INTEGER/SEQUENCE source through a local bridge EQUIVALENCE chain before reaching COMMON. The repair removes the component initializer without changing the association graph. Pointer/allocatable-component types require separate C8110 eligibility and cannot stand in as an isolated control; direct COMMON listing retains C8124."
+      },
+      "oracle": "Complete actual type definitions and transitive association source, with one initializer deletion yielding an otherwise valid program.",
+      "oracle_limitation": "This prose restriction does not by itself require fatal rejection or a diagnostic. Keep nonconforming programs as source counterexamples unless a separately identified numbered/Clause19 obligation or an explicit diagnostic-policy basis is implemented and reviewed. Compiler acceptance, a linker layout choice or a generic COMMON warning cannot adjudicate the relationship. Never execute an invalid source as a value oracle. All proposed evidence remains PENDING. No case, direct/linked facet, SourceUse relationship, inventory renewal, source approval, baseline change or universal conformance credit is created. Each reference/target/configuration is separate; f2018 success cannot corroborate an f2023 expectation. Numerical-kind, real/BOZ/IEEE, coarray and companion/CFI-header gates remain with their actual owners. Missing or unsupported prerequisite evidence cannot be treated as success.",
+      "dependencies": "3.30.1;7.5.1p3/p4;7.5.2.3;7.5.4.6p8;8.10.1.1C8110-C8120;8.10.2.1C8124;8.10.2.2p1;19.5.3.4p10;4.2."
+    },
+    {
+      "id": "S8.10.3-003",
+      "title": "Equivalence extension of COMMON cannot precede its first storage unit",
+      "source": "8.10.3 p3, J3/24-007, 18 December 2023, physical PDF149.",
+      "source_units": [
+        "p3",
+        "p3.equivalence-cause",
+        "p3.common-block-sequence",
+        "p3.added-storage-units",
+        "p3.preceding-first-unit",
+        "p3.first-specified-object",
+        "p3.common-statement-order"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "Equivalence association cannot enlarge a common-block sequence by adding units before the first unit of the first object specified for that block in COMMON.8.10.2.2p1's tail-only condition is accounted under this same owner. Eligible tail extension remains possible and contributes to the size of the block.",
+      "facets": [
+        "direct-backward-extension",
+        "transitive-backward-extension",
+        "blank-common-boundary",
+        "tail-and-full-size-source"
+      ],
+      "pending": {
+        "direct-backward-extension": "PENDING a complete program declares INTEGER first, extension(2), COMMON /packet/ first and EQUIVALENCE(first,extension(2)). Change only subscript2 to1 for the valid tail-extension control. Bounds are constant and in range in both sources; no address, layout or uninitialized payload is inspected.",
+        "transitive-backward-extension": "PENDING a complete source adds INTEGER bridge, then EQUIVALENCE(first,bridge),(bridge,extension(2)). The same one-subscript repair removes the pre-first unit through the full chain. Keep8.10.1.5 repeated/nonconsecutive-unit restrictions and avoid accidentally joining two different blocks.",
+        "blank-common-boundary": "PENDING the direct complete source/control uses blank COMMON instead of a named block. Its allowed interscope size variation does not permit local pre-first-unit extension. The first specified object and actual storage sequence remain explicit.",
+        "tail-and-full-size-source": "PENDING a separately adjudicated finite relation to the complete future8.10.2.2 direct/transitive tail parent, with exact declarations, occurrences, full program and definition-status oracles. Same starting unit or no added units is not backward extension; permitted extra tail units must be counted by8.10.2.3/.5. No relation exists or earns credit until independently implemented and reviewed."
+      },
+      "oracle": "Source-derived common/EQUIVALENCE storage-unit closure, minimal valid tail controls and later separately reviewed finite reuse.",
+      "oracle_limitation": "This prose restriction does not by itself require fatal rejection or a diagnostic. Keep nonconforming programs as source counterexamples unless a separately identified numbered/Clause19 obligation or an explicit diagnostic-policy basis is implemented and reviewed. Compiler acceptance, a linker layout choice or a generic COMMON warning cannot adjudicate the relationship. Never execute an invalid source as a value oracle. All proposed evidence remains PENDING. No case, direct/linked facet, SourceUse relationship, inventory renewal, source approval, baseline change or universal conformance credit is created. Each reference/target/configuration is separate; f2018 success cannot corroborate an f2023 expectation. Numerical-kind, real/BOZ/IEEE, coarray and companion/CFI-header gates remain with their actual owners. Missing or unsupported prerequisite evidence cannot be treated as success.",
+      "dependencies": "8.10.1.1/.2/.4/.5;8.10.2.1p3/p4;8.10.2.2p1;8.10.2.3/.5;19.5.3.2/.3/.4;4.2."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_8_10_3.md"
+  },
+  "review_fingerprint": "5d67c3b244e0c926e1fd6929007ebc2b990f22f84d5a6d00c310b6e5c2b16074",
+  "review_rationale": "Independent original-source review925b4227 and all10pending plans in doc/source_audits/batch_084.json. The three prose restrictions forbid joining distinct common blocks, equivalencing default-initialized derived objects into COMMON and extending before the first specified storage unit, including indirect chains. The default-init contrast keeps the derived object outside the COMMON list and removes only its initializer. Direct/transitive tail controls preserve other EQUIVALENCE eligibility and sequence constraints. All diagnostic/source/reuse plans remain pending; no compiler rejection or source-graph credit is inferred."
+}

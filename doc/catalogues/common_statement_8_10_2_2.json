@@ -1,0 +1,155 @@
+{
+  "schema_version": 1,
+  "section": "8.10.2.2",
+  "review_state": "reviewed",
+  "subunits": {
+    "p1": [
+      "p1.each-block-in-scope",
+      "p1.object-storage-sequences",
+      "p1.all-listed-storage-units",
+      "p1.list-appearance-order",
+      "p1.equivalence-extension",
+      "p1.all-associated-units",
+      "p1.tail-only-extension",
+      "p1.associated-object-membership"
+    ],
+    "p2": [
+      "p2.common-contributors",
+      "p2.equivalence-contributors",
+      "p2.appearing-in-scope",
+      "p2.same-scope-sequence"
+    ]
+  },
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "requirements",
+      "requirements": [
+        "S8.10.2.2-001",
+        "S8.10.3-003"
+      ],
+      "rationale": "Forms a per-scope block sequence in object-list order, closes it under eligible equivalence association and forbids extension before its first unit."
+    },
+    {
+      "unit": "p1.each-block-in-scope",
+      "disposition": "definition",
+      "rationale": "The construction is for each block in one scoping unit."
+    },
+    {
+      "unit": "p1.object-storage-sequences",
+      "disposition": "requirements",
+      "requirements": [
+        "S8.10.2.2-001"
+      ],
+      "rationale": "Step1 uses every listed object's storage sequence."
+    },
+    {
+      "unit": "p1.all-listed-storage-units",
+      "disposition": "requirements",
+      "requirements": [
+        "S8.10.2.2-001"
+      ],
+      "rationale": "The resulting sequence contains those storage units."
+    },
+    {
+      "unit": "p1.list-appearance-order",
+      "disposition": "requirements",
+      "requirements": [
+        "S8.10.2.2-001"
+      ],
+      "rationale": "Object-list appearance fixes concatenation order."
+    },
+    {
+      "unit": "p1.equivalence-extension",
+      "disposition": "requirements",
+      "requirements": [
+        "S8.10.2.2-001"
+      ],
+      "rationale": "Step2 includes equivalence-associated sequences."
+    },
+    {
+      "unit": "p1.all-associated-units",
+      "disposition": "requirements",
+      "requirements": [
+        "S8.10.2.2-001"
+      ],
+      "rationale": "Closure includes all storage units of those sequences."
+    },
+    {
+      "unit": "p1.tail-only-extension",
+      "disposition": "requirements",
+      "requirements": [
+        "S8.10.3-003"
+      ],
+      "rationale": "New units may be added only beyond the last unit."
+    },
+    {
+      "unit": "p1.associated-object-membership",
+      "disposition": "definition",
+      "rationale": "Objects associated with a COMMON entity count as in that block."
+    },
+    {
+      "unit": "p2",
+      "disposition": "definition",
+      "rationale": "Bounds the contributors to this scope's construction. It does not append text from other scopes or automatically count a source graph."
+    },
+    {
+      "unit": "p2.common-contributors",
+      "disposition": "definition",
+      "rationale": "COMMON statements are one contributor kind."
+    },
+    {
+      "unit": "p2.equivalence-contributors",
+      "disposition": "definition",
+      "rationale": "EQUIVALENCE statements are the other contributor kind."
+    },
+    {
+      "unit": "p2.appearing-in-scope",
+      "disposition": "definition",
+      "rationale": "Only statements actually in this scoping unit contribute."
+    },
+    {
+      "unit": "p2.same-scope-sequence",
+      "disposition": "definition",
+      "rationale": "Their result is the sequence formed in that same scope."
+    }
+  ],
+  "requirements": [
+    {
+      "id": "S8.10.2.2-001",
+      "title": "The per-scope sequence preserves order and includes the equivalence tail",
+      "source": "8.10.2.2 p1, J3/24-007, 18 December 2023, physical PDF148.",
+      "source_units": [
+        "p1",
+        "p1.object-storage-sequences",
+        "p1.all-listed-storage-units",
+        "p1.list-appearance-order",
+        "p1.equivalence-extension",
+        "p1.all-associated-units"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The block sequence concatenates its listed objects' storage sequences in appearance order and includes all units brought in by eligible equivalence association. This is a language storage-sequence construction, not an ABI layout measurement. Other scopes supply matching views, not extra local lists.",
+      "facets": [
+        "list-order-finite-parent",
+        "array-element-order",
+        "direct-equivalence-tail",
+        "transitive-equivalence-tail"
+      ],
+      "pending": {
+        "list-order-finite-parent": "PENDING a separately adjudicated finite relation to one complete S8.10.2.1-001 ordered-list parent once it actually exists. Bind every writer/reader declaration and occurrence, all inputs, current source/requirement/review fingerprints and literal tuple oracle. No case is assumed to exist, no duplicate execution is created and no link is implemented or credited by this pending plan.",
+        "array-element-order": "PENDING complete driver, writer and reader with matching saved named COMMON. Writer has INTEGER a(-1:0,2:3); reader has INTEGER flat(4). Seed all four elements and assign a(-1,2)=11, a(0,2)=22, a(-1,3)=33, a(0,3)=44. Require flat=[11,22,33,44] literally. Wrong row-order and lower-bound assumptions must fail the whole parent.",
+        "direct-equivalence-tail": "PENDING complete writer with INTEGER first, extension(3), COMMON /packet/ first and EQUIVALENCE(first,extension(1)); complete reader declares a size3 INTEGER COMMON view. Both save the same named block. Seed extension, assign11,22,33, then require those three literal positions. Include the extension in both scopes' block-size adjudication.",
+        "transitive-equivalence-tail": "PENDING complete writer declares INTEGER first, middle(2), tail(3), COMMON /packet/ first, and EQUIVALENCE(first,middle(1)),(middle(2),tail(1)). The resulting sequence has four numeric units, not one, two or three. Seed first and all tail positions, set first=11 and tail=[22,33,44], and compare a complete saved reader view of size4 to those literals. Retain all C8110-C8120, 8.10.1.5 and8.10.3 constraints; no TARGET, BIND, default initialization or illegal backward extension is introduced."
+      },
+      "oracle": "Source-derived storage-unit closure, then actual same-type defined-value observations in the complete future programs. Every future effect requires a complete driver and all declaring/defining procedures, actual successful compile/link/run traces in the required f2023 configuration, independent literal observations and executed-call/completion checks. For named COMMON initial families, put consistent SAVE /block/ in every nonexempt declaring procedure and match the complete storage sequences; avoid relying on an accidentally active scope or implicit SAVE. Seed every observed storage unit with a known sentinel before the operation under test, so omitted-write sensitivity never reads undefined data. Keep actual arguments distinct from COMMON storage to avoid dummy-aliasing violations. Wrong-order/value/omission/omitted-call mutations must fail the whole counted parent, not a detached expression. No such program or mutation has been implemented here.",
+      "oracle_limitation": "Neither membership definitions nor a complete static graph are counted as runtime effects. Zero-sized sequences contribute no payload; addresses, STORAGE_SIZE-to-byte guesses and same-processor TRANSFER are not substitutes. All proposed evidence remains PENDING. No case, direct/linked facet, SourceUse relationship, inventory renewal, source approval, baseline change or universal conformance credit is created. Each reference/target/configuration is separate; f2018 success cannot corroborate an f2023 expectation. Numerical-kind, real/BOZ/IEEE, coarray and companion/CFI-header gates remain with their actual owners. Missing or unsupported prerequisite evidence cannot be treated as success.",
+      "dependencies": "8.10.1.1-.5;8.10.2.1p3/p4;8.10.2.3/.4/.5;8.10.3;8.5.16;9.2p2;9.5.3.3/Table9.1;15.5.2.14;19.5.3;19.6.5(12)."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_8_10_2_2.md"
+  },
+  "review_fingerprint": "50100be9650270c3802061253aaf1696b4a644a0fdc49b97b6a74b213950acdd",
+  "review_rationale": "Independent original-source review925b4227 and all4pending plans in doc/source_audits/batch_084.json. Local COMMON lists concatenate actual language storage sequences and eligible EQUIVALENCE closure includes the full tail. The separate tail-only prohibition is accounted under S8.10.3-003, not duplicated. Table9.1 was visually checked for lower-bound-dependent array order. Complete direct/transitive tail programs must match full size and source/definedness/SAVE conditions across scopes. Membership and per-scope construction definitions do not create empty effects; proposed reuse remains unimplemented."
+}

@@ -22,7 +22,7 @@ The readiness refactoring now supplies:
   context case.
 
 This is infrastructure readiness, not completed conformance coverage.
-The current census still has 4,710 unresolved base units and six unresolved
+The current census still has 4,688 unresolved base units and six unresolved
 fine-grained units inside the catalogues. Its independent visual
 review is still pending. Automatic PDF extraction is not semantic review,
 and list items/table rows require additional audited subdivisions.
@@ -1790,6 +1790,24 @@ The172main metadata methods pass without compiler invocations. Last actual
 main selection remains batch080 in its133-catalogue context; no source
 registration is a new full-suite execution. See `doc/source_audits/batch_083.json`.
 
+The eighty-fourth checkpoint registers independently reviewed COMMON and
+related storage restrictions:29base/166fine units across six sections,
+seven numbered and17S requirements, and117pending facets. Twenty-two base
+units are newly accounted. Independent review checks726original units
+across109sections,502grammar heads and the original Table9.1. Language
+storage sequences, type/parameter identity, definedness, named/blank
+differences, SAVE and initialization/lifetime conditions remain separate.
+The block-size section is definition-only; three zero-payload association
+facets are positive controls, not empty runtime effects.
+
+There remain **2,065cases**, now with **142catalogues,825requirements,
+1,770direct,22linked and2,501pending facets out of4,293**. Source accounting
+covers1,785base units;4,688base and six fine units remain unresolved.
+All old cases,2,029reviews,136oldercatalogues,22links,R402andbaseline are
+preserved. The172main metadata methods pass; source registration and the
+separate inventory renewal supply no new compiler observations.
+See `doc/source_audits/batch_084.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
@@ -1798,10 +1816,12 @@ The original PARAMETER native capture completed before a Python3.9 proof-join
 error; its unchanged report was joined using the existing Python3.12
 environment, with no rerun and no invented runner-return value.
 
-Distinct EQUIVALENCE8.10.1.1-.5 and COMMON/storage-association8.10.2.1-.5/8.10.3
-source authors start from `ddb0952` and `cb45d6a`, respectively, covering25
-and29base units with all executable facets pending. None of these unintegrated
-proposals grants source, case, link, SourceUse or inventory approval.
+The EQUIVALENCE8.10.1.1-.5 source proposal `8cf739ab` is frozen from
+`ddb0952`:25base/129fine units,21requirements and130pending facets.
+Independent review is in progress; author checks alone grant no main
+source, case, link, SourceUse or inventory approval. The separately authored
+COMMON packet retains its original `cb45d6a`/2,062-case context, despite its
+source-only registration in batch084's newer main context.
 The main baseline remains `b153c75b`, including the two approved PARAMETER
 failures. All wider source/oracle/processor gates remain unfinished.
 

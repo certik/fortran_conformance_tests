@@ -1,0 +1,232 @@
+{
+  "schema_version": 1,
+  "section": "8.10.2.5",
+  "review_state": "reviewed",
+  "subunits": {
+    "p1": [
+      "p1.shared-properties",
+      "p1.return-event",
+      "p1.end-event",
+      "p1.named-might-undefine",
+      "p1.save-exception",
+      "p1.blank-nonpointer-subject",
+      "p1.blank-no-event-undefinition",
+      "p1.named-same-name",
+      "p1.named-equal-size",
+      "p1.all-scoping-units-in-program",
+      "p1.blank-different-sizes",
+      "p1.named-initialization",
+      "p1.data-initialization-route",
+      "p1.type-declaration-route",
+      "p1.block-data-context",
+      "p1.blank-initial-definition-prohibition"
+    ]
+  },
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "requirements",
+      "requirements": [
+        "S8.10.2.5-001",
+        "S8.10.2.5-002",
+        "S8.10.2.5-003"
+      ],
+      "rationale": "The named/blank comparison retains all three bullets without promoting permissions or potentially undefined values to passing effects."
+    },
+    {
+      "unit": "p1.shared-properties",
+      "disposition": "definition",
+      "rationale": "Blank common otherwise has the properties of named common."
+    },
+    {
+      "unit": "p1.return-event",
+      "disposition": "requirements",
+      "requirements": [
+        "S8.10.2.5-001"
+      ],
+      "rationale": "The first bullet includes execution of RETURN."
+    },
+    {
+      "unit": "p1.end-event",
+      "disposition": "requirements",
+      "requirements": [
+        "S8.10.2.5-001"
+      ],
+      "rationale": "The first bullet also includes execution of END."
+    },
+    {
+      "unit": "p1.named-might-undefine",
+      "disposition": "definition",
+      "rationale": "Named objects can become undefined only under the actual19.6.6 conditions."
+    },
+    {
+      "unit": "p1.save-exception",
+      "disposition": "definition",
+      "rationale": "SAVE retains its canonical8.5.16 conditions, not an unconditional value initializer."
+    },
+    {
+      "unit": "p1.blank-nonpointer-subject",
+      "disposition": "requirements",
+      "requirements": [
+        "S8.10.2.5-001"
+      ],
+      "rationale": "The stated blank guarantee is for nonpointer data objects."
+    },
+    {
+      "unit": "p1.blank-no-event-undefinition",
+      "disposition": "requirements",
+      "requirements": [
+        "S8.10.2.5-001"
+      ],
+      "rationale": "Those events never cause these blank objects to become undefined."
+    },
+    {
+      "unit": "p1.named-same-name",
+      "disposition": "requirements",
+      "requirements": [
+        "S8.10.2.5-002"
+      ],
+      "rationale": "The same named block is compared across scopes."
+    },
+    {
+      "unit": "p1.named-equal-size",
+      "disposition": "requirements",
+      "requirements": [
+        "S8.10.2.5-002"
+      ],
+      "rationale": "Its complete size is the same in all declaring scopes."
+    },
+    {
+      "unit": "p1.all-scoping-units-in-program",
+      "disposition": "requirements",
+      "requirements": [
+        "S8.10.2.5-002"
+      ],
+      "rationale": "The denominator is every declaring scoping unit of the program."
+    },
+    {
+      "unit": "p1.blank-different-sizes",
+      "disposition": "permission",
+      "rationale": "Blank common may differ in size, subject to matching prefixes."
+    },
+    {
+      "unit": "p1.named-initialization",
+      "disposition": "permission",
+      "rationale": "A named-common data object may be initially defined in the specified context."
+    },
+    {
+      "unit": "p1.data-initialization-route",
+      "disposition": "permission",
+      "rationale": "DATA is one specified route, with C880 and initialization owners retained."
+    },
+    {
+      "unit": "p1.type-declaration-route",
+      "disposition": "permission",
+      "rationale": "A type declaration is the other route, with C808 retained."
+    },
+    {
+      "unit": "p1.block-data-context",
+      "disposition": "permission",
+      "rationale": "The named permission is within a BLOCK DATA program unit under14.3."
+    },
+    {
+      "unit": "p1.blank-initial-definition-prohibition",
+      "disposition": "requirements",
+      "requirements": [
+        "S8.10.2.5-003"
+      ],
+      "rationale": "Objects in blank common shall not be initially defined."
+    }
+  ],
+  "requirements": [
+    {
+      "id": "S8.10.2.5-001",
+      "title": "RETURN and END do not undefine nonpointer blank-common data",
+      "source": "8.10.2.5 p1, J3/24-007, 18 December 2023, physical PDF149.",
+      "source_units": [
+        "p1",
+        "p1.return-event",
+        "p1.end-event",
+        "p1.blank-nonpointer-subject",
+        "p1.blank-no-event-undefinition"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Executing RETURN or END does not cause nonpointer data objects in blank common to become undefined. The named-common comparison remains conditional under19.6.6 and SAVE, and pointer association status and target lifetime are separate. This guarantee does not initialize previously undefined objects.",
+      "facets": [
+        "explicit-return-retention",
+        "end-subroutine-retention",
+        "array-and-character-retention"
+      ],
+      "pending": {
+        "explicit-return-retention": "PENDING a complete driver declares no COMMON and calls an ordinary external writer, then an ordinary external reader. Each declares the same nonpointer INTEGER blank member without SAVE, DATA or declaration initialization. Writer seeds0, sets11 and executes an explicit RETURN; the later reader must observe literal11. Count both actual calls and successful completion. There is no still-active third scope declaring the block.",
+        "end-subroutine-retention": "PENDING a distinct complete program with the same controlled blank COMMON context, but the writer completes by END SUBROUTINE without an explicit RETURN after setting22. A subsequent actual reader call checks22. This is not an attempted observation after END PROGRAM or a value inferred from linker persistence.",
+        "array-and-character-retention": "PENDING complete ordinary writer/reader scopes declare identical blank sequences of INTEGER a(2) and CHARACTER(2) text, no SAVE and no initialization outside execution. Seed every element/character, set a=[11,22] and text='OK', finish the writer and check the three independent literal observations in the later reader. Keep mixed-unit sequence equality, bounds, nonpointer status, call counts and safe omitted-write sensitivity."
+      },
+      "oracle": "Actual sequential procedure completion and later defined blank-common value observations. The complete programs deliberately omit named COMMON, SAVE and other active declaring scopes; all probes begin with defined sentinels and count executed calls. Whole-parent wrong-value, omitted-write and skipped-call sensitivity remains to be implemented.",
+      "oracle_limitation": "An unsaved named-common counterpart is source context only if its values could be undefined; never run it as an expected stale-value negative. Pointer-target lifetime, active recursion and implicit SAVE are not substituted for the blank nonpointer guarantee. All proposed evidence remains PENDING. No case, direct/linked facet, SourceUse relationship, inventory renewal, source approval, baseline change or universal conformance credit is created. Each reference/target/configuration is separate; f2018 success cannot corroborate an f2023 expectation. Numerical-kind, real/BOZ/IEEE, coarray and companion/CFI-header gates remain with their actual owners. Missing or unsupported prerequisite evidence cannot be treated as success.",
+      "dependencies": "8.5.16p1/p3/p4;8.10.2.4;5.3.3p1;15.6.2.4;19.5.2.5;19.5.3.4p5;19.6.4/.5/.6p1(3);9.2p2."
+    },
+    {
+      "id": "S8.10.2.5-002",
+      "title": "Named common of one name has one complete size across a program",
+      "source": "8.10.2.5 p1, J3/24-007, 18 December 2023, physical PDF149.",
+      "source_units": [
+        "p1",
+        "p1.named-same-name",
+        "p1.named-equal-size",
+        "p1.all-scoping-units-in-program"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "Every scoping unit in a program that declares the same named common block gives it the same complete storage-sequence size, including equivalence extensions. Blank common may have different sizes, but matching-prefix and associated-type restrictions still apply.",
+      "facets": [
+        "named-size-mismatch",
+        "equivalence-extension-size",
+        "unexecuted-scope-and-zero-size",
+        "blank-unequal-size-permission"
+      ],
+      "pending": {
+        "named-size-mismatch": "PENDING a complete driver plus two ordinary scopes declare the same named block as default INTEGER arrays of sizes2 and3. Repair one bound to make both2. Retain all program units; this is a source nonconformance contrast, not an unconditional linker-error predicate or an executable wrong-size program.",
+        "equivalence-extension-size": "PENDING one complete scope lists one INTEGER member in COMMON but extends it to three units through EQUIVALENCE(member,array(1)) with array(3). The valid other view has three INTEGER units; a one-unit declaration is the source negative. Count the full closure, not the textual member count.",
+        "unexecuted-scope-and-zero-size": "PENDING complete programs retain an uncalled declaring procedure in the size denominator. Also distinguish two zero-sized named declarations from a zero/nonzero mismatch. Do not drop an unselected/unexecuted source unit or claim a payload effect from an empty array.",
+        "blank-unequal-size-permission": "PENDING complete default-INTEGER blank views of sizes2 and3 are permitted when their initial unit sequences match. A separate mixed-unit prefix mismatch remains nonconforming under19.5.3.4p5 even though unequal blank sizes themselves are allowed. No byte-count shortcut is admitted."
+      },
+      "oracle": "Whole-program, per-scope storage-unit sequence accounting and complete minimal source repairs; valid admission controls remain distinct from effects.",
+      "oracle_limitation": "This prose restriction does not by itself require fatal rejection or a diagnostic. Keep nonconforming programs as source counterexamples unless a separately identified numbered/Clause19 obligation or an explicit diagnostic-policy basis is implemented and reviewed. Compiler acceptance, a linker layout choice or a generic COMMON warning cannot adjudicate the relationship. Never execute an invalid source as a value oracle. All proposed evidence remains PENDING. No case, direct/linked facet, SourceUse relationship, inventory renewal, source approval, baseline change or universal conformance credit is created. Each reference/target/configuration is separate; f2018 success cannot corroborate an f2023 expectation. Numerical-kind, real/BOZ/IEEE, coarray and companion/CFI-header gates remain with their actual owners. Missing or unsupported prerequisite evidence cannot be treated as success.",
+      "dependencies": "8.10.2.2/.3/.4;8.10.3p3;19.5.3.2-.4p5;4.2p1."
+    },
+    {
+      "id": "S8.10.2.5-003",
+      "title": "Blank-common objects are not initially defined",
+      "source": "8.10.2.5 p1, J3/24-007, 18 December 2023, physical PDF149.",
+      "source_units": [
+        "p1",
+        "p1.blank-initial-definition-prohibition"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "Blank-common objects cannot be initially defined. The neighboring permission allows named-common initialization by DATA or a type declaration in BLOCK DATA under the canonical initialization and complete-block rules; it does not provide a new local initialization effect.",
+      "facets": [
+        "blank-data-canonical-source",
+        "blank-declaration-canonical-source",
+        "named-block-data-permission",
+        "program-initialization-and-save-boundaries"
+      ],
+      "pending": {
+        "blank-data-canonical-source": "PENDING a complete ordinary program with INTEGER item, COMMON item and DATA item/7/, contrasted with deleting only DATA. C880 is the actual numbered source route. Select/review one complete canonical pair rather than cloning it under this S requirement or auto-linking an old receipt.",
+        "blank-declaration-canonical-source": "PENDING a complete INTEGER :: item=7 plus COMMON item context, repaired by removing only =7. C808 retains numbered ownership; compile admission of the control does not authorize reading its undefined payload.",
+        "named-block-data-permission": "PENDING a complete program and BLOCK DATA unit declare the same fully specified named INTEGER block; the BLOCK DATA initializes a member by DATA or, separately, a type declaration. Preserve C808/C880, all storage units, same-name size equality and14.3's program-unit restrictions. This is a positive admission/source plan, not a no-op value run.",
+        "program-initialization-and-save-boundaries": "PENDING source-led complete contrasts retain8.4p1 and19.5.3.4p10's at-most-once storage initialization and14.3p4's single BLOCK DATA declaration for a named block. DATA and type initialization of COMMON members do not acquire SAVE through the non-COMMON8.4p3/8.6.7p4 rules. A future initial-value effect must use an actual canonical owner, defined read and full program."
+      },
+      "oracle": "Original initialization source relationships and complete positive controls, with separately adjudicated numbered diagnosis where applicable. No existing case or link is automatically reused.",
+      "oracle_limitation": "This prose restriction does not by itself require fatal rejection or a diagnostic. Keep nonconforming programs as source counterexamples unless a separately identified numbered/Clause19 obligation or an explicit diagnostic-policy basis is implemented and reviewed. Compiler acceptance, a linker layout choice or a generic COMMON warning cannot adjudicate the relationship. Never execute an invalid source as a value oracle. All proposed evidence remains PENDING. No case, direct/linked facet, SourceUse relationship, inventory renewal, source approval, baseline change or universal conformance credit is created. Each reference/target/configuration is separate; f2018 success cannot corroborate an f2023 expectation. Numerical-kind, real/BOZ/IEEE, coarray and companion/CFI-header gates remain with their actual owners. Missing or unsupported prerequisite evidence cannot be treated as success.",
+      "dependencies": "8.2C808;8.4p1/p3;8.6.7C880/p1/p3/p4;14.3;19.5.3.4p10;19.6.3/.4;8.5.16;4.2."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_8_10_2_5.md"
+  },
+  "review_fingerprint": "19c85ffd9947ab6b7098f2d4897602e688309f19ab8311f4d6ad0ae1f8b05f44",
+  "review_rationale": "Independent original-source review925b4227 and all11pending plans in doc/source_audits/batch_084.json. RETURN/END retention is for nonpointer blank COMMON; named-common undefinition is conditional and SAVE never initializes data or extends dead targets. Named size equality includes every declaring scope and equivalence extension; blank unequal sizes retain identical prefixes. Named BLOCK DATA initialization permission preserves C808/C880, complete block specification, one BLOCK DATA declaration and storage-unit uniqueness; blank initial definition remains prohibited. No potentially undefined reentry reads or duplicate initialization effects."
+}
