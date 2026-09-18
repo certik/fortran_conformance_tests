@@ -22,7 +22,7 @@ The readiness refactoring now supplies:
   context case.
 
 This is infrastructure readiness, not completed conformance coverage.
-The current census still has 4,814 unresolved base units and eight unresolved
+The current census still has 4,810 unresolved base units and eight unresolved
 fine-grained units inside the catalogues. Its independent visual
 review is still pending. Automatic PDF extraction is not semantic review,
 and list items/table rows require additional audited subdivisions.
@@ -1264,6 +1264,23 @@ remains the actual last full run in its103-catalogue/619-requirement context.
 The172-method source/evidence selection passed. See
 `doc/source_audits/batch_053.json`.
 
+The fifty-fourth checkpoint registers independently reviewed INTRINSIC
+and OPTIONAL source: six base units,24 fine units, four requirements and
+all23 new facets pending. Two numbered units were already accounted, so
+four additional base units are resolved. Specific-intrinsic eligibility,
+generic procedure-class constraints and their causal overlaps stay explicit.
+OPTIONAL presence is not equated with allocation, pointer association or
+having an effective argument; conditional-NIL and absent-use rules retain
+their full independent constraints.
+
+There are now **108 catalogues, 647 requirements, 1,745 direct, nine linked
+and1,512 pending facets out of3,266**. Source accounting covers1,663 base
+units;4,810 base and eight fine units remain unresolved. All2,035 cases,
+1,999 stored reviews, nine links, R402 and the baseline are preserved.
+Source and inventory context reviews add no compiler observation and do
+not relabel batch051's actual full-run context. The172-method source/evidence
+selection passed. See `doc/source_audits/batch_054.json`.
+
 A further source-only packet covers 7.5.8 and 7.5.9 with 13 base units,
 50 fine units, 14 requirements and 72 pending facets. It preserves existing
 canonical witnesses and explicitly accounts for the value-set definition
@@ -1352,10 +1369,10 @@ facets pending. Coordinator-authored EXTERNAL/INTENT source packet
 review:23base/104fine units,21requirements and97pending facets. Nine
 numbered units were already globally accounted; registration newly accounts
 14base units, not23. It supplies no fixture or compiler observation.
-INTRINSIC/OPTIONAL source packet `14c607c` is separately frozen unapproved:
-six base/24fine units, four requirements and23pending facets, with no
-fixtures or compiler observations. Independent source eligibility has
-passed; explicit shared registration and all implementation remain pending.
+INTRINSIC/OPTIONAL source packet `14c607c` is registered as batch054 after
+independent source review: six base/24fine units, four requirements and
+23pending facets, with no fixtures or compiler observations. PARAMETER and
+POINTER source in8.5.13/.14 are the next isolated author scope.
 
 Bound-COMMON SAVE runtime authoring stopped before any fixture or compiler
 run at BCS-ROLE-001: an explicit-SAVE confirmation needs a positive-control
