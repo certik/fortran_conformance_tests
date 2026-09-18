@@ -22,7 +22,7 @@ The readiness refactoring now supplies:
   context case.
 
 This is infrastructure readiness, not completed conformance coverage.
-The current census still has 4,778 unresolved base units and six unresolved
+The current census still has 4,775 unresolved base units and six unresolved
 fine-grained units inside the catalogues. Its independent visual
 review is still pending. Automatic PDF extraction is not semantic review,
 and list items/table rows require additional audited subdivisions.
@@ -1476,6 +1476,21 @@ report was already correct and remains immutable. The56-method focused
 selection passes, including the independently reviewed standalone-generator
 test-scope correction. All prior case bindings,22links,R402and the failure
 baseline survive. See `doc/source_audits/batch_065.json`.
+
+The sixty-sixth checkpoint registers independently reviewed ALLOCATABLE and
+ASYNCHRONOUS statement source: six base/24fine units, three numbered
+requirements and29pending facets. Three base units are newly accounted;
+the other three were already counted numbered rules. Statement syntax
+and scoped attribute identity remain distinct from allocation, I/O and
+communication operations. Neither paragraph creates a duplicate S classifier.
+
+There remain **2,047cases**, now with **118catalogues,696requirements,
+1,754direct,22linked and1,773pending facets out of3,549**. Source accounting
+covers1,698base units;4,775base and six fine units remain unresolved.
+All prior case bindings,2,011reviews,22links,R402andbaseline are preserved.
+The172-method metadata selection passes; this source-only registration
+adds no compiler invocation and does not relabel batch065's selected
+observations or batch059's full report. See `doc/source_audits/batch_066.json`.
 
 A further source-only packet covers 7.5.8 and 7.5.9 with 13 base units,
 50 fine units, 14 requirements and 72 pending facets. It preserves existing
