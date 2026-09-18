@@ -1,0 +1,221 @@
+{
+  "schema_version": 1,
+  "section": "7.5.8",
+  "review_state": "reviewed",
+  "subunits": {
+    "p1": [
+      "p1.pointer-component",
+      "p1.pointer-association-value",
+      "p1.allocatable-status",
+      "p1.allocated-condition",
+      "p1.allocated-dynamic-type",
+      "p1.allocated-type-parameters",
+      "p1.allocated-bounds",
+      "p1.allocated-value",
+      "p1.nonpointer-nonallocatable",
+      "p1.ordinary-component-value"
+    ],
+    "p2": [
+      "p2.particular-type",
+      "p2.all-possible-sequences",
+      "p2.component-values",
+      "p2.components-of-type"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S7.5.8-001",
+      "title": "A pointer component contributes its association rather than a copied target value",
+      "source": "7.5.8, p1.pointer-component, p1.pointer-association-value; J3/24-007, 18 December 2023, physical PDF106, printed92.",
+      "source_units": [
+        "p1.pointer-component",
+        "p1.pointer-association-value"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For a pointer component, its component value is its pointer association. A data target's contents are not a replacement for that association, and a procedure pointer denotes its procedure association rather than an evaluated function result. Disassociated and associated states must be distinguished without querying an undefined association. The operation used to observe or transfer this value retains its own pointer-assignment and interface conditions.",
+      "facets": [
+        "data-pointer-association",
+        "array-pointer-association",
+        "procedure-pointer-association",
+        "disassociated-pointer-value"
+      ],
+      "pending": {
+        "data-pointer-association": "PENDING - Assess reuse of S10_2_1_3_024_valid's defined scalar TARGET, ASSOCIATED(copy%scalar,scalar) and later shared-target mutation. Keep the actual primary S10.2.1.3-024 and source/phase/review binding; do not copy its program under this owner.",
+        "array-pointer-association": "PENDING - Assess the same canonical case's values(2:6:2) target section, eligible ASSOCIATED comparison and independently observed values(4) mutation. Do not replace association/view identity by equal element values or raw addresses.",
+        "procedure-pointer-association": "PENDING - Assess its explicit transform interface, live module procedure double_value and association comparison plus separately evaluated call result10. A matching integer return alone is insufficient procedure-identity evidence.",
+        "disassociated-pointer-value": "PENDING - Assess its explicitly NULLIFY-established scalar/array/procedure disassociation before the second derived assignment. Do not infer association states from uninitialized storage or require a trap for undefined association."
+      },
+      "oracle": "The existing canonical S10.2.1.3-024 program was inspected as a reuse candidate: it establishes named live targets and initialized data, checks association and shared mutation, then explicitly nullifies before checking disassociation. Any new connection still needs its own source and current fixture review.",
+      "oracle_limitation": "Read only defined values and independently established allocation/association states. Keep pointer targets alive, use exact eligible procedure interfaces, guard allocation before dependent inquiries, and do not dereference null or undefined pointers. A component value is not an ABI layout or a byte encoding. This paragraph does not independently prescribe how every operation copies a pointer; the canonical assignment rules supply that operation. No allocation-address, target-value equality or opaque C descriptor oracle is authorized.",
+      "dependencies": "7.5.4.4/.5;7.5.4.7;9.2.2;10.2.1.3p15/p16 and10.2.2;15.5.2;16.9 ASSOCIATED;19.5.2/19.6."
+    },
+    {
+      "id": "S7.5.8-002",
+      "title": "An allocatable component's value includes conditional allocation characteristics and data",
+      "source": "7.5.8, p1.allocatable-status, p1.allocated-condition, p1.allocated-dynamic-type, p1.allocated-type-parameters, p1.allocated-bounds, p1.allocated-value; J3/24-007, 18 December 2023, physical PDF106, printed92.",
+      "source_units": [
+        "p1.allocatable-status",
+        "p1.allocated-condition",
+        "p1.allocated-dynamic-type",
+        "p1.allocated-type-parameters",
+        "p1.allocated-bounds",
+        "p1.allocated-value"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "An allocatable component contributes its allocation status. When it is allocated, its component value additionally includes dynamic type, type parameter values, bounds and data value. The allocated-only qualification does not authorize reading absent data or inferring an allocation's physical address. Allocation, assignment, inquiry and defined-assignment operations retain their separately specified semantics.",
+      "facets": [
+        "unallocated-status",
+        "allocated-status",
+        "allocated-dynamic-type",
+        "allocated-type-parameters",
+        "allocated-bounds",
+        "allocated-data-value"
+      ],
+      "pending": {
+        "unallocated-status": "PENDING - Review the allocated-to-unallocated and both-unallocated branches of existing S10_2_1_3_029_valid for this connection. Retain actual status observations and no inquiry of absent payloads; its finalization variant is a different operation context, not a substitute.",
+        "allocated-status": "PENDING - Review the successful allocation and guarded status observations in S10_2_1_3_030_valid before linking the allocated branch. No failed allocation or optional-facility absence is a successful component-value observation.",
+        "allocated-dynamic-type": "PENDING - Assess the actual polymorphic component/dynamic-type witnesses in S10_2_1_3_030_valid and S10_2_1_3_032_valid. Verify their exact eligible type guards and allocation state, rather than assuming a declared type proves the allocated dynamic type.",
+        "allocated-type-parameters": "PENDING - Assess the canonical kind/length-parameter observations in S10_2_1_3_030_valid. Bind their real parameter kinds and source characteristics; no arbitrary numeric intrinsic kind or unallocated deferred-parameter inquiry is allowed.",
+        "allocated-bounds": "PENDING - Assess its nonunit-bound witness against allocation/assignment and LBOUND/UBOUND rules. Keep zero-size inquiry conventions separate; do not infer a stored empty-array lower bound from a nonempty example.",
+        "allocated-data-value": "PENDING - Assess independent initialized data observations in S10_2_1_3_030_valid and S10_2_1_3_032_valid. Defined assignment under S10.2.1.3-031 can transform values and must not be silently treated as intrinsic copying."
+      },
+      "oracle": "Use independently established allocation state and operation-specific canonical evidence. The named existing cases are candidates, not new executions or automatic approval of this semantic connection.",
+      "oracle_limitation": "Read only defined values and independently established allocation/association states. Keep pointer targets alive, use exact eligible procedure interfaces, guard allocation before dependent inquiries, and do not dereference null or undefined pointers. A component value is not an ABI layout or a byte encoding. This definition is not an independent deep-copy or deallocation requirement, and it does not promise an allocation can never fail. Unallocated components do not acquire observable payloads by this paragraph.",
+      "dependencies": "7.2;7.3.2.3p5;7.5.4.2/.3;9.4.5p2, PDF153;9.7.1/.3;10.2.1.3p15/p16;16.9 ALLOCATED/LBOUND/UBOUND;19.6."
+    },
+    {
+      "id": "S7.5.8-003",
+      "title": "An ordinary component contributes its data value",
+      "source": "7.5.8, p1.nonpointer-nonallocatable, p1.ordinary-component-value; J3/24-007, 18 December 2023, physical PDF106, printed92.",
+      "source_units": [
+        "p1.nonpointer-nonallocatable",
+        "p1.ordinary-component-value"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For a component with neither POINTER nor ALLOCATABLE, the component value is its data value. This includes intrinsic data, a nested derived value and array-valued data under their own type, parameter, shape and definedness rules. It does not make general derived-type equality intrinsic or override a separately applicable defined assignment.",
+      "facets": [
+        "ordinary-intrinsic-components",
+        "ordinary-nested-derived-component",
+        "ordinary-array-components"
+      ],
+      "pending": {
+        "ordinary-intrinsic-components": "PENDING - Assess S10_2_1_3_026_valid's explicitly initialized INTEGER, CHARACTER and LOGICAL members and independent literal checks. Preserve the actual canonical program instead of duplicating its scalar copy example.",
+        "ordinary-nested-derived-component": "PENDING - Assess its named initialization and separate nested scalar member checks with no applicable type-bound defined assignment. No construction-order or shared-oracle cancellation is introduced.",
+        "ordinary-array-components": "PENDING - Assess its two explicitly initialized nested array elements, independent expected member values and later mutation that leaves the source element unchanged. This is finite data-value evidence, not a general ABI representation claim."
+      },
+      "oracle": "The existing S10.2.1.3-026 source was inspected: all read members are assigned by name, and the finite expectations are independently stated. Its actual source qualifications and observation/review binding must be retained.",
+      "oracle_limitation": "Read only defined values and independently established allocation/association states. Keep pointer targets alive, use exact eligible procedure interfaces, guard allocation before dependent inquiries, and do not dereference null or undefined pointers. A component value is not an ABI layout or a byte encoding. Defined assignment can legitimately change the destination value; S10.2.1.3-025 is not interchangeable with the no-matching-binding case. The p2 value-set definition remains fully accounted without a no-op execution.",
+      "dependencies": "7.2;7.3.1;7.5.4.7;10.2.1.3p15/p16;10.2.1.4;19.6."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "structural",
+      "rationale": "PDF106 lines2-6 divide the semantic component-value definition into pointer, allocatable and ordinary branches, retaining the allocated-only condition."
+    },
+    {
+      "unit": "p2",
+      "disposition": "definition",
+      "rationale": "PDF106 lines7-8 define the value set by possible sequences of the type's component values. This is a normative semantic model, not permission to enumerate arbitrary bit patterns or a new requirement for intrinsic derived-type equality, storage layout or an empty executable. The p1 branches and canonical operations provide the finite observable witnesses; 7.2 and7.5.4.7 retain parameter dependence and component ordering."
+    },
+    {
+      "unit": "p1.pointer-component",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.8-001"
+      ]
+    },
+    {
+      "unit": "p1.pointer-association-value",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.8-001"
+      ]
+    },
+    {
+      "unit": "p1.allocatable-status",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.8-002"
+      ]
+    },
+    {
+      "unit": "p1.allocated-condition",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.8-002"
+      ]
+    },
+    {
+      "unit": "p1.allocated-dynamic-type",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.8-002"
+      ]
+    },
+    {
+      "unit": "p1.allocated-type-parameters",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.8-002"
+      ]
+    },
+    {
+      "unit": "p1.allocated-bounds",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.8-002"
+      ]
+    },
+    {
+      "unit": "p1.allocated-value",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.8-002"
+      ]
+    },
+    {
+      "unit": "p1.nonpointer-nonallocatable",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.8-003"
+      ]
+    },
+    {
+      "unit": "p1.ordinary-component-value",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.8-003"
+      ]
+    },
+    {
+      "unit": "p2.particular-type",
+      "disposition": "definition",
+      "rationale": "PDF106 lines7-8 define the value set by possible sequences of the type's component values. This is a normative semantic model, not permission to enumerate arbitrary bit patterns or a new requirement for intrinsic derived-type equality, storage layout or an empty executable. The p1 branches and canonical operations provide the finite observable witnesses; 7.2 and7.5.4.7 retain parameter dependence and component ordering."
+    },
+    {
+      "unit": "p2.all-possible-sequences",
+      "disposition": "definition",
+      "rationale": "PDF106 lines7-8 define the value set by possible sequences of the type's component values. This is a normative semantic model, not permission to enumerate arbitrary bit patterns or a new requirement for intrinsic derived-type equality, storage layout or an empty executable. The p1 branches and canonical operations provide the finite observable witnesses; 7.2 and7.5.4.7 retain parameter dependence and component ordering."
+    },
+    {
+      "unit": "p2.component-values",
+      "disposition": "definition",
+      "rationale": "PDF106 lines7-8 define the value set by possible sequences of the type's component values. This is a normative semantic model, not permission to enumerate arbitrary bit patterns or a new requirement for intrinsic derived-type equality, storage layout or an empty executable. The p1 branches and canonical operations provide the finite observable witnesses; 7.2 and7.5.4.7 retain parameter dependence and component ordering."
+    },
+    {
+      "unit": "p2.components-of-type",
+      "disposition": "definition",
+      "rationale": "PDF106 lines7-8 define the value set by possible sequences of the type's component values. This is a normative semantic model, not permission to enumerate arbitrary bit patterns or a new requirement for intrinsic derived-type equality, storage layout or an empty executable. The p1 branches and canonical operations provide the finite observable witnesses; 7.2 and7.5.4.7 retain parameter dependence and component ordering."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_7_5_8.md"
+  },
+  "review_fingerprint": "65adac9294cf219211b0a401089018b7a1879eb4dc03d8376608245a9c6d3956",
+  "review_rationale": "Register the unchanged7.5.8half of source-only packet1fada1e under its independent source eligibility review23787bf295cd9f87cd2af9bfc8f22abcbfb5f115f310ecb992e66c7abdf7d2e6 and the fresh original-PDF replay in doc/source_audits/batch_052.json. All2base/14fine units remain accounted, including the normative p2value-set definition without a fabricated S7.5.8-004 or no-op execution. Three S requirements retain all13facets pending. Pointer association, allocated-only dynamic type/parameters/bounds/data and ordinary values keep their exact premises and canonical operation owners. Named assignment witnesses are only reuse candidates; their connections and source/role/runtime qualifications are not approved here. The newer7.5.9catalogue/fixtures and all existing case/evidence records remain untouched."
+}

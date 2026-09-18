@@ -22,7 +22,7 @@ The readiness refactoring now supplies:
   context case.
 
 This is infrastructure readiness, not completed conformance coverage.
-The current census still has 4,830 unresolved base units and eight unresolved
+The current census still has 4,828 unresolved base units and eight unresolved
 fine-grained units inside the catalogues. Its independent visual
 review is still pending. Automatic PDF extraction is not semantic review,
 and list items/table rows require additional audited subdivisions.
@@ -1231,14 +1231,31 @@ were added to the baseline. The785-method Python suite passed. There are
 source counts are unchanged. Three other C834 and all23 R822/S facets stay
 pending. See `doc/source_audits/batch_051.json`.
 
+The fifty-second checkpoint registers the already independently reviewed
+7.5.8 half of the earlier value/specifier source packet, without overwriting
+the newer7.5.9 material. Two original paragraphs and14 fine units supply
+three requirements, all13 facets pending. Pointer association, allocated-only
+characteristics and ordinary component values remain distinct. The normative
+value-set definition is accounted without inventing a no-op execution.
+
+The current corpus has **104 catalogues, 622 requirements, 1,745 direct,
+nine linked and1,392 pending facets out of3,146**. Source accounting covers
+1,645 base units;4,828 base and eight fine units remain unresolved. All2,035
+case bindings,1,999 stored reviews, nine links, R402 and the baseline are
+unchanged. Source and inventory context review add no compiler observation:
+batch051 retains its actual103-catalogue/619-requirement full-run context.
+The172-method source/evidence selection passed. See
+`doc/source_audits/batch_052.json`.
+
 A further source-only packet covers 7.5.8 and 7.5.9 with 13 base units,
 50 fine units, 14 requirements and 72 pending facets. It preserves existing
 canonical witnesses and explicitly accounts for the value-set definition
 without inventing a no-op execution. Its four-file author commit `1fada1e`
 has passed independent source-eligibility review; no main-checkout coverage
 was credited by the source-only packet. The 7.5.9 compile subset is now
-integrated separately as batch020; 7.5.8's 13 value facets remain pending
-outside main, without a fabricated value-set classifier execution.
+integrated separately as batch020. The unchanged7.5.8source half is now
+registered as batch052; its13value facets remain pending in main, without
+a fabricated value-set classifier execution or automatic canonical links.
 Source-only constructor packet `8ba944c` in 7.5.10 covers 28 base and
 114 fine units, with 22 requirements and 98 facets: two already represented
 C7107 facets and 96 pending. The four existing C7107 programs and their
@@ -1318,8 +1335,10 @@ facets pending. Coordinator-authored EXTERNAL/INTENT source packet
 97pending facets. Nine numbered units were already globally accounted;
 registration would newly account14base units, not23. Its independent source
 review is open, and it supplies no fixture or compiler observation.
-Original INTRINSIC/OPTIONAL source in8.5.11/.12 has been read in another
-isolated worktree; no second packet or coverage has been delivered yet.
+INTRINSIC/OPTIONAL source packet `14c607c` is separately frozen unapproved:
+six base/24fine units, four requirements and23pending facets, with no
+fixtures or compiler observations. Independent source review and shared
+registration are still required.
 
 Bound-COMMON SAVE runtime authoring stopped before any fixture or compiler
 run at BCS-ROLE-001: an explicit-SAVE confirmation needs a positive-control
