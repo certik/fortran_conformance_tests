@@ -1704,14 +1704,31 @@ and main172-method metadata selections pass without compiler invocations.
 No SAVE retention, TARGET lifetime or new grammar observation is supplied.
 See `doc/source_audits/batch_078.json`.
 
-A separate isolated
-PARAMETER proposal `c4be9b2` adds six finite value-effect programs and is
-under independent source/oracle/native review, not integrated here. Its
-author observations retain a truncation runtime failure and a scalar-array
-compiler failure; no baseline update or successful effect credit is
-inferred from this source checkpoint. IMPLICIT8.7 source authoring remains
-isolated; IMPORT source accounting is the next bounded coordinator scope.
-All wider source/oracle/processor gates remain unfinished.
+The following proposals are frozen in isolated author contexts and queued
+for independent review. **They are not registered main coverage.**
+
+| Proposal | Bounded scope | Author evidence and limits |
+| --- | --- | --- |
+| `c4be9b2` PARAMETER | Six S8.6.11-004 value-effect programs and six facets | Target4passes, one truncation runtime failure and one scalar-array internal compiler error; GNUf2023six passes, Flangf2018six supplementary passes.230mutation runs reach intended failures;34target plans stay unexecuted behind failed parents. |
+| `36e9f1b` DATA | Three S8.6.7-004 position/initial-state programs and three facets | Nine complete parents pass across three processors;129wrong-oracle/omission runs reach intended failures. DATA after RETURN remains obsolescent but conforming, and every mutation preserves initialization. |
+| `c713ce4` IMPORT |18base/71fine units,15requirements including seven S rules,79pending facets | No fixtures or native runs. BLOCK versus ordinary host access, interface defaults, implicit mapping and no-hiding conditions remain explicit. |
+| `836c650` NAMELIST |11base/40fine units,10requirements including five S rules,47pending facets | No fixtures, I/O parser or native runs. Output order/multiplicity/concatenation, recursive direct components and exact transfer-state conditions remain pending. |
+
+The PARAMETER author context is batch076's2,056cases/129catalogues. DATA,
+IMPORT and NAMELIST use batch078's2,056cases/133catalogues; their separate
+candidate counts must not be added to main or conflated with each other.
+The original PARAMETER native capture completed before a Python3.9 proof-join
+error; its unchanged report was joined using the existing Python3.12
+environment, with no rerun and no invented runner-return value.
+
+Independent fixture/source/oracle/native review is processing PARAMETER
+before DATA. IMPLICIT8.7 source authoring remains isolated from batch076,
+followed by independent IMPORT and NAMELIST reviews by that other author.
+No proposal grants source, case, link, SourceUse or inventory approval, and
+the main `c3b55716` baseline is unchanged. Last actual main selected execution
+remains batch072 in its122-catalogue context; the candidate observations above
+are not later main or full-suite runs. All wider source/oracle/processor
+gates remain unfinished.
 
 A further source-only packet covers 7.5.8 and 7.5.9 with 13 base units,
 50 fine units, 14 requirements and 72 pending facets. It preserves existing
