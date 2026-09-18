@@ -22,7 +22,7 @@ The readiness refactoring now supplies:
   context case.
 
 This is infrastructure readiness, not completed conformance coverage.
-The current census still has 4,771 unresolved base units and six unresolved
+The current census still has 4,767 unresolved base units and six unresolved
 fine-grained units inside the catalogues. Its independent visual
 review is still pending. Automatic PDF extraction is not semantic review,
 and list items/table rows require additional audited subdivisions.
@@ -1542,6 +1542,27 @@ The14C830 cases and two prior contiguity effects use type attributes, not
 standalone statement occurrences; their failures, ICE and26UNTESTED plans
 are not promoted or relabelled. The172-method metadata selection passes,
 with no compiler invocation. See `doc/source_audits/batch_069.json`.
+
+The seventieth checkpoint registers independently reviewed accessibility
+statement source:10base/63fine units, eight requirements and42pending
+facets. Four base units are newly accounted after six numbered units already
+counted. List/default/module-policy and generic/name-space conditions stay
+distinct from component, binding, implementation and constructor access.
+
+New p1 accounting genuinely staled three existing binding connections.
+Each received independent semantic eligibility, then an explicit
+source-context renewal after source approval. Their specifications, roles
+and two unique complete programs are unchanged; the other19link reviews
+remain exact. **This adds no link, execution or passing linked aggregate.**
+Old compiler observations retain their actual modes and contexts.
+
+There remain **2,049cases**, now with **122catalogues,710requirements,
+1,756direct,22current linked and1,861pending facets out of3,639**.
+Source accounting covers1,706base units;4,767base and six fine units remain
+unresolved. All case bindings,2,013case reviews,R402andbaseline survive.
+The177-method metadata/link selection includes all32type-bound ownership
+subsets and passes without compiler invocations.
+See `doc/source_audits/batch_070.json`.
 
 A further source-only packet covers 7.5.8 and 7.5.9 with 13 base units,
 50 fine units, 14 requirements and 72 pending facets. It preserves existing
