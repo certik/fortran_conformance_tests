@@ -1635,7 +1635,22 @@ All case/review/link/R402/baseline bindings survive. The172-method metadata
 selection passes; no compiler, rank/state effect or numbered-wrapper
 connection is added. See `doc/source_audits/batch_074.json`.
 
-OPTIONAL/PARAMETER has independent source eligibility and awaits registration.
+The seventy-fifth checkpoint registers independently reviewed OPTIONAL and
+PARAMETER statement source:10base/49fine units, seven requirements and44
+pending facets. Seven base units are newly accounted. OPTIONAL keeps its
+actual dummy-name/role/presence owners. PARAMETER retains subsequent typing
+under the real implicit mapping, prior rank, the two conditional shape
+branches and independently justified constant-value/conversion oracles.
+None of those planned effects is replaced by a compile-only classifier.
+
+There remain **2,056cases**, now with **127catalogues,752requirements,
+1,761direct,22linked and2,108pending facets out of3,891**. Source accounting
+covers1,729base units;4,744base and six fine units remain unresolved.
+All old cases,2,020reviews,22links,R402andbaseline are preserved. The172
+metadata methods pass without compiler invocations; source/inventory
+adjudication is not an execution or representation-profile approval.
+See `doc/source_audits/batch_075.json`.
+
 POINTER/PROTECTED correction
 `396598d` awaits independent PPSR-001 closeout. SAVE/TARGET and VALUE/VOLATILE
 statement source authoring remains isolated. None of these pending packets
