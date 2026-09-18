@@ -1670,9 +1670,29 @@ independent172-method review, narrow14-method closeout and current main
 or missing-EXTERNAL negative/control is supplied. Source registration is not
 fixture approval. See `doc/source_audits/batch_076.json`.
 
-SAVE/TARGET and VALUE/VOLATILE statement source authoring remains isolated
-and requires independent review. PARAMETER value effects and all wider
-source/oracle/processor gates remain unfinished.
+The seventy-seventh checkpoint registers independently reviewed VALUE and
+VOLATILE statement source: four base/14fine units, two syntax requirements
+and23pending facets. Two base units are newly accounted. The independent
+review reads20complete original sections and selected units of eight more,
+verifies all28section hashes and202original units, and confirms explicit
+R1534/R804 name ownership in the complete502-head grammar census.
+Actual data-dummy roles, anonymous-object/component semantics, scoped
+VOLATILE identity and the mandatory-versus-advisory boundaries stay exact.
+
+There remain **2,056cases**, now with **131catalogues,758requirements,
+1,761direct,22linked and2,164pending facets out of3,947**. Source accounting
+covers1,734base units;4,739base and six fine units remain unresolved.
+All old cases,2,020reviews,22links,R402andbaseline remain unchanged. The172
+main metadata methods pass; no compiler, copying/ABI effect, timing oracle
+or fixture approval is supplied. See `doc/source_audits/batch_077.json`.
+
+SAVE/TARGET source is under independent review. A separate isolated
+PARAMETER proposal `c4be9b2` adds six finite value-effect programs and is
+under independent source/oracle/native review, not integrated here. Its
+author observations retain a truncation runtime failure and a scalar-array
+compiler failure; no baseline update or successful effect credit is
+inferred from this source checkpoint. IMPLICIT8.7 source authoring remains
+isolated. All wider source/oracle/processor gates remain unfinished.
 
 A further source-only packet covers 7.5.8 and 7.5.9 with 13 base units,
 50 fine units, 14 requirements and 72 pending facets. It preserves existing

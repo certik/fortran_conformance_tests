@@ -1,0 +1,126 @@
+{
+  "schema_version": 1,
+  "section": "8.6.17",
+  "review_state": "reviewed",
+  "subunits": {
+    "R865": [
+      "R865.keyword",
+      "R865.optional-double-colon",
+      "R865.object-name-list"
+    ],
+    "p1": [
+      "p1.statement-route",
+      "p1.volatile-attribute",
+      "p1.listed-objects",
+      "p1.defining-reference"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "R865",
+      "title": "A VOLATILE statement has an optional double colon and a required object-name list",
+      "source": "8.6.17 R865, J3/24-007, 18 December 2023, physical PDF141",
+      "source_units": [
+        "R865",
+        "R865.keyword",
+        "R865.optional-double-colon",
+        "R865.object-name-list"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "VOLATILE is followed by an optional double colon and a nonempty comma-separated object-name list. R401 supplies the list; explicit R804/C810 supplies a data-object name, overriding assumed R402. C870 further requires a variable that is not an INTENT(IN) dummy. No array/coarray declarator, component selection, substring or invocation is part of the list. Actual scope, inherited attributes and coarray-related conditions remain canonical.",
+      "facets": [
+        "double-colon-form",
+        "no-double-colon-form",
+        "multiple-object-names",
+        "required-name-list",
+        "single-colon-repair",
+        "list-separator-repairs",
+        "name-not-designator",
+        "variable-eligibility-and-state-source",
+        "use-host-and-inherited-scope-source",
+        "block-scope-and-construct-identity",
+        "subobject-and-pointer-target-source",
+        "external-event-and-modality-source"
+      ],
+      "pending": {
+        "double-colon-form": "PENDING compile/positive-control: a complete ordinary program with IMPLICIT NONE, prior INTEGER :: x and one VOLATILE :: x statement. x is a mutable local scalar, not VALUE or an INTENT(IN) dummy, and has no other explicit VOLATILE specification. No value read or external event is needed for grammar admission.",
+        "no-double-colon-form": "PENDING the same complete ordinary variable context with VOLATILE x. Both colons are omitted, not replaced by one colon. Preserve type, identity, scope and absence of duplicate attributes; this is not a timing or optimization experiment.",
+        "multiple-object-names": "PENDING compile/positive-control with separately declared INTEGER :: x,y and VOLATILE :: x,y. Both names resolve to distinct eligible variables with no prior VOLATILE specification. The statement does not supply shape, allocate storage or cause an external modification.",
+        "required-name-list": "PENDING separate complete specification-part negatives VOLATILE alone and VOLATILE :: alone, each repaired only by adding the prior-declared x with proper token separation. Retain a valid program ending and all declaration conditions. Require a missing-list cause, not a generic EOF, missing type or unsupported facility.",
+        "single-colon-repair": "PENDING diagnostic/control for VOLATILE : x, repaired only by inserting the second colon. No VALUE/INTENT or association condition is changed; the cause is the unadmitted separator form.",
+        "list-separator-repairs": "PENDING separately isolated missing-comma and trailing-comma variants in the complete x,y context. Repair just the selected separator and leave both names distinct. A repeated entity or another explicit attribute specification is a C815 condition, not list-length evidence.",
+        "name-not-designator": "PENDING diagnostic/control with prior ordinary INTEGER :: a(2): VOLATILE :: a(1), repaired only to VOLATILE :: a. The array shape remains solely in the type declaration. A separate complete local type with a plain public INTEGER field and a nonpointer noncoarray variable box can use box%field versus whole box, provided the repair retains C870-C872 eligibility. R804 is a name slot, not a selected-subobject or declaration suffix.",
+        "variable-eligibility-and-state-source": "PENDING finite R865 -> R401 -> R804/C810 -> C870 relationships for ordinary scalar/array variables and separately complete scalar data-POINTER or ALLOCATABLE variables with no conflicting attributes. Declaration admission does not require querying an undefined pointer status or unallocated payload. Named constants and procedures are not admitted as variables; an INTENT(IN) dummy remains excluded even when it is a pointer whose target operations could otherwise be legal. Keep those canonical causes separate from local grammar diagnostics.",
+        "use-host-and-inherited-scope-source": "PENDING complete source/identity relationships for a public noncoarray INTEGER module variable accessed by USE and for the same kind of host variable in a contained procedure, each without a prior local VOLATILE specification.14.2.2/19.5.1.4 permit the scoped additional attribute for eligible objects, not a universal new local declaration. C871 still forbids local specification for use/host-associated coarrays and coarray-potential-subobject variables; inherited VOLATILE is a different case. Multiple USE paths, actual/dummy matching and pointer/coarray matching keep their canonical rules, including15.5.2.5p22 despite the noncoarray association permission.",
+        "block-scope-and-construct-identity": "PENDING finite scope proof for a complete program's enclosing ordinary INTEGER x named only by VOLATILE :: x inside BLOCK: the added attribute applies inside, not globally, and the statement alone does not make x a construct entity. A separate declared INTEGER,SAVE coarray local to BLOCK needs a complete legal declaration, C826 storage premise and true construct identity before any source/compile admission. USE inside BLOCK creates construct entities under19.4p3 but does not override C871's use-association prohibition; C872's construct test and the other constraints all remain active. Existing S8.5.20-001 owns the scoped effect; no local S or no-op runtime classifier is added.",
+        "subobject-and-pointer-target-source": "PENDING exact S8.5.20-003/9.4.2 relationships using an ordinary array, a default CHARACTER variable, and a local derived object with a plain INTEGER component and a scalar data-pointer component. Actual nonpointer subobjects inherit VOLATILE. A rightmost sole pointer component is a subobject in association-status contexts, not when dereferenced to its target; a path through an earlier pointer does not propagate from the original base. Potential-subobject paths use3.30.3/7.5.1p5, not arbitrary pointer reachability. No undefined association or private/opaque representation is queried, and no duplicate propagation program is authored.",
+        "external-event-and-modality-source": "PENDING source/documentation/processor qualification under8.5.20. External reference/definition/undefinition and pointer/allocatable property changes in p1 are possibilities, not events every program must force or observe. P3 has two should recommendations around the conditional shall requiring a pointer to have VOLATILE when its target is actually referenced, defined or made undefined externally; target-VOLATILE spelling alone is not that event premise. P5's current-value-use and prompt-availability clauses are both should recommendations, not mandated load/store strategies, atomicity, synchronization or latency thresholds. S8.5.20-002 and coarray matching rules retain ownership. No optimizer trap, data race, keyword grep, source echo, unsupported-feature success or timing loop supplies evidence."
+      },
+      "oracle": "Complete eligible variable contexts and source-minimal local grammar repairs, with exact source origins and one intended syntax predicate. Scoped attribute, propagation, association and external-event mechanisms remain finite canonical source/processor plans pending explicit adjudication. Compile admission alone cannot establish those effects or any implementation strategy.",
+      "oracle_limitation": "Required numbered reporting does not prescribe fatal rejection, nonzero exit, exact English or printed R865. Generic variable/VOLATILE words, wrong entity role, duplicate attributes, missing providers, unsupported facilities, recovery, crashes and resource errors are not causes for an unrelated grammar defect. No externally visible value change, timing, atomicity, barrier, mandatory optimization behavior or unconditional target propagation is inferred. All facets remain pending.",
+      "dependencies": "4.1.3R401/p2;4.2;8.1/8.2R804/C810;8.5.1C815;8.5.20C870-C872/p1-p5/S8.5.20-001 through -003;3.30.3/7.5.1p5;9.4.2p5/note1;11.1.4/19.4p3;14.2.2p2/p9/p10;19.5.1.4p1/note1;8.5.6.1C826/8.5.16;15.5.2.5p21-p22/C1546-C1549;15.5.2.9;15.5.2.14;10.2.2.3p7."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "R865",
+      "disposition": "requirements",
+      "requirements": [
+        "R865"
+      ]
+    },
+    {
+      "unit": "R865.keyword",
+      "disposition": "requirements",
+      "requirements": [
+        "R865"
+      ]
+    },
+    {
+      "unit": "R865.optional-double-colon",
+      "disposition": "requirements",
+      "requirements": [
+        "R865"
+      ]
+    },
+    {
+      "unit": "R865.object-name-list",
+      "disposition": "requirements",
+      "requirements": [
+        "R865"
+      ],
+      "rationale": "R401 supplies the nonempty list. The original complete502-head scan identifies explicit R804/C810 for object-name, not an assumed generic R402 replacement. C870 supplies the further variable/not-INTENT(IN) restriction."
+    },
+    {
+      "unit": "p1",
+      "disposition": "definition",
+      "rationale": "Normative separate-statement route to VOLATILE for the listed objects, with the exact8.5.20 reference. The source does not supply a new local S effect, compulsory external event or implementation/timing oracle. Scope, inheritance, modalities and canonical evidence mechanisms remain explicit pending gates."
+    },
+    {
+      "unit": "p1.statement-route",
+      "disposition": "definition",
+      "rationale": "8.5.1 permits a separate attribute specification statement. Its exact live source occurrence, object identity and scope must be established; a keyword in a type declaration, comment or diagnostic is not sufficient evidence of this route."
+    },
+    {
+      "unit": "p1.volatile-attribute",
+      "disposition": "definition",
+      "rationale": "8.5.20 defines external-change possibilities, attribute restrictions, association permission and conditional/recommended behavior. All those conditions remain at the defining source, including both p5 should clauses. No mandatory strategy or broadened diagnostic duty is introduced."
+    },
+    {
+      "unit": "p1.listed-objects",
+      "disposition": "definition",
+      "rationale": "The listed eligible objects receive the attribute in the applicable scope. Subobject inheritance uses S8.5.20-003's exact path/context rule; arbitrary pointer targets are not treated as contained objects. USE/HOST/BLOCK identity and C871/C872 remain independent prerequisites."
+    },
+    {
+      "unit": "p1.defining-reference",
+      "disposition": "structural",
+      "rationale": "Preserve C870-C872 and S8.5.20-001/-002/-003, coarray/argument/pointer and state owners. A future finite source/interface relation must bind actual declarations and scoped attributes; no SourceUses instance, arbitrary numbered-target link, copied parent program or approval is authored."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_8_6_17.md"
+  },
+  "review_fingerprint": "a8b2b0153c07ccfc2faef92ef7f9ff6de98195ffc97ffafa2a23fb48cad879c1",
+  "review_rationale": "Independent complete original primary source and bounded canonical-dependency review a3a97c7e83c474fa523bddf2dcbefe8f6ce805be70e7364c7da467b2d1df25a9, registered in doc/source_audits/batch_077.json. R865 uses a required R401 list and explicit R804/C810 object-name, not a designator or assumed R402. C870 excludes INTENT(IN) dummies even when pointers. Exact USE/HOST/BLOCK identity and C871/C872 remain independent; BLOCK USE construct identity does not waive the coarray/PSC restriction, and noncoarray permission does not waive15.5.2.5p22 matching. Subobject propagation retains9.4.2p5's sole-rightmost-pointer association-context condition rather than arbitrary target reachability.8.5.20p3's conditional pointer shall requires actual external target events; adjacent pointer/EQUIVALENCE advice and both p5 clauses remain should recommendations, not timing, atomicity or mandatory load/store strategies. All12facets and canonical source/interface/processor mechanisms remain pending. P1 supplies a declaration route, not an executed value or local no-op classifier."
+}
