@@ -126,12 +126,61 @@ fatal rejection.
 
 ## STOP and external I/O expectations
 
+**11.4 source review is recorded in batch062.** Effective status remains
+`Registry.catalogue_review_state("11.4")`. All ten original base units of
+J3/24-007, December 18, 2023, are accounted from physical PDF228-229,
+including NOTE2 before the actual next heading, 11.5. The pinned 688-page
+PDF has SHA-256
+`7371e889f231cfb0316d30365d5083fb5af34cbb6d5f7cb1e01855c73021bfa2`.
+Every new facet remains pending; source accounting is not independent
+source approval, fixture evidence or whole-standard completion.
+
 The source initiates normal termination with `STOP 200`. Fortran makes
 the process-status mapping a recommendation and processor-dependent
 interface, not a universal requirement. This fixture explicitly chooses
 the `posix-stop-code` execution profile, checks stdout and a closed output
 file, and expects status 200. It is not a compiler crash or a generic
 "any nonzero status passes" negative test.
+
+The entire S11.4-001 record, its two source anchor IDs and
+`S11_4_001_valid__stop_io` are preserved. Its input7, stdout `INPUT=7`,
+explicitly closed file containing49 and after-STOP marker retain the
+existing external-driver contract. This is not evidence of implicit file
+closing or a new execution. The historical processor modes, fingerprints
+and raw review are not relabelled by this source expansion.
+
+The new syntax plans separate code and QUIET optionality, scalar/type/kind
+premises and source-form owners. An ordinary nonconstant scalar expression
+is not excluded just because it is not a literal; default logical kind is
+not required for QUIET. Unsupported kinds/facilities or unrelated syntax
+errors cannot stand in for an intended diagnostic.
+
+Normal/error termination and image states belong to5.3.4-5.3.7. In this
+pinned draft,11.6 is NOTIFY WAIT, not the termination subclause. A single
+process crash or nonzero shell status is not evidence of program-wide
+ERROR STOP propagation. Image/team/segment and complete-lifecycle gates
+remain explicit; the recommendation to propagate quickly has no prescribed
+numeric deadline.
+
+The p2 status mappings and p3 formatted-code-output advice remain
+recommendations, not universal exit values, streams or wording. The
+existing `p2.integer-status` anchor is now classified as a recommendation,
+without changing the S11.4-001 requirement or its selected profile.
+Processor-dependent availability of a specified code is a separate effect.
+
+When QUIET is omitted or false and an exception is signaling on that image,
+p3 requires an identifying warning on ERROR_UNIT. With explicit true
+QUIET, p4 requires suppression of exception and stop-code output. Neither
+condition is weakened to advice. IEEE support, halting and procedure-entry
+flag behavior require actual qualification; a signaling flag is not a
+signaling-NaN value or a trap oracle. ERROR_UNIT may equal OUTPUT_UNIT and
+is not universally OS stderr. Silence without proven statement entry and
+termination cannot establish suppression.
+
+Both original notes remain informative, including the limited-range and
+low-eight-bit example. No fixtures, profiles, driver changes, compiler runs,
+links, SourceUses entries, baseline changes or approvals are added. Other
+sections in this shared view retain their independent content and status.
 
 <!-- BEGIN GENERATED 11.4 -->
 
@@ -150,6 +199,216 @@ is processor-dependent and recommended rather than universally required.
 judge termination. The posix-stop-code facet explicitly chooses status 200 as a
 processor-profile expectation; it must not be mistaken for a compiler crash or silently
 promoted to a universal Fortran requirement.
+
+### R1162: STOP has independently optional stop-code and QUIET parts
+
+**Source:** 11.4 R1162, J3/24-007, 18 December 2023, physical PDF228, printed214, line15. **Class:** Syntax.
+
+**Definition:** A STOP statement has an optional stop-code followed by an independently optional comma
+and QUIET=scalar-logical-expr. The code may be omitted while QUIET is present. QUIET is
+a scalar logical expression, not necessarily a literal or constant expression, and this
+production does not require default logical kind. Stop-code type/kind and source-form
+rules retain their own owners.
+
+**Diagnostic obligation:** required.
+
+**Facets:** `no-code-form`, `code-and-quiet-optionality`, `quiet-scalar-logical`, `quiet-expression-admission`, `separator-and-order-source-gate`.
+
+**Oracle:** Source-valid compile/positive-controls and single-predicate diagnostic/repair pairs in
+ordinary program contexts, with complete source, exact intended causes and legitimate
+origins reviewed before any fixture.
+
+**Oracle limitation:** 4.2 requires reporting capability, not fatal rejection, fixed wording or a printed code.
+Unsupported STOP/QUIET facilities, source echoes, other errors and internal/resource
+failures are not qualifying diagnostics. No new fixture, role designation or runtime
+evidence is supplied.
+
+**Dependencies:** 4.1.1-.4, especially R403/C401;4.2p2;6.3.2/.3;10.1.9.1 C1007;11.4
+R1164/C1176;14.1;canonical S11.4-001.
+
+### R1163: ERROR STOP has independently optional stop-code and QUIET parts
+
+**Source:** 11.4 R1163, physical PDF228, printed214, line16. **Class:** Syntax.
+
+**Definition:** An ERROR STOP statement has an optional stop-code and an independently optional
+following comma-QUIET scalar-logical expression. Its syntax does not require a code, a
+constant QUIET value or default logical kind. Admission of the statement is distinct
+from executing error termination and from the source-form rules for its two keywords.
+
+**Diagnostic obligation:** required.
+
+**Facets:** `no-code-form`, `code-and-quiet-optionality`, `quiet-scalar-logical`, `quiet-expression-admission`, `separator-and-order-source-gate`, `source-form-keyword-boundary`.
+
+**Oracle:** Complete syntax admissions and genuinely source-isolated diagnostic repairs, without
+executing the ERROR STOP programs or duplicating canonical expression/source-form cases.
+
+**Oracle limitation:** No fatal-status, standardized-English, rule-code or unsupported-feature proxy. This
+source-only entry does not claim an error-termination trace, a process-status value or a
+multi-image result.
+
+**Dependencies:** 4.1.1-.4;4.2p2;6.3.2.2p2-p3/Table6.2;6.3.3.1;10.1.9.1 C1007;11.4
+R1164/C1176;14.1;S11.4-002.
+
+### R1164: A stop-code is scalar default character or scalar integer
+
+**Source:** 11.4 R1164, physical PDF228, printed214, lines17-18. **Class:** Syntax.
+
+**Definition:** A stop-code is a scalar default-character expression or a scalar integer expression;
+C1176 additionally restricts the integer alternative to default kind. These are
+expressions, not literal-only or constant-expression productions. Character length,
+integer sign and host process-status representability do not supply additional local
+restrictions.
+
+**Diagnostic obligation:** required.
+
+**Facets:** `default-character-admission`, `integer-admission`, `defined-expression-admission`, `other-type-source-gate`, `scalar-source-gate`, `default-character-kind-source-gate`.
+
+**Oracle:** Finite complete type/rank/expression admissions and source-isolated canonical negatives.
+Defined scalar values and actual supported kinds are prerequisites, independent of any
+compiler's diagnostic wording.
+
+**Oracle limitation:** No new BOZ claim, undefined operand evaluation, character-storage model or universal
+process-status truncation oracle. Numbered reporting capability is not required
+rejection or a prescribed message.
+
+**Dependencies:** 4.1.3 R403/C401;4.2p2;7.4.3.1;7.4.4.1/.2;10.1.9.1 C1008/C1009;10.1.9.2;11.4
+C1176/p2/note2.
+
+### C1176: An integer stop-code has default kind
+
+**Source:** 11.4 C1176 associated with R1164, physical PDF228, printed214, line19. **Class:** Restriction.
+
+**Definition:** The scalar integer expression used as a stop-code has default integer kind. The
+restriction applies to the integer alternative, not to QUIET or character length.
+Default kind is identified by the language's kind relation, not by a fixed kind number,
+storage width or process-status range.
+
+**Diagnostic obligation:** required.
+
+**Facets:** `default-kind-admission`, `supported-nondefault-kind-exclusion`, `kind-identity-source-boundary`.
+
+**Oracle:** An actually supported nondefault-kind violation paired with a valid default-kind
+control, with precise source attribution and complete cause review. Admission is
+compile/positive-control evidence, not a status-value effect.
+
+**Oracle limitation:** No kind=4/8 or word-size assumption, unsupported-kind credit, narrowing/overflow repair,
+mandatory fatal status or printed C1176 requirement. The unchanged status200 calibration
+is not a new C1176 case.
+
+**Dependencies:** 4.1.2;4.2p2;7.4.3.1p1-p4/p6;10.1.9.1/.2;11.4 R1164/p2/note2;actual processor kind
+capability.
+
+### S11.4-002: Executing ERROR STOP initiates error termination
+
+**Source:** 11.4 p1 second sentence, physical PDF228, printed214, lines20-21; canonical termination semantics are5.3.7. **Class:** Effect.
+
+**Definition:** Execution of ERROR STOP initiates error termination, not normal termination, return from
+a procedure or a failed-image event. Under5.3.7, initiation on an image propagates to
+all images that have not already initiated error termination; program termination occurs
+when all images have terminated or failed. The recommendation to propagate as quickly as
+possible is not a numeric timing guarantee. A nonzero shell status alone does not
+establish these semantics.
+
+**Diagnostic obligation:** not-required.
+
+**Facets:** `initiating-image`, `program-wide-image-propagation`, `stopped-and-failed-image-source-boundary`, `team-and-segment-source-gate`.
+
+**Oracle:** Real run/effect evidence through a source-reviewed termination/lifecycle mechanism or
+qualified canonical reuse. Entry, intended statement execution and whole-run completion
+must be externally established with independent events and correct image/configuration
+bindings.
+
+**Oracle limitation:** The applicable termination owner in this pinned draft is5.3.7, not11.6, which describes
+NOTIFY WAIT. No mandatory error exit code, signal, crash, post-error file flush, C ABI
+or fixed propagation deadline is inferred. Missing lifecycle/launcher capability leaves
+the facet pending or an observation unqualified, not passed.
+
+**Dependencies:** 5.3.4-.7;11.5;11.7.1/.2;11.4 R1163/p2;4.2p1-p2/p5-p8;canonical termination, image/team
+and segment owners.
+
+### S11.4-003: A terminating image's specified stop code is made available by a processor-dependent method
+
+**Source:** 11.4 p2 first sentence, physical PDF228, printed214, lines22-23. **Class:** Effect.
+
+**Definition:** When an image is terminated by STOP or ERROR STOP, a specified stop code is made
+available in a processor-dependent manner. The method is not universally a process exit
+status, stdout, stderr, formatted text or an exact message. The integer/other-status
+recommendations and the formatted-output recommendation are separately classified;
+QUIET=true suppresses code output without defining an exit status or erasing every
+possible non-output availability mechanism.
+
+**Diagnostic obligation:** not-required.
+
+**Facets:** `integer-code-interface`, `character-code-interface`, `statement-kind-and-termination-binding`, `quiet-true-nonoutput-interface`.
+
+**Oracle:** An actual independently specified code joined to a reviewed processor-defined interface
+and successful complete execution evidence. Unknown or unavailable mechanisms are
+explicit source/documentary/profile gates, not generic output or exit-code fallbacks.
+
+**Oracle limitation:** Documentary/profile prerequisites are qualification gates, not a new universal
+documentation mandate. No universal process concept, exact code mapping, 8-bit
+truncation, status200, nonzero error status or literal STOP/ERROR STOP text is added.
+All new facets remain pending; historical observations and S11.4-001 remain unchanged.
+
+**Dependencies:** 11.4 R1164/C1176/p2-p4/note2;5.3.4-.7;4.2p5-p8;actual processor interfaces;unchanged
+S11.4-001 and its explicitly selected posix-stop-code profile.
+
+### S11.4-004: Without QUIET=true, signaling exceptions require an identifying warning on ERROR_UNIT
+
+**Source:** 11.4 p3 condition and first bullet, physical PDF228, printed214, lines29-32. **Class:** Effect.
+
+**Definition:** If QUIET is omitted or its scalar logical expression is false and any exception is
+signaling on the terminating image, the processor issues a warning identifying which
+exceptions are signaling, on the unit identified by ISO_FORTRAN_ENV's ERROR_UNIT. This
+conditional runtime warning is required, unlike the following stop-code-output
+recommendation. The metadata's not-required compile-diagnostic obligation does not
+weaken that runtime requirement.
+
+**Diagnostic obligation:** not-required.
+
+**Facets:** `quiet-omitted`, `quiet-false`, `multiple-signaling-flags`, `error-unit-routing`, `terminating-image-and-scope-state`.
+
+**Oracle:** Real run/effect records join supported flag setup, independently specified expected
+identities, the actual terminating statement/image, ERROR_UNIT routing and externally
+observed completion. Compiler/configuration-specific output decoding needs review and
+may not accept generic exception-looking text.
+
+**Oracle limitation:** IEEE modules and some flags are processor dependent; IEEE_SUPPORT_FLAG and any
+IEEE_SUPPORT_HALTING prerequisites must be honored. Do not call IEEE_SET_HALTING_MODE
+when support is false or assume an initial halting mode. Signaling flags are not
+signaling-NaN values or proof of a trap. The p3 second bullet remains a recommendation,
+and no native observation/profile is authored here.
+
+**Dependencies:** 11.4p3-p4;5.3.4p1/5.3.7;16.10.2.9;17.1-.3,
+especially17.3p2-p3/p8/p10;17.6/.7;17.11.5/.6/.39/.40/.55/.56.
+
+### S11.4-005: QUIET=true suppresses signaling-exception and stop-code output
+
+**Source:** 11.4 p4, physical PDF228, printed214, lines35-36. **Class:** Effect.
+
+**Definition:** When QUIET is present and its scalar logical expression is true, no output of signaling
+exceptions or the stop code is produced. This is a required suppression for STOP and
+ERROR STOP, not merely a recommendation. It does not suppress arbitrary earlier user
+output, remove termination, prescribe a process status, clear IEEE flags or promise a
+particular processor representation.
+
+**Diagnostic obligation:** not-required.
+
+**Facets:** `stop-code-output`, `signaling-exception-output`, `combined-code-and-flags`, `defined-quiet-expression`, `statement-kind-and-completion-guards`.
+
+**Oracle:** A real executed true-QUIET statement and established code/flag premises, observed
+through qualified output and lifecycle interfaces. Literal independent setup
+expectations and complete traces must distinguish suppression from absent work or failed
+execution.
+
+**Oracle limitation:** No universal empty-stderr or empty-all-output assertion, forced zero/nonzero status, C
+interface, flush guarantee or physical descriptor claim. Stop-code availability and
+status/output recommendations retain their separate meanings. Missing
+mode/profile/routing/lifecycle support leaves evidence unqualified; all new facets are
+pending.
+
+**Dependencies:** 11.4 R1162-R1164/C1176/p2-p4;5.3.4-.7;16.10.2.9;17.1/.3/.6/.7 and relevant flag/halting
+procedures;S11.4-003/-004;unchanged S11.4-001.
 
 <!-- END GENERATED 11.4 -->
 
