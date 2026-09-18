@@ -1211,6 +1211,26 @@ out of3,133**; source counts are unchanged. The finite eight-facet C830
 matrix is represented, but all28 local S facets remain pending and no
 runtime contiguity credit is claimed. See `doc/source_audits/batch_050.json`.
 
+The fifty-first checkpoint adds eight C834 compile cases for three finite
+ordinary-array facets. POINTER/ALLOCATABLE are crossed with scalar and
+constant size-one vector bounds; each negative is repaired only to a
+single deferred-shape colon. The two same-attribute control source pairs
+are byte-identical and retain four repair relationships, not extra
+semantic effects. Original source, exact causes, staged origins and all
+2,144 stored countermodel traces were independently checked.
+
+GNU f2023 corroborates all eight contracts. The target passes six case
+judgments but reports only an unrelated scalar-bound complaint for the two
+vector negatives; those remain failures. Flang's genuine C834 reports and
+additional scalar-only complaints are preserved as f2018 supplementary
+evidence. The full corpus is **2,035 cases: 1,236 PASS, 794 XFAIL,
+four SKIPs and one NEEDS_ORACLE**. All2,027 old results/bindings and
+1,991 old reviews are unchanged; only the two reviewed reporting failures
+were added to the baseline. The785-method Python suite passed. There are
+**1,745 direct, nine linked and1,379 pending facets out of3,133**;
+source counts are unchanged. Three other C834 and all23 R822/S facets stay
+pending. See `doc/source_audits/batch_051.json`.
+
 A further source-only packet covers 7.5.8 and 7.5.9 with 13 base units,
 50 fine units, 14 requirements and 72 pending facets. It preserves existing
 canonical witnesses and explicitly accounts for the value-set definition
@@ -1293,8 +1313,13 @@ source `b2df630` is integrated as batch041, with all49 facets and the
 pointer-bound canonical-mechanism coverage gates pending. Assumed-size/
 implied-shape source `b0f9d2b` is integrated as batch043 with all59 facets
 pending. Assumed-rank source `7e010106` is integrated as batch047 with all32
-facets pending. The next bounded source packet covers EXTERNAL and INTENT
-attributes in8.5.9/.10.
+facets pending. Coordinator-authored EXTERNAL/INTENT source packet
+`da6cf5d` is frozen unapproved:23base/104fine units,21requirements and
+97pending facets. Nine numbered units were already globally accounted;
+registration would newly account14base units, not23. Its independent source
+review is open, and it supplies no fixture or compiler observation.
+Original INTRINSIC/OPTIONAL source in8.5.11/.12 has been read in another
+isolated worktree; no second packet or coverage has been delivered yet.
 
 Bound-COMMON SAVE runtime authoring stopped before any fixture or compiler
 run at BCS-ROLE-001: an explicit-SAVE confirmation needs a positive-control
