@@ -18,6 +18,7 @@ NEGATIVES = {
     "explicit_shape": ("explicit-shape-excluded", "integer, contiguous :: subject(2)", False),
     "allocatable_fixed_rank": (
         "allocatable-fixed-rank-excluded", "integer, allocatable, contiguous :: subject(:)", False),
+    "assumed_size": ("assumed-size-excluded", "integer, contiguous :: subject(*)", True),
 }
 ADMISSIONS = {
     "array_pointer": ("array-pointer-admission", "integer, pointer, contiguous :: subject(:)", False),
@@ -37,16 +38,6 @@ FLANG_CAUSE = (
 )
 CAUSES = {variant: (GNU_CAUSE, FLANG_CAUSE) for variant in NEGATIVES}
 NONFATAL = (dict(compiler="flang", severity="portability", equals_any=[FLANG_CAUSE]),)
-ASSUMED_SIZE_GATE = (
-    "PENDING C830-ANCHOR-001: the complete nonpointer assumed-size dummy candidate and exact "
-    "CONTIGUOUS-only repair were raw-calibrated, not registered as fixtures. GNU f2023 reports "
-    "the dummy at its procedure-header line4 while Flang f2018 reports its attribute declaration "
-    "at line6. The current single statement-span contract does not express these two disjoint "
-    "subject anchors. Preserve the complete context and both actual reports; do not widen across "
-    "unrelated statements, coalesce statements, fabricate a fatal-exit obligation or report a "
-    "GNU conformance failure merely because its legitimate subject location differs. Independently "
-    "review an explicit multi-anchor causal contract before representing this facet."
-)
 EXCLUSIONS = (
     "not yet implemented", "not implemented", "unimplemented", "unsupported", "not supported",
     "internal:", "internal error", "asr", "verifier", "out of memory", "recovery",
@@ -54,22 +45,26 @@ EXCLUSIONS = (
     "duplicate", "cannot read module", "missing interface",
 )
 ORACLE = (
-    "Twelve complete compile/f2023 program units represent seven C830 facets. Four negatives "
+    "Fourteen complete compile/f2023 program units represent eight C830 facets. Five negatives "
     "give CONTIGUOUS to an ordinary scalar, scalar pointer, ordinary explicit-shape array, "
-    "or fixed-rank deferred-shape ALLOCATABLE array. Each control "
+    "fixed-rank deferred-shape ALLOCATABLE array, or nonpointer assumed-size dummy. Each control "
     "deletes only ', contiguous', preserving every other byte and the actual entity category. "
     "Four additional admissions declare an array pointer and explicit-interface assumed-shape, "
     "ordinary assumed-rank and ALLOCATABLE assumed-rank dummies. A negative needs the actual "
-    "located CONTIGUOUS/entity-category cause at its sole declaration in the actual staged input, "
-    "matching one complete extracted diagnostic message; an ordinary zero or "
+    "located CONTIGUOUS/entity-category cause in the actual staged input, matching one complete "
+    "extracted diagnostic message. The four ordinary declarations retain their line3 anchor. "
+    "The assumed-size dummy has primary declaration line6 and additional procedure-header line4 "
+    "as separate subject anchors; gap line5 and cross-anchor ranges do not qualify. An ordinary zero or "
     "nonzero reporting status can satisfy that capability. Only the exact observed Flang "
     "portability message is an allowed nonfatal report. Every valid case requires successful "
     "object compilation and is positive-control evidence, not a runtime effect."
 )
 LIMITATION = (
-    "The assumed-size exclusion remains pending under C830-ANCHOR-001: its actual GNU "
-    "procedure-header and Flang attribute-declaration locations need an independently reviewed "
-    "explicit multi-anchor contract, not a broadened span or altered source formatting. "
+    "The assumed-size pair preserves the original complete module/procedure source and its "
+    "CONTIGUOUS-only repair. Its declaration/header relation uses the independently reviewed "
+    "disjoint-anchor infrastructure from batch048, not a broadened span, coalesced statements "
+    "or a false GNU conformance failure for selecting the header. Source, fixture and processor "
+    "adjudications remain separate from representing that relation. "
     "This finite eligibility matrix is not an enumeration of all possible declarations, actual "
     "arguments or processor modes. Ordinary fixed-rank exclusions do not ban eligible assumed-rank "
     "dummies, and actual whole-array contiguity does not authorize the attribute. Module-contained "
@@ -167,6 +162,8 @@ def build_corpus(root=ROOT):
                 equals_any=list(causes), excludes_any=list(EXCLUSIONS),
                 allow_nonfatal=copy.deepcopy(list(NONFATAL)),
             )
+            if spec["variant"] == "assumed_size":
+                manifest["expect"]["diagnostic"]["additional_spans"] = [dict(line=4)]
         spec["path"], spec["manifest"] = directory + "/fixture.json", manifest
         files[Path(root) / directory / "source.f90"] = spec["source"].encode("ascii")
         files[Path(root) / directory / "fixture.json"] = (json.dumps(manifest, indent=2) + "\n").encode()
@@ -180,8 +177,6 @@ def synced_catalogue(catalogue):
         raise ValueError("the selected C830 facet definitions changed")
     for facet in FACETS:
         requirement["pending"].pop(facet, None)
-    if "assumed-size-excluded" in requirement["pending"]:
-        requirement["pending"]["assumed-size-excluded"] = ASSUMED_SIZE_GATE
     requirement["oracle"] = ORACLE
     requirement["oracle_limitation"] = LIMITATION
     return result
@@ -212,13 +207,13 @@ def render_view(catalogue, root=ROOT):
         "The original independent source gate is recorded in batch038. Fixture,\n"
         "source and observational-inventory adjudications remain separate.\n\n"
         "## Bounded C830 eligibility matrix\n\n"
-        "Twelve compile/f2023 cases represent seven C830 facets: four invalid\n"
+        "Fourteen compile/f2023 cases represent eight C830 facets: five invalid\n"
         "entity categories and exact CONTIGUOUS-only repairs, plus four admissions\n"
         "covering the three eligible categories. Assumed-rank admissions include\n"
         "both ordinary and ALLOCATABLE dummies. Every repair deletes only\n"
         "`, contiguous`, keeping the original rank, POINTER/ALLOCATABLE role,\n"
         "dummy/interface context and all other source bytes.\n\n"
-        "The eight valid cases are compile/positive-control evidence. No link, run,\n"
+        "The nine valid cases are compile/positive-control evidence. No link, run,\n"
         "allocation, association, payload, argument-copy or contiguity inquiry is\n"
         "observed. Negatives require a located entity-category cause, not a bare\n"
         "attribute word, source echo, unrelated error or native compiler failure.\n"
@@ -243,16 +238,17 @@ def render_view(catalogue, root=ROOT):
         "The following definitions are generated from the catalogue. Admission,\n"
         "runtime-effect, reporting and source-only plans remain separate.\n\n"
     )
-    gate = (
-        "The assumed-size exclusion remains pending at C830-ANCHOR-001. Raw GNU\n"
-        "f2023 calibration locates the dummy in its procedure header; Flang f2018\n"
-        "locates its separate attribute declaration. Those legitimate disjoint\n"
-        "subject anchors need an explicit contract, not a widened statement span,\n"
-        "coalesced source statements or a false compiler-conformance failure.\n"
-        "The raw candidate/control attempts are not registered fixture evidence.\n\n"
-        if "assumed-size-excluded" in requirement["pending"] else ""
+    relation = (
+        "The assumed-size pair retains the original complete module/procedure\n"
+        "sources and exact attribute-only repair. Its primary declaration anchor\n"
+        "is line6; additional line4 identifies the same dummy in the procedure\n"
+        "header. Each reported range must fit one anchor. Gap line5 and a4..6\n"
+        "recovery range do not qualify. This uses the independently reviewed\n"
+        "batch048 infrastructure without source coalescing or a false GNU failure.\n"
+        "The registered contracts and fresh observations still require independent\n"
+        "source/fixture adjudication; earlier raw calibration remains historical.\n\n"
     )
-    return (header + gate + preserved + ownership + begin + "\n\n"
+    return (header + relation + preserved + ownership + begin + "\n\n"
             + "\n".join(render_requirement(item) for item in catalogue["requirements"])
             + "\n" + end + after)
 
@@ -283,12 +279,14 @@ def main():
         if actual - set(files):
             raise ValueError("unexpected files in the bounded C830 corpus")
         for path, raw in files.items():
-            path.parent.mkdir(parents=True, exist_ok=True)
-            path.write_bytes(raw)
+            if not path.is_file() or path.read_bytes() != raw:
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_bytes(raw)
         if args.sync_catalogue:
             (ROOT / CATALOGUE).write_text(json.dumps(updated, indent=2) + "\n")
             (ROOT / VIEW).write_text(view)
-    print(f"{'Checked' if args.check else 'Generated'} 24 files: 12 compile cases, seven C830 facets.")
+    print(f"{'Checked' if args.check else 'Generated'} {len(files)} files: "
+          f"{len(files) // 2} compile cases, {len(FACETS)} C830 facets.")
 
 
 if __name__ == "__main__":

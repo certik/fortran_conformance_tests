@@ -1193,6 +1193,24 @@ There are **1,741 direct, nine linked and1,383 pending facets out of3,133**;
 source counts are unchanged. The767-method Python suite passed.
 See `doc/source_audits/batch_049.json`.
 
+The fiftieth checkpoint registers the original held C830 assumed-size
+negative and its minimal repair: the sole source change removes
+`, contiguous`. GNU's header line4 and Flang's declaration line6 are
+separate allowed anchors, never a widened4..6range. Complete causes and
+live staged-source identity still qualify every diagnostic.
+
+All fourteen current C830 cases have fresh independent observations and
+explicit main approval. The twelve old source/manifest pairs are unchanged,
+but their requirement-bound fingerprints genuinely changed; their reviews
+were renewed, not silently rebound. All2,013 other old case bindings and
+all2,025 prior outcomes are preserved. The full corpus is **2,027 cases:
+1,230 PASS, 792 XFAIL, four SKIPs and one NEEDS_ORACLE**. Only the new
+missing-report failure was added to the baseline. The770-method Python
+suite passed. There are **1,742 direct, nine linked and1,382 pending facets
+out of3,133**; source counts are unchanged. The finite eight-facet C830
+matrix is represented, but all28 local S facets remain pending and no
+runtime contiguity credit is claimed. See `doc/source_audits/batch_050.json`.
+
 A further source-only packet covers 7.5.8 and 7.5.9 with 13 base units,
 50 fine units, 14 requirements and 72 pending facets. It preserves existing
 canonical witnesses and explicitly accounts for the value-set definition
@@ -1289,10 +1307,12 @@ Shared SHORT correction `0c7161ba` is integrated as batch040
 after independent closeout. The original C830 candidate `ce23c2d` remains
 immutable historical evidence; correction `0b62b0e` is integrated in batch045
 after independent source, repair, cause/origin and native-evidence closeout.
-Twelve compile cases represent seven facets. Its assumed-size facet stays pending at
-C830-ANCHOR-001 until a real source-qualified case/control is registered and
-adjudicated. Batch048 supplies its disjoint-anchor infrastructure, without
-source coalescing, a widened span or a false GNU conformance failure.
+Batch045's twelve compile cases represent seven facets. Batch048 supplies
+disjoint-anchor infrastructure, and batch050 closes C830-ANCHOR-001 with the
+original source-qualified assumed-size pair and explicit fourteen-case
+adjudication. Fourteen compile cases now represent eight finite facets,
+without source coalescing, a widened span or a false GNU conformance failure.
+The28 surrounding S facets remain pending.
 
 Source-use candidate `29fc461` and correction `b9150e82` are integrated as
 batch026 after independent SULR-001 closeout. That infrastructure checkpoint

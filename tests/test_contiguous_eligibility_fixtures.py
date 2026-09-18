@@ -1,9 +1,11 @@
 """C830 entity categories, exact repairs, causal reports and renewable evidence."""
 import copy
-from dataclasses import asdict
+from dataclasses import asdict, replace
 import hashlib
+import json
 from pathlib import Path
 import sys
+import tempfile
 import unittest
 from unittest.mock import patch
 
@@ -26,6 +28,7 @@ FLANG_CAUSE = (
 )
 PREFIXES = ("", "Internal: ", "Not yet implemented: ", "Unimplemented: ", "Unsupported: ",
             "Internal error: ", "Verifier error: ")
+POINT_NEGATIVES = ("ordinary_scalar", "scalar_pointer", "explicit_shape", "allocatable_fixed_rank")
 
 
 class ContiguousEligibilityFixturesTests(unittest.TestCase):
@@ -37,18 +40,20 @@ class ContiguousEligibilityFixturesTests(unittest.TestCase):
         cls.cases = {case.name: case for case in cls.all_cases
                      if "/fixtures/contiguous_eligibility_" in case.path}
         cls.members = {row["id"]: row for row in cls.registry.execution._members(list(cls.cases.values()))}
+        cls.point_negatives = [cls.cases[generated.identifier(variant, True)] for variant in POINT_NEGATIVES]
 
     def case(self, variant, negative=False):
         return self.cases[generated.identifier(variant, negative)]
 
-    def test_exact_twelve_cases_seven_facets_and_compile_only_roles(self):
+    def test_exact_fourteen_cases_eight_facets_and_compile_only_roles(self):
         self.assertEqual(set(self.cases), set(self.specs))
-        self.assertEqual(len(self.cases), 12)
-        self.assertEqual(sum(case.kind == "invalid" for case in self.cases.values()), 4)
+        self.assertEqual(len(self.cases), 14)
+        self.assertEqual(sum(case.kind == "invalid" for case in self.cases.values()), 5)
+        self.assertEqual(len(self.point_negatives), 4)
         self.assertEqual({facet for case in self.cases.values() for facet in case.meta.facets}, {
             "ordinary-scalar-excluded", "scalar-pointer-excluded", "explicit-shape-excluded",
             "allocatable-fixed-rank-excluded", "array-pointer-admission",
-            "assumed-shape-admission", "assumed-rank-admission",
+            "assumed-shape-admission", "assumed-rank-admission", "assumed-size-excluded",
         })
         for case in self.cases.values():
             self.assertEqual((case.rule, case.meta.standard, case.meta.oracle_basis), ("C830", "f2023", "standard"))
@@ -147,8 +152,9 @@ class ContiguousEligibilityFixturesTests(unittest.TestCase):
             self.assertEqual(command[0], family)
             self.assertEqual(timeout, 5)
             self.assertIsNone(stdin)
-            source_line = raw.decode().splitlines()[target - 1]
-            column = source_line.index("subject") + 1
+            lines = raw.decode().splitlines()
+            source_line = lines[first - 1] if 1 <= first <= len(lines) else lines[target - 1]
+            column = max(1, source_line.find("subject") + 1)
             location = filename or str(source)
             reported = "syntax error" if echo_only else cause
             if family == "lfortran":
@@ -176,9 +182,7 @@ class ContiguousEligibilityFixturesTests(unittest.TestCase):
 
     def test_504_exact_causal_and_wrapped_vectors_use_actual_staging(self):
         vectors = []
-        for case in self.cases.values():
-            if case.kind != "invalid":
-                continue
+        for case in self.point_negatives:
             for family, mode in FAMILIES:
                 cause = FLANG_CAUSE if family == "flang" else GNU_CAUSE
                 for code in (0, 1, 2):
@@ -201,9 +205,7 @@ class ContiguousEligibilityFixturesTests(unittest.TestCase):
             "Missing explicit interface for assumed-shape dummy", "Cannot read module eligibility_scope",
             "Duplicate CONTIGUOUS attribute", "Unknown type of subject", "Invalid initialization",
         )
-        for case in self.cases.values():
-            if case.kind != "invalid":
-                continue
+        for case in self.point_negatives:
             for family, _ in FAMILIES:
                 for line in (0, 1, 2, 4):
                     self.assertEqual(self.staged(case, family, line=line).outcome, "fail")
@@ -236,15 +238,15 @@ class ContiguousEligibilityFixturesTests(unittest.TestCase):
             diagnostic = case.fixture.expectation.diagnostic
             self.assertEqual(diagnostic["equals_any"], [GNU_CAUSE, FLANG_CAUSE])
             self.assertNotIn("contains_any", diagnostic)
-            self.assertEqual((diagnostic["line"], diagnostic["end_line"]), (3, 3))
+            target = 6 if case == self.case("assumed_size", True) else 3
+            self.assertEqual((diagnostic["line"], diagnostic["end_line"]), (target, target))
+            self.assertEqual(diagnostic.get("additional_spans", []), [dict(line=4)] if target == 6 else [])
             self.assertEqual(diagnostic["allow_nonfatal"], [
                 {"compiler": "flang", "severity": "portability", "equals_any": [FLANG_CAUSE]}])
 
     def test_216_quoted_outer_errors_cannot_borrow_a_matching_inner_cause(self):
         checked = 0
-        for case in self.cases.values():
-            if case.kind != "invalid":
-                continue
+        for case in self.point_negatives:
             for family, _ in FAMILIES:
                 cause = FLANG_CAUSE if family == "flang" else GNU_CAUSE
                 for status in (0, 1, 2):
@@ -259,9 +261,7 @@ class ContiguousEligibilityFixturesTests(unittest.TestCase):
 
     def test_144_foreign_origins_fail_and_216_genuine_origins_retain_cause_credit(self):
         foreign, genuine = 0, 0
-        for case in self.cases.values():
-            if case.kind != "invalid":
-                continue
+        for case in self.point_negatives:
             for family, _ in FAMILIES:
                 for status in (0, 1, 2):
                     for codes in (False, True):
@@ -317,24 +317,138 @@ class ContiguousEligibilityFixturesTests(unittest.TestCase):
                     self.members[case.name], asdict(check), dict(compiler.configuration(), version=compiler.version),
                     ROOT, None, False))
 
-    def test_assumed_size_remains_gated_instead_of_broadening_or_coalescing_anchors(self):
+    def test_assumed_size_preserves_original_source_repair_and_disjoint_subject_anchors(self):
         requirement = self.registry.requirements["C830"]
-        self.assertIn("assumed-size-excluded", requirement["pending"])
-        self.assertEqual(requirement["pending"]["assumed-size-excluded"], generated.ASSUMED_SIZE_GATE)
-        self.assertFalse(any("assumed_size" in name for name in self.cases))
+        self.assertNotIn("assumed-size-excluded", requirement["pending"])
+        negative = self.case("assumed_size", True)
+        control = self.case("assumed_size_control")
+        raw = (negative.fixture.root / "source.f90").read_bytes()
+        repaired = (control.fixture.root / "source.f90").read_bytes()
+        self.assertEqual(hashlib.sha256(raw).hexdigest(),
+                         "648a3dce6d21264c0be051dec9cf0730140a321214a7075b472d50d8a5369a28")
+        self.assertEqual(hashlib.sha256(repaired).hexdigest(),
+                         "edcc0562d3ccec81328730fb6abc6e50a90e683c238cf2d055e666b2e300de45")
+        self.assertEqual(raw[121:133], b", contiguous")
+        self.assertEqual(repaired, raw[:121] + raw[133:])
+        self.assertEqual((len(raw.splitlines()), len(repaired.splitlines())), (8, 8))
+        self.assertEqual(raw.splitlines()[3].strip(), b"subroutine declaration_context(subject)")
+        self.assertEqual(raw.splitlines()[5].strip(), b"integer, contiguous :: subject(*)")
+        self.assertEqual(raw.splitlines()[4].strip(), b"implicit none")
+        diagnostic = negative.fixture.expectation.diagnostic
+        self.assertEqual((diagnostic["file"], diagnostic["line"], diagnostic["end_line"]),
+                         ("source.f90", 6, 6))
+        self.assertEqual(diagnostic["additional_spans"], [dict(line=4)])
+        self.assertEqual(diagnostic["equals_any"], [GNU_CAUSE, FLANG_CAUSE])
+        self.assertEqual(diagnostic["excludes_any"], self.point_negatives[0].fixture.expectation.diagnostic["excludes_any"])
+        self.assertEqual(diagnostic["allow_nonfatal"], self.point_negatives[0].fixture.expectation.diagnostic["allow_nonfatal"])
         for spec in self.specs.values():
             self.assertNotIn(";", spec["source"])
-            if spec["kind"] == "invalid":
+            if spec["kind"] == "invalid" and spec["variant"] != "assumed_size":
                 self.assertEqual(spec["manifest"]["expect"]["diagnostic"]["line"], 3)
                 self.assertEqual(spec["manifest"]["expect"]["diagnostic"]["end_line"], 3)
+                self.assertNotIn("additional_spans", spec["manifest"]["expect"]["diagnostic"])
+
+    def test_assumed_size_120_anchor_gap_and_cross_range_vectors(self):
+        case = self.case("assumed_size", True)
+        checked = 0
+        for family, _ in FAMILIES:
+            ranges = [(line, line) for line in (3, 4, 5, 6, 7)]
+            if family == "lfortran":
+                ranges += [(4, 6), (3, 4), (4, 5), (5, 6), (6, 7)]
+            for status in (0, 1, 2):
+                for codes in (False, True):
+                    for first, last in ranges:
+                        with self.subTest(family=family, status=status, codes=codes, first=first, last=last):
+                            check = self.staged(case, family, code=status, codes=codes, line=first, end_line=last)
+                            self.assertEqual(check.outcome, "pass" if first == last and first in (4, 6) else "fail")
+                        checked += 1
+        self.assertEqual(checked, 120)
+
+    def test_assumed_size_both_anchors_keep_all_cause_origin_and_failure_gates(self):
+        case = self.case("assumed_size", True)
+        checked = 0
+        for family, _ in FAMILIES:
+            cause = FLANG_CAUSE if family == "flang" else GNU_CAUSE
+            for line in (4, 6):
+                for status in (0, 1, 2):
+                    for codes in (False, True):
+                        variants = [
+                            dict(message='Example: "' + cause + '"', severity="error"),
+                            dict(message='Unknown symbol "' + cause + '"', severity="error"),
+                            dict(message=cause.replace("'subject'", "'other'")),
+                            dict(filename="/foreign/source.f90"),
+                            dict(filename="../source.f90"),
+                            dict(filename="unrelated/source.f90"),
+                            dict(severity="warning"),
+                            dict(echo_only=True),
+                            dict(silent=True),
+                            dict(timed_out=True),
+                            dict(tail="\n/foreign/source.f90:1:1: error: Internal: failed\n"),
+                            dict(tail="\nASR verify pass error\n"),
+                            dict(tail="\nout of memory\n"),
+                        ]
+                        variants += [dict(message=prefix + cause, severity="error") for prefix in PREFIXES[1:]]
+                        for variant in variants:
+                            with self.subTest(family=family, line=line, status=status, codes=codes, variant=variant):
+                                self.assertEqual(self.staged(
+                                    case, family, code=status, codes=codes, line=line, **variant).outcome, "fail")
+                            checked += 1
+                for status in (-6, -11, 128, 134, 139):
+                    with self.subTest(family=family, line=line, abnormal_status=status):
+                        self.assertEqual(self.staged(case, family, code=status, line=line).outcome, "fail")
+                    checked += 1
+        self.assertEqual(checked, 714)
+
+    def test_assumed_size_schema_and_mutations_invalidate_the_real_contract_snapshot(self):
+        original = self.case("assumed_size", True)
+        fingerprint = original.fingerprint(self.registry)
+        raw_manifest = original.fixture.path.read_bytes()
+        raw_source = (original.fixture.root / "source.f90").read_bytes()
+        for mutation in ("span", "gap", "cause", "origin", "source"):
+            with self.subTest(mutation=mutation), tempfile.TemporaryDirectory() as temporary:
+                directory = Path(temporary)
+                path = directory / "fixture.json"
+                path.write_bytes(raw_manifest)
+                (directory / "source.f90").write_bytes(raw_source)
+
+                def current_cases(*args, **kwargs):
+                    fixture = runner.load_fixture(path, runner.PROFILES)
+                    changed = replace(original, path=str(path), fixture=fixture, meta=fixture.meta)
+                    return [changed if case.name == original.name else case for case in self.all_cases]
+
+                cloned = next(case for case in current_cases() if case.name == original.name)
+                self.assertEqual(cloned.fingerprint(self.registry), fingerprint)
+                data = json.loads(raw_manifest)
+                diagnostic = data["expect"]["diagnostic"]
+                if mutation == "span":
+                    diagnostic.pop("additional_spans")
+                elif mutation == "gap":
+                    diagnostic["additional_spans"] = [dict(line=5)]
+                elif mutation == "cause":
+                    diagnostic["equals_any"][0] += " changed"
+                elif mutation == "origin":
+                    diagnostic["file"] = "other.f90"
+                else:
+                    (directory / "source.f90").write_bytes(raw_source + b"\n")
+                path.write_text(json.dumps(data, indent=2) + "\n")
+                if mutation != "origin":
+                    changed = next(case for case in current_cases() if case.name == original.name)
+                    self.assertNotEqual(changed.fingerprint(self.registry), fingerprint)
+                with patch.object(runner, "Registry", return_value=self.registry), \
+                        patch.object(runner, "collect_cases", side_effect=current_cases):
+                    errors = runner.confirm_snapshot([], [original], {original.review_key: fingerprint})
+                self.assertTrue(errors)
 
     def test_generator_preserves_other_requirements_facets_and_administrative_records(self):
         catalogue = self.registry.catalogues["8.5.7"]
         self.assertEqual(generated.synced_catalogue(catalogue), catalogue)
-        for pending_state in ("actual", "none"):
+        for pending_state in ("actual", "one-foreign-facet-cleared", "none"):
             candidate = copy.deepcopy(catalogue)
+            foreign = [row for row in candidate["requirements"] if row["id"] != "C830"]
+            if pending_state == "one-foreign-facet-cleared":
+                foreign[0]["pending"].pop(next(iter(foreign[0]["pending"])))
             if pending_state == "none":
-                for requirement in candidate["requirements"]:
+                for requirement in foreign:
                     requirement["pending"] = {}
             expected = copy.deepcopy(candidate)
             self.assertEqual(generated.synced_catalogue(candidate), expected)
@@ -392,7 +506,7 @@ class ContiguousEligibilityFixturesTests(unittest.TestCase):
     def test_exact_generated_files_and_byte_stable_reexecution(self):
         actual = {path for path in (ROOT / "tests/fixtures").glob("contiguous_eligibility_*/*") if path.is_file()}
         self.assertEqual(actual, set(self.files))
-        self.assertEqual(len(actual), 24)
+        self.assertEqual(len(actual), 28)
         self.assertEqual(generated.build_corpus()[0], self.files)
         for path, raw in self.files.items():
             self.assertEqual(path.read_bytes(), raw)
