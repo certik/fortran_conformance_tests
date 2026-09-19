@@ -1,0 +1,194 @@
+{
+  "schema_version": 1,
+  "section": "9.5.3.4.1",
+  "review_state": "draft",
+  "subunits": {
+    "p1": [
+      "p1.triplet-and-vector-sequences",
+      "p1.sequences-may-be-empty",
+      "p1.sequence-values-within-bounds",
+      "p1.section-elements-from-combinations"
+    ],
+    "p2": [
+      "p2.no-section-list-rank-shape",
+      "p2.rank-from-triplets-and-vectors",
+      "p2.shape-from-sequence-counts",
+      "p2.empty-sequence-size-zero",
+      "p2.subscript-order-of-represented-object"
+    ]
+  },
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "requirements",
+      "requirements": [
+        "S9.5.3.4.1-001",
+        "S9.5.3.4.1-002"
+      ]
+    },
+    {
+      "unit": "p1.triplet-and-vector-sequences",
+      "disposition": "requirements",
+      "requirements": [
+        "S9.5.3.4.1-001"
+      ]
+    },
+    {
+      "unit": "p1.sequences-may-be-empty",
+      "disposition": "requirements",
+      "requirements": [
+        "S9.5.3.4.1-001"
+      ]
+    },
+    {
+      "unit": "p1.section-elements-from-combinations",
+      "disposition": "requirements",
+      "requirements": [
+        "S9.5.3.4.1-001"
+      ]
+    },
+    {
+      "unit": "p1.sequence-values-within-bounds",
+      "disposition": "requirements",
+      "requirements": [
+        "S9.5.3.4.1-002"
+      ]
+    },
+    {
+      "unit": "p2",
+      "disposition": "requirements",
+      "requirements": [
+        "S9.5.3.4.1-003"
+      ]
+    },
+    {
+      "unit": "p2.no-section-list-rank-shape",
+      "disposition": "requirements",
+      "requirements": [
+        "S9.5.3.4.1-003"
+      ]
+    },
+    {
+      "unit": "p2.rank-from-triplets-and-vectors",
+      "disposition": "requirements",
+      "requirements": [
+        "S9.5.3.4.1-003"
+      ]
+    },
+    {
+      "unit": "p2.shape-from-sequence-counts",
+      "disposition": "requirements",
+      "requirements": [
+        "S9.5.3.4.1-003"
+      ]
+    },
+    {
+      "unit": "p2.empty-sequence-size-zero",
+      "disposition": "requirements",
+      "requirements": [
+        "S9.5.3.4.1-003"
+      ]
+    },
+    {
+      "unit": "p2.subscript-order-of-represented-object",
+      "disposition": "requirements",
+      "requirements": [
+        "S9.5.3.4.1-003"
+      ]
+    }
+  ],
+  "requirements": [
+    {
+      "id": "S9.5.3.4.1-001",
+      "title": "Section subscript lists contribute scalar subscripts or possibly empty subscript sequences",
+      "source": "9.5.3.4.1 p1 sentence 1 and sentence 3, J3/24-007, 18 December 2023, physical PDF156.",
+      "source_units": [
+        "p1",
+        "p1.triplet-and-vector-sequences",
+        "p1.sequences-may-be-empty",
+        "p1.section-elements-from-combinations"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "In an array section that has a section-subscript-list, each subscript triplet and vector-subscript in that list indicates a sequence of subscripts, and the sequence may be empty. The array section is the set of elements from the array determined by all possible subscript lists obtainable from the single subscripts and these indicated subscript sequences.",
+      "facets": [
+        "triplet-indicates-sequence",
+        "vector-subscript-indicates-sequence",
+        "sequence-may-be-empty",
+        "section-elements-from-cartesian-combinations"
+      ],
+      "pending": {
+        "triplet-indicates-sequence": "PENDING positive-control source shape: rank-one INTEGER a(5) with distinct literals, section a(1:5:2), oracle SHAPE [3] and values [a1,a3,a5]. Non-vacuous because scalar subscript a(1) would be scalar, not a sequence.",
+        "vector-subscript-indicates-sequence": "PENDING positive-control source shape: INTEGER v=[3,1] and rank-one a with distinct literals, section a(v), oracle values [a3,a1] in vector order. Non-vacuous because a triplet 1:3 would produce [a1,a2,a3].",
+        "sequence-may-be-empty": "PENDING positive-control source shape: a(3:1) or a(1:3:-1) producing an empty sequence by 9.5.3.4.2. Oracle is SIZE 0 and SHAPE [0] without referencing any element. Non-vacuous because repaired nonempty triplet has positive SIZE and literal SUM.",
+        "section-elements-from-cartesian-combinations": "PENDING positive-control source shape: rank-two array with coordinate-coded literals, use a([2,1],1:2). Independent oracle is the four coordinate literals from all combinations in vector/triplet order. Non-vacuous because omitting combinations or using row-major storage order changes the literal matrix."
+      },
+      "oracle": "Every facet is a pending source plan. Positive-control plans use independently chosen literal values, SHAPE, SIZE, LBOUND, UBOUND, or scalar results that first establish definedness and reached execution. Diagnostic-policy plans pair an otherwise legal source with a minimal repair and require any future report to be attributable to the stated requirement rather than an unrelated grammar, declaration, unsupported-feature, resource, or runtime failure. Negative plans identify the violated owner and avoid programs already invalid for a different rule.",
+      "oracle_limitation": "This source-only catalogue creates no Fortran test program, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Numbered syntax rules and constraints in neighbouring catalogues carry the 4.2 detection and reporting duty; the unnumbered prose rules catalogued here are not promoted to mandatory static diagnostics. Runtime-valued subscript, stride, bound, definedness, duplicate-value, finalization, contiguity, or shape predicates remain runtime/source obligations unless a future review separately establishes a static context. No pending oracle uses compiler agreement, address arithmetic, TRANSFER, emitted assembly, reading undefined storage, or executing an out-of-bounds subscript as evidence.",
+      "dependencies": "9.5.3.1R921-R925/C929;9.5.3.4.2;9.5.3.4.3;9.5.3.3 array element order;8.5.8 bounds and shape."
+    },
+    {
+      "id": "S9.5.3.4.1-002",
+      "title": "Nonempty section-subscript sequences use only in-bounds subscripts",
+      "source": "9.5.3.4.1 p1 sentence 2, J3/24-007, 18 December 2023, physical PDF156.",
+      "source_units": [
+        "p1",
+        "p1.sequence-values-within-bounds"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "context-dependent",
+      "definition": "Each subscript value in a sequence indicated by a subscript triplet or vector-subscript shall be within the bounds for its dimension, unless the sequence is empty. This restriction applies to generated sequence values, not merely to written triplet endpoint expressions; no static diagnostic is implied for runtime-valued subscripts or bounds.",
+      "facets": [
+        "nonempty-triplet-generated-values-in-bounds",
+        "nonempty-vector-values-in-bounds",
+        "empty-sequence-bounds-exception",
+        "runtime-valued-bounds-no-static-duty"
+      ],
+      "pending": {
+        "nonempty-triplet-generated-values-in-bounds": "PENDING diagnostic-policy/source pair attributable to S9.5.3.4.1-002: explicit-shape a(1:5), use a(0:4:2) so generated value 0 is outside bounds while the form otherwise satisfies 9.5.3.1. Repair only the first subscript to 1 and observe literal values [a1,a3]. No other rule should make the original invalid; p2 zero stride is not involved.",
+        "nonempty-vector-values-in-bounds": "PENDING diagnostic-policy/source pair attributable to S9.5.3.4.1-002: INTEGER v=[2,6] with a(1:5), use a(v) in a value context. Repair v to [2,5] and observe [a2,a5]. The violation is the generated vector value out of bounds, not C929 rank/type or duplicate definability.",
+        "empty-sequence-bounds-exception": "PENDING positive-control source shape: use a(6:7:-1) on a(1:5), whose negative-stride sequence is empty because second > first, and assert SIZE 0. Non-vacuous because changing stride to +1 generates out-of-bounds values and is attributable to this same requirement.",
+        "runtime-valued-bounds-no-static-duty": "PENDING runtime-condition source plan: vector or triplet endpoint assigned from input/branch may be in or out of bounds; future oracle must use approved runtime status or remain source-only. Non-vacuous by paired literal branches. No static diagnostic is claimed for the runtime-valued condition."
+      },
+      "oracle": "Every facet is a pending source plan. Positive-control plans use independently chosen literal values, SHAPE, SIZE, LBOUND, UBOUND, or scalar results that first establish definedness and reached execution. Diagnostic-policy plans pair an otherwise legal source with a minimal repair and require any future report to be attributable to the stated requirement rather than an unrelated grammar, declaration, unsupported-feature, resource, or runtime failure. Negative plans identify the violated owner and avoid programs already invalid for a different rule.",
+      "oracle_limitation": "This source-only catalogue creates no Fortran test program, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Numbered syntax rules and constraints in neighbouring catalogues carry the 4.2 detection and reporting duty; the unnumbered prose rules catalogued here are not promoted to mandatory static diagnostics. Runtime-valued subscript, stride, bound, definedness, duplicate-value, finalization, contiguity, or shape predicates remain runtime/source obligations unless a future review separately establishes a static context. No pending oracle uses compiler agreement, address arithmetic, TRANSFER, emitted assembly, reading undefined storage, or executing an out-of-bounds subscript as evidence.",
+      "dependencies": "9.5.3.1R921-R925/C929;9.5.3.4.2;9.5.3.4.3;8.5.8 bounds;4.2 diagnostic policy only for numbered constraints."
+    },
+    {
+      "id": "S9.5.3.4.1-003",
+      "title": "Array section rank, shape, zero size, and element order are determined by nonzero-rank parts or section-subscript sequences",
+      "source": "9.5.3.4.1 p2, J3/24-007, 18 December 2023, physical PDF156-PDF157.",
+      "source_units": [
+        "p2",
+        "p2.no-section-list-rank-shape",
+        "p2.rank-from-triplets-and-vectors",
+        "p2.shape-from-sequence-counts",
+        "p2.empty-sequence-size-zero",
+        "p2.subscript-order-of-represented-object"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For an array-section with no section-subscript-list, the rank and shape are those of the nonzero-rank part-ref. Otherwise, the rank is the number of subscript triplets and vector subscripts in the section-subscript-list, the shape is the rank-one array whose ith element is the count of integer values in the ith such sequence, any empty sequence makes the section size zero, and the subscript order of section elements is that of the array data object represented.",
+      "facets": [
+        "no-section-list-rank-shape-from-nonzero-part-ref",
+        "rank-counts-triplets-and-vector-subscripts",
+        "shape-elements-count-sequence-values",
+        "empty-sequence-gives-size-zero",
+        "section-subscript-order-follows-represented-array"
+      ],
+      "pending": {
+        "no-section-list-rank-shape-from-nonzero-part-ref": "PENDING positive-control source shape: derived-type array parent or complex/array component section with no final section-subscript-list, using SHAPE as oracle from the nonzero-rank part-ref. Non-vacuous because adding a scalar subscript changes rank or shape; 9.4.2 owns the part-ref rank calculation.",
+        "rank-counts-triplets-and-vector-subscripts": "PENDING positive-control source shape: rank-three array section a(2,1:3,[3,1]) where one scalar subscript, one triplet, and one vector subscript appear. Oracle is RANK/SHAPE [3,2]. Non-vacuous because counting the scalar subscript would give rank 3.",
+        "shape-elements-count-sequence-values": "PENDING positive-control source shape: use a(1:5:2,[4,2,1]) with independent oracle SHAPE [3,3]. Non-vacuous because the triplet extent and vector size differ from array bounds.",
+        "empty-sequence-gives-size-zero": "PENDING positive-control source shape: rank-two section with one empty triplet and one nonempty vector, oracle SIZE 0 and SHAPE containing zero. Non-vacuous because all declarations and the nonempty dimension are valid and a repaired triplet produces nonzero size.",
+        "section-subscript-order-follows-represented-array": "PENDING positive-control source shape: rank-two coordinate-coded array and section with two nonunit sequences; oracle orders elements by the represented array's Table 9.1 subscript order, not by source textual nesting or storage address. Non-vacuous because at least two selected coordinates differ in both dimensions."
+      },
+      "oracle": "Every facet is a pending source plan. Positive-control plans use independently chosen literal values, SHAPE, SIZE, LBOUND, UBOUND, or scalar results that first establish definedness and reached execution. Diagnostic-policy plans pair an otherwise legal source with a minimal repair and require any future report to be attributable to the stated requirement rather than an unrelated grammar, declaration, unsupported-feature, resource, or runtime failure. Negative plans identify the violated owner and avoid programs already invalid for a different rule.",
+      "oracle_limitation": "This source-only catalogue creates no Fortran test program, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Numbered syntax rules and constraints in neighbouring catalogues carry the 4.2 detection and reporting duty; the unnumbered prose rules catalogued here are not promoted to mandatory static diagnostics. Runtime-valued subscript, stride, bound, definedness, duplicate-value, finalization, contiguity, or shape predicates remain runtime/source obligations unless a future review separately establishes a static context. No pending oracle uses compiler agreement, address arithmetic, TRANSFER, emitted assembly, reading undefined storage, or executing an out-of-bounds subscript as evidence.",
+      "dependencies": "9.4.2 part-ref rank;9.5.3.1C925/R921-R925;9.5.3.3 array element order;9.5.3.4.2;9.5.3.4.3;16.9 RANK/SHAPE/SIZE inquiries."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_9_5_3_4_1.md"
+  }
+}
