@@ -2013,6 +2013,40 @@ covers1,829base units;4,644base and six fine units remain unresolved. All
 compiler was invoked. Sections9.5.3.2 through9.7 remain queued.
 See `doc/source_audits/batch_090.json`.
 
+The ninety-first checkpoint registers the independently reviewed array
+section, element order and contiguity source:26base/58fine units across six
+subclauses,19S requirements and79pending facets. All26base units are newly
+accounted, because these subclauses contain no numbered items of their own.
+The reviewer independently derived Table9.1's subscript order value, which is
+one plus the sum over dimensions of (s_i − j_i) multiplied by the product of
+the preceding dimension sizes, with d_i equal to MAX(k_i − j_i + 1,0). The
+automatic extraction of the rank-15 row misplaces a multiplication sign and
+emits a stray fragment; the catalogue records that ambiguity explicitly
+rather than resolving it silently, and a later visual confirmation of that
+row remains outstanding.
+
+The authoring agent was killed by a transient network failure after writing
+the packet but before committing or self-reviewing. The coordinator validated
+the output mechanically, committed it verbatim and instructed the reviewer to
+apply extra scepticism. Review then returned **blocked** twice. C9SR2-001
+found that the `S9.5.4-001` positive control `(:,2,1:3)` violates the very
+bullet it was meant to support, since a scalar subscript precedes the triplet.
+C9SR2-002 found that the coordinator's own correction reintroduced the
+attribution defect: on a rank-three array the retained negative `(2,1:3)`
+supplies only two section-subscripts and is already invalid under 9.4.2 C913,
+so it could not demonstrate the9.5.4 bullet it was filed under. The negatives
+are now `(:,2,1:3)` and `(2,:,1:3)`, each a legal rank-three list. That the
+second finding was raised against an integrator-authored correction is the
+intended behaviour of an independent review, not an exception to it.
+
+There remain **2,069cases**, now with **164catalogues,942requirements,
+1,774direct,22linked and2,999pending facets out of4,795**. Source accounting
+covers1,855base units;4,618base and six fine units remain unresolved. All
+2,069case bindings,2,033reviews,158oldercatalogues,22links,R402 and the
+`b153c75b` baseline are preserved, the948-method Python suite passes and no
+compiler was invoked.
+See `doc/source_audits/batch_091.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
