@@ -1882,6 +1882,39 @@ f2018 success stays supplementary, and the retained needs-oracle real-BOZ case
 still makes the normal whole-suite gate nonzero.
 See `doc/source_audits/batch_086.json`.
 
+The eighty-seventh checkpoint opens Clause 9 by registering the independently
+reviewed Designator, Variable and Constant source:19base/44fine units across
+three sections,14numbered and three S requirements, and50pending facets.
+Five base units are newly accounted. The review reads the19original units,
+18referenced sections and all502grammar heads. R901's seven designator
+alternatives stay owned by9.4.x and9.5.x rather than being duplicated here.
+C901 excludes a constant and any subobject of one, including a substring of a
+literal constant through the R909 parent-string alternatives. C902 requires a
+data pointer result and9.2p1 requires that pointer to be associated, while
+R904-R907 share the general variable grammar and take their types from the
+paired constraints. The definedness effects of9.2p2 carry no diagnostic duty,
+because a reference to an undefined variable is generally not statically
+detectable; their plans use positive controls with literal oracles, and no
+plan executes an undefined read. The unnumbered note stays informative, and
+9.3's never-permitted redefinition is owned as prose while diagnostics remain
+with C901 and the assignment and definition-context owners.
+
+A fresh-context author produced the packet in an isolated worktree and
+declared four interpretation risks; a separate fresh-context reviewer answered
+each and returned no blocking finding. The coordinator reproduced the
+accounting and identifier checks, re-read9.1-9.3 and9.4.1 in the original, and
+audited every definedness plan before recording any review.
+
+There remain **2,069cases**, now with **150catalogues,863requirements,
+1,774direct,22linked and2,677pending facets out of4,473**. Source accounting
+covers1,801base units;4,672base and six fine units remain unresolved. All
+2,069case bindings,2,033reviews,147oldercatalogues,22links,R402 and the
+`b153c75b` baseline are preserved, the generated views regenerate
+byte-identically, the948-method Python suite passes and no compiler was
+invoked. Sections9.4 through9.7 are queued as eight further source packets and
+remain unauthored.
+See `doc/source_audits/batch_087.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
