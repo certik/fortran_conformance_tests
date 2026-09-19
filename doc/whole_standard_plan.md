@@ -1845,6 +1845,43 @@ remains a pending gate, and no byte layout, address arithmetic, TRANSFER
 result or undefined-alias read is accepted as an oracle.
 See `doc/source_audits/batch_085.json`.
 
+The eighty-sixth checkpoint integrates four independently reviewed COMMON
+ordered-list run/effect programs for S8.10.2.1-001: repeated `/packet/` groups
+in one statement, successive named statements, the omitted-name plus `//`
+spellings of the same blank block, and interleaved `/left_block/` and
+`/right_block/` statements. Each represents exactly one facet;113 other
+8.10.2.1 facets keep their original pending plans. A separately called and
+counted seed defines every observed storage unit to a negative sentinel
+before the writer, so neither the observations nor any mutation reads
+undefined storage, and readers compare each actual COMMON coordinate against
+independent literals rather than a commutative sum, an address or a TRANSFER
+result. All four are reference-validated by GNU Fortran16.1.0 in f2023; the
+frozen target and Flang's f2018 runs also pass, but neither adjudicates.
+All507 whole-program wrong-oracle and omission mutations,169 per compiler,
+failed at their predicted guards.
+
+Independent fixture review raised and closed three blocking findings.
+CLER-001: after the cases existed, the requirement's inherited oracle and
+limitation text still said no such program or mutation had been implemented
+and that no case was created, while the generated view rationalised keeping
+that wording. CLER-002 and CLER-003 were successive weaknesses in the
+coordinator's replacement guard, which first accepted mixed stale-plus-current
+wording and then stale-plus-reworded near-variants. The final guard pins
+distinctive content anchors to the exact corrected sentences and is exercised
+by eight rejection vectors per protected field. No Fortran byte changed, but
+the requirement-metadata correction staled the four case fingerprints, so both
+native stages were re-run rather than reused; the pre-correction artifacts are
+preserved separately.
+
+There are now **2,069cases**, with **147catalogues,846requirements,
+1,774direct,22linked and2,627pending facets out of4,423**. Source accounting
+remains1,796/6,473base units. All2,065prior case bindings,2,029reviews,
+22links, R402 and the `b153c75b` baseline are unchanged, and no baseline entry
+is added. Declaration text is source-reviewed rather than mutation-probed,
+f2018 success stays supplementary, and the retained needs-oracle real-BOZ case
+still makes the normal whole-suite gate nonzero.
+See `doc/source_audits/batch_086.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must

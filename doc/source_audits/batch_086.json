@@ -1,0 +1,132 @@
+{
+  "schema_version": 1,
+  "review_type": "independent-COMMON-ordered-list-runtime-fixture-and-oracle-review",
+  "review_date": "2026-09-19",
+  "baseline_commit": "eb442b7e7cb78c762f9aeae26ab182871ecd7641",
+  "state": "reviewed-ordered-list-runtime-subset-with-corrected-catalogue-claims",
+  "scope": {
+    "section": "8.10.2.1",
+    "requirement": "S8.10.2.1-001",
+    "new_cases": 4,
+    "represented_facets": ["named-one-statement", "named-multiple-statements",
+                           "blank-spelling-continuation", "interleaved-distinct-blocks"],
+    "remaining_pending_facets_in_section": 113,
+    "new_source_units": 0,
+    "new_requirements": 0,
+    "new_links": 0,
+    "new_baseline_entries": 0
+  },
+  "packet": {
+    "origin": "uncommitted author packet recovered from the rollout-common-list-effects worktree of session 67dcac1e",
+    "generator": "tools/generate_common_list_effect_fixtures.py",
+    "regression_module": "tests/test_common_list_effect_fixtures.py",
+    "fixtures": ["tests/fixtures/common_list_effect_named_single",
+                 "tests/fixtures/common_list_effect_named_multiple",
+                 "tests/fixtures/common_list_effect_blank",
+                 "tests/fixtures/common_list_effect_interleaved"],
+    "deterministic_check": "tools/generate_common_list_effect_fixtures.py --check exits 0",
+    "packet_tests": 14
+  },
+  "independent_review": {
+    "receipt": "common-list-effects-review.json",
+    "reviewer_distinct_from_author": true,
+    "reviewer_context": "fresh subagent context; original 8.10.2.1 text read before the programs",
+    "decision": "fixtures-eligible-with-nonblocking-observations",
+    "per_case_state": {
+      "S8_10_2_1_001_valid__common_list_effect_named_single": "reference-validated",
+      "S8_10_2_1_001_valid__common_list_effect_named_multiple": "reference-validated",
+      "S8_10_2_1_001_valid__common_list_effect_blank": "reference-validated",
+      "S8_10_2_1_001_valid__common_list_effect_interleaved": "reference-validated"
+    },
+    "blocking_findings_raised": 3,
+    "blocking_findings_closed": 3,
+    "turns": 4,
+    "elapsed_seconds": 1443
+  },
+  "findings": [
+    {
+      "id": "CLER-001",
+      "state": "closed",
+      "anchor": "doc/catalogues/common_statement_8_10_2_1.json S8.10.2.1-001 oracle/oracle_limitation; doc/fortran_2023_8_10_2_1.md",
+      "defect": "After the four cases were added, the requirement's inherited text still said that no such program or mutation had been implemented and that all proposed evidence remained pending with no case created. The generated view additionally asserted that this stale wording was retained deliberately.",
+      "correction": "synced_catalogue() now replaces exactly those two sentences with accurate current statements, and the view summary describes the replacement instead of rationalising the stale text. Other requirements in the same section that genuinely have no case keep their wording.",
+      "independently_raised": true
+    },
+    {
+      "id": "CLER-002",
+      "state": "closed",
+      "anchor": "tools/generate_common_list_effect_fixtures.py synced_catalogue()",
+      "defect": "The first replacement guard accepted a field containing both the stale and the corrected sentence and duplicated the corrected sentence instead of raising.",
+      "correction": "The two accepted states are now mutually exclusive: exactly one corrected sentence and no stale one, or exactly one stale sentence and no corrected one. Five rejection vectors per field were added.",
+      "independently_raised": true
+    },
+    {
+      "id": "CLER-003",
+      "state": "closed",
+      "anchor": "tools/generate_common_list_effect_fixtures.py synced_catalogue()",
+      "defect": "A field containing the stale sentence together with a reworded near-variant of the corrected sentence was still accepted, preserving the altered false claim.",
+      "correction": "Each protected sentence now carries distinctive content anchors that must occur exactly as often as the exact corrected sentence, so near-variants and bare anchor fragments raise. Eight rejection vectors per field are asserted, including a rewording that deliberately preserves every anchor.",
+      "independently_raised": true
+    }
+  ],
+  "evidence": {
+    "observation_receipt": "common-list-effects-native.json",
+    "observation_report": "common-list-effects-native-report.json",
+    "sensitivity_receipt": "common-list-effects-sensitivity.json",
+    "parent_observations": 12,
+    "parent_outcomes": {"lfortran": "4 pass", "gfortran_f2023": "4 pass", "flang_f2018": "4 pass"},
+    "qualifying_reference": "GNU Fortran 16.1.0 in f2023 for all four cases",
+    "supplementary_only": "Flang 22.0.0git runs in f2018 and cannot qualify an f2023 expectation",
+    "target": "frozen LFortran 0.65.0-411-ga0afaa840b-dirty; the target under test adjudicates nothing",
+    "wrong_oracle_plans": 65,
+    "omission_plans": 104,
+    "mutation_runs": 507,
+    "mutation_processes": 1521,
+    "mutations_sensitive": 507,
+    "mutations_vacuous": 0,
+    "observations_rerun_after_correction": true,
+    "rerun_reason": "The requirement-metadata correction staled the four case fingerprints, so both native stages were re-run rather than reused.",
+    "preserved_precorrection_artifacts": "files/precorrection-cler001/"
+  },
+  "oracle_judgments": [
+    "Each program separately calls and counts a seed procedure that defines every observed storage unit to a negative sentinel before the writer runs, so no observation and no mutation reads undefined COMMON storage.",
+    "Readers compare each actual COMMON coordinate against independent literals 11/22/33/44, as one four-element tuple or as separate left 11/22 and right 33/44 tuples. No commutative sum, address, byte layout, emitted assembly, TRANSFER result or same-processor round trip is used.",
+    "Control arguments are distinct initialized driver scalars rather than COMMON members, so no dummy-argument aliasing with COMMON storage is relied on.",
+    "Named blocks carry SAVE /block/ in every declaring procedure; the blank-common case deliberately has no SAVE, DATA or declaration initialization and relies on the blank-common retention rules of 8.10.2.5 and 19.6.6.",
+    "Entries, writes, observations and normal returns are counted, nine counted caller checks precede completion, and completion is an exact external stdout oracle with empty runtime stderr and exit 0.",
+    "The four facets are genuinely distinguished: one statement with repeated /packet/ groups, successive named statements, the omitted-name plus // spellings of the same blank block, and interleaved /left_block/ and /right_block/ statements whose separate tuples would expose cross-block contamination."
+  ],
+  "explicit_limitations": [
+    "These four runs represent exactly four facets of S8.10.2.1-001. The other 113 facets of 8.10.2.1 remain pending with their original plans.",
+    "No linked facet, SourceUse relationship, source closure, baseline entry or universal conformance credit is created.",
+    "Compile and link success is not runtime evidence, and an f2018 observation never qualifies an f2023 expectation.",
+    "Declaration text itself is source-reviewed rather than mutation-probed; the sensitivity evidence covers assertions, values, calls, bodies, return counts and completion.",
+    "The retained needs-oracle real-BOZ case still makes the normal whole-suite gate nonzero; nothing here resolves it."
+  ],
+  "preservation": {
+    "cases_before": 2065,
+    "cases_after": 2069,
+    "old_case_bindings_preserved": 2065,
+    "old_reviews_preserved": 2029,
+    "current_links_preserved": 22,
+    "current_source_use_inventories_preserved": 1,
+    "baseline": "b153c75b",
+    "baseline_lines_changed": 0,
+    "fortran_bytes_changed_by_corrections": 0
+  },
+  "validation_snapshot": {
+    "fixture_reviews_written": 4,
+    "catalogue_reviews_written": 1,
+    "inventory_reviews_written": 1,
+    "fixture_review_states": {"reference-validated": 1756, "source-reviewed": 274, "needs-oracle": 1},
+    "authored_facets": 1774,
+    "pending_facets": 2627,
+    "detailed_catalogues": 147,
+    "requirements": 846,
+    "accounted_base_units": 1796,
+    "normal_audit_exit": 1,
+    "normal_audit_block": "one retained needs-oracle real-BOZ case",
+    "python_suite_tests": 948,
+    "python_suite_result": "OK"
+  }
+}
