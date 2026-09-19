@@ -1915,6 +1915,39 @@ invoked. Sections9.4 through9.7 are queued as eight further source packets and
 remain unauthored.
 See `doc/source_audits/batch_087.json`.
 
+The eighty-eighth checkpoint registers the independently reviewed Substring
+and Structure component source:32base/101fine units across two sections,
+19numbered and eight S requirements, and115pending facets. Thirteen base
+units are newly accounted. The reviewer read all32original units in full and
+verified all502grammar heads. R908-R910 require an explicit substring-range,
+so a whole scalar variable or array element is not a substring occurrence,
+and C908 keeps the character-type condition on the parent string. The
+starting and ending points, the MAX(l-f+1,0) length, the default endpoints of
+one and n, the zero-length case when the starting point exceeds the ending
+point and the otherwise-in-range requirement stay distinct, with runtime
+valued endpoint conditions given no invented static diagnostic duty.
+
+In9.4.2, C909 and C910 keep the derived-type and component-of-declared-type
+conditions on all but the rightmost and leftmost part-names, C911 constrains
+only an abstract rightmost part-name, and C912 requires a data-object
+leftmost name. C913 retains the exact rank equation and C914 the
+cosubscript/corank equality. C915 excludes C_PTR, C_FUNPTR and TEAM_TYPE only
+when some part-ref carries an image selector, while C916 requires a
+section-subscript-list only for an array part-name with an image selector.
+C917 and C918 keep both the intrinsic-inquiry and type-parameter-inquiry
+exceptions, and C919 keeps both the single-nonzero-rank rule and the
+ALLOCATABLE/POINTER prohibition to its right. Array sections, subscripts and
+image selectors remain owned by9.5.x and9.6, components by7.5.x, and all
+four notes stay informative.
+
+There remain **2,069cases**, now with **152catalogues,890requirements,
+1,774direct,22linked and2,792pending facets out of4,588**. Source accounting
+covers1,814base units;4,659base and six fine units remain unresolved. All
+2,069case bindings,2,033reviews,150oldercatalogues,22links,R402 and the
+`b153c75b` baseline are preserved, the948-method Python suite passes and no
+compiler was invoked. Sections9.4.3 through9.7 remain queued and unauthored.
+See `doc/source_audits/batch_088.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
