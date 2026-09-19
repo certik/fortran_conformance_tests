@@ -126,7 +126,7 @@ prose restrictions here are not promoted to mandatory static diagnostics. Multi-
 execution, failed-image detection, teams, NOTIFY variables, and cross-team coarray
 establishment remain separately gated capabilities.
 
-**Dependencies:** 4.1.3;4.2;9.6C932-C935/p3-p7;9.7R946 stat-variable;11.1.5.1R1115/C1115
+**Dependencies:** 4.1.3;4.2;9.6C932-C935/p3-p7;9.7.4R946 stat-variable;11.1.5.1R1115/C1115
 team-value;11.6R1167/C1177-C1178 notify-variable;16.10.2.34 TEAM_TYPE.
 
 ### C932: No image selector specifier appears more than once in a selector-spec list
@@ -185,7 +185,7 @@ prose restrictions here are not promoted to mandatory static diagnostics. Multi-
 execution, failed-image detection, teams, NOTIFY variables, and cross-team coarray
 establishment remain separately gated capabilities.
 
-**Dependencies:** 4.2;10.2 intrinsic assignment;9.6R928/p4;11.6R1167/C1177-C1178 notify-variable.
+**Dependencies:** 4.2;10.2.1.3 intrinsic assignment;9.6R928/p4;11.6R1167/C1177-C1178 notify-variable.
 
 ### C934: TEAM and TEAM_NUMBER are mutually exclusive in an image selector spec list
 
@@ -241,7 +241,7 @@ prose restrictions here are not promoted to mandatory static diagnostics. Multi-
 execution, failed-image detection, teams, NOTIFY variables, and cross-team coarray
 establishment remain separately gated capabilities.
 
-**Dependencies:** 4.2;9.4.3;9.6R928/p6-p7;9.7R946 stat-variable.
+**Dependencies:** 4.2;9.4.3;9.6R928/p6-p7;9.7.4R946 stat-variable.
 
 ### S9.6-002: Cosubscript values are within cobounds and determine image index by coarray subscript order
 
@@ -272,8 +272,8 @@ execution, failed-image detection, teams, NOTIFY variables, and cross-team coarr
 establishment remain separately gated capabilities. The p2/corank equality is
 deliberately not duplicated from C914.
 
-**Dependencies:** 4.2;5.3.4;8.5.6.1;8.5.6.3;9.4.2C914;9.5.3.3 table9.1;9.6R927;16.9 image inquiry
-intrinsics.
+**Dependencies:** 4.2;5.3.4;8.5.6.1;8.5.6.3;9.4.2C914;9.5.3.3 table9.1;9.6R927;16.9.156 NUM_IMAGES and
+16.9.208 THIS_IMAGE image inquiry intrinsics.
 
 ### S9.6-003: TEAM selects the current or an ancestor team and requires establishment in that team
 
@@ -360,7 +360,7 @@ The standard text does not state a literal value for the initial team's team num
 here; future controls should use a standard inquiry or a separately reviewed FORM
 TEAM/TEAM_NUMBER dependency rather than guessing.
 
-**Dependencies:** 4.2;5.3.4;8.5.6.1;9.6R928/C934/p5;11.7.9;16.9 TEAM_NUMBER intrinsic;19.5.1.6.
+**Dependencies:** 4.2;5.3.4;8.5.6.1;9.6R928/C934/p5;11.7.9;16.9.207 TEAM_NUMBER intrinsic;19.5.1.6.
 
 ### S9.6-006: An image selector without TEAM or TEAM_NUMBER uses the current team
 
@@ -414,8 +414,8 @@ NOTIFY observations require multi-image execution, valid NOTIFY_TYPE variables, 
 corresponding NOTIFY WAIT semantics from 11.6; this packet records only pending source
 plans.
 
-**Dependencies:** 4.2;9.6R928/C933;10.2 intrinsic assignment;11.6R1166-R1167/C1177-C1178/p1-p10;16.10.2
-NOTIFY_TYPE.
+**Dependencies:** 4.2;9.6R928/C933;10.2.1.3 intrinsic
+assignment;11.6R1166-R1167/C1177-C1178/p1-p10;16.10.2.22 NOTIFY_TYPE.
 
 ### S9.6-008: An image selector specifies an existing image index in its selected team
 
@@ -443,7 +443,7 @@ Runtime-valued image-count and team membership conditions are not static diagnos
 obligations in this packet. Future invalid-image tests must not use a reference to a
 nonexistent image as observational evidence.
 
-**Dependencies:** 4.2;5.3.4;9.6p2-p3;16.9 NUM_IMAGES/THIS_IMAGE inquiry intrinsics.
+**Dependencies:** 4.2;5.3.4;9.6p2-p3;16.9.156 NUM_IMAGES/16.9.208 THIS_IMAGE inquiry intrinsics.
 
 ### S9.6-009: STAT in an image selector defines the STAT variable with failed-image or zero status
 
@@ -472,7 +472,7 @@ Failed-image observations require a processor/profile that can detect failed ima
 value of a coindexed object on a failed image is processor dependent and must not be
 used as evidence.
 
-**Dependencies:** 4.2;5.3.6;9.6R928/C935/p7;9.7R946 stat-variable;16.10.2.28 STAT_FAILED_IMAGE;16.10.2
+**Dependencies:** 4.2;5.3.6;9.6R928/C935/p7;9.7.4R946 stat-variable;16.10.2.28 STAT_FAILED_IMAGE;16.10.2
 ISO_FORTRAN_ENV.
 
 ### S9.6-010: STAT variables in image selectors are independent of same-statement evaluation and side effects
@@ -503,6 +503,6 @@ The exact boundary of 'denotation depends on evaluation of any entity in the sam
 statement' is source-sensitive for array-element STAT variables; this ambiguity is
 recorded for independent review and no mandatory static diagnostic is claimed.
 
-**Dependencies:** 4.2;9.6R928/C935/p6;9.7R946 stat-variable;10.1 expression evaluation;16.10.2.28.
+**Dependencies:** 4.2;9.6R928/C935/p6;9.7.4R946 stat-variable;10.1 expression evaluation;16.10.2.28.
 
 <!-- END GENERATED 9.6 -->
