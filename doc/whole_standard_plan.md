@@ -1948,6 +1948,36 @@ covers1,814base units;4,659base and six fine units remain unresolved. All
 compiler was invoked. Sections9.4.3 through9.7 remain queued and unauthored.
 See `doc/source_audits/batch_088.json`.
 
+The eighty-ninth checkpoint registers the independently reviewed coindexed
+named object, complex part designator and type parameter inquiry source:
+13base/42fine units across three sections, six numbered and four S
+requirements, and47pending facets. Seven base units are newly accounted.
+C921 keeps three separate conditions on the data-ref: exactly one part-ref,
+an image-selector in that part-ref, and a part-name naming a scalar coarray.
+R915 supplies exactly the `%RE` and `%IM` forms, C922 requires a complex
+designator, and p1 fixes the designated part, the real result type and the
+designator's kind and shape, which may be array or scalar. C923 binds the
+type-param-name to the **declared** type of the designated object, while
+9.4.5p2's prohibition on inquiring about a deferred parameter of an
+unassociated pointer or unallocated allocatable depends on runtime status
+and therefore carries no required static diagnostic duty; no plan executes
+such an inquiry. NOTE 1's non-variable, primary-only and scalar statements
+stay informative here rather than becoming locally owned requirements.
+
+The coordinator read the scoped source independently while the author worked
+and caught a defect in its own task instruction: 9.4.5's note2 is on PDF
+page154, so a single-page range made the reader's census assertion fail.
+Inventory page positions are section starts, not ranges. The author reran the
+corrected command and the committed packet needed no change.
+
+There remain **2,069cases**, now with **155catalogues,900requirements,
+1,774direct,22linked and2,839pending facets out of4,635**. Source accounting
+covers1,821base units;4,652base and six fine units remain unresolved. All
+2,069case bindings,2,033reviews,152oldercatalogues,22links,R402 and the
+`b153c75b` baseline are preserved, the948-method Python suite passes and no
+compiler was invoked.
+See `doc/source_audits/batch_089.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
