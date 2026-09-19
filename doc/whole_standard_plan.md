@@ -2047,6 +2047,38 @@ covers1,855base units;4,618base and six fine units remain unresolved. All
 compiler was invoked.
 See `doc/source_audits/batch_091.json`.
 
+The ninety-second checkpoint registers the independently reviewed image
+selector source:15base/50fine units, seven numbered and ten S requirements,
+and56pending facets. Eight base units are newly accounted, completing Clause9
+source accounting through9.6. R926 supplies the bracketed image-selector form,
+R927 the scalar integer cosubscript and R928 the NOTIFY, STAT, TEAM and
+TEAM_NUMBER selector-spec forms. C932 forbids a repeated specifier, C933
+restricts NOTIFY to a variable designator in an intrinsic assignment, C934
+makes TEAM and TEAM_NUMBER mutually exclusive, and C935 forbids a coindexed
+STAT variable. The cosubscript-count sentence of p2 is accounted as
+structural because the registered9.4.2 C914 owns that numbered equality, while
+the cobound range and the image-index calculation stay under S9.6-002, so no
+normative content is lost. Runtime-valued image, team and cobound conditions
+receive no invented static diagnostic duty, and several plans are explicitly
+marked as needing the separately gated multi-image capability.
+
+A first attempt at this packet was lost to the same transient network failure
+that killed the batch091 author, producing nothing; the packet was authored
+from scratch. The reviewer's one nonblocking observation, an imprecise
+`9.7R946` dependency reference, was acted on before registration: asked to
+check the whole file for that class of defect, the author corrected nine
+references, including `9.7.4R946`, `10.2.1.3`, `16.9.156`, `16.9.207`,
+`16.9.208` and `16.10.2.22`, each independently reconfirmed by the reviewer.
+
+There remain **2,069cases**, now with **165catalogues,959requirements,
+1,774direct,22linked and3,055pending facets out of4,851**. Source accounting
+covers1,863base units;4,610base and six fine units remain unresolved. All
+2,069case bindings,2,033reviews,164oldercatalogues,22links,R402 and the
+`b153c75b` baseline are preserved, the948-method Python suite passes and no
+compiler was invoked. Clause9's remaining allocation subclauses in9.7 are
+queued as four further packets and remain unauthored.
+See `doc/source_audits/batch_092.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
