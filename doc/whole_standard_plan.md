@@ -1978,6 +1978,41 @@ covers1,821base units;4,652base and six fine units remain unresolved. All
 compiler was invoked.
 See `doc/source_audits/batch_089.json`.
 
+The ninetieth checkpoint registers the independently reviewed and corrected
+whole-array, array-element and array-section syntax source:25base/66fine
+units across three sections,17numbered and six S requirements, and81pending
+facets. Eight base units are newly accounted. 9.5.1 states only that no order
+of reference is implied except where array element ordering is specified, and
+9.5.2 keeps its four distinct statements, including the EQUIVALENCE exception
+owned by8.10.1.4 and the assumed-size restriction to actual arguments that do
+not require the shape. C924 requires every part-ref to have rank zero with a
+subscript-list in the last, C925 keeps its exact disjunction including the
+complex-part alternative, and R919-R925 keep subscript, multiple-subscript,
+subscript-triplet, multiple-subscript-triplet, stride and vector-subscript as
+separate forms with C927, C928 and C929 on their actual owners. C930 and C931
+keep their distinct assumed-size last-dimension conditions, while9.5.3.1p2's
+in-bounds requirement stays runtime valued with no invented static diagnostic
+duty and no plan that executes an out-of-bounds subscript.
+
+Independent review returned **blocked** with three pending-plan attribution
+findings. C9AR-001: an R919 scalar-subscript negative used `a([1,2])`, which
+is a legal vector-subscript excluded in that context by C924's rank-zero
+requirement, not by R919. C9AR-002: an R920 plan demanded a missing-`@`
+diagnostic, although without `@` a rank-one integer vector still parses as a
+vector-subscript, so any failure belongs to the C913 or C925 rank owners.
+C9AR-003: a C930 positive control offered `a(:,:)` for assumed-size `a(3,*)`,
+a form that violates C930 itself. The author corrected exactly three plan
+strings; the reviewer verified the closeout by diff, confirmed no other field
+changed and found no new finding. The original proposal stays immutable.
+
+There remain **2,069cases**, now with **158catalogues,923requirements,
+1,774direct,22linked and2,920pending facets out of4,716**. Source accounting
+covers1,829base units;4,644base and six fine units remain unresolved. All
+2,069case bindings,2,033reviews,155oldercatalogues,22links,R402 and the
+`b153c75b` baseline are preserved, the948-method Python suite passes and no
+compiler was invoked. Sections9.5.3.2 through9.7 remain queued.
+See `doc/source_audits/batch_090.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must

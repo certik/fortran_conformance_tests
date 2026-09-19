@@ -1,0 +1,140 @@
+{
+  "schema_version": 1,
+  "review_type": "independent-whole-array-element-and-section-syntax-source-review",
+  "review_date": "2026-09-19",
+  "baseline_commit": "9850acb",
+  "state": "reviewed-source-only-after-pending-plan-attribution-corrections",
+  "scope": {
+    "sections": ["9.5.1", "9.5.2", "9.5.3.1"],
+    "section_titles": {
+      "9.5.1": "Order of reference",
+      "9.5.2": "Whole arrays",
+      "9.5.3.1": "Syntax (array elements and array sections)"
+    },
+    "base_units": 25,
+    "fine_units": 66,
+    "accounting_rows": 91,
+    "already_counted_numbered_units": 17,
+    "newly_accounted_base_units": 8,
+    "new_requirements": 23,
+    "new_numbered_requirements": 17,
+    "new_S_requirements": 6,
+    "new_pending_facets": 81,
+    "new_cases": 0,
+    "new_direct_or_linked_facets": 0
+  },
+  "authoring": {
+    "author_context": "fresh subagent context in an isolated worktree based on 33981ce, concurrent with the 9.4.3-9.4.5 author in a separate worktree",
+    "author_proposal": "b026566368bdcaee2b875b0b5d0c4783e8ae1dbe",
+    "author_correction": "c1c6ce8de5874ce5fec6818b293f6d1abed3bb8a",
+    "rebased_onto_main": ["b1f2064", "56acf0c"],
+    "declared_interpretation_risks": [
+      "C925's complex-part wording versus the exactly-one-part-ref condition",
+      "C924's subscript-list terminology",
+      "scalar subscript versus vector-subscript ambiguity",
+      "multiple-subscript rank ownership delegated to 9.4.2 and 9.5.3.2",
+      "runtime bounds in p2 not being over-diagnosed",
+      "assumed-size contexts in C930 and C931",
+      "vector-subscript restrictions delegated to 9.5.3.4.3",
+      "the substring ownership split with 9.4.1"
+    ]
+  },
+  "independent_review": {
+    "receipt": "clause9-arrays-source-review.json",
+    "reviewer_distinct_from_author": true,
+    "reviewer_context": "fresh subagent context; original text read before the candidate catalogues",
+    "initial_decision": "blocked",
+    "final_decision": "source-eligible",
+    "blocking_findings_raised": 3,
+    "blocking_findings_closed": 3,
+    "new_findings_from_correction": 0,
+    "scoped_original_units_read_in_full": 25,
+    "referenced_material_read": ["9.4.1", "9.4.2", "9.4.4", "9.5.3.2", "9.5.3.3", "9.5.3.4",
+                                 "9.5.4", "9.6", "8.5.8", "5.4.6", "10.1.12", "8.10.1.4", "19.5.3"],
+    "compiler_invocations": 0,
+    "risk_answers": {
+      "C925-complex-part-versus-one-part-ref": "correct",
+      "C924-subscript-list-terminology": "correct",
+      "scalar-versus-vector-subscript": "originally defective; corrected under C9AR-001",
+      "multiple-subscript-rank-ownership": "correct once C9AR-002 was closed",
+      "p2-runtime-bounds-not-over-diagnosed": "correct",
+      "assumed-size-C930-C931": "originally defective; corrected under C9AR-003",
+      "vector-subscript-restrictions-delegated": "correct",
+      "substring-ownership-split-with-9.4.1": "correct"
+    }
+  },
+  "findings": [
+    {
+      "id": "C9AR-001",
+      "state": "closed",
+      "anchors": ["9.5.3.1#R919", "9.5.3.1#R921", "9.5.3.1#R925", "9.5.3.1#C929", "9.5.3.1#C924"],
+      "defect": "The R919 negative plan used a([1,2]) and demanded a scalar-int-expr cause. R921 permits a vector-subscript, R925 defines it as int-expr and C929 requires a rank-one integer array, so in an array-element classification that form is excluded by C924's rank-zero requirement, not by R919's grammar.",
+      "correction": "a([1,2]) removed; the plan now uses a(1.0) or another scalar noninteger expression and delegates rank-one integer array contrasts to C924, C925, C929 and the C913 dependency."
+    },
+    {
+      "id": "C9AR-002",
+      "state": "closed",
+      "anchors": ["9.5.3.1#R920", "9.5.3.1#R921", "9.5.3.1#R925", "9.4.2#C913"],
+      "defect": "The R920 plan demanded a missing-@ diagnostic, but without @ a rank-one integer vector still parses as a vector-subscript; any resulting problem is a rank or context issue owned by C913 or C925.",
+      "correction": "Recast as a source-classification contrast between vector-subscript and multiple-subscript, with any rejection attributed to the C913, C924 and C925 owners rather than R920."
+    },
+    {
+      "id": "C9AR-003",
+      "state": "closed",
+      "anchors": ["9.5.3.1#C930", "8.5.8.5#p4", "8.5.8.5#p5"],
+      "defect": "The C930 positive-control plan offered a(:,:) for assumed-size a(3,*). That form omits the second subscript in the last dimension and therefore violates C930 itself, so it cannot be its positive control.",
+      "correction": "a(:,:) deleted; only a(:,1) and a(1:3,1) remain, with an explicit scalar subscript in the last dimension."
+    }
+  ],
+  "coordinator_verification": {
+    "reproduced_mechanical_checks": [
+      "Every base unit of 9.5.1, 9.5.2 and 9.5.3.1 appears exactly once in accounting, with every declared fine unit accounted.",
+      "Every requirement's source_units exist in the scoped census and every pending key is a declared facet.",
+      "All numbered identifiers exist in doc/fortran_2023_rules.txt; no requirement identifier collides across the 158 catalogues.",
+      "Reported 25 base / 66 fine / 23 requirements / 81 facets confirmed, all pending with no represented case.",
+      "Audit deltas measured after rebase: accounted_base_units 1821 to 1829, declared_facets 4635 to 4716, requirements 900 to 923, catalogues 155 to 158."
+    ],
+    "original_units_reread_by_coordinator": ["9.5.1#p1", "9.5.2#p1", "9.5.2#p2", "9.5.3.1#R917",
+                                             "9.5.3.1#C924", "9.5.3.1#R918", "9.5.3.1#C925",
+                                             "9.5.3.1#R919", "9.5.3.1#R920", "9.5.3.1#C927",
+                                             "9.5.3.1#R921", "9.5.3.1#R922", "9.5.3.1#R923",
+                                             "9.5.3.1#C928", "9.5.3.1#R924", "9.5.3.1#R925",
+                                             "9.5.3.1#C929", "9.5.3.1#C930", "9.5.3.1#C931",
+                                             "9.5.3.1#p1", "9.5.3.1#p2"],
+    "integration_note": "The packet was authored from 33981ce concurrently with batch089 and rebased onto 9850acb. The only conflict was the appended catalogue list in doc/catalogues/index.json, resolved by keeping both packets' entries in registration order."
+  },
+  "explicit_limitations": [
+    "Source registration only: no test program, compiler invocation, oracle, canonical link, SourceUse relationship or fixture approval is created.",
+    "All 81 facets remain pending. Whole-array specification, element and section classification, subscript forms and assumed-size conditions are future fixture gates.",
+    "9.5.3.1 p2's in-bounds requirement is runtime valued; it carries no required static diagnostic duty and no plan executes an out-of-bounds subscript.",
+    "The data-ref chain and its rank rules remain owned by the registered 9.4.2 catalogue, substring ranges by 9.4.1, complex part designators by 9.4.4, array element ordering and section semantics by 9.5.3.2-9.5.3.4, image selectors by 9.6 and assumed-size declaration by 8.5.8.5.",
+    "Sections 9.5.3.2 through 9.7 remain unauthored and the whole-standard source census stays unratified."
+  ],
+  "preservation": {
+    "cases_preserved": 2069,
+    "raw_reviews_preserved": 2033,
+    "older_catalogues_preserved": 155,
+    "current_links_preserved": 22,
+    "current_source_use_inventories_preserved": 1,
+    "baseline_lines_changed": 0,
+    "baseline": "b153c75b",
+    "new_compiler_invocations": 0,
+    "generated_views_reproduced_byte_identically": true
+  },
+  "validation_snapshot": {
+    "catalogue_reviews_written": 3,
+    "inventory_reviews_written": 1,
+    "detailed_catalogues": 158,
+    "requirements": 923,
+    "declared_facets": 4716,
+    "pending_facets": 2920,
+    "authored_facets": 1774,
+    "accounted_base_units": 1829,
+    "unresolved_base_units": 4644,
+    "unresolved_fine_units": 6,
+    "normal_audit_exit": 1,
+    "normal_audit_block": "one retained needs-oracle real-BOZ case",
+    "python_suite_tests": 948,
+    "python_suite_result": "OK"
+  }
+}
