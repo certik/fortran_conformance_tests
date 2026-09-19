@@ -1,0 +1,243 @@
+{
+  "schema_version": 1,
+  "section": "8.10.1.2",
+  "review_state": "reviewed",
+  "subunits": {
+    "p1": [
+      "p1.specified-data-objects",
+      "p1.storage-sequence-reference",
+      "p1.association",
+      "p1.nonzero-subset",
+      "p1.if-nonzero-present",
+      "p1.same-first-unit",
+      "p1.zero-subset",
+      "p1.zero-mutual-association",
+      "p1.zero-to-first-nonzero-unit",
+      "p1.specified-object-association",
+      "p1.other-object-association"
+    ],
+    "p2": [
+      "p2.any-data-object",
+      "p2.save-premise",
+      "p2.all-other-objects",
+      "p2.save-result",
+      "p2.explicit-confirmation"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S8.10.1.2-001",
+      "title": "Sets align storage sequences including zero-sized sequences",
+      "source": "8.10.1.2 p1, J3/24-007, 18 December 2023, physical PDF147",
+      "source_units": [
+        "p1",
+        "p1.specified-data-objects",
+        "p1.storage-sequence-reference",
+        "p1.association",
+        "p1.nonzero-subset",
+        "p1.if-nonzero-present",
+        "p1.same-first-unit",
+        "p1.zero-subset",
+        "p1.zero-mutual-association",
+        "p1.zero-to-first-nonzero-unit",
+        "p1.specified-object-association",
+        "p1.other-object-association"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The specified objects' storage sequences are associated. Nonempty sequences, if present, start at the same storage unit. Empty sequences are associated with one another and with the first unit of any nonempty sequences. These relationships can associate other objects through their containing sequences. Neither equal sequence size nor definition of every overlapping value follows automatically.",
+      "facets": [
+        "same-first-numeric-unit",
+        "containing-sequence-overlap",
+        "transitive-scalar-association",
+        "numeric-sequence-components",
+        "zero-and-nonzero-sequences",
+        "all-zero-sequences",
+        "type-and-definition-state-boundary",
+        "common-extension-and-scope-boundary",
+        "single-initialization-source"
+      ],
+      "pending": {
+        "same-first-numeric-unit": "PENDING future complete runtime parent: ordinary default INTEGER a,b, EQUIVALENCE (a,b), no initializer or other association. Execute a=17, check b==17, then b=23 and check a==23. Each read follows a same-type defining event under19.6.5p1(12). Count both observations and completion; no byte address or physical copy is the observable.",
+        "containing-sequence-overlap": "PENDING future runtime parent: INTEGER a(2),b(3); EQUIVALENCE (a(1),b(1)). Define b(1:3) separately to3,7,11; check a(1)==3 and a(2)==7. Then assign a(2)=13 and check b(1)==3,b(2)==13,b(3)==11.19.5.3.3 propagates aligned positions through containing sequences; b's third element is not assumed aliased and is explicitly defined.",
+        "transitive-scalar-association": "PENDING future runtime parent: ordinary INTEGER a,b,c with sets (a,b),(b,c). Define a=19 and independently check b,c==19; then define c=29 and check a,b==29. Qualify consistent unit equations under8.10.1.5, guard each observation and retain definitions in any omission probes. This is association across sets, not execution of the statements.",
+        "numeric-sequence-components": "PENDING future runtime parent: public SEQUENCE t has two ordinary default INTEGER components left,right; box of t, INTEGER a(2); EQUIVALENCE (box,a(1)). Set a(1)=3,a(2)=7 and check box%left==3,box%right==7. Set box%right=11 and check a(2)==11 and a(1)==3. Require7.5.2.3/19.5.3.2p2(5), same-type defined subcomponents and19.6.5p1(12)/(15); no PRIVATE, padding, default initialization, pointer or allocatable component.",
+        "zero-and-nonzero-sequences": "PENDING future runtime/source parent: INTEGER z(0),a,b, whole-name sets (z,a),(z,b). Assign a=31 and check b==31. z has constant zero extent, not an element designator. The two units tied to the same empty sequence are identical under19.5.3.3p2. Bind that canonical implication explicitly; do not substitute SIZE(z)==0 as the association oracle.",
+        "all-zero-sequences": "PENDING bounded source/admission plan: two ordinary INTEGER arrays of constant zero extent appear as whole names in one set. Resolve both empty sequences and the no-nonempty branch. No first element exists, and a vacuous loop, SIZE equality or no-op run cannot observe association. A documentary/canonical-source mechanism remains a future gate.",
+        "type-and-definition-state-boundary": "PENDING source-state plan: record total versus partial association and each actual type/KIND before choosing observations. Default INTEGER/default REAL admission does not permit reading the latter after an INTEGER store; partially associated double precision and default COMPLEX have distinct19.6.5/.6 rules. No REAL/COMPLEX representation or part-layout oracle is invented. A future numeric-part effect needs its own original-source value mapping and qualification.",
+        "common-extension-and-scope-boundary": "PENDING dependency-only source plan: for INTEGER a(2),x with COMMON /blk/ x and set (a(1),x),8.10.2.2 can extend the named block at its end and treats a as in that block. Cross-scope declarations must agree on the complete extended sequence. 8.10.3 forbids joining different blocks, extending before the first unit, or introducing an associated default-initialized derived object. Preserve those canonical owners; no COMMON requirement, cross-unit runtime program or reuse credit is created in this packet.",
+        "single-initialization-source": "PENDING source/initial-state plan:19.5.3.4p10 permits only one explicit initialization per shared unit; explicit initialization overrides default, and overlapping default initializations need same type/parameters/value. Qualify any future initialized parent against those exact rules. The finite executable-assignment parents above avoid overlapping initializers, rather than deriving a local duplicated diagnostic or resetting this canonical gate."
+      },
+      "oracle": "Future complete run/effect parents must observe actual associated objects against independent small INTEGER or default CHARACTER literals. Every referenced subobject must already be defined by justified events. Count reached observations, calls and normal returns where applicable; require exact completion stdout, empty runtime stderr and normal exit. Wrong-expectation and observation-omission sensitivity must preserve required definitions and associations, and follow a fresh passing complete parent.",
+      "oracle_limitation": "All plans are pending, not compiler observations or fixture approvals. A source summary, compile-only or no-op success, implementation byte/address layout, TRANSFER, undefined-alias read, arbitrary kind ordering or compiler consensus is not an oracle. Canonical state/type/lifetime premises and any future cross-owner source/interface relationship need explicit adjudication. Existing same-numbered diagnostic/control links do not implement arbitrary S-runtime or positive-only reuse; neither cloned programs nor fictional passing inquiries close that gap.",
+      "dependencies": "4.1.3R401/p2;4.2;5.1R504/R507/R508/R513;5.3.1-.2;8.1/8.2/8.7;8.10.1.1-.5;9.2R903/C903/p2;19.5.3.1-.4;19.6.1-.6;4.4.3/B.3.11;7.5.1/7.5.2.3;8.5.8.2;8.10.2.2-.5/8.10.3;9.5.3.3Table9.1;10.2.1.2-.3;19.5.3.2p2/19.5.3.3p1-p2/19.5.3.4p3/p5/p7/p10;19.6.5p1(12)-(15)/19.6.6p1(1)."
+    },
+    {
+      "id": "S8.10.1.2-002",
+      "title": "An actual SAVE member gives SAVE to the other set objects",
+      "source": "8.10.1.2 p2, J3/24-007, 18 December 2023, physical PDF147",
+      "source_units": [
+        "p2",
+        "p2.any-data-object",
+        "p2.save-premise",
+        "p2.all-other-objects",
+        "p2.save-result",
+        "p2.explicit-confirmation"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "When a data object in the set has SAVE, the other objects in that set have it as well. An explicit confirmation is permitted. The premise is an actual attribute on the relevant data object; it is not a request for any particular static allocation strategy or an exemption from the canonical SAVE restrictions.",
+      "facets": [
+        "local-scalar-retention",
+        "explicit-confirmation",
+        "set-wide-save",
+        "transitive-save",
+        "attribute-origin-and-subobject-gate"
+      ],
+      "pending": {
+        "local-scalar-retention": "PENDING future complete runtime parent calls a nonrecursive subroutine twice. Its ordinary local INTEGER a,b have EQUIVALENCE (a,b); only a is explicitly SAVE. A separate dummy call index selects a first call that defines b=37, and a second call that reads b and a against37 without redefining them. Both are nondummy association subjects. Count two entries/returns and all observations; no main/module implicit SAVE or DATA initializer supplies the effect.",
+        "explicit-confirmation": "PENDING bounded admission/property plan adds SAVE for b to the same eligible local pair, confirming the attribute already propagated from a. Retention observations still require the real two-call parent; the extra statement is not a second effect or compulsory syntax.",
+        "set-wide-save": "PENDING future two-call parent with ordinary local a,b,c in one set and explicit SAVE only on the last member c. First call defines a=41; second checks b and c against41. Qualify all actual identities and avoid any other SAVE origin. This distinguishes a trigger at any position from a first-member-only implementation.",
+        "transitive-save": "PENDING future two-call source/runtime plan: local a,b,c in sets (a,b),(b,c), only a explicitly SAVE. The first call defines c=43; the second reads c and b against43. The source graph must establish propagation through both sets and8.5.16/19.6.6 lifetime rules. Do not read after omitting the sole defining call in a sensitivity variant.",
+        "attribute-origin-and-subobject-gate": "PENDING finite source/attribute plan distinguishes explicit local SAVE, initialization-implied SAVE under8.4p3, main/module implicit SAVE, and SAVE of a common block. The executable controls use only whole local scalars to isolate propagation. Do not assume an element has every array attribute under9.5.3.1note2; a proposed subobject trigger must establish its actual SAVE premise. C862 forbids specifying SAVE for a COMMON member directly. No omitted-initialization or dangling-state mutant may supply sensitivity."
+      },
+      "oracle": "Future complete run/effect parents must observe actual associated objects against independent small INTEGER or default CHARACTER literals. Every referenced subobject must already be defined by justified events. Count reached observations, calls and normal returns where applicable; require exact completion stdout, empty runtime stderr and normal exit. Wrong-expectation and observation-omission sensitivity must preserve required definitions and associations, and follow a fresh passing complete parent.",
+      "oracle_limitation": "All plans are pending, not compiler observations or fixture approvals. A source summary, compile-only or no-op success, implementation byte/address layout, TRANSFER, undefined-alias read, arbitrary kind ordering or compiler consensus is not an oracle. Canonical state/type/lifetime premises and any future cross-owner source/interface relationship need explicit adjudication. Existing same-numbered diagnostic/control links do not implement arbitrary S-runtime or positive-only reuse; neither cloned programs nor fictional passing inquiries close that gap.",
+      "dependencies": "4.1.3R401/p2;4.2;5.1R504/R507/R508/R513;5.3.1-.2;8.1/8.2/8.7;8.10.1.1-.5;9.2R903/C903/p2;19.5.3.1-.4;19.6.1-.6;4.4.3/B.3.11;8.4p3;8.5.1C815;8.5.16C861/C862/p1/p3-p4;9.5.3.1note2;15.6.2.3/15.6.2.7;19.6.6p1(3)."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "requirements",
+      "requirements": [
+        "S8.10.1.2-001"
+      ]
+    },
+    {
+      "unit": "p1.specified-data-objects",
+      "disposition": "requirements",
+      "requirements": [
+        "S8.10.1.2-001"
+      ]
+    },
+    {
+      "unit": "p1.storage-sequence-reference",
+      "disposition": "requirements",
+      "requirements": [
+        "S8.10.1.2-001"
+      ]
+    },
+    {
+      "unit": "p1.association",
+      "disposition": "requirements",
+      "requirements": [
+        "S8.10.1.2-001"
+      ]
+    },
+    {
+      "unit": "p1.nonzero-subset",
+      "disposition": "requirements",
+      "requirements": [
+        "S8.10.1.2-001"
+      ]
+    },
+    {
+      "unit": "p1.if-nonzero-present",
+      "disposition": "requirements",
+      "requirements": [
+        "S8.10.1.2-001"
+      ]
+    },
+    {
+      "unit": "p1.same-first-unit",
+      "disposition": "requirements",
+      "requirements": [
+        "S8.10.1.2-001"
+      ]
+    },
+    {
+      "unit": "p1.zero-subset",
+      "disposition": "requirements",
+      "requirements": [
+        "S8.10.1.2-001"
+      ]
+    },
+    {
+      "unit": "p1.zero-mutual-association",
+      "disposition": "requirements",
+      "requirements": [
+        "S8.10.1.2-001"
+      ]
+    },
+    {
+      "unit": "p1.zero-to-first-nonzero-unit",
+      "disposition": "requirements",
+      "requirements": [
+        "S8.10.1.2-001"
+      ]
+    },
+    {
+      "unit": "p1.specified-object-association",
+      "disposition": "requirements",
+      "requirements": [
+        "S8.10.1.2-001"
+      ]
+    },
+    {
+      "unit": "p1.other-object-association",
+      "disposition": "requirements",
+      "requirements": [
+        "S8.10.1.2-001"
+      ]
+    },
+    {
+      "unit": "p2",
+      "disposition": "requirements",
+      "requirements": [
+        "S8.10.1.2-002"
+      ]
+    },
+    {
+      "unit": "p2.any-data-object",
+      "disposition": "requirements",
+      "requirements": [
+        "S8.10.1.2-002"
+      ]
+    },
+    {
+      "unit": "p2.save-premise",
+      "disposition": "requirements",
+      "requirements": [
+        "S8.10.1.2-002"
+      ]
+    },
+    {
+      "unit": "p2.all-other-objects",
+      "disposition": "requirements",
+      "requirements": [
+        "S8.10.1.2-002"
+      ]
+    },
+    {
+      "unit": "p2.save-result",
+      "disposition": "requirements",
+      "requirements": [
+        "S8.10.1.2-002"
+      ]
+    },
+    {
+      "unit": "p2.explicit-confirmation",
+      "disposition": "permission",
+      "requirements": [
+        "S8.10.1.2-002"
+      ],
+      "rationale": "Explicitly confirming the propagated SAVE is permitted. It is not compulsory, does not remove C862's object-category restrictions, and is not a second independent SAVE effect."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_8_10_1_2.md"
+  },
+  "review_fingerprint": "aefc1bdb2a6f53d9eca96a5747a9dff0508a8c322e6f838c69ce36bcd9c577bc",
+  "review_rationale": "Independent source review in doc/source_audits/batch_085.json reads both original 8.10.1.2 paragraphs and their 16 fine units and confirms the 19.5.3.2 storage-sequence association effect, the equal first storage unit for every nonzero-sized sequence, the mutual association of zero-sized sequences with one another and with that first unit, and the separately recorded association of other data objects. SAVE propagation is catalogued as an attribute conferred on the remaining set members with explicit confirmation kept as a permission, not as a required diagnostic. All 14 facets remain pending source plans; no case, execution, oracle or fixture approval is created."
+}

@@ -1808,6 +1808,43 @@ preserved. The172main metadata methods pass; source registration and the
 separate inventory renewal supply no new compiler observations.
 See `doc/source_audits/batch_084.json`.
 
+The eighty-fifth checkpoint registers the independently reviewed EQUIVALENCE
+statement source:25base/129fine units across five sections,14numbered and
+seven S requirements, and130pending facets. Eleven base units are newly
+accounted, completing Clause8 source accounting through8.10.3. The review
+verifies the five scoped sections and their25original units,13referenced
+sections with79units, and502grammar heads. R873 has no double-colon form,
+R874 requires at least two members, and R875 admits only variable names,
+array elements and substrings. C8110 retains all eleven base-object
+exclusions as alternatives; C8114-C8117 stay four separate family rules;
+C8118 remains a condition on the program while8.10.1.2p2 confers SAVE on the
+other set members with explicit confirmation merely permitted. Default
+character association keeps its own first character storage unit, a nonzero
+whole array name aligns with its first element under the actual declared
+bounds, and the two unnumbered8.10.1.5 prohibitions stay distinct with a
+context-dependent rather than numbered-constraint reporting duty.
+
+The first review pass returned quickly and reported no blocking finding, so
+the coordinator reproduced every mechanical accounting and identifier check,
+re-read8.10.1.1-.5 and9.4.1 in the original, and required answers to three
+targeted questions before recording any review. That follow-up confirmed the
+conferred-versus-required SAVE and PROTECTED distinction, the unnumbered
+prohibition scope, and retention of the19.5.3.4 default-initialization
+cross-reference. The reviewer had not read9.4.1; the coordinator verified
+that R908-R910 require an explicit substring range, so C8120's limitation to
+substring occurrences is correct.
+
+There remain **2,065cases**, now with **147catalogues,846requirements,
+1,770direct,22linked and2,631pending facets out of4,423**. Source accounting
+covers1,796base units;4,677base and six fine units remain unresolved.
+All old cases,2,029reviews,142oldercatalogues,22links,R402andbaseline are
+preserved, and the generated views regenerate byte-identically. The934-method
+Python suite passes and no compiler was invoked. Source registration is not
+fixture approval: every storage-association, alignment and storage-unit plan
+remains a pending gate, and no byte layout, address arithmetic, TRANSFER
+result or undefined-alias read is accepted as an oracle.
+See `doc/source_audits/batch_085.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
@@ -1817,9 +1854,11 @@ error; its unchanged report was joined using the existing Python3.12
 environment, with no rerun and no invented runner-return value.
 
 The EQUIVALENCE8.10.1.1-.5 source proposal `8cf739ab` is frozen from
-`ddb0952`:25base/129fine units,21requirements and130pending facets.
-Independent review is in progress; author checks alone grant no main
-source, case, link, SourceUse or inventory approval. The separately authored
+`ddb0952`:25base/129fine units,21requirements and130pending facets. It is
+now independently reviewed and registered as batch085 in the current
+147-catalogue main context; the author's original frozen context and its
+uncommitted index overlay are not relabelled as that integration. The
+separately authored
 COMMON packet retains its original `cb45d6a`/2,062-case context, despite its
 source-only registration in batch084's newer main context.
 The main baseline remains `b153c75b`, including the two approved PARAMETER
