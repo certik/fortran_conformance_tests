@@ -1,0 +1,168 @@
+{
+  "schema_version": 1,
+  "section": "9.5.2",
+  "review_state": "draft",
+  "subunits": {
+    "p1": [
+      "p1.named-array-form",
+      "p1.structure-component-final-array-component",
+      "p1.no-subscript-list"
+    ],
+    "p2": [
+      "p2.executable-whole-array-variable-all-elements",
+      "p2.nonexecutable-whole-array-designator-entire-array",
+      "p2.equivalence-set-exception",
+      "p2.assumed-size-whole-array-limited-permission"
+    ]
+  },
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "requirements",
+      "requirements": [
+        "S9.5.2-001"
+      ]
+    },
+    {
+      "unit": "p1.named-array-form",
+      "disposition": "requirements",
+      "requirements": [
+        "S9.5.2-001"
+      ]
+    },
+    {
+      "unit": "p1.structure-component-final-array-component",
+      "disposition": "requirements",
+      "requirements": [
+        "S9.5.2-001"
+      ]
+    },
+    {
+      "unit": "p1.no-subscript-list",
+      "disposition": "requirements",
+      "requirements": [
+        "S9.5.2-001"
+      ]
+    },
+    {
+      "unit": "p2",
+      "disposition": "requirements",
+      "requirements": [
+        "S9.5.2-002",
+        "S9.5.2-003"
+      ]
+    },
+    {
+      "unit": "p2.executable-whole-array-variable-all-elements",
+      "disposition": "requirements",
+      "requirements": [
+        "S9.5.2-002"
+      ]
+    },
+    {
+      "unit": "p2.nonexecutable-whole-array-designator-entire-array",
+      "disposition": "requirements",
+      "requirements": [
+        "S9.5.2-002"
+      ]
+    },
+    {
+      "unit": "p2.equivalence-set-exception",
+      "disposition": "requirements",
+      "requirements": [
+        "S9.5.2-002"
+      ]
+    },
+    {
+      "unit": "p2.assumed-size-whole-array-limited-permission",
+      "disposition": "requirements",
+      "requirements": [
+        "S9.5.2-003"
+      ]
+    }
+  ],
+  "requirements": [
+    {
+      "id": "S9.5.2-001",
+      "title": "A whole array is a named array or final array component with no appended subscript list",
+      "source": "9.5.2 p1, J3/24-007, 18 December 2023, physical PDF154.",
+      "source_units": [
+        "p1",
+        "p1.named-array-form",
+        "p1.structure-component-final-array-component",
+        "p1.no-subscript-list"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A whole array is either a named array or a structure component whose final part-ref is an array component name, and no subscript list is appended. This distinguishes a whole array from an array element or array section, whose final or relevant part-ref carries subscripts or section subscripts under 9.5.3.1 and 9.4.2.",
+      "facets": [
+        "named-array-no-subscript-list",
+        "final-array-component-no-subscript-list",
+        "not-element-or-section-with-subscript-list"
+      ],
+      "pending": {
+        "named-array-no-subscript-list": "PENDING positive-control source: declare INTEGER a(3) with distinct literals [2,4,6], reference a without a subscript list in an assignment or intrinsic inquiry, and use SUM(a)==12 or SHAPE(a)==[3] as the independent oracle. Non-vacuous because a(2) alone would produce literal 4, not 12 or shape [3].",
+        "final-array-component-no-subscript-list": "PENDING positive-control source: derived type with INTEGER component c(3), scalar parent obj, assign obj%c=[3,5,7], reference obj%c without a final subscript list, and use SUM(obj%c)==15 or SHAPE(obj%c)==[3] as oracle. Non-vacuous because component and whole-array selection are both required.",
+        "not-element-or-section-with-subscript-list": "PENDING contrast source containing a whole-array reference a and separate designators a(2) and a(1:3:2). Oracles are distinct literal element 4 and section SHAPE [2]/SUM 8, establishing that appending a subscript list changes classification; element and section semantics remain dependencies."
+      },
+      "oracle": "Every facet is a pending source plan. Positive-control plans use independently chosen literal values, SHAPE/SIZE inquiries, or scalar results that first establish definedness and reached execution; diagnostic plans pair an otherwise legal source with a minimal repair and require the reported cause to match the stated grammar or semantic predicate, not an unrelated parse, declaration, unsupported-feature, resource, or runtime failure.",
+      "oracle_limitation": "This source-only catalogue creates no Fortran test program, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Numbered syntax rules and constraints carry the 4.2 detection and reporting duty, but these plans do not require a fixed message, fatal rejection, nonzero status, or printed rule number. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics; runtime-valued predicates remain runtime/source obligations unless a future review separately establishes a static context.",
+      "dependencies": "5.4.6;7.5.1;9.1R901;9.2;9.4.2R911-R913/C913/C919-C920/p2-p3;9.5.3.1."
+    },
+    {
+      "id": "S9.5.2-002",
+      "title": "Whole array appearances designate all elements in executable constructs and the entire array in nonexecutable statements except equivalence sets",
+      "source": "9.5.2 p2 sentences 1-2, J3/24-007, 18 December 2023, physical PDF154.",
+      "source_units": [
+        "p2",
+        "p2.executable-whole-array-variable-all-elements",
+        "p2.nonexecutable-whole-array-designator-entire-array",
+        "p2.equivalence-set-exception"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A whole array variable appearing in an executable construct specifies all elements of the array. A whole array designator appearing in a nonexecutable statement specifies the entire array, except that an appearance in an equivalence set has the special effect specified by 8.10.1.4.",
+      "facets": [
+        "executable-construct-all-elements",
+        "nonexecutable-statement-entire-array",
+        "equivalence-set-exception-delegated"
+      ],
+      "pending": {
+        "executable-construct-all-elements": "PENDING positive-control program shape: INTEGER a(3), b(3) with b=[10,20,30]; execute a=b or a=b+1 and check independent literal vector [10,20,30] or [11,21,31]. Non-vacuous because each element has a different expected value and the whole-array variable is the assignment target or source.",
+        "nonexecutable-statement-entire-array": "PENDING source plan using a whole array designator in a declaration-time nonexecutable context that admits an array designator without subscripts, with SHAPE or declared extent as the literal oracle. Non-vacuous because an element designator repair would change rank to scalar; ownership of that statement context remains with its clause.",
+        "equivalence-set-exception-delegated": "PENDING source-only dependency plan contrasting an EQUIVALENCE object using an unqualified nonzero-sized array name with a first-element designator. The independent oracle is the 8.10.1.4 source equation for first element identity; no storage reading, TRANSFER, address arithmetic, or execution value is proposed."
+      },
+      "oracle": "Every facet is a pending source plan. Positive-control plans use independently chosen literal values, SHAPE/SIZE inquiries, or scalar results that first establish definedness and reached execution; diagnostic plans pair an otherwise legal source with a minimal repair and require the reported cause to match the stated grammar or semantic predicate, not an unrelated parse, declaration, unsupported-feature, resource, or runtime failure.",
+      "oracle_limitation": "This source-only catalogue creates no Fortran test program, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Numbered syntax rules and constraints carry the 4.2 detection and reporting duty, but these plans do not require a fixed message, fatal rejection, nonzero status, or printed rule number. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics; runtime-valued predicates remain runtime/source obligations unless a future review separately establishes a static context.",
+      "dependencies": "5.4.6;8.10.1.1-.5;9.1;9.2;9.5.1;9.5.3.1;19.5.3."
+    },
+    {
+      "id": "S9.5.2-003",
+      "title": "Assumed-size arrays may appear as whole arrays only as actual arguments when shape is not required",
+      "source": "9.5.2 p2 sentence 3, J3/24-007, 18 December 2023, physical PDF154.",
+      "source_units": [
+        "p2",
+        "p2.assumed-size-whole-array-limited-permission"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "context-dependent",
+      "definition": "An assumed-size array is permitted to appear as a whole array in an executable construct or specification expression only when it is an actual argument in a procedure reference that does not require the shape. The assumed-size declaration, absence of last-dimension shape, and procedure-reference requirements are owned by 8.5.8.5 and procedure/interface clauses.",
+      "facets": [
+        "actual-argument-shape-not-required-permitted",
+        "executable-shape-required-context-restricted",
+        "specification-expression-shape-required-context-restricted"
+      ],
+      "pending": {
+        "actual-argument-shape-not-required-permitted": "PENDING positive-control source: external or explicit-interface procedure dummy that can accept an assumed-size actual without needing shape, caller dummy INTEGER a(*), and a call p(a). The independent oracle is a literal scalar side effect or status set by the callee using only permitted element access; non-vacuous because the whole-array actual is the argument, not a copied scalar.",
+        "executable-shape-required-context-restricted": "PENDING diagnostic-policy/source pair: assumed-size dummy a(*) appears as a whole array in an executable context that requires shape, such as whole-array assignment or SIZE/SHAPE-dependent operation. Repair only by passing a bounded explicit-shape array or by changing the context to a shape-free actual argument; repaired source has a literal result. Do not require a static diagnostic for runtime extent values beyond the source-known assumed-size predicate.",
+        "specification-expression-shape-required-context-restricted": "PENDING diagnostic-policy/source pair: assumed-size dummy a(*) appears as a whole array in a specification expression whose evaluation requires shape. Repair by replacing with an explicit bound or with a permitted inquiry not requiring the assumed-size shape; literal bound oracle makes the repaired declaration non-vacuous."
+      },
+      "oracle": "Every facet is a pending source plan. Positive-control plans use independently chosen literal values, SHAPE/SIZE inquiries, or scalar results that first establish definedness and reached execution; diagnostic plans pair an otherwise legal source with a minimal repair and require the reported cause to match the stated grammar or semantic predicate, not an unrelated parse, declaration, unsupported-feature, resource, or runtime failure.",
+      "oracle_limitation": "This source-only catalogue creates no Fortran test program, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Numbered syntax rules and constraints carry the 4.2 detection and reporting duty, but these plans do not require a fixed message, fatal rejection, nonzero status, or printed rule number. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics; runtime-valued predicates remain runtime/source obligations unless a future review separately establishes a static context.",
+      "dependencies": "4.2;8.5.8.5R823-R825/C835-C837/p1-p6;10.1.11 specification expressions;15.5.2.4-.5 actual arguments and shape requirements;16.9.171;9.5.3.1C930-C931."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_9_5_2.md"
+  }
+}
