@@ -1,0 +1,103 @@
+{
+  "schema_version": 1,
+  "review_type": "independent-STAT-and-ERRMSG-specifier-source-review",
+  "review_date": "2026-09-19",
+  "baseline_commit": "aae2a07",
+  "state": "reviewed-source-only-completing-clause9-source-accounting",
+  "scope": {
+    "sections": ["9.7.4", "9.7.5"],
+    "section_titles": {"9.7.4": "STAT= specifier", "9.7.5": "ERRMSG= specifier"},
+    "base_units": 10,
+    "fine_units": 43,
+    "already_counted_numbered_units": 1,
+    "newly_accounted_base_units": 9,
+    "new_requirements": 7,
+    "new_numbered_requirements": 1,
+    "new_S_requirements": 6,
+    "new_pending_facets": 44,
+    "new_cases": 0,
+    "new_direct_or_linked_facets": 0,
+    "significance": "These are the last two subclauses of Clause 9; their registration completes Clause 9 source accounting."
+  },
+  "authoring": {
+    "author_context": "fresh subagent context in an isolated worktree based on aae2a07",
+    "author_packet": "102a96bacf4151a8563b88129be3f69899452464",
+    "author_corrections": ["4ceecdf5fe28fde7707e1ab59c296a74bc416e60", "d79e54b3cbf8d77bfe0bf942de6eba75ed359777"]
+  },
+  "independent_review": {
+    "receipt": "stat-errmsg-source-review.json",
+    "reviewer_distinct_from_author": true,
+    "initial_decision": "blocked",
+    "final_decision": "source-eligible-with-nonblocking-observations",
+    "blocking_findings_raised": 5,
+    "blocking_findings_closed": 5,
+    "review_rounds": 3,
+    "scoped_original_units_read_in_full": 10,
+    "referenced_material_read": ["9.7.1.1", "9.7.3.1", "9.7.3.2", "9.7.3.3", "9.6", "11.6",
+                                 "11.7.1", "11.7.2", "16.10.2.1-16.10.2.35", "19.6.1-19.6.6"],
+    "compiler_invocations": 0,
+    "disposition_verdicts": {
+      "9.7.4#p1 recommendation": "accepted; the source says should, not shall",
+      "9.7.4#p2 structural": "accepted; it scopes the rest of the subclause while ALLOCATE and DEALLOCATE option syntax stays with 9.7.1.1 and 9.7.3.1",
+      "R946 dependency satisfaction": "confirmed; the registered 9.6, 9.7.1.1, 9.7.1.2 and 9.7.2 catalogues cite 9.7.4R946 and this catalogue carries the faithful scalar-int-variable entry"
+    }
+  },
+  "findings": [
+    {"id": "SER-001", "state": "closed", "disposition": "narrowed", "anchor": "9.7.4#p5",
+     "defect": "Other-error STAT facets proposed deliberately creating ALLOCATE or DEALLOCATE errors, which the author prompt had forbidden outright.",
+     "correction": "The coordinator narrowed its own over-broad rule after rereading the source. The facets keep a deterministic standard-specified error premise and assert only that the value is positive and distinct from STAT_STOPPED_IMAGE and STAT_FAILED_IMAGE, never a specific value, and never via resource exhaustion.",
+     "reviewer_position": "accepted the adjudication with its own anchors, citing 9.7.1.3 p1, 9.7.3.2 p1 and 9.7.4 p5"},
+    {"id": "SER-002", "state": "closed", "disposition": "narrowed", "anchor": "9.7.4#p6",
+     "defect": "Object-status facets proposed engineered errors and risked asserting processor-dependent behaviour.",
+     "correction": "The oracles are now bounded by exactly the three p6 bullet guarantees per object and assert nothing about processing order or which objects the processor handled."},
+    {"id": "SER-003", "state": "closed", "disposition": "narrowed-then-superseded", "anchor": "9.7.5#p2",
+     "defect": "ERRMSG-on-error facets proposed engineered errors and reading the message.",
+     "correction": "Initially revised to assert only that the variable changed from a preset sentinel; that revision was then rejected by SER-005."},
+    {"id": "SER-004", "state": "closed", "disposition": "upheld", "anchor": "16.10.2.28#p1, 16.10.2.31#p1",
+     "defect": "Dependency strings cited the umbrella 16.10.2 for STAT_FAILED_IMAGE and STAT_STOPPED_IMAGE.",
+     "correction": "Corrected to 16.10.2.28 and 16.10.2.31, independently verified by both author and reviewer, with a sweep of both catalogues."},
+    {"id": "SER-005", "state": "closed", "disposition": "upheld", "anchor": "9.7.5#p2",
+     "defect": "The SER-003 revision asserted that the errmsg-variable changed from a chosen sentinel. Because p2 leaves the explanatory message content entirely unspecified, nothing guarantees the assigned message differs from that sentinel, so the oracle was unsound even though it no longer read undefined storage.",
+     "correction": "The two directions of p2 were split. The error branch is classification-only and records that no value comparison, including inequality with a sentinel or padding and truncation observation, can portably prove the assignment, so a future fixture needs a separately justified processor-specific premise. The success branch is retained as a real plan, presetting a sentinel and asserting it is unchanged after a successful statement, which p2 does guarantee.",
+     "note": "Raised against a coordinator-directed revision, and accepted by the coordinator without reservation."}
+  ],
+  "coordinator_adjudication": {
+    "narrowed_rule": "A plan may exercise an error condition that the standard specifies deterministically, provided its oracle asserts only portable properties. It must not depend on resource exhaustion, on a specific processor-dependent value, or on manufacturing a stopped or failed image.",
+    "reason": "The original author instruction forbade any deliberately created ALLOCATE or DEALLOCATE error. That was aimed at nondeterministic resource failures, but as written it would have deleted correct plans for error conditions the standard specifies deterministically.",
+    "limit_of_the_narrowing": "SER-005 shows the narrowing is not a licence to observe anything after an error. Where the standard leaves the observable content unspecified, as with the ERRMSG message, the facet stays unobservable and pending."
+  },
+  "explicit_limitations": [
+    "Source registration only: no test program, compiler invocation, oracle, canonical link, SourceUse relationship or fixture approval is created.",
+    "All 44 facets remain pending. Six facets are gated on the separately provisioned multi-image capability, and the failed or stopped image condition must never be fabricated.",
+    "The ERRMSG error branch and the initially-undefined branch are explicitly unobservable in a conforming portable program and remain pending with that reason.",
+    "Clause 9 completion is source accounting only. Every pending facet of 9.1 through 9.7 is still without a fixture, and the whole-standard census remains unratified with thousands of base units unresolved."
+  ],
+  "preservation": {
+    "cases_preserved": 2069,
+    "raw_reviews_preserved": 2033,
+    "older_catalogues_preserved": 173,
+    "current_links_preserved": 22,
+    "current_source_use_inventories_preserved": 1,
+    "baseline_lines_changed": 0,
+    "baseline": "b153c75b",
+    "new_compiler_invocations": 0,
+    "generated_views_reproduced_byte_identically": true
+  },
+  "validation_snapshot": {
+    "catalogue_reviews_written": 2,
+    "inventory_reviews_written": 1,
+    "detailed_catalogues": 175,
+    "requirements": 1060,
+    "declared_facets": 5171,
+    "pending_facets": 3375,
+    "authored_facets": 1774,
+    "accounted_base_units": 1924,
+    "unresolved_base_units": 4549,
+    "clause9_catalogues": 28,
+    "clause9_all_reviewed": true,
+    "normal_audit_exit": 1,
+    "normal_audit_block": "one retained needs-oracle real-BOZ case",
+    "python_suite_tests": 948,
+    "python_suite_result": "OK"
+  }
+}

@@ -2181,6 +2181,47 @@ catalogues,22links,R402 and the `b153c75b` baseline are preserved, the
 948-method Python suite passes and no compiler was invoked.
 See `doc/source_audits/batch_095.json`.
 
+The ninety-sixth checkpoint registers the independently reviewed STAT= and
+ERRMSG= specifier source:10base/43fine units, one numbered and six S
+requirements, and44pending facets. Nine base units are newly accounted, and
+this **completes Clause9 source accounting**: all28Clause9 catalogues, from
+9.1 through9.7.5, are now reviewed. R946's scalar integer stat-variable
+satisfies the citations already made by the registered9.6,9.7.1.1,9.7.1.2 and
+9.7.2 catalogues. Paragraph p1 is a recommendation because the source says
+"should", and p2 is structural because it only scopes the rest of the
+subclause; the reviewer accepted both dispositions independently. Paragraph p5
+keeps the ordered stopped-image, failed-image and other-error values with
+their exact owners16.10.2.28 and16.10.2.31, and p6 keeps the three per-object
+status guarantees.
+
+Five findings were closed across three rounds. Three were narrowed under the
+same adjudication as the deallocation packet. One corrected imprecise
+ISO_FORTRAN_ENV references. The fifth, **SER-005, was raised against the
+coordinator's own directed revision**: having been told to assert that the
+errmsg-variable changed from a preset sentinel, the reviewer objected that
+9.7.5p2 leaves the message content entirely unspecified, so nothing guarantees
+the assigned message differs from that sentinel and the oracle was unsound.
+That is correct and was accepted without reservation. The two directions of p2
+are not symmetric, so they are now split: the error branch is
+classification-only and records that no value comparison can portably prove
+the assignment, while the success branch remains a real plan, since p2 does
+guarantee the value is unchanged when no error occurs. This is the boundary of
+the narrowed error-oracle rule: exercising a deterministic error condition is
+permitted, but only where the standard actually specifies something portable
+to observe.
+
+There remain **2,069cases**, now with **175catalogues,1,060requirements,
+1,774direct,22linked and3,375pending facets out of5,171**. Source accounting
+covers1,924base units;4,549base and six fine units remain unresolved. All
+2,069case bindings,2,033reviews,173oldercatalogues,22links,R402 and the
+`b153c75b` baseline are preserved, the948-method Python suite passes and no
+compiler was invoked.
+
+Clause9 completion is **source accounting only**. Every one of its698pending
+facets is still without a fixture, no Clause9 requirement has an executed
+case, and the whole-standard census remains unratified.
+See `doc/source_audits/batch_096.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
