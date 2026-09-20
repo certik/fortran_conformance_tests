@@ -1,0 +1,248 @@
+{
+  "schema_version": 1,
+  "section": "9.7.3.3",
+  "review_state": "draft",
+  "subunits": {
+    "p1": [
+      "p1.pointer-association-status-defined",
+      "p1.disassociated-pointer-error",
+      "p1.non-allocate-target-error",
+      "p1.allocatable-entity-target-not-deallocated",
+      "p1.target-argument-associated-not-deallocated",
+      "p1.target-construct-associated-not-deallocated"
+    ],
+    "p2": [
+      "p2.associated-with-whole-allocated-object",
+      "p2.same-dynamic-type-and-type-parameters",
+      "p2.array-elements-same-array-element-order",
+      "p2.other-pointers-to-target-undefined",
+      "p2.other-pointers-to-portion-undefined"
+    ]
+  },
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "requirements",
+      "requirements": [
+        "S9.7.3.3-001",
+        "S9.7.3.3-002",
+        "S9.7.3.3-003"
+      ]
+    },
+    {
+      "unit": "p2",
+      "disposition": "requirements",
+      "requirements": [
+        "S9.7.3.3-004",
+        "S9.7.3.3-005"
+      ]
+    },
+    {
+      "unit": "p1.pointer-association-status-defined",
+      "disposition": "requirements",
+      "requirements": [
+        "S9.7.3.3-001"
+      ]
+    },
+    {
+      "unit": "p1.disassociated-pointer-error",
+      "disposition": "requirements",
+      "requirements": [
+        "S9.7.3.3-002"
+      ]
+    },
+    {
+      "unit": "p1.non-allocate-target-error",
+      "disposition": "requirements",
+      "requirements": [
+        "S9.7.3.3-002"
+      ]
+    },
+    {
+      "unit": "p1.allocatable-entity-target-not-deallocated",
+      "disposition": "requirements",
+      "requirements": [
+        "S9.7.3.3-003"
+      ]
+    },
+    {
+      "unit": "p1.target-argument-associated-not-deallocated",
+      "disposition": "requirements",
+      "requirements": [
+        "S9.7.3.3-003"
+      ]
+    },
+    {
+      "unit": "p1.target-construct-associated-not-deallocated",
+      "disposition": "requirements",
+      "requirements": [
+        "S9.7.3.3-003"
+      ]
+    },
+    {
+      "unit": "p2.associated-with-whole-allocated-object",
+      "disposition": "requirements",
+      "requirements": [
+        "S9.7.3.3-004"
+      ]
+    },
+    {
+      "unit": "p2.same-dynamic-type-and-type-parameters",
+      "disposition": "requirements",
+      "requirements": [
+        "S9.7.3.3-004"
+      ]
+    },
+    {
+      "unit": "p2.array-elements-same-array-element-order",
+      "disposition": "requirements",
+      "requirements": [
+        "S9.7.3.3-004"
+      ]
+    },
+    {
+      "unit": "p2.other-pointers-to-target-undefined",
+      "disposition": "requirements",
+      "requirements": [
+        "S9.7.3.3-005"
+      ]
+    },
+    {
+      "unit": "p2.other-pointers-to-portion-undefined",
+      "disposition": "requirements",
+      "requirements": [
+        "S9.7.3.3-005"
+      ]
+    }
+  ],
+  "requirements": [
+    {
+      "id": "S9.7.3.3-001",
+      "title": "Pointer allocate-objects in DEALLOCATE shall have defined association status",
+      "source": "9.7.3.3 p1, J3/24-007, 18 December 2023, physical PDF166.",
+      "source_units": [
+        "p1",
+        "p1.pointer-association-status-defined"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "If a pointer appears in a DEALLOCATE statement, its pointer association status shall be defined before the statement is executed. This excludes undefined pointer association status; it does not create a portable oracle for querying an undefined pointer.",
+      "facets": [
+        "associated-pointer-defined-status-control",
+        "undefined-status-pointer-invalid"
+      ],
+      "pending": {
+        "associated-pointer-defined-status-control": "PENDING positive-control source where pointer p is allocated by ALLOCATE or explicitly NULLIFY'd before any relevant operation so its association status is defined; only the allocated associated case is then deallocated successfully with STAT=0. The control never calls ASSOCIATED on an undefined pointer.",
+        "undefined-status-pointer-invalid": "PENDING diagnostic/control source with a pointer whose association status is undefined and that appears in DEALLOCATE, repaired by allocating or NULLIFYing the pointer before the statement as appropriate. Invalidity is attributable to S9.7.3.3-001, not to p1's disassociated-pointer error, because undefined status is distinct from defined disassociated status."
+      },
+      "oracle": "All facets are pending source plans. Positive plans use independent literal values, permitted allocation or pointer association inquiry results, STAT/ERRMSG observations only through their owning subclauses, finalizer call sentinels, or reached-control-flow sentinels that first establish the required preconditions. Negative plans use an otherwise conforming source and a minimal repair, with invalidity attributed to the named requirement rather than to declaration syntax, ALLOCATE ownership, NULLIFY ownership, STAT= or ERRMSG= semantics, undefined data, address arithmetic, TRANSFER, emitted code, compiler agreement, resource exhaustion, or unsupported launch mode.",
+      "oracle_limitation": "This is a source-only catalogue. It creates no Fortran test program, invokes no compiler, records no evidence link, approves no oracle or fixture, and claims no coverage. Numbered syntax rules and constraints carry the processor detection/reporting duty from 4.2; unnumbered prose effects, execution-time allocation status, pointer association status, STAT values, error conditions, image participation, processor-dependent outcomes, and coarray synchronization requirements are not promoted to mandatory static diagnostics. Future executable plans must not read deallocated allocatable storage, dereference deallocated pointer targets, read undefined pointer or C_PTR values, use address arithmetic, or rely on deliberate resource exhaustion. Multi-image execution, stopped-image handling, failed-image handling, and teams are separately gated capabilities in this suite.",
+      "dependencies": "4.2;7.3.2.3p5;7.5.6.3p2/p8;8.5.14p1-p4/C854-C855;9.2R902-R907/C901-C907/p1-p2;9.4.2R911-R913/C909-C920/p1-p6;9.7.1.4p1-p2;9.7.3.1R944-R945/C957/p1-p4;9.7.4R946/p1-p6;9.7.5p1-p2;10.2.2.1-10.2.2.4;15.5.2.4;16.9.20 ASSOCIATED;19.5.2.1-19.5.2.5;19.6.6(16),(21),(27)."
+    },
+    {
+      "id": "S9.7.3.3-002",
+      "title": "Deallocating a disassociated pointer or non-ALLOCATE target is a DEALLOCATE error condition",
+      "source": "9.7.3.3 p1, J3/24-007, 18 December 2023, physical PDF166.",
+      "source_units": [
+        "p1",
+        "p1.disassociated-pointer-error",
+        "p1.non-allocate-target-error"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Deallocating a pointer that is disassociated, or whose target was not created by an ALLOCATE statement, causes an error condition in the DEALLOCATE statement. STAT values and post-error status are owned by 9.7.4.",
+      "facets": [
+        "disassociated-pointer-deallocate-error",
+        "nonallocate-target-deallocate-error"
+      ],
+      "pending": {
+        "disassociated-pointer-deallocate-error": "PENDING runtime source with a pointer whose association status is defined disassociated by NULLIFY, then DEALLOCATE(p, STAT=s) observes the 9.7.4 error indication and an independent sentinel. The violation/error is attributable to S9.7.3.3-002, not to undefined pointer status or syntax.",
+        "nonallocate-target-deallocate-error": "PENDING runtime source where p is pointer-associated with a valid TARGET object not created by ALLOCATE, then DEALLOCATE(p, STAT=s) observes a 9.7.4 error indication. The repaired control changes only the target creation to ALLOCATE(p) and observes successful deallocation; no target is dereferenced after deallocation."
+      },
+      "oracle": "All facets are pending source plans. Positive plans use independent literal values, permitted allocation or pointer association inquiry results, STAT/ERRMSG observations only through their owning subclauses, finalizer call sentinels, or reached-control-flow sentinels that first establish the required preconditions. Negative plans use an otherwise conforming source and a minimal repair, with invalidity attributed to the named requirement rather than to declaration syntax, ALLOCATE ownership, NULLIFY ownership, STAT= or ERRMSG= semantics, undefined data, address arithmetic, TRANSFER, emitted code, compiler agreement, resource exhaustion, or unsupported launch mode.",
+      "oracle_limitation": "This is a source-only catalogue. It creates no Fortran test program, invokes no compiler, records no evidence link, approves no oracle or fixture, and claims no coverage. Numbered syntax rules and constraints carry the processor detection/reporting duty from 4.2; unnumbered prose effects, execution-time allocation status, pointer association status, STAT values, error conditions, image participation, processor-dependent outcomes, and coarray synchronization requirements are not promoted to mandatory static diagnostics. Future executable plans must not read deallocated allocatable storage, dereference deallocated pointer targets, read undefined pointer or C_PTR values, use address arithmetic, or rely on deliberate resource exhaustion. Multi-image execution, stopped-image handling, failed-image handling, and teams are separately gated capabilities in this suite.",
+      "dependencies": "4.2;7.3.2.3p5;7.5.6.3p2/p8;8.5.14p1-p4/C854-C855;9.2R902-R907/C901-C907/p1-p2;9.4.2R911-R913/C909-C920/p1-p6;9.7.1.4p1-p2;9.7.3.1R944-R945/C957/p1-p4;9.7.4R946/p1-p6;9.7.5p1-p2;10.2.2.1-10.2.2.4;15.5.2.4;16.9.20 ASSOCIATED;19.5.2.1-19.5.2.5;19.6.6(16),(21),(27)."
+    },
+    {
+      "id": "S9.7.3.3-003",
+      "title": "Pointer targets that are allocatable or associated with dummy arguments or associate names shall not be deallocated",
+      "source": "9.7.3.3 p1, J3/24-007, 18 December 2023, physical PDF166.",
+      "source_units": [
+        "p1",
+        "p1.allocatable-entity-target-not-deallocated",
+        "p1.target-argument-associated-not-deallocated",
+        "p1.target-construct-associated-not-deallocated"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "If a pointer is associated with an allocatable entity, that pointer shall not be deallocated. A pointer shall also not be deallocated if its target or any subobject of the target is argument associated with a dummy argument or construct associated with an associate name.",
+      "facets": [
+        "pointer-associated-with-allocatable-entity-invalid",
+        "pointer-target-argument-or-construct-associated-invalid"
+      ],
+      "pending": {
+        "pointer-associated-with-allocatable-entity-invalid": "PENDING diagnostic/control source where a pointer is associated with an allocated allocatable TARGET entity and DEALLOCATE(p) is attempted. Repair by DEALLOCATE of the allocatable variable itself or by using a pointer target created by ALLOCATE(p); invalidity is attributable to S9.7.3.3-003 and the control avoids reading any deallocated object.",
+        "pointer-target-argument-or-construct-associated-invalid": "PENDING diagnostic/control source where a pointer target or subobject is argument associated with a dummy argument, or construct associated with an associate name, while DEALLOCATE(p) is attempted. Repair by leaving the association context before deallocation or deallocating an independent pointer target; attribution excludes p2 whole-object and dynamic-type restrictions."
+      },
+      "oracle": "All facets are pending source plans. Positive plans use independent literal values, permitted allocation or pointer association inquiry results, STAT/ERRMSG observations only through their owning subclauses, finalizer call sentinels, or reached-control-flow sentinels that first establish the required preconditions. Negative plans use an otherwise conforming source and a minimal repair, with invalidity attributed to the named requirement rather than to declaration syntax, ALLOCATE ownership, NULLIFY ownership, STAT= or ERRMSG= semantics, undefined data, address arithmetic, TRANSFER, emitted code, compiler agreement, resource exhaustion, or unsupported launch mode.",
+      "oracle_limitation": "This is a source-only catalogue. It creates no Fortran test program, invokes no compiler, records no evidence link, approves no oracle or fixture, and claims no coverage. Numbered syntax rules and constraints carry the processor detection/reporting duty from 4.2; unnumbered prose effects, execution-time allocation status, pointer association status, STAT values, error conditions, image participation, processor-dependent outcomes, and coarray synchronization requirements are not promoted to mandatory static diagnostics. Future executable plans must not read deallocated allocatable storage, dereference deallocated pointer targets, read undefined pointer or C_PTR values, use address arithmetic, or rely on deliberate resource exhaustion. Multi-image execution, stopped-image handling, failed-image handling, and teams are separately gated capabilities in this suite.",
+      "dependencies": "4.2;7.3.2.3p5;7.5.6.3p2/p8;8.5.14p1-p4/C854-C855;9.2R902-R907/C901-C907/p1-p2;9.4.2R911-R913/C909-C920/p1-p6;9.7.1.4p1-p2;9.7.3.1R944-R945/C957/p1-p4;9.7.4R946/p1-p6;9.7.5p1-p2;10.2.2.1-10.2.2.4;15.5.2.4;16.9.20 ASSOCIATED;19.5.2.1-19.5.2.5;19.6.6(16),(21),(27)."
+    },
+    {
+      "id": "S9.7.3.3-004",
+      "title": "A deallocated pointer shall designate the whole allocated object with matching characteristics",
+      "source": "9.7.3.3 p2, J3/24-007, 18 December 2023, physical PDF166.",
+      "source_units": [
+        "p2",
+        "p2.associated-with-whole-allocated-object",
+        "p2.same-dynamic-type-and-type-parameters",
+        "p2.array-elements-same-array-element-order"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "If a pointer appears in a DEALLOCATE statement, it shall be associated with the whole of an object that was created by allocation. The pointer shall have the same dynamic type and type parameters as the allocated object, and if the allocated object is an array the pointer shall be an array whose elements are the same as those of the allocated object in array element order.",
+      "facets": [
+        "whole-allocated-object",
+        "same-dynamic-type-and-type-parameters",
+        "array-elements-same-order",
+        "subobject-or-section-pointer-invalid"
+      ],
+      "pending": {
+        "whole-allocated-object": "PENDING positive-control source allocating a whole pointer object with ALLOCATE(p), then DEALLOCATE(p, STAT=s) and observing STAT=0 plus disassociated status by permitted inquiry. Non-vacuousness comes from successful allocation and pre-deallocation literal assignment.",
+        "same-dynamic-type-and-type-parameters": "PENDING diagnostic/control source where a polymorphic or parameterized pointer does not have the same dynamic type or type parameters as the allocated object it points at when DEALLOCATE is attempted, repaired by making the pointer characteristics match the allocated object. Invalidity is attributable to S9.7.3.3-004 after confirming the target was created by ALLOCATE and is the whole object.",
+        "array-elements-same-order": "PENDING positive-control source allocating a rank-one or rank-two pointer array as the whole allocated object and deallocating through a pointer whose elements match the allocated object's elements in array element order; the oracle is STAT=0 and disassociated status only, not storage addresses.",
+        "subobject-or-section-pointer-invalid": "PENDING diagnostic/control source pointer-associated with a component, element, or section of an allocated target and then used in DEALLOCATE. Repair by deallocating through the original whole-object pointer; invalidity is attributable to S9.7.3.3-004, not to non-ALLOCATE target or disassociated status."
+      },
+      "oracle": "All facets are pending source plans. Positive plans use independent literal values, permitted allocation or pointer association inquiry results, STAT/ERRMSG observations only through their owning subclauses, finalizer call sentinels, or reached-control-flow sentinels that first establish the required preconditions. Negative plans use an otherwise conforming source and a minimal repair, with invalidity attributed to the named requirement rather than to declaration syntax, ALLOCATE ownership, NULLIFY ownership, STAT= or ERRMSG= semantics, undefined data, address arithmetic, TRANSFER, emitted code, compiler agreement, resource exhaustion, or unsupported launch mode.",
+      "oracle_limitation": "This is a source-only catalogue. It creates no Fortran test program, invokes no compiler, records no evidence link, approves no oracle or fixture, and claims no coverage. Numbered syntax rules and constraints carry the processor detection/reporting duty from 4.2; unnumbered prose effects, execution-time allocation status, pointer association status, STAT values, error conditions, image participation, processor-dependent outcomes, and coarray synchronization requirements are not promoted to mandatory static diagnostics. Future executable plans must not read deallocated allocatable storage, dereference deallocated pointer targets, read undefined pointer or C_PTR values, use address arithmetic, or rely on deliberate resource exhaustion. Multi-image execution, stopped-image handling, failed-image handling, and teams are separately gated capabilities in this suite.",
+      "dependencies": "4.2;7.3.2.3p5;7.5.6.3p2/p8;8.5.14p1-p4/C854-C855;9.2R902-R907/C901-C907/p1-p2;9.4.2R911-R913/C909-C920/p1-p6;9.7.1.4p1-p2;9.7.3.1R944-R945/C957/p1-p4;9.7.4R946/p1-p6;9.7.5p1-p2;10.2.2.1-10.2.2.4;15.5.2.4;16.9.20 ASSOCIATED;19.5.2.1-19.5.2.5;19.6.6(16),(21),(27)."
+    },
+    {
+      "id": "S9.7.3.3-005",
+      "title": "Deallocating a pointer target makes other associated pointer statuses undefined",
+      "source": "9.7.3.3 p2, J3/24-007, 18 December 2023, physical PDF166.",
+      "source_units": [
+        "p2",
+        "p2.other-pointers-to-target-undefined",
+        "p2.other-pointers-to-portion-undefined"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "When a pointer target is deallocated, the pointer association status of any other pointer that is associated with that target or with a portion of that target becomes undefined. The listed pointer used for deallocation becomes disassociated through 9.7.3.1 p1; other pointers with undefined association status are not portable inquiry operands.",
+      "facets": [
+        "other-pointer-to-target-undefined",
+        "other-pointer-to-portion-undefined"
+      ],
+      "pending": {
+        "other-pointer-to-target-undefined": "PENDING source-only classification plan with two pointers associated with the same allocated target, deallocating through one pointer and recording that the other pointer's association status becomes undefined. Future executable tests must not call ASSOCIATED on or dereference the other pointer after deallocation.",
+        "other-pointer-to-portion-undefined": "PENDING source-only classification plan with another pointer associated with a portion of an allocated target, deallocating the whole target through an eligible pointer and recording that the portion pointer's association status becomes undefined. No post-deallocation inquiry or reference of the portion pointer is a valid oracle."
+      },
+      "oracle": "All facets are pending source plans. Positive plans use independent literal values, permitted allocation or pointer association inquiry results, STAT/ERRMSG observations only through their owning subclauses, finalizer call sentinels, or reached-control-flow sentinels that first establish the required preconditions. Negative plans use an otherwise conforming source and a minimal repair, with invalidity attributed to the named requirement rather than to declaration syntax, ALLOCATE ownership, NULLIFY ownership, STAT= or ERRMSG= semantics, undefined data, address arithmetic, TRANSFER, emitted code, compiler agreement, resource exhaustion, or unsupported launch mode.",
+      "oracle_limitation": "This is a source-only catalogue. It creates no Fortran test program, invokes no compiler, records no evidence link, approves no oracle or fixture, and claims no coverage. Numbered syntax rules and constraints carry the processor detection/reporting duty from 4.2; unnumbered prose effects, execution-time allocation status, pointer association status, STAT values, error conditions, image participation, processor-dependent outcomes, and coarray synchronization requirements are not promoted to mandatory static diagnostics. Future executable plans must not read deallocated allocatable storage, dereference deallocated pointer targets, read undefined pointer or C_PTR values, use address arithmetic, or rely on deliberate resource exhaustion. Multi-image execution, stopped-image handling, failed-image handling, and teams are separately gated capabilities in this suite.",
+      "dependencies": "4.2;7.3.2.3p5;7.5.6.3p2/p8;8.5.14p1-p4/C854-C855;9.2R902-R907/C901-C907/p1-p2;9.4.2R911-R913/C909-C920/p1-p6;9.7.1.4p1-p2;9.7.3.1R944-R945/C957/p1-p4;9.7.4R946/p1-p6;9.7.5p1-p2;10.2.2.1-10.2.2.4;15.5.2.4;16.9.20 ASSOCIATED;19.5.2.1-19.5.2.5;19.6.6(16),(21),(27)."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_9_7_3_3.md"
+  }
+}
