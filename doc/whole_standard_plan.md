@@ -2110,6 +2110,37 @@ catalogues,22links,R402 and the `b153c75b` baseline are preserved, the
 948-method Python suite passes and no compiler was invoked.
 See `doc/source_audits/batch_093.json`.
 
+The ninety-fourth checkpoint registers the independently reviewed allocation
+semantics and NULLIFY source:26base/112fine units across9.7.1.2,9.7.1.3,
+9.7.1.4 and9.7.2, three numbered and25S requirements, and93pending facets.
+Twenty-three base units are newly accounted. These subclauses are dense effect
+prose rather than grammar, so the reviewer compared them sentence by sentence.
+The execution order and timing of bounds and cobounds evaluation, the SOURCE=
+and MOLD= effects on value, type parameters and definition status, default
+initialization on allocation, the resulting allocation status and shape, the
+error path with STAT= and ERRMSG=, the pointer association status after
+allocation of a target, and NULLIFY's disassociation with C956's condition are
+all retained exactly. Processor-dependent outcomes stay recorded as processor
+dependent rather than as mandated behaviour, no plan reads a MOLD-allocated
+undefined value or deliberately triggers allocation failure, and an undefined
+pointer status is not claimed to be directly observable.
+
+The one nonblocking observation — a coarray mismatch plan that did not declare
+its multi-image requirement — was closed before registration and the reviewer
+independently rechecked every coarray and image-related plan across all four
+catalogues. Since the sister9.7.1.1 packet was blocked for the same class of
+omission as ASR-002, both9.7 packets now declare multi-image dependence
+consistently.
+
+There remain **2,069cases**, now with **170catalogues,1,027requirements,
+1,774direct,22linked and3,267pending facets out of5,063**. Source accounting
+covers1,894base units;4,579base and six fine units remain unresolved. All
+2,069case bindings,2,033reviews,166oldercatalogues,22links,R402 and the
+`b153c75b` baseline are preserved, the948-method Python suite passes and no
+compiler was invoked. Clause9 now lacks only the9.7.3 deallocation subclauses
+and9.7.4/9.7.5.
+See `doc/source_audits/batch_094.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must

@@ -1,0 +1,116 @@
+{
+  "schema_version": 1,
+  "review_type": "independent-allocation-semantics-and-NULLIFY-source-review",
+  "review_date": "2026-09-19",
+  "baseline_commit": "f1c3428",
+  "state": "reviewed-source-only-with-processor-dependent-and-multi-image-gates",
+  "scope": {
+    "sections": ["9.7.1.2", "9.7.1.3", "9.7.1.4", "9.7.2"],
+    "section_titles": {
+      "9.7.1.2": "Execution of an ALLOCATE statement",
+      "9.7.1.3": "Allocation of allocatable variables",
+      "9.7.1.4": "Allocation of pointer targets",
+      "9.7.2": "NULLIFY statement"
+    },
+    "base_units": 26,
+    "fine_units": 112,
+    "accounting_rows": 138,
+    "already_counted_numbered_units": 3,
+    "newly_accounted_base_units": 23,
+    "new_requirements": 28,
+    "new_numbered_requirements": 3,
+    "new_S_requirements": 25,
+    "new_pending_facets": 93,
+    "new_cases": 0,
+    "new_direct_or_linked_facets": 0,
+    "note": "Only R942, R943 and C956 in 9.7.2 are numbered; the allocation semantics subclauses are dense effect prose with no numbered items of their own."
+  },
+  "authoring": {
+    "author_context": "fresh subagent context in an isolated worktree based on 9c467f0, concurrent with the 9.7.1.1 author",
+    "author_packet": "d0d7447a23082aeee51dd1380a348c86967de3a2",
+    "author_correction": "90ed59ca17b78bbbdf75e60713265b850d6248b1",
+    "declared_interpretation_risks": [
+      "SOURCE= pointer-status overlap with 8.5.14 and 9.2",
+      "processor-dependent ALLOCATE errors",
+      "a MOLD-allocated undefined value must never be read",
+      "p6 processor-dependent status side effects",
+      "a pointer result's undefined status not being directly observable",
+      "NULLIFY dependency negatives needing careful C956 and designator isolation"
+    ]
+  },
+  "independent_review": {
+    "receipt": "allocate-forms-source-review.json",
+    "reviewer_distinct_from_author": true,
+    "reviewer_context": "fresh subagent context; original text read before the candidate catalogues",
+    "initial_decision": "source-eligible-with-nonblocking-observations",
+    "final_decision": "source-eligible",
+    "blocking_findings": 0,
+    "nonblocking_observations_closed": 1,
+    "scoped_original_units_read_in_full": 26,
+    "referenced_material_read": ["9.7.1.1", "8.5.3", "8.5.6.x", "8.5.14", "7.5.4.6", "10.2.2.x",
+                                 "19.5", "19.6", "11.6", "11.7.2", "16.10.2.34"],
+    "compiler_invocations": 0,
+    "risk_answers": {
+      "SOURCE-pointer-status-overlap": "handled",
+      "processor-dependent-errors": "handled",
+      "MOLD-undefined-value-never-read": "handled",
+      "p6-processor-dependent-side-effects": "handled",
+      "pointer-undefined-status-not-observable": "handled",
+      "NULLIFY-C956-isolation": "handled"
+    }
+  },
+  "findings": [
+    {
+      "id": "AFR-nonblocking-multi-image-gating",
+      "state": "closed",
+      "closed_by": "90ed59ca",
+      "anchor": "9.7.1.2 S9.7.1.2-005 facet mismatch-attribution-boundary",
+      "observation": "One coarray mismatch plan did not state that it requires at least two images, although its sibling coarray facets did.",
+      "correction": "The plan now states that it is a multi-image plan requiring at least two images and that multi-image execution is a separately gated capability.",
+      "reviewer_closeout": "Confirmed this was the intended plan, that the wording is accurate, and independently rechecked every coarray and image-related plan across all four catalogues for the same omission, finding none.",
+      "coordination_note": "The concurrently reviewed 9.7.1.1 packet was blocked for the same class of omission as ASR-002, so both 9.7 packets now declare their multi-image dependence consistently."
+    }
+  ],
+  "coordinator_verification": {
+    "reproduced_mechanical_checks": [
+      "Every base unit of the four subclauses appears exactly once in accounting, with every declared fine unit accounted and every subunit parent a real base unit.",
+      "Every requirement's source_units exist in the scoped census and every pending key is a declared facet.",
+      "R942, R943 and C956 exist in doc/fortran_2023_rules.txt; no requirement identifier collides across the 170 catalogues.",
+      "Reported 26 base / 112 fine / 28 requirements / 93 facets confirmed, all pending with no represented case."
+    ],
+    "integration_note": "Authored from 9c467f0 concurrently with batch093 and rebased onto f1c3428. The only conflict was the appended catalogue list in doc/catalogues/index.json, resolved by keeping both packets' entries in registration order."
+  },
+  "explicit_limitations": [
+    "Source registration only: no test program, compiler invocation, oracle, canonical link, SourceUse relationship or fixture approval is created.",
+    "All 93 facets remain pending. Coarray plans are explicitly gated on the separately provisioned multi-image capability.",
+    "Processor-dependent outcomes are recorded as processor dependent rather than as mandated behaviour, and runtime conditions carry no invented static diagnostic duty.",
+    "No plan deliberately triggers allocation failure, reads a MOLD-allocated undefined value, or claims that an undefined pointer status is directly observable.",
+    "The ALLOCATE statement syntax and constraints remain owned by 9.7.1.1, attributes by 8.5.3 and 8.5.14, coarray declaration by 8.5.6, default initialization by 7.5.4.6, and allocation and definition status semantics by 19.5.x and 19.6.x."
+  ],
+  "preservation": {
+    "cases_preserved": 2069,
+    "raw_reviews_preserved": 2033,
+    "older_catalogues_preserved": 166,
+    "current_links_preserved": 22,
+    "current_source_use_inventories_preserved": 1,
+    "baseline_lines_changed": 0,
+    "baseline": "b153c75b",
+    "new_compiler_invocations": 0,
+    "generated_views_reproduced_byte_identically": true
+  },
+  "validation_snapshot": {
+    "catalogue_reviews_written": 4,
+    "inventory_reviews_written": 1,
+    "detailed_catalogues": 170,
+    "requirements": 1027,
+    "declared_facets": 5063,
+    "pending_facets": 3267,
+    "authored_facets": 1774,
+    "accounted_base_units": 1894,
+    "unresolved_base_units": 4579,
+    "normal_audit_exit": 1,
+    "normal_audit_block": "one retained needs-oracle real-BOZ case",
+    "python_suite_tests": 948,
+    "python_suite_result": "OK"
+  }
+}
