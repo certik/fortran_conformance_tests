@@ -1,0 +1,171 @@
+{
+  "schema_version": 1,
+  "section": "10.1.2.6",
+  "review_state": "draft",
+  "subunits": {
+    "p1": [
+      "p1.level-2-base",
+      "p1.concat-op"
+    ],
+    "R1011": [
+      "R1011.level-2-expr",
+      "R1011.left-recursive-concat"
+    ],
+    "R1012": [
+      "R1012.double-slash"
+    ],
+    "note-unnumbered": [
+      "note-unnumbered.examples"
+    ]
+  },
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "requirements",
+      "requirements": [
+        "S10.1.2.6-001"
+      ]
+    },
+    {
+      "unit": "p1.level-2-base",
+      "disposition": "requirements",
+      "requirements": [
+        "S10.1.2.6-001"
+      ]
+    },
+    {
+      "unit": "p1.concat-op",
+      "disposition": "requirements",
+      "requirements": [
+        "S10.1.2.6-001"
+      ]
+    },
+    {
+      "unit": "R1011",
+      "disposition": "requirements",
+      "requirements": [
+        "R1011"
+      ]
+    },
+    {
+      "unit": "R1011.level-2-expr",
+      "disposition": "requirements",
+      "requirements": [
+        "R1011"
+      ]
+    },
+    {
+      "unit": "R1011.left-recursive-concat",
+      "disposition": "requirements",
+      "requirements": [
+        "R1011"
+      ]
+    },
+    {
+      "unit": "R1012",
+      "disposition": "requirements",
+      "requirements": [
+        "R1012"
+      ]
+    },
+    {
+      "unit": "R1012.double-slash",
+      "disposition": "requirements",
+      "requirements": [
+        "R1012"
+      ]
+    },
+    {
+      "unit": "note-unnumbered",
+      "disposition": "informative",
+      "rationale": "Informative examples of level-3 expressions; no additional requirement or coverage claim is created."
+    },
+    {
+      "unit": "note-unnumbered.examples",
+      "disposition": "informative",
+      "rationale": "Informative examples of level-3 expressions; no additional requirement or coverage claim is created."
+    }
+  ],
+  "requirements": [
+    {
+      "id": "S10.1.2.6-001",
+      "title": "Level-3 expressions are the character concatenation layer over level-2 expressions",
+      "source": "10.1.2.6 p1; J3/24-007 PDF p170.",
+      "source_units": [
+        "p1",
+        "p1.level-2-base",
+        "p1.concat-op"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "not-required",
+      "definition": "Level-3 expressions are level-2 expressions optionally involving concat-op. This places concatenation above relational and logical operations but below numeric level-2 syntax in the grammar ladder.",
+      "facets": [
+        "level-2-base",
+        "concatenation-layer",
+        "left-concatenation-chain"
+      ],
+      "pending": {
+        "level-2-base": "PENDING positive-control source shape using a character primary or level-2-compatible expression as a level-3 expression with literal string oracle. No concat-op is required.",
+        "concatenation-layer": "PENDING positive-control source shape 'ab'//'cd' assigned to CHARACTER(4) with literal oracle 'abcd'. Character interpretation remains 10.1.5.3.",
+        "left-concatenation-chain": "PENDING positive-control source shape 'a'//'b'//'c' with literal oracle 'abc' and a parenthesized companion if needed; same result is acceptable only when non-vacuity is supplied by distinct operand lengths and reached assignment."
+      },
+      "oracle": "Future plans use fixed character literals and length checks, not storage or collation assumptions.",
+      "oracle_limitation": "This source-only catalogue records pending plans only. It creates no Fortran test program, invokes no processor, approves no fixture or oracle, and claims no coverage. Numbered syntax rules and constraints carry the 4.2 diagnostic-capability duty, but future negative plans must isolate the cited rule or constraint and must not rely on compiler agreement, address arithmetic, TRANSFER, emitted code, undefined reads, or interpretation and evaluation rules owned by 10.1.3-10.1.12.",
+      "dependencies": "10.1.2.5R1007;10.1.3 Table 10.1;10.1.5.3;10.1.9;10.2.1.3."
+    },
+    {
+      "id": "R1011",
+      "title": "A level-3 expression is a left-recursive chain of level-2 expressions joined by concat-op",
+      "source": "10.1.2.6 R1011; J3/24-007 PDF p170.",
+      "source_units": [
+        "R1011",
+        "R1011.level-2-expr",
+        "R1011.left-recursive-concat"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "The level-3-expr syntax is either a level-2-expr or a level-3-expr followed by concat-op and level-2-expr, making unparenthesized concatenation left-recursive in the grammar.",
+      "facets": [
+        "single-level-2",
+        "single-concat",
+        "left-recursive-concat",
+        "missing-right-level-2-rejected"
+      ],
+      "pending": {
+        "single-level-2": "PENDING positive-control source shape using a character primary as the level-2 expression and checking literal value 'x'.",
+        "single-concat": "PENDING positive-control source shape 'x'//'y' with literal oracle 'xy'. R1012 owns the token.",
+        "left-recursive-concat": "PENDING positive-control source shape 'x'//'yz'//'q' with literal oracle 'xyzq' and length oracle 4. Distinct lengths make grouping observation non-vacuous even though concatenation is associative for these values.",
+        "missing-right-level-2-rejected": "PENDING diagnostic/control source shape ending an expression with a valid '//' after a valid character operand. Repair appends literal 'b' and observes 'ab', so the defect is the missing R1011 right level-2 expression."
+      },
+      "oracle": "Missing-operand negatives must keep concat-op valid and operands otherwise declared; type mismatch belongs to 10.1.5.3, not R1011.",
+      "oracle_limitation": "This source-only catalogue records pending plans only. It creates no Fortran test program, invokes no processor, approves no fixture or oracle, and claims no coverage. Numbered syntax rules and constraints carry the 4.2 diagnostic-capability duty, but future negative plans must isolate the cited rule or constraint and must not rely on compiler agreement, address arithmetic, TRANSFER, emitted code, undefined reads, or interpretation and evaluation rules owned by 10.1.3-10.1.12.",
+      "dependencies": "4.2;10.1.2.5R1007;10.1.2.6R1012;10.1.5.3."
+    },
+    {
+      "id": "R1012",
+      "title": "The concatenation operator token is double slash",
+      "source": "10.1.2.6 R1012; J3/24-007 PDF p170.",
+      "source_units": [
+        "R1012",
+        "R1012.double-slash"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "The concat-op token is '//'. It is the token used by R1011 and does not define character operand validity by itself.",
+      "facets": [
+        "double-slash-token",
+        "single-slash-not-concat"
+      ],
+      "pending": {
+        "double-slash-token": "PENDING positive-control source shape using the token // in 'a'//'b' and observing independent literal oracle 'ab'. The operands are chosen so interpretation is unambiguous and owned by 10.1.5 or 10.1.6 rather than this token rule.",
+        "single-slash-not-concat": "PENDING diagnostic/control or boundary source shape placing '/' where R1011 requires concat-op between character level-2 expressions, repaired to '//' with literal oracle 'ab'. Numeric division uses of '/' are excluded and remain R1009/10.1.5.2."
+      },
+      "oracle": "The negative must force the concat-op slot with character operands so a single slash is not merely parsed as division in a numeric expression.",
+      "oracle_limitation": "This source-only catalogue records pending plans only. It creates no Fortran test program, invokes no processor, approves no fixture or oracle, and claims no coverage. Numbered syntax rules and constraints carry the 4.2 diagnostic-capability duty, but future negative plans must isolate the cited rule or constraint and must not rely on compiler agreement, address arithmetic, TRANSFER, emitted code, undefined reads, or interpretation and evaluation rules owned by 10.1.3-10.1.12.",
+      "dependencies": "4.2;6.2.4R608;10.1.2.6R1011;10.1.5.3."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_10_1_2_6.md"
+  }
+}

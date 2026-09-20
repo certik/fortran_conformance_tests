@@ -1,0 +1,127 @@
+{
+  "schema_version": 1,
+  "section": "10.1.1",
+  "review_state": "draft",
+  "subunits": {
+    "p1": [
+      "p1.representation",
+      "p1.evaluation-value",
+      "p1.nonvariable-corank"
+    ]
+  },
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "requirements",
+      "requirements": [
+        "S10.1.1-001",
+        "S10.1.1-002",
+        "S10.1.1-003"
+      ]
+    },
+    {
+      "unit": "p1.representation",
+      "disposition": "requirements",
+      "requirements": [
+        "S10.1.1-001"
+      ]
+    },
+    {
+      "unit": "p1.evaluation-value",
+      "disposition": "requirements",
+      "requirements": [
+        "S10.1.1-002"
+      ]
+    },
+    {
+      "unit": "p1.nonvariable-corank",
+      "disposition": "requirements",
+      "requirements": [
+        "S10.1.1-003"
+      ]
+    }
+  ],
+  "requirements": [
+    {
+      "id": "S10.1.1-001",
+      "title": "An expression represents a data object reference or a computation",
+      "source": "10.1.1 p1, first sentence; J3/24-007 PDF p168.",
+      "source_units": [
+        "p1.representation"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "An expression denotes either a data object reference or a computation, and the value represented by the expression is scalar or array. This catalogue records that representational boundary without duplicating designator, variable, operation, or result interpretation rules.",
+      "facets": [
+        "data-object-reference-expression",
+        "computation-expression",
+        "scalar-expression-value",
+        "array-expression-value"
+      ],
+      "pending": {
+        "data-object-reference-expression": "PENDING positive-control source shape with a declared scalar variable assigned literal 17 and then used as an expression. The independent oracle is the literal 17; a reached branch mutates the variable before use so the observation is not merely parsing an object name. Designator and variable validity remain 9.1 and 9.2 dependencies.",
+        "computation-expression": "PENDING positive-control source shape using a simple integer computation such as 2+5 assigned to a scalar result. The oracle is literal 7, computed independently in the harness text; changing either operand changes the observed result, making the expression use non-vacuous while numeric interpretation remains 10.1.5-owned.",
+        "scalar-expression-value": "PENDING positive-control source shape in which an expression result is assigned to a scalar INTEGER and compared with a literal. The oracle is the scalar literal, and non-vacuity is established by a separate path check that the assignment executed. Assignment and type conversion remain 10.2.1.3 dependencies.",
+        "array-expression-value": "PENDING positive-control source shape in which a conforming whole-array intrinsic expression produces a rank-one array with literal elements [3,5]. The independent oracle is the literal shape [2] and values [3,5], not storage layout; array shape and elemental operation details remain 10.1.9 and 10.1.10 dependencies."
+      },
+      "oracle": "Future controls compare reached scalar or array values against independent literals after satisfying the owning designator, operation, and assignment rules. No test may infer expression representation from storage addresses or from a processor's chosen evaluation order.",
+      "oracle_limitation": "This source-only catalogue records pending plans only. It creates no Fortran test program, invokes no processor, approves no fixture or oracle, and claims no coverage. Numbered syntax rules and constraints carry the 4.2 diagnostic-capability duty, but future negative plans must isolate the cited rule or constraint and must not rely on compiler agreement, address arithmetic, TRANSFER, emitted code, undefined reads, or interpretation and evaluation rules owned by 10.1.3-10.1.12.",
+      "dependencies": "9.1;9.2;10.1.2;10.1.5;10.1.9;10.1.10;10.2.1.3."
+    },
+    {
+      "id": "S10.1.1-002",
+      "title": "Evaluation of an expression produces a typed value with parameters and shape",
+      "source": "10.1.1 p1, second sentence; J3/24-007 PDF p168.",
+      "source_units": [
+        "p1.evaluation-value"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "When an expression is evaluated it produces a value, and that value has a type, has type parameters when appropriate, and has a shape. The detailed determination of those properties is delegated to the later expression-result subclauses.",
+      "facets": [
+        "integer-type-value",
+        "character-length-parameter",
+        "derived-type-parameter",
+        "scalar-shape",
+        "array-shape"
+      ],
+      "pending": {
+        "integer-type-value": "PENDING positive-control source shape evaluating an integer expression and assigning it to an INTEGER result checked against literal 42. A distinct LOGICAL control is not used as the oracle; the declaration and literal make the type premise non-vacuous.",
+        "character-length-parameter": "PENDING positive-control source shape evaluating a character concatenation with declared literal operands of lengths 2 and 3 and comparing LEN(result) with literal 5 plus the value with a literal string. LEN is a dependency, not a substitute for this facet.",
+        "derived-type-parameter": "PENDING positive-control source shape using a parameterized derived-type constructor or object expression with a known integer type parameter and querying it with a literal oracle. The plan must establish the parameter in the declaration or constructor, not infer it from component storage.",
+        "scalar-shape": "PENDING positive-control source shape using a scalar expression in an assignment to a scalar result and a rank inquiry or scalar-only context with literal value oracle. The program also contains an array control so the scalar observation is not vacuous.",
+        "array-shape": "PENDING positive-control source shape using an array expression with known extent two and literal element oracle [8,13]. The future observation checks extent and values separately; whole-array formation and conformability remain owned by 9.5 and 10.1.10."
+      },
+      "oracle": "Future plans must establish the source expression and then observe type, parameter, or shape through independently specified literals or inquiries whose own semantics are cited as dependencies.",
+      "oracle_limitation": "This source-only catalogue records pending plans only. It creates no Fortran test program, invokes no processor, approves no fixture or oracle, and claims no coverage. Numbered syntax rules and constraints carry the 4.2 diagnostic-capability duty, but future negative plans must isolate the cited rule or constraint and must not rely on compiler agreement, address arithmetic, TRANSFER, emitted code, undefined reads, or interpretation and evaluation rules owned by 10.1.3-10.1.12.",
+      "dependencies": "7.2;7.4;7.5.3.1;7.5.10;9.5;10.1.5;10.1.9;10.1.10;16.9.118 KIND;16.9.122 LEN;16.9.171 SHAPE."
+    },
+    {
+      "id": "S10.1.1-003",
+      "title": "A non-variable expression has corank zero",
+      "source": "10.1.1 p1, third sentence; J3/24-007 PDF p168.",
+      "source_units": [
+        "p1.nonvariable-corank"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The corank of an expression that is not a variable is zero. This does not redefine which expressions are variables, nor the separate rules for coarray variables and coindexed designators.",
+      "facets": [
+        "literal-nonvariable-corank-zero",
+        "computed-nonvariable-corank-zero",
+        "parenthesized-variable-boundary"
+      ],
+      "pending": {
+        "literal-nonvariable-corank-zero": "PENDING positive-control source shape passing a literal or literal expression to a context that can independently observe corank zero, with a scalar value literal oracle on the same path. The plan must cite the inquiry/context owner and must not infer corank from local execution alone.",
+        "computed-nonvariable-corank-zero": "PENDING positive-control source shape using a computed expression from coarray-capable declarations but not a variable, with a literal arithmetic oracle and an independently specified corank-zero inquiry or acceptance context. No address or image arithmetic is an oracle.",
+        "parenthesized-variable-boundary": "PENDING boundary source plan comparing a variable expression and a parenthesized variable expression only in contexts whose owners distinguish variable status. The non-vacuous observation is a literal value check plus the cited variable-context admission or rejection; variable status remains 9.2/10.1.8 dependent."
+      },
+      "oracle": "Future observations need an independently owned corank-sensitive context and a literal value check to prove execution. A coarray declaration alone is not evidence that a non-variable expression has nonzero corank.",
+      "oracle_limitation": "This source-only catalogue records pending plans only. It creates no Fortran test program, invokes no processor, approves no fixture or oracle, and claims no coverage. Numbered syntax rules and constraints carry the 4.2 diagnostic-capability duty, but future negative plans must isolate the cited rule or constraint and must not rely on compiler agreement, address arithmetic, TRANSFER, emitted code, undefined reads, or interpretation and evaluation rules owned by 10.1.3-10.1.12.",
+      "dependencies": "8.5.6.1;9.2;9.4.3;9.6;10.1.8;10.1.9;15.5.2.4;16.9 corank inquiry facilities;19.6."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_10_1_1.md"
+  }
+}
