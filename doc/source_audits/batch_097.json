@@ -1,0 +1,116 @@
+{
+  "schema_version": 1,
+  "review_type": "independent-complex-part-designator-runtime-fixture-review",
+  "review_date": "2026-09-20",
+  "baseline_commit": "069d85e",
+  "state": "reviewed-runtime-effect-subset-with-limited-shape-oracle",
+  "scope": {
+    "section": "9.4.4",
+    "requirement": "S9.4.4-001",
+    "new_cases": 6,
+    "represented_facets": ["real-part-selection", "imaginary-part-selection", "kind-inherited",
+                           "scalar-shape-inherited", "array-shape-inherited", "defining-context-boundary"],
+    "facets_left_pending_in_requirement": ["result-real-type"],
+    "facets_left_pending_in_section": 9,
+    "new_source_units": 0,
+    "new_requirements": 0,
+    "new_links": 0,
+    "new_baseline_entries": 0,
+    "significance": "First executable batch since batch086. It converts six pending plans into observed runtime effects."
+  },
+  "packet": {
+    "author_commit": "ebd76e126442326f0ac3e1569f3938ee41e659b2",
+    "generator": "tools/generate_complex_part_effect_fixtures.py",
+    "regression_module": "tests/test_complex_part_effect_fixtures.py",
+    "deterministic_check": "generator --check exits 0",
+    "author_self_check": "gfortran -std=f2023 compiled and ran all six successfully during authoring"
+  },
+  "independent_review": {
+    "receipt": "complex-part-fixture-review.json",
+    "reviewer_distinct_from_author": true,
+    "initial_decision": "blocked",
+    "final_decision": "fixtures-eligible-with-nonblocking-observations",
+    "blocking_findings_raised": 2,
+    "blocking_findings_closed": 2,
+    "per_case_state": "reference-validated for all six",
+    "compiler_invocations_by_reviewer": "permitted for verification only; no adjudication"
+  },
+  "findings": [
+    {
+      "id": "CPFR-001",
+      "state": "closed",
+      "owner": "integrator",
+      "anchor": "doc/catalogues/complex_part_9_4_4.json review_rationale",
+      "defect": "The stored catalogue review rationale, recorded in batch089, still asserted that all fifteen 9.4.4 facets were pending and that no case or execution existed. That became false once six cases were added.",
+      "correction": "The integrator re-recorded the catalogue review with accurate text. The field is integrator-owned: an author rewriting it would be forging a review record.",
+      "system_behaviour_note": "The content-bound review machinery had already computed the catalogue review state as stale, so the false text could not have passed audit silently. The finding correctly insisted it be replaced rather than assumed."
+    },
+    {
+      "id": "CPFR-002",
+      "state": "closed",
+      "owner": "integrator",
+      "anchor": "doc/catalogues/complex_part_9_4_4.json review_rationale; tests/fixtures/complex_part_effect_kind_inherited/source.f90",
+      "defect": "The integrator's own replacement text claimed that every program compares against independent literals. That is false for the kind facet, which compares KIND of each part with KIND of the designator.",
+      "correction": "The rationale now states that the oracles differ by facet: four value facets use independent literals, the kind facet deliberately uses KIND of the designator so no numeric kind value is assumed, and the array facet additionally uses SIZE and an independently computed SUM.",
+      "note": "Raised by the reviewer against integrator-authored text, and accepted without reservation."
+    }
+  ],
+  "evidence": {
+    "observation_receipt": "complex-part-effects-native.json",
+    "observation_report": "complex-part-effects-native-report.json",
+    "sensitivity_receipt": "complex-part-effects-sensitivity.json",
+    "parent_observations": 18,
+    "parent_outcomes": {"lfortran_f23": "6 pass", "gfortran_f2023": "6 pass", "flang_f2018": "6 pass"},
+    "qualifying_reference": "GNU Fortran 16.1.0 in f2023 for all six cases",
+    "supplementary_only": "Flang 22.0.0git runs f2018 and cannot qualify an f2023 expectation",
+    "target": "frozen LFortran 0.65.0-411-ga0afaa840b-dirty; it passes all six but adjudicates nothing",
+    "wrong_oracle_plans": 21,
+    "omission_plans": 20,
+    "mutation_runs": 123,
+    "mutation_processes": 369,
+    "mutations_sensitive": 123,
+    "mutations_vacuous": 0,
+    "uncovered_assertions_found": 0,
+    "reviewer_note_on_coverage": "Setup literals are source-reviewed rather than directly mutation-covered."
+  },
+  "oracle_judgments": [
+    "No program uses REAL, AIMAG or CMPLX as the oracle for a part value, so the cases establish the designator's own effect rather than comparing it with an intrinsic.",
+    "Real and imaginary parts are distinct in every case, so selecting the wrong part fails.",
+    "All literals are exactly representable dyadic values and comparisons are exact, with no tolerance, because the facets concern designator selection rather than arithmetic.",
+    "The kind facet compares KIND of each part with KIND of the designator rather than a literal, so no particular numeric kind value is assumed.",
+    "The array facet uses SIZE for shape and an independently computed SUM whose value would change under a wrong per-element selection.",
+    "The defining-context case assigns through z%IM and checks both that the assigned part changed and that the other part is unchanged."
+  ],
+  "explicit_limitations": [
+    "The scalar-shape facet is an adequate but limited scalar-context value witness, not an independent runtime rank inquiry; the reviewer recorded this explicitly rather than treating the facet as fully discharged.",
+    "result-real-type remains pending because it requires a diagnostic control, and the eight R915 and C922 facets keep their original pending plans.",
+    "These six runs represent exactly six facets of one requirement. No linked facet, SourceUse relationship, source closure, baseline entry or universal conformance credit is created.",
+    "All three compilers passing is corroboration, not proof: Flang runs f2018 and is supplementary, and the target under test adjudicates nothing."
+  ],
+  "preservation": {
+    "cases_before": 2069,
+    "cases_after": 2075,
+    "old_case_bindings_preserved": 2069,
+    "old_reviews_preserved": 2033,
+    "current_links_preserved": 22,
+    "current_source_use_inventories_preserved": 1,
+    "baseline": "b153c75b",
+    "baseline_lines_changed": 0,
+    "reason_no_baseline_change": "all six cases pass on the frozen target"
+  },
+  "validation_snapshot": {
+    "fixture_reviews_written": 6,
+    "catalogue_reviews_written": 1,
+    "inventory_reviews_written": 1,
+    "fixture_review_states": {"reference-validated": 1762, "source-reviewed": 274, "needs-oracle": 1},
+    "authored_facets": 1780,
+    "pending_facets": 3369,
+    "declared_facets": 5171,
+    "requirements": 1060,
+    "detailed_catalogues": 175,
+    "normal_audit_exit": 1,
+    "normal_audit_block": "one retained needs-oracle real-BOZ case",
+    "python_suite_tests": 954,
+    "python_suite_result": "OK"
+  }
+}

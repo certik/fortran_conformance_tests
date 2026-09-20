@@ -2222,6 +2222,49 @@ facets is still without a fixture, no Clause9 requirement has an executed
 case, and the whole-standard census remains unratified.
 See `doc/source_audits/batch_096.json`.
 
+The ninety-seventh checkpoint is the **first executable batch since the COMMON
+ordered-list effects**, and the first fixtures anywhere in Clause9. Six
+complete run/effect programs represent six of the seven S9.4.4-001 facets:
+real-part selection, imaginary-part selection, kind inheritance, scalar shape,
+array shape and the defining context. Only `result-real-type` stays pending,
+because it needs a diagnostic control, and the eight R915 and C922 facets keep
+their original plans.
+
+The oracles are deliberately not uniform. The four value facets compare the
+selected part against independent literals written in the program, never
+against `REAL`, `AIMAG` or `CMPLX`, since comparing a designator with an
+intrinsic would test the intrinsic rather than establish the designator's
+effect. Real and imaginary parts are always distinct, so a wrong selection
+fails, and every literal is an exactly representable dyadic value compared
+exactly rather than with a tolerance. The kind facet uses no literal at all:
+it compares `KIND(z%RE)` and `KIND(z%IM)` with `KIND(z)`, so no particular
+numeric kind value is assumed. The array facet adds `SIZE` and an
+independently computed `SUM`.
+
+All six pass on the frozen target, GNU Fortran16.1.0 in f2023 and Flang in
+f2018, and all123 wrong-oracle and omission mutations failed at their
+predicted guards across the three compilers. GNU f2023 supplies the
+qualifying reference; no baseline entry is added because the target passes.
+
+Both blocking findings were raised against **integrator-owned text, not the
+author's work**. CPFR-001 found that the stored catalogue review rationale
+still asserted that all fifteen 9.4.4 facets were pending and that no case or
+execution existed. CPFR-002 then found that the integrator's own replacement
+overclaimed that every program compares against independent literals, which is
+false for the kind facet. Both were corrected by re-recording the catalogue
+review with per-facet accuracy. The content-bound review machinery had already
+computed the catalogue state as stale, so the false text could not have passed
+the audit silently, but it still had to be replaced rather than assumed. The
+reviewer also recorded, and the integrator accepted, that the scalar-shape
+facet is an adequate but limited scalar-context value witness rather than an
+independent runtime rank inquiry.
+
+There are now **2,075cases**, with **175catalogues,1,060requirements,
+1,780direct,22linked and3,369pending facets out of5,171**. All2,069prior
+case bindings,2,033reviews,22links,R402 and the `b153c75b` baseline are
+unchanged, and the954-method Python suite passes.
+See `doc/source_audits/batch_097.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
