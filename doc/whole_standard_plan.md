@@ -2079,6 +2079,37 @@ compiler was invoked. Clause9's remaining allocation subclauses in9.7 are
 queued as four further packets and remain unauthored.
 See `doc/source_audits/batch_092.json`.
 
+The ninety-third checkpoint registers the independently reviewed ALLOCATE
+statement source, the largest single subclause in Clause9:41base/99fine
+units,13syntax rules,20constraints, seven S requirements and119pending
+facets. Eight base units are newly accounted; the33numbered units were
+already globally counted. The reviewer checked every numbered item
+individually. R929 keeps the optional `type-spec ::` and alloc-opt list, R930
+the ERRMSG, MOLD, SOURCE and STAT forms, R933 both allocation alternatives
+including the parenthesized bounds form and the coarray bracket, and
+R940/R941 the coarray and coshape specs with their trailing asterisk. C936
+restricts each allocate-object to a data pointer or allocatable variable,
+C937 requires a type-spec or source-expr for a deferred, unlimited
+polymorphic or abstract object, and the remaining constraints retain their
+exact type, kind, length, rank, corank, SOURCE and MOLD conditions.
+
+Review returned **blocked** with two findings, both closed and independently
+verified. ASR-001: the C952 negative used a SOURCE= form whose program also
+violates the separate p4 dynamic-type restriction, so it was invalid for two
+reasons and could not isolate C952; it now uses MOLD=, whose source-expr
+declared type C952 still governs while p4 does not apply. ASR-002: the
+S9.7.1.1-004 plan lacked the multi-image coarray gating that its sibling
+facets already carried. The sister packet's reviewer raised the same class of
+gating omission as a nonblocking point, so both9.7 packets now state their
+multi-image dependence consistently.
+
+There remain **2,069cases**, now with **166catalogues,999requirements,
+1,774direct,22linked and3,174pending facets out of4,970**. Source accounting
+covers1,871base units. All2,069case bindings,2,033reviews,165older
+catalogues,22links,R402 and the `b153c75b` baseline are preserved, the
+948-method Python suite passes and no compiler was invoked.
+See `doc/source_audits/batch_093.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
