@@ -2141,6 +2141,46 @@ compiler was invoked. Clause9 now lacks only the9.7.3 deallocation subclauses
 and9.7.4/9.7.5.
 See `doc/source_audits/batch_094.json`.
 
+The ninety-fifth checkpoint registers the independently reviewed deallocation
+source:24base/70fine units across9.7.3.1,9.7.3.2 and9.7.3.3, three numbered
+and23S requirements, and64pending facets. Twenty-one base units are newly
+accounted. R944, R945 and C957 keep their exact forms and conditions; the
+deterministic error condition for deallocating an unallocated allocatable, the
+undefined pointer status caused by deallocating a TARGET allocatable, the
+argument- and construct-association prohibitions, the procedure return, BLOCK
+exit, function result, INTENT(OUT), intrinsic assignment and derived-type
+component cases, finalization and the coarray conditions are all retained.
+
+Review returned **blocked** with seven findings, all closed. Four were upheld:
+the subclause title is "Form of the DEALLOCATE statement", a plan proposed
+manufacturing a stopped or failed image, a facet was missing for9.7.3.2p10's
+second trigger where the allocate-object merely has a coarray potential
+subobject component, and the C descriptor dependencies omitted their Clause18
+owners.
+
+The other three exposed a defect in the coordinator's own author instruction.
+It had forbidden any deliberately triggered deallocation error, but that rule
+was aimed at resource exhaustion and fabricated failed images. 9.7.3.2p1 and
+9.7.3.3p1 specify **deterministic** error conditions, and a program that
+triggers one with a STAT= specifier is conforming, with 9.7.4p5 and p6
+supplying a portable oracle. The rule was therefore narrowed rather than
+applied to delete correct plans: a plan may exercise a deterministic
+standard-specified error condition provided its oracle asserts only portable
+properties, never a specific processor-dependent value. The reviewer
+explicitly accepted that adjudication with its own source anchors. The same
+reasoning was applied to the sister9.7.4/9.7.5 packet, where the reviewer then
+correctly rejected a proposed ERRMSG oracle: because p2 leaves the message
+content unspecified, even inequality with a chosen sentinel cannot prove the
+assignment, so that branch stays classification-only while the portable
+success branch survives as a real plan.
+
+There remain **2,069cases**, now with **173catalogues,1,053requirements,
+1,774direct,22linked and3,331pending facets out of5,127**. Source accounting
+covers1,915base units. All2,069case bindings,2,033reviews,170older
+catalogues,22links,R402 and the `b153c75b` baseline are preserved, the
+948-method Python suite passes and no compiler was invoked.
+See `doc/source_audits/batch_095.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must

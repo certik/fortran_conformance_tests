@@ -1,0 +1,106 @@
+{
+  "schema_version": 1,
+  "review_type": "independent-DEALLOCATE-and-deallocation-semantics-source-review",
+  "review_date": "2026-09-19",
+  "baseline_commit": "aae2a07",
+  "state": "reviewed-source-only-after-title-trigger-and-oracle-corrections",
+  "scope": {
+    "sections": ["9.7.3.1", "9.7.3.2", "9.7.3.3"],
+    "section_titles": {
+      "9.7.3.1": "Form of the DEALLOCATE statement",
+      "9.7.3.2": "Deallocation of allocatable variables",
+      "9.7.3.3": "Deallocation of pointer targets"
+    },
+    "base_units": 24,
+    "fine_units": 70,
+    "already_counted_numbered_units": 3,
+    "newly_accounted_base_units": 21,
+    "new_requirements": 26,
+    "new_numbered_requirements": 3,
+    "new_S_requirements": 23,
+    "new_pending_facets": 64,
+    "new_cases": 0,
+    "new_direct_or_linked_facets": 0
+  },
+  "authoring": {
+    "author_context": "fresh subagent context in an isolated worktree based on aae2a07",
+    "author_packet": "eaa02d0f3dbf6bbebff6ce507be08650de302564",
+    "author_correction": "bb4c757f51c06d320eb63a5189805d98bf4eb973"
+  },
+  "independent_review": {
+    "receipt": "deallocate-source-review.json",
+    "reviewer_distinct_from_author": true,
+    "initial_decision": "blocked",
+    "final_decision": "source-eligible-with-nonblocking-observations",
+    "blocking_findings_raised": 7,
+    "blocking_findings_closed": 7,
+    "scoped_original_units_read_in_full": 24,
+    "compiler_invocations": 0
+  },
+  "coordinator_adjudication": {
+    "summary": "Three of the seven findings rested on an instruction the coordinator had written too broadly in the author prompt, namely that no plan may deliberately force a deallocation error. On rereading the source the coordinator narrowed that rule rather than letting correct plans be deleted.",
+    "narrowed_rule": "A plan may exercise an error condition that the standard specifies deterministically, provided its oracle asserts only portable properties. It must not depend on resource exhaustion, on a specific processor-dependent error value, or on manufacturing a stopped or failed image.",
+    "source_basis": [
+      "9.7.3.2 p1: deallocating an unallocated allocatable variable causes an error condition; its only prohibitions concern argument and construct association, so such a program with STAT= is conforming.",
+      "9.7.3.3 p1: the corresponding deterministic error conditions for pointer targets.",
+      "9.7.4 p5: the stat-variable becomes a processor-dependent positive value distinct from STAT_STOPPED_IMAGE and STAT_FAILED_IMAGE.",
+      "9.7.4 p6: the per-object status guarantees after an error condition.",
+      "9.7.3.1 p3: without a STAT= specifier an error condition causes error termination, so that facet cannot be an ordinary passing run."
+    ],
+    "reviewer_response": "The reviewer explicitly accepted the adjudication with its own anchors and confirmed it does not read these STAT= forms as non-conforming or the positive-and-distinct assertion as unportable."
+  },
+  "findings": [
+    {"id": "DSR-001", "state": "closed", "disposition": "upheld", "anchor": "9.7.3.1 heading",
+     "defect": "The catalogue title said 'DEALLOCATE statement'; the actual title is 'Form of the DEALLOCATE statement'.",
+     "correction": "Title corrected in the catalogue and generated view."},
+    {"id": "DSR-002", "state": "closed", "disposition": "narrowed", "anchor": "9.7.3.1 p3",
+     "defect": "A plan proposed a no-STAT deallocation error.",
+     "correction": "Retained as a source-only plan that records that 9.7.3.1 p3 requires error termination, so it cannot be an ordinary passing run and would need an error-termination harness."},
+    {"id": "DSR-003", "state": "closed", "disposition": "narrowed", "anchor": "9.7.3.2 p1",
+     "defect": "A plan deallocated a known-unallocated allocatable with STAT=.",
+     "correction": "Retained; the oracle now asserts only that the stat-variable is positive and distinct from both named constants, plus the 9.7.4 p6 retained status, and records that this is a deterministic standard-specified error rather than a resource failure."},
+    {"id": "DSR-004", "state": "closed", "disposition": "narrowed", "anchor": "9.7.3.3 p1",
+     "defect": "Plans deallocated a disassociated pointer and a target not created by ALLOCATE.",
+     "correction": "Retained with the same portable oracle bounds; no target is dereferenced after the failed deallocation."},
+    {"id": "DSR-005", "state": "closed", "disposition": "upheld", "anchor": "9.7.3.2 p10",
+     "defect": "A plan proposed producing a stopped or failed image to observe STAT_STOPPED_IMAGE or STAT_FAILED_IMAGE.",
+     "correction": "The facet is now source-only and gated, and explicitly forbids manufacturing, forcing or relying on creating that condition."},
+    {"id": "DSR-006", "state": "closed", "disposition": "upheld", "anchor": "9.7.3.2 p10",
+     "defect": "The packet covered only direct coarray deallocation, omitting the source's second trigger: an allocate-object that has a coarray potential subobject component.",
+     "correction": "One new pending facet, S9.7.3.2-012.coarray-potential-subobject-component-trigger, covers the second trigger and is distinct from the direct-coarray facet. Facet count rose from 63 to 64."},
+    {"id": "DSR-007", "state": "closed", "disposition": "upheld", "anchor": "9.7.3.2 p6",
+     "defect": "Plans cited C descriptors but the dependency strings omitted the exact Clause 18 owners.",
+     "correction": "18.3.7 p2/p4/p6 and 18.5.3 p1-p5 added and verified against the census."}
+  ],
+  "explicit_limitations": [
+    "Source registration only: no test program, compiler invocation, oracle, canonical link, SourceUse relationship or fixture approval is created.",
+    "All 64 facets remain pending. Coarray facets are gated on the separately provisioned multi-image capability, and the stopped or failed image condition is explicitly not producible by this suite.",
+    "No plan reads deallocated storage, dereferences a deallocated pointer target, or queries an undefined pointer association status; the reviewer verified this directly.",
+    "ALLOCATE and its constraints remain owned by 9.7.1.1, allocation semantics by 9.7.1.2-9.7.1.4, NULLIFY by 9.7.2, STAT= and ERRMSG= by 9.7.4 and 9.7.5, attributes by 8.5.3 and 8.5.14, coarrays by 8.5.6, finalization by 7.5.6 and status semantics by 19.5.x and 19.6.x."
+  ],
+  "preservation": {
+    "cases_preserved": 2069,
+    "raw_reviews_preserved": 2033,
+    "older_catalogues_preserved": 170,
+    "current_links_preserved": 22,
+    "current_source_use_inventories_preserved": 1,
+    "baseline_lines_changed": 0,
+    "baseline": "b153c75b",
+    "new_compiler_invocations": 0,
+    "generated_views_reproduced_byte_identically": true
+  },
+  "validation_snapshot": {
+    "catalogue_reviews_written": 3,
+    "inventory_reviews_written": 1,
+    "detailed_catalogues": 173,
+    "requirements": 1053,
+    "declared_facets": 5127,
+    "pending_facets": 3331,
+    "authored_facets": 1774,
+    "accounted_base_units": 1915,
+    "normal_audit_exit": 1,
+    "normal_audit_block": "one retained needs-oracle real-BOZ case",
+    "python_suite_tests": 948,
+    "python_suite_result": "OK"
+  }
+}
