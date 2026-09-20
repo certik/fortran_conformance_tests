@@ -2265,6 +2265,46 @@ case bindings,2,033reviews,22links,R402 and the `b153c75b` baseline are
 unchanged, and the954-method Python suite passes.
 See `doc/source_audits/batch_097.json`.
 
+The ninety-eighth checkpoint **opens Clause10** with the expression grammar:
+50base/131fine units across10.1.1 and10.1.2.1-10.1.2.9,43requirements and
+187pending facets. Twenty base units are newly accounted; the30numbered units
+were already globally counted.
+
+The reviewer derived the precedence chain independently from the grammar
+rather than accepting the author's summary, and found that summary matched
+only coarsely. The catalogue now states the finer chain: primary, defined
+unary, `**`, `* /`, unary `+ -`, binary `+ -`, `//`, one relation, `.NOT.`,
+`.AND.`, `.OR.`, `.EQV.`/`.NEQV.`, and defined binary operators lowest. A
+layer confusion here would have silently corrupted every later expression
+requirement.
+
+Five blocking findings were closed over three rounds, and they are
+instructive. Three concerned oracles that **cannot work**: a literal value
+cannot reveal the grouping of an associative operation such as `//` or
+`.EQV.`, and an execution-path oracle cannot reveal `.AND.` grouping because
+the standard does not require short-circuit evaluation, so a processor may
+evaluate either operand or neither. One moved a defined-binary rejection off
+R1023's *form* to the applicability and generic-resolution owners10.1.6 and
+15.4.3.4.2.
+
+The fifth was raised against the corrected text itself and is the sharpest.
+The replacement wording had declared those groupings simply unobservable, but
+that is true only for **intrinsic** operands. The same operator symbols can be
+extended by defined operations, and a non-associative defined extension makes
+the grouping observable by ordinary value comparison. Each affected plan now
+scopes the limitation to intrinsic operands and records the defined-extension
+route as its concrete future shape. A convenient unobservability claim is
+itself a defect when it is too broad.
+
+There remain **2,075cases**, now with **185catalogues,1,103requirements,
+1,780direct,22linked and3,556pending facets out of5,358**. Source accounting
+covers1,944base units;4,529base and six fine units remain unresolved. All
+2,075case bindings,2,039reviews,175oldercatalogues,22links,R402 and the
+`b153c75b` baseline are preserved, the954-method Python suite passes and no
+compiler was invoked. Clause10 is only opened: 10.1.3 onwards and most of10.2
+remain unauthored.
+See `doc/source_audits/batch_098.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must

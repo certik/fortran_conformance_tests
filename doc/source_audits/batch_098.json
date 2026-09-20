@@ -1,0 +1,112 @@
+{
+  "schema_version": 1,
+  "review_type": "independent-clause10-expression-grammar-source-review",
+  "review_date": "2026-09-20",
+  "baseline_commit": "6e4e86d",
+  "state": "reviewed-source-only-after-oracle-attribution-and-scope-corrections",
+  "scope": {
+    "sections": ["10.1.1", "10.1.2.1", "10.1.2.2", "10.1.2.3", "10.1.2.4",
+                 "10.1.2.5", "10.1.2.6", "10.1.2.7", "10.1.2.8", "10.1.2.9"],
+    "base_units": 50,
+    "fine_units": 131,
+    "already_counted_numbered_units": 30,
+    "newly_accounted_base_units": 20,
+    "new_requirements": 43,
+    "new_pending_facets": 187,
+    "new_cases": 0,
+    "new_direct_or_linked_facets": 0,
+    "significance": "Opens Clause 10 with the expression grammar built in precedence layers."
+  },
+  "authoring": {
+    "author_context": "fresh subagent context in an isolated worktree based on 069d85e",
+    "author_packet": "cf4fde3757bf84a33f1c5f6dca67641c958f93ae",
+    "author_corrections": ["65745b90d614bdac08199c0b917c2c3091b50850", "fffff4751afc97958c66d7463d23d274f98fe76e"],
+    "declared_interpretation_risks": ["C1001 and C1003 attribution", ".NOT. nesting",
+                                      "relation chaining", "defined-binary right operand grouping"]
+  },
+  "independent_review": {
+    "receipt": "clause10-expressions-source-review.json",
+    "reviewer_distinct_from_author": true,
+    "initial_decision": "blocked",
+    "final_decision": "source-eligible-with-nonblocking-observations",
+    "blocking_findings_raised": 5,
+    "blocking_findings_closed": 5,
+    "review_rounds": 3,
+    "scoped_original_units_read_in_full": 50,
+    "original_grammar_heads_verified": 502,
+    "compiler_invocations": 0,
+    "risk_answers": {
+      "C1001-attribution": "correct",
+      "C1003-attribution": "correct",
+      "NOT-nesting": "correct",
+      "relation-chaining": "correct",
+      "defined-binary-right-operand": "originally defective; corrected under C10ER-004"
+    }
+  },
+  "precedence_structure": {
+    "independently_derived_by_reviewer": "primary -> defined unary -> ** -> * / -> unary + - -> binary + - -> // -> one relation -> .NOT. -> .AND. -> .OR. -> .EQV./.NEQV. -> defined binary",
+    "author_initial_summary": "primary -> defined unary -> power/mult/add -> concat -> rel -> logical -> defined binary",
+    "verdict": "The author's initial summary matched only coarsely; the catalogue text was corrected to the finer chain, separating ** from * /, unary from binary + -, and the four logical levels.",
+    "why_it_matters": "A layer confusion here would silently corrupt every later expression requirement."
+  },
+  "findings": [
+    {
+      "id": "C10ER-001", "state": "closed", "anchors": ["10.1.2.6#R1011", "10.1.5.3#p3"],
+      "defect": "A literal-value oracle was proposed for the left grouping of concatenation, but character concatenation is associative, so both parenthesisations produce the same string and the oracle cannot observe the grouping.",
+      "correction": "The plan admits only the final value and records that the grouping is not observable by value for intrinsic operands."
+    },
+    {
+      "id": "C10ER-002", "state": "closed", "anchors": ["10.1.2.8#R1016", "10.1.5.4.2"],
+      "defect": "An execution-path oracle was proposed for .AND. grouping. Fortran does not require short-circuit evaluation, so a processor may evaluate operands in any order or not at all; grouping cannot be inferred from which operand was evaluated.",
+      "correction": "The execution-path oracle was removed and the limitation recorded."
+    },
+    {
+      "id": "C10ER-003", "state": "closed", "anchors": ["10.1.2.8#R1018", "10.1.5.4"],
+      "defect": "The .EQV./.NEQV. grouping plan was neither concrete nor checkable, and those operations are associative in two-valued logic.",
+      "correction": "Replaced with an explicit statement of the limitation for intrinsic operands."
+    },
+    {
+      "id": "C10ER-004", "state": "closed", "anchors": ["10.1.2.9#R1023", "10.1.6", "15.4.3.4.2"],
+      "defect": "A right-operand defined-binary negative attributed an applicability or generic-resolution failure to R1023 syntax. A program whose defined operator has no applicable specific procedure is not rejected by the R1023 form.",
+      "correction": "The facet is now a positive boundary only, with applicability and generic resolution assigned to their real owners 10.1.6 and 15.4.3.4.2 as dependencies. The reviewer confirmed the form itself remains positively tested."
+    },
+    {
+      "id": "C10ER-005", "state": "closed", "anchors": ["10.1.2.6", "10.1.2.8", "10.1.6", "15.4.3.4.2"],
+      "defect": "The replacement text for C10ER-001 to C10ER-003 claimed unobservability too broadly. Those operations are associative only for intrinsic operands; a non-associative defined extension of the same operator symbol makes the grouping observable by value.",
+      "correction": "Each affected plan now scopes the unobservability claim to intrinsic operands and records the non-associative defined-extension route as the concrete future shape, with 10.1.6 and 15.4.3.4.2 cited as the owners of the defined-operation semantics.",
+      "note": "Raised against the corrected text rather than the original packet, and a reminder that a convenient unobservability claim is itself a defect if it is too broad."
+    }
+  ],
+  "explicit_limitations": [
+    "Source registration only: no test program, compiler invocation, oracle, canonical link, SourceUse relationship or fixture approval is created.",
+    "All 187 facets remain pending. Several grouping facets are explicitly unobservable for intrinsic operands and record a defined-extension route rather than an implemented program.",
+    "Expression interpretation, evaluation and constant expressions remain owned by 10.1.3 through 10.1.12; intrinsic assignment by the registered 10.2.1.3; designators by the Clause 9 catalogues; defined operations by 15.4.3.4.x.",
+    "Clause 10 is only opened by this packet: 10.1.3 onwards and most of 10.2 remain unauthored."
+  ],
+  "preservation": {
+    "cases_preserved": 2075,
+    "raw_reviews_preserved": 2039,
+    "older_catalogues_preserved": 175,
+    "current_links_preserved": 22,
+    "current_source_use_inventories_preserved": 1,
+    "baseline_lines_changed": 0,
+    "baseline": "b153c75b",
+    "new_compiler_invocations": 0,
+    "generated_views_reproduced_byte_identically": true
+  },
+  "validation_snapshot": {
+    "catalogue_reviews_written": 10,
+    "inventory_reviews_written": 1,
+    "detailed_catalogues": 185,
+    "requirements": 1103,
+    "declared_facets": 5358,
+    "pending_facets": 3556,
+    "authored_facets": 1780,
+    "accounted_base_units": 1944,
+    "unresolved_base_units": 4529,
+    "normal_audit_exit": 1,
+    "normal_audit_block": "one retained needs-oracle real-BOZ case",
+    "python_suite_tests": 954,
+    "python_suite_result": "OK"
+  }
+}
