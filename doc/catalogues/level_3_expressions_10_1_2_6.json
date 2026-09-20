@@ -107,11 +107,11 @@
       "pending": {
         "level-2-base": "PENDING positive-control source shape using a character primary or level-2-compatible expression as a level-3 expression with literal string oracle. No concat-op is required.",
         "concatenation-layer": "PENDING positive-control source shape 'ab'//'cd' assigned to CHARACTER(4) with literal oracle 'abcd'. Character interpretation remains 10.1.5.3.",
-        "left-concatenation-chain": "PENDING source-only plan for the unparenthesized chain 'a'//'b'//'c'. A literal value oracle can admit the chain and check the final value 'abc', but it cannot portably observe R1011 left grouping because 10.1.5.3 p3 states that parentheses specifying character-expression order have no effect on the value. No side-effect or partial-evaluation oracle is acceptable; this facet remains explicitly pending until a non-value property or source-only adjudication is approved."
+        "left-concatenation-chain": "PENDING source-only plan for the unparenthesized chain 'a'//'b'//'c'. With intrinsic character operands, a literal value oracle can admit the chain and check the final value 'abc', but it cannot observe R1011 left grouping because 10.1.5.3 p3 states that parentheses specifying character-expression order have no effect on the value. The concrete future grouping route is a derived type with a non-associative defined extension of intrinsic operator //, distinct literal-bearing operands a,b,c, and an oracle comparing the unparenthesized result with independently computed component values for (a//b)//c versus a//(b//c). Defined-operation applicability and interpretation remain owned by 10.1.6 and 15.4.3.4.2."
       },
-      "oracle": "Future plans use fixed character literals and length checks, not storage or collation assumptions.",
+      "oracle": "Intrinsic character controls use fixed character literals and length checks only for admission and final value, not grouping. Grouping-sensitive future controls may instead use a non-associative defined extension of // on a derived type, with independently computed component-value oracles and valid interfaces under 10.1.6 and 15.4.3.4.2.",
       "oracle_limitation": "This source-only catalogue records pending plans only. It creates no Fortran test program, invokes no processor, approves no fixture or oracle, and claims no coverage. Numbered syntax rules and constraints carry the 4.2 diagnostic-capability duty, but future negative plans must isolate the cited rule or constraint and must not rely on compiler agreement, address arithmetic, TRANSFER, emitted code, undefined reads, or interpretation and evaluation rules owned by 10.1.3-10.1.12.",
-      "dependencies": "10.1.2.5R1007;10.1.3 Table 10.1;10.1.5.3;10.1.9;10.2.1.3."
+      "dependencies": "10.1.2.5R1007;10.1.3 Table 10.1;10.1.5.3;10.1.6;10.1.9;10.2.1.3;15.4.3.4.2."
     },
     {
       "id": "R1011",
@@ -134,12 +134,12 @@
       "pending": {
         "single-level-2": "PENDING positive-control source shape using a character primary as the level-2 expression and checking literal value 'x'.",
         "single-concat": "PENDING positive-control source shape 'x'//'y' with literal oracle 'xy'. R1012 owns the token.",
-        "left-recursive-concat": "PENDING source-only grouping facet: R1011 makes the unparenthesized concat chain left-recursive, but 10.1.5.3 p3 makes (x//y)//z and x//(y//z) have the same character value and length for all operands. A future positive control may check admission and final literal value, but it cannot claim to observe grouping by value or by side effects. Keep this facet pending as not portably value-observable unless an independent non-value oracle is reviewed.",
+        "left-recursive-concat": "PENDING source-only grouping facet: R1011 makes the unparenthesized concat chain left-recursive. For intrinsic character operands, 10.1.5.3 p3 makes (x//y)//z and x//(y//z) have the same character value and length, so value cannot distinguish grouping. A viable future control uses a derived type with a non-associative defined extension of //, operands carrying independent literal values such as 1, 2, and 3, and a result component whose expected value is computed independently for left grouping and differs from the parenthesized right-grouping control. The defined-operation semantics used by that route are dependencies on 10.1.6 and 15.4.3.4.2.",
         "missing-right-level-2-rejected": "PENDING diagnostic/control source shape ending an expression with a valid '//' after a valid character operand. Repair appends literal 'b' and observes 'ab', so the defect is the missing R1011 right level-2 expression."
       },
       "oracle": "Missing-operand negatives must keep concat-op valid and operands otherwise declared; type mismatch belongs to 10.1.5.3, not R1011.",
       "oracle_limitation": "This source-only catalogue records pending plans only. It creates no Fortran test program, invokes no processor, approves no fixture or oracle, and claims no coverage. Numbered syntax rules and constraints carry the 4.2 diagnostic-capability duty, but future negative plans must isolate the cited rule or constraint and must not rely on compiler agreement, address arithmetic, TRANSFER, emitted code, undefined reads, or interpretation and evaluation rules owned by 10.1.3-10.1.12.",
-      "dependencies": "4.2;10.1.2.5R1007;10.1.2.6R1012;10.1.5.3."
+      "dependencies": "4.2;10.1.2.5R1007;10.1.2.6R1012;10.1.5.3;10.1.6;15.4.3.4.2."
     },
     {
       "id": "R1012",
