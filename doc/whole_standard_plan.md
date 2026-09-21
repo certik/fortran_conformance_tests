@@ -2336,6 +2336,39 @@ case bindings,2,039reviews,22links,R402 and the `b153c75b` baseline are
 unchanged, and the960-method Python suite passes.
 See `doc/source_audits/batch_099.json`.
 
+The hundredth checkpoint registers the independently reviewed precedence,
+evaluation and intrinsic-classification source:27base/81fine units across
+10.1.3,10.1.4 and10.1.5.1,17S requirements and91pending facets. All27base
+units are newly accounted, because no numbered item falls in this scope.
+
+This is where the standard's **processor latitude** lives, and it is the most
+dangerous area in the project for inventing false oracles. A permission
+wrongly promoted to a requirement, or a plan inferring behaviour from
+evaluation order, would corrupt every later expression fixture. The reviewer
+therefore enumerated the evaluation freedoms independently before comparing
+them with the catalogue. The IF/WHERE/FORALL side-effect permission and the
+permission for pure elemental operations to be performed in any order or
+simultaneously are both recorded as permissions rather than requirements; the
+conditional skipped-evaluation effect carries no side-effect oracle; and the
+freedoms owned by10.1.7,10.1.8 and10.1.6.3 are recorded as oracle boundaries
+and dependencies rather than as locally owned requirements.
+
+No plan infers anything from which operand was evaluated or in what order,
+asserts a result that a mathematically equivalent rewrite could change, or
+uses a floating-point tolerance as an escape hatch, and the grouping of an
+associative intrinsic operation is not claimed to be value-observable. Table
+10.2 was checked against the table itself rather than the candidate's summary,
+since automatic extraction interleaves its columns; the enumeration-type and
+character-kind distinctions are preserved. There were no blocking findings.
+
+There remain **2,083cases**, now with **188catalogues,1,120requirements,
+1,788direct,22linked and3,639pending facets out of5,449**. Source accounting
+covers1,971base units. All2,083case bindings,2,047reviews,185older
+catalogues,22links,R402 and the `b153c75b` baseline are preserved, and no
+compiler was invoked. Clause10 remains partially registered:10.1.5.2 onwards
+and most of10.2 are unauthored.
+See `doc/source_audits/batch_100.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
