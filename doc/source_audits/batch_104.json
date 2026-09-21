@@ -1,0 +1,139 @@
+{
+  "schema_version": 1,
+  "review_type": "independent-expression-and-operation-result-characteristics-source-review",
+  "review_date": "2026-09-21",
+  "baseline_commit": "5824e93",
+  "state": "reviewed-source-only-with-processor-dependent-result-kinds-recorded-as-permissions",
+  "scope": {
+    "sections": ["10.1.9.1", "10.1.9.2", "10.1.9.3"],
+    "section_titles": {
+      "10.1.9.1": "Characteristics of an expression",
+      "10.1.9.2": "Characteristics of a primary",
+      "10.1.9.3": "Characteristics of the result of an operation"
+    },
+    "base_units": 18,
+    "fine_units": 49,
+    "already_counted_numbered_units": 8,
+    "newly_accounted_base_units": 10,
+    "new_requirements": 24,
+    "new_numbered_requirements": 8,
+    "new_S_requirements": 16,
+    "new_pending_facets": 81,
+    "new_cases": 0,
+    "note": "Eight numbered units - R1025, C1007, R1026, C1008, R1027, C1009, R1028 and C1010 - were already accounted by the numbered-rule inventory before this packet, so the packet newly accounts 10 base units rather than 18. The reviewer verified each of the eight independently and confirmed none is double-counted or dropped. No table is a base unit in this scope.",
+    "per_section": {
+      "10.1.9.1": {"base_units": 10, "fine_units": 14, "requirements": 10, "pending_facets": 22, "already_counted_numbered_units": 8},
+      "10.1.9.2": {"base_units": 4, "fine_units": 17, "requirements": 5, "pending_facets": 24, "already_counted_numbered_units": 0},
+      "10.1.9.3": {"base_units": 4, "fine_units": 18, "requirements": 9, "pending_facets": 35, "already_counted_numbered_units": 0}
+    }
+  },
+  "authoring": {
+    "author_context": "fresh subagent context in an isolated worktree based on 109161c",
+    "author_packet": "4045fd1",
+    "source_read_receipt": "receipts-batch104-source.json",
+    "note": "The author's base 109161c predates the integration of batches 101-103, so the author's global audit numbers are relative to that base. The integrator recomputed all totals on the integration base."
+  },
+  "independent_review": {
+    "receipt": "c10-result-props-source-review.json",
+    "reviewer_distinct_from_author": true,
+    "decision": "source-eligible-with-nonblocking-observations",
+    "blocking_findings": 0,
+    "scoped_original_units_read_in_full": 18,
+    "pdf_pages_read": [183, 184, 185, 186],
+    "compiler_invocations": 0,
+    "why_this_scope_is_high_risk": "10.1.9.3 is where the standard states result type, kind, length and shape rules that look like exact oracles but are in several cases deliberately underdetermined. The batch101 review had already established the precedent; this packet is where it actually bites."
+  },
+  "accounting_verification": {
+    "claim": "+10 newly accounted base units, not +18",
+    "verdict": "verified independently",
+    "newly_accounted_base_units": [
+      "10.1.9.1#p1", "10.1.9.1#p2",
+      "10.1.9.2#p1", "10.1.9.2#p2", "10.1.9.2#p3", "10.1.9.2#p4",
+      "10.1.9.3#p1", "10.1.9.3#p2", "10.1.9.3#p3", "10.1.9.3#p4"
+    ],
+    "already_accounted_numbered_units": [
+      "10.1.9.1#R1025", "10.1.9.1#C1007",
+      "10.1.9.1#R1026", "10.1.9.1#C1008",
+      "10.1.9.1#R1027", "10.1.9.1#C1009",
+      "10.1.9.1#R1028", "10.1.9.1#C1010"
+    ],
+    "detail": "Each of the eight was already accounted by the numbered-rule inventory and now additionally carries a catalogue record, while still counting as exactly one accounted base unit. The reviewer confirmed no double count and no drop."
+  },
+  "permission_dispositions": [
+    {
+      "unit": "10.1.9.2 p3.disassociated-pointer-explicit-permission",
+      "verdict": "acceptable",
+      "reason": "The phrase only allows contexts explicitly permitted elsewhere. The packet treats it as a boundary and does not invent an independent processor behaviour or a fixture that would assert one."
+    },
+    {
+      "unit": "10.1.9.3 p4.integer-equal-range-processor-dependent",
+      "verdict": "acceptable",
+      "reason": "The processor-dependent choice is not promoted to a requirement. The retained requirement is only the weak property the source actually requires: that the result kind is one of the operand kinds."
+    },
+    {
+      "unit": "10.1.9.3 p4.real-complex-equal-precision-processor-dependent",
+      "verdict": "acceptable",
+      "reason": "The packet does not predict which equal-precision operand kind is selected; it keeps only the one-of-operand-kinds property."
+    },
+    {
+      "unit": "10.1.9.3 p4.logical-different-kind-processor-dependent",
+      "verdict": "acceptable",
+      "reason": "No particular logical kind is required when operand kinds differ; only that the result kind is an operand kind."
+    }
+  ],
+  "permissions_completeness": "The reviewer found no other in-scope processor-latitude phrase requiring a permission disposition, and confirmed that no genuine requirement had been demoted into an untestable processor-choice oracle. Both failure directions were checked.",
+  "mixed_kind_verdict": {
+    "verdict": "acceptable",
+    "rules_derived_independently_by_the_reviewer": "Integer with real or complex uses the real or complex operand kind. Same-kind numeric operands, and same-kind real/complex pairs, preserve the common kind. Different-range integer pairs require the greater RANGE kind. Different-precision real or complex pairs require the greater PRECISION kind. Equal-range integer pairs, equal-precision real or complex pairs, and different-kind logical binary results require only that the kind be one of the operand kinds, with the choice processor dependent. Relational results are default logical.",
+    "candidate_check": "No pending plan hard-codes a kind value, and none predicts which operand kind is selected in the equal-range, equal-precision or different-logical-kind cases. The greater-RANGE and greater-PRECISION plans are conditional on dynamically identifying supported distinct values."
+  },
+  "kind_set_assumptions": "acceptable. Plans consistently compare KIND, LEN, RANGE and PRECISION results against declarations, operands, KIND(.TRUE.), or dynamically discovered supported kinds. No plan assumes a specific numeric kind value, and none assumes that multiple nondefault kinds exist.",
+  "vacuity_review": "acceptable. LEN is asserted explicitly for character length. Disassociated pointers and unallocated allocatables are given no SHAPE oracle. The binary-operation shape plan explicitly warns that two conformable arrays cannot discriminate the x1-shape rule, and offers array-scalar cases that can.",
+  "ownership_and_duplication": "acceptable. Grammar, precedence and evaluation, Table 10.2 operation classification, intrinsic operation interpretation, type definitions, designators, constructors, generic resolution, pointer and allocatable attributes, assignment, procedure argument association and the intrinsics are all cited as dependencies rather than re-owned. Dependencies on pending or unregistered 10.2 pointer-assignment and allocation contexts are explicit. No under-claim of a locally owned 10.1.9.x rule was found.",
+  "tables": "No table is a base unit in 10.1.9.1, 10.1.9.2 or 10.1.9.3. Table 10.2 is referenced by 10.1.9.3 p1 but belongs to already-registered 10.1.5.1; the packet cites it as a dependency and does not duplicate its rows.",
+  "nonblocking_observations": [
+    {
+      "id": "C10RPR-NB-001",
+      "observation": "Future shape fixtures must not try to prove the x1-shape rule with two conforming arrays alone, because conformability makes the x1 and x2 shapes equal and the assertion becomes vacuous. The packet already warns against this and offers array-scalar coverage."
+    },
+    {
+      "id": "C10RPR-NB-002",
+      "observation": "The disassociated-pointer pointer-assignment plan must be worded carefully in future fixture work so that 'target in a pointer assignment statement' is exercised as the pointer-assignment target context, rather than accidentally testing only later association."
+    }
+  ],
+  "explicit_limitations": [
+    "This batch registers source accounting only. It is not fixture approval, it supplies no execution, and it creates no test case.",
+    "All 81 facets in scope remain pending.",
+    "No result kind is claimed for an equal-range integer, equal-precision real or complex, or different-kind logical operation. The standard requires only that it be one of the operand kinds.",
+    "No plan asserts that any particular kind exists beyond the default kinds; greater-RANGE and greater-PRECISION plans are conditional on dynamic discovery.",
+    "No compiler was invoked during authoring or review. The eight substring executions integrated in batch099 remain the latest actual observations."
+  ],
+  "preservation": {
+    "cases_preserved": 2083,
+    "raw_reviews_preserved": 2047,
+    "older_catalogues_preserved": 203,
+    "linked_facets_preserved": 22,
+    "current_source_use_inventories_preserved": 1,
+    "baseline_lines_changed": 0,
+    "baseline": "b153c75b",
+    "expected_failures_lines": 804,
+    "new_compiler_invocations": 0,
+    "integrated_files_byte_identical_to_reviewed_branch": true,
+    "index_json_conflict_resolution": "batch104 was authored in parallel with batch105 and batch106 from base 109161c, which predates batches 101-103. The doc/catalogues/index.json append conflict was resolved by keeping both sides in registration order; no entry was dropped or reordered."
+  },
+  "validation_snapshot": {
+    "catalogue_reviews_written": 3,
+    "inventory_reviews_written": 1,
+    "detailed_catalogues": 206,
+    "requirements": 1185,
+    "declared_facets": 5706,
+    "pending_facets": 3896,
+    "authored_facets": 1788,
+    "accounted_base_units": 2049,
+    "unresolved_base_units": 4424,
+    "normal_audit_exit": 1,
+    "normal_audit_block": "one retained needs-oracle real-BOZ case",
+    "python_suite_tests": 960,
+    "python_suite_result": "OK"
+  }
+}

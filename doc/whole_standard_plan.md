@@ -2538,6 +2538,59 @@ compiler was invoked. Discharging a delegation means a writable plan now
 exists — not that a program has been written or run.
 See `doc/source_audits/batch_103.json`.
 
+The hundred-and-fourth checkpoint registers the independently reviewed
+expression, primary and operation-result characteristics source:18base/49fine
+units across10.1.9.1,10.1.9.2 and10.1.9.3,24requirements and81pending facets.
+
+The central number in this batch is **10, not18**. Eight of the base units in
+scope — R1025, C1007, R1026, C1008, R1027, C1009, R1028 and C1010 — were
+already accounted by the numbered-rule inventory before this packet, so only
+ten base units are newly accounted. They now additionally carry catalogue
+records while still counting as one accounted base unit each. The reviewer
+verified all eight individually and confirmed that none is double-counted and
+none is dropped; a wrong number here would corrupt the whole-standard census.
+
+10.1.9.3 is the interesting part, because it states result type, kind, length
+and shape rules that *look* like exact oracles and in several cases are
+deliberately underdetermined. The reviewer derived the rules independently
+from the source before comparing them with the catalogue. Integer combined
+with real or complex uses the real or complex operand kind. Different-range
+integer pairs require the **greater** RANGE kind, and different-precision real
+or complex pairs the **greater** PRECISION kind. But equal-range integer
+pairs, equal-precision real or complex pairs, and different-kind logical
+results require only that the result kind be **one of the operand kinds** —
+which one is processor dependent. All three are recorded as permissions, and
+the retained requirement is the weak property the standard actually states.
+The fourth permission is the10.1.9.2p3 phrase admitting a disassociated
+pointer only in contexts explicitly permitted elsewhere, which is a boundary
+rather than a behaviour. The reviewer checked both failure directions and
+found no other latitude needing a permission, and no genuine requirement
+demoted into an untestable processor-choice oracle.
+
+No plan hard-codes a kind value, predicts which operand kind is selected, or
+assumes that multiple nondefault kinds exist; plans compare KIND, LEN, RANGE
+and PRECISION against declarations, operands, `KIND(.TRUE.)` or dynamically
+discovered supported kinds, and the greater-RANGE and greater-PRECISION plans
+are conditional on that discovery.
+
+Vacuity was checked explicitly, because this scope invites it. LEN is asserted
+directly for character length. Disassociated pointers and unallocated
+allocatables are given no SHAPE oracle. And the binary-operation shape plan
+carries its own warning that two *conformable* arrays cannot discriminate the
+x1-shape rule at all — conformability makes their shapes equal — so array-
+scalar cases are offered instead. No table is a base unit in this scope;
+Table10.2 is cited as a dependency and remains owned by10.1.5.1.
+
+There were no blocking findings; two non-blocking observations record traps
+for the future fixture work.
+
+There remain **2,083cases**, now with **206catalogues,1,185requirements,
+1,788direct,22linked and3,896pending facets out of5,706**. Source accounting
+covers2,049base units. All2,083case bindings,2,047reviews,203older
+catalogues,22links,R402 and the `b153c75b` baseline are preserved, and no
+compiler was invoked.
+See `doc/source_audits/batch_104.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
