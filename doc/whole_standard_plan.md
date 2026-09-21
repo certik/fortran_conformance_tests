@@ -3017,6 +3017,77 @@ catalogues,22links,R402 and the `b153c75b` baseline are preserved, and no
 compiler was invoked.
 See `doc/source_audits/batch_111.json`.
 
+The hundred-and-twelfth checkpoint registers the independently reviewed
+`CHANGE TEAM` and `CRITICAL` source:39base/75fine units across11.1.5.1,
+11.1.5.2 and11.1.6,33requirements and85pending facets. Eighteen numbered
+items were already accounted — twelve in11.1.5.1, **none** in11.1.5.2, six in
+11.1.6 — so21base units are newly accounted.
+
+A process point first. The authoring prompt for this packet **wrongly guessed**
+that these sections were the `IF` and `CASE` constructs. The author read the
+pinned document, found they are `CHANGE TEAM` and `CRITICAL`, and registered
+what the source actually says. The reviewer verified the titles independently
+and recorded the override as correct. That is the right precedent: **the
+pinned source outranks the coordinator's instruction**, and an author who
+follows a wrong prompt into the wrong sections would have done real damage.
+
+The substantive problem in this scope is that `CHANGE TEAM` and `CRITICAL` are
+fundamentally about **multi-image execution**, and this suite has no
+multi-image testing capability. Almost every interesting obligation is a
+dynamic cross-image requirement that no conforming single-image program can
+observe and that a processor is not required to diagnose.
+
+That produced finding **C11TR-001**. The rule at11.1.5.2p5 — *"All active
+images of the new team shall execute the same CHANGE TEAM statement"* — had
+been filed as a **diagnostic rejection**, a negative with a control expecting
+the processor to reject the invalid program. But which `CHANGE TEAM` statement
+each image executes is determined at run time by which image runs which code
+path. A conforming processor is neither required to diagnose a violation nor
+generally able to, and there is no portable executable oracle either, because
+observing that images diverged would require exactly the timing, scheduling and
+interleaving evidence this project forbids. The facet was unimplementable in
+**both** directions. The requirement stays registered and still states the p5
+obligation; only the unsupportable plan was removed.
+
+The rule that closes it generalises, and is now a project precedent:
+
+> A facet may carry a **diagnostic** expectation only if a conforming
+> processor is actually required to reject the program, and an **executable**
+> oracle only if a conforming single-image program can portably observe the
+> effect. A dynamic multi-image synchronization obligation satisfies neither.
+
+The author then swept the whole packet against that test and produced a
+22-row classification. It reclassified **eight further facets** beyond the one
+found — the successful-change-team synchronization, the post-change and
+post-`END TEAM` segment delays, cross-image segment precedence, and, notably,
+the `CRITICAL` one-image-at-a-time and mutual-exclusion facets. `CRITICAL`
+does provide mutual exclusion, but a conforming program cannot portably
+observe that another image was excluded.
+
+Crucially, the reviewer audited that sweep for **over-correction** as well as
+under-correction, because an unobservability claim that is too broad is itself
+a defect here. The team-restoration rows and the `CRITICAL` segment
+classification were examined specifically for local single-image
+observability. None was over-suppressed, nothing is missing from the table,
+and no facet could pass vacuously in a single-image run — which would be worse
+than having no facet at all.
+
+Both permissions follow the batch111 precedent: the "permissible to branch …
+**only** from within" sentences carry a permission and a paired restriction,
+and both halves are captured.
+
+The honest summary is that a substantial fraction of this packet's85facets are
+recorded as **unimplementable** in the current observational regime rather
+than merely unwritten. Registering this source gives the suite no multi-image
+capability; acquiring one would be separate and substantial work.
+
+There remain **2,083cases**, now with **238catalogues,1,411requirements,
+1,788direct,22linked and4,614pending facets out of6,424**. Source accounting
+covers2,184base units. All2,083case bindings,2,047reviews,235older
+catalogues,22links,R402 and the `b153c75b` baseline are preserved, and no
+compiler was invoked.
+See `doc/source_audits/batch_112.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
