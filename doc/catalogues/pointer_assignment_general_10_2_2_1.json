@@ -1,0 +1,149 @@
+{
+  "schema_version": 1,
+  "section": "10.2.2.1",
+  "review_state": "reviewed",
+  "subunits": {
+    "p1": [
+      "p1.status-associated",
+      "p1.status-disassociated",
+      "p1.status-undefined",
+      "p1.previous-association-broken"
+    ],
+    "p2": [
+      "p2.derived-type-intrinsic-assignment-route",
+      "p2.pointer-component-object",
+      "p2.corresponding-component-target"
+    ]
+  },
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "requirements",
+      "requirements": [
+        "S10.2.2.1-001"
+      ]
+    },
+    {
+      "unit": "p1.status-associated",
+      "disposition": "requirements",
+      "requirements": [
+        "S10.2.2.1-001"
+      ]
+    },
+    {
+      "unit": "p1.status-disassociated",
+      "disposition": "requirements",
+      "requirements": [
+        "S10.2.2.1-001"
+      ]
+    },
+    {
+      "unit": "p1.status-undefined",
+      "disposition": "requirements",
+      "requirements": [
+        "S10.2.2.1-001"
+      ]
+    },
+    {
+      "unit": "p1.previous-association-broken",
+      "disposition": "requirements",
+      "requirements": [
+        "S10.2.2.1-001"
+      ]
+    },
+    {
+      "unit": "p2",
+      "disposition": "requirements",
+      "requirements": [
+        "S10.2.2.1-002"
+      ]
+    },
+    {
+      "unit": "p2.derived-type-intrinsic-assignment-route",
+      "disposition": "requirements",
+      "requirements": [
+        "S10.2.2.1-002"
+      ]
+    },
+    {
+      "unit": "p2.pointer-component-object",
+      "disposition": "requirements",
+      "requirements": [
+        "S10.2.2.1-002"
+      ]
+    },
+    {
+      "unit": "p2.corresponding-component-target",
+      "disposition": "requirements",
+      "requirements": [
+        "S10.2.2.1-002"
+      ]
+    }
+  ],
+  "requirements": [
+    {
+      "id": "S10.2.2.1-001",
+      "title": "Pointer assignment changes pointer association status and breaks any previous association",
+      "source": "10.2.2.1 p1; J3/24-007 PDF p193.",
+      "source_units": [
+        "p1",
+        "p1.status-associated",
+        "p1.status-disassociated",
+        "p1.status-undefined",
+        "p1.previous-association-broken"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Pointer assignment is the operation that causes a pointer to become associated with a target, disassociated, or to have undefined pointer association status; any previous association between the pointer and a target is broken.",
+      "facets": [
+        "data-pointer-associated-status",
+        "procedure-pointer-associated-status",
+        "disassociated-status",
+        "undefined-status-source-boundary",
+        "previous-association-broken"
+      ],
+      "pending": {
+        "data-pointer-associated-status": "PENDING source plan using a valid data-pointer assignment from a pointer with defined status to a live TARGET object, then observing ASSOCIATED(pointer) and a literal target value. The exact association case is owned jointly with 10.2.2.2 syntax and 10.2.2.3 (NOT YET REGISTERED).",
+        "procedure-pointer-associated-status": "PENDING source plan using a valid procedure-pointer assignment to a compatible live procedure target, then invoking through the pointer for an independent literal result only after 10.2.2.4 (NOT YET REGISTERED) supplies the association effect and procedure characteristics are satisfied.",
+        "disassociated-status": "PENDING source plan assigning from NULL() or another source whose disassociated status is already defined by NULL/NULLIFY rules, then observing ASSOCIATED(pointer)=.FALSE. only when the status is defined by the owning rule.",
+        "undefined-status-source-boundary": "PENDING source-review-only plan identifying the standard paths that make association status undefined. It must not call ASSOCIATED, compare, dereference, invoke, or otherwise inspect a pointer whose association status is undefined.",
+        "previous-association-broken": "PENDING source plan first associating a pointer with target A, then performing a conforming pointer assignment to target B and observing association to B plus lack of association with A using only defined-status ASSOCIATED inquiries and distinguishable literal payloads."
+      },
+      "oracle": "ASSOCIATED may be used only after the cited source establishes defined association status; the expected result must come from the association-status rules, not from compiler convention. Undefined status is recorded as an unobservable source state, not as a runtime oracle.",
+      "oracle_limitation": "This source-only catalogue records pending plans only. It creates no Fortran test program, invokes no processor, approves no fixture or oracle, and claims no coverage. Future fixtures must use independently derived source relations, literal values, inquiry results, or reached-control-flow sentinels only after all pointer association statuses and targets are defined for that inquiry. They must not rely on compiler agreement, diagnostic wording, addresses, descriptor contents, emitted code, undefined association status, undefined target values, resource exhaustion, or processor-dependent representations.",
+      "dependencies": "8.5.14 POINTER;8.5.18 TARGET;9.7.1.4 pointer allocation;9.7.2 NULLIFY;10.2.2.2 in this packet;10.2.2.3 data pointer assignment NOT YET REGISTERED;10.2.2.4 procedure pointer assignment NOT YET REGISTERED;16.9.20 ASSOCIATED/16.9.155 NULL NOT YET REGISTERED;19.5.2 pointer association status NOT YET REGISTERED."
+    },
+    {
+      "id": "S10.2.2.1-002",
+      "title": "Derived-type intrinsic assignment can perform pointer assignment for pointer components",
+      "source": "10.2.2.1 p2; J3/24-007 PDF p193.",
+      "source_units": [
+        "p2",
+        "p2.derived-type-intrinsic-assignment-route",
+        "p2.pointer-component-object",
+        "p2.corresponding-component-target"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Execution of a derived-type intrinsic assignment statement can also perform pointer assignment for a pointer component of a structure; the pointer object is the pointer component of the variable, and the target is the corresponding component of the expression as further described by 10.2.2.2 p2.",
+      "facets": [
+        "data-pointer-component-derived-assignment",
+        "procedure-pointer-component-derived-assignment",
+        "component-target-correspondence"
+      ],
+      "pending": {
+        "data-pointer-component-derived-assignment": "PENDING source plan with two structures containing data-pointer components, performing intrinsic assignment of the whole structure and then observing the destination component associated with the source component target through defined-status ASSOCIATED and a distinct literal value. Component value assignment remains credited to 10.2.1.3.",
+        "procedure-pointer-component-derived-assignment": "PENDING source plan with structures containing procedure-pointer components, performing intrinsic assignment and then invoking the destination component for an independent literal result after 10.2.2.4 establishes procedure-pointer association effects.",
+        "component-target-correspondence": "PENDING source plan that uses two pointer components with distinct live targets and assigns a structure expression, checking that the destination component follows the corresponding source component rather than an unrelated component or copied target value."
+      },
+      "oracle": "The plan observes association, not storage identity. It must not treat an undefined component status as disassociated or inspect an undefined target. 10.2.1.3 owns the surrounding derived-type intrinsic assignment sequence; this section owns only the pointer-assignment route for pointer components.",
+      "oracle_limitation": "This source-only catalogue records pending plans only. It creates no Fortran test program, invokes no processor, approves no fixture or oracle, and claims no coverage. Future fixtures must use independently derived source relations, literal values, inquiry results, or reached-control-flow sentinels only after all pointer association statuses and targets are defined for that inquiry. They must not rely on compiler agreement, diagnostic wording, addresses, descriptor contents, emitted code, undefined association status, undefined target values, resource exhaustion, or processor-dependent representations.",
+      "dependencies": "10.2.1.3 pointer-component intrinsic assignment registered;7.5.4 components;8.5.14 POINTER;10.2.2.2 p2 in this packet;10.2.2.3 and 10.2.2.4 NOT YET REGISTERED;15 procedure characteristics NOT YET REGISTERED;16.9.20 ASSOCIATED NOT YET REGISTERED."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_10_2_2_1.md"
+  },
+  "review_fingerprint": "95a0c1f7049205c5a2110e9844c2d9813f8c298bc32217c22331a26a647e429a",
+  "review_rationale": "batch107: independent fresh-context source review against pinned J3/24-007 (sha256 7371e889...). Reviewer read all 32 base units of 10.2.2.1 and 10.2.2.2 in the original PDF rather than the author summary, verified 32 base / 61 fine units, 29 requirements and 92 facets (all pending), and independently confirmed the accounting claim that only 5 base units are newly accounted. The 27 numbered items R1034 through R1041 and C1016 through C1034 were already accounted by the numbered-rule inventory; the newly accounted units are 10.2.2.1 p1 and p2 plus 10.2.2.2's unnumbered note, p1 and p2. No double count and no dropped unit were found, and using the numbered identifiers as requirement IDs rather than minting S identifiers matches suite_data enforcement and earlier batches. The zero-permissions claim was independently adjudicated and accepted: the only two latitude words in scope are both the word can, and neither grants the processor a choice. In 10.2.2.1 p2 it identifies another execution route by which pointer assignment occurs, namely a derived-type intrinsic assignment statement, and in the 10.2.2.2 note it describes an admitted program shape. No requirement was demoted and no permission promoted. 10.2.2.2 p1 and p2 are correctly dispositioned as definitions: p1 says data-pointer-object and proc-pointer-object denote the pointer object while data-target and proc-target denote the pointer target, and p2 defines those terms for derived-type intrinsic assignment; neither carries a shall or an independent obligation, and no normative obligation was lost. The reviewer audited the 32-row attribution table required by project precedent, spot-checking C1018, C1019, C1020, C1021, C1023, C1026, C1028, C1030, C1031, C1032 and C1033 against the source, including every constraint that yields two or more negatives, and confirmed each negative is individually attributable to one prohibiting clause. Pointer-specific discipline was verified: no plan reads, compares, dereferences, invokes or inquires about a pointer whose association status is undefined, ASSOCIATED is proposed only after another cited source establishes defined status with 16.9.20 kept as an explicit dependency, and no bounds oracle is asserted without nondefault bounds to avoid vacuity. Decision: source-eligible, no blocking findings; three non-blocking observations recorded in doc/source_audits/batch_107.json. This registers source accounting only: it is not fixture approval, it supplies no execution, and it approves no oracle."
+}

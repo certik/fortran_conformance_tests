@@ -2723,6 +2723,58 @@ catalogues,22links,R402 and the `b153c75b` baseline are preserved, and no
 compiler was invoked.
 See `doc/source_audits/batch_106.json`.
 
+The hundred-and-seventh checkpoint registers the independently reviewed
+pointer assignment statement source:32base/61fine units across10.2.2.1 and
+10.2.2.2,29requirements and92pending facets.
+
+10.2.2.2 is the most **constraint-dense** subclause registered so far:27 of
+its30base units are numbered items — R1034 through R1041 and C1016 through
+C1034 — all of which were already accounted by the numbered-rule inventory.
+So the packet newly accounts only **five** base units:10.2.2.1p1 and p2, and
+10.2.2.2's unnumbered note, p1 and p2. The reviewer verified all27
+individually and found no double count and no dropped unit.
+
+The zero-permissions verdict here is unusually clean. The words "may", "need
+not", "is permitted to" and "processor dependent" **do not occur in this scope
+at all**. The only latitude-shaped word is "can", twice: once in10.2.2.1p2,
+where pointer assignment for a pointer component of a structure *can also take
+place* by execution of a derived-type intrinsic assignment statement — a
+second semantic route, not a processor choice — and once in a NOTE observing
+that a coarray can be of a derived type with pointer or allocatable
+subcomponents, which describes an admitted program shape.
+
+10.2.2.2p1 and p2 are dispositioned as **definitions**, and the reviewer
+confirmed that is right rather than an under-claim: p1 states what
+*data-pointer-object*, *proc-pointer-object*, *data-target* and *proc-target*
+denote, and p2 defines the pointer object and target for a derived-type
+intrinsic assignment. Neither carries a `shall`, and no normative obligation
+was lost by treating them as definitions.
+
+The32-row attribution table was **audited rather than accepted**, under the
+precedent established in batch105. Every constraint that yields two or more
+negatives was examined to confirm each negative is individually attributable
+to one prohibiting clause, rather than a single program violating a constraint
+in two ways at once; C1018, C1019, C1020, C1021, C1023, C1026, C1028, C1030,
+C1031, C1032 and C1033 were checked against the source.
+
+The pointer-specific discipline is the part worth recording for later. **No
+plan reads, compares, dereferences, invokes or inquires about a pointer whose
+association status is undefined** — such a program is not conforming, and the
+catalogue explicitly forbids `ASSOCIATED` or any other inspection in that
+state. `ASSOCIATED` is proposed only after some other cited source has
+established defined status, with16.9.20 retained as an explicit dependency so
+the oracle is not circular. And no bounds oracle is asserted without nondefault
+bounds, because a bound that coincides with the default proves nothing.
+
+There were no blocking findings; three non-blocking observations are recorded.
+
+There remain **2,083cases**, now with **215catalogues,1,255requirements,
+1,788direct,22linked and4,194pending facets out of6,004**. Source accounting
+covers2,083base units. All2,083case bindings,2,047reviews,213older
+catalogues,22links,R402 and the `b153c75b` baseline are preserved, and no
+compiler was invoked.
+See `doc/source_audits/batch_107.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
