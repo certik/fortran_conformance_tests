@@ -1,0 +1,92 @@
+{
+  "schema_version": 1,
+  "review_type": "independent-substring-runtime-fixture-review",
+  "review_date": "2026-09-21",
+  "baseline_commit": "c50500c",
+  "state": "reviewed-runtime-effect-subset-completing-S9.4.1-001",
+  "scope": {
+    "section": "9.4.1",
+    "requirement": "S9.4.1-001",
+    "new_cases": 8,
+    "represented_facets": ["contiguous-portion", "first-expression-start", "second-expression-end",
+                           "inclusive-character-selection", "default-start-one",
+                           "default-end-parent-length", "length-formula",
+                           "zero-length-when-start-exceeds-end"],
+    "requirement_facets_remaining_pending": 0,
+    "section_facets_remaining_pending": 28,
+    "new_source_units": 0,
+    "new_requirements": 0,
+    "new_links": 0,
+    "new_baseline_entries": 0,
+    "note": "Every facet of S9.4.1-001 is now represented. The facets of R908, R909, R910, C908 and S9.4.1-002 keep their original pending plans."
+  },
+  "packet": {
+    "author_commit": "47cf7e91f122f529bb5a8bd567bf3481b899c223",
+    "generator": "tools/generate_substring_effect_fixtures.py",
+    "regression_module": "tests/test_substring_effect_fixtures.py",
+    "deterministic_check": "generator --check exits 0",
+    "author_self_check": "gfortran -std=f2023 compiled and ran all eight during authoring",
+    "author_self_reported_weakness": "The author flagged that a comparison of a zero-length substring with an empty literal is weak on its own and that the LEN guards carry those facets."
+  },
+  "independent_review": {
+    "receipt": "substring-fixture-review.json",
+    "reviewer_distinct_from_author": true,
+    "decision": "fixtures-eligible-with-nonblocking-observations",
+    "blocking_findings": 0,
+    "per_case_state": "reference-validated for all eight",
+    "blank_padding_analysis": "The reviewer checked every value comparison individually. All nonzero comparisons use equal-length operands, so none can succeed through Fortran's blank padding instead of the property under test. The only padding-weak comparisons are the two against an empty literal, at length_formula line 32 and zero_length line 12, and in both cases the facet is carried by an explicit LEN assertion.",
+    "zero_length_verdict": "Acceptable: the dedicated case asserts LEN of zero, that the parent is unchanged, and that a neighbouring nonzero substring still behaves.",
+    "sensitivity_verdict": "82 plans per compiler, all 246 runs sensitive, no vacuous mutation found."
+  },
+  "evidence": {
+    "observation_receipt": "substring-effects-native.json",
+    "observation_report": "substring-effects-native-report.json",
+    "sensitivity_receipt": "substring-effects-sensitivity.json",
+    "parent_observations": 24,
+    "parent_outcomes": {"lfortran_f23": "8 pass", "gfortran_f2023": "8 pass", "flang_f2018": "8 pass"},
+    "qualifying_reference": "GNU Fortran 16.1.0 in f2023 for all eight cases",
+    "supplementary_only": "Flang 22.0.0git runs f2018",
+    "target": "frozen LFortran 0.65.0-411-ga0afaa840b-dirty; it passes all eight but adjudicates nothing",
+    "wrong_oracle_plans": 40,
+    "omission_plans": 42,
+    "mutation_runs": 246,
+    "mutation_processes": 738,
+    "mutations_sensitive": 246,
+    "mutations_vacuous": 0
+  },
+  "oracle_judgments": [
+    "Parents use all-different characters, so an off-by-one starting or ending point changes the observed value.",
+    "No character intrinsic such as INDEX, SCAN, TRIM or ADJUSTL is used as the oracle for a substring value; LEN is used only where the facet is about length.",
+    "The default facets compare the defaulted form against its explicit equivalent, so they establish the default rule rather than merely a value.",
+    "The endpoint facets use integer variables assigned by executed statements, so they concern an evaluated expression rather than a constant.",
+    "The zero-length facets rest on LEN of zero plus an unchanged parent and a neighbouring nonzero substring."
+  ],
+  "explicit_limitations": [
+    "These eight runs represent exactly the eight facets of one requirement. The 28 remaining 9.4.1 facets under R908, R909, R910, C908 and S9.4.1-002 stay pending, including every diagnostic-control plan.",
+    "No linked facet, SourceUse relationship, source closure, baseline entry or universal conformance credit is created.",
+    "All three compilers passing is corroboration, not proof: Flang runs f2018 and is supplementary, and the target under test adjudicates nothing.",
+    "A comparison of a zero-length substring against an empty literal is not by itself evidence; the LEN assertions carry those facets."
+  ],
+  "preservation": {
+    "cases_before": 2075,
+    "cases_after": 2083,
+    "old_case_bindings_preserved": 2075,
+    "old_reviews_preserved": 2039,
+    "current_links_preserved": 22,
+    "current_source_use_inventories_preserved": 1,
+    "baseline": "b153c75b",
+    "baseline_lines_changed": 0,
+    "reason_no_baseline_change": "all eight cases pass on the frozen target"
+  },
+  "validation_snapshot": {
+    "fixture_reviews_written": 8,
+    "catalogue_reviews_written": 1,
+    "inventory_reviews_written": 1,
+    "authored_facets": 1788,
+    "pending_facets": 3548,
+    "normal_audit_exit": 1,
+    "normal_audit_block": "one retained needs-oracle real-BOZ case",
+    "python_suite_tests": 960,
+    "python_suite_result": "OK"
+  }
+}

@@ -2305,6 +2305,37 @@ compiler was invoked. Clause10 is only opened: 10.1.3 onwards and most of10.2
 remain unauthored.
 See `doc/source_audits/batch_098.json`.
 
+The ninety-ninth checkpoint adds eight substring run/effect programs and
+**completes S9.4.1-001**: contiguous portion, the starting and ending point
+expressions, inclusive selection, both defaults, the `MAX(l-f+1,0)` length
+formula and the zero-length case. The28 remaining9.4.1 facets under R908,
+R909, R910, C908 and S9.4.1-002 keep their original pending plans.
+
+This section has a specific trap, and the review was aimed squarely at it.
+Fortran blank-pads the shorter operand in a character comparison, so a
+comparison against a literal of the wrong length can succeed for the wrong
+reason and hide exactly the off-by-one endpoint the facet is meant to catch.
+The reviewer checked every comparison individually and confirmed that all
+nonzero comparisons use equal-length operands. The only padding-weak
+comparisons are the two against an empty literal, and in both cases the facet
+is carried by an explicit `LEN` assertion rather than by that comparison.
+Parents use all-different characters so an off-by-one changes the value, the
+default facets compare the defaulted form against its explicit equivalent
+rather than merely against a literal, the endpoint facets use integer
+variables assigned by executed statements, and no character intrinsic such as
+`INDEX` or `TRIM` is used as an oracle.
+
+All eight pass on the frozen target, GNU f2023 and Flang f2018, and all246
+mutations failed at their predicted guards with no vacuous mutation found. GNU
+f2023 is the qualifying reference; no baseline entry is added. There were no
+blocking findings.
+
+There are now **2,083cases**, with **185catalogues,1,103requirements,
+1,788direct,22linked and3,548pending facets out of5,358**. All2,075prior
+case bindings,2,039reviews,22links,R402 and the `b153c75b` baseline are
+unchanged, and the960-method Python suite passes.
+See `doc/source_audits/batch_099.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
