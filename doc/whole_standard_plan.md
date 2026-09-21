@@ -2775,6 +2775,65 @@ catalogues,22links,R402 and the `b153c75b` baseline are preserved, and no
 compiler was invoked.
 See `doc/source_audits/batch_107.json`.
 
+The hundred-and-eighth checkpoint registers the independently reviewed data
+and procedure pointer assignment source:20base/46fine units across10.2.2.3,
+10.2.2.4 and10.2.2.5,20S requirements and64pending facets. **No numbered
+item falls in this scope at all** — R1034 through R1041 and C1016 through
+C1034 all live in10.2.2.2 — so all20base units are newly accounted. The
+reviewer verified that claim independently rather than taking it from the
+parallel batch107 author.
+
+This packet and batch107 were authored **in parallel** from the same base,
+splitting10.2.2 between them. Neither author read the other's worktree; both
+read the neighbouring sections from the pinned document to place the boundary.
+That makes the boundary the thing most worth checking, and the reviewer
+checked it in both directions. The split that needed scrutiny is a fine one:
+bounds **remapping effects** in p8 through p10 are owned here, while bounds
+**syntax and count constraints** are delegated to10.2.2.2. That is exactly the
+kind of division where a hole can open, and none was found — nor any
+duplication.
+
+10.2.2.5 yields **zero requirements and zero facets**, because it is examples.
+Both its base units and all three fine units are still accounted; the zero
+records the absence of a testable obligation, not an omission.
+
+Three permissions are recorded, all in10.2.2.4p3: the pure, simple and
+elemental-intrinsic target exceptions. Each is an *allowed exception* rather
+than an obligation that anything be exercised. No other unit in scope grants
+latitude, and nothing was demoted.
+
+The attribution table needed verifying word by word here for a specific
+reason: **every row cites a `shall` from a paragraph rather than from a
+numbered constraint.** That is legitimate — a paragraph can prohibit — but it
+removes the convenient signal a C-number provides. The reviewer checked the p7
+VOLATILE "if and only if" family, which yields four facets from one sentence;
+the three separate facet families p8 carries; and the opposite implicit-
+interface pairs in10.2.2.4p5, confirming the source really states both
+directions.
+
+The pointer discipline here is worth recording precisely, because it shows the
+right *shape* for an unobservability claim. The plans for the p2 remote-image
+undefined status, the p5 undefined-status target exclusion and the p8
+undefined remap target do not read, compare, inquire about or otherwise
+observe a pointer once its association status becomes undefined. But the claim
+is **scoped to undefined association status only** — conforming controls may
+still check parameter values, association, bounds, extents or procedure calls
+wherever the source rule requires a defined state. An unobservability claim
+that swept wider than that would itself be a defect. Bounds evidence is
+non-vacuous by construction: nondefault lower bounds, remapped shapes that
+differ from the target's, and target lower bounds distinct from the explicit
+ones.
+
+With this batch,10.2.2 is source-complete.
+
+There remain **2,083cases**, now with **218catalogues,1,275requirements,
+1,788direct,22linked and4,258pending facets out of6,068**. Source accounting
+covers2,103base units. All2,083case bindings,2,047reviews,215older
+catalogues,22links,R402 and the `b153c75b` baseline are preserved, and no
+compiler was invoked. Several10.2.2.4facets depend on unregistered Clause15
+material and cannot be implemented until it is registered.
+See `doc/source_audits/batch_108.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
