@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "section": "10.2.4.2.3",
+  "review_state": "reviewed",
+  "subunits": {
+    "p1": [
+      "p1.do-concurrent-mask-delegation"
+    ]
+  },
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "structural",
+      "requirements": [
+        "S10.2.4.2.3-001"
+      ],
+      "rationale": "Delegates mask-expression evaluation to unregistered DO CONCURRENT execution rules."
+    },
+    {
+      "unit": "p1.do-concurrent-mask-delegation",
+      "disposition": "structural",
+      "requirements": [
+        "S10.2.4.2.3-001"
+      ],
+      "rationale": "Structural dependency pointer; the substantive rule is delegated to the cited unregistered or registered owner section."
+    }
+  ],
+  "requirements": [
+    {
+      "id": "S10.2.4.2.3-001",
+      "title": "FORALL mask expression evaluation follows DO CONCURRENT mask evaluation",
+      "source": "10.2.4.2.3 p1; J3/24-007 PDF p201.",
+      "source_units": [
+        "p1",
+        "p1.do-concurrent-mask-delegation"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The FORALL mask expression is evaluated as it is for the DO CONCURRENT statement in 11.1.7.4.2.",
+      "facets": [
+        "do-concurrent-mask-dependency",
+        "mask-final-selection-plan"
+      ],
+      "pending": {
+        "do-concurrent-mask-dependency": "PENDING source-control evidence that scalar-mask-expr evaluation timing and any restrictions are checked against unregistered 11.1.7.4.2 before executable mask fixtures are approved.",
+        "mask-final-selection-plan": "PENDING positive source plan with a side-effect-free scalar mask over literal index values, proving only final active-combination selection by preloaded sentinels and not evaluation count/order."
+      },
+      "oracle": "This unit delegates mask evaluation to 11.1.7.4.2. Future fixtures may observe only final active-combination selection, not mask evaluation order, call counts, or side effects.",
+      "oracle_limitation": "This source-only catalogue records pending plans only. It creates no Fortran test program, invokes no processor, approves no fixture or oracle, and claims no coverage. Future FORALL fixtures must use independently derived literal, inquiry, or source-relation oracles; must inspect final values and scoping directly; must preload untouched or inactive objects with distinguishable sentinels; must not compute masking or selection oracles with MERGE, PACK, COUNT, or an equivalent; must not infer index processing order, assignment order, association order, function call counts, side effects, processor temporaries, simultaneity, or temporary storage; and must not rely on compiler agreement, diagnostic wording, emitted code, undefined values, resource exhaustion, or processor-dependent kind availability.",
+      "dependencies": "10.1.4 evaluation latitude registered;11.1.7.4.2 DO CONCURRENT mask evaluation NOT YET REGISTERED;19.4 index names NOT YET REGISTERED."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_10_2_4_2_3.md"
+  },
+  "review_fingerprint": "c4a0d1527604f8c0cd66fed5c2b130407165a97222330f8d140e33c17dc41b62",
+  "review_rationale": "batch110: independent fresh-context source review against pinned J3/24-007 (sha256 7371e889...). This batch completes Clause 10 source registration. The reviewer read all 28 base units of 10.2.4.1, 10.2.4.2.1, 10.2.4.2.2, 10.2.4.2.3, 10.2.4.2.4, 10.2.4.3 and 10.2.4.4 in the original PDF rather than the author summary, verified 28 base / 62 fine units, 33 requirements and 77 facets (all pending), and confirmed the accounting claim that only 18 base units are newly accounted: the ten numbered items are exactly R1051 through R1056 and C1038 through C1041, all already census-accounted, and the 18 newly accounted units are the non-numbered paragraphs and notes. FORALL is the richest remaining source of processor latitude in Clause 10, so the reviewer derived independently from the source what is required about the final state and what is merely permitted about order, and confirmed the catalogue draws that line in the same place. Six permissions are recorded and each was verified correct: the any-order evaluation and assignment latitude of 10.2.4.2.4 p2, the corresponding pointer evaluation and association latitude of p3, the 10.2.4.4 p1 permission to assign or pointer-assign the same object in different statements, and the 10.2.4.4 p2 permission for a nested concurrent header to depend on outer index values. No plan anywhere asserts that the processor took a particular order, counts function calls, relies on a side effect, or observes a temporary; a program able to detect the processing order would not be a conforming test. The attribution audit covered all 21 diagnostic-obligation facets, including the four C1038 construct-name rows, the five C1040 pure-procedure rows spanning function reference, defined operation, defined assignment and finalization, the 10.2.4.2.4 p4 rows, and the 10.2.4.4 many-to-one and nested-index rows, confirming each negative is individually attributable to one prohibiting clause and is not also rejectable for a purity, index-definition or conformability reason. The ownership boundaries were checked in both directions: assignment conversion, element correspondence, character padding and truncation, allocatable and component assignment remain with registered 10.2.1.3, pointer-assignment effects with 10.2.2, and WHERE control-mask semantics with 10.2.3, while FORALL owns active-combination execution, statement sequencing, evaluation before assignment, final effects and nested combination formation. Decision: source-eligible, no blocking findings. This registers source accounting only: it is not fixture approval, it supplies no execution, and it approves no oracle."
+}

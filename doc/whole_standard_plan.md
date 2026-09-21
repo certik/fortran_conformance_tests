@@ -2900,6 +2900,65 @@ catalogues,22links,R402 and the `b153c75b` baseline are preserved, and no
 compiler was invoked.
 See `doc/source_audits/batch_109.json`.
 
+The hundred-and-tenth checkpoint registers the independently reviewed `FORALL`
+source:28base/62fine units across10.2.4.1,10.2.4.2.1 through10.2.4.2.4,
+10.2.4.3 and10.2.4.4,33requirements and77pending facets. Ten numbered items —
+R1051 through R1056 and C1038 through C1041 — were already accounted, so18base
+units are newly accounted.
+
+**With this batch, Clause10 source registration is complete.** All53Clause10
+catalogues are reviewed, every content-bearing Clause10 section has a
+catalogue, and338Clause10 base units are accounted. Clauses8,9 and10 are now
+source-complete.
+
+`FORALL` is the richest remaining source of processor latitude in Clause10,
+and the entire value of this registration turns on one line: what the standard
+**requires** about the final state, versus what it merely **permits** about
+order. The reviewer derived that line independently from the source before
+comparing. The rules about when each right-hand side is evaluated relative to
+the assignments are the only reason `FORALL` is testable at all, and the
+catalogue neither strengthens nor weakens them.
+
+Six permissions are recorded and each was verified in both directions: the
+any-order evaluation and assignment latitude of10.2.4.2.4p2, the corresponding
+pointer evaluation and association latitude of p3, the10.2.4.4p1 permission to
+assign or pointer-assign the same object in *different* statements, and the
+p2 permission for a nested concurrent header to depend on outer index values.
+No plan anywhere asserts that the processor took a particular order, counts
+function calls, relies on a side effect, or observes a temporary — a program
+able to detect the processing order would not be a conforming test.
+
+The reviewer audited **all21** diagnostic-obligation facets rather than a
+sample. Three families needed real scrutiny: the four C1038 rows, which all
+cite the identical words "shall have the same forall-construct-name" and had to
+be shown to differ in exactly one property each; the five C1040 rows citing
+"shall be a pure procedure" across function reference, defined operation,
+defined assignment and finalization, where the source does extend to all four;
+and the10.2.4.4 many-to-one rows, checked specifically to confirm the invalid
+programs are not *also* non-conforming for a purity, index-definition or
+conformability reason. None was found wanting.
+
+The ownership boundaries were checked in both directions. Assignment
+conversion, element correspondence, character padding and truncation, and
+allocatable and component assignment remain with10.2.1.3; pointer-assignment
+effects with10.2.2; `WHERE` control-mask semantics with10.2.3, the `FORALL`
+overlay being confined to10.2.4.2.4p5. There were no blocking findings.
+
+One thing this milestone is **not**. Completing Clause10 *source registration*
+is not completing Clause10 *testing*. Clause10 now declares1,731facets, of
+which all but a handful are pending, and no Clause10 fixture has yet been
+written. Several facets additionally depend on unregistered Clause11
+(11.1.7 `DO CONCURRENT`, branch targets), Clause15 (pure procedures,
+finalization) and Clause19 (index-name scope, pointer association status)
+material, and cannot be implemented until those clauses are registered.
+
+There remain **2,083cases**, now with **227catalogues,1,336requirements,
+1,788direct,22linked and4,410pending facets out of6,220**. Source accounting
+covers2,139base units. All2,083case bindings,2,047reviews,220older
+catalogues,22links,R402 and the `b153c75b` baseline are preserved, and no
+compiler was invoked.
+See `doc/source_audits/batch_110.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
