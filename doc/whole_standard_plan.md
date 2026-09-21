@@ -2420,6 +2420,68 @@ compiler was invoked. Clause10 remains partially registered at this batch:
 10.1.5.4 onwards and all of10.2 are unauthored.
 See `doc/source_audits/batch_101.json`.
 
+The hundred-and-second checkpoint registers the independently reviewed logical
+and relational intrinsic operation source:24base/70fine units across
+10.1.5.4.1,10.1.5.4.2,10.1.5.5.1 and10.1.5.5.2,19S requirements and68pending
+facets. All24base units are newly accounted; Tables10.5,10.6 and10.7 are base
+units in their own right.
+
+This packet was **blocked on its first pass** with three findings, all closed
+by a correction commit and then independently re-verified against the pinned
+document. Two of them are the same defect twice.10.1.5.4.2p1 and10.1.5.5.2p1
+each say that once the interpretation of an operation is established, the
+processor *may* evaluate any other expression that is logically — or
+relationally — equivalent, provided the integrity of parentheses is not
+violated. Both had been catalogued as **effect requirements**. That is exactly
+the error this project has ruled against before: processor latitude is a
+`permission`, never a requirement, and never gets a plan asserting the
+processor took it. Both were reclassified, and each of those two subclauses
+now yields **zero facets** — the parenthesis-integrity limit and the NaN limit
+survive as *boundaries* of the permission rather than as effects. A plan that
+tried to detect whether a rewrite happened would itself be a defect.
+
+The third finding is a plain source error. The relational oracle guidance had
+been repeated across fourteen places telling a future author to use "exact
+small integer, **logical**, enumeration, enum, and same-kind character
+literals". But two operands of type logical cannot be compared with a
+relational operator at all:10.1.5.5.1NOTE1 says so and Table10.2 does not
+admit them. A logical-operand relational positive control would not even be a
+conforming program. All fourteen occurrences were corrected and the count
+independently confirmed.
+
+Tables10.5,10.6 and10.7 were each checked row by row against the tables
+themselves. Table10.6's four truth rows legitimately cover five operator
+requirements, because `.NOT.` depends only on x2, so the apparently duplicated
+x1 cases are genuine rows rather than missing ones. In Table10.7 the `< =` and
+`> =` strings produced by text extraction are **artefacts**, not alternative
+spellings; visual layout extraction of the original page confirms `<=` and
+`>=`, and token ownership correctly stays with R1014 in10.1.2.7 rather than
+minting spaced-token operator requirements.
+
+Two attributions were checked substantively rather than taken on trust.
+Character collation is owned by7.4.4.4, with term3.27 as terminology and the
+LGT/LGE/LLE/LLT intrinsics in16.9.124-16.9.127 as a dependency boundary rather
+than a substitute owner; blank padding of the shorter operand is stated
+explicitly, limited for nondefault kinds by NOTE2. And10.1.5.5.1p6 owns the
+rule that relational operands are converted to the type and kind of x1+x2,
+while *determining* that type and kind is delegated to10.1.9.3p4 — a
+delegation, not a duplicate requirement. The logical catalogues continue to
+forbid side-effect, call-count, execution-path and skipped-operand oracles for
+`.AND.` and `.OR.`.
+
+Because batch101 and batch102 were authored in parallel from the same base,
+both appended to `doc/catalogues/index.json`; the conflict was resolved by
+keeping both appends in registration order, and all eight of batch102's files
+were verified byte-identical to the reviewed corrected branch before any
+review was recorded.
+
+There remain **2,083cases**, now with **198catalogues,1,151requirements,
+1,788direct,22linked and3,752pending facets out of5,562**. Source accounting
+covers2,019base units. All2,083case bindings,2,047reviews,194older
+catalogues,22links,R402 and the `b153c75b` baseline are preserved, and no
+compiler was invoked.
+See `doc/source_audits/batch_102.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
