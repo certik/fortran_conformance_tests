@@ -1,0 +1,129 @@
+{
+  "schema_version": 1,
+  "review_type": "independent-constant-and-specification-expression-source-review",
+  "review_date": "2026-09-21",
+  "baseline_commit": "c299759",
+  "state": "reviewed-source-only-after-three-closed-findings-and-a-full-attribution-sweep",
+  "scope": {
+    "sections": ["10.1.10", "10.1.11", "10.1.12"],
+    "section_titles": {
+      "10.1.10": "Conformability rules for elemental operations",
+      "10.1.11": "Specification expression",
+      "10.1.12": "Constant expression"
+    },
+    "base_units": 25,
+    "fine_units": 105,
+    "already_counted_numbered_units": 8,
+    "newly_accounted_base_units": 17,
+    "new_requirements": 20,
+    "new_numbered_requirements": 8,
+    "new_S_requirements": 12,
+    "new_pending_facets": 117,
+    "new_cases": 0,
+    "note": "Eight numbered units - R1029, C1011, R1030, C1012, R1031, C1013, R1032 and C1014 - were already accounted before this packet, so it newly accounts 17 base units rather than 25. They are used directly as requirement identifiers rather than minting S identifiers, matching earlier batches. Counts are final, after two correction commits; the original proposal declared 118 facets before one was removed and others reclassified.",
+    "per_section": {
+      "10.1.10": {"base_units": 2, "fine_units": 5, "requirements": 2},
+      "10.1.11": {"base_units": 13, "fine_units": 59, "requirements": 10, "numbered": ["R1029", "C1011"]},
+      "10.1.12": {"base_units": 10, "fine_units": 41, "requirements": 8, "numbered": ["R1030", "C1012", "R1031", "C1013", "R1032", "C1014"]}
+    }
+  },
+  "authoring": {
+    "author_context": "fresh subagent context in an isolated worktree based on 109161c",
+    "author_packet": "f7804c1",
+    "author_corrections": ["8eed53a", "0fe82a5"],
+    "source_read_receipt": "receipts-batch105-source.json",
+    "note": "The original proposal commit is immutable; both corrections are separate commits on top of it. The integrator verified that all six catalogue and view files on main are byte-identical to the final corrected branch before recording any review."
+  },
+  "independent_review": {
+    "receipt": "c10-constant-spec-source-review.json",
+    "reviewer_distinct_from_author": true,
+    "first_pass_decision": "blocked",
+    "second_pass_decision": "blocked",
+    "final_decision": "accept_no_blocking_findings",
+    "blocking_findings": 3,
+    "blocking_findings_closed": 3,
+    "review_rounds": 3,
+    "scoped_original_units_read_in_full": 25,
+    "compiler_invocations": 0,
+    "why_this_scope_is_high_risk": "This is the first constraint-dense scope in Clause 10. Most of its content is admission rules, so most plans are negatives - and a negative filed against the wrong unit, or against a unit that prohibits nothing, establishes nothing at all. Two of the three findings were exactly that defect."
+  },
+  "accounting_verification": {
+    "claim": "+17 newly accounted base units, not +25",
+    "verdict": "verified independently",
+    "already_accounted_numbered_units": ["R1029", "C1011", "R1030", "C1012", "R1031", "C1013", "R1032", "C1014"],
+    "detail": "Each was confirmed already accounted, neither double-counted nor dropped, and the use of numbered identifiers as requirement IDs was confirmed consistent with earlier batches."
+  },
+  "zero_permissions_verdict": {
+    "claim": "no unit in this scope is processor latitude",
+    "verdict": "accepted after independent adjudication",
+    "method": "The reviewer scanned every unit for 'may', 'need not', 'is permitted to' and 'processor dependent', and classified each occurrence by asking whether it grants the PROCESSOR latitude or conditionally admits a PROGRAM construct.",
+    "detail": "All such phrases in this scope are program-admission restrictions. In particular the TRANSFER 'permitted only if' text is a conditional restriction on what a program may write, not a permission granted to the processor. No unit therefore requires a permission disposition, which is unusual for Clause 10 but correct for a constraint-dense subclause."
+  },
+  "findings": [
+    {
+      "id": "C10CSR-001",
+      "anchor": "doc/catalogues/conformability_rules_for_elemental_operations_10_1_10.json / S10.1.10-001 / 10.1.10#p1, facet non-elemental-defined-operation-boundary",
+      "source_text": "An elemental operation is an intrinsic operation or a defined operation for which the function is elemental (15.9).",
+      "defect": "A diagnostic/control pair was filed against a unit that defines and classifies but prohibits nothing. A program using a non-ELEMENTAL defined operator on arrays is rejectable, if at all, through the defined-operation and generic-resolution rules or dummy-argument rank rules - and if the non-ELEMENTAL function accepts array dummy arguments, the operation is a perfectly valid non-elemental defined operation. The negative was therefore not attributable to the rule it was filed under.",
+      "closure": "The diagnostic-boundary facet was removed from S10.1.10-001 and the remaining definition and oracle text rewritten as classification-only, with no rejection expectation. The reviewer confirmed the negative was not relocated to an equally unsupportable neighbour.",
+      "state": "closed"
+    },
+    {
+      "id": "C10CSR-002",
+      "anchor": "doc/catalogues/specification_expression_10_1_11.json / C1011 / 10.1.11#p2 item (2)",
+      "source_text": "each primary may be an object designator with a base object that is a dummy argument that has neither the OPTIONAL nor the INTENT (OUT) attribute.",
+      "defect": "The C1011 dependency list reached into dummy-argument attributes without recording explicit dependencies on the OPTIONAL and INTENT(OUT) attribute owners, under-recording ownership for the two most important C1011 exclusion negatives.",
+      "closure": "Explicit dependencies added and verified by the reviewer against the pinned document: INTENT at 8.5.10/R828/C845-C849 and 8.6.9/R852; OPTIONAL at 8.5.12/C851 and 8.6.10/R853; dummy-argument and procedure-reference owners 15.5.2.1, 15.5.2.4 and 15.5.2.13 flagged as not yet registered. Ownership of the restricted-expression exclusion itself stayed with C1011.",
+      "state": "closed"
+    },
+    {
+      "id": "C10CSR-003",
+      "anchor": "doc/catalogues/specification_expression_10_1_11.json / S10.1.11-003 / 10.1.11#p4",
+      "source_text": "A function is a specification function if it is a pure function, is not a standard intrinsic function, is not an internal function, is not a statement function, and does not have a dummy procedure argument.",
+      "defect": "Raised during closeout of the first correction. The same defect class as C10CSR-001: p4 defines the term specification function and prohibits nothing on its own, yet S10.1.11-003 still carried diagnostic/control plans for not-internal-function, not-statement-function, no-dummy-procedure-argument and impure-function-boundary. A program using a non-qualifying function in a specification expression is invalid through C1011 and p2, because the expression is then not a restricted expression; noting that the definition feeds C1011 does not repair filing the negative under the definition.",
+      "closure": "The p4 plans were rewritten as classification/source-control evidence only. The author was then required to sweep the whole packet under an explicit rule, and found and fixed a fourth instance themselves at 10.1.11 p9 (S10.1.11-008 component-specification-expression plans), which likewise defines a term without prohibiting anything.",
+      "state": "closed"
+    }
+  ],
+  "attribution_rule_established": {
+    "rule": "A facet may carry a diagnostic expectation only if the source unit it is filed under actually prohibits something - an explicit shall, shall not, or a numbered constraint. A unit that defines a term, classifies a construct, or states what something is cannot support a negative, however obviously the definition feeds a nearby prohibition.",
+    "enforcement": "The author produced a 38-row sweep table covering every remaining diagnostic or control plan in all three catalogues, naming for each: the source unit it is filed under, the exact prohibiting words in that unit, and the single property differing between the invalid program and its control.",
+    "reviewer_audit": "The reviewer spot-checked twelve representative and high-risk row groups against the pinned PDF rather than accepting the table: the C1012 p1 family (intrinsic-only, p1(6)(b)(i)-(iii), the p1(8) transformational exclusions, p1(9) NULL and the two p1(10) TRANSFER rows), the C1011 ordinary-local-variable, OPTIONAL and INTENT(OUT) exclusions, the S10.1.11-004 direct versus indirect invocation pair that the author had flagged as a risk, the p6, p7 and p8 ordering rows, C1013 and C1014, and the 10.1.12 p2 and p3 rows. All were found sound.",
+    "note": "This rule is a project-wide precedent, not local to this batch. It generalises the earlier precedent that every negative must be attributable to the single rule it is filed under, by identifying the commonest way that rule is violated: filing a negative against a definition."
+  },
+  "explicit_limitations": [
+    "This batch registers source accounting only. It is not fixture approval, it supplies no execution, and it creates no test case.",
+    "All 117 facets in scope remain pending. The 38-row sweep table describes programs that could be written; none has been written or run.",
+    "The facets reclassified by C10CSR-001, C10CSR-003 and the author's own p9 sweep are classification and source-control evidence only. They carry no diagnostic expectation, and no conforming processor is claimed to reject anything on their account.",
+    "Three dummy-argument and procedure-reference owners - 15.5.2.1, 15.5.2.4 and 15.5.2.13 - are recorded as dependencies but are not yet registered, so the C1011 exclusion negatives cannot be implemented until they are.",
+    "No compiler was invoked during authoring or review. The eight substring executions integrated in batch099 remain the latest actual observations."
+  ],
+  "preservation": {
+    "cases_preserved": 2083,
+    "raw_reviews_preserved": 2047,
+    "older_catalogues_preserved": 206,
+    "linked_facets_preserved": 22,
+    "current_source_use_inventories_preserved": 1,
+    "baseline_lines_changed": 0,
+    "baseline": "b153c75b",
+    "expected_failures_lines": 804,
+    "new_compiler_invocations": 0,
+    "integrated_files_byte_identical_to_reviewed_branch": true,
+    "index_json_conflict_resolution": "Resolved by keeping both appends in registration order; no entry dropped or reordered."
+  },
+  "validation_snapshot": {
+    "catalogue_reviews_written": 3,
+    "inventory_reviews_written": 1,
+    "detailed_catalogues": 209,
+    "requirements": 1205,
+    "declared_facets": 5823,
+    "pending_facets": 4013,
+    "authored_facets": 1788,
+    "accounted_base_units": 2066,
+    "unresolved_base_units": 4407,
+    "normal_audit_exit": 1,
+    "normal_audit_block": "one retained needs-oracle real-BOZ case",
+    "python_suite_tests": 960,
+    "python_suite_result": "OK"
+  }
+}

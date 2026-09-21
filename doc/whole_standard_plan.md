@@ -2591,6 +2591,74 @@ catalogues,22links,R402 and the `b153c75b` baseline are preserved, and no
 compiler was invoked.
 See `doc/source_audits/batch_104.json`.
 
+The hundred-and-fifth checkpoint registers the independently reviewed
+conformability, specification expression and constant expression source:
+25base/105fine units across10.1.10,10.1.11 and10.1.12,20requirements and
+117pending facets. Eight numbered units — R1029, C1011, R1030, C1012, R1031,
+C1013, R1032 and C1014 — were already accounted, so17base units are newly
+accounted, and those eight are used directly as requirement identifiers.
+
+This is the first **constraint-dense** scope in Clause10, and that changes the
+shape of the work. Almost all of its content is admission rules, so almost all
+of its plans are negatives — and a negative filed against the wrong unit
+establishes nothing at all. It took **three review rounds** to get right.
+
+The first round confirmed two things and rejected a third. The +17 accounting
+was verified unit by unit. The **zero-permissions** verdict was independently
+adjudicated and accepted: every "may" and "permitted only if" in this scope —
+including the TRANSFER text — conditionally admits a *program* construct
+rather than granting the *processor* latitude. Zero permissions is unusual for
+Clause10 but correct for a constraint-dense subclause. What failed was
+C10CSR-001: a diagnostic/control pair filed against10.1.10p1, which says *"An
+elemental operation is an intrinsic operation or a defined operation for which
+the function is elemental"*. That defines and classifies; it prohibits
+nothing. And if the non-ELEMENTAL function accepts array dummy arguments, the
+operation is a perfectly valid *non-elemental defined operation* — so the
+planned negative was not attributable to the rule it was filed under.
+C10CSR-002 was smaller: p2 item (2) reaches directly into the OPTIONAL and
+INTENT(OUT) attributes, but their owners were never recorded as dependencies.
+
+The second round is the interesting one. Closing a finding does not close its
+*class*, and the closeout found **C10CSR-003 — the same defect again**, at
+10.1.11p4, which defines the term "specification function". A program using a
+non-qualifying function in a specification expression is invalid through C1011
+and p2, because the expression is then not a restricted expression; the
+definition merely feeds that determination. Saying so in the facet text does
+not repair filing the negative under the definition.
+
+So the third round demanded a full sweep under an explicit rule, now a
+project-wide precedent:
+
+> A facet may carry a diagnostic expectation only if the source unit it is
+> filed under **actually prohibits something** — an explicit `shall`,
+> `shall not`, or a numbered constraint. A unit that defines a term,
+> classifies a construct, or states what something *is* cannot support a
+> negative, however obviously the definition feeds a nearby prohibition.
+
+The sweep found a **fourth** instance, at p9, which the author fixed
+themselves, and produced a38-row table naming, for every remaining diagnostic
+plan, the exact prohibiting words in its unit and the single property
+distinguishing the invalid program from its control. The reviewer did not
+accept the table: they spot-checked twelve representative and high-risk row
+groups against the pinned document — the whole C1012 p1 family, the C1011
+ordinary-variable, OPTIONAL and INTENT(OUT) exclusions, the S10.1.11-004
+direct-versus-indirect invocation pair the author had themselves flagged as
+risky, the p6/p7/p8 ordering rows, C1013, C1014 and the10.1.12 p2 and p3 rows
+— and found all of them sound.
+
+One limitation deserves naming: three dummy-argument and procedure-reference
+owners —15.5.2.1,15.5.2.4 and15.5.2.13 — are recorded as dependencies but are
+**not yet registered**, so the C1011 exclusion negatives cannot be implemented
+until they are.
+
+There remain **2,083cases**, now with **209catalogues,1,205requirements,
+1,788direct,22linked and4,013pending facets out of5,823**. Source accounting
+covers2,066base units. All2,083case bindings,2,047reviews,206older
+catalogues,22links,R402 and the `b153c75b` baseline are preserved, and no
+compiler was invoked. The38-row sweep table describes programs that *could* be
+written; none has been written or run.
+See `doc/source_audits/batch_105.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must

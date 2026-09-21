@@ -1,0 +1,129 @@
+{
+  "schema_version": 1,
+  "section": "10.1.10",
+  "review_state": "reviewed",
+  "subunits": {
+    "p1": [
+      "p1.intrinsic-operation",
+      "p1.elemental-defined-function"
+    ],
+    "p2": [
+      "p2.binary-conformability",
+      "p2.scalar-array-expansion",
+      "p2.scalar-array-empty-shape"
+    ]
+  },
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "requirements",
+      "requirements": [
+        "S10.1.10-001"
+      ]
+    },
+    {
+      "unit": "p1.intrinsic-operation",
+      "disposition": "requirements",
+      "requirements": [
+        "S10.1.10-001"
+      ]
+    },
+    {
+      "unit": "p1.elemental-defined-function",
+      "disposition": "requirements",
+      "requirements": [
+        "S10.1.10-001"
+      ]
+    },
+    {
+      "unit": "p2",
+      "disposition": "requirements",
+      "requirements": [
+        "S10.1.10-002"
+      ]
+    },
+    {
+      "unit": "p2.binary-conformability",
+      "disposition": "requirements",
+      "requirements": [
+        "S10.1.10-002"
+      ]
+    },
+    {
+      "unit": "p2.scalar-array-expansion",
+      "disposition": "requirements",
+      "requirements": [
+        "S10.1.10-002"
+      ]
+    },
+    {
+      "unit": "p2.scalar-array-empty-shape",
+      "disposition": "requirements",
+      "requirements": [
+        "S10.1.10-002"
+      ]
+    }
+  ],
+  "requirements": [
+    {
+      "id": "S10.1.10-001",
+      "title": "Elemental operations are intrinsic operations or elemental-function defined operations",
+      "source": "10.1.10 p1; J3/24-007 PDF p185.",
+      "source_units": [
+        "p1",
+        "p1.intrinsic-operation",
+        "p1.elemental-defined-function"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "An elemental operation is either an intrinsic operation or a defined operation whose defining function is elemental. Intrinsic-operation classification and defined-operation resolution remain with their own subclauses; this subclause classifies the operations to which later elemental-operation conformability and evaluation rules apply. It does not by itself prohibit non-elemental defined operations.",
+      "facets": [
+        "intrinsic-operation-is-elemental",
+        "defined-operation-elemental-function"
+      ],
+      "pending": {
+        "intrinsic-operation-is-elemental": "PENDING positive-control program using a simple intrinsic integer array operation and observing shape and element values. Credit intrinsic-operation interpretation to 10.1.5.1 and this facet only to the elemental-operation classification.",
+        "defined-operation-elemental-function": "PENDING positive-control module defining an ELEMENTAL function and a matching OPERATOR interface on a small derived scalar/array operand, observing literal component results without inferring element order."
+      },
+      "oracle": "Future evidence for this requirement is classification/source-control evidence only: one admitted intrinsic operation and one admitted defined operation whose defining function is elemental. A non-ELEMENTAL defined operation is not a rejection oracle for 10.1.10 p1; any future rejection case belongs under the defined-operation, generic-resolution, procedure-reference, or dummy-argument rule that actually makes the program invalid, with 10.1.10 p1 cited only as a dependency.",
+      "oracle_limitation": "This source-only catalogue records pending plans only. It creates no Fortran test program, invokes no processor, approves no fixture or oracle, and claims no coverage. Future fixtures for expression restrictions must isolate the cited rule, use conforming positive controls, and must not rely on compiler agreement, message wording, address arithmetic, TRANSFER except where TRANSFER itself is the source subject, emitted code, undefined reads, or floating-point exactness that 7.4.3 and 10.1.5.2.4 do not guarantee.",
+      "dependencies": "10.1.5.1 registered intrinsic-operation classification;10.1.6 defined operations NOT YET REGISTERED in this base;15.4.3.4.2 generic operator interfaces NOT YET REGISTERED;15.9 elemental procedures NOT YET REGISTERED."
+    },
+    {
+      "id": "S10.1.10-002",
+      "title": "Elemental binary operations require conformable operands and scalar-array expansion",
+      "source": "10.1.10 p2; J3/24-007 PDF p185.",
+      "source_units": [
+        "p2",
+        "p2.binary-conformability",
+        "p2.scalar-array-expansion",
+        "p2.scalar-array-empty-shape"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "context-dependent",
+      "definition": "For every elemental binary operation, the operands shall be conformable. If one operand is scalar and the other is an array, the scalar is treated as an array of the same shape as the array operand, with every element, if any, equal to the scalar value.",
+      "facets": [
+        "conformable-binary-operands",
+        "scalar-left-expanded-to-array-shape",
+        "scalar-right-expanded-to-array-shape",
+        "empty-array-scalar-expansion",
+        "nonconformable-array-operands-boundary"
+      ],
+      "pending": {
+        "conformable-binary-operands": "PENDING positive-control program adding two same-shape integer arrays and checking SHAPE plus exact element literals; assignment shape and declaration syntax are held constant.",
+        "scalar-left-expanded-to-array-shape": "PENDING positive-control program evaluating scalar + rank-one array with exact integer element literals, proving the scalar is treated elementwise rather than by a single assignment conversion.",
+        "scalar-right-expanded-to-array-shape": "PENDING positive-control program evaluating rank-one array + scalar with exact integer element literals and separate SHAPE assertion.",
+        "empty-array-scalar-expansion": "PENDING positive-control program using a zero-size array operand and a scalar operand, checking SIZE zero and successful reached execution without comparing nonexistent elements.",
+        "nonconformable-array-operands-boundary": "PENDING diagnostic/control pair for an elemental binary intrinsic operation between two otherwise valid arrays of different explicit shapes, repaired only by changing one bound to make the shapes equal. The context avoids assignment-shape, declaration, and operator-applicability failures so rejection is attributable to this conformability rule."
+      },
+      "oracle": "Future evidence is source-attributed: positives use independently checked literals, LEN/KIND/SHAPE inquiries, or declaration reachability; negatives are paired with a same-context repair that changes only the construct violating this requirement.",
+      "oracle_limitation": "This source-only catalogue records pending plans only. It creates no Fortran test program, invokes no processor, approves no fixture or oracle, and claims no coverage. Future fixtures for expression restrictions must isolate the cited rule, use conforming positive controls, and must not rely on compiler agreement, message wording, address arithmetic, TRANSFER except where TRANSFER itself is the source subject, emitted code, undefined reads, or floating-point exactness that 7.4.3 and 10.1.5.2.4 do not guarantee.",
+      "dependencies": "9.5.2 whole arrays registered;10.1.4 p4-p5 registered elementwise evaluation;10.1.5.1 registered intrinsic-operation conformability;10.1.6 defined operations NOT YET REGISTERED;10.2.1.3 intrinsic assignment NOT YET REGISTERED;16.9.171 SHAPE and 16.9.194 SIZE NOT YET REGISTERED."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_10_1_10.md"
+  },
+  "review_fingerprint": "d94f3b9025a475e29bd95d749421201ac529742142352d5e9add2cabe4bf7884",
+  "review_rationale": "batch105: independent fresh-context source review against pinned J3/24-007 (sha256 7371e889...), plus two closeout re-verifications. Reviewer read all 25 base units of 10.1.10, 10.1.11 and 10.1.12 in the original PDF rather than the author summary, verified 25 base / 105 fine units, 20 requirements and 117 facets (all pending), and independently confirmed the accounting claim that only 17 base units are newly accounted because the eight numbered units R1029, C1011, R1030, C1012, R1031, C1013, R1032 and C1014 were already accounted; each was checked as neither double-counted nor dropped, and using them as requirement identifiers rather than minting S identifiers matches earlier batches. The zero-permissions claim was independently adjudicated and accepted: every may, permitted only if and similar phrase in this constraint-dense scope admits a program construct conditionally rather than granting the processor latitude, including the TRANSFER permitted only if text, which is a restriction. Three rounds of findings were raised and closed. C10CSR-001 and C10CSR-003 are the same defect class: a facet may carry a diagnostic expectation only if the unit it is filed under actually prohibits something. 10.1.10 p1 defines an elemental operation and 10.1.11 p4 defines a specification function; neither prohibits anything, and a non-qualifying function in a specification expression is invalid through C1011 and p2, not through the definition. Both facet families were reclassified as classification or source-control evidence only, and the author's own sweep found and fixed a fourth instance at 10.1.11 p9. C10CSR-002 added the missing explicit dependencies for OPTIONAL and INTENT(OUT) attribute ownership reached by p2 item 2, verified in the pinned document at 8.5.10/R828/C845-C849 and 8.6.9/R852 for INTENT and 8.5.12/C851 and 8.6.10/R853 for OPTIONAL, with 15.5.2.1, 15.5.2.4 and 15.5.2.13 flagged as not yet registered. The author then produced a 38-row sweep table naming, for every remaining diagnostic plan, the exact prohibiting words and the single property distinguishing the invalid program from its control; the reviewer spot-checked twelve representative and high-risk row groups against the PDF, including the C1012 p1 family, the C1011 ordinary, OPTIONAL and INTENT exclusions, the S10.1.11-004 direct and indirect invocation pair, p6, p7, p8, C1013, C1014 and the 10.1.12 p2 and p3 rows, and found all sound. Final decision: accept, no blocking findings. This registers source accounting only: it is not fixture approval, it supplies no execution, and it approves no oracle."
+}
