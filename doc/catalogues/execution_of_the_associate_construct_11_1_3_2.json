@@ -1,0 +1,238 @@
+{
+  "schema_version": 1,
+  "section": "11.1.3.2",
+  "subunits": {
+    "p1": [
+      "p1.selector-expression-evaluation",
+      "p1.block-execution",
+      "p1.associate-name-identifies-entity",
+      "p1.declared-type-parameters",
+      "p1.polymorphic-iff"
+    ],
+    "p2": [
+      "p2.attributes-delegated"
+    ],
+    "p3": [
+      "p3.internal-end-branch-permission",
+      "p3.outside-end-branch-prohibition"
+    ]
+  },
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "requirements",
+      "requirements": [
+        "S11.1.3.2-001",
+        "S11.1.3.2-002",
+        "S11.1.3.2-003"
+      ]
+    },
+    {
+      "unit": "p1.selector-expression-evaluation",
+      "disposition": "requirements",
+      "requirements": [
+        "S11.1.3.2-001"
+      ]
+    },
+    {
+      "unit": "p1.block-execution",
+      "disposition": "requirements",
+      "requirements": [
+        "S11.1.3.2-001"
+      ]
+    },
+    {
+      "unit": "p1.associate-name-identifies-entity",
+      "disposition": "requirements",
+      "requirements": [
+        "S11.1.3.2-002"
+      ]
+    },
+    {
+      "unit": "p1.declared-type-parameters",
+      "disposition": "requirements",
+      "requirements": [
+        "S11.1.3.2-003"
+      ]
+    },
+    {
+      "unit": "p1.polymorphic-iff",
+      "disposition": "requirements",
+      "requirements": [
+        "S11.1.3.2-003"
+      ]
+    },
+    {
+      "unit": "p2",
+      "disposition": "structural",
+      "requirements": [
+        "S11.1.3.2-004"
+      ],
+      "rationale": "Cross-reference assigning the remaining attribute rules to 11.1.3.3."
+    },
+    {
+      "unit": "p2.attributes-delegated",
+      "disposition": "structural",
+      "requirements": [
+        "S11.1.3.2-004"
+      ],
+      "rationale": "Fine subdivision of the attribute ownership cross-reference."
+    },
+    {
+      "unit": "p3",
+      "disposition": "requirements",
+      "requirements": [
+        "S11.1.3.2-005"
+      ]
+    },
+    {
+      "unit": "p3.internal-end-branch-permission",
+      "disposition": "permission",
+      "requirements": [
+        "S11.1.3.2-005"
+      ],
+      "rationale": "Permits a branch to END ASSOCIATE from within its ASSOCIATE construct; this does not require such a branch to occur."
+    },
+    {
+      "unit": "p3.outside-end-branch-prohibition",
+      "disposition": "requirements",
+      "requirements": [
+        "S11.1.3.2-005"
+      ]
+    }
+  ],
+  "requirements": [
+    {
+      "id": "S11.1.3.2-001",
+      "title": "ASSOCIATE execution evaluates selectors before executing the block",
+      "source": "11.1.3.2 p1 first sentence; J3/24-007 PDF p204.",
+      "source_units": [
+        "p1",
+        "p1.selector-expression-evaluation",
+        "p1.block-execution"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Executing an ASSOCIATE construct evaluates every expression within every selector that is a variable designator and evaluates every other selector, followed by execution of the block. This establishes selector values or variable associations before block execution; it does not prescribe expression evaluation order among selectors or authorize side-effect/count oracles.",
+      "facets": [
+        "expression-selector-value-before-block",
+        "variable-designator-subexpressions-before-block",
+        "block-executes-after-selector-evaluation"
+      ],
+      "pending": {
+        "expression-selector-value-before-block": "PENDING positive-control source shape where an expression selector computes a value distinct from later changes to its operands, checked by reading the associate name inside the block.",
+        "variable-designator-subexpressions-before-block": "PENDING positive-control source shape with a variable selector containing a subscript expression whose value selects a nondefault element before block assignment; no function side effects or call counts are used.",
+        "block-executes-after-selector-evaluation": "PENDING positive-control source shape where the block assigns through an associate name only after selector association is established, with direct final value checks."
+      },
+      "oracle": "Use side-effect-free selector expressions and direct values. Do not infer order among multiple selector evaluations or count evaluations.",
+      "oracle_limitation": "This source-only catalogue records pending plans only. It creates no Fortran test program, invokes no processor, approves no fixture or oracle, and claims no coverage. Future ASSOCIATE fixtures must use non-vacuous selectors and sentinels: lower bounds must differ where bounds are asserted, character length must be checked with LEN rather than inferred from padded comparison, outer homonyms must start with values different from any inner assignment, and assignment through an associate name is credited only after the selector is established definable. No plan may count selector evaluations, depend on function side effects, assume a real or complex kind exists, or use compiler agreement as an oracle.",
+      "dependencies": "10.1 expression evaluation registered;9.1/9.2 designators and variables registered;11.1.2.2 block execution in this packet."
+    },
+    {
+      "id": "S11.1.3.2-002",
+      "title": "During the ASSOCIATE block each associate name identifies an entity associated with its selector",
+      "source": "11.1.3.2 p1 second sentence; J3/24-007 PDF p204.",
+      "source_units": [
+        "p1",
+        "p1.associate-name-identifies-entity"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "During execution of the ASSOCIATE block, each associate name identifies an entity associated with the corresponding selector. The lifetime/scope of that construct entity and the general association relation are Clause 19 dependencies.",
+      "facets": [
+        "associate-name-reads-expression-value",
+        "associate-name-defines-variable-selector",
+        "associate-name-not-outside-block-source"
+      ],
+      "pending": {
+        "associate-name-reads-expression-value": "PENDING positive-control program where reading an associate name for an expression selector yields the selector value while operands later hold different sentinel values.",
+        "associate-name-defines-variable-selector": "PENDING positive-control program assigning through an associate name for a definable variable selector and observing the selector changed to a value not otherwise assigned.",
+        "associate-name-not-outside-block-source": "PENDING source-control plan showing the associate name is not available after END ASSOCIATE; any diagnostic is credited to scope/name-resolution owners in Clause 19 when registered."
+      },
+      "oracle": "Association is observable through values and assignments only when selector definability is established. Scope diagnostics are not attributed to this descriptive sentence alone.",
+      "oracle_limitation": "This source-only catalogue records pending plans only. It creates no Fortran test program, invokes no processor, approves no fixture or oracle, and claims no coverage. Future fixtures must use independently derived literal values, inquiry results, or source relationships; must ensure discriminating non-vacuous observations for association, scope, bounds, and control-flow claims; must not infer statement execution counts, evaluation order beyond the cited rule, side effects, temporary storage, image ordering, addresses, descriptor layout, or processor-dependent representations; and must not rely on compiler agreement, message wording, emitted code, undefined values, resource exhaustion, or a processor-dependent value.",
+      "dependencies": "11.1.3.1 C1101 and 11.1.3.3 p5 in this packet;19.4 construct entity scope NOT YET REGISTERED;19.5.1.6 association NOT YET REGISTERED."
+    },
+    {
+      "id": "S11.1.3.2-003",
+      "title": "ASSOCIATE associating entities assume selector declared type, type parameters, and polymorphic status",
+      "source": "11.1.3.2 p1 final sentences; J3/24-007 PDF p204.",
+      "source_units": [
+        "p1",
+        "p1.declared-type-parameters",
+        "p1.polymorphic-iff"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The associating entity assumes the declared type and type parameters of the selector. If and only if the selector is polymorphic, the associating entity is polymorphic. Dynamic type and additional attributes are owned by 11.1.3.3.",
+      "facets": [
+        "declared-type-control",
+        "character-length-type-parameter",
+        "kind-type-parameter-source",
+        "polymorphic-selector-control",
+        "nonpolymorphic-selector-control"
+      ],
+      "pending": {
+        "declared-type-control": "PENDING positive-control source shape using selector and associate name in type-specific operations whose validity follows from the selector declared type, without duplicating expression semantics.",
+        "character-length-type-parameter": "PENDING positive-control with a character selector whose length is not the default and is asserted with LEN on the associate name; no character comparison is used as a length oracle.",
+        "kind-type-parameter-source": "PENDING source-control plan using a selector with an explicitly declared kind chosen through available-kind logic, without assuming a particular real or complex kind exists.",
+        "polymorphic-selector-control": "PENDING source-control plan with a polymorphic selector and associate name in a context requiring polymorphism, after polymorphic entities and SELECT TYPE dependencies are registered.",
+        "nonpolymorphic-selector-control": "PENDING source-control plan showing a nonpolymorphic selector does not make the associating entity polymorphic; any negative must be filed under the rule requiring polymorphism."
+      },
+      "oracle": "LEN/KIND or source admissibility may observe type parameters only when the expected value is required by declarations in the same test. Do not assume processor-dependent kind availability.",
+      "oracle_limitation": "This source-only catalogue records pending plans only. It creates no Fortran test program, invokes no processor, approves no fixture or oracle, and claims no coverage. Future fixtures must use independently derived literal values, inquiry results, or source relationships; must ensure discriminating non-vacuous observations for association, scope, bounds, and control-flow claims; must not infer statement execution counts, evaluation order beyond the cited rule, side effects, temporary storage, image ordering, addresses, descriptor layout, or processor-dependent representations; and must not rely on compiler agreement, message wording, emitted code, undefined values, resource exhaustion, or a processor-dependent value.",
+      "dependencies": "7.x types/type parameters largely registered;7.3.2.3 polymorphism registered;9.4.5 type-parameter inquiry registered;16 LEN/KIND intrinsics NOT YET REGISTERED;11.1.3.3 p4 dynamic type in this packet."
+    },
+    {
+      "id": "S11.1.3.2-004",
+      "title": "Other ASSOCIATE associating-entity attributes are delegated to 11.1.3.3",
+      "source": "11.1.3.2 p2; J3/24-007 PDF p204.",
+      "source_units": [
+        "p2",
+        "p2.attributes-delegated"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The other attributes of an ASSOCIATE associating entity are described in 11.1.3.3. This unit is a cross-reference and ownership boundary rather than an independent observable effect.",
+      "facets": [
+        "attribute-ownership-boundary"
+      ],
+      "pending": {
+        "attribute-ownership-boundary": "PENDING source-control audit that rank, bounds, corank, attributes, dynamic type, OPTIONAL, contiguity, and definability facets are filed under 11.1.3.3 rather than duplicated under this paragraph."
+      },
+      "oracle": "No fixture should claim coverage of an attribute from p2 alone; use the owning 11.1.3.3 unit.",
+      "oracle_limitation": "This source-only catalogue records pending plans only. It creates no Fortran test program, invokes no processor, approves no fixture or oracle, and claims no coverage. Future fixtures must use independently derived literal values, inquiry results, or source relationships; must ensure discriminating non-vacuous observations for association, scope, bounds, and control-flow claims; must not infer statement execution counts, evaluation order beyond the cited rule, side effects, temporary storage, image ordering, addresses, descriptor layout, or processor-dependent representations; and must not rely on compiler agreement, message wording, emitted code, undefined values, resource exhaustion, or a processor-dependent value.",
+      "dependencies": "11.1.3.3 in this packet."
+    },
+    {
+      "id": "S11.1.3.2-005",
+      "title": "Branching to END ASSOCIATE is permitted only from within the ASSOCIATE construct",
+      "source": "11.1.3.2 p3; J3/24-007 PDF p204.",
+      "source_units": [
+        "p3",
+        "p3.internal-end-branch-permission",
+        "p3.outside-end-branch-prohibition"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "context-dependent",
+      "definition": "It is permissible to branch to an end-associate-stmt only from within its ASSOCIATE construct; a branch from outside the construct to that END ASSOCIATE is not permitted.",
+      "facets": [
+        "internal-end-associate-branch-control",
+        "outside-end-associate-branch-rejected"
+      ],
+      "pending": {
+        "internal-end-associate-branch-control": "PENDING positive-control source shape with a branch from within an ASSOCIATE block to its END ASSOCIATE after branch statements are registered.",
+        "outside-end-associate-branch-rejected": "PENDING diagnostic/control pair where the only intended defect is a branch from outside an ASSOCIATE construct to its END ASSOCIATE; the repair moves the branch inside the construct or targets an outside label."
+      },
+      "oracle": "The negative must isolate source/target location and not also violate label, branch-statement, or construct-name restrictions.",
+      "oracle_limitation": "This source-only catalogue records pending plans only. It creates no Fortran test program, invokes no processor, approves no fixture or oracle, and claims no coverage. Future fixtures must use independently derived literal values, inquiry results, or source relationships; must ensure discriminating non-vacuous observations for association, scope, bounds, and control-flow claims; must not infer statement execution counts, evaluation order beyond the cited rule, side effects, temporary storage, image ordering, addresses, descriptor layout, or processor-dependent representations; and must not rely on compiler agreement, message wording, emitted code, undefined values, resource exhaustion, or a processor-dependent value.",
+      "dependencies": "8 labels registered;11.2 branch statements NOT YET REGISTERED;11.1.2.1 general block control-flow rule in this packet."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_11_1_3_2.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "7ee8c0e5ffaf40218ecb9ac78df229f9ede8f153bc7eca36aed8e0749ec64a2b",
+  "review_rationale": "batch111: independent fresh-context source review against pinned J3/24-007 (sha256 7371e889...). This batch opens Clause 11, so it establishes the shape later Clause 11 packets follow. The reviewer read all 44 base units of 11.1.1 Blocks, 11.1.2.1 Control flow in blocks, 11.1.2.2 Execution of a block, 11.1.3.1 through 11.1.3.4 the ASSOCIATE construct, and 11.1.4 the BLOCK construct in the original PDF rather than the author summary, verifying the titles from the source and confirming 44 base / 77 fine units, 42 requirements and 119 facets (all pending). The accounting claim was verified independently: the 20 numbered items R1101 in 11.1.1, R1102 through R1106 with C1101 through C1106 in 11.1.3.1, and R1107 through R1110 with C1107 through C1110 in 11.1.4 were already inventoried, so 24 non-numbered units are newly accounted, with no double count and no drop. Five permissions were adjudicated and accepted, including the 11.1.4 p3 explicit processor latitude for specification-expression evaluation order, which carries no plan asserting the processor took a particular order. Critically, the sentences of the form it is permissible to branch to an end statement only from within its construct do two things at once, permitting the inward branch and through the word only prohibiting the outward one, and the reviewer confirmed the packet captures both halves rather than losing a restriction or a permission. The attribution table was audited in full: all 30 negative rows were checked, including the R1109 row whose prohibiting words are a grammar production rather than a shall, the seven C1107 rows drawn from one prohibition list covering COMMON, EQUIVALENCE, INTENT, NAMELIST, OPTIONAL, statement functions and VALUE, the three C1101 rows and the four rows filed under 11.1.3.3 p5 that quote long compound sentences, confirming each negative isolates exactly one clause. The author's decision to treat C1104 as source-classification only was independently examined and accepted, because ordinary pointer assignment is conforming through the variable selector alternative, and 11.1.3.4's zero facets were accepted because its single note base unit and fine unit remain accounted. Decision: source-eligible, no blocking findings. This registers source accounting only: it is not fixture approval, it supplies no execution, and it approves no oracle."
+}

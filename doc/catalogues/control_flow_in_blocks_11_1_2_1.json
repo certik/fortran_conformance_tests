@@ -1,0 +1,140 @@
+{
+  "schema_version": 1,
+  "section": "11.1.2.1",
+  "subunits": {
+    "p1": [
+      "p1.no-entry-from-outside",
+      "p1.procedure-return-exception",
+      "p1.within-and-out-transfer-permission"
+    ],
+    "p2": [
+      "p2.procedure-references-permitted"
+    ]
+  },
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "requirements",
+      "requirements": [
+        "S11.1.2.1-001",
+        "S11.1.2.1-002"
+      ]
+    },
+    {
+      "unit": "p1.no-entry-from-outside",
+      "disposition": "requirements",
+      "requirements": [
+        "S11.1.2.1-001"
+      ]
+    },
+    {
+      "unit": "p1.procedure-return-exception",
+      "disposition": "requirements",
+      "requirements": [
+        "S11.1.2.1-001"
+      ]
+    },
+    {
+      "unit": "p1.within-and-out-transfer-permission",
+      "disposition": "permission",
+      "requirements": [
+        "S11.1.2.1-002"
+      ],
+      "rationale": "Permits within-block and outward transfers subject to their owning branch rules; it does not require such a transfer or any processor choice."
+    },
+    {
+      "unit": "p2",
+      "disposition": "permission",
+      "requirements": [
+        "S11.1.2.1-003"
+      ],
+      "rationale": "Permits procedure references to appear in a block; procedure semantics are dependencies."
+    },
+    {
+      "unit": "p2.procedure-references-permitted",
+      "disposition": "permission",
+      "requirements": [
+        "S11.1.2.1-003"
+      ],
+      "rationale": "Fine subdivision of the p2 permission for subroutine and function references in blocks."
+    }
+  ],
+  "requirements": [
+    {
+      "id": "S11.1.2.1-001",
+      "title": "Control cannot transfer into a block from outside except for a return from an invoked procedure",
+      "source": "11.1.2.1 p1 first sentence; J3/24-007 PDF p203.",
+      "source_units": [
+        "p1",
+        "p1.no-entry-from-outside",
+        "p1.procedure-return-exception"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "context-dependent",
+      "definition": "Transfer of control from outside a block to a statement in the block is prohibited. The exception is the return from a procedure that was invoked within the block. Branching constructs, labels, and procedure return semantics are separate dependencies.",
+      "facets": [
+        "outside-branch-entry-rejected",
+        "procedure-return-exception-control"
+      ],
+      "pending": {
+        "outside-branch-entry-rejected": "PENDING diagnostic/control pair where the invalid program differs only by targeting a labeled executable statement inside a BLOCK or ASSOCIATE block from outside that block; the repair moves the branch target outside the block or moves the branch inside the block.",
+        "procedure-return-exception-control": "PENDING positive-control source shape where a procedure invoked inside a block returns normally to the invocation point in the block; procedure execution and call semantics are credited to Clause 15."
+      },
+      "oracle": "The negative must isolate block-entry transfer and not also violate branch-statement syntax, label definition, host association, or construct-name rules.",
+      "oracle_limitation": "This source-only catalogue records pending plans only. It creates no Fortran test program, invokes no processor, approves no fixture or oracle, and claims no coverage. Future fixtures must use independently derived literal values, inquiry results, or source relationships; must ensure discriminating non-vacuous observations for association, scope, bounds, and control-flow claims; must not infer statement execution counts, evaluation order beyond the cited rule, side effects, temporary storage, image ordering, addresses, descriptor layout, or processor-dependent representations; and must not rely on compiler agreement, message wording, emitted code, undefined values, resource exhaustion, or a processor-dependent value.",
+      "dependencies": "8 labels registered;11.1.3/11.1.4 constructs in this packet;11.2 branch statements NOT YET REGISTERED;15.5.3/15.5.4 procedure references NOT YET REGISTERED;15 procedure return NOT YET REGISTERED."
+    },
+    {
+      "id": "S11.1.2.1-002",
+      "title": "Transfers within a block and transfers from a block to outside are permitted forms",
+      "source": "11.1.2.1 p1 final sentence; J3/24-007 PDF p203.",
+      "source_units": [
+        "p1",
+        "p1.within-and-out-transfer-permission"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The language permits transfers within a block and transfers from the interior of a block to outside the block, subject to the branch, RETURN, EXIT, CYCLE, and construct-specific rules that own those transfers. This is a permission, not a requirement that any transfer occur.",
+      "facets": [
+        "within-block-transfer-source",
+        "out-of-block-transfer-source"
+      ],
+      "pending": {
+        "within-block-transfer-source": "PENDING positive-control source shape with a branch whose source and target are both within the same block after 11.2 branch statements are registered; no execution-count oracle is attached here.",
+        "out-of-block-transfer-source": "PENDING positive-control source shape with a branch from inside a block to a valid target outside the block after 11.2 is registered; block completion effects are credited to 11.1.2.2 p2."
+      },
+      "oracle": "Do not require a processor to choose or exercise a transfer. Future fixtures may only show that a conforming source shape is admitted and then rely on the owning branch rule for execution.",
+      "oracle_limitation": "This source-only catalogue records pending plans only. It creates no Fortran test program, invokes no processor, approves no fixture or oracle, and claims no coverage. Future fixtures must use independently derived literal values, inquiry results, or source relationships; must ensure discriminating non-vacuous observations for association, scope, bounds, and control-flow claims; must not infer statement execution counts, evaluation order beyond the cited rule, side effects, temporary storage, image ordering, addresses, descriptor layout, or processor-dependent representations; and must not rely on compiler agreement, message wording, emitted code, undefined values, resource exhaustion, or a processor-dependent value.",
+      "dependencies": "11.1.2.2 p2 in this packet;11.2 branch statements NOT YET REGISTERED;11.1.5+ construct-specific transfer rules NOT YET REGISTERED."
+    },
+    {
+      "id": "S11.1.2.1-003",
+      "title": "Procedure references may appear inside a block",
+      "source": "11.1.2.1 p2; J3/24-007 PDF p203.",
+      "source_units": [
+        "p2",
+        "p2.procedure-references-permitted"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Subroutine and function references are permitted to appear in a block. The call/reference syntax, argument association, result values, and side effects are owned by Clause 15 and expression/assignment dependencies.",
+      "facets": [
+        "subroutine-reference-in-block-source",
+        "function-reference-in-block-source"
+      ],
+      "pending": {
+        "subroutine-reference-in-block-source": "PENDING positive-control source shape containing a subroutine call inside a BLOCK or ASSOCIATE block, observing only reached execution after Clause 15 call semantics are registered.",
+        "function-reference-in-block-source": "PENDING positive-control source shape containing a side-effect-free function reference in an expression inside a block, with the result oracle credited to expression and procedure owners."
+      },
+      "oracle": "This permission does not by itself define procedure invocation semantics, side effects, recursion, argument association, or return behavior.",
+      "oracle_limitation": "This source-only catalogue records pending plans only. It creates no Fortran test program, invokes no processor, approves no fixture or oracle, and claims no coverage. Future fixtures must use independently derived literal values, inquiry results, or source relationships; must ensure discriminating non-vacuous observations for association, scope, bounds, and control-flow claims; must not infer statement execution counts, evaluation order beyond the cited rule, side effects, temporary storage, image ordering, addresses, descriptor layout, or processor-dependent representations; and must not rely on compiler agreement, message wording, emitted code, undefined values, resource exhaustion, or a processor-dependent value.",
+      "dependencies": "10.1 expression evaluation registered;15.5.3 subroutine references NOT YET REGISTERED;15.5.4 function references NOT YET REGISTERED."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_11_1_2_1.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "bad073ff65c7f02d0a8ae50b6cb1309310c1d78f60a50f35eb18b439f25d44bb",
+  "review_rationale": "batch111: independent fresh-context source review against pinned J3/24-007 (sha256 7371e889...). This batch opens Clause 11, so it establishes the shape later Clause 11 packets follow. The reviewer read all 44 base units of 11.1.1 Blocks, 11.1.2.1 Control flow in blocks, 11.1.2.2 Execution of a block, 11.1.3.1 through 11.1.3.4 the ASSOCIATE construct, and 11.1.4 the BLOCK construct in the original PDF rather than the author summary, verifying the titles from the source and confirming 44 base / 77 fine units, 42 requirements and 119 facets (all pending). The accounting claim was verified independently: the 20 numbered items R1101 in 11.1.1, R1102 through R1106 with C1101 through C1106 in 11.1.3.1, and R1107 through R1110 with C1107 through C1110 in 11.1.4 were already inventoried, so 24 non-numbered units are newly accounted, with no double count and no drop. Five permissions were adjudicated and accepted, including the 11.1.4 p3 explicit processor latitude for specification-expression evaluation order, which carries no plan asserting the processor took a particular order. Critically, the sentences of the form it is permissible to branch to an end statement only from within its construct do two things at once, permitting the inward branch and through the word only prohibiting the outward one, and the reviewer confirmed the packet captures both halves rather than losing a restriction or a permission. The attribution table was audited in full: all 30 negative rows were checked, including the R1109 row whose prohibiting words are a grammar production rather than a shall, the seven C1107 rows drawn from one prohibition list covering COMMON, EQUIVALENCE, INTENT, NAMELIST, OPTIONAL, statement functions and VALUE, the three C1101 rows and the four rows filed under 11.1.3.3 p5 that quote long compound sentences, confirming each negative isolates exactly one clause. The author's decision to treat C1104 as source-classification only was independently examined and accepted, because ordinary pointer assignment is conforming through the variable selector alternative, and 11.1.3.4's zero facets were accepted because its single note base unit and fine unit remain accounted. Decision: source-eligible, no blocking findings. This registers source accounting only: it is not fixture approval, it supplies no execution, and it approves no oracle."
+}

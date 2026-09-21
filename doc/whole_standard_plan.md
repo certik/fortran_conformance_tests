@@ -2959,6 +2959,64 @@ catalogues,22links,R402 and the `b153c75b` baseline are preserved, and no
 compiler was invoked.
 See `doc/source_audits/batch_110.json`.
 
+The hundred-and-eleventh checkpoint **opens Clause 11**. Nothing in Clause 11
+was registered before this batch, so it establishes the shape later Clause 11
+packets will follow:44base/77fine units across11.1.1 Blocks,11.1.2.1 Control
+flow in blocks,11.1.2.2 Execution of a block,11.1.3.1 through11.1.3.4 the
+ASSOCIATE construct, and11.1.4 the BLOCK construct —42requirements and
+119pending facets. Twenty numbered items were already inventoried, so24base
+units are newly accounted.
+
+One precedent set here will recur throughout Clause 11 and deserves recording.
+The standard repeatedly says it is permissible to branch to an `END` statement
+**only** from within its construct. That single sentence does *two* things: it
+**permits** the inward branch, and through the word "only" it **prohibits** the
+outward one. Recording only the permission loses a restriction; recording only
+the restriction loses a permission. The reviewer confirmed the packet captures
+both halves in each case. The other permission worth naming is11.1.4p3, which
+grants explicit processor latitude over specification-expression evaluation
+order — recorded as latitude, with no plan asserting the processor took any
+particular order.
+
+The attribution table was audited in full —all30negative rows, not a sample.
+Three families needed real scrutiny. The **R1109** row is the interesting one:
+its quoted prohibiting words are a **grammar production**, not a `shall`. A
+syntax rule can support a negative, but this is precisely the shape that has
+produced defects before, so it was adjudicated against how earlier batches
+treated R-rule negatives, and accepted. The **seven C1107 rows** all derive
+from one prohibition list — COMMON, EQUIVALENCE, INTENT, NAMELIST, OPTIONAL,
+statement functions, VALUE — and each had to be shown individually
+attributable and not rejectable for a second reason. And the **C1101** and
+**11.1.3.3p5** rows quote long compound sentences, where each negative must
+isolate exactly one clause.
+
+Two things were checked for *under*-claiming, which this project treats as no
+less a defect than over-claiming. The author dispositioned **C1104** as
+source-classification only, reasoning that ordinary pointer assignment is
+conforming through the `variable` selector alternative so no standalone
+negative exists; the reviewer examined that independently and agreed. And
+**11.1.3.4** yields zero requirements and zero facets because it is examples,
+with its single note base unit and fine unit still accounted.
+
+What `ASSOCIATE` makes observable is genuinely valuable: the associate name's
+type, type parameters, rank, bounds and definability, and construct-entity
+scoping. The plans are non-vacuous — bounds coinciding with the selector's
+would prove nothing, and an outer variable already holding the expected value
+would prove nothing about scoping. Length facets assert `LEN` explicitly rather
+than relying on character comparison, which blank-pads the shorter operand.
+
+Two limits are recorded honestly. **Branch-to-`END` negatives cannot be
+implemented at all** until11.2 registers branch statement syntax and
+semantics, and the11.1.3.3p3 `CHANGE TEAM` plans are dependency-only until
+11.1.5 owns that construct.
+
+There remain **2,083cases**, now with **235catalogues,1,378requirements,
+1,788direct,22linked and4,529pending facets out of6,339**. Source accounting
+covers2,163base units. All2,083case bindings,2,047reviews,227older
+catalogues,22links,R402 and the `b153c75b` baseline are preserved, and no
+compiler was invoked.
+See `doc/source_audits/batch_111.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
