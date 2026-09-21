@@ -2369,6 +2369,57 @@ compiler was invoked. Clause10 remains partially registered:10.1.5.2 onwards
 and most of10.2 are unauthored.
 See `doc/source_audits/batch_100.json`.
 
+The hundred-and-first checkpoint registers the independently reviewed numeric
+and character intrinsic operation source:24base/42fine units across
+10.1.5.2.1,10.1.5.2.2,10.1.5.2.3,10.1.5.2.4,10.1.5.3.1 and10.1.5.3.2,12S
+requirements and45pending facets. All24base units are newly accounted,
+because no numbered item falls in this scope; Tables10.3 and10.4 are base
+units in their own right and are accounted as such.
+
+This is the first scope where the standard states **arithmetic semantics that
+look directly testable** — integer division truncates toward zero, complex
+exponentiation yields the principal value, concatenation appends on the right
+and its length is the sum — and the temptation is to turn each of them
+straight into a value oracle. Three separate hedges forbid that.7.4.3 makes
+real and complex values *approximations* to mathematical values;10.1.5.2.4p2
+permits the processor to evaluate any mathematically equivalent alternative,
+and p3 says outright that the computational results may differ; and10.1.9.3p4
+leaves the result kind processor dependent wherever two operand kinds have
+equal decimal range or equal decimal precision. So no nontrivial complex-power
+component value, no reassociation-sensitive floating value, and no equal-range
+or equal-precision mixed-kind result kind may become an oracle. Tolerance
+comparison and reference-compiler agreement are explicitly not substitutes.
+
+What survives is genuinely portable and is what the facets target: the
+integer-division rule, which fixes the result exactly for exact small
+operands; the same-kind concatenation value and its length-sum; and the
+invariance of a parenthesized character value.
+
+**10.1.5.3.2 yields zero facets.** That is a deliberate, reviewed conclusion,
+not an omission: its single paragraph permits a processor to evaluate more of
+a character intrinsic operation than the context requires, so no conforming
+program may count function calls or observe skipped evaluation. The paragraph
+and both its fine units are still accounted, as a permission. Likewise
+10.1.5.2.1p4 (the processor need not convert an integer exponent) and
+10.1.5.2.4p2 are permissions, and their parenthesis-integrity and
+mathematical-equivalence limits are recorded as *boundaries* of those
+permissions rather than as effects. Nothing in the packet asserts that a
+processor did or did not take a rewrite — that is unobservable by design.
+The reviewer read all24base units in the pinned document plus fourteen
+dependency units in clauses7,10,15 and16, checked Tables10.3 and10.4 row by
+row against the tables themselves, and confirmed that the NOTE2 alternative-
+form table stays informative rather than being promoted to requirements.
+There were no blocking findings; two non-blocking scope clarifications are
+recorded as C10NR-NB1 and C10NR-NB2.
+
+There remain **2,083cases**, now with **194catalogues,1,132requirements,
+1,788direct,22linked and3,684pending facets out of5,494**. Source accounting
+covers1,995base units. All2,083case bindings,2,047reviews,188older
+catalogues,22links,R402 and the `b153c75b` baseline are preserved, and no
+compiler was invoked. Clause10 remains partially registered at this batch:
+10.1.5.4 onwards and all of10.2 are unauthored.
+See `doc/source_audits/batch_101.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
