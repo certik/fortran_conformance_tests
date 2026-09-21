@@ -2834,6 +2834,72 @@ compiler was invoked. Several10.2.2.4facets depend on unregistered Clause15
 material and cannot be implemented until it is registered.
 See `doc/source_audits/batch_108.json`.
 
+The hundred-and-ninth checkpoint registers the independently reviewed masked
+array assignment source — the `WHERE` statement and construct:30base/57fine
+units across10.2.3.1 and10.2.3.2,28requirements and75pending facets. All
+twelve numbered items, R1042 through R1050 and C1035 through C1037, are in
+10.2.3.1 and were already accounted;10.2.3.2 contains none, so18base units
+are newly accounted. The reviewer verified that by **recomputing the suite
+accounting algorithm** against the base commit rather than trusting the
+author's arithmetic.
+
+The heart of this subclause is the **control mask and pending control mask**,
+and it is the easiest thing in Clause10 to paraphrase almost-correctly. The
+author flagged it as their own highest risk. So the reviewer derived all eight
+transitions from the source *before* looking at the catalogue:
+
+- A top-level `WHERE` statement or construct statement evaluates *mask-expr*
+  and sets the control mask to it; a top-level construct also sets the pending
+  control mask to `.NOT. mask-expr`.
+- Each `WHERE`, construct and masked `ELSEWHERE` mask is evaluated **at most
+  once** per execution of that statement.
+- A **masked `ELSEWHERE`**, with `mc` the previous pending mask, first sets the
+  control mask to `mc`, then sets pending to `mc .AND. .NOT. mask`, then sets
+  control to `mc .AND. mask`.
+- A bare `ELSEWHERE` takes the current pending mask and establishes no new one.
+- `END WHERE` restores both masks.
+- And the distinction that matters: a nested `WHERE` **construct** sets pending
+  to `mc .AND. .NOT.` inner and control to `mc .AND.` inner, whereas a nested
+  `WHERE` **statement** sets the control mask and **does not alter pending** at
+  all.
+
+The catalogue states all eight directly from p1 through p8, keeps the nested-
+construct and nested-statement cases separate, and — importantly — no
+requirement or facet leans on the subclause's example as authority.
+
+Exactly one permission is recorded, and its scope is the point. p13 says the
+execution of a function reference in the mask expression of a `WHERE`
+**statement** is permitted to affect entities in the assignment statement —
+expressly the statement, not a construct statement and not a masked
+`ELSEWHERE`. The catalogue keeps that scope. Equally important is what is
+*not* a permission: there is **no local element-assignment-order latitude** in
+10.2.3 at all. p3 orders statements within a construct and p12 selects which
+elements are assigned; neither licenses an arbitrary per-element order. So
+leaving per-element assignment order, snapshot and temporary issues to the
+registered10.2.1.3 is correct rather than a demotion.
+
+The masking oracle discipline is the valuable part for later fixture work.
+Assignment to elements *not* selected by the mask is directly observable, and
+the plans make it non-vacuous: unselected elements are preloaded with values
+**different from every right-hand-side value**, so the assertion cannot
+succeed for the wrong reason. No plan computes expected masking with `MERGE`,
+`PACK`, `COUNT` or any equivalent intrinsic — that would duplicate the feature
+under test. The p2 "at most once" facets are source-control only, with no
+call-count oracle. And the unobservability limits are scoped precisely to
+order, call counts, side effects, temporaries, short-circuiting and storage —
+they are not used to suppress directly observable branch membership.
+
+There were no blocking findings; two non-blocking observations are recorded.
+
+Only10.2.4 now remains to complete Clause10 source.
+
+There remain **2,083cases**, now with **220catalogues,1,303requirements,
+1,788direct,22linked and4,333pending facets out of6,143**. Source accounting
+covers2,121base units. All2,083case bindings,2,047reviews,218older
+catalogues,22links,R402 and the `b153c75b` baseline are preserved, and no
+compiler was invoked.
+See `doc/source_audits/batch_109.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must

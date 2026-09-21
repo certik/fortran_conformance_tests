@@ -1,0 +1,147 @@
+{
+  "schema_version": 1,
+  "review_type": "independent-masked-array-assignment-source-review",
+  "review_date": "2026-09-21",
+  "baseline_commit": "7d3f815",
+  "state": "reviewed-source-only-with-control-mask-semantics-independently-derived",
+  "scope": {
+    "sections": ["10.2.3.1", "10.2.3.2"],
+    "section_titles": {
+      "10.2.3.1": "General form of the masked array assignment",
+      "10.2.3.2": "Interpretation of masked array assignments"
+    },
+    "base_units": 30,
+    "fine_units": 57,
+    "already_counted_numbered_units": 12,
+    "newly_accounted_base_units": 18,
+    "new_requirements": 28,
+    "new_numbered_requirements": 12,
+    "new_S_requirements": 16,
+    "new_pending_facets": 75,
+    "new_cases": 0,
+    "note": "All twelve numbered items - R1042 through R1050 and C1035 through C1037 - are in 10.2.3.1 and were already accounted. 10.2.3.2 contains no numbered item. No table falls in this scope.",
+    "per_section": {
+      "10.2.3.1": {"base_units": 15, "fine_units": 28, "requirements": 14, "pending_facets": 34, "already_counted": 12, "newly_accounted": 3},
+      "10.2.3.2": {"base_units": 15, "fine_units": 29, "requirements": 14, "pending_facets": 41, "already_counted": 0, "newly_accounted": 15}
+    }
+  },
+  "authoring": {
+    "author_context": "fresh subagent context in an isolated worktree based on 05d6e08",
+    "author_packet": "afb4119",
+    "source_read_receipt": "receipts-batch109-source.json"
+  },
+  "independent_review": {
+    "receipt": "c10-where-source-review.json",
+    "reviewer_distinct_from_author": true,
+    "decision": "source-eligible-with-nonblocking-observations",
+    "blocking_findings": 0,
+    "scoped_original_units_read_in_full": 30,
+    "compiler_invocations": 0,
+    "why_this_scope_is_high_risk": "The control mask and pending control mask semantics of nested WHERE constructs are intricate, easy to paraphrase wrongly, and tempting to infer from the subclause's example rather than from its normative text. The author flagged this as their own highest risk."
+  },
+  "accounting_verification": {
+    "claim": "+18 newly accounted base units, not +30",
+    "verdict": "verified independently",
+    "method": "The reviewer recomputed the suite accounting algorithm against base 05d6e08 and against the candidate, without recording any review. Numbered R/C units count as accounted when present in doc/fortran_2023_rules.txt; non-numbered and note units require catalogue accounting.",
+    "already_accounted_numbered_units": ["R1042", "R1043", "R1044", "R1045", "R1046", "R1047", "R1048", "R1049", "R1050", "C1035", "C1036", "C1037"],
+    "newly_accounted_units": [
+      "10.2.3.1#p1", "10.2.3.1#p2", "10.2.3.1#note-unnumbered",
+      "10.2.3.2#p1", "10.2.3.2#p2", "10.2.3.2#p3", "10.2.3.2#p4", "10.2.3.2#p5",
+      "10.2.3.2#p6", "10.2.3.2#note1", "10.2.3.2#p7", "10.2.3.2#p8",
+      "10.2.3.2#p9", "10.2.3.2#p10", "10.2.3.2#p11", "10.2.3.2#p12",
+      "10.2.3.2#p13", "10.2.3.2#note2"
+    ],
+    "asymmetry_confirmed": "All twelve numbered items are in 10.2.3.1; 10.2.3.2 has no numbered base unit."
+  },
+  "control_mask_semantics": {
+    "status": "independently derived by the reviewer from the source BEFORE comparing with the catalogue",
+    "derived_rules": [
+      "A top-level WHERE statement or WHERE construct statement evaluates mask-expr and establishes the control mask to that value. A top-level WHERE construct also establishes the pending control mask to .NOT. mask-expr.",
+      "Each WHERE, WHERE construct and masked ELSEWHERE mask-expr is evaluated at most once per execution of that statement.",
+      "Statements in a WHERE construct execute in sequence.",
+      "Masked ELSEWHERE: let mc be the previous pending control mask. The control mask first becomes mc; then the pending control mask becomes mc .AND. .NOT. mask-expr; then the control mask becomes mc .AND. mask-expr.",
+      "Bare ELSEWHERE: the control mask becomes the current pending control mask, and no new pending control mask is established.",
+      "END WHERE restores the control and pending control masks to their values before the corresponding WHERE construct statement. After a nested WHERE statement used as a where-body-construct, the control mask is restored to its prior value.",
+      "A nested WHERE construct used as a where-body-construct: with mc the prior control mask, pending becomes mc .AND. .NOT. inner mask, then control becomes mc .AND. inner mask; the inner mask is evaluated at most once; its END WHERE restores the outer masks.",
+      "A nested WHERE statement used as a where-body-construct: control becomes mc .AND. inner mask and pending is NOT altered; after the statement, control is restored by p6."
+    ],
+    "catalogue_comparison": "S10.2.3.2-001 through -008 state these transitions directly from p1-p8. NOTE 1 is marked informative and no requirement or facet relies on the example as authority. The p7 nested-construct pending-mask behaviour and the p8 nested-statement no-pending-change behaviour are correctly separated - this was the author's declared highest risk and it is right."
+  },
+  "permission_and_order_latitude": {
+    "permission_count": 1,
+    "unit": "10.2.3.2#p13.mask-function-side-effect-permission -> S10.2.3.2-014",
+    "source_text": "The execution of a function reference in the mask expression of a WHERE statement is permitted to affect entities in the assignment statement.",
+    "adjudication": "A genuine permission, correctly filed. The wording is expressly the WHERE STATEMENT - not a WHERE construct statement, not a masked ELSEWHERE, and not all construct masks - and the catalogue keeps that scope.",
+    "order_latitude": "No local element-assignment-order latitude is stated anywhere in 10.2.3. p3 orders statements within a construct and p12 selects which elements are assigned; neither permits an arbitrary per-element order. Leaving per-element intrinsic assignment order, snapshot and temporary issues to the registered 10.2.1.3 is therefore correct, and no local requirement was demoted into a permission."
+  },
+  "attribution_table_audit": {
+    "rule_applied": "A facet may carry a diagnostic expectation only if the unit it is filed under actually prohibits something. Established in batch105.",
+    "table_size": 8,
+    "rows_checked": ["C1036 x3", "p2 x3", "C1035", "C1037"],
+    "missing_diagnostic_facets": "none - no facet carries a diagnostic expectation without appearing in the table",
+    "verdict": "sound"
+  },
+  "masking_oracle_discipline": {
+    "verdict": "acceptable for a source-only packet",
+    "unselected_elements": "p12 assigns expr values corresponding to true control-mask elements to the corresponding variable elements. In this masked-assignment context the catalogue is justified in planning direct checks that false-control-mask elements remain unassigned by that where-assignment-stmt.",
+    "nonvacuity": "Plans for the top-level, ELSEWHERE, nested construct and nested statement cases, and for p12, all call for direct element inspection with sentinels or distinct values. p12 explicitly requires unselected elements to be preloaded with values different from every right-hand-side value, so the assertion cannot succeed for the wrong reason.",
+    "no_masking_intrinsic_oracle": "The packet repeatedly forbids MERGE, PACK, COUNT and equivalent masking intrinsics as oracles, and no pending plan computes expected masking through them.",
+    "side_effect_call_count_order": "The p2 at-most-once facets are source-control and snapshot-design only, with no call-count oracle. p9 and p11 avoid impure functions, side effects, exceptions, constructor element side effects and call counts, checking only final selected values or documenting source dependence. p13 records the local side-effect permission but scopes it as a permission and admission boundary, claiming no call counts, multiple evaluations or general evaluation order.",
+    "unobservability_scope": "The unobservability limits are scoped to element assignment order, call counts, side effects used to prove evaluation, processor temporaries, short-circuiting and storage. They are NOT used to suppress directly observable branch membership or selected-element assignment - an overbroad claim would itself be a defect."
+  },
+  "ownership_split_with_10_2_1_3": {
+    "verdict": "correct",
+    "no_duplication": "The packet owns WHERE masking, mask establishment, branch membership, selected-element assignment under a control mask, and the WHERE-specific function and constructor masking rules. It claims no assignment conversion, allocation or reallocation, character padding or truncation, component assignment, temporary storage, or per-element processing order.",
+    "no_gap": "All local masking rules p1 through p13 are represented, including the nested construct p7, the nested statement p8, the p9-p11 evaluation-under-mask rules, p12 selected assignment and p13 mask stability. 10.2.1.3 dependencies are explicit wherever ordinary assignment effects are needed."
+  },
+  "ownership_beyond_10_2_x": {
+    "clause_11": "Construct-name and general branch and execution-control rules are explicitly flagged as NOT YET REGISTERED dependencies for C1036, C1037, p3 and p6. The packet keeps the local WHERE grammar and the local C1037 branch-target prohibition here, which is correct.",
+    "clause_15": "Elemental and non-elemental procedure, side-effect and purity dependencies are explicitly flagged as not yet registered where needed.",
+    "clause_16": "SHAPE and transformational-function dependencies are explicitly flagged as not yet registered. No unregistered Clause 16 rule is silently claimed."
+  },
+  "nonblocking_observations": [
+    {
+      "id": "C10WR-NB-001",
+      "observation": "p12 does not use the word 'only', but in context its operative assignment sentence selects true control-mask elements. The catalogue should continue to require non-vacuous sentinel checks for unselected elements rather than leaning on an 'only' that is not literally present."
+    },
+    {
+      "id": "C10WR-NB-002",
+      "observation": "S10.2.3.2-014 is a permission and admission boundary for WHERE-statement mask-function side effects. Future fixtures must not turn it into a general side-effect-order or call-count oracle."
+    }
+  ],
+  "explicit_limitations": [
+    "This batch registers source accounting only. It is not fixture approval, it supplies no execution, and it creates no test case.",
+    "All 75 facets in scope remain pending.",
+    "No evaluation-order, call-count, side-effect, temporary-storage or short-circuit observation is admitted anywhere in this scope.",
+    "Per-element intrinsic assignment effects - conversion, allocation, padding, component assignment, processing order - are not registered here; they remain owned by 10.2.1.3.",
+    "Construct-name and branch rules depend on unregistered Clause 11 material, and elemental and purity rules on unregistered Clause 15 material, so several facets cannot be implemented until those clauses are registered.",
+    "No compiler was invoked during authoring or review. The eight substring executions integrated in batch099 remain the latest actual observations."
+  ],
+  "preservation": {
+    "cases_preserved": 2083,
+    "raw_reviews_preserved": 2047,
+    "older_catalogues_preserved": 218,
+    "linked_facets_preserved": 22,
+    "current_source_use_inventories_preserved": 1,
+    "baseline_lines_changed": 0,
+    "baseline": "b153c75b",
+    "expected_failures_lines": 804,
+    "new_compiler_invocations": 0,
+    "integrated_files_byte_identical_to_reviewed_branch": true
+  },
+  "validation_snapshot": {
+    "catalogue_reviews_written": 2,
+    "inventory_reviews_written": 1,
+    "detailed_catalogues": 220,
+    "requirements": 1303,
+    "declared_facets": 6143,
+    "pending_facets": 4333,
+    "authored_facets": 1788,
+    "accounted_base_units": 2121,
+    "unresolved_base_units": 4352,
+    "normal_audit_exit": 1,
+    "normal_audit_block": "one retained needs-oracle real-BOZ case",
+    "python_suite_tests": 960,
+    "python_suite_result": "OK"
+  }
+}
