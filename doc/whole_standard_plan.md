@@ -2482,6 +2482,62 @@ catalogues,22links,R402 and the `b153c75b` baseline are preserved, and no
 compiler was invoked.
 See `doc/source_audits/batch_102.json`.
 
+The hundred-and-third checkpoint registers the independently reviewed defined
+operation, operand evaluation and parenthesis source:20base/56fine units
+across10.1.6.1,10.1.6.2,10.1.6.3,10.1.7 and10.1.8,10S requirements and
+63pending facets. All20base units are newly accounted. Nine requirements are
+effects and exactly one —10.1.7p3 — is a restriction.
+
+This packet matters out of proportion to its size, because it is where **four
+delegations left open by earlier Clause10 batches are finally discharged**.
+Back in batch098 the reviewer refused to let the suite claim that the grouping
+of a left-recursive *intrinsic* operation is value-observable: `//` is
+associative by value, `.AND.` and `.EQV.` have no short-circuit guarantee, and
+inferring grouping from a side effect or an execution path is not permitted.
+The question was deferred to a **non-associative defined extension** — and
+10.1.6 is where that extension becomes available. The packet supplies a
+concrete plan: a derived type whose defining function returns
+`left%v*10 + right%v`, with operands1,2 and3, which distinguishes
+`(a//b)//c` =123 from `a//(b//c)` =33. The same route carries the `.AND.` and
+`.EQV.`/`.NEQV.` grouping facets. The fourth delegation, from10.1.2.9, moves
+defined-binary applicability and generic nonapplicability out of R1023 syntax
+into10.1.6 and15.4.3.4.2 — with R1023, R1024 and C1006 syntax staying where
+they are, and with no syntax negative filed for mere generic nonapplicability.
+
+Every processor freedom in scope is a permission.10.1.6.3p1 lets the processor
+evaluate any equivalent expression once the interpretation is established, but
+only without violating the integrity of parentheses.10.1.7p1 says it is not
+necessary to evaluate all of the operands, or to evaluate each entirely, if
+the value can be determined otherwise — latitude, not a short-circuit
+guarantee, and no plan infers whether an operand was evaluated. And10.1.8p1
+was correctly **split**: the rewrite-latitude context inherited from10.1.5
+stays a permission, while its counterweight — that any expression in
+parentheses *shall* be treated as a data entity — stays a requirement. Neither
+half was allowed to swallow the other. What parentheses do is force the
+parenthesized expression to be the data entity operand of the surrounding
+operation; what they do **not** do is create a portable observation of
+evaluation order, call count, short-circuiting or floating-point reassociation.
+
+The reviewer also ran a global name-head check over502rule heads —0missing,
+0duplicate,0unmatched — confirming that the defined-operator grammar owners
+remain R1004/C1005, R1024/C1006, R1012, R1020 and R1022 rather than migrating
+into this scope. Two limits are recorded explicitly: the undefined-status
+effect in10.1.7p2 is not safely value-observable by reading the entity, and a
+finite sample can **refute** but never **prove** the all-possible-primary-values
+equivalence condition of10.1.6.3p2. There were no blocking findings; three
+non-blocking observations are recorded, one of which corrects a transcription
+slip in the author's own accounting delta.
+
+With this batch,10.1 is source-complete from10.1.1 through10.1.8.
+
+There remain **2,083cases**, now with **203catalogues,1,161requirements,
+1,788direct,22linked and3,815pending facets out of5,625**. Source accounting
+covers2,039base units. All2,083case bindings,2,047reviews,198older
+catalogues,22links,R402 and the `b153c75b` baseline are preserved, and no
+compiler was invoked. Discharging a delegation means a writable plan now
+exists — not that a program has been written or run.
+See `doc/source_audits/batch_103.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must

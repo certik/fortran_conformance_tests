@@ -1,0 +1,99 @@
+{
+  "schema_version": 1,
+  "section": "10.1.8",
+  "review_state": "reviewed",
+  "subunits": {
+    "p1": [
+      "p1.rewrite-context-from-10-1-5",
+      "p1.parenthesized-expression",
+      "p1.treated-as-data-entity"
+    ],
+    "note-unnumbered": [
+      "note-unnumbered.numeric-example",
+      "note-unnumbered.no-reassociation-example"
+    ]
+  },
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "requirements",
+      "requirements": [
+        "S10.1.8-001"
+      ]
+    },
+    {
+      "unit": "p1.rewrite-context-from-10-1-5",
+      "disposition": "permission",
+      "requirements": [
+        "S10.1.8-001"
+      ],
+      "rationale": "This clause references processor latitude granted by 10.1.5 to evaluate a different expression; the latitude is permission, not a requirement, and is bounded here by parentheses integrity."
+    },
+    {
+      "unit": "p1.parenthesized-expression",
+      "disposition": "requirements",
+      "requirements": [
+        "S10.1.8-001"
+      ]
+    },
+    {
+      "unit": "p1.treated-as-data-entity",
+      "disposition": "requirements",
+      "requirements": [
+        "S10.1.8-001"
+      ]
+    },
+    {
+      "unit": "note-unnumbered",
+      "disposition": "informative",
+      "rationale": "Informative numeric example illustrating the parentheses-integrity rule; no independent requirement or coverage claim is created."
+    },
+    {
+      "unit": "note-unnumbered.numeric-example",
+      "disposition": "informative",
+      "rationale": "Informative A+(B-C) example; no independent requirement."
+    },
+    {
+      "unit": "note-unnumbered.no-reassociation-example",
+      "disposition": "informative",
+      "rationale": "Informative statement that the example shall not be evaluated as (A+B)-C; the normative rule is accounted under p1."
+    }
+  ],
+  "requirements": [
+    {
+      "id": "S10.1.8-001",
+      "title": "Parenthesized expressions are treated as data entities and preserve parentheses integrity",
+      "source": "10.1.8 p1 and NOTE; J3/24-007 PDF p183.",
+      "source_units": [
+        "p1",
+        "p1.parenthesized-expression",
+        "p1.treated-as-data-entity"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Although other evaluation rules can permit a processor to evaluate a different expression from the one produced by the expression grammar and interpretation rules, every expression enclosed in parentheses is treated as a data entity. The processor may not use a different expression in a way that violates the integrity of those parentheses.",
+      "facets": [
+        "parenthesized-expression-data-entity",
+        "no-rewrite-through-parentheses",
+        "defined-operation-parentheses-boundary",
+        "numeric-reassociation-example-caution",
+        "no-mathematically-equivalent-rewrite-oracle"
+      ],
+      "pending": {
+        "parenthesized-expression-data-entity": "PENDING positive source plan in which a parenthesized expression is used as the operand/data entity required by a surrounding operation, with the expected value computed independently from the parenthesized expression first.",
+        "no-rewrite-through-parentheses": "PENDING boundary plan showing that an alternative expression that crosses a parentheses boundary is outside the permission, even if it would be mathematically tempting for intrinsic numeric operations.",
+        "defined-operation-parentheses-boundary": "PENDING concrete grouping control using a non-associative defined binary operation on a derived type with literal-bearing operands 1,2,3 and result left%v*10+right%v. The oracle compares x op (y op z) with its independently computed value and with the different unparenthesized left grouping.",
+        "numeric-reassociation-example-caution": "PENDING note-derived caution: do not use floating-point tolerances, overflow, processor-dependent arithmetic, or compiler agreement to prove A+(B-C) was or was not reassociated.",
+        "no-mathematically-equivalent-rewrite-oracle": "PENDING oracle guard that future tests must assert only results invariant under permissions granted by 10.1.5 and 10.1.6.3, except where parentheses integrity itself makes two source expressions observably different by standard semantics."
+      },
+      "oracle": "Future controls should use standard-defined, value-observable distinctions such as non-associative defined operations to test parenthesized grouping. They must not rely on floating-point reassociation artifacts, emitted code, operand evaluation order, or undefined values.",
+      "oracle_limitation": "This source-only catalogue records pending plans only. It creates no Fortran test program, invokes no processor, approves no fixture or oracle, and claims no coverage. Future cases must not infer which operand was evaluated, the order of evaluation, or whether an optional evaluation was omitted; must not assert a result that a permitted mathematically or logically equivalent rewrite could change; must not use floating-point tolerance as an escape hatch; must not rely on compiler agreement, address arithmetic, TRANSFER, emitted assembly, or undefined reads; and must attribute every negative to the cited requirement rather than to an independently invalid rule owned elsewhere.",
+      "dependencies": "10.1.2;10.1.5;10.1.6.1;10.1.6.3;10.1.7;15.4.3.4.2."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_10_1_8.md"
+  },
+  "review_fingerprint": "bc4b2cc1d67158061ef4fc8ba8e685043306570b0800816598b9eb4b5b36728d",
+  "review_rationale": "batch103: independent fresh-context source review against pinned J3/24-007 (sha256 7371e889...). Reviewer read all 20 base units of 10.1.6.1, 10.1.6.2, 10.1.6.3, 10.1.7 and 10.1.8 in the original PDF rather than the author summary, verified 20 base / 56 fine units, 10 requirements and 63 facets (all pending), and separately re-read the 10.1.2.4, 10.1.2.6, 10.1.2.8 and 10.1.2.9 grammar units to confirm ownership. A global name-head check over 502 rule heads found 0 missing, 0 duplicate and 0 unmatched, and confirmed the defined-operator grammar owners remain R1004/C1005, R1024/C1006, R1012, R1020 and R1022. Every processor freedom is correctly recorded as a permission: 10.1.6.3 p1 equivalent-expression latitude is bounded by parenthesis integrity, 10.1.7 p1 records that a processor need not evaluate all operands or evaluate each entirely, and 10.1.8 p1 keeps the rewrite context as permission while preserving the normative requirement that a parenthesized expression be treated as a data entity. 10.1.7 p3 is the single restriction in scope, with its CRITICAL and END CRITICAL exceptions. This packet carries four delegations left open by earlier batches: defined-binary applicability and generic nonapplicability from 10.1.2.9, and the left-recursive grouping facets from 10.1.2.6 and 10.1.2.8, which are discharged through a value-observable non-associative defined extension rather than through truth tables, short-circuiting or side effects. Undefined-status effects are recorded as not value-observable by reading the entity, and finite samples are recorded as able to refute but never to prove the all-possible-primary-values equivalence of 10.1.6.3 p2. Decision: accept, no blocking findings; three non-blocking observations recorded in doc/source_audits/batch_103.json. This registers source accounting only: it is not fixture approval, it supplies no execution, and it approves no oracle."
+}
