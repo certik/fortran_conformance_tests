@@ -1,0 +1,173 @@
+{
+  "schema_version": 1,
+  "section": "10.2.1.1",
+  "review_state": "reviewed",
+  "subunits": {
+    "R1033": [
+      "R1033.variable",
+      "R1033.equals",
+      "R1033.expr"
+    ],
+    "C1015": [
+      "C1015.whole-assumed-size-array"
+    ],
+    "note-unnumbered": [
+      "note-unnumbered.examples"
+    ],
+    "p1": [
+      "p1.defined-or-intrinsic"
+    ]
+  },
+  "accounting": [
+    {
+      "unit": "R1033",
+      "disposition": "requirements",
+      "requirements": [
+        "R1033"
+      ]
+    },
+    {
+      "unit": "C1015",
+      "disposition": "requirements",
+      "requirements": [
+        "C1015"
+      ]
+    },
+    {
+      "unit": "note-unnumbered",
+      "disposition": "informative",
+      "rationale": "Informative examples of assignment statements; they create no additional syntax, restriction, fixture approval, or coverage claim."
+    },
+    {
+      "unit": "p1",
+      "disposition": "requirements",
+      "requirements": [
+        "S10.2.1.1-001"
+      ]
+    },
+    {
+      "unit": "R1033.variable",
+      "disposition": "requirements",
+      "requirements": [
+        "R1033"
+      ]
+    },
+    {
+      "unit": "R1033.equals",
+      "disposition": "requirements",
+      "requirements": [
+        "R1033"
+      ]
+    },
+    {
+      "unit": "R1033.expr",
+      "disposition": "requirements",
+      "requirements": [
+        "R1033"
+      ]
+    },
+    {
+      "unit": "C1015.whole-assumed-size-array",
+      "disposition": "requirements",
+      "requirements": [
+        "C1015"
+      ]
+    },
+    {
+      "unit": "note-unnumbered.examples",
+      "disposition": "informative",
+      "rationale": "The two example statements illustrate the syntax but do not extend it."
+    },
+    {
+      "unit": "p1.defined-or-intrinsic",
+      "disposition": "requirements",
+      "requirements": [
+        "S10.2.1.1-001"
+      ]
+    }
+  ],
+  "requirements": [
+    {
+      "id": "R1033",
+      "title": "An assignment statement has a variable, equals sign, and expression",
+      "source": "10.2.1.1 R1033; J3/24-007 PDF p188.",
+      "source_units": [
+        "R1033",
+        "R1033.variable",
+        "R1033.equals",
+        "R1033.expr"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "The assignment-stmt syntax consists of a variable, the equals sign token, and an expr. This rule only provides the general syntactic form; the statement must still be either an intrinsic or a defined assignment statement.",
+      "facets": [
+        "scalar-variable-form",
+        "array-variable-form",
+        "expression-rhs-form",
+        "missing-equals-rejected"
+      ],
+      "pending": {
+        "scalar-variable-form": "PENDING positive-control source shape assigning an integer literal to a scalar integer variable and checking the literal value after execution. The variable designator and expression validity are dependencies; this facet credits only the R1033 statement form.",
+        "array-variable-form": "PENDING positive-control source shape assigning a rank-one integer array constructor to a whole rank-one variable, then checking independently specified elements. Eligibility and element interpretation are credited to 10.2.1.2 and 10.2.1.3.",
+        "expression-rhs-form": "PENDING positive-control source shape whose right hand side is a simple exact integer expression such as 2+3 and whose oracle is the literal result 5. Numeric expression interpretation is a dependency, not local coverage.",
+        "missing-equals-rejected": "PENDING diagnostic/control source shape omitting only the equals sign between an otherwise valid variable and expr. The repaired control inserts = and observes a literal integer assignment; other syntax remains valid so the negative is attributable to R1033."
+      },
+      "oracle": "Syntax negatives must isolate the assignment-stmt form and keep declarations, expression syntax, and assignment eligibility valid in the repaired control. Positive controls must separately satisfy either intrinsic or defined assignment requirements.",
+      "oracle_limitation": "This source-only catalogue records pending plans only. It creates no Fortran test program, invokes no processor, approves no fixture or oracle, and claims no coverage. Future fixtures must use independently derived literal, inquiry, or source-relation oracles; must not infer assignment evaluation order, processor temporaries, or function call counts; and must not rely on compiler agreement, emitted code, undefined values, resource exhaustion, or a processor-dependent value.",
+      "dependencies": "9.2 variable;10.1.2.9 expr;10.2.1.2;10.2.1.4;10.2.1.3."
+    },
+    {
+      "id": "C1015",
+      "title": "The assignment variable is not a whole assumed-size array",
+      "source": "10.2.1.1 C1015; J3/24-007 PDF p188.",
+      "source_units": [
+        "C1015",
+        "C1015.whole-assumed-size-array"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "In an assignment statement, the variable shall not be a whole assumed-size array. Array elements or otherwise valid sections of such a dummy are outside this specific prohibition when all other rules are satisfied.",
+      "facets": [
+        "explicit-shape-array-control",
+        "assumed-size-whole-array-rejected",
+        "assumed-size-element-control"
+      ],
+      "pending": {
+        "explicit-shape-array-control": "PENDING positive-control source shape using an explicit-shape dummy or local array as the assignment variable and checking distinct literal elements after assignment. The control demonstrates a whole array that is not assumed-size.",
+        "assumed-size-whole-array-rejected": "PENDING diagnostic/control source shape in a procedure with an assumed-size dummy used as the whole assignment variable. The repair changes only the variable to a valid explicit section or to an explicit-shape dummy, isolating C1015.",
+        "assumed-size-element-control": "PENDING positive-control source shape assigning to a single element of an assumed-size dummy with an independently checked literal value, showing the negative is specifically the whole-array variable."
+      },
+      "oracle": "Do not run a nonconforming whole assumed-size assignment as a required runtime failure. A negative must keep the dummy declaration and procedure interface otherwise valid and attribute the defect only to C1015.",
+      "oracle_limitation": "This source-only catalogue records pending plans only. It creates no Fortran test program, invokes no processor, approves no fixture or oracle, and claims no coverage. Future fixtures must use independently derived literal, inquiry, or source-relation oracles; must not infer assignment evaluation order, processor temporaries, or function call counts; and must not rely on compiler agreement, emitted code, undefined values, resource exhaustion, or a processor-dependent value.",
+      "dependencies": "8.5.8.5 assumed-size arrays;9.5 array elements and sections;10.2.1.2."
+    },
+    {
+      "id": "S10.2.1.1-001",
+      "title": "Every assignment statement is either intrinsic or defined assignment",
+      "source": "10.2.1.1 p1; J3/24-007 PDF p189.",
+      "source_units": [
+        "p1",
+        "p1.defined-or-intrinsic"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "context-dependent",
+      "definition": "An assignment-stmt shall satisfy the requirements of either an intrinsic assignment statement or a defined assignment statement. The local rule partitions the general R1033 syntax; it does not duplicate the detailed requirements of either branch.",
+      "facets": [
+        "intrinsic-branch-control",
+        "defined-branch-control"
+      ],
+      "pending": {
+        "intrinsic-branch-control": "PENDING positive-control source shape with an intrinsic integer assignment satisfying 10.2.1.2, followed by a literal value check. The value effect is credited to 10.2.1.3.",
+        "defined-branch-control": "PENDING positive-control source shape with a minimal ASSIGNMENT(=) interface satisfying 10.2.1.4 and a subroutine effect checked by a literal field. The procedure-reference details remain dependencies."
+      },
+      "oracle": "Future fixtures should classify which branch makes the statement conforming before claiming any interpretation effect. A statement that satisfies neither branch needs a separately isolated negative tied to the failing branch rule.",
+      "oracle_limitation": "This source-only catalogue records pending plans only. It creates no Fortran test program, invokes no processor, approves no fixture or oracle, and claims no coverage. Future fixtures must use independently derived literal, inquiry, or source-relation oracles; must not infer assignment evaluation order, processor temporaries, or function call counts; and must not rely on compiler agreement, emitted code, undefined values, resource exhaustion, or a processor-dependent value.",
+      "dependencies": "10.2.1.2;10.2.1.3;10.2.1.4;10.2.1.5;15.4.3.4.3."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_10_2_1_1.md"
+  },
+  "review_fingerprint": "05717954e4fe7a3dc0577060ae2e090ac836f394a4602593b48440d14c7b465e",
+  "review_rationale": "batch106: independent fresh-context source review against pinned J3/24-007 (sha256 7371e889...). Reviewer read all 14 base units of 10.2.1.1, 10.2.1.2, 10.2.1.4 and 10.2.1.5 in the original PDF across pages 188 to 194, verified 14 base / 52 fine units, 21 requirements and 89 facets (all pending), and confirmed that only 12 base units are newly accounted because R1033 and C1015 were already counted. The central question was the ownership boundary with 10.2.1.3, which is already registered and sits in the middle of this scope with 26 base units and 144 facets. The reviewer read that catalogue and checked both failure directions. No duplication: the 10.2.1.2 p1 allocatable, character-kind and deferred-length plans admit the cases but leave the resulting allocation, length, bounds, truncation, padding, conversion and values to 10.2.1.3; the p3 pointer plans require an associated definable conforming target but leave the target write to 10.2.1.3 and association changes to 10.2.2; the 10.2.1.4 plans classify the subroutine, generic, rank and shape conditions and leave element-by-element interpretation to 10.2.1.5 and generic mechanics to 15.4.3.4.3. No gaps either: 10.2.1.1 p1 owns the partition rule rather than punting it, and 10.2.1.2 keeps every local eligibility condition including the intrinsic-not-defined classification, polymorphic restrictions, conformance and rank admission, BOZ destination type, Table 10.8, character kind compatibility, derived type parameter compatibility, coindexed restrictions, pointer target eligibility and the coarray unallocated-allocatable prohibition. The zero-permissions claim was independently adjudicated and accepted: no normative unit in scope grants processor latitude, and the sentence permitting pure elemental subroutine assignments to be performed simultaneously or in any order occurs only in the unnumbered NOTE in 10.2.1.5, correctly dispositioned informative, with plans forbidding order, simultaneity, temporary, side-effect and call-count oracles. Table 10.8 was read row by row from the table itself; all eight rows are owned, and the enum row preserves the condition that when expr is integer a primary in expr shall be an enumerator of the enum type, rather than admitting arbitrary integers. Character plans require explicit LEN checks and warn against relying on blank-padded comparison, and no plan assumes ISO 10646 or ASCII kinds exist. Decision: source-eligible, no blocking findings; two non-blocking observations recorded in doc/source_audits/batch_106.json. This registers source accounting only: it is not fixture approval, it supplies no execution, and it approves no oracle."
+}

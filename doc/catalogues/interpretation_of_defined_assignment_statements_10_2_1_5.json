@@ -1,0 +1,170 @@
+{
+  "schema_version": 1,
+  "section": "10.2.1.5",
+  "review_state": "reviewed",
+  "subunits": {
+    "p1": [
+      "p1.subroutine-provides-interpretation"
+    ],
+    "p2": [
+      "p2.elemental-array-element-by-element",
+      "p2.corresponding-elements",
+      "p2.scalar-expr-as-array"
+    ],
+    "note-unnumbered": [
+      "note-unnumbered.procedure-rule-dependencies",
+      "note-unnumbered.snapshot-effect-explanation",
+      "note-unnumbered.pure-elemental-order-latitude"
+    ]
+  },
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "requirements",
+      "requirements": [
+        "S10.2.1.5-001"
+      ]
+    },
+    {
+      "unit": "p2",
+      "disposition": "requirements",
+      "requirements": [
+        "S10.2.1.5-002",
+        "S10.2.1.5-003"
+      ]
+    },
+    {
+      "unit": "note-unnumbered",
+      "disposition": "informative",
+      "rationale": "Informative explanation of effects ensured by defined-assignment, procedure-reference, subroutine-reference, and elemental-subroutine rules; no additional local requirement or fixture approval is created."
+    },
+    {
+      "unit": "p1.subroutine-provides-interpretation",
+      "disposition": "requirements",
+      "requirements": [
+        "S10.2.1.5-001"
+      ]
+    },
+    {
+      "unit": "p2.elemental-array-element-by-element",
+      "disposition": "requirements",
+      "requirements": [
+        "S10.2.1.5-002"
+      ]
+    },
+    {
+      "unit": "p2.corresponding-elements",
+      "disposition": "requirements",
+      "requirements": [
+        "S10.2.1.5-002"
+      ]
+    },
+    {
+      "unit": "p2.scalar-expr-as-array",
+      "disposition": "requirements",
+      "requirements": [
+        "S10.2.1.5-003"
+      ]
+    },
+    {
+      "unit": "note-unnumbered.procedure-rule-dependencies",
+      "disposition": "informative",
+      "rationale": "Points to external procedure, subroutine, and elemental-subroutine rules that ensure the described effects; those rules are dependencies."
+    },
+    {
+      "unit": "note-unnumbered.snapshot-effect-explanation",
+      "disposition": "informative",
+      "rationale": "Informative explanation of a snapshot-like effect for defined assignment; the normative local interpretation is p1/p2 and the detailed expression and argument rules are dependencies."
+    },
+    {
+      "unit": "note-unnumbered.pure-elemental-order-latitude",
+      "disposition": "informative",
+      "rationale": "Informative statement of pure elemental order latitude. It constrains oracle design but, as a note, creates no local requirement to perform any particular order or simultaneity."
+    }
+  ],
+  "requirements": [
+    {
+      "id": "S10.2.1.5-001",
+      "title": "Defined assignment is interpreted by the subroutine that defines it",
+      "source": "10.2.1.5 p1; J3/24-007 PDF p193.",
+      "source_units": [
+        "p1",
+        "p1.subroutine-provides-interpretation"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The interpretation of a defined assignment is provided by the subroutine that defines that assignment. Observable assignment behavior therefore comes from executing the defining subroutine, subject to the procedure-call and argument rules.",
+      "facets": [
+        "explicit-subroutine-effect",
+        "type-bound-subroutine-effect",
+        "intrinsic-assignment-not-used-for-top-level-effect"
+      ],
+      "pending": {
+        "explicit-subroutine-effect": "PENDING positive-control source shape with an ASSIGNMENT(=) interface whose subroutine stores a literal transformation, such as lhs%value = rhs%value + 7, then checks that transformed value. The oracle must not be obtainable from intrinsic component assignment alone.",
+        "type-bound-subroutine-effect": "PENDING positive-control source shape with a type-bound defined assignment subroutine and a distinct literal transformation proving dispatch to that subroutine.",
+        "intrinsic-assignment-not-used-for-top-level-effect": "PENDING contrast source shape where intrinsic component-wise assignment would produce a different value from the defined subroutine, ensuring the fixture credits defined assignment rather than 10.2.1.3."
+      },
+      "oracle": "The plan may observe subroutine-specified state changes, but must not infer operand evaluation order beyond the procedure-reference dependencies. Defined assignment interface eligibility is owned by 10.2.1.4 and 15.4.3.4.3.",
+      "oracle_limitation": "This source-only catalogue records pending plans only. It creates no Fortran test program, invokes no processor, approves no fixture or oracle, and claims no coverage. Future fixtures must use independently derived literal, inquiry, or source-relation oracles; must not infer assignment evaluation order, processor temporaries, or function call counts; and must not rely on compiler agreement, emitted code, undefined values, resource exhaustion, or a processor-dependent value.",
+      "dependencies": "10.2.1.4;15.4.3.4.3;15.5 procedure references;15.5.4 subroutine references."
+    },
+    {
+      "id": "S10.2.1.5-002",
+      "title": "Elemental defined assignment over an array is performed element by element on corresponding elements",
+      "source": "10.2.1.5 p2 first sentence; J3/24-007 PDF p193.",
+      "source_units": [
+        "p2",
+        "p2.elemental-array-element-by-element",
+        "p2.corresponding-elements"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "If a defined assignment is elemental and the assignment variable is an array, the defined assignment is performed element by element on corresponding elements of the variable and expr.",
+      "facets": [
+        "rank-one-correspondence",
+        "rank-two-correspondence",
+        "different-lower-bounds-correspondence",
+        "noncontiguous-section-correspondence"
+      ],
+      "pending": {
+        "rank-one-correspondence": "PENDING positive-control source shape with an elemental defined assignment over rank-one arrays whose RHS elements have distinct literal payloads and whose subroutine applies a distinct transformation checked element by element.",
+        "rank-two-correspondence": "PENDING positive-control source shape using rank-two arrays with all elements distinguishable so row/column or storage-order confusion is detectable without asserting execution order.",
+        "different-lower-bounds-correspondence": "PENDING positive-control source shape assigning between conformable arrays with different lower bounds and checking correspondence by element order, not equal subscript values.",
+        "noncontiguous-section-correspondence": "PENDING positive-control source shape using a noncontiguous variable section and a conformable RHS, checking selected elements and untouched surrounding elements."
+      },
+      "oracle": "No fixture may require a particular element execution order, simultaneity, temporary, or function call count. The oracle should inspect final corresponding element values only.",
+      "oracle_limitation": "This source-only catalogue records pending plans only. It creates no Fortran test program, invokes no processor, approves no fixture or oracle, and claims no coverage. Future fixtures must use independently derived literal, inquiry, or source-relation oracles; must not infer assignment evaluation order, processor temporaries, or function call counts; and must not rely on compiler agreement, emitted code, undefined values, resource exhaustion, or a processor-dependent value.",
+      "dependencies": "9.5 array sections;10.1.10 conformance;10.2.1.4;15.8 elemental procedures;15.9.3."
+    },
+    {
+      "id": "S10.2.1.5-003",
+      "title": "Scalar expr in elemental defined assignment is treated as a same-shape array of scalar values",
+      "source": "10.2.1.5 p2 second sentence; J3/24-007 PDF p193.",
+      "source_units": [
+        "p2",
+        "p2.scalar-expr-as-array"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For an elemental defined assignment with an array variable and scalar expr, expr is treated as if it were an array of the same shape as the variable with every element equal to the scalar value of expr.",
+      "facets": [
+        "scalar-to-rank-one-array",
+        "scalar-to-rank-two-array",
+        "scalar-expression-snapshot-value"
+      ],
+      "pending": {
+        "scalar-to-rank-one-array": "PENDING positive-control source shape assigning a scalar derived-type value through elemental defined assignment to a rank-one array, with the subroutine transformation checked for every element.",
+        "scalar-to-rank-two-array": "PENDING positive-control source shape assigning a scalar expr to a rank-two variable and checking every element receives the same scalar-derived transformed value.",
+        "scalar-expression-snapshot-value": "PENDING source shape where the scalar expr value is established before assignment and the elemental subroutine transformation makes stale or per-element recomputation detectable without relying on side-effect counts."
+      },
+      "oracle": "The scalar treatment is an interpretation of eligible elemental defined assignment. It does not permit a nonconforming elemental assignment that fails 10.2.1.4 rank, uniqueness, or conformance conditions.",
+      "oracle_limitation": "This source-only catalogue records pending plans only. It creates no Fortran test program, invokes no processor, approves no fixture or oracle, and claims no coverage. Future fixtures must use independently derived literal, inquiry, or source-relation oracles; must not infer assignment evaluation order, processor temporaries, or function call counts; and must not rely on compiler agreement, emitted code, undefined values, resource exhaustion, or a processor-dependent value.",
+      "dependencies": "10.2.1.4;15.8;15.9.3."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_10_2_1_5.md"
+  },
+  "review_fingerprint": "f347eab6c2fa214dcf474dacff49892932ae7dd256d47e5eaf916b9a6c1eb48d",
+  "review_rationale": "batch106: independent fresh-context source review against pinned J3/24-007 (sha256 7371e889...). Reviewer read all 14 base units of 10.2.1.1, 10.2.1.2, 10.2.1.4 and 10.2.1.5 in the original PDF across pages 188 to 194, verified 14 base / 52 fine units, 21 requirements and 89 facets (all pending), and confirmed that only 12 base units are newly accounted because R1033 and C1015 were already counted. The central question was the ownership boundary with 10.2.1.3, which is already registered and sits in the middle of this scope with 26 base units and 144 facets. The reviewer read that catalogue and checked both failure directions. No duplication: the 10.2.1.2 p1 allocatable, character-kind and deferred-length plans admit the cases but leave the resulting allocation, length, bounds, truncation, padding, conversion and values to 10.2.1.3; the p3 pointer plans require an associated definable conforming target but leave the target write to 10.2.1.3 and association changes to 10.2.2; the 10.2.1.4 plans classify the subroutine, generic, rank and shape conditions and leave element-by-element interpretation to 10.2.1.5 and generic mechanics to 15.4.3.4.3. No gaps either: 10.2.1.1 p1 owns the partition rule rather than punting it, and 10.2.1.2 keeps every local eligibility condition including the intrinsic-not-defined classification, polymorphic restrictions, conformance and rank admission, BOZ destination type, Table 10.8, character kind compatibility, derived type parameter compatibility, coindexed restrictions, pointer target eligibility and the coarray unallocated-allocatable prohibition. The zero-permissions claim was independently adjudicated and accepted: no normative unit in scope grants processor latitude, and the sentence permitting pure elemental subroutine assignments to be performed simultaneously or in any order occurs only in the unnumbered NOTE in 10.2.1.5, correctly dispositioned informative, with plans forbidding order, simultaneity, temporary, side-effect and call-count oracles. Table 10.8 was read row by row from the table itself; all eight rows are owned, and the enum row preserves the condition that when expr is integer a primary in expr shall be an enumerator of the enum type, rather than admitting arbitrary integers. Character plans require explicit LEN checks and warn against relying on blank-padded comparison, and no plan assumes ISO 10646 or ASCII kinds exist. Decision: source-eligible, no blocking findings; two non-blocking observations recorded in doc/source_audits/batch_106.json. This registers source accounting only: it is not fixture approval, it supplies no execution, and it approves no oracle."
+}

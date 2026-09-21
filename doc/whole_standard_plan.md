@@ -2659,6 +2659,70 @@ compiler was invoked. The38-row sweep table describes programs that *could* be
 written; none has been written or run.
 See `doc/source_audits/batch_105.json`.
 
+The hundred-and-sixth checkpoint registers the independently reviewed
+assignment statement source:14base/52fine units across10.2.1.1,10.2.1.2,
+10.2.1.4 and10.2.1.5,21requirements and89pending facets. R1033 and C1015
+were already accounted, so12base units are newly accounted. Table10.8 is a
+base unit in its own right.
+
+The interesting feature of this packet is its shape: **10.2.1.3 was already
+registered, and it sits in the middle of the scope.** It owns26base units and
+144facets. So the central question was not whether the source was read
+correctly but where the boundary falls — and the failure modes are symmetric.
+Claiming an effect10.2.1.3 already owns would duplicate a requirement;
+punting a rule these sections genuinely own would leave a gap. The reviewer
+read the existing catalogue in full and checked both directions.
+
+There is no duplication. The10.2.1.2p1 allocatable, character-kind and
+deferred-length plans **admit** those cases but leave the resulting
+allocation, length, bounds, truncation, padding, conversion and values to
+10.2.1.3. The p3 pointer plans require an associated definable conforming
+target but leave the target write to10.2.1.3 and pointer association changes
+to10.2.2.10.2.1.4 classifies the subroutine, generic, rank and shape
+conditions and leaves element-by-element interpretation to10.2.1.5 and generic
+mechanics to15.4.3.4.3. And there is no gap:10.2.1.1p1 owns the partition
+rule rather than punting it, and10.2.1.2 keeps every local eligibility
+condition — intrinsic-not-defined classification, polymorphic restrictions,
+conformance and rank admission, BOZ destination type, Table10.8, character
+kind compatibility, derived type parameter compatibility, coindexed
+restrictions, pointer target eligibility, and the coarray or coindexed
+unallocated-allocatable prohibition.
+
+The zero-permissions verdict here is subtler than in batch105, and worth
+recording. Assignment *does* carry processor latitude — but the sentence
+permitting pure elemental subroutine assignments to be performed
+simultaneously or in any order occurs **only in the unnumbered NOTE** in
+10.2.1.5, which is informative. Meanwhile10.2.1.3, out of scope, contains
+genuine normative latitude at p4, p7 and p16, already recorded as permissions
+in its own catalogue. The contrast is what makes the verdict credible: the
+distinction was drawn deliberately, not missed. Every plan here forbids order,
+simultaneity, temporary, side-effect and call-count oracles.
+
+Table10.8 was read row by row from the table itself, since extraction
+interleaves its columns. All eight rows are owned. The enum row is the one to
+watch, and it survives intact: when *expr* is integer, a primary in *expr*
+shall be an enumerator of the enum type — **not** an arbitrary integer.
+Conversion is left to10.2.1.3p13.
+
+Character plans avoid the standing vacuity trap: where character assignment
+appears as an eligibility or control plan, LEN is checked explicitly rather
+than inferred from a comparison, because comparison blank-pads the shorter
+operand and would succeed for the wrong reason. And no plan assumes ISO10646
+or ASCII kinds exist — the kind facets are profile-qualified and skipped when
+unavailable rather than approximated.
+
+There were no blocking findings; two non-blocking observations are recorded.
+
+With this batch, Clause10 source is complete for all of10.1 and for10.2.1.
+10.2.2,10.2.3 and10.2.4 remain.
+
+There remain **2,083cases**, now with **213catalogues,1,226requirements,
+1,788direct,22linked and4,102pending facets out of5,912**. Source accounting
+covers2,078base units. All2,083case bindings,2,047reviews,209older
+catalogues,22links,R402 and the `b153c75b` baseline are preserved, and no
+compiler was invoked.
+See `doc/source_audits/batch_106.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
