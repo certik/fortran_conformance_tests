@@ -1,0 +1,149 @@
+{
+  "schema_version": 1,
+  "review_type": "independent-select-rank-construct-source-review",
+  "review_date": "2026-09-21",
+  "baseline_commit": "973551f",
+  "state": "reviewed-source-only-after-one-closed-finding",
+  "milestone": "With this batch, 11.1 is source-complete: 268 of 268 base units accounted across 11.1.1 through 11.1.12.",
+  "scope": {
+    "sections": ["11.1.10.1", "11.1.10.2", "11.1.10.3", "11.1.10.4"],
+    "section_titles_verified_from_source": {
+      "11.1.10.1": "Purpose and form of the SELECT RANK construct",
+      "11.1.10.2": "Execution of the SELECT RANK construct",
+      "11.1.10.3": "Attributes of a SELECT RANK associate name",
+      "11.1.10.4": "Examples of the SELECT RANK construct"
+    },
+    "base_units": 21,
+    "fine_units": 47,
+    "already_counted_numbered_units": 11,
+    "newly_accounted_base_units": 10,
+    "new_requirements": 21,
+    "new_numbered_requirements": 11,
+    "new_S_requirements": 10,
+    "new_pending_facets": 63,
+    "new_cases": 0,
+    "note": "The 11 numbered items are R1150, R1151, C1155, R1152, C1156, C1157, C1158, C1159, C1160, R1153 and C1161, all in 11.1.10.1. The 10 newly accounted units are 11.1.10.1 p1-p3, 11.1.10.2 p1-p2, 11.1.10.3 p1-p3 and 11.1.10.4 note1-note2. Facet count is 63 after the correction added one; the original proposal declared 62.",
+    "per_section": {
+      "11.1.10.1": {"base_units": 14, "already_counted": 11, "newly_accounted": 3},
+      "11.1.10.2": {"base_units": 2, "newly_accounted": 2},
+      "11.1.10.3": {"base_units": 3, "newly_accounted": 3},
+      "11.1.10.4": {"base_units": 2, "newly_accounted": 2}
+    }
+  },
+  "authoring": {
+    "author_context": "fresh subagent context in an isolated worktree based on 1cb5857",
+    "author_packet": "6f68b0b",
+    "author_correction": "6285b48",
+    "source_read_receipt": "receipts-batch116-source.json",
+    "note": "Authored in parallel with batch117 (SELECT TYPE and EXIT). The integrator took the final corrected file set directly and verified that git diff 1cb5857..6285b48 touches no file under tests/."
+  },
+  "independent_review": {
+    "receipt": "c11-selectrank-source-review.json",
+    "reviewer_distinct_from_author": true,
+    "first_pass_decision": "blocked",
+    "final_decision": "accept_no_blocking_findings",
+    "blocking_findings": 1,
+    "blocking_findings_closed": 1,
+    "scoped_original_units_read_in_full": 21,
+    "compiler_invocations": 0
+  },
+  "pre_existing_fixture_check": {
+    "why": "Registering a numbered rule that already has legacy fixtures STRUCTURALLY FORCES binding them, because validate_case_requirement runs once a rule is catalogued and rejects an empty facet list. That is what blocked batch113. A source packet must never bind fixtures.",
+    "identifiers_checked": ["R1150", "R1151", "R1152", "R1153", "C1155", "C1156", "C1157", "C1158", "C1159", "C1160", "C1161"],
+    "result": "No pre-existing cases under tests/ for any identifier, so registration is safe and nothing needed deferral.",
+    "independently_confirmed_by_reviewer": true,
+    "note": "The author performed this check unprompted-by-failure, which is what kept this packet out of the batch113 trap."
+  },
+  "findings": [
+    {
+      "id": "C11SRR-001",
+      "anchor": "11.1.10.1#C1161",
+      "source_text": "If the select-rank-stmt of a select-rank-construct specifies a select-construct-name, the corresponding end-select-rank-stmt shall specify the same select-construct-name. If the select-rank-stmt of a select-rank-construct does not specify a select-construct-name, the corresponding end-select-rank-stmt shall not specify a select-construct-name.",
+      "defect": "The FIRST SENTENCE carries TWO distinct obligations, not one: that a named SELECT RANK construct's END SELECT statement shall SPECIFY a construct name (a presence requirement), and that the name shall be THE SAME (an equality requirement). The packet had a wrong-name negative and the reverse unnamed-construct-with-named-END negative, but NO facet for a named SELECT RANK with an UNNAMED END SELECT - leaving a distinct C1161 prohibition with no pending facet or oracle row.",
+      "closure": "Added the facet named-select-rank-unnamed-end-rejected under C1161, with a diagnostic/control pair in which the only thing differing is the PRESENCE of the name on the END SELECT statement. Packet facets went 62 to 63; requirements unchanged at 21. C1161 now covers all three of its obligations: END name present, END name same, and unnamed construct having no END name.",
+      "state": "closed"
+    }
+  ],
+  "compound_obligation_sweep": {
+    "why": "The finding was a compound shall sentence whose second obligation was missed, which is a CLASS rather than a one-off. The author was required to sweep every constraint in scope containing more than one shall, a conjunction, or a paired if/if-not structure.",
+    "reviewer_action": "The sweep table was NOT accepted - the reviewer re-derived the obligation count for each constraint from the pinned PDF.",
+    "results": {
+      "C1155": "2 obligations, 3 diagnostic facets - the extra facet confirmed legitimate, not a duplicate or an unattributable split",
+      "C1156": "1 obligation, 1 facet",
+      "C1157": "1 obligation, 1 facet",
+      "C1158": "2 obligations, 2 facets",
+      "C1159": "2 obligations, 2 facets",
+      "C1160": "2 obligations, 2 facets",
+      "C1161": "3 obligations, 3 facets - now covered",
+      "R1150-R1153": "production alternatives covered; no omitted compound constraint"
+    },
+    "verdict": "sound"
+  },
+  "rank_matching_rules": {
+    "status": "independently derived by the reviewer from the source before comparing with the catalogue",
+    "verdict": "the catalogue states them correctly, covering which RANK guard matches which selector rank, the assumed-size and default cases, that at most one block is selected, and the precedence when several guards could match"
+  },
+  "permissions": [
+    {
+      "unit": "11.1.10.1 p3",
+      "detail": "A rank value greater than the maximum possible rank is permitted; the block never executes.",
+      "verdict": "accepted after the reviewer specifically adjudicated whether this is a permission or merely a statement of effect"
+    },
+    {
+      "unit": "11.1.10.2 p2",
+      "detail": "Internal branch to END SELECT is permitted, and the word 'only' supplies the paired outside-branch prohibition. Both halves are captured, per the batch111 precedent.",
+      "verdict": "accepted"
+    }
+  ],
+  "ownership_boundary_with_11_1_3_3": {
+    "verdict": "correct in both directions - no duplication and no gap",
+    "this_packet_owns": "SELECT RANK-specific association, rank matching, rank and bounds, and ALLOCATABLE, POINTER and TARGET inheritance.",
+    "11_1_3_3_retains": "The general attributes of associate names."
+  },
+  "oracle_discipline": "No plan establishes rank selection using the RANK intrinsic without justifying why the expected result is required rather than merely typical, which would duplicate the feature under test. Which-block-executed plans use sentinels distinct from every value any block could write, and the unobservability claim is scoped so it does not suppress the observable block-selection fact.",
+  "unregistered_dependencies_flagged": [
+    "11.1.11 and 11.1.12 (parallel packet batch117)",
+    "11.2 branch statements",
+    "Clause 15 dummy arguments and assumed-rank - SELECT RANK exists to handle assumed-rank dummies, so this reach is substantial and is flagged explicitly",
+    "Clause 16 intrinsics",
+    "Clause 19 association and definedness"
+  ],
+  "explicit_limitations": [
+    "This batch registers source accounting only. It is not fixture approval, it supplies no execution, and it creates no test case. authored_facets remains 1788, fixture review states remain 1770 / 274 / 1, and tests/ is untouched.",
+    "All 63 facets in scope remain pending.",
+    "11.1.10.4 yields zero requirements and zero facets because it is examples.",
+    "SELECT RANK's purpose is handling assumed-rank dummy arguments, which live in unregistered Clause 15; those facets cannot be implemented until it is registered.",
+    "Completing 11.1 SOURCE registration is not completing 11.1 testing - 11.1 now declares several hundred facets, essentially all pending, with no Clause 11 fixture written.",
+    "No compiler was invoked during authoring or review."
+  ],
+  "preservation": {
+    "cases_preserved": 2083,
+    "raw_reviews_preserved": 2047,
+    "older_catalogues_preserved": 259,
+    "linked_facets_preserved": 22,
+    "current_source_use_inventories_preserved": 1,
+    "baseline_lines_changed": 0,
+    "baseline": "b153c75b",
+    "expected_failures_lines": 804,
+    "authored_facets_unchanged": 1788,
+    "tests_directory_untouched": true,
+    "new_compiler_invocations": 0,
+    "integrated_files_byte_identical_to_reviewed_branch": true
+  },
+  "validation_snapshot": {
+    "catalogue_reviews_written": 4,
+    "inventory_reviews_written": 1,
+    "detailed_catalogues": 263,
+    "requirements": 1579,
+    "declared_facets": 6906,
+    "pending_facets": 5096,
+    "authored_facets": 1788,
+    "accounted_base_units": 2274,
+    "unresolved_base_units": 4199,
+    "clause_11_1_base_units_accounted": "268 of 268",
+    "normal_audit_exit": 1,
+    "normal_audit_block": "one retained needs-oracle real-BOZ case",
+    "python_suite_tests": 960,
+    "python_suite_result": "OK"
+  }
+}

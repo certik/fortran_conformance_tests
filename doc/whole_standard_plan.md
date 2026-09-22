@@ -3339,6 +3339,64 @@ covers2,264base units. `authored_facets` is unchanged at1,788 and `tests/` is
 untouched.
 See `doc/source_audits/batch_117.json`.
 
+The hundred-and-sixteenth checkpoint registers the independently reviewed
+`SELECT RANK` construct source:21base/47fine units across11.1.10.1 through
+11.1.10.4,21requirements and63pending facets. Eleven numbered items were
+already accounted, so10base units are newly accounted.
+
+**With this batch, 11.1 is source-complete: 268 of 268 base units**, across
+11.1.1 through11.1.12.
+
+The author ran the **pre-existing-fixture check** over R1150–R1153 and
+C1155–C1161 without being prompted by a failure, and found none. That is what
+kept this packet out of the trap that blocked batch113 — registering a
+numbered rule that already has legacy fixtures structurally forces binding
+them, which a source packet must never do. The reviewer confirmed the check
+independently.
+
+The blocking finding, **C11SRR-001**, is a good example of a defect that is
+easy to miss because the text reads as one rule. C1161's first sentence says
+that if the `SELECT RANK` statement specifies a construct name, the
+corresponding `END SELECT` **shall specify the same** name. That is *two*
+obligations: the name must be **present**, and it must be **the same**. The
+packet had a negative for a wrong name, and the mirror-image negative for an
+unnamed construct with a named `END SELECT` — but nothing at all for a
+**named construct with an unnamed `END SELECT`**. A distinct prohibition was
+left with no oracle row. The correction added
+`named-select-rank-unnamed-end-rejected`, whose control differs in exactly one
+property: the presence of the name.
+
+Because that is a *class* of defect rather than a one-off — a compound `shall`
+sentence whose second obligation goes unnoticed — a **compound-obligation
+sweep** was demanded across the whole scope, and then **re-derived from the
+pinned document by the reviewer** rather than accepted: C1155 has two
+obligations covered by three legitimate facets; C1156 and C1157 one each;
+C1158, C1159 and C1160 two each; C1161 three, now covered; and R1150–R1153
+carry production alternatives with no omitted compound constraint.
+
+Both permissions were adjudicated, including the specific question of whether
+11.1.10.1p3 — a rank value greater than the maximum possible rank is
+permitted, and the block never executes — is a genuine *permission* or merely
+a statement of *effect*. The11.1.10.2p2 "only from within" sentence is again
+split into both a permission and a restriction. The boundary against11.1.3.3
+was checked in both directions, this packet owning SELECT-RANK-specific
+association, rank matching, rank and bounds, and `ALLOCATABLE`/`POINTER`/
+`TARGET` inheritance.
+
+One limit deserves naming: `SELECT RANK` exists to handle **assumed-rank dummy
+arguments**, which live in **unregistered Clause 15**. Those facets cannot be
+implemented until Clause 15 is registered.
+
+And the larger caveat stands: 11.1 being *source*-complete is not 11.1 being
+*test*-complete. Several hundred Clause 11 facets are pending, and **no Clause
+11 fixture has been written at all**.
+
+There remain **2,083cases**, now with **263catalogues,1,579requirements,
+1,788direct,22linked and5,096pending facets out of6,906**. Source accounting
+covers2,274base units. `authored_facets` is unchanged at1,788 and `tests/` is
+untouched.
+See `doc/source_audits/batch_116.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
