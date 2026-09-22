@@ -3153,6 +3153,70 @@ review states are unchanged at1,770/274/1 — this packet touches nothing under
 and no compiler was invoked.
 See `doc/source_audits/batch_114.json`.
 
+The hundred-and-thirteenth checkpoint registers the independently reviewed
+`DO` construct **form and loop control** source:40base/78fine units across
+11.1.7.1,11.1.7.2 and11.1.7.3,38requirements and110pending facets. It is the
+most instructive batch of the session, because it exposed a structural
+coupling in the suite that no previous batch had hit.
+
+The packet was blocked with two findings. **C11DFR-001**: it had added
+`! covers` metadata headers to **four pre-existing fixture files**, binding ten
+facets to them. That raised `authored_facets` from1,788 to1,798 and — measured
+by the reviewer — **staled four reference-validated review groups**. Source
+registration is not fixture approval and confers no execution credit; every
+other source packet in this project has left the case corpus untouched.
+**C11DFR-002**: a single file-level `covers` line bound `R1123_invalid` to
+*four* distinct negatives at once, when that file contains four isolated
+subroutines each exercising a different grammar defect — overbroad, and
+destructive of per-facet attribution.
+
+Removing the bindings then made the audit **abort**:
+`ERROR: C1121_invalid:character: missing, duplicate, or unknown catalogue
+facets`. The cause, diagnosed directly in `tests/suite_data.py`, is a genuine
+coupling rather than an author error. `validate_case_requirement` is invoked
+only when `self.requirements.get(case.rule)` is truthy, and it raises on an
+empty facet list; meanwhile the parser requires a `covers` header only for
+`S<section>-NNN` rules, not for numbered ones. So before this packet, `C1121`
+and `R1123` were not catalogued requirements and their legacy cases were
+skipped entirely. **Registering them structurally forces those cases to gain
+`covers` metadata.**
+
+That left exactly two consistent outcomes: register the requirements *and*
+bind the fixtures, or do not register the requirements. A source packet may
+not do the former. So this was ruled a **fixture migration** — for which the
+ledger already shows precedent as a dedicated batch type, in the earlier C801
+and C815 migrations, each with independent fixture review and explicit
+retained-identifier accounting.
+
+The two requirements were therefore **deferred, not dropped**. `C1121`,
+`R1123` and their fine units are dispositioned `unresolved` and remain fully
+**accounted** — they do not vanish from the census — each carrying an explicit
+rationale naming the reason and the migration followup. The arithmetic follows
+honestly: seven non-numbered base units are newly accounted, but two
+previously-accounted numbered units move into unresolved, so the net global
+delta is **+5 accounted base units and +4 unresolved fine units**. The
+reviewer confirmed independently that this is an honest deferral rather than a
+quiet drop, and the right source-only outcome rather than under-claiming.
+
+Everything else stands: the31 registered numbered requirements, the two
+permissions — including the `end-do` "only from within" sentence split into
+both a permission and a restriction, per the batch111 precedent — and the
+deliberate decision **not** to own the iteration-count rule or the post-loop
+`DO` variable value, which belong to11.1.7.4 and were recorded as dependencies
+instead. The attribution audit covered the R1123 grammar-production row, the
+C1121/R1124 overlap, and the C1130 and C1131 exclusion lists.
+
+`authored_facets` is back to **1,788**, the fixture review states are restored
+to **1,770/274/1 with zero stale groups**, and the `tests/` directory is
+byte-identical to its state before the packet.
+
+There remain **2,083cases**, now with **248catalogues,1,492requirements,
+1,788direct,22linked and4,849pending facets out of6,659**. Source accounting
+covers2,229base units, with4,244base and **10** fine units unresolved — four
+of those fine units, and two base units, are the deliberate deferrals recorded
+above.
+See `doc/source_audits/batch_113.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must

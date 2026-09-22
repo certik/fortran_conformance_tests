@@ -1,0 +1,123 @@
+{
+  "schema_version": 1,
+  "review_type": "independent-do-construct-form-and-loop-control-source-review",
+  "review_date": "2026-09-21",
+  "baseline_commit": "4fbcf36",
+  "state": "reviewed-source-only-after-two-closed-findings-with-two-requirements-deliberately-deferred",
+  "scope": {
+    "sections": ["11.1.7.1", "11.1.7.2", "11.1.7.3"],
+    "base_units": 40,
+    "fine_units": 78,
+    "already_counted_numbered_units": 31,
+    "deferred_numbered_units": 2,
+    "newly_accounted_base_units": 7,
+    "net_accounted_base_unit_delta": 5,
+    "new_requirements": 38,
+    "new_numbered_requirements": 31,
+    "new_S_requirements": 7,
+    "new_pending_facets": 110,
+    "new_cases": 0,
+    "note": "33 numbered items fall in 11.1.7.2. 31 are registered as requirements and were already accounted. TWO - C1121 and R1123 - are deliberately DEFERRED and dispositioned unresolved, together with their fine units. The packet newly accounts 7 non-numbered base units, but the two deferrals move two previously-accounted numbered units into unresolved, so the net global delta is +5 accounted base units and +4 unresolved fine units.",
+    "per_section": {
+      "11.1.7.1": {"base_units": 4, "fine_units": 10, "requirements": 4, "pending_facets": 11, "newly_accounted": 4},
+      "11.1.7.2": {"base_units": 34, "fine_units": 65, "requirements": 32, "pending_facets": 95, "newly_accounted": 1, "already_counted": 31, "deferred": 2},
+      "11.1.7.3": {"base_units": 2, "fine_units": 3, "requirements": 2, "pending_facets": 4, "newly_accounted": 2}
+    }
+  },
+  "authoring": {
+    "author_context": "fresh subagent context in an isolated worktree based on 7d4f73f",
+    "author_packet": "54e7c88",
+    "author_corrections": ["f3be47c", "bd3fa3e"],
+    "source_read_receipt": "receipts-batch113-source.json",
+    "note": "Authored in parallel with batch114, which took 11.1.7.4 through 11.1.7.6. The integrator took the final corrected file set directly rather than replaying three commits, and verified that git diff 7d4f73f..bd3fa3e touches no file under tests/."
+  },
+  "independent_review": {
+    "receipt": "c11-do-form-source-review.json",
+    "reviewer_distinct_from_author": true,
+    "first_pass_decision": "blocked",
+    "final_decision": "accept_no_blocking_findings",
+    "blocking_findings": 2,
+    "blocking_findings_closed": 2,
+    "scoped_original_units_read_in_full": 40,
+    "compiler_invocations": 0
+  },
+  "findings": [
+    {
+      "id": "C11DFR-001",
+      "anchor": "tests/clause11/C1121_valid.f90, C1121_invalid.f90, R1123_valid.f90, R1123_invalid.f90; and the C1121 and R1123 pending maps in doc/catalogues/form_of_the_do_construct_11_1_7_2.json",
+      "defect": "The packet added '! covers' metadata headers to four PRE-EXISTING fixture files, binding ten facets to them. This raised authored_facets from 1788 to 1798 and reduced the packet's pending facets from 120 to 110. Source registration is NOT fixture approval and confers no execution credit; every other source packet in this project has left authored_facets unchanged and the case corpus untouched. There was also measured collateral damage: the four additions STALED four reference-validated review groups, moving the fixture review states to 1766/274/1 plus 4 stale.",
+      "closure": "All four metadata additions removed; the tests directory is byte-identical to the base commit.",
+      "state": "closed"
+    },
+    {
+      "id": "C11DFR-002",
+      "anchor": "tests/clause11/R1123_invalid.f90",
+      "defect": "A single file-level '! covers' line bound R1123_invalid to FOUR distinct negative facets at once - missing bound, WHILE missing parentheses, too many expressions, and CONCURRENT missing header. The file contains four isolated subroutines each exercising a different grammar defect, so one file-level line attaches all four facets to every case in the review group. That is overbroad and destroys per-facet attribution.",
+      "closure": "Closed by the removal in C11DFR-001. Carried forward as an explicit constraint on the future migration batch.",
+      "state": "closed"
+    }
+  ],
+  "structural_coupling_adjudication": {
+    "problem": "Removing the bindings caused the audit to ABORT with 'ERROR: C1121_invalid:character: missing, duplicate, or unknown catalogue facets'.",
+    "diagnosis_by_integrator": "In tests/suite_data.py, validate_case_requirement is invoked only when self.requirements.get(case.rule) is truthy, and it raises when the case's facet list is empty. Separately, the parser requires a 'covers' header only for S<section>-NNN rules; for numbered rules such as C1121 it is optional. Before this packet, C1121 and R1123 were not catalogued requirements, so their legacy cases were skipped entirely. REGISTERING THEM STRUCTURALLY FORCES the pre-existing cases to gain covers metadata.",
+    "consequence": "There were only two consistent outcomes: register the requirements AND bind the fixtures, or do not register the requirements. A source packet may not do the former.",
+    "ruling": "This is a FIXTURE MIGRATION. The rollout ledger shows precedent for that as a dedicated batch type - the earlier C801 and C815 migrations, each with independent fixture review and explicit retained-identifier accounting. The two requirements were therefore DEFERRED rather than dropped.",
+    "deferral_treatment": "C1121, R1123 and their fine units are dispositioned 'unresolved' and remain fully ACCOUNTED - they do not vanish from the census. Each carries an explicit rationale stating that registration is deferred because pre-existing reference-validated fixtures exist and binding them is a fixture migration requiring independent fixture review, not a source-registration action.",
+    "reviewer_verdict": "The reviewer independently confirmed the deferral is honest and correctly accounted, and that it is the right source-only outcome rather than under-claiming."
+  },
+  "followups_created": [
+    "Register C1121 and R1123 as requirements and migrate tests/clause11/C1121_valid.f90, C1121_invalid.f90, R1123_valid.f90 and R1123_invalid.f90 in a dedicated MIGRATION batch, with independent fixture review and renewal of the four affected review groups.",
+    "In that migration, R1123_invalid.f90 must use PER-CASE metadata so each isolated invalid subroutine carries only the one grammar facet it actually violates. A single file-level covers line binding all four negatives is overbroad and destroys per-facet attribution."
+  ],
+  "permissions": [
+    {"unit": "11.1.7.1 p2.do-concurrent-indeterminate-order", "detail": "DO CONCURRENT iteration order latitude. No plan asserts an order."},
+    {"unit": "11.1.7.2 p1.internal-end-do-branch-permission", "detail": "Branching to an end-do from within the construct is permitted, not required. The 'only from within' wording also supplies the paired restriction, and both halves are captured per the batch111 precedent."}
+  ],
+  "attribution_table_audit": {
+    "rows_checked": ["R1123 (grammar production yielding four negatives)", "C1121 vs R1124 overlap", "C1130 (LOCAL/LOCAL_INIT exclusion list)", "C1131 (REDUCE exclusion list)", "C1122 through C1137"],
+    "verdict": "sound"
+  },
+  "ownership": {
+    "iteration_count_and_post_loop_value": "Deliberately NOT owned here. The iteration-count rule and the post-loop DO variable value belong to 11.1.7.4, registered in parallel as batch114, and are recorded here as dependencies. The reviewer confirmed this boundary leaves no gap.",
+    "registered_forall": "10.2.4.x retains FORALL body, execution and many-to-one rules and delegates index-value determination to DO CONCURRENT execution. This packet owns only the DO syntax, concurrent-header and locality FORM constraints in 11.1.7.2.",
+    "unregistered_dependencies_flagged": ["11.1.7.4 onwards (parallel batch114)", "11.2 branch statements", "15.7 purity", "Clause 16 intrinsics", "19.4 index-name scope and attributes", "19.6 definition contexts"]
+  },
+  "explicit_limitations": [
+    "This batch registers source accounting only. It is not fixture approval, it supplies no execution, and it creates no test case. authored_facets remains 1788 and the fixture review states remain 1770 / 274 / 1 with zero stale groups.",
+    "All 110 facets in scope remain pending.",
+    "TWO numbered constraints, C1121 and R1123, are registered as ACCOUNTED BUT UNRESOLVED. Their requirements are not yet available to the suite, and will not be until the migration batch runs.",
+    "No trip-count or final-value oracle is built over a real DO variable, since accumulated increments are approximations.",
+    "No compiler was invoked during authoring or review. The eight substring executions integrated in batch099 remain the latest actual observations."
+  ],
+  "preservation": {
+    "cases_preserved": 2083,
+    "raw_reviews_preserved": 2047,
+    "older_catalogues_preserved": 245,
+    "linked_facets_preserved": 22,
+    "current_source_use_inventories_preserved": 1,
+    "baseline_lines_changed": 0,
+    "baseline": "b153c75b",
+    "expected_failures_lines": 804,
+    "authored_facets_unchanged": 1788,
+    "fixture_review_states_unchanged": "1770 reference-validated / 274 source-reviewed / 1 needs-oracle, zero stale",
+    "tests_directory_untouched": true,
+    "new_compiler_invocations": 0,
+    "integrated_files_byte_identical_to_reviewed_branch": true
+  },
+  "validation_snapshot": {
+    "catalogue_reviews_written": 3,
+    "inventory_reviews_written": 1,
+    "detailed_catalogues": 248,
+    "requirements": 1492,
+    "declared_facets": 6659,
+    "pending_facets": 4849,
+    "authored_facets": 1788,
+    "accounted_base_units": 2229,
+    "unresolved_base_units": 4244,
+    "unresolved_fine_units": 10,
+    "normal_audit_exit": 1,
+    "normal_audit_block": "one retained needs-oracle real-BOZ case",
+    "python_suite_tests": 960,
+    "python_suite_result": "OK"
+  }
+}

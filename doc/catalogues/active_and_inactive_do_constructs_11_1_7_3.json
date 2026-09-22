@@ -1,0 +1,105 @@
+{
+  "schema_version": 1,
+  "section": "11.1.7.3",
+  "subunits": {
+    "p1": [
+      "p1.initially-inactive",
+      "p1.active-only-on-do-stmt-execution"
+    ],
+    "p2": [
+      "p2.inactive-only-on-termination"
+    ]
+  },
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "requirements",
+      "requirements": [
+        "S11.1.7.3-001"
+      ]
+    },
+    {
+      "unit": "p1.initially-inactive",
+      "disposition": "requirements",
+      "requirements": [
+        "S11.1.7.3-001"
+      ]
+    },
+    {
+      "unit": "p1.active-only-on-do-stmt-execution",
+      "disposition": "requirements",
+      "requirements": [
+        "S11.1.7.3-001"
+      ]
+    },
+    {
+      "unit": "p2",
+      "disposition": "requirements",
+      "requirements": [
+        "S11.1.7.3-002"
+      ]
+    },
+    {
+      "unit": "p2.inactive-only-on-termination",
+      "disposition": "requirements",
+      "requirements": [
+        "S11.1.7.3-002"
+      ]
+    }
+  ],
+  "requirements": [
+    {
+      "id": "S11.1.7.3-001",
+      "title": "A DO construct is initially inactive and becomes active only when its DO statement is executed",
+      "source": "11.1.7.3 p1; J3/24-007 PDF p212.",
+      "source_units": [
+        "p1",
+        "p1.initially-inactive",
+        "p1.active-only-on-do-stmt-execution"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A DO construct is either active or inactive. It is initially inactive and becomes active only when its DO statement is executed.",
+      "facets": [
+        "initially-inactive-source-control",
+        "active-on-do-statement-execution"
+      ],
+      "pending": {
+        "initially-inactive-source-control": "PENDING source-control evidence that active/inactive state is an internal construct state; future executable tests must observe only specified DO execution effects, not the state directly.",
+        "active-on-do-statement-execution": "PENDING positive source plan where execution reaches a DO statement before any loop-body effect is expected, with actual loop initiation effects credited to 11.1.7.4.1."
+      },
+      "oracle": "The active/inactive state is not directly portable as an oracle in this source-only packet; future executable evidence must observe specified loop effects owned by 11.1.7.4.",
+      "oracle_limitation": "This source-only catalogue records pending plans only. It creates no Fortran test program, invokes no processor, approves no fixture or oracle, and claims no coverage. Future DO fixtures must use independently derived literal, inquiry, or source-relation oracles; must preload sentinels distinct from every value the loop body could write; must not use function side effects, call counts, evaluation-order observations, temporary-storage effects, compiler agreement, diagnostic wording, emitted code, undefined values, resource exhaustion, processor-dependent kind availability, or real/complex accumulated increments as an oracle.",
+      "dependencies": "11.1.7.2 DO statement form in this packet;11.1.7.4.1 loop initiation NOT YET REGISTERED (parallel)."
+    },
+    {
+      "id": "S11.1.7.3-002",
+      "title": "An active DO construct becomes inactive only when it terminates",
+      "source": "11.1.7.3 p2; J3/24-007 PDF p212.",
+      "source_units": [
+        "p2",
+        "p2.inactive-only-on-termination"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Once active, a DO construct becomes inactive only when it terminates.",
+      "facets": [
+        "inactive-on-termination-source-control",
+        "no-inactivation-before-termination-source-control"
+      ],
+      "pending": {
+        "inactive-on-termination-source-control": "PENDING source-control evidence linking inactivation to loop termination and filing normal, EXIT, and other termination effects under 11.1.7.4.5 when registered.",
+        "no-inactivation-before-termination-source-control": "PENDING source-control plan that does not attempt to observe active state directly; any future positive fixture must use non-vacuous final-state effects from a loop that has not yet terminated versus one that has."
+      },
+      "oracle": "This unit links inactivation to termination but does not by itself define the trip-count, EXIT, CYCLE, or post-loop DO-variable effects needed for executable observations.",
+      "oracle_limitation": "This source-only catalogue records pending plans only. It creates no Fortran test program, invokes no processor, approves no fixture or oracle, and claims no coverage. Future DO fixtures must use independently derived literal, inquiry, or source-relation oracles; must preload sentinels distinct from every value the loop body could write; must not use function side effects, call counts, evaluation-order observations, temporary-storage effects, compiler agreement, diagnostic wording, emitted code, undefined values, resource exhaustion, processor-dependent kind availability, or real/complex accumulated increments as an oracle.",
+      "dependencies": "11.1.7.4.5 loop termination NOT YET REGISTERED (parallel);11.1.7.4.3 execution cycle NOT YET REGISTERED (parallel)."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_11_1_7_3.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "1d4552d31e74f71d4c51268ae89d55cd8f8be426aefe63561d372d9a5b50506f",
+  "review_rationale": "batch113: independent fresh-context source review against pinned J3/24-007 (sha256 7371e889...), plus a closeout re-verification. Reviewer read all 40 base units of 11.1.7.1, 11.1.7.2 and 11.1.7.3 in the original PDF, verified 40 base / 78 fine units, and confirmed the accounting that only 7 non-numbered base units are newly accounted because 31 numbered items are already counted. The packet was blocked on its first pass with two findings, both closed and re-verified. C11DFR-001 found that the packet had added covers metadata headers to four pre-existing fixture files, binding ten facets and raising authored_facets from 1788 to 1798 while staling four reference-validated review groups. Source registration is not fixture approval and confers no execution credit, so a source packet may not bind fixtures. C11DFR-002 found that a single file-level covers line on R1123_invalid bound four distinct negatives at once, destroying per-facet attribution. Removing the bindings then exposed a genuine structural coupling, which the integrator diagnosed directly in tests/suite_data.py: validate_case_requirement runs only once a rule is a catalogued requirement, and it rejects an empty facet list, while covers headers are optional for numbered rules. Registering C1121 and R1123 therefore structurally forces their pre-existing cases to gain covers metadata, which is a fixture migration requiring independent fixture review rather than a source-registration action, and for which the ledger shows precedent as a dedicated batch type. The resolution was to defer those two requirements: C1121 and R1123 and their fine units are dispositioned unresolved and remain fully accounted, with explicit rationales naming the deferral reason and the migration followup, so the packet registers 38 requirements and 110 facets rather than 40 and 120. The reviewer verified that the deferral is honest rather than a quiet drop, that both units remain accounted, that the arithmetic is exactly attributable to the two deferrals, that the tests directory diff is empty, that authored_facets is restored to 1788 and the fixture review states to 1770 reference-validated, 274 source-reviewed and 1 needs-oracle with zero stale groups, and that the two permissions, the end-do permission and restriction split, and the dependency treatment of the iteration-count and post-loop DO variable material are undisturbed. Final decision: accept, no blocking findings. This registers source accounting only: it is not fixture approval, it supplies no execution, and it approves no oracle."
+}
