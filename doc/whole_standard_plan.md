@@ -3655,6 +3655,76 @@ must renew the source review of every catalogue it binds facets into, in the
 same integration.**
 See `doc/source_audits/batch_121.json`.
 
+## Batch 122 — branching, CONTINUE, STOP, FAIL IMAGE and NOTIFY WAIT source
+
+Clause 11.1 has been source-complete since batch118. This packet and its two
+parallel siblings close the rest of Clause 11. It registers **11.2.1, 11.2.2,
+11.2.3, 11.3, 11.5 and 11.6** — 36 base units over PDF pages 227–231, of which
+20 were already counted and **16 are newly accounted**, in six new catalogues
+carrying 23 requirements and 64 pending facets. Section titles were again
+established **from the source**, not from the coordinator's prompt.
+
+11.4 is the unusual one. `STOP` and `ERROR STOP` were **already registered** in
+the pre-existing `stop.json`, so all ten of its base units were already
+accounted. This packet therefore adds no 11.4 catalogue and leaves `stop.json`
+**byte-unchanged**, merely *relocating* it within `index.json` so the index
+stays in section order. The reviewer confirmed the relocation broke nothing and
+— importantly — did **not** stale the 11.4 review, because reviews are bound to
+catalogue **content**, not to index position.
+
+The reviewer **blocked** the packet. The blocking finding, C11BSR-001, is a
+familiar shape: 11.6 p9 collapses into two facets a sentence that actually
+carries four obligations — an explanatory message is assigned, the assignment
+has intrinsic-assignment semantics, and on success both the definition status
+*and* the value are unchanged — while the plan omitted the
+**initially-undefined** branch altogether by only ever planning a defined
+sentinel. It now carries five facets, mirroring the registered 9.7.5 model
+rather than a freshly invented decomposition.
+
+The `ERRMSG` discipline here is absolute and worth restating, because it is
+counter-intuitive: the standard leaves `ERRMSG` text **unspecified**, so no
+oracle may compare it — not by equality, not by **inequality against a
+sentinel**, not by substring, wording, or compiler agreement. That limit was
+set by finding SER-005. Only the no-error *unchanged-value* facet has genuine
+oracle potential, and even that must assert `LEN` explicitly, because character
+comparison blank-pads the shorter operand.
+
+Two further findings were accepted. C11BSR-002 caught a **stale baseline** in
+the author's own report: the claimed +26 accounted-base movement was really
+**+16**, which the integrator confirmed independently against `df0feaf` = 2274.
+The author's 20-already-counted / 16-newly-accounted split had been right all
+along; only the reported baseline was wrong. C11BSR-003 caught an **incomplete**
+list of the facets that registering 11.2 unblocks. That one matters more than it
+looks: the deferred branch-target facets scattered across 11.1.2 through
+11.1.11 have no other owner, so anything missing from that list would have been
+stranded silently and forever. The widened list — fifteen sites, from
+`11.1.2.1` through `11.1.11.2` — is recorded verbatim as the
+`clause11-branch-target-facet-migration` followup. None of them is discharged
+here; discharging them is fixture work and needs independent fixture review.
+
+The pre-existing fixture check over all fourteen identifiers (`R1159`–`R1167`,
+`C1174`–`C1178`) found no legacy cases, so nothing needed deferral — the trap
+that blocked batch113.
+
+`FAIL IMAGE` and `NOTIFY WAIT` are **multi-image gated** and unobservable in
+this single-image suite, and the exact positive `STAT` value is processor
+dependent **latitude**, never a requirement; only positivity and distinctness
+from the named `STAT_FAILED_IMAGE` and `STAT_STOPPED_IMAGE` are portable.
+
+One numeric puzzle was settled for good. Two authors reported different fixture
+counts from the same base — 1,823 and 1,821. Both are real and measure
+different things: the audit reports **1,821 active** review bindings, while raw
+`tests/reviews.json` holds 1,823 because `C801_invalid` and `C815_invalid` are
+**orphaned** leftovers of an earlier migration, bound to no active case. 1,821
+is the audit-active figure; the reviewer who argued otherwise was overruled on
+that evidence. It is pre-existing and not a defect, and is recorded here so it
+need not be re-investigated the next time someone notices the gap.
+
+Source accounting only: no fixture bound, no case added, no compiler invoked.
+`authored_facets` stays at **1,839**, cases at **2,134**, and
+`tests/expected_failures.txt` at **807 lines**, byte-unchanged.
+See `doc/source_audits/batch_122.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must

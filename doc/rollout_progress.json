@@ -5641,9 +5641,42 @@
         "Bounds fixtures RELY on standard LBOUND/UBOUND/SHAPE/SIZE semantics; they do NOT test those intrinsics independently.",
         "CORRECTIVE ACTION: binding facets into a catalogue STALES its content-bound source review by design. Batches118,119 and120 each left such staleness UNCORRECTED and were committed with it; the gate for this batch FAILED with 'cannot review linked evidence:11.1.3.3: catalogue source review is stale'. The earlier gates passed only because no test case happened to exercise those catalogues through the linked-evidence path. All six affected source reviews -9.5.3.3,10.1.5.2.2,10.1.5.3.1,10.2.3.2,11.1.3.2,11.1.3.3 - were renewed, each recording that the staleness is attributable SOLELY to facet binding and that the SOURCE ACCOUNTING IS UNCHANGED. PROCESS LESSON: a FIXTURE packet must renew the source review of every catalogue it binds facets into, in the same integration."
       ]
+    },
+    {
+      "id": "clause11-branching-stop-fail-image-notify-wait-source-122",
+      "state": "reviewed-source-only",
+      "packet_kind": "SOURCE",
+      "baseline_commit": "df0feaf",
+      "sections": ["11.2.1", "11.2.2", "11.2.3", "11.3", "11.4", "11.5", "11.6"],
+      "author_handoffs": {
+        "proposal": "b7bf3f8",
+        "correction": "da8168d"
+      },
+      "source_reviews": ["doc/source_audits/batch_122.json"],
+      "new_executions": 0,
+      "source_accounting": {
+        "base_units": 36,
+        "already_counted_units": 20,
+        "newly_accounted_base_units": 16,
+        "new_catalogues": 6,
+        "new_requirements": 23,
+        "new_pending_facets": 64
+      },
+      "coordination": "Branching, CONTINUE, STOP/ERROR STOP, FAIL IMAGE and NOTIFY WAIT. Titles established FROM SOURCE. Authored in PARALLEL with batch123 and batch124 from the same base df0feaf. THE 11.4 CASE IS THE UNUSUAL ONE: STOP/ERROR STOP was ALREADY registered in the pre-existing stop.json, so all10of its base units were already accounted; this packet registers NO new11.4 catalogue, leaves stop.json BYTE-UNCHANGED, and only RELOCATES it within index.json so the index stays in section order. The reviewer verified that relocation broke nothing and did NOT stale the11.4 review, since reviews are bound to catalogue CONTENT and not to index position. THE REVIEWER BLOCKED the packet on C11BSR-001:11.6 p9 collapsed the ERRMSG sentence into two facets when it carries four obligations plus an omitted initially-undefined branch. Corrected to FIVE facets mirroring the9.7.5 model. ERRMSG DISCIPLINE (finding SER-005) is absolute here - the standard leaves ERRMSG text unspecified, so NO oracle may compare it by equality, INEQUALITY AGAINST A SENTINEL, substring or wording; only the no-error unchanged-value facet has oracle potential and it must assert LEN explicitly against the blank-padding trap. C11BSR-002 caught a STALE BASELINE in the author's report: the claimed+26 accounted-base delta was really+16, which the integrator confirmed independently against df0feaf=2274. C11BSR-003 caught an INCOMPLETE unblocked-facet list; the widened list is recorded as the clause11-branch-target-facet-migration followup, because an omission there would silently strand facets forever. The PRE-EXISTING FIXTURE CHECK over all14identifiers R1159-R1167 and C1174-C1178 found no legacy cases, so nothing needed deferral (the trap that blocked batch113). FAIL IMAGE and NOTIFY WAIT are MULTI-IMAGE GATED and unobservable in this single-image suite; the exact positive STAT value is processor-dependent LATITUDE, never a requirement.",
+      "remaining_observations": [
+        "All64new facets remain PENDING. Registering a requirement is not evidence any processor implements it.",
+        "Registering11.2 UNBLOCKS deferred branch-target facets across11.1.2.1,11.1.2.2,11.1.3.2,11.1.4,11.1.5.1 C1111,11.1.5.2,11.1.6 C1120,11.1.7.2,11.1.7.4.4,11.1.7.4.5,11.1.7.5 C1142,11.1.8.2,11.1.9.2,11.1.10.2 and11.1.11.2 - NONE of which this packet discharges. They need a dedicated migration batch with independent fixture review.",
+        "Future branch tests may observe only WHICH STATEMENT EXECUTES NEXT, never how the transfer is implemented.",
+        "FIXTURE-STATE DISCREPANCY ADJUDICATED: one author reported1823reference-validated and another1821from the same base. Both are real but measure different things - the audit counts1821ACTIVE bindings, while raw tests/reviews.json holds1823because C801_invalid and C815_invalid are ORPHANED leftovers of an earlier migration bound to no active case.1821is the audit-active figure; the reviewer who argued otherwise was overruled. Pre-existing, not a defect, recorded so it is not re-investigated each time it is noticed."
+      ]
     }
   ],
   "cross_batch_followups": [
+    {
+      "id": "clause11-branch-target-facet-migration",
+      "topic": "Registering 11.2 branch concepts at batch122 unblocks branch-target facets that were deferred across Clause 11.1 while no catalogue owned the branch concepts. The complete list, verified by the batch122 reviewer against grep: 11.1.2.1 outside-branch-entry-rejected, within-block-transfer-source, out-of-block-transfer-source; 11.1.2.2 outward-branch-completion; 11.1.3.2 END ASSOCIATE internal and outside; 11.1.4 END BLOCK internal and outside; 11.1.5.1 C1111 internal and outside; 11.1.5.2 END TEAM within and outside; 11.1.6 C1120 and END CRITICAL, four facets; 11.1.7.2 end-do internal and outside; 11.1.7.4.4 cycle/end-do equivalence; 11.1.7.4.5 loop termination by outside branch; 11.1.7.5 C1142 both DO CONCURRENT facets; 11.1.8.2 END IF internal and outside; 11.1.9.2 END SELECT CASE both; 11.1.10.2 SELECT RANK both; 11.1.11.2 SELECT TYPE both. Batch122 deliberately did NOT discharge any of them - discharging is fixture work and needs independent fixture review. An incomplete list would strand facets silently, which is why the original short list was raised as finding C11BSR-003.",
+      "state": "open-unblocked-by-batch122"
+    },
     {
       "id": "lfortran-where-restoration-defect",
       "topic": "The frozen LFortran 0.65.0-411 fails three WHERE restoration cases (S10_2_3_2_006 nested_construct_restores_outer_control, nested_construct_restores_outer_pending, nested_stmt_restores_outer_control), computing stale-sentinel values for the post-construct elemental update where the source requires the restored control mask to govern it. gfortran f2023 passes all three and the required arrays were hand-derived from the source. This is a genuine LFortran sequencing/stale-RHS defect around END WHERE restoration and is a good candidate for an upstream MRE.",
