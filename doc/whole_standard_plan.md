@@ -3515,6 +3515,65 @@ There are now **2,102cases**, with **1,807direct facets** and **5,077pending**,
 and fixture review states of **1,789 reference-validated /274/1**.
 See `doc/source_audits/batch_119.json`.
 
+The hundred-and-twentieth checkpoint establishes **22 facets of 10.2.3.2** —
+the `WHERE` masking semantics — taking the corpus from **2,102 to 2,124
+cases**. It is also **the first baseline change of the session**:
+`tests/expected_failures.txt` had been byte-identical for thirty-five
+consecutive batches, and now gains three lines, going from 804 to 807.
+
+Those three lines are the point of the whole exercise. The packet found
+**three genuine defects in the frozen LFortran target**.
+
+All three are `S10.2.3.2-006` restoration cases —
+`nested_construct_restores_outer_control`,
+`nested_construct_restores_outer_pending` and
+`nested_stmt_restores_outer_control`. They pass under gfortran f2023 and fail
+under LFortran. That asymmetry alone proves nothing: a fixture can be wrong in
+a way one compiler happens to tolerate, and **compiler consensus is not an
+oracle**. So the reviewer **hand-derived the required final arrays from the
+source rules**, independently of any compiler:
+`[1101,1202,303,304,1205,1106]` for the two nested-construct cases and
+`[1101,198,-803,-804,195,1106]` for the nested-statement case. They match the
+fixtures. LFortran computes **stale-sentinel values** for the post-construct
+elemental update — 199 and 194 where 198 and 195 are required — a sequencing
+and stale-right-hand-side defect around `END WHERE` restoration.
+
+So the fixtures are right and the compiler is wrong. The three were recorded
+as XFAILs in a **separate execution operation** from the review recording, as
+the protocol requires. No fixture was weakened, no oracle relaxed, no
+workaround introduced. The defect is also logged as a cross-batch followup, as
+a good candidate for an upstream minimal reproducer.
+
+Non-vacuity was again proved **by mutation**, and this packet's campaign is
+the most thorough yet: ignoring the mask failed 22 of 22; inverting it failed
+22 of 22; perturbing an expected element failed 22 of 22; a masked `ELSEWHERE`
+using its own mask alone, without conjoining the previous pending mask, failed
+6 of 6; suppressing `END WHERE` restoration failed 3 of 3. And the most
+valuable result: **treating a nested construct as a statement failed 5 of 5,
+and treating a nested statement as a construct failed 1 of 1.** That
+distinction — a nested `WHERE` **construct** alters the pending mask while a
+nested `WHERE` **statement** does not — is the subtlest thing in the
+subclause, and failing in *both* directions is what makes it genuinely
+established rather than assumed.
+
+The fixtures are built to discriminate: sentinels distinct from every value
+any branch could write, masks that are never all-true or all-false, integer
+and logical data only, and hand-written literal expected arrays. No `MERGE`,
+`PACK`, `COUNT`, `UNPACK`, `ALL` or `ANY` appears as an oracle.
+
+What is deliberately **not** claimed matters as much. No element assignment
+order is inferred. No mask evaluation is counted — p2 says a mask is evaluated
+at most once per execution of its statement, but a conforming program cannot
+observe that. Nothing asserts whether an unselected element's expression was
+evaluated, since the processor may evaluate more than the context requires.
+And the narrow p13 permission for a `WHERE` statement mask function remains a
+permission, not an effect claimed as exercised. All 34 facets of 10.2.3.1 and
+19 of 10.2.3.2 stay pending for these reasons.
+
+There are now **2,124cases**, with **1,829direct facets** and **5,055pending**,
+and fixture review states of **1,811 reference-validated /274/1**.
+See `doc/source_audits/batch_120.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must

@@ -1,0 +1,115 @@
+{
+  "schema_version": 1,
+  "review_type": "independent-where-masking-fixture-review",
+  "review_date": "2026-09-21",
+  "baseline_commit": "6e437c1",
+  "state": "reference-validated-runtime-effects-with-three-lfortran-defects-recorded",
+  "packet_kind": "FIXTURE",
+  "milestone": "FIRST BASELINE CHANGE OF THE SESSION. tests/expected_failures.txt was byte-identical for 35 consecutive batches; this packet adds three XFAIL lines for genuine LFortran defects found by new tests, taking it from 804 to 807 lines.",
+  "scope": {
+    "targets": ["10.2.3.1 general form of the masked array assignment", "10.2.3.2 interpretation of masked array assignments"],
+    "pending_before": {"10.2.3.1": 34, "10.2.3.2": 41, "total": 75},
+    "facets_established": 22,
+    "new_cases": 22,
+    "established_requirements": ["S10.2.3.2-001", "S10.2.3.2-004", "S10.2.3.2-005", "S10.2.3.2-006", "S10.2.3.2-007", "S10.2.3.2-008", "S10.2.3.2-012"],
+    "pending_after": {"10.2.3.1": 34, "10.2.3.2": 19}
+  },
+  "why_this_target": "The batch109 source review identified the highest-value family in this scope: assignment to elements NOT selected by the mask must not occur. That is directly observable by preloading unselected elements with distinguishable sentinels.",
+  "authoring": {
+    "author_context": "fresh subagent context in an isolated worktree based on 155d775",
+    "author_packet": "f245522",
+    "generator": "tools/generate_where_masking_fixtures.py",
+    "generator_check_determinism": "passed"
+  },
+  "independent_review": {
+    "receipt": "where-masking-fixture-review.json",
+    "reviewer_distinct_from_author": true,
+    "decision": "eligible-with-nonblocking-observations",
+    "blocking_findings": 0
+  },
+  "lfortran_defects_found": {
+    "summary": "This packet found three genuine defects in the frozen LFortran target. That is the suite working as intended.",
+    "failing_cases": [
+      "S10_2_3_2_006_valid__where_masking_nested_construct_restores_outer_control",
+      "S10_2_3_2_006_valid__where_masking_nested_construct_restores_outer_pending",
+      "S10_2_3_2_006_valid__where_masking_nested_stmt_restores_outer_control"
+    ],
+    "how_adjudicated": "The reviewer HAND-DERIVED the required final arrays for all three from the source rules, independently of any compiler, and confirmed they match the fixtures. The required arrays are [1101,1202,303,304,1205,1106] for the two nested-construct cases and [1101,198,-803,-804,195,1106] for the nested-statement case.",
+    "defect_characterisation": "LFortran computes stale-sentinel values for the post-construct elemental update - for example 199 and 194 where 198 and 195 are required. This is a sequencing and stale-right-hand-side defect around END WHERE restoration.",
+    "why_this_is_not_a_false_fixture": "gfortran f2023 passes all 22, but compiler consensus is NOT an oracle and gfortran agreement alone would not have settled it. The hand derivation did. Had the arithmetic disagreed with both compilers, the arithmetic would have won.",
+    "handling": "Recorded as XFAILs against the frozen target in a SEPARATE execution operation from the review recording, as the protocol requires. No fixture was weakened, no oracle relaxed, and no workaround introduced."
+  },
+  "non_vacuity_by_mutation": {
+    "principle": "Per the batch118 precedent, non-vacuity is proved by MUTATION, not inspection.",
+    "campaigns": {
+      "ignore the mask entirely": "22 of 22 failed",
+      "invert the mask": "22 of 22 failed",
+      "perturb an expected element by one": "22 of 22 failed",
+      "masked ELSEWHERE using its own mask alone, without conjoining the previous pending mask": "6 of 6 failed",
+      "treat a nested construct as a statement": "5 of 5 failed",
+      "treat a nested statement as a construct with respect to the pending mask": "1 of 1 failed",
+      "suppress END WHERE restoration": "3 of 3 failed"
+    },
+    "most_valuable_result": "The construct-versus-statement discrimination is the subtlest thing in this subclause - a nested WHERE construct alters the pending mask while a nested WHERE statement does not - and the mutations in BOTH directions fail, so it is genuinely established rather than assumed."
+  },
+  "design_for_discrimination": {
+    "sentinels": "distinct from every value any branch could write, so assigned and not-assigned are genuinely distinguishable",
+    "masks": "mixed, never all-true or all-false - such a mask cannot distinguish a correct implementation from one that ignores the mask",
+    "types": "integer and logical only, keeping the arithmetic exact",
+    "oracles": "direct scalar element checks against hand-written literal arrays"
+  },
+  "oracle_independence": "No MERGE, PACK, COUNT, UNPACK, ALL, ANY or equivalent selection intrinsic is used as an oracle anywhere.",
+  "what_is_not_claimed": [
+    "No element assignment ORDER is inferred.",
+    "No mask evaluation is COUNTED - 10.2.3.2 p2 says a mask is evaluated at most once per execution of its statement, but a conforming program cannot observe that.",
+    "No claim that an unselected element's expression was or was not evaluated - the processor may evaluate more than the context requires.",
+    "No side effect is used to prove evaluation happened. The narrow p13 permission for a WHERE statement mask function is a permission, not an effect that may be asserted as exercised."
+  ],
+  "deferrals": {
+    "10_2_3_1_all_34": "syntax, source-control or diagnostic constraints rather than runtime effects",
+    "10_2_3_2_p2_and_p7": "snapshot and call-count facets - a conforming program cannot count mask evaluations",
+    "10_2_3_2_p9_p10_p11": "evaluation facets with no portable oracle",
+    "10_2_3_2_p13_p14": "permissions rather than required effects",
+    "10_2_3_2_p3_and_stable_mask": "runtime-possible but deferred to focused packets; the reviewer judged this reasonable rather than a shortfall"
+  },
+  "compiler_observations": {
+    "frozen_target": "lfortran 0.65.0-411-ga0afaa840b-dirty",
+    "frozen_target_result": "19 of 22 pass, 3 fail - see lfortran_defects_found",
+    "qualifying_reference": "gfortran 16.1.0 with -std=f2023",
+    "reference_result": "22 of 22 pass; agreement on 22 of 22",
+    "reproduced_by_integrator": true
+  },
+  "explicit_limitations": [
+    "22 facets of 10.2.3.2 are established. All 34 of 10.2.3.1 and 19 of 10.2.3.2 remain pending.",
+    "This establishes masking semantics - which elements are assigned and which are left alone, and the control and pending control mask transitions. It establishes NOTHING about evaluation order, evaluation counts, or side effects.",
+    "Three cases are XFAIL against the frozen target. They pass on the qualifying reference and are correct; the XFAILs record an LFortran defect, not a weakened test."
+  ],
+  "preservation": {
+    "cases_before": 2102,
+    "cases_after": 2124,
+    "authored_facets_before": 1807,
+    "authored_facets_after": 1829,
+    "pending_facets_before": 5077,
+    "pending_facets_after": 5055,
+    "fixture_review_states_after": "1811 reference-validated / 274 source-reviewed / 1 needs-oracle",
+    "raw_reviews_preserved": 2047,
+    "baseline": "b153c75b",
+    "expected_failures_lines_before": 804,
+    "expected_failures_lines_after": 807,
+    "baseline_lines_added": 3,
+    "baseline_lines_removed": 0
+  },
+  "validation_snapshot": {
+    "fixture_reviews_written": 22,
+    "inventory_reviews_written": 1,
+    "xfail_entries_added": 3,
+    "detailed_catalogues": 263,
+    "requirements": 1579,
+    "pending_facets": 5055,
+    "authored_facets": 1829,
+    "normal_audit_exit": 1,
+    "normal_audit_block": "one retained needs-oracle real-BOZ case",
+    "python_suite_tests": 978,
+    "python_suite_result": "OK"
+  }
+}
