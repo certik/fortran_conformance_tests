@@ -3788,6 +3788,86 @@ Source accounting only. `authored_facets` stays **1,839**, cases **2,134**, and
 `tests/expected_failures.txt` byte-unchanged at **807 lines**.
 See `doc/source_audits/batch_123.json`.
 
+## Batch 124 — EVENT, FORM TEAM, LOCK/UNLOCK and STAT=/ERRMSG= — Clause 11 complete
+
+Registers **11.7.7 EVENT POST, 11.7.8 EVENT WAIT, 11.7.9 FORM TEAM, 11.7.10
+LOCK and UNLOCK, and 11.7.11 STAT= and ERRMSG= specifiers in image control
+statements** — 60 base units over PDF pages 236–241, 20 already counted and
+**40 newly accounted**, in five catalogues with 54 requirements and 140 pending
+facets. 11.7.11 contains no numbered items at all, so all fourteen of its base
+units are accounted fresh.
+
+**This completes Clause 11 at 407 of 407 base units** — the fifth
+source-complete clause, after 6, 8, 9 and 10. The contributions are 268 from
+11.1 (finished at batch118), 36 from batch122, 43 from batch123 and 60 here;
+the total was recomputed independently from `doc/source_inventory.json`, which
+gives 67 sections and 407 units for the clause.
+
+Three sections all *start* on page 236, which made mispartitioning the single
+largest risk in the packet; the reviewer verified the boundary unit by unit.
+
+The reviewer **blocked** the packet on three findings.
+
+C1177SR-001: all **twenty** "shall not depend" cases were planned as
+diagnostic/control pairs. But these are **non-numbered requirements on the
+program**, not constraints — no conforming processor is required to reject
+them, and dependency is not generally **statically decidable**, so no portable
+diagnostic could exist even in principle. All twenty were re-dispositioned as
+source-control. That is a re-disposition, not a deletion: every one remains
+fully accounted, and the endorsed ten-way obligation split under 11.7.11 p1 was
+preserved rather than collapsed.
+
+C1177SR-002 is the most valuable finding of the checkpoint, and it runs in the
+*opposite* direction from everything else in 11.7. The packet recorded "no
+executable oracle is supplied" for `ACQUIRED_LOCK=` becoming **true** — but for
+an **initially unlocked local lock**, a **single-image** program can observe
+exactly that. This is **over-suppression**, caught by the standing precedent
+that *an unobservability claim which is too broad is itself a defect*. In a
+clause where almost everything genuinely is unobservable, the temptation to
+blanket-suppress is strongest, and this is where that precedent earns its keep.
+The facet was split three ways, with the true-result branch now classified
+**implementable**, carrying two recorded prerequisites for whoever writes the
+fixture: `LOCK_TYPE` is a coarray, so gfortran needs `-fcoarray=single` and
+rejects the syntax by default; and the oracle must set the logical **false
+before** the `LOCK` and assert **true after**, so a single-image run cannot
+satisfy it **vacuously**.
+
+C1177SR-003: 11.7.11 p5 and p10 collapsed compound effects into STAT-only
+facets, dropping the *active-image intended action* and the CRITICAL
+*continues-normally* obligation. Both were restored, and an independent
+re-sweep of p1 through p13 found no further instance.
+
+The **named-`STAT` list** was independently verified exhaustive: zero on
+success, `STAT_STOPPED_IMAGE`, `STAT_FAILED_IMAGE`, `STAT_LOCKED`,
+`STAT_UNLOCKED_FAILED_IMAGE`, `STAT_UNLOCKED` and `STAT_LOCKED_OTHER_IMAGE`.
+Everything else is processor dependent, and only positivity and distinctness
+from the named values may ever be asserted. No `ERRMSG` text, sentinel,
+inequality or substring oracle appears anywhere — the SER-005 limit holds.
+
+One small thing was worth not waving through. The correction reported **+3**
+declared facets where the described changes implied **+4**. The reconciliation:
+the pre-correction 11.7.10 p4 already carried *two* facets, so the three-way
+split adds only +1, and +1 plus the two restored facets gives +3. A count gap of
+exactly that shape is what concealed the stale-catalogue-review defect at
+batch121, so it was reconciled explicitly rather than assumed benign.
+
+Finally, 11.1.6 p4's delegation to 11.7.11 — outstanding since CRITICAL was
+registered — is now **discharged**, and the reviewer confirmed the material is
+owned here without being duplicated across both catalogues.
+
+One caveat deserves to be stated plainly, because the milestone invites
+overreading it: **source-complete is not test-complete.** All 407 base units
+carry a disposition and, where applicable, a requirement with an explicit
+pending plan. But Clause 11 has only the 45 executable cases added by batches
+118–121, and the overwhelming majority of its facets have never been executed.
+A great many of them never can be, in a suite with no multi-image capability —
+and recording that honestly is better than writing facets a single-image run
+would satisfy vacuously.
+
+Source accounting only. `authored_facets` stays **1,839**, cases **2,134**, and
+`tests/expected_failures.txt` byte-unchanged at **807 lines**.
+See `doc/source_audits/batch_124.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must

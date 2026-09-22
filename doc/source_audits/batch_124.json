@@ -1,0 +1,190 @@
+{
+ "schema_version": 1,
+ "review_type": "independent-event-form-team-lock-and-stat-errmsg-source-review",
+ "review_date": "2026-09-21",
+ "baseline_commit": "7d60671",
+ "packet_base_commit": "df0feaf",
+ "state": "reviewed-source-only",
+ "packet_kind": "source",
+ "milestone": "CLAUSE 11 SOURCE-COMPLETE at 407/407 base units. This is the fifth source-complete clause, after 6, 8, 9 and 10.",
+ "scope": {
+  "sections": ["11.7.7", "11.7.8", "11.7.9", "11.7.10", "11.7.11"],
+  "section_titles_verified_from_source": {
+   "11.7.7": "EVENT POST statement",
+   "11.7.8": "EVENT WAIT statement",
+   "11.7.9": "FORM TEAM statement",
+   "11.7.10": "LOCK and UNLOCK statements",
+   "11.7.11": "STAT= and ERRMSG= specifiers in image control statements"
+  },
+  "pdf_pages": "236-241",
+  "base_units": 60,
+  "already_counted_numbered_units": 20,
+  "newly_accounted_base_units": 40,
+  "new_catalogues": 5,
+  "new_requirements": 54,
+  "new_pending_facets": 140,
+  "new_cases": 0,
+  "note": "The 20 numbered items are R1174, R1175 and C1183 (11.7.7); R1176, R1177, R1178, C1184 and C1185 (11.7.8); R1179, R1180, R1181, C1186, R1182 and C1187 (11.7.9); R1183, R1184, C1188, R1185, R1186 and C1189 (11.7.10). 11.7.11 contains NO numbered items - it is entirely paragraph material, which is why all 14 of its base units are newly accounted.",
+  "per_section": {
+   "11.7.7": {"base_units": 6, "already_counted": 3, "newly_accounted": 3},
+   "11.7.8": {"base_units": 10, "already_counted": 5, "newly_accounted": 5},
+   "11.7.9": {"base_units": 14, "already_counted": 6, "newly_accounted": 8},
+   "11.7.10": {"base_units": 16, "already_counted": 6, "newly_accounted": 10},
+   "11.7.11": {"base_units": 14, "already_counted": 0, "newly_accounted": 14}
+  },
+  "page_236_boundary": "Three sections (11.7.7, 11.7.8, 11.7.9) all START on PDF page 236, which made mispartitioning the single largest risk in this packet. The reviewer verified the boundary unit by unit and independently confirmed the split: 11.7.7 takes all six of its units, 11.7.8 all ten, and 11.7.9 begins with p1 and R1179."
+ },
+ "why_this_target": "The last of three parallel packets closing Clause 11. 11.7.11 is the most consequential section in the group: it fixes the STAT= and ERRMSG= semantics that every image control statement in the language depends on, and 11.1.6 p4 had explicitly delegated material to it.",
+ "authoring": {
+  "author_context": "fresh subagent context in an isolated worktree based on df0feaf",
+  "author_packet": "af948f3",
+  "correction_commit": "09faa38",
+  "source_read_receipt": "receipts-batch124-source.json",
+  "note": "Authored in parallel with batch122 (11.2-11.6) and batch123 (11.7.1-11.7.6) from the same base."
+ },
+ "independent_review": {
+  "reviewer_distinct_from_author": true,
+  "decision": "accept_after_corrections",
+  "blocking_findings": 3,
+  "scoped_original_units_read_in_full": 60,
+  "compiler_invocations": 0,
+  "reviewer_re_derived_unit_hashes": true,
+  "note": "The author reported the PDF's own sha256 as the source-receipt sha, which the reviewer flagged as sloppy; the reviewer therefore re-derived all unit hashes independently rather than relying on the receipt."
+ },
+ "findings": [
+  {
+   "id": "C1177SR-001",
+   "severity": "blocking",
+   "location": "11.7.7 p2, 11.7.8 p2, 11.7.10 p1, 11.7.11 p1",
+   "source_text": "e.g. 11.7.11 p1: 'the stat-variable ... shall not depend on ... errmsg-variable ... event-variable, lock-variable, team-variable, or ... ACQUIRED_LOCK= ...'",
+   "issue": "All twenty dependency cases were planned as diagnostic/control pairs with *-rejected facets. These are NON-NUMBERED 'shall not depend' requirements on the PROGRAM, not numbered constraints. A conforming processor is not required to reject them, and dependency is not generally statically decidable, so no portable diagnostic could be relied on even in principle.",
+   "precedent": "A facet may carry a diagnostic expectation only if the unit it is filed under actually prohibits something AND a conforming processor is REQUIRED to reject it (batch105, batch112).",
+   "closure": "Closed in 09faa38. All twenty were re-dispositioned as source-control program-obligation facets and renamed accordingly; the corresponding 'independent' controls were reframed so they are no longer diagnostic/control pairs. The author argues, and the reviewer agrees, that NONE of the twenty is a required diagnostic. This is a re-disposition, not a deletion: all twenty remain fully accounted.",
+   "reviewer_verification": "Re-verified: the four units now carry diagnostic_obligation not-required, no *-rejected dependency facet survives, and the endorsed ten-way split under 11.7.11 p1 is preserved rather than collapsed."
+  },
+  {
+   "id": "C1177SR-002",
+   "severity": "blocking",
+   "location": "11.7.10 p4",
+   "source_text": "'If the lock variable is unlocked, successful execution of a LOCK statement with an ACQUIRED_LOCK= specifier causes ... the scalar logical variable to become defined with the value true.'",
+   "issue": "OVER-SUPPRESSION. The packet recorded 'No executable oracle ... is supplied' and classified this source-control only. For an INITIALLY UNLOCKED LOCAL lock variable, a SINGLE-IMAGE program can observe ACQUIRED_LOCK= becoming true.",
+   "precedent": "An unobservability claim that is TOO BROAD is itself a defect. Over-suppression is a real finding, not a safe default. This is the precedent working exactly as designed, and it is the first time it has caught an error of this direction in Clause 11.",
+   "closure": "Closed in 09faa38 by splitting 11.7.10 p4 three ways: acquired-lock-locks-unlocked-source-control (lock-state change), acquired-lock-true-local-executable (IMPLEMENTABLE, pending a single-image oracle), and acquired-lock-false-other-image-source-control (contention, remains unimplementable).",
+   "fixture_prerequisites_recorded": [
+    "LOCK_TYPE objects are coarrays, so a future fixture needs single-image coarray support; gfortran requires -fcoarray=single and rejects the syntax in its default mode.",
+    "The oracle must set the logical FALSE BEFORE the LOCK and assert TRUE AFTER, so that a single-image run cannot satisfy it VACUOUSLY."
+   ],
+   "reviewer_verification": "Re-verified: the implementable facet is correctly scoped to an initially unlocked LOCAL lock, the anti-vacuity contract is written into the pending plan rather than only mentioned in prose, and nothing cross-image leaked into the implementable classification."
+  },
+  {
+   "id": "C1177SR-003",
+   "severity": "blocking",
+   "location": "11.7.11 p5 and p10",
+   "source_text": "p5: 'the intended action is performed on the active images involved and stat-variable is assigned the value STAT_FAILED_IMAGE'. p10: 'stat-variable becomes defined with ... STAT_FAILED_IMAGE and execution of the construct continues normally.'",
+   "issue": "Each sentence carries more than the STAT assignment. The active-image intended action (p5) and the CRITICAL continues-normally obligation (p10) were dropped as separately accounted facets.",
+   "precedent": "Compound-obligation precedent (C1161).",
+   "closure": "Closed in 09faa38 by adding failed-image-active-intended-action-source-control and critical-continues-normally-after-previous-failure-source-control. Both remain source-control: they require a failed image, which cannot be portably induced.",
+   "reviewer_verification": "Re-verified, including an INDEPENDENT re-sweep of 11.7.11 p1 through p13, which found no further dropped compound effect."
+  }
+ ],
+ "count_reconciliation": {
+  "question": "The correction reported +3 declared facets, but C1177SR-002 splitting one facet into three (+2) plus C1177SR-003 adding two (+2) implies +4.",
+  "resolution": "The pre-correction 11.7.10 p4 already carried TWO facets, not one, so the three-way split adds only +1, not +2. +1 plus the two restored facets gives +3.",
+  "verified_by": "Raised by the integrator and reconciled by the reviewer rather than waved through. A small unexplained count gap of exactly this shape concealed the stale-catalogue-review defect at batch121."
+ },
+ "pre_existing_fixture_check": {
+  "why": "Batch113 was blocked because it registered numbered rules that already had legacy fixture files. Registering such a rule STRUCTURALLY FORCES binding them, because validate_case_requirement runs once a rule is catalogued and rejects an empty facet list. A source packet must never bind fixtures.",
+  "identifiers_checked": [
+   "R1174", "R1175", "C1183", "R1176", "R1177", "R1178", "C1184", "C1185",
+   "R1179", "R1180", "R1181", "C1186", "R1182", "C1187",
+   "R1183", "R1184", "C1188", "R1185", "R1186", "C1189"
+  ],
+  "result": "No pre-existing cases under tests/ for any identifier. Nothing needed deferral.",
+  "independently_confirmed_by_reviewer": true
+ },
+ "stat_and_errmsg_discipline": {
+  "named_values_verified_exhaustive_by_reviewer": [
+   "zero on success",
+   "STAT_STOPPED_IMAGE",
+   "STAT_FAILED_IMAGE",
+   "STAT_LOCKED",
+   "STAT_UNLOCKED_FAILED_IMAGE",
+   "STAT_UNLOCKED",
+   "STAT_LOCKED_OTHER_IMAGE"
+  ],
+  "processor_dependent": "All other error values, including EVENT WAIT and SYNC MEMORY other errors, the listed team/event/sync other errors, LOCK/UNLOCK other errors and CRITICAL other errors. Only portable positivity and distinctness from the named values may ever be asserted; a specific value may not.",
+  "errmsg_rule": "Where the standard leaves observable content unspecified - and ERRMSG text is the canonical case - NO value comparison proves the effect, including inequality against a sentinel, substring or wording. Established as finding SER-005.",
+  "reviewer_verification": "The reviewer independently confirmed the named-value list is exhaustive and correct, and that no ERRMSG text, sentinel, inequality or substring oracle appears anywhere in the packet.",
+  "character_caveat": "Any future ERRMSG length facet must assert LEN explicitly, because character comparison blank-pads the shorter operand."
+ },
+ "delegation_discharged": {
+  "claim": "11.1.6 p4 (CRITICAL) had delegated material to 11.7.11, which was unregistered at the time.",
+  "status": "Now owned here by 11.7.11 p10 and p12 at source-accounting level.",
+  "reviewer_verification": "Verified against the already-registered 11.1.6 catalogue: the delegated material is genuinely owned here, is NOT duplicated across both, and nothing delegated was left unowned."
+ },
+ "implementability": {
+  "principle": "This suite has no multi-image capability. A facet may carry a diagnostic expectation only if a processor is REQUIRED to reject, and an executable oracle only if a SINGLE-IMAGE program can PORTABLY OBSERVE the effect.",
+  "implementable": "Pure grammar and source forms; the type constraints C1183, C1186 and C1189; the duplicate-specifier constraints C1185, C1187 and C1188; the coindexed EVENT WAIT constraint C1184; and, after correction, the ACQUIRED_LOCK= true result on an initially unlocked local lock.",
+  "source_control": "EVENT POST and EVENT WAIT purpose, count and threshold; FORM TEAM creation, index and source obligations; LOCK and UNLOCK state definitions; STAT success zero; involved-image definitions; ERRMSG success and error records; and all twenty dependency obligations after C1177SR-001.",
+  "unimplementable_context_dependent": "Cross-image event satisfaction and ordering; FORM TEAM synchronization, same-count and segment ordering; stopped and failed image STAT cases; lock contention, other-image ownership, failure release and segment ordering; CRITICAL previous failed image; and any manufactured processor-dependent, resource or communication error.",
+  "both_directions_audited": true
+ },
+ "permissions_recorded": [
+  "EVENT POST error count is processor dependent.",
+  "EVENT WAIT error count is processor dependent.",
+  "The image index when FORM TEAM has no NEW_INDEX= specifier is processor dependent.",
+  "The set of error conditions for image control statements is processor dependent.",
+  "The specific positive STAT= value for 'other error' branches is processor dependent; only positivity and distinctness from the named values are required."
+ ],
+ "explicit_limitations": [
+  "This is source accounting only. No fixture was bound, no case was added, no compiler was invoked and no runtime credit is claimed.",
+  "All 140 facets remain pending, including the one newly reclassified as implementable. Registering a requirement is not evidence that any processor implements it.",
+  "The majority of this scope is unimplementable in the current single-image observational regime. That is the accurate result of applying the batch112 precedent, not a coverage shortfall.",
+  "CLAUSE 11 IS SOURCE-COMPLETE, WHICH IS NOT TEST-COMPLETE. 407 of 407 base units are accounted, but Clause 11 has only the 45 executable cases added by batches 118 through 121; the overwhelming majority of its facets have never been executed.",
+  "Same-image EVENT POST and EVENT WAIT count observation was kept source-control and may deserve future review; it was not claimed as implementable.",
+  "Clause 16 ISO_FORTRAN_ENV (LOCK_TYPE, EVENT_TYPE, TEAM_TYPE and the STAT_ constants), Clause 19 dependence and association terminology, and 5.3.6 failure and termination are unregistered dependencies."
+ ],
+ "preservation": {
+  "cases_before": 2134,
+  "cases_after": 2134,
+  "authored_facets_before": 1839,
+  "authored_facets_after": 1839,
+  "accounted_base_before": 2323,
+  "accounted_base_after": 2363,
+  "unresolved_base_before": 4150,
+  "unresolved_base_after": 4110,
+  "declared_facets_before": 7044,
+  "declared_facets_after": 7184,
+  "pending_facets_before": 5183,
+  "pending_facets_after": 5323,
+  "requirements_before": 1630,
+  "requirements_after": 1684,
+  "detailed_catalogues_before": 275,
+  "detailed_catalogues_after": 280,
+  "fixture_review_states_after": "1821 reference-validated / 274 source-reviewed / 1 needs-oracle",
+  "expected_failures_lines": 807,
+  "baseline_lines_changed_by_this_packet": 0,
+  "tests_directory_diff": "empty"
+ },
+ "clause_11_completion": {
+  "base_units_total": 407,
+  "base_units_accounted": 407,
+  "contributing_batches": "11.1 completed at batch118 (268 units); batch122 added 36 (11.2-11.6); batch123 added 43 (11.7.1-11.7.6); batch124 added 60 (11.7.7-11.7.11).",
+  "verified_by": "The integrator recomputed the clause total independently from doc/source_inventory.json: 67 sections, 407 base units, all accounted.",
+  "caveat": "Source-complete means every base unit carries a disposition and, where applicable, a requirement with an explicit pending plan. It does NOT mean the clause is tested."
+ },
+ "validation_snapshot": {
+  "detailed_catalogues": 280,
+  "requirements": 1684,
+  "declared_facets": 7184,
+  "pending_facets": 5323,
+  "authored_facets": 1839,
+  "catalogue_reviews_reviewed": 279,
+  "catalogue_reviews_draft": 1,
+  "catalogue_reviews_draft_note": "Only 18.3.7 remains draft; it is pre-existing in doc/catalogues/c_interop.json and predates this session.",
+  "normal_audit_exit": 1,
+  "normal_audit_block": "the single retained needs-oracle real-BOZ case, which is the intended state and not a regression",
+  "python_suite_tests": 984,
+  "python_suite_result": "OK"
+ }
+}
