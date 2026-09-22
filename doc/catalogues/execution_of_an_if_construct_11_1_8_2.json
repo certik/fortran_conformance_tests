@@ -1,0 +1,187 @@
+{
+  "schema_version": 1,
+  "section": "11.1.8.2",
+  "subunits": {
+    "p1": [
+      "p1.at-most-one",
+      "p1.exactly-one-with-else",
+      "p1.eval-order-until-stop",
+      "p1.true-or-else-block",
+      "p1.remaining-not-evaluated",
+      "p1.no-block-no-true-no-else"
+    ],
+    "p2": [
+      "p2.internal-branch-permission",
+      "p2.outside-branch-prohibition",
+      "p2.end-if-no-effect"
+    ]
+  },
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "requirements",
+      "requirements": [
+        "S11.1.8.2-001",
+        "S11.1.8.2-002"
+      ]
+    },
+    {
+      "unit": "p1.at-most-one",
+      "disposition": "requirements",
+      "requirements": [
+        "S11.1.8.2-001"
+      ]
+    },
+    {
+      "unit": "p1.exactly-one-with-else",
+      "disposition": "requirements",
+      "requirements": [
+        "S11.1.8.2-001"
+      ]
+    },
+    {
+      "unit": "p1.eval-order-until-stop",
+      "disposition": "requirements",
+      "requirements": [
+        "S11.1.8.2-002"
+      ]
+    },
+    {
+      "unit": "p1.true-or-else-block",
+      "disposition": "requirements",
+      "requirements": [
+        "S11.1.8.2-001"
+      ]
+    },
+    {
+      "unit": "p1.remaining-not-evaluated",
+      "disposition": "requirements",
+      "requirements": [
+        "S11.1.8.2-002"
+      ]
+    },
+    {
+      "unit": "p1.no-block-no-true-no-else",
+      "disposition": "requirements",
+      "requirements": [
+        "S11.1.8.2-001"
+      ]
+    },
+    {
+      "unit": "p2",
+      "disposition": "requirements",
+      "requirements": [
+        "S11.1.8.2-003"
+      ]
+    },
+    {
+      "unit": "p2.internal-branch-permission",
+      "disposition": "permission",
+      "requirements": [
+        "S11.1.8.2-003"
+      ],
+      "rationale": "Permits but does not require a branch to END IF from within the construct."
+    },
+    {
+      "unit": "p2.outside-branch-prohibition",
+      "disposition": "requirements",
+      "requirements": [
+        "S11.1.8.2-003"
+      ]
+    },
+    {
+      "unit": "p2.end-if-no-effect",
+      "disposition": "requirements",
+      "requirements": [
+        "S11.1.8.2-003"
+      ]
+    }
+  ],
+  "requirements": [
+    {
+      "id": "S11.1.8.2-001",
+      "title": "IF construct execution runs at most one block and exactly one block when ELSE is present",
+      "source": "11.1.8.2 p1; J3/24-007 PDF p218-p219.",
+      "source_units": [
+        "p1",
+        "p1.at-most-one",
+        "p1.exactly-one-with-else",
+        "p1.true-or-else-block",
+        "p1.no-block-no-true-no-else"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "At most one IF construct block is executed. If an ELSE statement appears, exactly one block is executed. A true value or ELSE selects the immediately following block; with no true evaluated expression and no ELSE, no construct block executes.",
+      "facets": [
+        "first-true-block-only",
+        "else-block-when-all-false",
+        "no-block-without-true-or-else"
+      ],
+      "pending": {
+        "first-true-block-only": "PENDING program with two true conditions and distinct block sentinels, expecting the first true sentinel only.",
+        "else-block-when-all-false": "PENDING all-false program with ELSE writing a sentinel distinct from the initial value.",
+        "no-block-without-true-or-else": "PENDING all-false no-ELSE program where the target remains at a preloaded sentinel distinct from all block writes."
+      },
+      "oracle": "Final sentinels observe which block executed.",
+      "oracle_limitation": "This source-only catalogue records pending plans only. It creates no Fortran test program, invokes no processor, approves no fixture or oracle, and claims no coverage. Future selection fixtures must preload targets with sentinels distinct from every block write and observe only final values to prove which block executed. They must not infer condition, selector, or case-value evaluation from side effects, call counts, short-circuiting, deliberate errors, temporaries, or evaluation order. Character CASE plans must control blank padding with equal lengths or explicit LEN checks. No plan may assume a particular real or complex kind, use an intrinsic that duplicates the feature under test, rely on compiler agreement, or require permission text to be exercised.",
+      "dependencies": "11.1.8.1 in this packet;11.1.1 blocks registered."
+    },
+    {
+      "id": "S11.1.8.2-002",
+      "title": "IF construct logical expressions are evaluated in order until true, ELSE, or END IF, and later ELSE IF expressions are not evaluated",
+      "source": "11.1.8.2 p1; J3/24-007 PDF p218-p219.",
+      "source_units": [
+        "p1",
+        "p1.eval-order-until-stop",
+        "p1.remaining-not-evaluated"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The scalar logical expressions are evaluated in their construct order until a true value is found or ELSE or END IF is encountered; expressions in remaining ELSE IF statements are not evaluated.",
+      "facets": [
+        "ordered-condition-source-rule",
+        "remaining-else-if-not-evaluated-source-rule"
+      ],
+      "pending": {
+        "ordered-condition-source-rule": "PENDING source-control plan with side-effect-free conditions selecting first, second, and later blocks; observed evidence remains the selected block sentinel, not a call count.",
+        "remaining-else-if-not-evaluated-source-rule": "PENDING source-accounting control only until an independent portable oracle exists; no deliberate runtime errors, side effects, or evaluation counts may be used."
+      },
+      "oracle": "This registers the source rule but approves no side-effect/call-count oracle. The observable fact remains which block executed.",
+      "oracle_limitation": "This source-only catalogue records pending plans only. It creates no Fortran test program, invokes no processor, approves no fixture or oracle, and claims no coverage. Future selection fixtures must preload targets with sentinels distinct from every block write and observe only final values to prove which block executed. They must not infer condition, selector, or case-value evaluation from side effects, call counts, short-circuiting, deliberate errors, temporaries, or evaluation order. Character CASE plans must control blank padding with equal lengths or explicit LEN checks. No plan may assume a particular real or complex kind, use an intrinsic that duplicates the feature under test, rely on compiler agreement, or require permission text to be exercised.",
+      "dependencies": "10.1.4 evaluation latitude registered;10.1 expressions registered."
+    },
+    {
+      "id": "S11.1.8.2-003",
+      "title": "Branching to END IF is permitted only within the IF construct and END IF has no effect",
+      "source": "11.1.8.2 p2; J3/24-007 PDF p219.",
+      "source_units": [
+        "p2",
+        "p2.internal-branch-permission",
+        "p2.outside-branch-prohibition",
+        "p2.end-if-no-effect"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "context-dependent",
+      "definition": "It is permissible to branch to an END IF statement only from within its IF construct, so an outside branch to that END IF is not permitted. Execution of an END IF statement has no effect.",
+      "facets": [
+        "internal-end-if-branch-control",
+        "outside-end-if-branch-rejected",
+        "end-if-no-effect-control"
+      ],
+      "pending": {
+        "internal-end-if-branch-control": "PENDING positive-control branch from within an IF construct to its END IF after branch statements are registered.",
+        "outside-end-if-branch-rejected": "PENDING diagnostic/control varying only that the branch source is outside the IF construct.",
+        "end-if-no-effect-control": "PENDING program where a selected block writes a sentinel and reaching END IF does not alter it."
+      },
+      "oracle": "The word only supplies the outside-branch prohibition; internal branching is permission.",
+      "oracle_limitation": "This source-only catalogue records pending plans only. It creates no Fortran test program, invokes no processor, approves no fixture or oracle, and claims no coverage. Branching fixtures must isolate source and target locations, keep labels and construct names otherwise valid, and avoid evaluation-order, side-effect, image-ordering, or message-wording oracles.",
+      "dependencies": "8 labels registered;11.2 branch statements NOT YET REGISTERED;11.1.2.1 registered."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_11_1_8_2.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "fc6741f0f9b58f45a581aaa7225995ea7164021ffbd4bc12800a052340d7d475",
+  "review_rationale": "batch115: independent fresh-context source review against pinned J3/24-007 (sha256 7371e889...). Reviewer read all 39 base units in the original PDF across pages 218 to 222 and verified the titles from the source as Purpose and form of the IF construct, Execution of an IF construct, Examples of IF constructs, IF statement, Purpose and form of the SELECT CASE construct, Execution of a SELECT CASE construct, and Examples of SELECT CASE constructs. Verified 39 base / 81 fine units, 36 requirements and 95 facets, all pending, and confirmed the accounting that only 17 base units are newly accounted because 22 numbered items were already counted, with the claimed asymmetry that numbered items fall only in 11.1.8.1, 11.1.8.4 and 11.1.9.1 independently checked. The SELECT CASE matching rules were derived independently from the source before comparison, covering which case value ranges match which selector values, that at most one block is selected, how ranges with an omitted lower or upper bound behave, and when CASE DEFAULT is selected. The character CASE trap was examined specifically: C1152 allows differing character lengths and comparison blank-pads the shorter operand, so the packet states the semantics explicitly rather than letting a length-differing match succeed for the wrong reason, and no plan assumes a particular character kind exists. Four permissions were adjudicated. The END IF and END SELECT sentences of the form it is permissible to branch only from within the construct carry both a permission and a paired restriction, and both halves are captured per the batch111 precedent. The 11.1.8.4 p3 side-effect permission was accepted with an explicit double-credit caution against 10.1.4, which owns general evaluation latitude. The C1152 character-length-difference permission was examined for whether it is a genuine permission or merely an absent restriction, and accepted as an explicit permission. The attribution table was audited against the source, including the R1137, R1141, R1146 and R1149 rows whose prohibiting words are grammar productions rather than a shall, the four C1147 and three C1149 construct-name rows, and the three C1154 rows that all cite the identical no-possible-value-matches-more-than-one-range clause, confirming each negative is individually attributable and the character-padding overlap row is not rejectable for a second reason. Observability discipline was verified: plans assert only which block executed, using sentinels distinct from every value any block could write, no plan infers evaluation from a side effect or counts invocations, and the unobservability claim about condition and selector evaluation is scoped so that it does not suppress the plainly observable block-selection fact. 11.1.8.3 and 11.1.9.3 correctly yield zero requirements and zero facets because they are examples, with all base and fine units still accounted. Decision: source-eligible, no blocking findings. This registers source accounting only: it is not fixture approval, it supplies no execution, and it approves no oracle."
+}

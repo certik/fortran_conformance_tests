@@ -1,0 +1,308 @@
+{
+  "schema_version": 1,
+  "section": "11.1.9.2",
+  "subunits": {
+    "p1": [
+      "p1.case-expr-evaluated",
+      "p1.range-list-any-match",
+      "p1.logical-eqv-match",
+      "p1.other-equality-match",
+      "p1.bounded-match",
+      "p1.low-open-match",
+      "p1.high-open-match",
+      "p1.default-fallback",
+      "p1.no-default-no-match"
+    ],
+    "p2": [
+      "p2.matching-block-executed",
+      "p2.construct-completes"
+    ],
+    "p3": [
+      "p3.internal-branch-permission",
+      "p3.outside-branch-prohibition"
+    ]
+  },
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "requirements",
+      "requirements": [
+        "S11.1.9.2-001",
+        "S11.1.9.2-002",
+        "S11.1.9.2-003",
+        "S11.1.9.2-004"
+      ]
+    },
+    {
+      "unit": "p1.case-expr-evaluated",
+      "disposition": "requirements",
+      "requirements": [
+        "S11.1.9.2-001"
+      ]
+    },
+    {
+      "unit": "p1.range-list-any-match",
+      "disposition": "requirements",
+      "requirements": [
+        "S11.1.9.2-001"
+      ]
+    },
+    {
+      "unit": "p1.logical-eqv-match",
+      "disposition": "requirements",
+      "requirements": [
+        "S11.1.9.2-002"
+      ]
+    },
+    {
+      "unit": "p1.other-equality-match",
+      "disposition": "requirements",
+      "requirements": [
+        "S11.1.9.2-002"
+      ]
+    },
+    {
+      "unit": "p1.bounded-match",
+      "disposition": "requirements",
+      "requirements": [
+        "S11.1.9.2-003"
+      ]
+    },
+    {
+      "unit": "p1.low-open-match",
+      "disposition": "requirements",
+      "requirements": [
+        "S11.1.9.2-003"
+      ]
+    },
+    {
+      "unit": "p1.high-open-match",
+      "disposition": "requirements",
+      "requirements": [
+        "S11.1.9.2-003"
+      ]
+    },
+    {
+      "unit": "p1.default-fallback",
+      "disposition": "requirements",
+      "requirements": [
+        "S11.1.9.2-004"
+      ]
+    },
+    {
+      "unit": "p1.no-default-no-match",
+      "disposition": "requirements",
+      "requirements": [
+        "S11.1.9.2-004"
+      ]
+    },
+    {
+      "unit": "p2",
+      "disposition": "requirements",
+      "requirements": [
+        "S11.1.9.2-005"
+      ]
+    },
+    {
+      "unit": "p2.matching-block-executed",
+      "disposition": "requirements",
+      "requirements": [
+        "S11.1.9.2-005"
+      ]
+    },
+    {
+      "unit": "p2.construct-completes",
+      "disposition": "requirements",
+      "requirements": [
+        "S11.1.9.2-005"
+      ]
+    },
+    {
+      "unit": "p3",
+      "disposition": "requirements",
+      "requirements": [
+        "S11.1.9.2-006"
+      ]
+    },
+    {
+      "unit": "p3.internal-branch-permission",
+      "disposition": "permission",
+      "requirements": [
+        "S11.1.9.2-006"
+      ],
+      "rationale": "Permits but does not require a branch to END SELECT from within the construct."
+    },
+    {
+      "unit": "p3.outside-branch-prohibition",
+      "disposition": "requirements",
+      "requirements": [
+        "S11.1.9.2-006"
+      ]
+    }
+  ],
+  "requirements": [
+    {
+      "id": "S11.1.9.2-001",
+      "title": "SELECT CASE evaluates its case expression and a range list matches if any range matches",
+      "source": "11.1.9.2 p1 introductory text; J3/24-007 PDF p220.",
+      "source_units": [
+        "p1",
+        "p1.case-expr-evaluated",
+        "p1.range-list-any-match"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Executing SELECT CASE evaluates the case expression. A case value range list matches if the case expression value matches any range in the list.",
+      "facets": [
+        "case-expression-value-selects",
+        "range-list-any-range-matches"
+      ],
+      "pending": {
+        "case-expression-value-selects": "PENDING side-effect-free case expressions selecting distinct block sentinels.",
+        "range-list-any-range-matches": "PENDING one CASE list with several nonoverlapping ranges selecting the same block sentinel."
+      },
+      "oracle": "Observe block selection, not selector evaluation.",
+      "oracle_limitation": "This source-only catalogue records pending plans only. It creates no Fortran test program, invokes no processor, approves no fixture or oracle, and claims no coverage. Future selection fixtures must preload targets with sentinels distinct from every block write and observe only final values to prove which block executed. They must not infer condition, selector, or case-value evaluation from side effects, call counts, short-circuiting, deliberate errors, temporaries, or evaluation order. Character CASE plans must control blank padding with equal lengths or explicit LEN checks. No plan may assume a particular real or complex kind, use an intrinsic that duplicates the feature under test, rely on compiler agreement, or require permission text to be exercised.",
+      "dependencies": "11.1.9.1 in this packet;10.1 expressions registered."
+    },
+    {
+      "id": "S11.1.9.2-002",
+      "title": "Single CASE values match by .EQV. for logical and equality for other types",
+      "source": "11.1.9.2 p1 item (1); J3/24-007 PDF p220.",
+      "source_units": [
+        "p1",
+        "p1.logical-eqv-match",
+        "p1.other-equality-match"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A single logical case value v matches c when c .EQV. v is true; for other allowed types a single value matches when c == v is true.",
+      "facets": [
+        "logical-true-false-single-values",
+        "integer-single-value-equality",
+        "character-single-value-equality",
+        "enum-single-value-source"
+      ],
+      "pending": {
+        "logical-true-false-single-values": "PENDING logical SELECT CASE selecting .TRUE. and .FALSE. blocks.",
+        "integer-single-value-equality": "PENDING integer single-value selection.",
+        "character-single-value-equality": "PENDING character selection with equal length or explicit LEN controls.",
+        "enum-single-value-source": "PENDING enum source-control after dependencies."
+      },
+      "oracle": "Equality operations are dependencies; this rule owns their use for CASE matching.",
+      "oracle_limitation": "This source-only catalogue records pending plans only. It creates no Fortran test program, invokes no processor, approves no fixture or oracle, and claims no coverage. Future selection fixtures must preload targets with sentinels distinct from every block write and observe only final values to prove which block executed. They must not infer condition, selector, or case-value evaluation from side effects, call counts, short-circuiting, deliberate errors, temporaries, or evaluation order. Character CASE plans must control blank padding with equal lengths or explicit LEN checks. No plan may assume a particular real or complex kind, use an intrinsic that duplicates the feature under test, rely on compiler agreement, or require permission text to be exercised.",
+      "dependencies": "10.1.5.4/.5 registered;7.4.4.4 registered;7.6 registered;16 LEN intrinsic NOT YET REGISTERED for planned character-length controls."
+    },
+    {
+      "id": "S11.1.9.2-003",
+      "title": "Colon CASE ranges match bounded, lower-open, and upper-open intervals",
+      "source": "11.1.9.2 p1 items (2)-(4); J3/24-007 PDF p220.",
+      "source_units": [
+        "p1",
+        "p1.bounded-match",
+        "p1.low-open-match",
+        "p1.high-open-match"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "low:high matches when low <= c and c <= high; low: matches when low <= c; :high matches when c <= high.",
+      "facets": [
+        "bounded-range-inside",
+        "bounded-range-outside",
+        "low-open-range",
+        "high-open-range"
+      ],
+      "pending": {
+        "bounded-range-inside": "PENDING integer value inside low:high selects that block.",
+        "bounded-range-outside": "PENDING values outside bounded range fall to other/default sentinels.",
+        "low-open-range": "PENDING endpoint and above select low: block.",
+        "high-open-range": "PENDING endpoint and below select :high block."
+      },
+      "oracle": "Use allowed CASE types only; logical colon ranges are C1153 violations.",
+      "oracle_limitation": "This source-only catalogue records pending plans only. It creates no Fortran test program, invokes no processor, approves no fixture or oracle, and claims no coverage. Future selection fixtures must preload targets with sentinels distinct from every block write and observe only final values to prove which block executed. They must not infer condition, selector, or case-value evaluation from side effects, call counts, short-circuiting, deliberate errors, temporaries, or evaluation order. Character CASE plans must control blank padding with equal lengths or explicit LEN checks. No plan may assume a particular real or complex kind, use an intrinsic that duplicates the feature under test, rely on compiler agreement, or require permission text to be exercised.",
+      "dependencies": "C1153 in this packet;10.1.5.5.1 registered."
+    },
+    {
+      "id": "S11.1.9.2-004",
+      "title": "CASE DEFAULT matches only if no other selector matches; without DEFAULT there may be no match",
+      "source": "11.1.9.2 p1 items (5)-(6); J3/24-007 PDF p220.",
+      "source_units": [
+        "p1",
+        "p1.default-fallback",
+        "p1.no-default-no-match"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "If no other selector matches and DEFAULT appears, DEFAULT matches; if no other selector matches and DEFAULT does not appear, there is no match.",
+      "facets": [
+        "default-selected-after-no-value-match",
+        "value-match-preempts-default",
+        "no-match-without-default"
+      ],
+      "pending": {
+        "default-selected-after-no-value-match": "PENDING no-value-match program selecting DEFAULT sentinel.",
+        "value-match-preempts-default": "PENDING value match present with DEFAULT also present, expecting value block sentinel.",
+        "no-match-without-default": "PENDING no-match no-DEFAULT program leaving preload sentinel unchanged."
+      },
+      "oracle": "Observe final sentinel values only.",
+      "oracle_limitation": "This source-only catalogue records pending plans only. It creates no Fortran test program, invokes no processor, approves no fixture or oracle, and claims no coverage. Future selection fixtures must preload targets with sentinels distinct from every block write and observe only final values to prove which block executed. They must not infer condition, selector, or case-value evaluation from side effects, call counts, short-circuiting, deliberate errors, temporaries, or evaluation order. Character CASE plans must control blank padding with equal lengths or explicit LEN checks. No plan may assume a particular real or complex kind, use an intrinsic that duplicates the feature under test, rely on compiler agreement, or require permission text to be exercised.",
+      "dependencies": "C1151 in this packet;11.1.9.2 p2 in this packet."
+    },
+    {
+      "id": "S11.1.9.2-005",
+      "title": "The block after the matching CASE statement executes and completes SELECT CASE execution",
+      "source": "11.1.9.2 p2; J3/24-007 PDF p220.",
+      "source_units": [
+        "p2",
+        "p2.matching-block-executed",
+        "p2.construct-completes"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The block following the CASE statement containing the matching selector, if any, is executed, and this completes execution of the construct.",
+      "facets": [
+        "matching-case-block-executes",
+        "nonmatching-blocks-not-executed",
+        "construct-completes-after-selected-block"
+      ],
+      "pending": {
+        "matching-case-block-executes": "PENDING each CASE block writes a distinct sentinel for its selected input.",
+        "nonmatching-blocks-not-executed": "PENDING separate targets preloaded with sentinels prove nonmatching blocks did not write.",
+        "construct-completes-after-selected-block": "PENDING statement after END SELECT observes selected sentinel without fall-through."
+      },
+      "oracle": "Which block executed is observable; selector evaluation is not used as evidence.",
+      "oracle_limitation": "This source-only catalogue records pending plans only. It creates no Fortran test program, invokes no processor, approves no fixture or oracle, and claims no coverage. Future selection fixtures must preload targets with sentinels distinct from every block write and observe only final values to prove which block executed. They must not infer condition, selector, or case-value evaluation from side effects, call counts, short-circuiting, deliberate errors, temporaries, or evaluation order. Character CASE plans must control blank padding with equal lengths or explicit LEN checks. No plan may assume a particular real or complex kind, use an intrinsic that duplicates the feature under test, rely on compiler agreement, or require permission text to be exercised.",
+      "dependencies": "11.1.9.1 p1 in this packet;11.1.1 blocks registered."
+    },
+    {
+      "id": "S11.1.9.2-006",
+      "title": "Branching to END SELECT is permitted only within its SELECT CASE construct",
+      "source": "11.1.9.2 p3; J3/24-007 PDF p220.",
+      "source_units": [
+        "p3",
+        "p3.internal-branch-permission",
+        "p3.outside-branch-prohibition"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "context-dependent",
+      "definition": "It is permissible to branch to an end-select-stmt only from within its SELECT CASE construct; an outside branch to that END SELECT is not permitted.",
+      "facets": [
+        "internal-end-select-branch-control",
+        "outside-end-select-branch-rejected"
+      ],
+      "pending": {
+        "internal-end-select-branch-control": "PENDING positive-control branch from within SELECT CASE to its END SELECT after branch statements are registered.",
+        "outside-end-select-branch-rejected": "PENDING diagnostic/control varying only that the branch source is outside the construct."
+      },
+      "oracle": "The word only supplies the outside-branch prohibition; internal branching is permission.",
+      "oracle_limitation": "This source-only catalogue records pending plans only. It creates no Fortran test program, invokes no processor, approves no fixture or oracle, and claims no coverage. Branching fixtures must isolate source and target locations, keep labels and construct names otherwise valid, and avoid evaluation-order, side-effect, image-ordering, or message-wording oracles.",
+      "dependencies": "8 labels registered;11.2 branch statements NOT YET REGISTERED;11.1.2.1 registered."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_11_1_9_2.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "d0abfa6db0b43f37c10f9316b2a43ecf2e1bd3c152e8a2937e4d0672b0365f14",
+  "review_rationale": "batch115: independent fresh-context source review against pinned J3/24-007 (sha256 7371e889...). Reviewer read all 39 base units in the original PDF across pages 218 to 222 and verified the titles from the source as Purpose and form of the IF construct, Execution of an IF construct, Examples of IF constructs, IF statement, Purpose and form of the SELECT CASE construct, Execution of a SELECT CASE construct, and Examples of SELECT CASE constructs. Verified 39 base / 81 fine units, 36 requirements and 95 facets, all pending, and confirmed the accounting that only 17 base units are newly accounted because 22 numbered items were already counted, with the claimed asymmetry that numbered items fall only in 11.1.8.1, 11.1.8.4 and 11.1.9.1 independently checked. The SELECT CASE matching rules were derived independently from the source before comparison, covering which case value ranges match which selector values, that at most one block is selected, how ranges with an omitted lower or upper bound behave, and when CASE DEFAULT is selected. The character CASE trap was examined specifically: C1152 allows differing character lengths and comparison blank-pads the shorter operand, so the packet states the semantics explicitly rather than letting a length-differing match succeed for the wrong reason, and no plan assumes a particular character kind exists. Four permissions were adjudicated. The END IF and END SELECT sentences of the form it is permissible to branch only from within the construct carry both a permission and a paired restriction, and both halves are captured per the batch111 precedent. The 11.1.8.4 p3 side-effect permission was accepted with an explicit double-credit caution against 10.1.4, which owns general evaluation latitude. The C1152 character-length-difference permission was examined for whether it is a genuine permission or merely an absent restriction, and accepted as an explicit permission. The attribution table was audited against the source, including the R1137, R1141, R1146 and R1149 rows whose prohibiting words are grammar productions rather than a shall, the four C1147 and three C1149 construct-name rows, and the three C1154 rows that all cite the identical no-possible-value-matches-more-than-one-range clause, confirming each negative is individually attributable and the character-padding overlap row is not rejectable for a second reason. Observability discipline was verified: plans assert only which block executed, using sentinels distinct from every value any block could write, no plan infers evaluation from a side effect or counts invocations, and the unobservability claim about condition and selector evaluation is scoped so that it does not suppress the plainly observable block-selection fact. 11.1.8.3 and 11.1.9.3 correctly yield zero requirements and zero facets because they are examples, with all base and fine units still accounted. Decision: source-eligible, no blocking findings. This registers source accounting only: it is not fixture approval, it supplies no execution, and it approves no oracle."
+}

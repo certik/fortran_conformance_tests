@@ -3217,6 +3217,70 @@ of those fine units, and two base units, are the deliberate deferrals recorded
 above.
 See `doc/source_audits/batch_113.json`.
 
+The hundred-and-fifteenth checkpoint registers the independently reviewed
+`IF` construct and `SELECT CASE` source:39base/81fine units across11.1.8.1
+through11.1.8.4 and11.1.9.1 through11.1.9.3,36requirements and95pending
+facets. Twenty-two numbered items were already accounted, so17base units are
+newly accounted. The authoring prompt deliberately did **not** name the
+constructs — the author established them from the source, and the reviewer
+verified the titles independently.
+
+The `SELECT CASE` **matching rules** are the substance here, and the reviewer
+derived them from the source before looking at the catalogue: which case value
+ranges match which selector values, that **at most one** block is selected,
+how ranges with an omitted lower or upper bound behave, and when `CASE
+DEFAULT` is selected.
+
+The trap worth recording is the **character selector**. C1152 explicitly
+*allows* a case value and the selector to have different character lengths —
+and character comparison blank-pads the shorter operand. So a length-differing
+match is genuinely meaningful, but a plan that relies on that *accidentally*
+proves nothing. The packet states the semantics explicitly rather than
+inferring them, and no plan assumes a particular character kind exists.
+
+Four permissions were adjudicated, and two of them were interesting. The
+`END IF` and `END SELECT` "permissible … **only** from within" sentences again
+carry both a permission and a restriction, and both halves are captured per
+the batch111 precedent. The **11.1.8.4p3** side-effect permission was accepted
+but with an explicit **double-credit caution**: 10.1.4 already owns general
+evaluation latitude and side effects, and future fixture work must not claim
+the same latitude under both owners. And **C1152's** "lengths may differ" was
+examined specifically for whether it is a genuine permission or merely an
+*absent restriction* — those are not the same thing, and a non-restriction
+dressed as a permission would be a classification error. It was accepted as an
+explicit permission.
+
+The attribution audit covered the four rows — R1137, R1141, R1146, R1149 —
+whose prohibiting words are **grammar productions** rather than a `shall`, a
+shape that has produced defects before; the four C1147 and three C1149
+construct-name rows; and the three **C1154** rows, which all cite the
+*identical* clause "no possible value matches more than one case-value-range".
+Three negatives from one clause needs each to be individually attributable,
+and the character-padding overlap row in particular checked as not rejectable
+for a second reason.
+
+The observability discipline is the general lesson for selection constructs:
+**which block executed is plainly observable; which condition or selector was
+evaluated is not**, and Fortran guarantees no short-circuiting anywhere. The
+plans assert only which block ran, using sentinels distinct from every value
+any block could write. Crucially, the unobservability claim is scoped so that
+it does not suppress the block-selection fact — an overbroad claim would
+itself be a defect.
+
+11.1.8.3 and11.1.9.3 each yield zero requirements and zero facets because they
+are examples, with all base and fine units still accounted. There were no
+blocking findings.
+
+With this batch,11.1 is registered through11.1.9;11.1.10 to11.1.12 and11.2
+to11.7 remain.
+
+There remain **2,083cases**, now with **255catalogues,1,528requirements,
+1,788direct,22linked and4,944pending facets out of6,754**. Source accounting
+covers2,246base units. `authored_facets` is unchanged at1,788 and `tests/` is
+untouched. All2,083case bindings,2,047reviews,248older catalogues,22links,
+R402 and the `b153c75b` baseline are preserved, and no compiler was invoked.
+See `doc/source_audits/batch_115.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
