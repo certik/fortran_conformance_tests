@@ -1,0 +1,138 @@
+{
+ "schema_version": 1,
+ "review_type": "independent-evaluation-of-operations-fixture-review",
+ "review_date": "2026-09-22",
+ "baseline_commit": "5fa3821",
+ "state": "reference-validated-runtime-effects",
+ "packet_kind": "FIXTURE",
+ "milestone": "FIRST EXECUTABLE FIXTURES FOR CLAUSE 10. Clause 10 has been source-complete since batch110 but had ZERO executable tests until this checkpoint.",
+ "scope": {
+  "sections": ["10.1.4"],
+  "section_title_verified_from_source": "Evaluation of operations",
+  "pdf_page": 174,
+  "facets_established": 14,
+  "new_cases": 14,
+  "requirements_touched": ["S10.1.4-001", "S10.1.4-003", "S10.1.4-004", "S10.1.4-005"],
+  "breakdown": {
+   "S10.1.4-001": "all 3 operand-value facets",
+   "S10.1.4-003": "all 4 ac-implied-do control facets",
+   "S10.1.4-004": "all 4 elemental binary facets",
+   "S10.1.4-005": "3 of 4: intrinsic-unary-array-values, unary-result-same-shape, pure-elemental-function-array-values"
+  },
+  "left_pending": "all S10.1.4-002 restriction facets; S10.1.4-005 pure-element-order-latitude; all S10.1.4-006 and S10.1.4-007 conditional-expression facets"
+ },
+ "why_this_target": "Clause 10 was source-complete with 986 addressable pending facets and no fixtures at all. 10.1.4 was chosen because its pending plans were already concrete and hand-computable, and because several of its plans carried their own non-vacuity arguments, which set a usable standard for the rest of the clause.",
+ "authoring": {
+  "author_context": "fresh subagent context in an isolated worktree based on 5fa3821",
+  "author_packet": "d22a06a",
+  "generator": "tools/generate_evaluation_of_operations_fixtures.py",
+  "generator_check_determinism": "verified by both author and reviewer"
+ },
+ "independent_review": {
+  "reviewer_distinct_from_author": true,
+  "decision": "accept_no_blocking_findings",
+  "blocking_findings": 0,
+  "reviewer_read_original_source": "10.1.4, PDF p174, PDF checksum verified independently",
+  "reviewer_hand_derived_all_oracles": true,
+  "note": "The reviewer was instructed to derive every expected value independently rather than checking the author's arithmetic, and to re-run a sample of the mutation campaign rather than accept the table."
+ },
+ "non_vacuity_by_mutation": {
+  "principle": "Non-vacuity must be proved by MUTATION, not by inspection. A test that passes when the feature is broken establishes nothing.",
+  "author_campaign": "14 parents pass; 58 oracle mutations, 21 input mutations and 58 omission mutations all FAILED as required.",
+  "reviewer_reran_sample": [
+   "wrong unary -4 -> 4: FAILED as required",
+   "wrong nested implied-do values: FAILED as required",
+   "input mutation 1+1 -> 1: FAILED to compile, as required",
+   "omission of the corresponding-middle observation: FAILED by check-total",
+   "ABS-LIKE UNARY IMPLEMENTATION SIMULATION: FAILED as required - this is the mutation that matters, because -(-7)=7 alone is satisfied by an absolute-value bug; the paired -(4)=-4 case rejects it"
+  ],
+  "deliberate_reverse_mutation": {
+   "mutation": "removed the unary -4 observation and weakened the check total from 2 to 1",
+   "result": "the mutant PASSED",
+   "conclusion": "the check-total sentinel is genuinely load-bearing, not decorative"
+  }
+ },
+ "oracles_hand_derived_and_independently_confirmed": [
+  "-(-7)=7 and -(4)=-4 (the pair that rejects an absolute-value implementation)",
+  "19-6=13 and 6-19=-13",
+  "[8,-3,15]-[2,5,-4]=[6,-8,19], sum 17",
+  "implied-do [(i,i=1+1,4)]=[2,3,4]",
+  "implied-do [(i,i=1,2+2)]=[1,2,3,4]",
+  "implied-do [(i,i=1,5,1+1)]=[1,3,5]",
+  "nested controls, outer j=3,5 and inner i=1,3, giving [13,33,15,35] - element ORDER independently verified",
+  "10-[1,4,7]=[9,6,3] and [1,4,7]-10=[-9,-6,-3]",
+  "[1,2,3]+[10,20,30]=[11,22,33]",
+  "[1,100,7]-[10,1,-5]=[-9,99,12]",
+  "-[1,-2,3]=[-1,2,-3]",
+  "shape(-a(2:3,-1:1))=[2,3]; all six negated values derive and the fixture asserts three representative values 11,-23,32",
+  "pure elemental bump([-2,0,5])=[1,3,8], sum 12"
+ ],
+ "integrator_verification": {
+  "shape_discrepancy_raised_and_resolved": "The author's report listed shape [2,3] with only three values, which appeared inconsistent for a six-element section. The integrator raised this to the reviewer as a possible defect. The reviewer confirmed there is NO contradiction: the section genuinely has six elements, all six negated values derive correctly, and the fixture deliberately asserts three representative values. Recorded because the report was ambiguous even though the fixture was correct.",
+  "author_count_misreport": "The author reported 'authored facets 2537 -> 2551' and 'reference-validated 1856'. Both figures were wrong. The integrator measured the worktree directly: authored_facets 1839 -> 1853 (+14) and pending_facets 5323 -> 5309. The underlying packet state was correct; only the prose counts were wrong. The reviewer was given the true figures so the error could not propagate into this receipt.",
+  "reference_agreement_reproduced_by_integrator": "14/14 cases agree with gfortran 16.1.0 -std=f2023 in a fingerprinted report generated by the integrator, not inherited from the author."
+ },
+ "observability_limits": {
+  "rule": "10.1.4 p5 permits pure elemental function element evaluation in arbitrary order or simultaneously. No conforming program can observe that order, and a function with side effects is not a legitimate detector.",
+  "facet_left_unimplementable": "S10.1.4-005 pure-element-order-latitude",
+  "audited_in_both_directions": "The reviewer was required to check whether the unimplementability claim was also TOO BROAD, on the standing principle that an over-broad unobservability claim is itself a defect. Verdict: not too broad - observable value and shape facts were implemented, and the conditional-expression facets remain genuinely pending rather than suppressed.",
+  "what_this_packet_does_not_establish": "No evaluation ORDER claim, no evaluation COUNT claim, and no claim that any particular operand WAS evaluated. A processor need not evaluate all of an expression if the value can be determined otherwise."
+ },
+ "oracle_discipline": {
+  "arithmetic": "Exact integer arithmetic only. No real comparison appears in this packet, avoiding the 7.4.3 approximation and 10.1.5.2.4 reassociation hazards entirely.",
+  "kinds": "No processor-dependent kind is asserted.",
+  "no_self_referential_intrinsic": "The SHAPE-based oracle was examined specifically to confirm SHAPE is not being used to prove something SHAPE itself supplies; the shape claim is corroborated by the independently derived element values.",
+  "compiler_consensus_not_an_oracle": "Every expected value was hand-derived from the source. Agreement between gfortran and LFortran was treated as corroboration only, never as the oracle."
+ },
+ "catalogue_review_renewal": {
+  "why": "Binding facets into a catalogue changes its content and therefore STALES its content-bound source review by design. Batches 118, 119 and 120 each shipped with this uncorrected; the defect surfaced only at batch121 when a gate failed.",
+  "observed_here": "After recording the 14 fixture reviews, the audit reported 10.1.4 as non-reviewed, exactly as the rule predicts.",
+  "action": "doc/catalogues/evaluation_of_operations_10_1_4.json source review renewed in the same integration, recording that the staleness is attributable solely to facet binding and that source accounting is unchanged.",
+  "verification": "After renewal the audit shows only 18.3.7 as non-reviewed, which is pre-existing in doc/catalogues/c_interop.json and predates this session."
+ },
+ "compiler_observations": {
+  "frozen_target": "lfortran 0.65.0-411-ga0afaa840b-dirty",
+  "frozen_target_result": "14/14 pass",
+  "qualifying_reference": "gfortran 16.1.0 with -std=f2023",
+  "reference_result": "14/14 pass",
+  "reproduced_by_integrator": true,
+  "lfortran_defects_found": 0,
+  "caveat": "The PATH lfortran is a newer build and was not used for any adjudicated run."
+ },
+ "explicit_limitations": [
+  "This records executable effects for 14 facets of 10.1.4 only. It is not coverage of Clause 10, which retains roughly 1,000 pending facets.",
+  "No evaluation order, evaluation count, or operand-was-evaluated claim is established, and none can be.",
+  "The conditional-expression facets (S10.1.4-006, S10.1.4-007) and the S10.1.4-002 restrictions remain entirely pending.",
+  "Passing under two compilers is corroboration, not proof of universal conformance; no ABI or portability claim is made.",
+  "Source accounting is unchanged: declared_facets remains 7184 and no source unit was added, removed or redispositioned."
+ ],
+ "preservation": {
+  "cases_before": 2134,
+  "cases_after": 2148,
+  "authored_facets_before": 1839,
+  "authored_facets_after": 1853,
+  "pending_facets_before": 5323,
+  "pending_facets_after": 5309,
+  "declared_facets_before": 7184,
+  "declared_facets_after": 7184,
+  "reference_validated_before": 1821,
+  "reference_validated_after": 1835,
+  "fixture_review_states_after": "1835 reference-validated / 274 source-reviewed / 1 needs-oracle",
+  "expected_failures_lines": 807,
+  "baseline_lines_changed_by_this_packet": 0,
+  "existing_case_ids_modified": 0
+ },
+ "validation_snapshot": {
+  "detailed_catalogues": 280,
+  "requirements": 1684,
+  "declared_facets": 7184,
+  "pending_facets": 5309,
+  "authored_facets": 1853,
+  "catalogue_reviews_draft": 1,
+  "catalogue_reviews_draft_note": "Only 18.3.7, pre-existing and untouched.",
+  "normal_audit_exit": 1,
+  "normal_audit_block": "the single retained needs-oracle real-BOZ case, which is the intended state and not a regression",
+  "python_suite_tests": 990,
+  "python_suite_result": "OK"
+ }
+}

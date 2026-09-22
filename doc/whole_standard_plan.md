@@ -3868,6 +3868,70 @@ Source accounting only. `authored_facets` stays **1,839**, cases **2,134**, and
 `tests/expected_failures.txt` byte-unchanged at **807 lines**.
 See `doc/source_audits/batch_124.json`.
 
+## Batch 126 — the first executable tests Clause 10 has ever had
+
+Clause 10 has been **source-complete since batch110** — 338 base units, every one
+classified — and until this batch it had **zero executable fixtures**. Roughly a
+thousand pending facets, nothing running. This packet starts closing that gap.
+
+It establishes **14 facets** of **10.1.4 Evaluation of operations**, with 14 new
+cases: all three operand-value facets of `S10.1.4-001`, all four
+`ac-implied-do` control facets of `S10.1.4-003`, all four elemental binary
+facets of `S10.1.4-004`, and three of `S10.1.4-005`.
+
+The reviewer accepted it with **no blocking findings**, which is worth stating
+precisely because of *how* it was checked. The reviewer re-read 10.1.4 from the
+pinned PDF, **hand-derived every oracle independently** rather than verifying
+the author's arithmetic, and **re-ran a sample of the mutation campaign**
+instead of accepting the table.
+
+The mutation that matters most is the one the reviewer added: an **absolute-value
+implementation simulation**. `-(-7) = 7` on its own is satisfied by a compiler
+that computes `ABS` instead of unary minus — the test would pass while the
+feature was broken. It is only the paired `-(4) = -4` that rejects that bug.
+That pairing is the difference between a test and a decoration, and it is the
+pattern every future Clause 10 fixture should copy.
+
+The **reverse mutation** confirmed the other half: removing the `-4` observation
+and weakening the check total from 2 to 1 made the mutant **pass**, proving the
+check-total sentinel is genuinely load-bearing rather than cosmetic.
+
+All arithmetic here is **exact integer**, which sidesteps the 7.4.3
+approximation problem and the 10.1.5.2.4 reassociation permission entirely, and
+no processor-dependent kind is asserted anywhere.
+
+One facet was correctly left **unimplementable**. 10.1.4 p5 permits pure
+elemental function elements to be evaluated in arbitrary order or
+simultaneously, so `pure-element-order-latitude` cannot have an oracle — and a
+function with side effects is not a legitimate detector. The reviewer was
+required to audit that claim in **both** directions, since an over-broad
+unobservability claim is itself a defect, and confirmed it was not used as cover:
+the observable value and shape facts were implemented, and the
+conditional-expression facets remain genuinely pending rather than suppressed.
+
+**The batch121 lesson held exactly as predicted.** After the 14 fixture reviews
+were recorded, the audit reported 10.1.4 as non-reviewed — binding facets
+changes catalogue content and stales its content-bound source review by design.
+It was renewed in the same integration, recording that the staleness is
+attributable *solely* to binding and that the source accounting is unchanged.
+That rule is now doing its job automatically rather than being discovered by a
+failing gate.
+
+Two things are worth recording about process. An integrator-raised discrepancy —
+the author reporting `shape = [2,3]` alongside only three values, which looks
+wrong for a six-element section — was referred to the reviewer rather than
+assumed benign; it resolved cleanly, with all six values deriving and three
+asserted as representatives. Separately, the author **misreported its own
+counts** (claiming `authored_facets` 2537→2551 and 1856 reference-validated).
+The true movement is **1,839 → 1,853** and **1,821 → 1,835**, measured directly
+from the worktree. The reviewer was given the correct figures so the error could
+not propagate into the receipt or this log.
+
+What this does **not** establish: no evaluation order, no evaluation count, and
+no claim that any particular operand *was* evaluated. Passing under two
+compilers is corroboration, never proof of universal conformance.
+See `doc/source_audits/batch_126.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
