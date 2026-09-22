@@ -5846,6 +5846,36 @@
         "13of22evidence links are stale and were ALREADY stale at df0feaf, predating this checkpoint. NOT rubber-stamped - recorded as the stale-evidence-link-adjudication followup, since --record-evidence-review requires independent adjudication.",
         "Restraint judged appropriate:7of19facets discharged; the rest involve processor-dependent numeric/BOZ/enum/polymorphic/runtime-length concerns or another clause's ownership."
       ]
+    },
+    {
+      "id": "clause9-allocate-execution-fixtures-128",
+      "state": "reference-validated-runtime-effects",
+      "packet_kind": "FIXTURE",
+      "milestone": "FIRST XFAILs SINCE BATCH120 - three genuine frozen-LFortran defects",
+      "baseline_commit": "cc68783",
+      "packet_base_commit": "20d5174",
+      "sections": ["9.7.1.2"],
+      "author_handoffs": {
+        "proposal": "6f443e5"
+      },
+      "source_reviews": ["doc/source_audits/batch_128.json"],
+      "new_executions": 10,
+      "fixture_accounting": {
+        "facets_established": 13,
+        "new_cases": 10,
+        "authored_facets": "1885 -> 1898",
+        "cases": "2176 -> 2186",
+        "reference_validated": "1863 -> 1873",
+        "expected_failures": "807 -> 810"
+      },
+      "coordination": "THREE GENUINE LFORTRAN DEFECTS, each verified against the PINNED SOURCE before any XFAIL was considered.(1) SOURCE=/MOLD= shaped allocation WITHOUT explicit dimensions is rejected - but R930/C943 permit exactly that, and9.7.1.2p7 requires the array be allocated with the SHAPE of source-expr and each lower bound equal to LBOUND(source-expr); LFortran emits 'Allocate for arrays should have dimensions specified'.(2) The SOURCE expression is EVALUATED MORE THAN ONCE - but9.7.1.2p8 states 'The source-expr is evaluated exactly once for each execution of an ALLOCATE statement.' The integrator specifically CHALLENGED this one, since the project holds that evaluation counts are usually unobservable and single-evaluation could have been processor latitude; the reviewer settled it by quoting the sentence VERBATIM. Had it been latitude, the FIXTURE would have been withdrawn rather than LFortran XFAILed. The reviewer also confirmed the highest-risk oracle: SOURCE=s with s(-3:-1,5:8) gives LBOUND[-3,5], NOT unit lower bounds - the claim most likely to be backwards. NON-VACUITY: the reviewer re-ran ALL273generated mutations,273/273killed, including all11feature-level. Every fixture asserts LBOUND AND UBOUND, not merely SIZE, so a wrong-bounds allocator is rejected - ALLOCATED(a) alone would have been vacuous. NO payload sentinel is0, because freshly allocated memory is frequently zero; zero appears only for standard STAT=0/SIZE=0 and counters.",
+      "remaining_observations": [
+        "XFAIL SEQUENCE followed strictly: full suite gate (1010OK) -> --record-execution-review -> --update-xfail, as SEPARATE operations.807->810lines, exactly three additions and ZERO modifications to existing lines.",
+        "The integrator REPRODUCED the frozen-target result independently:3FAIL /7PASS, matching the reviewer.",
+        "These three cases are NOT evidence of conformance under the frozen toolchain - they are evidence of DEFECTS in it.",
+        "No TRANSFER/LOC/address oracle, no undefined value read, no ERRMSG text oracle, and NO resource-exhaustion STAT= test (deliberately failing an allocation with a huge request is not portable).",
+        "Coarray, team and error paths remain unexercised; polymorphic ancestor allocation and the undefined-source boundary remain pending."
+      ]
     }
   ],
   "cross_batch_followups": [

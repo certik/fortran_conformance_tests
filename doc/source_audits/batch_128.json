@@ -1,0 +1,115 @@
+{
+ "schema_version": 1,
+ "review_type": "independent-allocate-execution-fixture-review",
+ "review_date": "2026-09-22",
+ "baseline_commit": "cc68783",
+ "packet_base_commit": "20d5174",
+ "state": "reference-validated-runtime-effects",
+ "packet_kind": "FIXTURE",
+ "milestone": "FIRST XFAILs SINCE BATCH120. Three genuine frozen-LFortran defects verified against the pinned standard.",
+ "scope": {
+  "sections": ["9.7.1.2"],
+  "section_title_verified_from_source": "Execution of an ALLOCATE statement",
+  "facets_established": 13,
+  "new_cases": 10,
+  "requirements_touched": ["S9.7.1.2-001", "S9.7.1.2-008", "S9.7.1.2-010", "S9.7.1.2-011"],
+  "left_pending": "S9.7.1.2-002 through -007, -009, -012, -013, plus the -010 polymorphic ancestor and undefined-source boundary. None judged permanently unimplementable; coarray, team and error paths remain gated or scoped, and undefined status was not observed."
+ },
+ "independent_review": {
+  "reviewer_distinct_from_author": true,
+  "decision": "accept_no_blocking_findings",
+  "blocking_findings": 0,
+  "reviewer_read_original_source": "9.7.1.2 and 9.7.1.3, PDF checksum verified independently"
+ },
+ "lfortran_defects_verified": [
+  {
+   "id": "C971FR-001",
+   "defect": "SOURCE= and MOLD= shaped allocation without explicit dimensions is rejected",
+   "standard_basis": "R930 defines both MOLD = source-expr and SOURCE = source-expr. C943 permits no explicit bounds when source-expr appears with the same rank. 9.7.1.2 p7: 'the array is allocated with the shape of source-expr, and with each lower bound equal to the corresponding element of LBOUND(source-expr).' p9 adds for MOLD: 'If MOLD= appears and source-expr is a variable, its value need not be defined.'",
+   "gfortran_16_1_0_f2023": "both fixtures pass",
+   "frozen_lfortran_0_65_0_411": "source_shape_bounds: 'ASR verify pass error: Allocate for arrays should have dimensions specified ... ASR_FUZZ_FAILURE phase=pass pass=array_op'. mold_undefined_value: 'semantic error: Allocate for arrays should have dimensions specified ... Array specification required in allocate statement'",
+   "verdict": "GENUINE LFORTRAN DEFECT",
+   "cases_xfailed": [
+    "S9_7_1_2_008_valid__allocate_execution_source_shape_bounds",
+    "S9_7_1_2_011_valid__allocate_execution_mold_undefined_value"
+   ]
+  },
+  {
+   "id": "C971FR-002",
+   "defect": "The SOURCE= expression is evaluated more than once",
+   "standard_basis": "9.7.1.2 p8: 'The source-expr is evaluated exactly once for each execution of an ALLOCATE statement.' This is an EXPLICIT requirement, not a processor latitude. The integrator specifically challenged whether single evaluation might be latitude - given the standing precedent that evaluation counts are usually unobservable - and the reviewer settled it by quoting the sentence verbatim.",
+   "gfortran_16_1_0_f2023": "ALLOCATE EXECUTION SOURCE EVALUATED ONCE OK",
+   "frozen_lfortran_0_65_0_411": "stdout 'AEX:source_evaluated_once:counter-once', stderr ERROR STOP, exit 1",
+   "verdict": "GENUINE LFORTRAN DEFECT",
+   "cases_xfailed": ["S9_7_1_2_010_valid__allocate_execution_source_evaluated_once"]
+  }
+ ],
+ "xfail_discipline": {
+  "rule": "A genuine compiler defect is recorded as an XFAIL, never worked around, and only after the required result is HAND-DERIVED FROM THE SOURCE. Compiler consensus is not an oracle - gfortran passing is corroboration, never proof.",
+  "process_followed": "The reviewer was required to quote the exact standard sentence for each defect BEFORE any XFAIL was considered, and to state for each whether it was a genuine compiler defect or a DEFECTIVE TEST. Both were adjudicated genuine defects.",
+  "reproduced_by_integrator": "Yes - the integrator ran the frozen target independently and observed exactly 3 FAIL / 7 PASS, matching the reviewer.",
+  "sequence": "full suite gate (1010 OK) -> --record-execution-review -> --update-xfail, as separate operations. --update-xfail was never combined with a review recording.",
+  "baseline_movement": "807 -> 810 lines, exactly three additions and no modifications to any existing line.",
+  "note_on_format": "One new XFAIL comment embeds a temporary fixture path. This matches established practice: 121 pre-existing baseline lines carry such paths, and only the case id before the # is significant."
+ },
+ "source_derivations_independently_confirmed": {
+  "source_bounds_rule": "SOURCE=s with s(-3:-1,5:8) yields LBOUND(a)=[-3,5], NOT unit lower bounds, by 9.7.1.2 p7 together with p1 allocation bounds for s. This was flagged as the claim most likely to be backwards and it is correct.",
+  "bound_capture": "The fixture redefines lo=-5 and hi=9 BEFORE the assertions; p1 establishes that later redefinition does not affect already-allocated bounds.",
+  "zero_extent": "p1 gives zero extent when the upper bound is below the lower; 9.7.1.3 p1 makes ALLOCATED(a) true after ALLOCATE. No element is read.",
+  "mold_undefined": "The MOLD= fixture never reads mold or the undefined content of a; only the fresh writes 612 and 445 are read. Undefined values are not observable and reading one would have been a blocking defect."
+ },
+ "non_vacuity_by_mutation": {
+  "principle": "Non-vacuity must be proved by MUTATION targeting the FEATURE UNDER TEST, not merely its oracle.",
+  "author_campaign": "273 mutations: 200 oracle guards, 20 output/omission, 42 input, 11 feature-level.",
+  "reviewer_reran": "ALL 273 generated mutations - 273/273 killed, including all 11 feature-level ones.",
+  "reverse_mutation": "Scalar source control (source=7 -> 8 with the oracle updated) passed, proving the sentinel load-bearing.",
+  "allocate_specific_guard": "Every fixture asserts LBOUND and UBOUND, not merely SIZE, so a processor allocating the wrong bounds is rejected. ALLOCATED(a) alone would not have been sufficient.",
+  "sentinel_discipline": "No payload sentinel is 0 - freshly allocated memory is frequently zero, so a zero payload would be vacuous. Zero appears only for the standard STAT=0 and SIZE=0 and for counters and indices.",
+  "bounds_discipline": "Non-unit and negative lower bounds (3:5, -2:2, -3:-1, -6:-4) with distinct extents, so defaulted, transposed or off-by-one bounds are all detectable."
+ },
+ "observability_limits_respected": [
+  "No TRANSFER, LOC or address-based oracle; storage layout and allocation mechanism are not observable.",
+  "No undefined value or undefined association status is read.",
+  "No ERRMSG text, sentinel, inequality or substring oracle (SER-005).",
+  "No resource-exhaustion STAT= test: deliberately failing an allocation by requesting a huge array is not portable."
+ ],
+ "explicit_limitations": [
+  "Thirteen facets of 9.7.1.2 only; the majority of the section remains pending.",
+  "Coarray, team and error paths are not exercised.",
+  "Polymorphic ancestor allocation and the undefined-source boundary remain pending.",
+  "Three cases FAIL under the frozen LFortran and are recorded as XFAILs. They are NOT evidence of conformance under that toolchain; they are evidence of defects in it.",
+  "Passing under gfortran is corroboration, not proof of universal conformance.",
+  "Source accounting is unchanged: declared_facets remains 7184."
+ ],
+ "preservation": {
+  "cases_before": 2176,
+  "cases_after": 2186,
+  "authored_facets_before": 1885,
+  "authored_facets_after": 1898,
+  "declared_facets_before": 7184,
+  "declared_facets_after": 7184,
+  "reference_validated_before": 1863,
+  "reference_validated_after": 1873,
+  "fixture_review_states_after": "1873 reference-validated / 274 source-reviewed / 1 needs-oracle",
+  "expected_failures_lines_before": 807,
+  "expected_failures_lines_after": 810,
+  "baseline_lines_added": 3,
+  "baseline_lines_modified": 0,
+  "existing_case_ids_modified": 0
+ },
+ "validation_snapshot": {
+  "detailed_catalogues": 280,
+  "requirements": 1684,
+  "declared_facets": 7184,
+  "authored_facets": 1898,
+  "catalogue_reviews_draft": 1,
+  "catalogue_reviews_draft_note": "Only 18.3.7, pre-existing and untouched.",
+  "execution_aggregate_review": "source-reviewed (renewed before the xfail update, as required)",
+  "frozen_lfortran_result": "7 PASS / 3 FAIL, all three XFAILed",
+  "gfortran_result": "10/10 pass",
+  "normal_audit_exit": 1,
+  "normal_audit_block": "the single retained needs-oracle real-BOZ case, which is the intended state and not a regression",
+  "python_suite_tests": 1010,
+  "python_suite_result": "OK"
+ }
+}

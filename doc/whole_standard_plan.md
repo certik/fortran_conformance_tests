@@ -4125,6 +4125,65 @@ precisely the unearned approval this protocol exists to prevent. They are
 recorded as the `stale-evidence-link-adjudication` followup.
 See `doc/source_audits/batch_130.json`.
 
+## Batch 128 — ALLOCATE execution, and three real compiler defects
+
+Establishes **13 facets** of **9.7.1.2 Execution of an ALLOCATE statement**
+across 10 fixtures, and produces the **first XFAILs since batch120**: three
+genuine defects in the frozen LFortran, each verified against the pinned
+standard *before* any XFAIL was contemplated.
+
+**Defect 1 — `SOURCE=`/`MOLD=` shaped allocation is rejected.** R930 defines
+both specifiers and C943 permits *no* explicit bounds when `source-expr`
+appears with the same rank; 9.7.1.2 p7 then requires the array to be allocated
+"with the shape of source-expr, and with each lower bound equal to the
+corresponding element of `LBOUND(source-expr)`". The frozen LFortran instead
+emits *"Allocate for arrays should have dimensions specified"* — an ASR
+verification failure in one case and a semantic error in the other. gfortran
+accepts both.
+
+**Defect 2 — the `SOURCE=` expression is evaluated more than once.** This one
+deserved scepticism and got it. The project already holds that **evaluation
+counts are generally not observable**, and "evaluated once" claims are exactly
+the sort of thing that turns out to be processor latitude — in which case the
+*fixture* would have been invalid and withdrawn, rather than LFortran earning
+an XFAIL. I put that challenge to the reviewer explicitly, and it settled the
+question by quoting 9.7.1.2 p8 verbatim: *"The source-expr is evaluated exactly
+once for each execution of an ALLOCATE statement."* An explicit requirement,
+not a latitude. The frozen target evaluates it twice.
+
+The reviewer also confirmed the packet's highest-risk oracle. `SOURCE=s` with
+`s(-3:-1,5:8)` gives the allocated object lower bounds `[-3,5]`, **not** unit
+lower bounds with the same shape — the rule most easily got backwards, and the
+fixture has it right.
+
+On non-vacuity, the reviewer re-ran **all 273** generated mutations rather than
+a sample: 273 of 273 killed, including all 11 feature-level ones. Two
+discipline points carried this packet:
+
+- **Every fixture asserts `LBOUND` *and* `UBOUND`, not merely `SIZE`.** A
+  processor that allocated the wrong bounds would sail through an
+  `ALLOCATED(a)` check, and would survive a `SIZE`-only check for any shape
+  with the same extent.
+- **No payload sentinel is `0`.** Freshly allocated memory is frequently zero,
+  so a zero payload proves nothing about what was written. Zero appears only
+  where the standard requires it — `STAT=0`, `SIZE=0` — and in counters.
+
+The observability limits held: no `TRANSFER`, `LOC` or address-based oracle; no
+undefined value or association status is ever read (the `MOLD=` fixture reads
+only its own fresh writes); no `ERRMSG` text oracle; and **no resource-exhaustion
+`STAT=` test**, since deliberately failing an allocation by requesting a huge
+array is not portable.
+
+The XFAIL sequence was followed strictly and as separate operations: full suite
+gate (**1010 tests OK**), then `--record-execution-review`, then
+`--update-xfail`. The baseline moved **807 → 810** — exactly three additions,
+zero modifications to existing lines. I reproduced the frozen-target result
+myself first, observing precisely 3 FAIL / 7 PASS.
+
+These three cases are not evidence of conformance under the frozen toolchain.
+They are evidence of defects in it.
+See `doc/source_audits/batch_128.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
