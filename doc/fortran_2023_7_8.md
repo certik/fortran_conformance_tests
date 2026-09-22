@@ -2,7 +2,7 @@
 
 **Catalogue source review: reviewed.** Source and case/evidence adjudications remain separate content-bound records.
 
-The corpus has **5 shared valid run/effect programs**, **87 primitive value/shape/length guards** and one completion guard per program. **10 of 107 facets are represented; 97 remain PENDING.** No source/case/link/inventory approval is implied.
+The corpus has **9 shared valid run/effect programs**, **129 primitive value/shape/length guards** and one completion guard per program. **17 of 107 facets are represented; 90 remain PENDING.** No source/case/link/inventory approval is implied.
 
 ## Source and oracle qualifications
 
@@ -13,23 +13,29 @@ The31base/100fine/131accounting units,26requirements and107facet IDs remain.
 The independently reviewed source was already registered on main; its review
 state/fingerprint/rationale are preserved, not replaced by author approval.
 
-Only S7.8-001's first two, S7.8-008's first five and S7.8-009's first three
-facets are represented. S001.mixed-shapes-and-empty-source remains pending
-even though the separately owned empty-source case uses mixed scalar/empty
-values. No R/C, other S, conversion/type/dynamic/representation/source-use
-claim or diagnostic policy is added.
+Only S7.8-001's first four, S7.8-003's first two, S7.8-005's two
+CHARACTER conversion facets, S7.8-008's first six and S7.8-009's first three
+facets are represented. S7.8-001 evaluation-order, S7.8-003 runtime explicit
+length plus nonintrinsic and deferred-boundary, S7.8-005 numeric/enum/BOZ,
+S7.8-006 dynamic-type, S7.8-008 control-evaluation, and S7.8-009
+state/optional-evaluation plans remain pending. No R/C, other S,
+dynamic/representation/source-use diagnostic policy or processor-kind
+availability claim is added.
 
-All payloads and limits are small default INTEGER values, or ordinary default
-CHARACTER. Matrix cells11/13/17/19 and vector cells31/37 are assigned individually
-by name. No expected Fortran array or setup constructor, RESHAPE, PACK, matching
-reordered construction or processor inquiry supplies an expected sequence.
-Element order follows9.5.3.3, not a memory-layout or function-call-order claim.
+All payloads and limits are small default INTEGER values, default INTEGER(KIND(0))
+values, or ordinary default CHARACTER. Matrix cells11/13/17/19, vector
+cells31/37, pointer/allocatable cells41/43/47/53, mixed-source cells61/73/79/83
+and type-parameter cells89/97 are assigned individually by name. No expected
+Fortran array or setup constructor, RESHAPE, PACK, matching reordered construction
+or processor inquiry supplies an expected sequence. Element order follows9.5.3.3,
+not a memory-layout or function-call-order claim.
 
 Ordinary implied DO initiation/execution follows11.1.7.4.1/.3. The optional
 inline INTEGER type-spec is omitted; containing-scope scalar INTEGER i/j
 declarations supply type/parameters under19.4p1/p2/p5. The ac-do names remain
 separate statement entities and inherit no other attributes. Their host values
-are neither needed nor read, including after scope. Steps are nonzero. Inner
+are not used as loop values; the dedicated host-scope fixture separately checks
+that the host i value99 survives the constructor. Steps are nonzero. Inner
 j=1:i reads the defined outer i; no own uninitialized bound, mutable function-order
 counter, DO CONCURRENT or optional-evaluation absence oracle is used. This is a
 separate grammar-alternative change: the original inline syntax was valid and
@@ -38,26 +44,29 @@ its observed processor failures remain history. No R783 facet is claimed.
 RANK16.9.171p3 requires a DATA OBJECT. Under5.4.3.2.1/.2/.3,6.2.3R604/R605
 and9.2R902/C901/C902, a constructor computation is not a constant or variable.
 Its result is a data entity under5.4.3.3, not automatically a data object.
-Each exact constructor expression is instead passed to a complete internal
-INTEGER or CHARACTER(LEN=*),INTENT(IN) dummy a(..), without POINTER,
-ALLOCATABLE,CODIMENSION or VALUE. It is a real assumed-rank dummy data object
-under8.5.8.7p1/R827/C839. RANK(a) is checked before SELECT RANK(a); only RANK(1)
-enables the size/length/indexed guards, and RANK DEFAULT explicitly fails.
-C840 permits the inquiry/selection. No declared rank-one dummy or destination
-is used as a rank proxy. All87 primitive expectations and five completion
-counts remain unchanged; guard locations are regenerated.
+Legacy operations pass exact constructor expressions to complete internal
+INTEGER or CHARACTER(LEN=*),INTENT(IN) dummies a(..), without POINTER,
+ALLOCATABLE,CODIMENSION or VALUE. Those are real assumed-rank dummy data objects
+under8.5.8.7p1/R827/C839. Added exact state/type/character operations instead
+use ASSOCIATE names bound to the constructor expression, because both qualifying
+toolchains preserve the constructor value there and gfortran does not preserve
+all added exact cases through assumed-rank argument association. RANK is checked
+on the data object before size/length/indexed guards; legacy SELECT RANK
+observers retain an explicit RANK DEFAULT failure. No declared rank-one dummy or
+destination is used as a rank proxy. Primitive expectations and completion
+counts are regenerated from the case table, not hand-edited after generation.
 
-SIZE16.9.194 and LEN16.9.122 still inspect actual constructor expressions:
-their own argument paragraphs permit an array or a CHARACTER entity,
-respectively, unlike RANK's DATA OBJECT restriction. Internal explicit
-interfaces meet15.4.2.1/.2. Ordinary argument association under15.5.2.4/.5
-permits any actual rank for an assumed-rank dummy and preserves actual rank,
-extents, element order and assumed length. Lower bounds are one. SELECT RANK
-under11.1.10.1/.2/.3 and19.5.1.6 preserves type/parameters and selects the
-rank-specific entity with those bounds;11.1.3.3 forbids defining the read-only
-association. Dummy SIZE/LEN and indexed guards are inside RANK(1), with size
-guards before element reads. An assumed CHARACTER length is inherited under
-7.4.4.2/15.5.2.5p5, never masked by a fixed-length destination.
+SIZE16.9.194 and LEN16.9.122 still inspect actual constructor expressions or
+ASSOCIATE names bound to those expressions: their own argument paragraphs permit
+an array or a CHARACTER entity, respectively, unlike RANK's DATA OBJECT
+restriction. Internal explicit interfaces meet15.4.2.1/.2. Ordinary argument
+association under15.5.2.4/.5 permits any actual rank for an assumed-rank dummy
+and preserves actual rank, extents, element order and assumed length in legacy
+operations. Lower bounds are one. SELECT RANK under11.1.10.1/.2/.3 and19.5.1.6
+preserves type/parameters and selects the rank-specific entity with those bounds;
+11.1.3.3 forbids defining the read-only association. Size guards precede element
+reads. An assumed or associated CHARACTER length is observed directly, never
+masked by a fixed-length destination.
 
 The ordinary INTEGER empty(0) is always defined under19.6.2. Typed-empty
 [INTEGER ::] and a syntactically nonempty zero-trip implied DO both have
@@ -65,6 +74,17 @@ rank1/size0. The [7] and [11,empty,13] controls ensure actual nonempty value
 observations. Empty CHARACTER(LEN=3) and runtime n=3 have no ac-value, so they
 do not invoke the zero-trip CHARACTER ac-value length restriction. The abc
 control has matching source/target length3 and makes no padding/conversion claim.
+
+Pointer and allocatable source-state observations first establish association,
+allocation, extents and element definitions, then read constructor elements through
+an assumed-rank observer. They do not infer pointer broadcasting, allocation-status
+elements, finalization, deallocation or pointer/allocatable inheritance by the
+constructor expression.
+
+CHARACTER constructor observations always check LEN explicitly and use length-3
+expected strings such as 'A  ' and 'BC ', not shorter operands that would compare
+equal by blank padding. The substring fixture has nonzero iteration count and
+constant text='ABC'; it does not cover the zero-trip p5 restriction.
 
 Each primitive expected value is a scalar literal at its real source guard.
 Each program also checks its completed guard count. Separate single-span
@@ -552,18 +572,20 @@ order.
 direct constructor value/rank/size observations. Permitted array element order fixes
 sequence positions, not the order of evaluating unrelated source functions.
 
-Finite value implementation: 1 shared valid run-phase programs represent 2 selected
+Finite value implementation: 2 shared valid run-phase programs represent 4 selected
 facets using independent default-INTEGER/default-CHARACTER literal guards. Direct
-constructor SIZE/LEN retain their own argument rules. RANK requires a data object: each
-actual constructor expression is associated with an explicit INTENT(IN) assumed-rank
-dummy a(..), and RANK(a) is checked before SELECT RANK permits rank-one
-size/length/indexed observations. There is an explicit unexpected-rank failure branch,
-not a rank-one dummy/destination proxy. Ordinary implied DO indices infer INTEGER from
-containing scalar i/j declarations, which supply types only; no host value or inherited
-attributes are used and R783 remains pending. Source setup never uses another
-constructor, RESHAPE or PACK. Empty contexts retain nonempty controls. Every other plan
-stays pending and all administrative review fields are preserved; changed source
-material may make the existing source review stale, never silently renewed.
+constructor SIZE/LEN retain their own argument rules where they are used. RANK requires
+a data object: legacy operations associate the actual constructor expression with an
+explicit INTENT(IN) assumed-rank dummy a(..), while the added exact state/type/character
+operations use ASSOCIATE names bound to the constructor expression. RANK is checked on
+that data object before rank-one size/length/indexed observations. Legacy assumed-rank
+observers retain an explicit unexpected-rank failure branch, not a rank-one
+dummy/destination proxy. Ordinary implied DO indices infer INTEGER from containing
+scalar i/j declarations, which supply types only; no host value or inherited attributes
+are used and R783 remains pending. Source setup never uses another constructor, RESHAPE
+or PACK. Empty contexts retain nonempty controls. Every other plan stays pending and all
+administrative review fields are preserved; changed source material may make the
+existing source review stale, never silently renewed.
 
 **Oracle limitation:** Finite runtime witnesses do not confer independent adjudication. Use independently fixed
 small values, named element setup and direct constructor observations; a destination
@@ -619,12 +641,28 @@ a destination's allocation/parameter attributes redefine the constructor.
 Their independent literals, complete state and actual constructor consumers must be
 checked before fixture authoring.
 
-**Oracle limitation:** No runtime witness is implemented. Use independently fixed small values, named element
-setup and direct constructor observations; a destination declaration or a second use of
-the same operation is not an independent oracle. Source sequence order is not an
-unspecified function-evaluation order. Read only defined values with established
-allocation/association and valid parameter state. No C_INT, KIND-number, extra-kind,
-byte-width, IEEE-layout, arbitrary-bit or processor-choice premise is assumed.
+Finite value implementation: 1 shared valid run-phase programs represent 2 selected
+facets using independent default-INTEGER/default-CHARACTER literal guards. Direct
+constructor SIZE/LEN retain their own argument rules where they are used. RANK requires
+a data object: legacy operations associate the actual constructor expression with an
+explicit INTENT(IN) assumed-rank dummy a(..), while the added exact state/type/character
+operations use ASSOCIATE names bound to the constructor expression. RANK is checked on
+that data object before rank-one size/length/indexed observations. Legacy assumed-rank
+observers retain an explicit unexpected-rank failure branch, not a rank-one
+dummy/destination proxy. Ordinary implied DO indices infer INTEGER from containing
+scalar i/j declarations, which supply types only; no host value or inherited attributes
+are used and R783 remains pending. Source setup never uses another constructor, RESHAPE
+or PACK. Empty contexts retain nonempty controls. Every other plan stays pending and all
+administrative review fields are preserved; changed source material may make the
+existing source review stale, never silently renewed.
+
+**Oracle limitation:** Finite runtime witnesses do not confer independent adjudication. Use independently fixed
+small values, named element setup and direct constructor observations; a destination
+declaration or a second use of the same operation is not an independent oracle. Source
+sequence order is not an unspecified function-evaluation order. Read only defined values
+with established allocation/association and valid parameter state. No C_INT,
+KIND-number, extra-kind, byte-width, IEEE-layout, arbitrary-bit or processor-choice
+premise is assumed.
 
 **Dependencies:** 7.8p2/p3;R778/R702;7.2/C701/C702;7.4.4.2/C726;7.5.9/C7100;7.6;16.9.118 KIND/16.9.122
 LEN;8.5.3.
@@ -673,16 +711,31 @@ performed the constructor's work.
 assignment conversion or a second constructor/RESHAPE. The old numeric/character
 assignment cases keep their own primary effects.
 
-**Oracle limitation:** No runtime witness is implemented. Use independently fixed small values, named element
-setup and direct constructor observations; a destination declaration or a second use of
-the same operation is not an independent oracle. Source sequence order is not an
-unspecified function-evaluation order. Read only defined values with established
-allocation/association and valid parameter state. No C_INT, KIND-number, extra-kind,
-byte-width, IEEE-layout, arbitrary-bit or processor-choice premise is assumed. REAL and
-CMPLX have processor-dependent approximation clauses. Default REAL precision6/range37
-are recommendations, not general mandatory accuracy bounds. Any exact real/complex
-numeric result needs an independently established arithmetic premise, distinct from
-internal bit representation.
+Finite value implementation: 1 shared valid run-phase programs represent 2 selected
+facets using independent default-INTEGER/default-CHARACTER literal guards. Direct
+constructor SIZE/LEN retain their own argument rules where they are used. RANK requires
+a data object: legacy operations associate the actual constructor expression with an
+explicit INTENT(IN) assumed-rank dummy a(..), while the added exact state/type/character
+operations use ASSOCIATE names bound to the constructor expression. RANK is checked on
+that data object before rank-one size/length/indexed observations. Legacy assumed-rank
+observers retain an explicit unexpected-rank failure branch, not a rank-one
+dummy/destination proxy. Ordinary implied DO indices infer INTEGER from containing
+scalar i/j declarations, which supply types only; no host value or inherited attributes
+are used and R783 remains pending. Source setup never uses another constructor, RESHAPE
+or PACK. Empty contexts retain nonempty controls. Every other plan stays pending and all
+administrative review fields are preserved; changed source material may make the
+existing source review stale, never silently renewed.
+
+**Oracle limitation:** Finite runtime witnesses do not confer independent adjudication. Use independently fixed
+small values, named element setup and direct constructor observations; a destination
+declaration or a second use of the same operation is not an independent oracle. Source
+sequence order is not an unspecified function-evaluation order. Read only defined values
+with established allocation/association and valid parameter state. No C_INT,
+KIND-number, extra-kind, byte-width, IEEE-layout, arbitrary-bit or processor-choice
+premise is assumed. REAL and CMPLX have processor-dependent approximation clauses.
+Default REAL precision6/range37 are recommendations, not general mandatory accuracy
+bounds. Any exact real/complex numeric result needs an independently established
+arithmetic premise, distinct from internal bit representation.
 
 **Dependencies:** 7.8p3;10.2.1.3p8-p13/Table10.9;7.4.3.2p6;16.9.110 INT/16.9.172 REAL/16.9.53
 CMPLX;7.6.1-.2;C7126/C7127;16.3/C1601.
@@ -758,18 +811,20 @@ rules in19.4.
 order of resulting elements distinct from an unprescribed total order of unrelated
 function evaluations.
 
-Finite value implementation: 2 shared valid run-phase programs represent 5 selected
+Finite value implementation: 3 shared valid run-phase programs represent 6 selected
 facets using independent default-INTEGER/default-CHARACTER literal guards. Direct
-constructor SIZE/LEN retain their own argument rules. RANK requires a data object: each
-actual constructor expression is associated with an explicit INTENT(IN) assumed-rank
-dummy a(..), and RANK(a) is checked before SELECT RANK permits rank-one
-size/length/indexed observations. There is an explicit unexpected-rank failure branch,
-not a rank-one dummy/destination proxy. Ordinary implied DO indices infer INTEGER from
-containing scalar i/j declarations, which supply types only; no host value or inherited
-attributes are used and R783 remains pending. Source setup never uses another
-constructor, RESHAPE or PACK. Empty contexts retain nonempty controls. Every other plan
-stays pending and all administrative review fields are preserved; changed source
-material may make the existing source review stale, never silently renewed.
+constructor SIZE/LEN retain their own argument rules where they are used. RANK requires
+a data object: legacy operations associate the actual constructor expression with an
+explicit INTENT(IN) assumed-rank dummy a(..), while the added exact state/type/character
+operations use ASSOCIATE names bound to the constructor expression. RANK is checked on
+that data object before rank-one size/length/indexed observations. Legacy assumed-rank
+observers retain an explicit unexpected-rank failure branch, not a rank-one
+dummy/destination proxy. Ordinary implied DO indices infer INTEGER from containing
+scalar i/j declarations, which supply types only; no host value or inherited attributes
+are used and R783 remains pending. Source setup never uses another constructor, RESHAPE
+or PACK. Empty contexts retain nonempty controls. Every other plan stays pending and all
+administrative review fields are preserved; changed source material may make the
+existing source review stale, never silently renewed.
 
 **Oracle limitation:** Finite runtime witnesses do not confer independent adjudication. Use independently fixed
 small values, named element setup and direct constructor observations; a destination
@@ -800,16 +855,18 @@ variable is not a constructor-only oracle.
 
 Finite value implementation: 2 shared valid run-phase programs represent 3 selected
 facets using independent default-INTEGER/default-CHARACTER literal guards. Direct
-constructor SIZE/LEN retain their own argument rules. RANK requires a data object: each
-actual constructor expression is associated with an explicit INTENT(IN) assumed-rank
-dummy a(..), and RANK(a) is checked before SELECT RANK permits rank-one
-size/length/indexed observations. There is an explicit unexpected-rank failure branch,
-not a rank-one dummy/destination proxy. Ordinary implied DO indices infer INTEGER from
-containing scalar i/j declarations, which supply types only; no host value or inherited
-attributes are used and R783 remains pending. Source setup never uses another
-constructor, RESHAPE or PACK. Empty contexts retain nonempty controls. Every other plan
-stays pending and all administrative review fields are preserved; changed source
-material may make the existing source review stale, never silently renewed.
+constructor SIZE/LEN retain their own argument rules where they are used. RANK requires
+a data object: legacy operations associate the actual constructor expression with an
+explicit INTENT(IN) assumed-rank dummy a(..), while the added exact state/type/character
+operations use ASSOCIATE names bound to the constructor expression. RANK is checked on
+that data object before rank-one size/length/indexed observations. Legacy assumed-rank
+observers retain an explicit unexpected-rank failure branch, not a rank-one
+dummy/destination proxy. Ordinary implied DO indices infer INTEGER from containing
+scalar i/j declarations, which supply types only; no host value or inherited attributes
+are used and R783 remains pending. Source setup never uses another constructor, RESHAPE
+or PACK. Empty contexts retain nonempty controls. Every other plan stays pending and all
+administrative review fields are preserved; changed source material may make the
+existing source review stale, never silently renewed.
 
 **Oracle limitation:** Finite runtime witnesses do not confer independent adjudication. Use independently fixed
 small values, named element setup and direct constructor observations; a destination
@@ -838,6 +895,45 @@ The four matrix cells are independently assigned by name. Direct SIZE inspects a
 
 The exact completed primitive guard count is `15`. Guard families: `constructor-size-nonempty`, `assumed-rank-argument`, `argument-size-nonempty`, `integer-element`, `completion-count`.
 
+### `S7_8_001_valid__array_constructor_value_state_and_mixed`
+
+**Primary:** S7.8-001; **phase/evidence:** run / effect.
+
+**Facets:** `mixed-shapes-and-empty-source`, `value-expression-state-source-use`.
+
+The mixed constructor has rank-one sources of extents one, zero and three. The empty source contributes no element, so the exact sequence is 61,73,79,83. The state constructor uses a live associated pointer and an allocated allocatable array whose individual elements are assigned by name; the constructor contributes their data values 41,43,47,53 rather than status bits. No source setup uses another constructor or an array-producing intrinsic.
+
+* `mixed`: actual `[one,empty,three]`; independent indexed literals `[61, 73, 79, 83]`.
+* `state`: actual `[ptr,alloc]`; independent indexed literals `[41, 43, 47, 53]`.
+
+The exact completed primitive guard count is `12`. Guard families: `associate-rank`, `associate-size-nonempty`, `integer-element`, `completion-count`.
+
+### `S7_8_003_valid__array_constructor_value_type_parameters`
+
+**Primary:** S7.8-003; **phase/evidence:** run / effect.
+
+**Facets:** `inferred-integer-kind`, `inferred-character-length`.
+
+The integer kind is named by the symbolic parameter k=KIND(0), and the constructor KIND is checked against k rather than a numeric kind code. Character inference is observed from two defined CHARACTER(2) sources, with LEN 2 and exact element strings AB/CD. The ordinary runtime CHARACTER(LEN=n) plan remains pending because gfortran 16.1 loses that length when the expression is associated with a data object.
+
+* `integer_kind`: actual `[left_k,right_k]`; independent indexed literals `[89, 97]`.
+* `character_inferred`: actual `[left_c,right_c]`; independent indexed literals `['AB', 'CD']`; actual LEN must be `2`.
+
+The exact completed primitive guard count is `10`. Guard families: `associate-rank`, `associate-size-nonempty`, `associate-kind`, `integer-element`, `associate-character-length`, `character-element`, `completion-count`.
+
+### `S7_8_005_valid__array_constructor_value_character_conversion`
+
+**Primary:** S7.8-005; **phase/evidence:** run / effect.
+
+**Facets:** `character-padding-and-truncation`, `nonzero-dependent-character-length`.
+
+The explicit CHARACTER(LEN=3) constructor pads 'A' to 'A  ' and truncates 'BCDE' to 'BCD'. The nonzero implied DO reads the constant text(1:i) for i=1,2,3, all in range, and then the same explicit LEN=3 conversion yields 'A  ','AB ','ABC'. LEN is asserted before element comparisons so blank-padded character equality cannot hide a wrong constructor length.
+
+* `pad_truncate`: actual `[character(len=3) :: 'A','BCDE']`; independent indexed literals `['A  ', 'BCD']`; actual LEN must be `3`.
+* `dependent_substrings`: actual `[character(len=3) :: (text(1:i),i=1,3)]`; independent indexed literals `['A  ', 'AB ', 'ABC']`; actual LEN must be `3`.
+
+The exact completed primitive guard count is `11`. Guard families: `associate-rank`, `associate-size-nonempty`, `associate-character-length`, `character-element`, `completion-count`.
+
 ### `S7_8_008_valid__array_constructor_value_ordinary_loops`
 
 **Primary:** S7.8-008; **phase/evidence:** run / effect.
@@ -865,6 +961,18 @@ The inner j limit reads the already defined outer i, never its own uninitialized
 * `array_body`: actual `[(vector+i,i=1,2)]`; independent indexed literals `[32, 38, 33, 39]`.
 
 The exact completed primitive guard count is `16`. Guard families: `constructor-size-nonempty`, `assumed-rank-argument`, `argument-size-nonempty`, `integer-element`, `completion-count`.
+
+### `S7_8_008_valid__array_constructor_value_host_scope`
+
+**Primary:** S7.8-008; **phase/evidence:** run / effect.
+
+**Facets:** `kind-and-host-scope-source-use`.
+
+The ac-do variable i has the symbolic default kind k and is a statement entity separate from the host variable i. The constructor sequence is 77,1,2,3,88, and after the constructor the host variable is still 99. This does not assert side-effect callback order, a zero step, post-scope ac-do-variable access or distinct non-default kind availability.
+
+* `host_scope`: actual `[77,(i,i=1_k,3_k),88]`; independent indexed literals `[77, 1, 2, 3, 88]`.
+
+The exact completed primitive guard count is `9`. Guard families: `associate-rank`, `associate-size-nonempty`, `associate-kind`, `integer-element`, `host-scope`, `completion-count`.
 
 ### `S7_8_009_valid__array_constructor_value_integer_empty`
 
@@ -1018,8 +1126,6 @@ Every unselected map below is retained exactly from the canonical source; incide
 
 ### Pending S7.8-001
 
-* **`mixed-shapes-and-empty-source`** - PENDING - Runtime plan: defined rank-one sources of lengths1 and3 plus an actual defined zero-size array contribute concatenated values and no elements for the empty source. Check exact size and indexed markers; neither equal source shapes nor scalar broadcast is required.
-* **`value-expression-state-source-use`** - PENDING - Source-use plan: a live associated pointer or allocated allocatable array ac-value contributes its defined data values, not its association/allocation status. Before any new witness, establish complete state and parameters; a pointer-containing derived element retains its scalar-constructor/assignment owners and no pointer broadcasting is inferred.
 * **`evaluation-order-and-shared-consumer-graph`** - PENDING - Source-use graph:10.1.4/10.1.7 retain control-expression evaluation, side-effect restrictions and optional operand evaluation. Do not use mutable callback order or absence as the flattening oracle. Existing R702/S10 witnesses retain their primaries; a future direct sequence witness is not a renamed assignment program.
 
 ### Pending S7.8-002
@@ -1031,8 +1137,6 @@ Every unselected map below is retained exactly from the canonical source; incide
 
 ### Pending S7.8-003
 
-* **`inferred-integer-kind`** - PENDING - Runtime plan: one supported INTEGER kind obtained symbolically is used by every ac-value, and KIND of the constructor expression is checked against that selector. Values11/13 are independently checked; the expected KIND is not a numeric identifier.
-* **`inferred-character-length`** - PENDING - Runtime plan: two defined default CHARACTER(2) sources AB/CD produce a length2, size2 constructor observed directly. Do not assign first to a fixed CHARACTER(2) receiver and treat that declaration's LEN as evidence.
 * **`explicit-type-and-runtime-length`** - PENDING - Runtime plan: a defined scalar INTEGER n=3 supplies [CHARACTER(LEN=n) :: 'A','BC']; direct observation checks length3 and values 'A  '/'BC '. LEN need not be constant in this ordinary executable context; surrounding constant-expression requirements remain separate.
 * **`nonintrinsic-identity-consumer-source-use`** - PENDING - Source-use graph: prior concrete derived, named enum and enumeration type specifiers retain R702/R703/C795/C7112/C7116 and their exact identities. Existing typed-array cases are preserved without generic KIND-of-enum or same-type-from-equal-values shortcuts.
 * **`deferred-assumed-and-destination-boundary`** - PENDING - Source-use graph: C702 and C726/C7100 control colon/asterisk contexts. An ALLOCATABLE destination cannot license a deferred type-spec inside the array constructor. Pointer/allocatable source entities have established values/parameters; the resulting expression is not an allocatable or pointer variable by inheritance.
@@ -1047,8 +1151,6 @@ Every unselected map below is retained exactly from the canonical source; incide
 ### Pending S7.8-005
 
 * **`small-numeric-conversion`** - PENDING - Processor-qualified runtime matrix: after independently establishing the needed numeric literal/conversion accuracy, use nominal REAL inputs4.0/-3.0 for INTEGER expectations[4,-3,2] in [INTEGER :: source,2], INTEGER-2/4 for REAL expectations-2.0/4.0, and INTEGER2/REAL4.0/COMPLEX(5.0,-3.0) for COMPLEX expectations(2.0,0.0)/(4.0,0.0)/(5.0,-3.0). These exact real/complex comparisons are not universal merely because inputs are small. REAL/CMPLX approximation clauses and default-REAL recommendations retain their qualifications; never obtain the sole oracle by applying INT/REAL/CMPLX to the same inputs.
-* **`character-padding-and-truncation`** - PENDING - Runtime plan: [CHARACTER(LEN=3) :: 'A','BCDE'] has independent expected 'A  '/'BCD'. An assumed-length observer checks both LEN and named element values before any differently typed destination could mask conversion.
-* **`nonzero-dependent-character-length`** - PENDING - Runtime plan: with a defined CHARACTER(3) PARAMETER text='ABC', a nonzero i=1:3 implied DO contributes text(1:i) under explicit CHARACTER(LEN=3); expected elements are 'A  ','AB ','ABC'. No substring is out of range. This is not the zero-trip p5 case.
 * **`enum-conversion-source-use`** - PENDING - Source-use graph: an explicit enum type can convert only qualifying INTEGER expressions with a correct enum primary, with representable values; INT of an enum and INT of an enumeration have different meanings. Preserve S10_2_1_3_022_valid and R702 enum/enumERATION contexts without cloned executions.
 * **`boz-conversion-and-representation-gate`** - PENDING - Source-use/profile gate: C7119/C7126 allowance, C7127 REAL representation, C1601 discarded bits and16.3/INT/REAL conversion are all required. Keep arithmetic expected values independently justified; no REAL IEEE pattern or arbitrary signed/oversized bit sequence is inferred from compiler agreement.
 
@@ -1067,7 +1169,6 @@ Every unselected map below is retained exactly from the canonical source; incide
 
 ### Pending S7.8-008
 
-* **`kind-and-host-scope-source-use`** - PENDING - Source-use graph:19.4 says the index is a scalar INTEGER statement entity with specified or inferred type/parameters and no other attributes. A future host i=99 witness checks that host value separately remains99; an inline INTEGER control does not declare a host name. Kind differentiation needs actually supported distinct selectors, not assumed codes.
 * **`control-evaluation-and-zero-step-source-use`** - PENDING - Source-use graph:10.1.4p3 requires control-expression evaluation, while10.1.4p2/10.1.7 constrain side effects/optional operand evaluation. Use defined literal or separate named bounds in ordinary witnesses; nested-zero/side-effect counts and self-referential limits are not inferred. Zero step is the canonical DO prose restriction, not a new R783/C7128 diagnostic policy.
 
 ### Pending S7.8-009

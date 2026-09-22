@@ -14,27 +14,44 @@ sys.path.insert(0, str(ROOT / "tools"))
 import generate_array_constructor_value_fixtures as generated
 import generate_derived_parameter_fixtures as parameters
 
-CASES = {
+LEGACY_CASES = {
     "sequence": ("S7.8-001", ["rank-one-and-scalar-sequence", "higher-rank-flattening"]),
     "ordinary_loops": ("S7.8-008", ["default-increment-sequence", "positive-and-negative-strides", "multiple-body-values"]),
     "dependent_bodies": ("S7.8-008", ["nested-dependent-bounds", "array-valued-body-sequence"]),
     "integer_empty": ("S7.8-009", ["typed-empty-and-zero-trip", "zero-sized-array-ac-value"]),
     "character_empty": ("S7.8-009", ["empty-character-parameters"]),
 }
+NEW_CASES = {
+    "state_and_mixed": ("S7.8-001", ["mixed-shapes-and-empty-source", "value-expression-state-source-use"]),
+    "type_parameters": ("S7.8-003", ["inferred-integer-kind", "inferred-character-length"]),
+    "character_conversion": ("S7.8-005", ["character-padding-and-truncation", "nonzero-dependent-character-length"]),
+    "host_scope": ("S7.8-008", ["kind-and-host-scope-source-use"]),
+}
+CASES = {**LEGACY_CASES, **NEW_CASES}
 EXPECTED = {
     "sequence": {"scalars": [11,13,17], "matrix": [5,11,13,17,19,23]},
+    "state_and_mixed": {"mixed": [61,73,79,83], "state": [41,43,47,53]},
+    "type_parameters": {"integer_kind": [89,97], "character_inferred": ["AB","CD"]},
+    "character_conversion": {"pad_truncate": ["A  ","BCD"],
+                             "dependent_substrings": ["A  ","AB ","ABC"]},
     "ordinary_loops": {"default_step": [1,2,3], "positive_step": [1,3,5],
                        "negative_step": [5,3,1], "multiple_body": [1,10,2,20]},
     "dependent_bodies": {"nested": [11,21,22,31,32,33], "array_body": [32,38,33,39]},
+    "host_scope": {"host_scope": [77,1,2,3,88]},
     "integer_empty": {"integer_control": [7], "typed_empty": [], "zero_trip": [], "empty_source": [11,13]},
     "character_empty": {"character_control": ["abc"], "character_fixed": [], "character_runtime": []},
 }
 EXPRESSIONS = {
     "scalars": "[11,13,17]", "matrix": "[5,m,23]",
+    "mixed": "[one,empty,three]", "state": "[ptr,alloc]",
+    "integer_kind": "[left_k,right_k]", "character_inferred": "[left_c,right_c]",
+    "pad_truncate": "[character(len=3) :: 'A','BCDE']",
+    "dependent_substrings": "[character(len=3) :: (text(1:i),i=1,3)]",
     "default_step": "[(i,i=1,3)]", "positive_step": "[(i,i=1,5,2)]",
     "negative_step": "[(i,i=5,1,-2)]", "multiple_body": "[(i,10*i,i=1,2)]",
     "nested": "[((10*i+j,j=1,i),i=1,3)]",
     "array_body": "[(vector+i,i=1,2)]",
+    "host_scope": "[77,(i,i=1_k,3_k),88]",
     "integer_control": "[7]", "typed_empty": "[integer ::]",
     "zero_trip": "[(i,i=1,0)]", "empty_source": "[11,empty,13]",
     "character_control": "[character(len=3) :: 'abc']",
@@ -43,19 +60,32 @@ EXPRESSIONS = {
 }
 SETUP = {
     "sequence": ["m(1,1)=11", "m(2,1)=13", "m(1,2)=17", "m(2,2)=19"],
+    "state_and_mixed": ["backing(1)=41", "backing(2)=43", "ptr=>backing", "allocate(alloc(2))",
+                        "alloc(1)=47", "alloc(2)=53", "one(1)=61", "three(1)=73",
+                        "three(2)=79", "three(3)=83"],
+    "type_parameters": ["left_k=89", "right_k=97", "left_c='AB'", "right_c='CD'"],
+    "character_conversion": [],
     "ordinary_loops": [],
     "dependent_bodies": ["vector(1)=31", "vector(2)=37"],
+    "host_scope": ["i=99"],
     "integer_empty": [],
     "character_empty": ["n=3"],
 }
 DECLARATIONS = {
     "sequence": ["integer :: m(2,2)"], "ordinary_loops": ["integer :: i"],
     "dependent_bodies": ["integer :: vector(2)", "integer :: i,j"],
+    "state_and_mixed": ["integer, target :: backing(2)", "integer, pointer :: ptr(:)",
+                        "integer, allocatable :: alloc(:)", "integer :: one(1), empty(0), three(3)"],
+    "type_parameters": ["integer, parameter :: k=kind(0)", "integer(kind=k) :: left_k, right_k",
+                        "character(len=2) :: left_c, right_c"],
+    "character_conversion": ["character(len=3), parameter :: text='ABC'", "integer :: i"],
+    "host_scope": ["integer, parameter :: k=kind(0)", "integer(kind=k) :: i"],
     "integer_empty": ["integer :: empty(0)", "integer :: i"],
     "character_empty": ["integer :: n"],
 }
 COUNTS = {"sequence": 15, "ordinary_loops": 25, "dependent_bodies": 16,
-          "integer_empty": 15, "character_empty": 16}
+          "integer_empty": 15, "character_empty": 16, "state_and_mixed": 12,
+          "type_parameters": 10, "character_conversion": 11, "host_scope": 9}
 
 
 def do_values(initial, terminal, increment=1):
@@ -87,13 +117,13 @@ class ArrayConstructorValueFixturesTests(unittest.TestCase):
     def source(self, variant):
         return (self.cases[self.name(variant)].fixture.root / "source.f90").read_text()
 
-    def test_exact_five_program_partition_and_only_ten_facets(self):
+    def test_exact_nine_program_partition_and_only_seventeen_facets(self):
         names = {self.name(variant) for variant in CASES}
         self.assertEqual(set(self.specs), names)
         self.assertEqual(set(self.cases), names)
-        self.assertEqual(len(names), 5)
-        self.assertEqual(sum(len(s["facets"]) for s in self.specs.values()), 10)
-        self.assertEqual(sum(s["expected_check_count"] for s in self.specs.values()), 87)
+        self.assertEqual(len(names), 9)
+        self.assertEqual(sum(len(s["facets"]) for s in self.specs.values()), 17)
+        self.assertEqual(sum(s["expected_check_count"] for s in self.specs.values()), 129)
         for variant, (rule, facets) in CASES.items():
             spec, case = self.spec(variant), self.cases[self.name(variant)]
             self.assertEqual(case.rule, rule)
@@ -115,7 +145,7 @@ class ArrayConstructorValueFixturesTests(unittest.TestCase):
     def test_exact_files_and_no_other_owned_input_surfaces(self):
         actual = {p for p in (ROOT / "tests/fixtures").glob("array_constructor_value_*/*") if p.is_file()}
         self.assertEqual(actual, set(self.files))
-        self.assertEqual(len(actual), 10)
+        self.assertEqual(len(actual), 18)
         for path, content in self.files.items():
             self.assertEqual(path.read_bytes(), content)
             content.decode("ascii")
@@ -197,7 +227,7 @@ class ArrayConstructorValueFixturesTests(unittest.TestCase):
 
     def test_data_object_rank_rejects_direct_constructor_and_fixed_rank_proxies(self):
         count = 0
-        for variant in CASES:
+        for variant in LEGACY_CASES:
             source = self.source(variant)
             self.verify_source(variant, source)
             for op in self.spec(variant)["operations"]:
@@ -261,17 +291,82 @@ class ArrayConstructorValueFixturesTests(unittest.TestCase):
                 first, last = item["first_column"] - 1, item["last_column"]
                 self.assertEqual(line, item["source_text"])
                 self.assertEqual(line[first:last], EXPRESSIONS[item["operation"]])
-                self.assertEqual(line, f"call observe_{item['operation']}({item['expression']})")
-                self.assertEqual(item["category"], "character" if variant == "character_empty" else "integer")
-                self.assertEqual(line[:first], f"call observe_{item['operation']}(")
+                if item["observer"] == "associate":
+                    self.assertEqual(line, f"associate(a_{item['operation']}=>{item['expression']})")
+                else:
+                    self.assertEqual(line, f"call observe_{item['operation']}({item['expression']})")
+                op = next(op for op in spec["operations"] if op["name"] == item["operation"])
+                self.assertEqual(item["category"], op["category"])
+                prefix = f"associate(a_{item['operation']}=>" if item["observer"] == "associate" else f"call observe_{item['operation']}("
+                self.assertEqual(line[:first], prefix)
                 self.assertEqual(line[last:], ")")
                 total += 1
-        self.assertEqual(total, 15)
+        self.assertEqual(total, sum(len(self.spec(variant)["operations"]) for variant in CASES))
 
     def test_actual_sources_use_direct_inquiries_named_setup_and_literal_element_guards(self):
-        for variant in CASES:
+        for variant in LEGACY_CASES:
             with self.subTest(case=variant):
                 self.verify_source(variant, self.source(variant))
+
+    def test_new_constructor_sources_pin_state_type_length_and_host_scope(self):
+        anchors = {
+            "state_and_mixed": [
+                "integer, target :: backing(2)", "integer, pointer :: ptr(:)",
+                "integer, allocatable :: alloc(:)", "ptr=>backing", "allocate(alloc(2))",
+                "associate(a_mixed=>[one,empty,three])", "associate(a_state=>[ptr,alloc])",
+                "a_mixed(4),83)", "a_state(4),53)"],
+            "type_parameters": [
+                "integer, parameter :: k=kind(0)", "integer(kind=k) :: left_k, right_k",
+                "character(len=2) :: left_c, right_c",
+                "call check_integer('integer_kind:kind',kind(a_integer_kind),k)",
+                "call check_integer('character_inferred:length',len(a_character_inferred),2)",
+                "call check_logical('character_inferred:value-2',a_character_inferred(2)=='CD',.true.)"],
+            "character_conversion": [
+                "character(len=3), parameter :: text='ABC'",
+                "associate(a_pad_truncate=>[character(len=3) :: 'A','BCDE'])",
+                "associate(a_dependent_substrings=>[character(len=3) :: (text(1:i),i=1,3)])",
+                "call check_logical('pad_truncate:value-2',a_pad_truncate(2)=='BCD',.true.)",
+                "call check_logical('dependent_substrings:value-2',a_dependent_substrings(2)=='AB ',.true.)"],
+            "host_scope": [
+                "integer, parameter :: k=kind(0)", "integer(kind=k) :: i", "i=99",
+                "associate(a_host_scope=>[77,(i,i=1_k,3_k),88])",
+                "call check_integer('host_i_after',i,99)"],
+        }
+        for variant in NEW_CASES:
+            source = self.source(variant)
+            source.encode("ascii")
+            self.assertNotRegex(source.lower(), r"\b(?:reshape|pack|spread|merge|transfer|loc|c_loc)\s*\(")
+            self.assertNotIn("= [", source)
+            self.assertEqual(self.spec(variant)["declarations"], DECLARATIONS[variant])
+            self.assertEqual(self.spec(variant)["setup"], SETUP[variant])
+            for needle in anchors[variant]:
+                self.assertIn(needle, source)
+            for op in self.spec(variant)["operations"]:
+                values = op["expected"]
+                self.assertEqual(values, EXPECTED[variant][op["name"]])
+                self.assertEqual(op["expression"], EXPRESSIONS[op["name"]])
+                self.assertEqual(len(values), len(set(values)))
+                self.assertTrue(all(value != 0 for value in values if type(value) is int))
+                self.assertEqual({m["category"] for m in op["feature_mutations"]},
+                                 {"reorder", "drop", "duplicate"})
+                for mutation in op["feature_mutations"]:
+                    self.assertNotEqual(mutation["replacement"], op["expression"])
+            if variant in ("type_parameters", "character_conversion"):
+                self.assertRegex(source, r"(?m)call check_integer\('[^']+:length',len\(")
+
+    def test_new_setup_input_spans_are_individually_bound(self):
+        for variant in NEW_CASES:
+            source = self.source(variant)
+            lines = source.splitlines()
+            seen = set()
+            for item in self.spec(variant)["setup_bindings"]:
+                line = lines[item["line"] - 1]
+                first, last = item["first_column"] - 1, item["last_column"]
+                self.assertEqual(line, item["source_text"])
+                self.assertEqual(line[first:last], item["expected_text"])
+                self.assertNotEqual(item["expected_text"], item["replacement"])
+                self.assertNotIn(item["id"], seen)
+                seen.add(item["id"])
 
     def test_matrix_column_order_is_independent_of_setup_and_expected_arrays(self):
         matrix = {(1,1):11, (2,1):13, (1,2):17, (2,2):19}
@@ -363,7 +458,7 @@ class ArrayConstructorValueFixturesTests(unittest.TestCase):
                 missing = dict(correct)
                 del missing[label]
                 self.assertFalse(generated.accepts(spec["observations"], missing))
-                wrong = not expected if type(expected) is bool else expected+1
+                wrong = not expected if type(expected) is bool else (expected + 1 if type(expected) is int else expected + "_wrong")
                 self.assertFalse(generated.accepts(spec["observations"], dict(correct, **{label:wrong})))
                 wrong_type = int(expected) if type(expected) is bool else True
                 self.assertFalse(generated.accepts(spec["observations"], dict(correct, **{label:wrong_type})))
@@ -381,7 +476,13 @@ class ArrayConstructorValueFixturesTests(unittest.TestCase):
                 self.assertEqual(line, g["source_text"])
                 first, last = g["first_column"]-1, g["last_column"]
                 self.assertEqual(line[first:last], g["expected_text"])
-                wrong = generated.literal(not g["expected"] if type(g["expected"]) is bool else g["expected"]+1)
+                if type(g["expected"]) is bool:
+                    wrong_value = not g["expected"]
+                elif type(g["expected"]) is int:
+                    wrong_value = g["expected"] + 1
+                else:
+                    wrong_value = g["expected"] + "+1"
+                wrong = generated.literal(wrong_value)
                 altered = line[:first]+wrong+line[last:]
                 self.assertEqual(altered[:first], line[:first])
                 self.assertTrue(altered.endswith(line[last:]))
@@ -391,7 +492,7 @@ class ArrayConstructorValueFixturesTests(unittest.TestCase):
             self.assertIn("if (actual .neqv. expected) then", source)
             self.assertIn("if (checked/=expected) then", source)
             self.assertIn("integer, save :: checked=0", source)
-        self.assertEqual(total, 92)
+        self.assertEqual(total, sum(COUNTS.values()) + len(COUNTS))
 
     def test_source_mutations_cannot_hide_data_object_rank_length_or_index_guards(self):
         source = self.source("sequence")
@@ -411,15 +512,15 @@ class ArrayConstructorValueFixturesTests(unittest.TestCase):
             with self.assertRaises(AssertionError):
                 self.verify_source("character_empty", altered)
 
-    def test_source_admin_is_preserved_and_all_97_unselected_plans_stay_pending(self):
+    def test_source_admin_is_preserved_and_all_90_unselected_plans_stay_pending(self):
         self.assertEqual(len(self.catalogue["requirements"]), 26)
         self.assertEqual(sum(len(r["facets"]) for r in self.catalogue["requirements"]), 107)
-        self.assertEqual(sum(len(r["pending"]) for r in self.catalogue["requirements"]), 97)
+        self.assertEqual(sum(len(r["pending"]) for r in self.catalogue["requirements"]), 90)
         for requirement in self.catalogue["requirements"]:
             covered = set(generated.ELIGIBLE.get(requirement["id"], []))
             self.assertEqual(set(requirement["pending"]), set(requirement["facets"])-covered)
         r = next(r for r in self.catalogue["requirements"] if r["id"]=="S7.8-001")
-        self.assertIn("mixed-shapes-and-empty-source", r["pending"])
+        self.assertIn("evaluation-order-and-shared-consumer-graph", r["pending"])
         admin = {k:v for k,v in self.catalogue.items() if k.startswith("review_")}
         self.assertEqual({k:v for k,v in generated.synced_catalogue(self.catalogue,self.specs).items()
                           if k.startswith("review_")}, admin)
@@ -430,7 +531,7 @@ class ArrayConstructorValueFixturesTests(unittest.TestCase):
         native.catalogues = {"7.8":self.catalogue}
         native.render()
         appendix = view.split("## Complete finite pending plans\n",1)[1].split("## Reproduction and remaining gates",1)[0]
-        self.assertEqual(appendix.count("* **`"),97)
+        self.assertEqual(appendix.count("* **`"),90)
         for r in self.catalogue["requirements"]:
             for facet,plan in r["pending"].items():
                 self.assertIn(f"* **`{facet}`** - {plan}",appendix)

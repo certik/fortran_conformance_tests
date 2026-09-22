@@ -12,12 +12,21 @@ ROOT = Path(__file__).resolve().parents[1]
 SECTION = "7.8"
 CATALOGUE = "doc/catalogues/array_constructors.json"
 VIEW = "doc/fortran_2023_7_8.md"
-ELIGIBLE = {
+LEGACY_ELIGIBLE = {
     "S7.8-001": ["rank-one-and-scalar-sequence", "higher-rank-flattening"],
     "S7.8-008": ["default-increment-sequence", "positive-and-negative-strides", "multiple-body-values",
                 "nested-dependent-bounds", "array-valued-body-sequence"],
     "S7.8-009": ["typed-empty-and-zero-trip", "zero-sized-array-ac-value", "empty-character-parameters"],
 }
+NEW_ELIGIBLE = {
+    "S7.8-001": ["mixed-shapes-and-empty-source", "value-expression-state-source-use"],
+    "S7.8-003": ["inferred-integer-kind", "inferred-character-length"],
+    "S7.8-005": ["character-padding-and-truncation", "nonzero-dependent-character-length"],
+    "S7.8-008": ["kind-and-host-scope-source-use"],
+}
+ELIGIBLE = copy.deepcopy(LEGACY_ELIGIBLE)
+for _rule, _facets in NEW_ELIGIBLE.items():
+    ELIGIBLE.setdefault(_rule, []).extend(_facets)
 CHECKS = """module array_value_checks
 implicit none
 private
@@ -57,13 +66,17 @@ def identifier(rule, variant):
     return rule.replace(".", "_").replace("-", "_") + "_valid__array_constructor_value_" + variant
 
 
-def operation(name, expression, values, category="integer", length=None, controls=()):
+def operation(name, expression, values, category="integer", length=None, controls=(), kind=None,
+              feature_mutations=(), observer="dummy"):
     if category not in ("integer", "character"):
         raise ValueError("only ordinary INTEGER/default CHARACTER constructor values are authorized")
     if category == "character" and length is None:
         raise ValueError("a CHARACTER operation needs an independent length expectation")
+    if observer not in ("dummy", "associate"):
+        raise ValueError("unknown observation strategy")
     return dict(name=name, expression=expression, expected=list(values), category=category,
-                expected_length=length, controls=list(controls))
+                expected_length=length, controls=list(controls), expected_kind=kind,
+                feature_mutations=list(feature_mutations), observer=observer)
 
 
 def guard(label, expression, expected, family, location):
@@ -82,9 +95,34 @@ def guard_code(item):
 def block_code(item):
     name, expression, values = item["name"], item["expression"], item["expected"]
     size_class = "empty" if not values else "nonempty"
+    if item["observer"] == "associate":
+        alias = "a_" + name
+        guards = [guard(name + ":rank", f"rank({alias})", 1, "associate-rank", name),
+                  guard(name + ":size", f"size({alias})", len(values),
+                        "associate-size-" + size_class, name)]
+        if item.get("expected_kind") is not None:
+            guards.append(guard(name + ":kind", f"kind({alias})", item["expected_kind"],
+                                "associate-kind", name))
+        if item["category"] == "character":
+            guards.append(guard(name + ":length", f"len({alias})", item["expected_length"],
+                                "associate-character-length", name))
+        for index, value in enumerate(values, 1):
+            if item["category"] == "integer":
+                guards.append(guard(name + f":value-{index}", f"{alias}({index})", value,
+                                    "integer-element", name))
+            else:
+                if not isinstance(value, str) or "'" in value:
+                    raise ValueError("the bounded CHARACTER oracle is a plain independently supplied literal")
+                guards.append(guard(name + f":value-{index}", f"{alias}({index})=='{value}'", True,
+                                    "character-element", name))
+        main = f"associate({alias}=>{expression})\n" + "".join(guard_code(g) for g in guards) + "end associate\n"
+        return main, "", guards
     direct = [
         guard(name + ":size", f"size({expression})", len(values), "constructor-size-" + size_class, "main"),
     ]
+    if item.get("expected_kind") is not None:
+        direct.append(guard(name + ":kind", f"kind({expression})", item["expected_kind"],
+                            "constructor-kind", "main"))
     if item["category"] == "character":
         direct.append(guard(name + ":length", f"len({expression})", item["expected_length"],
                             "constructor-character-length", "main"))
@@ -147,13 +185,32 @@ def bind_argument_spans(source, operations):
     lines = source.splitlines()
     result = []
     for item in operations:
-        prefix = f"call observe_{item['name']}("
-        text = prefix + item["expression"] + ")"
+        if item["observer"] == "associate":
+            prefix = f"associate(a_{item['name']}=>"
+            suffix = ")"
+        else:
+            prefix = f"call observe_{item['name']}("
+            suffix = ")"
+        text = prefix + item["expression"] + suffix
         if lines.count(text) != 1:
             raise ValueError("observer actual argument is not uniquely located")
         result.append(dict(operation=item["name"], expression=item["expression"], category=item["category"],
                            line=lines.index(text) + 1, first_column=len(prefix) + 1,
-                           last_column=len(prefix) + len(item["expression"]), source_text=text))
+                           last_column=len(prefix) + len(item["expression"]), source_text=text,
+                           observer=item["observer"]))
+    return result
+
+
+def bind_setup_spans(source, setup_inputs):
+    lines = source.splitlines()
+    result = []
+    for item in setup_inputs:
+        text = item["source_text"]
+        if lines.count(text) != 1:
+            raise ValueError("setup input source is not uniquely located: " + text)
+        first = text.index(item["expected_text"]) + 1
+        result.append(dict(item, line=lines.index(text) + 1, first_column=first,
+                           last_column=first + len(item["expected_text"]) - 1))
     return result
 
 
@@ -161,7 +218,8 @@ class Corpus(ParameterCorpus):
     def __init__(self, root=ROOT):
         super().__init__(namespace="array_constructor_value", root=root)
 
-    def add(self, rule, variant, facets, declarations, setup, operations, premises):
+    def add(self, rule, variant, facets, declarations, setup, operations, premises, setup_inputs=(),
+            post_guards=()):
         name = identifier(rule, variant)
         if name in self.cases or not operations or not any(op["expected"] for op in operations):
             raise ValueError("a unique case needs a nonempty value-control operation")
@@ -171,6 +229,10 @@ class Corpus(ParameterCorpus):
             main += code
             observers += observer
             guards += observations
+        post_guards = list(post_guards)
+        for item in post_guards:
+            main += guard_code(item)
+        guards += post_guards
         if len({g["label"] for g in guards}) != len(guards):
             raise ValueError("duplicate observation label")
         source = CHECKS + "program p\nuse array_value_checks, only: check_integer, check_logical, finish_checks\nimplicit none\n"
@@ -195,6 +257,7 @@ class Corpus(ParameterCorpus):
             path=folder + "/fixture.json", declarations=list(declarations), setup=list(setup),
             operations=operations, observations=guards, expected_check_count=len(guards),
             guard_bindings=spans, argument_bindings=bind_argument_spans(source, operations),
+            setup_bindings=bind_setup_spans(source, setup_inputs),
             sensitivity_representatives=representative, premises=premises)
 
 
@@ -203,7 +266,7 @@ def sequence_case(c):
         operation("scalars", "[11,13,17]", [11,13,17]),
         operation("matrix", "[5,m,23]", [5,11,13,17,19,23]),
     ]
-    c.add("S7.8-001", "sequence", ELIGIBLE["S7.8-001"], ["integer :: m(2,2)"],
+    c.add("S7.8-001", "sequence", LEGACY_ELIGIBLE["S7.8-001"], ["integer :: m(2,2)"],
           ["m(1,1)=11", "m(2,1)=13", "m(1,2)=17", "m(2,2)=19"], operations,
           "The four matrix cells are independently assigned by name. Direct SIZE inspects actual constructor "
           "expressions; complete assumed-rank dummy data objects receive those expressions and expose their actual rank. "
@@ -279,15 +342,122 @@ def character_empty_case(c):
           "the observer without fixed-length destination masking or character conversion claims.")
 
 
+def feature(reordered, dropped, duplicated):
+    return [
+        dict(id="reorder-same-multiset", replacement=reordered, category="reorder"),
+        dict(id="drop-ac-value", replacement=dropped, category="drop"),
+        dict(id="duplicate-ac-value", replacement=duplicated, category="duplicate"),
+    ]
+
+
+def additional_state_case(c):
+    operations = [
+        operation("mixed", "[one,empty,three]", [61,73,79,83], observer="associate",
+                  feature_mutations=feature("[three,empty,one]", "[empty,three]", "[one,empty,three,one]")),
+        operation("state", "[ptr,alloc]", [41,43,47,53],
+                  feature_mutations=feature("[alloc,ptr]", "[ptr]", "[ptr,alloc,ptr]"), observer="associate"),
+    ]
+    setup_inputs = [
+        dict(id="backing-1", source_text="backing(1)=41", expected_text="41", replacement="42"),
+        dict(id="backing-2", source_text="backing(2)=43", expected_text="43", replacement="44"),
+        dict(id="alloc-1", source_text="alloc(1)=47", expected_text="47", replacement="48"),
+        dict(id="alloc-2", source_text="alloc(2)=53", expected_text="53", replacement="54"),
+        dict(id="one-1", source_text="one(1)=61", expected_text="61", replacement="62"),
+        dict(id="three-1", source_text="three(1)=73", expected_text="73", replacement="74"),
+        dict(id="three-2", source_text="three(2)=79", expected_text="79", replacement="80"),
+        dict(id="three-3", source_text="three(3)=83", expected_text="83", replacement="84"),
+    ]
+    c.add("S7.8-001", "state_and_mixed", NEW_ELIGIBLE["S7.8-001"],
+          ["integer, target :: backing(2)", "integer, pointer :: ptr(:)",
+           "integer, allocatable :: alloc(:)", "integer :: one(1), empty(0), three(3)"],
+          ["backing(1)=41", "backing(2)=43", "ptr=>backing", "allocate(alloc(2))",
+           "alloc(1)=47", "alloc(2)=53", "one(1)=61", "three(1)=73",
+           "three(2)=79", "three(3)=83"], operations,
+          "The mixed constructor has rank-one sources of extents one, zero and three. The empty source "
+          "contributes no element, so the exact sequence is 61,73,79,83. The state constructor uses a live "
+          "associated pointer and an allocated allocatable array whose individual elements are assigned by name; "
+          "the constructor contributes their data values 41,43,47,53 rather than status bits. No source setup "
+          "uses another constructor or an array-producing intrinsic.", setup_inputs)
+
+
+def type_parameter_case(c):
+    operations = [
+        operation("integer_kind", "[left_k,right_k]", [89,97], kind="k", observer="associate",
+                  feature_mutations=feature("[right_k,left_k]", "[left_k]", "[left_k,right_k,left_k]")),
+        operation("character_inferred", "[left_c,right_c]", ["AB","CD"], "character", 2, observer="associate",
+                  feature_mutations=feature("[right_c,left_c]", "[left_c]", "[left_c,right_c,left_c]")),
+    ]
+    setup_inputs = [
+        dict(id="left-k", source_text="left_k=89", expected_text="89", replacement="90"),
+        dict(id="right-k", source_text="right_k=97", expected_text="97", replacement="98"),
+        dict(id="left-c", source_text="left_c='AB'", expected_text="'AB'", replacement="'AX'"),
+        dict(id="right-c", source_text="right_c='CD'", expected_text="'CD'", replacement="'CY'"),
+    ]
+    c.add("S7.8-003", "type_parameters", NEW_ELIGIBLE["S7.8-003"],
+          ["integer, parameter :: k=kind(0)", "integer(kind=k) :: left_k, right_k",
+           "character(len=2) :: left_c, right_c"],
+          ["left_k=89", "right_k=97", "left_c='AB'", "right_c='CD'"], operations,
+          "The integer kind is named by the symbolic parameter k=KIND(0), and the constructor KIND is "
+          "checked against k rather than a numeric kind code. Character inference is observed from two "
+          "defined CHARACTER(2) sources, with LEN 2 and exact element strings AB/CD. The ordinary "
+          "runtime CHARACTER(LEN=n) plan remains pending because gfortran 16.1 loses that length when "
+          "the expression is associated with a data object.", setup_inputs)
+
+
+def character_conversion_case(c):
+    operations = [
+        operation("pad_truncate", "[character(len=3) :: 'A','BCDE']", ["A  ","BCD"],
+                  "character", 3, observer="associate",
+                  feature_mutations=feature("[character(len=3) :: 'BCDE','A']",
+                                            "[character(len=3) :: 'A']",
+                                            "[character(len=3) :: 'A','BCDE','A']")),
+        operation("dependent_substrings", "[character(len=3) :: (text(1:i),i=1,3)]",
+                  ["A  ","AB ","ABC"], "character", 3, observer="associate",
+                  feature_mutations=feature("[character(len=3) :: (text(1:i),i=3,1,-1)]",
+                                            "[character(len=3) ::]",
+                                            "[character(len=3) :: (text(1:i),i=1,3),(text(1:i),i=1,3)]")),
+    ]
+    c.add("S7.8-005", "character_conversion", NEW_ELIGIBLE["S7.8-005"],
+          ["character(len=3), parameter :: text='ABC'", "integer :: i"], [], operations,
+          "The explicit CHARACTER(LEN=3) constructor pads 'A' to 'A  ' and truncates 'BCDE' to 'BCD'. "
+          "The nonzero implied DO reads the constant text(1:i) for i=1,2,3, all in range, and then the "
+          "same explicit LEN=3 conversion yields 'A  ','AB ','ABC'. LEN is asserted before element "
+          "comparisons so blank-padded character equality cannot hide a wrong constructor length.")
+
+
+def host_scope_case(c):
+    operations = [
+        operation("host_scope", "[77,(i,i=1_k,3_k),88]", [77,1,2,3,88], kind="k",
+                  observer="associate",
+                  controls=[dict(variable="i", initial="1_k", terminal="3_k", increment=1,
+                                 explicit_step=False, host_value_after=99)],
+                  feature_mutations=feature("[(i,i=1_k,3_k),77,88]",
+                                            "[77,(i,i=1_k,3_k)]",
+                                            "[77,(i,i=1_k,3_k),88,77]")),
+    ]
+    setup_inputs = [dict(id="host-i", source_text="i=99", expected_text="99", replacement="98")]
+    c.add("S7.8-008", "host_scope", NEW_ELIGIBLE["S7.8-008"],
+          ["integer, parameter :: k=kind(0)", "integer(kind=k) :: i"], ["i=99"], operations,
+          "The ac-do variable i has the symbolic default kind k and is a statement entity separate from "
+          "the host variable i. The constructor sequence is 77,1,2,3,88, and after the constructor the "
+          "host variable is still 99. This does not assert side-effect callback order, a zero step, "
+          "post-scope ac-do-variable access or distinct non-default kind availability.", setup_inputs,
+          [guard("host_i_after", "i", 99, "host-scope", "main")])
+
+
 def build_corpus(root=ROOT):
     c = Corpus(root)
     sequence_case(c)
+    additional_state_case(c)
+    type_parameter_case(c)
+    character_conversion_case(c)
     ordinary_loop_case(c)
     dependent_body_case(c)
+    host_scope_case(c)
     integer_empty_case(c)
     character_empty_case(c)
     if c.coverage() != {rule:set(facets) for rule,facets in ELIGIBLE.items()}:
-        raise ValueError("case partition differs from the ten authorized facets")
+        raise ValueError("case partition differs from the seventeen authorized facets")
     return c.files, c.cases
 
 
@@ -307,10 +477,12 @@ def synced_catalogue(catalogue, specs):
             requirement["oracle"] = old + (
                 f"\n\nFinite value implementation: {len(cases)} shared valid run-phase programs represent "
                 f"{len(covered)} selected facets using independent default-INTEGER/default-CHARACTER literal guards. "
-                "Direct constructor SIZE/LEN retain their own argument rules. RANK requires a data object: each actual "
-                "constructor expression is associated with an explicit INTENT(IN) assumed-rank dummy a(..), and "
-                "RANK(a) is checked before SELECT RANK permits rank-one size/length/indexed observations. "
-                "There is an explicit unexpected-rank failure branch, not a rank-one dummy/destination proxy. "
+                "Direct constructor SIZE/LEN retain their own argument rules where they are used. RANK requires a "
+                "data object: legacy operations associate the actual constructor expression with an explicit "
+                "INTENT(IN) assumed-rank dummy a(..), while the added exact state/type/character operations use "
+                "ASSOCIATE names bound to the constructor expression. RANK is checked on that data object before "
+                "rank-one size/length/indexed observations. Legacy assumed-rank observers retain an explicit "
+                "unexpected-rank failure branch, not a rank-one dummy/destination proxy. "
                 "Ordinary implied DO indices infer INTEGER from containing scalar i/j declarations, which supply "
                 "types only; no host value or inherited attributes are used and R783 remains pending. "
                 "Source setup never uses another constructor, RESHAPE or PACK. Empty contexts retain nonempty controls. "
@@ -333,23 +505,29 @@ The31base/100fine/131accounting units,26requirements and107facet IDs remain.
 The independently reviewed source was already registered on main; its review
 state/fingerprint/rationale are preserved, not replaced by author approval.
 
-Only S7.8-001's first two, S7.8-008's first five and S7.8-009's first three
-facets are represented. S001.mixed-shapes-and-empty-source remains pending
-even though the separately owned empty-source case uses mixed scalar/empty
-values. No R/C, other S, conversion/type/dynamic/representation/source-use
-claim or diagnostic policy is added.
+Only S7.8-001's first four, S7.8-003's first two, S7.8-005's two
+CHARACTER conversion facets, S7.8-008's first six and S7.8-009's first three
+facets are represented. S7.8-001 evaluation-order, S7.8-003 runtime explicit
+length plus nonintrinsic and deferred-boundary, S7.8-005 numeric/enum/BOZ,
+S7.8-006 dynamic-type, S7.8-008 control-evaluation, and S7.8-009
+state/optional-evaluation plans remain pending. No R/C, other S,
+dynamic/representation/source-use diagnostic policy or processor-kind
+availability claim is added.
 
-All payloads and limits are small default INTEGER values, or ordinary default
-CHARACTER. Matrix cells11/13/17/19 and vector cells31/37 are assigned individually
-by name. No expected Fortran array or setup constructor, RESHAPE, PACK, matching
-reordered construction or processor inquiry supplies an expected sequence.
-Element order follows9.5.3.3, not a memory-layout or function-call-order claim.
+All payloads and limits are small default INTEGER values, default INTEGER(KIND(0))
+values, or ordinary default CHARACTER. Matrix cells11/13/17/19, vector
+cells31/37, pointer/allocatable cells41/43/47/53, mixed-source cells61/73/79/83
+and type-parameter cells89/97 are assigned individually by name. No expected
+Fortran array or setup constructor, RESHAPE, PACK, matching reordered construction
+or processor inquiry supplies an expected sequence. Element order follows9.5.3.3,
+not a memory-layout or function-call-order claim.
 
 Ordinary implied DO initiation/execution follows11.1.7.4.1/.3. The optional
 inline INTEGER type-spec is omitted; containing-scope scalar INTEGER i/j
 declarations supply type/parameters under19.4p1/p2/p5. The ac-do names remain
 separate statement entities and inherit no other attributes. Their host values
-are neither needed nor read, including after scope. Steps are nonzero. Inner
+are not used as loop values; the dedicated host-scope fixture separately checks
+that the host i value99 survives the constructor. Steps are nonzero. Inner
 j=1:i reads the defined outer i; no own uninitialized bound, mutable function-order
 counter, DO CONCURRENT or optional-evaluation absence oracle is used. This is a
 separate grammar-alternative change: the original inline syntax was valid and
@@ -358,26 +536,29 @@ its observed processor failures remain history. No R783 facet is claimed.
 RANK16.9.171p3 requires a DATA OBJECT. Under5.4.3.2.1/.2/.3,6.2.3R604/R605
 and9.2R902/C901/C902, a constructor computation is not a constant or variable.
 Its result is a data entity under5.4.3.3, not automatically a data object.
-Each exact constructor expression is instead passed to a complete internal
-INTEGER or CHARACTER(LEN=*),INTENT(IN) dummy a(..), without POINTER,
-ALLOCATABLE,CODIMENSION or VALUE. It is a real assumed-rank dummy data object
-under8.5.8.7p1/R827/C839. RANK(a) is checked before SELECT RANK(a); only RANK(1)
-enables the size/length/indexed guards, and RANK DEFAULT explicitly fails.
-C840 permits the inquiry/selection. No declared rank-one dummy or destination
-is used as a rank proxy. All87 primitive expectations and five completion
-counts remain unchanged; guard locations are regenerated.
+Legacy operations pass exact constructor expressions to complete internal
+INTEGER or CHARACTER(LEN=*),INTENT(IN) dummies a(..), without POINTER,
+ALLOCATABLE,CODIMENSION or VALUE. Those are real assumed-rank dummy data objects
+under8.5.8.7p1/R827/C839. Added exact state/type/character operations instead
+use ASSOCIATE names bound to the constructor expression, because both qualifying
+toolchains preserve the constructor value there and gfortran does not preserve
+all added exact cases through assumed-rank argument association. RANK is checked
+on the data object before size/length/indexed guards; legacy SELECT RANK
+observers retain an explicit RANK DEFAULT failure. No declared rank-one dummy or
+destination is used as a rank proxy. Primitive expectations and completion
+counts are regenerated from the case table, not hand-edited after generation.
 
-SIZE16.9.194 and LEN16.9.122 still inspect actual constructor expressions:
-their own argument paragraphs permit an array or a CHARACTER entity,
-respectively, unlike RANK's DATA OBJECT restriction. Internal explicit
-interfaces meet15.4.2.1/.2. Ordinary argument association under15.5.2.4/.5
-permits any actual rank for an assumed-rank dummy and preserves actual rank,
-extents, element order and assumed length. Lower bounds are one. SELECT RANK
-under11.1.10.1/.2/.3 and19.5.1.6 preserves type/parameters and selects the
-rank-specific entity with those bounds;11.1.3.3 forbids defining the read-only
-association. Dummy SIZE/LEN and indexed guards are inside RANK(1), with size
-guards before element reads. An assumed CHARACTER length is inherited under
-7.4.4.2/15.5.2.5p5, never masked by a fixed-length destination.
+SIZE16.9.194 and LEN16.9.122 still inspect actual constructor expressions or
+ASSOCIATE names bound to those expressions: their own argument paragraphs permit
+an array or a CHARACTER entity, respectively, unlike RANK's DATA OBJECT
+restriction. Internal explicit interfaces meet15.4.2.1/.2. Ordinary argument
+association under15.5.2.4/.5 permits any actual rank for an assumed-rank dummy
+and preserves actual rank, extents, element order and assumed length in legacy
+operations. Lower bounds are one. SELECT RANK under11.1.10.1/.2/.3 and19.5.1.6
+preserves type/parameters and selects the rank-specific entity with those bounds;
+11.1.3.3 forbids defining the read-only association. Size guards precede element
+reads. An assumed or associated CHARACTER length is observed directly, never
+masked by a fixed-length destination.
 
 The ordinary INTEGER empty(0) is always defined under19.6.2. Typed-empty
 [INTEGER ::] and a syntactically nonempty zero-trip implied DO both have
@@ -385,6 +566,17 @@ rank1/size0. The [7] and [11,empty,13] controls ensure actual nonempty value
 observations. Empty CHARACTER(LEN=3) and runtime n=3 have no ac-value, so they
 do not invoke the zero-trip CHARACTER ac-value length restriction. The abc
 control has matching source/target length3 and makes no padding/conversion claim.
+
+Pointer and allocatable source-state observations first establish association,
+allocation, extents and element definitions, then read constructor elements through
+an assumed-rank observer. They do not infer pointer broadcasting, allocation-status
+elements, finalization, deallocation or pointer/allocatable inheritance by the
+constructor expression.
+
+CHARACTER constructor observations always check LEN explicitly and use length-3
+expected strings such as 'A  ' and 'BC ', not shorter operands that would compare
+equal by blank padding. The substring fixture has nonzero iteration count and
+constant text='ABC'; it does not cover the zero-trip p5 restriction.
 
 Each primitive expected value is a scalar literal at its real source guard.
 Each program also checks its completed guard count. Separate single-span
@@ -490,7 +682,9 @@ def main():
         if args.sync_catalogue:
             (ROOT / CATALOGUE).write_text(json.dumps(updated, indent=2) + "\n")
             (ROOT / VIEW).write_text(view)
-    print(f"{'Checked' if args.check else 'Generated'} {len(files)} files for {len(specs)} runtime programs and10 facets.")
+    represented = sum(len(spec["facets"]) for spec in specs.values())
+    print(f"{'Checked' if args.check else 'Generated'} {len(files)} files for {len(specs)} runtime programs "
+          f"and {represented} facets.")
 
 
 if __name__ == "__main__":

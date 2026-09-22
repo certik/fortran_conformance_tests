@@ -4060,6 +4060,71 @@ testing an operator or a classification, build the discrimination table *before*
 writing code, and bake the substitutions into the generator permanently.
 See `doc/source_audits/batch_125.json`.
 
+## Batch 130 — array constructors, and a near-miss on false validation
+
+Establishes **7 facets** of **7.8 Array constructors** across 4 fixtures, and is
+the **first fixture packet this session accepted with no defects at all**.
+
+The reviewer did the derivation work properly rather than taking the author's
+word. It followed the conversion **delegation chain** itself — 7.8 p3 delegates
+explicit type-spec conversion to intrinsic assignment, and 10.2.1.3 p11 requires
+right truncation and blank padding — confirming that
+`[CHARACTER(3)::'A','BCDE']` yields `'A  '` and `'BCD'`, with the longer operand
+**truncated**. It confirmed the **empty array contributes zero elements**, so
+`[one,empty,three]` has extent 4 rather than 5; that was the claim most likely
+to be subtly wrong. And it confirmed from 19.4 that the `ac-do` index is a
+**separate statement entity**, so the host `i` correctly remains 99.
+
+Non-vacuity here rests on the mutation classes that actually matter for a
+constructor: **reorder, drop and duplicate**. An oracle that sums, sorts, or
+uses `ANY`/`ALL` checks only the *multiset* of values and would survive all
+three — and sequence is the entire point of a constructor. The reviewer re-ran
+them, including mutating the empty array to contain one element, which is what
+genuinely proves "empty contributes nothing". No `RESHAPE`, `PACK`, `SPREAD`,
+`MERGE` or `TRANSFER` is used as an oracle; elements are read back **by
+subscript** against hand-computed literals.
+
+Polymorphic constructors were left pending after a probe reproduced a **gfortran
+16.1 internal compiler error**, with LFortran also rejecting via ASR
+verification failure. A reference-compiler ICE is not grounds to weaken or
+fabricate a test, and it is not automatically a defect in either compiler or the
+standard. It is recorded as worth a future upstream report.
+
+### The integration lesson — a near-miss worth recording
+
+Binding into 7.8 **staled five pre-existing fixture reviews**. This is a broader
+form of the batch121 rule: the Clause 10 catalogues in the previous checkpoint
+had *no* existing fixtures, so renewing the catalogue review was sufficient
+there. 7.8 already had fixtures bound to it, and their **own** reviews went
+stale too.
+
+The near-miss: four of the five **refused** to renew as `reference-validated`,
+erroring with *"no successful reference at the required phase and supported
+mode"*. Investigation showed they had always been **`source-reviewed`**, not
+reference-validated, and do not pass under gfortran in that mode — which is
+exactly why `source-reviewed` had dropped from 274 to 270. Had the renewal been
+forced through at the wrong state, the suite would have recorded a **false
+reference validation** for four cases. They were renewed at their **original**
+state, and the count returned to 274.
+
+The rule is now explicit: a fixture packet must renew **the catalogue source
+review for every catalogue it binds into**, *and* **every pre-existing fixture
+review in those catalogues** — each at its **own original review state, never
+upgraded**.
+
+Two further records came out of the same investigation. The execution aggregate
+`S4.2-001.whole-suite-execution` was stale; bisection showed it went stale at
+**batches 122–124**, when Clause 11 source registration changed the source
+inventory it binds to, and it has been renewed here as an observational
+inventory renewal claiming no new execution or facet completion. Separately,
+**13 of 22 evidence links are stale and were already stale at `df0feaf`**,
+predating this work entirely. They were deliberately **not** renewed in bulk:
+`--record-evidence-review` independently adjudicates a link *after* source and
+fixture review, so approving thirteen in a single integrator pass would be
+precisely the unearned approval this protocol exists to prevent. They are
+recorded as the `stale-evidence-link-adjudication` followup.
+See `doc/source_audits/batch_130.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must

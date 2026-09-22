@@ -1,0 +1,133 @@
+{
+ "schema_version": 1,
+ "review_type": "independent-array-constructor-fixture-review",
+ "review_date": "2026-09-22",
+ "baseline_commit": "e5737fa",
+ "packet_base_commit": "20d5174",
+ "state": "reference-validated-runtime-effects",
+ "packet_kind": "FIXTURE",
+ "scope": {
+  "sections": [
+   "7.8"
+  ],
+  "section_title_verified_from_source": "Array constructors",
+  "facets_established": 7,
+  "new_cases": 4,
+  "requirements_touched": [
+   "S7.8-001",
+   "S7.8-003",
+   "S7.8-005",
+   "S7.8-008"
+  ],
+  "left_pending": "12 facets: 10.1.4-owned control-expression evaluation, numeric real and complex conversions, enum and BOZ, polymorphic dynamic type, explicit runtime character length, and source-use graphs"
+ },
+ "independent_review": {
+  "reviewer_distinct_from_author": true,
+  "decision": "accept_no_blocking_findings",
+  "blocking_findings": 0,
+  "non_blocking_findings": 0,
+  "observations": 1,
+  "reviewer_read_original_source": "7.8, plus 10.2.1.3 p11 and 19.4, PDF checksum verified independently"
+ },
+ "source_derivations_independently_confirmed": {
+  "character_conversion_chain": "7.8 p3 delegates explicit type-spec conversion to intrinsic assignment, and 10.2.1.3 p11 requires right truncation and blank padding. The reviewer followed that delegation chain itself rather than accepting the author's claim.",
+  "pad_and_truncate": "[CHARACTER(3)::'A','BCDE'] gives 'A  ' and 'BCD' - the shorter is padded, the longer TRUNCATED.",
+  "substring_implied_do": "text='ABC'; text(1:i) for i=1..3 gives 'A', 'AB', 'ABC', padded to 'A  ', 'AB ', 'ABC'.",
+  "empty_array_contributes_nothing": "[one,empty,three] with empty(0) contributes ZERO elements, so the result extent is 4 and the values are 61,73,79,83. This was the claim most likely to be subtly wrong and it is correct.",
+  "host_scope_isolation": "19.4 makes the ac-do index a SEPARATE STATEMENT ENTITY, so the host i correctly remains 99 after the constructor."
+ },
+ "non_vacuity_by_mutation": {
+  "principle": "Non-vacuity must be proved by MUTATION targeting the FEATURE UNDER TEST, not merely its oracle.",
+  "author_campaign": "80/80 mutations failed on both compilers: 46 oracle, 13 setup-input, 7 reorder/same-multiset, 7 drop, 7 duplicate.",
+  "reviewer_reran": [
+   "REORDER: [three,empty,one], [alloc,ptr], and a reversed character constructor all FAILED as required",
+   "DROP: [empty,three] FAILED (size=3; LFortran additionally caught the out-of-bounds statically)",
+   "DUPLICATE: [one,empty,three,one] and a character duplicate both FAILED",
+   "EMPTY MUTATED to empty(1)=67 FAILED (size=5), which is what proves the empty array genuinely contributes nothing"
+  ],
+  "reviewer_verdict": "The reorder/drop/duplicate classes are SUFFICIENT for array-constructor sequence and extent fixtures, because they are exactly the mutations an oracle checking only the multiset of values would survive.",
+  "reverse_mutation": "one(1)=62 with the oracle updated to 62 PASSED, proving the sentinel is load-bearing."
+ },
+ "oracle_discipline_verified": {
+  "no_self_referential_intrinsic": "No RESHAPE, PACK, SPREAD, MERGE, TRANSFER or address-based oracle appears. Elements are read back BY SUBSCRIPT against hand-computed literals.",
+  "sentinels": "Integer sentinels are distinct and nonzero (61,73,79,83 and 41,43,47,53), so a zero-filled or defaulted result is rejected.",
+  "character_discipline": "LEN is asserted before every character value check, guarding the blank-padding trap.",
+  "kind_safety": "KIND==k uses k=kind(0), so no non-default kind is assumed to exist."
+ },
+ "scope_boundary": {
+  "claim": "The packet deliberately did NOT re-prove ac-implied-do CONTROL EXPRESSION evaluation, which 10.1.4 owns and batch126 established earlier in this session.",
+  "reviewer_verdict": "The boundary is honest: control-expression evaluation remains pending and cited in 7.8 rather than duplicated. The host_scope fixture does use an implied-DO, but asserts the CONSTRUCTOR and HOST-SCOPE claims, not a restatement of 10.1.4's evaluation claim."
+ },
+ "findings": [
+  {
+   "id": "C78FR-001",
+   "severity": "observation",
+   "location": "doc/catalogues/array_constructors.json, S7.8-006 pending polymorphic facets",
+   "issue": "A cheap probe of an array constructor with a CLASS(base) argument reproduced a gfortran 16.1 INTERNAL COMPILER ERROR; the frozen LFortran also rejects it with an ASR verification failure.",
+   "verdict": "Leaving the polymorphic constructor facets PENDING is correct. A reference-compiler ICE is not a reason to weaken or fabricate a test, and it is not automatically a defect in either compiler or in the standard.",
+   "action": "No correction for this packet. Recorded as a reproducible gfortran ICE worth a future upstream report."
+  }
+ ],
+ "restraint_assessment": {
+  "question": "Only 7 of 19 available facets were discharged. Was that appropriate restraint or were implementable facets left on the table?",
+  "reviewer_verdict": "Appropriate. The remaining facets involve processor-dependent numeric, BOZ, enum, polymorphic, runtime-length or source-use concerns, or belong to another clause, so none was safe to force into this packet."
+ },
+ "integrator_corrective_action": {
+  "issue": "Binding 7 facets into array_constructors.json staled FIVE PRE-EXISTING 7.8 fixture reviews. Unlike the Clause 10 packets in this checkpoint, 7.8 ALREADY HAD fixtures bound to it, so the content-bound staleness propagated to them as well as to the catalogue review.",
+  "why_it_matters": "This is a broader form of the batch121 lesson. It is not enough to renew the catalogue review: binding into a catalogue that ALREADY HAS FIXTURES also stales those fixtures' own reviews.",
+  "near_miss": "Four of the five could not be renewed as reference-validated and errored with 'no successful reference at the required phase and supported mode'. Investigation showed they were originally SOURCE-REVIEWED, not reference-validated, and do not pass under gfortran in that mode. Renewing them as reference-validated would have recorded a FALSE reference validation. They were renewed at their ORIGINAL state instead, and source-reviewed correctly returned to 274.",
+  "rule_added": "A fixture packet must renew (a) the catalogue source review for every catalogue it binds into, AND (b) every pre-existing fixture review in those catalogues - each at its OWN original review state, never upgraded.",
+  "execution_aggregate": "S4.2-001.whole-suite-execution was found stale. Tracing showed it went stale at batches 122-124, when Clause 11 source registration changed the source inventory it is content-bound to, and stayed stale through the Checkpoint I fixture commits. It has been renewed here as an observational inventory renewal that claims no new execution or facet completion.",
+  "pre_existing_defect_recorded": "13 of 22 evidence links (S7.5.8-001, -002, -003 families) are stale and were ALREADY stale at df0feaf, predating this checkpoint entirely. They were NOT rubber-stamped: per the protocol, --record-evidence-review requires independent adjudication after source and fixture review. Recorded as the cross-batch followup stale-evidence-link-adjudication."
+ },
+ "compiler_observations": {
+  "frozen_target": "lfortran 0.65.0-411-ga0afaa840b-dirty",
+  "frozen_target_result": "4/4 new cases pass",
+  "qualifying_reference": "gfortran 16.1.0 with -std=f2023",
+  "reference_result": "4/4 new cases pass",
+  "reproduced_by_integrator": true,
+  "lfortran_defects_found": 0,
+  "gfortran_ice_observed": "polymorphic array constructor, facets left pending"
+ },
+ "explicit_limitations": [
+  "Seven facets of 7.8 only; twelve remain pending.",
+  "Polymorphic array constructors are NOT tested; both compilers fail to handle the probe.",
+  "ac-implied-do control expression evaluation is NOT claimed here; 10.1.4 owns it.",
+  "Numeric real and complex conversions, enum and BOZ constructors are untested.",
+  "Passing under two compilers is corroboration, not proof of universal conformance.",
+  "Source accounting is unchanged: declared_facets remains 7184."
+ ],
+ "preservation": {
+  "cases_before": 2172,
+  "cases_after": 2176,
+  "authored_facets_before": 1878,
+  "authored_facets_after": 1885,
+  "declared_facets_before": 7184,
+  "declared_facets_after": 7184,
+  "reference_validated_before": 1859,
+  "reference_validated_after": 1863,
+  "source_reviewed_before": 274,
+  "source_reviewed_after": 274,
+  "fixture_review_states_after": "1863 reference-validated / 274 source-reviewed / 1 needs-oracle",
+  "expected_failures_lines": 807,
+  "baseline_lines_changed_by_this_packet": 0,
+  "existing_case_ids_modified": 0,
+  "existing_fixture_reviews_renewed_at_original_state": 5
+ },
+ "validation_snapshot": {
+  "detailed_catalogues": 280,
+  "requirements": 1684,
+  "declared_facets": 7184,
+  "authored_facets": 1885,
+  "catalogue_reviews_draft": 1,
+  "catalogue_reviews_draft_note": "Only 18.3.7, pre-existing and untouched.",
+  "fixture_reviews_stale": 0,
+  "execution_aggregate_review": "source-reviewed (renewed)",
+  "evidence_links_stale": 13,
+  "evidence_links_stale_note": "Pre-existing, already stale at df0feaf; recorded as a followup requiring independent adjudication rather than rubber-stamped.",
+  "normal_audit_exit": 1,
+  "normal_audit_block": "the single retained needs-oracle real-BOZ case, which is the intended state and not a regression",
+  "python_suite_tests": 1005,
+  "python_suite_result": "OK"
+ }
+}
