@@ -1,0 +1,155 @@
+{
+  "schema_version": 1,
+  "review_type": "independent-associate-construct-fixture-review",
+  "review_date": "2026-09-21",
+  "baseline_commit": "434fbe6",
+  "state": "reference-validated-runtime-effects",
+  "packet_kind": "FIXTURE",
+  "milestone": "FIRST CLAUSE 11 FIXTURES IN THE SUITE. Clause 11.1 was fully source-registered at 268 of 268 base units but had no executable tests at all; this packet establishes the pattern.",
+  "scope": {
+    "targets": [
+      "11.1.3.2 execution of the ASSOCIATE construct",
+      "11.1.3.3 other attributes of associate names"
+    ],
+    "pending_before": {
+      "11.1.3.2": 14,
+      "11.1.3.3": 19,
+      "total": 33
+    },
+    "facets_established": 10,
+    "facets_left_pending": 23,
+    "new_cases": 10,
+    "established_requirements": [
+      "S11.1.3.2-001",
+      "S11.1.3.2-002",
+      "S11.1.3.2-003",
+      "S11.1.3.3-001",
+      "S11.1.3.3-005"
+    ]
+  },
+  "why_this_target": "ASSOCIATE is unusually good fixture material because the association is genuinely observable: the associate name's type, kind, length, rank and bounds are specified by the standard, definability lets an assignment through the associate name be observed on the selector, and construct-entity scoping is directly testable against an outer homonym.",
+  "authoring": {
+    "author_context": "fresh subagent context in an isolated worktree based on 155d775",
+    "author_packet": "62edf11",
+    "generator": "tools/generate_associate_construct_fixtures.py",
+    "generator_check_determinism": "passed - 10 cases, 10 facets, 44 wrong-oracle and 43 omission plans"
+  },
+  "independent_review": {
+    "receipt": "associate-fixture-review.json",
+    "reviewer_distinct_from_author": true,
+    "decision": "eligible-with-nonblocking-observations",
+    "blocking_findings": 0
+  },
+  "non_vacuity_by_mutation": {
+    "principle": "Per the batch118 precedent, non-vacuity is proved by MUTATION, not inspection.",
+    "campaigns_that_failed_as_required": [
+      "Bounds mutated to the SELECTOR's subscript values - this is the central claim, that the associating entity's bounds DIFFER from the selector's subscripts",
+      "LEN mutated from 6 to 9, the parent string's length - the specific guard against the blank-padding trap",
+      "Omitting the assignment through the associate name",
+      "An over-broad neighbour write, caught by the adjacent-element check",
+      "Re-evaluation and deferred-index expectations for the selector-evaluation-timing fixtures",
+      "Scalar perturbations by one across the remaining fixtures"
+    ],
+    "deliberate_reverse_mutation": {
+      "mutation": "weakening the outer scoping sentinel to a value written inside the construct",
+      "result": "the test STOPPED discriminating - it passed",
+      "what_it_proves": "the sentinel choice of 707, distinct from every value written inside, is doing real work rather than being decorative. This is the right way to demonstrate that a design choice matters."
+    }
+  },
+  "independent_recomputation": {
+    "status": "the reviewer recomputed every bound, shape and length from the source",
+    "results": {
+      "LEN of the character section": 6,
+      "SHAPE of the rank-two strided section": "[3, 2]",
+      "base(-3:3:2)": "extent 4, associated bounds 1 to 4",
+      "base(12:20:3)": "extent 3, associated bounds 1 to 3"
+    },
+    "agreement_with_author": "matched"
+  },
+  "oracle_justification": {
+    "intrinsics_used": [
+      "LBOUND",
+      "UBOUND",
+      "SHAPE",
+      "SIZE",
+      "LEN",
+      "KIND"
+    ],
+    "why_legitimate": "These are used as oracles only because the standard REQUIRES the asserted values, not because they are merely typical, and each plan states that justification. The packet does not claim to be testing those intrinsics themselves.",
+    "character_discipline": "Every length assertion uses LEN explicitly and never a character comparison, because comparison blank-pads the shorter operand and could otherwise succeed for the wrong reason."
+  },
+  "positive_control_classification": {
+    "facet": "definable-selector-assignment-control",
+    "classification": "positive-control rather than full effect",
+    "reason": "its owning requirement is a restriction",
+    "reviewer_verdict": "confirmed correct - over-claiming it as an effect would have been a defect, and so would under-claiming a genuine effect"
+  },
+  "deferrals": {
+    "count": 23,
+    "reviewer_verdict": "each deferral is explicit and honest; none was judged a silent drop",
+    "reasons": [
+      "polymorphic selector facets need polymorphic and SELECT TYPE context",
+      "END ASSOCIATE branch facets need branch-statement ownership from 11.2, which is unregistered",
+      "coarray, corank and cobounds facets need coarray and CHANGE TEAM context",
+      "ASYNCHRONOUS, VOLATILE, OPTIONAL and contiguity facets need unregistered Clause 15 attribute owners",
+      "nondefinable, variable-definition-context and pointer-association negatives need Clause 19 scope isolation",
+      "the kind facet was deferred rather than assume a non-default kind exists - availability is processor dependent"
+    ]
+  },
+  "compiler_observations": {
+    "frozen_target": "lfortran 0.65.0-411-ga0afaa840b-dirty",
+    "frozen_target_result": "10 of 10 pass",
+    "qualifying_reference": "gfortran 16.1.0 with -std=f2023",
+    "reference_result": "10 of 10 pass; agreement on 10 of 10",
+    "reproduced_by_integrator": true,
+    "lfortran_gaps_observed": "none",
+    "caveat": "ASSOCIATE with strided array-section selectors is exactly where a compiler may be wrong, so the independently recomputed bounds - not the agreement between compilers - are what validate these fixtures."
+  },
+  "explicit_limitations": [
+    "10 facets are established; 23 remain pending, most blocked on unregistered Clause 15 or Clause 19 material, polymorphism, coarrays or branch ownership.",
+    "The scoping fixture demonstrates outer-homonym preservation for this construct. It does not establish full Clause 19 scope and lifetime coverage.",
+    "The bounds fixtures rely on standard LBOUND, UBOUND, SHAPE and SIZE inquiry semantics; they do not test those intrinsics independently.",
+    "No kind, polymorphism, coarray, pointer, allocatable, optional, contiguity or branch diagnostic coverage is claimed.",
+    "tests/expected_failures.txt is unchanged by this packet."
+  ],
+  "preservation": {
+    "cases_before": 2124,
+    "cases_after": 2134,
+    "authored_facets_before": 1829,
+    "authored_facets_after": 1839,
+    "pending_facets_before": 5055,
+    "pending_facets_after": 5045,
+    "fixture_review_states_after": "1821 reference-validated / 274 source-reviewed / 1 needs-oracle",
+    "raw_reviews_preserved": 2047,
+    "baseline": "b153c75b",
+    "expected_failures_lines": 807,
+    "baseline_lines_changed_by_this_packet": 0
+  },
+  "validation_snapshot": {
+    "fixture_reviews_written": 10,
+    "inventory_reviews_written": 1,
+    "detailed_catalogues": 263,
+    "requirements": 1579,
+    "pending_facets": 5045,
+    "authored_facets": 1839,
+    "normal_audit_exit": 1,
+    "normal_audit_block": "one retained needs-oracle real-BOZ case",
+    "python_suite_tests": 984,
+    "python_suite_result": "OK"
+  },
+  "corrective_action": {
+    "issue": "Binding facets into a catalogue changes its content and therefore STALES its content-bound source review by design. Batches 118, 119 and 120 each left such staleness uncorrected and were committed with it.",
+    "how_it_surfaced": "The full-suite gate for this batch FAILED with 'cannot review linked evidence: 11.1.3.3: catalogue source review is stale', raised from test_derived_value_links case 32. The earlier batches' gates had passed only because no test case happened to exercise the affected catalogues through the linked-evidence path.",
+    "scope": [
+      "9.5.3.3",
+      "10.1.5.2.2",
+      "10.1.5.3.1",
+      "10.2.3.2",
+      "11.1.3.2",
+      "11.1.3.3"
+    ],
+    "remedy": "All six catalogue source reviews were renewed. Each renewal records that the staleness is attributable SOLELY to facet binding; that the SOURCE ACCOUNTING IS UNCHANGED, with no base or fine unit added, removed or redispositioned, no requirement added or deleted, and no requirement identifier renumbered or reused; and that the renewal carries the original independent source review forward without adding any new source claim. It is not fixture approval, which is recorded separately per case, and confers no extra execution or coverage credit.",
+    "verification": "After renewal the only non-reviewed catalogue is 18.3.7, which was already 'draft' at session start commit 839d058 and was never touched by this session. The full suite then ran 984 tests OK.",
+    "process_lesson": "A FIXTURE packet must renew the source review of every catalogue it binds facets into, as part of the same integration. This is now recorded in the integration checklist."
+  }
+}

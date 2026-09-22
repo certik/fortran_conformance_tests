@@ -3574,6 +3574,87 @@ There are now **2,124cases**, with **1,829direct facets** and **5,055pending**,
 and fixture review states of **1,811 reference-validated /274/1**.
 See `doc/source_audits/batch_120.json`.
 
+The hundred-and-twenty-first checkpoint closes the fixtures-only round with
+the **first Clause 11 fixtures in the suite**. Clause 11.1 was source-complete
+at 268 of 268 base units but had **no executable tests at all**, so this
+packet sets the pattern. Ten facets of **11.1.3.2** and **11.1.3.3** — the
+`ASSOCIATE` construct — are established, taking the corpus from **2,124 to
+2,134 cases**.
+
+`ASSOCIATE` is unusually good fixture material because the association is
+genuinely observable: the associate name's type, kind, length, rank and bounds
+are specified; definability means an assignment *through* the associate name
+shows up on the selector; and construct-entity scoping is directly testable
+against an outer homonym of the same name.
+
+The central claim is that **the associating entity's bounds differ from the
+selector's subscripts** — that is exactly where an implementation goes wrong,
+and exactly where a careless fixture proves nothing. Mutating the expected
+`LBOUND` and `UBOUND` to the selector's subscript values fails, as required.
+The reviewer recomputed everything independently: `base(-3:3:2)` has extent 4
+and associated bounds 1:4; `base(12:20:3)` has extent 3 and bounds 1:3; the
+rank-two strided section has shape `[3,2]`; the character section has length
+6. Mutating that `LEN` from 6 to 9 — the parent string's length — also fails,
+which is the specific guard against the blank-padding trap. Every length
+assertion uses `LEN` explicitly and never a comparison.
+
+One mutation was applied **in the opposite direction**, and it is the nicest
+piece of evidence in the packet. Weakening the outer scoping sentinel to a
+value written *inside* the construct made the test **stop discriminating** —
+it passed. That proves the sentinel choice of 707, distinct from every value
+written inside, is doing real work rather than being decorative. Showing that
+a design choice *matters* is as valuable as showing the test fails when the
+feature breaks.
+
+The inquiry intrinsics `LBOUND`, `UBOUND`, `SHAPE`, `SIZE`, `LEN` and `KIND`
+are used as oracles here. That is legitimate **only** because the standard
+*requires* the asserted values rather than them being merely typical, and each
+plan states that justification; the packet does not claim to be testing those
+intrinsics. And `definable-selector-assignment-control` is correctly recorded
+as a **positive control** rather than a full effect, because its owning
+requirement is a restriction — over-claiming it would have been a defect.
+
+Twenty-three facets stay pending, and every deferral is explicit: polymorphic
+selectors need `SELECT TYPE` context; the `END ASSOCIATE` branch facets need
+branch-statement ownership from **unregistered 11.2**; coarray and cobound
+facets need `CHANGE TEAM` context; the attribute facets need **unregistered
+Clause 15** owners; the definability negatives need **Clause 19** scope
+isolation; and the kind facet was deferred rather than assume a non-default
+kind exists, since availability is processor dependent.
+
+Both runs were reproduced before recording: 10 of 10 under the frozen
+LFortran, 10 of 10 under gfortran `-std=f2023`. `ASSOCIATE` with strided
+section selectors is precisely where a compiler may be wrong, so it is the
+**independently recomputed bounds**, not the agreement between compilers, that
+validate these.
+
+There are now **2,134cases**, with **1,839direct facets** and **5,045pending**,
+and fixture review states of **1,821 reference-validated /274/1**.
+
+One correction belongs in this record. Binding facets into a catalogue changes
+its content, and therefore **stales that catalogue's content-bound source
+review** — by design. Batches 118, 119 and 120 each left such staleness
+uncorrected and were committed with it. It surfaced only when this batch's
+gate **failed**, with `cannot review linked evidence: 11.1.3.3: catalogue
+source review is stale`, raised from a linked-evidence test. The earlier gates
+had passed purely because no test case happened to exercise those catalogues
+through that path — which is luck, not verification.
+
+All six affected source reviews — 9.5.3.3, 10.1.5.2.2, 10.1.5.3.1, 10.2.3.2,
+11.1.3.2 and 11.1.3.3 — have been renewed. Each renewal records that the
+staleness is attributable **solely** to facet binding, that the **source
+accounting is unchanged** (no unit added, removed or redispositioned; no
+requirement renumbered or reused), and that it carries the original
+independent source review forward without adding any new source claim. The
+only remaining non-reviewed catalogue is 18.3.7, which was already `draft` at
+the session's starting commit and was never touched. The suite then ran 984
+tests OK.
+
+The process lesson is now in the integration checklist: **a fixture packet
+must renew the source review of every catalogue it binds facets into, in the
+same integration.**
+See `doc/source_audits/batch_121.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
