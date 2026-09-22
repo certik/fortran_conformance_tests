@@ -3932,6 +3932,72 @@ no claim that any particular operand *was* evaluated. Passing under two
 compilers is corroboration, never proof of universal conformance.
 See `doc/source_audits/batch_126.json`.
 
+## Batch 127 — operation classification, and a vacuity a mutation campaign missed
+
+Establishes **13 facets** of **10.1.5.1 Intrinsic operation classification**:
+unary plus, the five numeric operators, two character concatenation facets, and
+the five logical operators.
+
+The review of this packet produced the most instructive finding of the
+checkpoint, and it is worth recording in full because it changes how fixtures
+must be tested from here on.
+
+**The logical truth tables were vacuous.** `.AND.` asserted only `(T,T)->T` and
+`(T,F)->F` — rows on which **`.EQV.` behaves identically**. `.EQV.` was
+correspondingly indistinguishable from `.AND.`, and `.OR.`, tested only on
+`(F,F)->F` and `(F,T)->T`, was indistinguishable from `.NEQV.`.
+
+The reviewer did not infer this from reading the code. It **substituted the
+wrong operator into the source** — `.AND.`→`.EQV.`, `.EQV.`→`.AND.`,
+`.OR.`→`.NEQV.` — and all three tests **still passed under both compilers**. A
+test that passes when the feature under test is replaced by a different feature
+establishes nothing at all.
+
+The part that matters for the project: **this survived a 114-mutation campaign
+that the author reported as fully passing.** Those mutations corrupted oracles,
+inputs and observations — and a wrong-operator implementation survives every one
+of them, because the oracle and the operator are wrong together in a consistent
+way. Only mutating the **feature under test** can expose it.
+
+That yields a new standing precedent, now recorded in `plan.md`:
+
+> For any packet testing an **operator** or a **classification**, the mutation
+> campaign must include **substituting every plausible alternative operator**.
+> An oracle/input/omission sweep is provably insufficient.
+
+The correction asserts the **full `TT`/`TF`/`FT`/`FF` table** for all four binary
+operators, with an explicit row-by-row argument that each table is inconsistent
+with each of the other three, and completes `.NOT.` to both rows. The reviewer
+then re-ran **all twelve** operator substitutions rather than the sample it was
+asked for: **24 of 24 compiler runs failed**, as required. The twelve
+substitutions are now **permanent in the generator**, so the defect class cannot
+silently return.
+
+On what these fixtures honestly establish: classification is a **static,
+source-level** property, and no running program can print that an operation was
+classified as numeric. Every fixture here observes a runtime *consequence* — a
+value, a `LEN`, a `KIND`, a branch result. The reviewer examined the catalogue's
+recorded limitation on exactly this point and judged it **specific and honest
+rather than boilerplate**. The strongest oracle in the packet is `17/5 = 3`,
+which genuinely discriminates integer truncation from real division; the weakest
+is unary plus, which is near-identity and supports value preservation only — it
+was retained with its limitation recorded rather than overclaimed.
+
+The restriction analysis was confirmed sound in **both** directions: 10.1.5.1 p6
+contains only one explicit `shall`, the `character-kind-match-restriction`
+deferral is correct because distinct character kinds are processor dependent,
+and **no required diagnostic was wrongly deferred**. Only the character result
+kind is asserted, respecting the 10.1.9.3 p4 precedent that for equal-range
+integer, equal-precision real or different-kind logical operands only *one of
+the operand kinds* is required.
+
+One process point was settled here. A sibling reviewer raised the post-binding
+**stale catalogue review** as a defect against its author. That was
+**overruled**: authors are explicitly barred from running any `--record-*`
+operation, so a stale review is the *correct* intermediate state, and renewing
+it is integrator work done at integration — as it was here for 10.1.5.1.
+See `doc/source_audits/batch_127.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must

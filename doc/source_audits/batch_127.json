@@ -1,0 +1,139 @@
+{
+ "schema_version": 1,
+ "review_type": "independent-intrinsic-operation-classification-fixture-review",
+ "review_date": "2026-09-22",
+ "baseline_commit": "db4208e",
+ "packet_base_commit": "5fa3821",
+ "state": "reference-validated-runtime-effects",
+ "packet_kind": "FIXTURE",
+ "scope": {
+  "sections": [
+   "10.1.5.1"
+  ],
+  "section_title_verified_from_source": "Intrinsic operation classification",
+  "facets_established": 13,
+  "new_cases": 13,
+  "fixtures": [
+   "unary-plus-integer",
+   "numeric-add-op",
+   "numeric-subtract-op",
+   "numeric-multiply-op",
+   "numeric-divide-op",
+   "numeric-power-op",
+   "default-character-concat",
+   "character-result-length-value",
+   "logical-not",
+   "logical-and",
+   "logical-or",
+   "logical-eqv",
+   "logical-neqv"
+  ],
+  "left_pending": "all S10.1.5.1-002 facets; unary-minus-real; unary-minus-complex; unary-logical-not-separated; character nondefault and different-kind boundaries; nonlogical-operand-boundary; all 9 relational/restriction facets; all array-interpretation facets"
+ },
+ "why_this_target": "Second of two Clause 10 fixture packets integrated in this checkpoint. Clause 10 was source-complete since batch110 with zero executable tests.",
+ "authoring": {
+  "author_context": "fresh subagent context in an isolated worktree based on 5fa3821",
+  "author_packet": "d0c64bb",
+  "correction_commit": "67d2d26",
+  "generator": "tools/generate_intrinsic_operation_classification_fixtures.py",
+  "generator_check_determinism": "verified by both author and reviewer"
+ },
+ "independent_review": {
+  "reviewer_distinct_from_author": true,
+  "decision": "accept_after_corrections",
+  "blocking_findings": 1,
+  "non_blocking_findings": 1,
+  "reviewer_read_original_source": "10.1.5.1 including p6, PDF checksum verified independently"
+ },
+ "findings": [
+  {
+   "id": "C1051FR-001",
+   "severity": "blocking",
+   "location": "tools/generate_intrinsic_operation_classification_fixtures.py:347-370; the logical_and, logical_or and logical_eqv fixture sources; catalogue claim at intrinsic_operation_classification_10_1_5_1.json:590",
+   "issue": "THE LOGICAL TRUTH TABLES WERE VACUOUS. .AND. asserted only (T,T)->T and (T,F)->F, which .EQV. satisfies identically on those rows. .EQV. was likewise indistinguishable from .AND. .OR. asserted only (F,F)->F and (F,T)->T, which .NEQV. satisfies identically.",
+   "how_it_was_proved": "ADVERSARIALLY, not by inspection. The reviewer substituted the wrong operator into the source - .AND.->.EQV., .EQV.->.AND., .OR.->.NEQV. - and all three tests STILL PASSED under both gfortran and the frozen LFortran. A test that passes with the wrong operator substituted establishes nothing about that operator.",
+   "why_the_mutation_campaign_missed_it": "The author's 114-mutation campaign corrupted ORACLES, INPUTS and OMISSIONS, all of which a wrong-operator implementation survives. Only mutating the OPERATOR UNDER TEST can detect this vacuity class. This is the durable lesson of the finding.",
+   "closure": "Closed in 67d2d26. Every binary logical fixture now asserts the FULL truth table: .AND. TT->T, TF->F, FT->F, FF->F; .OR. TT->T, TF->T, FT->T, FF->F; .EQV. TT->T, TF->F, FT->F, FF->T; .NEQV. TT->F, TF->T, FT->T, FF->F. Each row set is inconsistent with all three alternative operators.",
+   "reviewer_verification": "The reviewer re-ran ALL 12 operator substitutions rather than the requested minimum sample: 24/24 compiler runs FAILED as required across both toolchains, including the three swaps that originally passed.",
+   "permanent_remedy": "The 12 operator substitutions are now a PERMANENT part of the generator via its operator_mutations table; generator --check reports '12 operator'. This prevents recurrence rather than fixing one instance."
+  },
+  {
+   "id": "C1051FR-002",
+   "severity": "non-blocking",
+   "location": "logical-not fixture",
+   "issue": "The unary table was asserted on a single row (.NOT. .FALSE. only), which cannot establish a unary operator.",
+   "closure": "Closed in 67d2d26; .NOT. now asserts both F->T and T->F, both as counted observations with omission guards.",
+   "reviewer_verification": "Confirmed both rows are genuinely asserted and load-bearing."
+  }
+ ],
+ "non_vacuity_by_mutation": {
+  "principle": "Non-vacuity must be proved by MUTATION, not by inspection - and the mutation must target the FEATURE UNDER TEST, not merely its oracle.",
+  "final_campaign": "13 parents pass per compiler; 142/142 mutations fail per compiler: 55 oracle, 25 input, 49 omission, 12 OPERATOR-SUBSTITUTION, plus 1 reverse sentinel mutation weakening -19 to 19.",
+  "reviewer_reran": "All 12 operator substitutions, 24/24 failing across both toolchains.",
+  "new_precedent_established": "For any packet testing an OPERATOR or a CLASSIFICATION, the mutation campaign MUST include substituting every plausible alternative operator. An oracle/input/omission sweep is provably insufficient."
+ },
+ "what_the_fixtures_actually_observe": {
+  "gap_acknowledged": "Classification is a STATIC, source-level property. A running program cannot print that an operation was classified as numeric. Every fixture here observes a runtime CONSEQUENCE - an integer value, a character LEN/KIND/value, or a logical branch result - not the classification label itself.",
+  "reviewer_judgement": "The recorded catalogue limitation text stating this gap was examined specifically and judged SPECIFIC AND HONEST, not boilerplate.",
+  "strongest_oracle": "numeric-divide-op: 17/5=3 genuinely discriminates integer truncation from real division, and would fail under a real-division implementation returning 3.4.",
+  "weakest_oracle": "unary-plus-integer: unary plus is near-identity, so +(-19)=-19 supports value preservation only. Retained with its limitation recorded rather than overclaimed."
+ },
+ "restriction_and_kind_analysis": {
+  "p6_finding": "10.1.5.1 p6 contains only ONE explicit shall - that kind type parameters shall be the same for character relational operands. All other S006 material is definitional or admissive and therefore cannot support a diagnostic expectation.",
+  "principle_applied": "A facet may carry a diagnostic expectation only if the unit it is filed under actually prohibits something, a processor is REQUIRED to reject, and a single-image program can portably observe it. A unit that defines or classifies CANNOT support a negative.",
+  "character_kind_match_deferred": "character-kind-match-restriction left pending because portable distinct character kinds are not guaranteed to exist; kinds are processor dependent and assuming a non-default kind is a known error.",
+  "reviewer_audited_both_directions": "The reviewer checked both for wrongly retained diagnostics and for wrongly deferred ones, and found NO required diagnostic had been wrongly deferred.",
+  "kind_assertion": "Only the CHARACTER result kind is asserted, justified by same-kind default character operands and Table 10.2. No numeric, logical or relational result kind is asserted, respecting the 10.1.9.3 p4 precedent that for equal-range integer, equal-precision real or different-kind logical operands only one of the operand kinds is required.",
+  "reviewer_verdict": "Character result-kind assertion confirmed safe for same-kind default operands."
+ },
+ "catalogue_review_renewal": {
+  "why": "Binding facets stales a content-bound catalogue source review BY DESIGN (the batch121 lesson).",
+  "observed_here": "After recording the 13 fixture reviews, the audit reported 10.1.5.1 as non-reviewed, exactly as expected.",
+  "action": "Renewed in the same integration, recording that the staleness is attributable solely to facet binding and that source accounting is unchanged.",
+  "verification": "After renewal only 18.3.7 remains non-reviewed; it is pre-existing in doc/catalogues/c_interop.json and predates this session.",
+  "process_note": "A sibling reviewer raised the equivalent stale state as a DEFECT against its author. That was OVERRULED: authors are explicitly barred from running any --record-* operation, so the stale state is the correct intermediate condition and renewal is integrator work performed at integration."
+ },
+ "compiler_observations": {
+  "frozen_target": "lfortran 0.65.0-411-ga0afaa840b-dirty",
+  "frozen_target_result": "13/13 pass",
+  "qualifying_reference": "gfortran 16.1.0 with -std=f2023",
+  "reference_result": "13/13 pass",
+  "reproduced_by_integrator": true,
+  "lfortran_defects_found": 0,
+  "caveat": "The PATH lfortran is a newer build and was not used for any adjudicated run."
+ },
+ "explicit_limitations": [
+  "Thirteen facets of 10.1.5.1 only. Clause 10 retains roughly 1,000 pending facets.",
+  "These fixtures do NOT observe the static classification label; they observe its runtime consequences. The catalogue limitation records that gap.",
+  "unary-plus-integer supports value preservation only and is the weakest oracle in the packet.",
+  "All S10.1.5.1-002 facets, the real and complex unary-minus facets, the character nondefault and different-kind boundaries, the 9 relational/restriction facets and all array-interpretation facets remain pending.",
+  "Passing under two compilers is corroboration, not proof of universal conformance.",
+  "Source accounting is unchanged: declared_facets remains 7184."
+ ],
+ "preservation": {
+  "cases_before": 2148,
+  "cases_after": 2161,
+  "authored_facets_before": 1853,
+  "authored_facets_after": 1866,
+  "declared_facets_before": 7184,
+  "declared_facets_after": 7184,
+  "reference_validated_before": 1835,
+  "reference_validated_after": 1848,
+  "fixture_review_states_after": "1848 reference-validated / 274 source-reviewed / 1 needs-oracle",
+  "expected_failures_lines": 807,
+  "baseline_lines_changed_by_this_packet": 0,
+  "existing_case_ids_modified": 0
+ },
+ "validation_snapshot": {
+  "detailed_catalogues": 280,
+  "requirements": 1684,
+  "declared_facets": 7184,
+  "authored_facets": 1866,
+  "catalogue_reviews_draft": 1,
+  "catalogue_reviews_draft_note": "Only 18.3.7, pre-existing and untouched.",
+  "normal_audit_exit": 1,
+  "normal_audit_block": "the single retained needs-oracle real-BOZ case, which is the intended state and not a regression",
+  "python_suite_tests": 996,
+  "python_suite_result": "OK"
+ }
+}
