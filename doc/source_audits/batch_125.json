@@ -1,0 +1,142 @@
+{
+ "schema_version": 1,
+ "review_type": "independent-relational-intrinsic-operation-fixture-review",
+ "review_date": "2026-09-22",
+ "baseline_commit": "20d5174",
+ "packet_base_commit": "5fa3821",
+ "state": "reference-validated-runtime-effects",
+ "packet_kind": "FIXTURE",
+ "scope": {
+  "sections": [
+   "10.1.5.5.1"
+  ],
+  "section_title_verified_from_source": "Relational intrinsic operation interpretation",
+  "facets_established": 12,
+  "new_cases": 11,
+  "requirements_touched": [
+   "S10.1.5.5.1-001",
+   "S10.1.5.5.1-002",
+   "S10.1.5.5.1-010"
+  ],
+  "breakdown": {
+   "S10.1.5.5.1-001": "two-operand-comparison (default-logical-result WITHDRAWN to pending, see C1055FR-001)",
+   "S10.1.5.5.1-002": "all six dotted/symbolic spelling-pair facets",
+   "S10.1.5.5.1-010": "all five character equality and blank-padding facets"
+  },
+  "left_pending": "33 facets: source inventory and delegation, Table 10.7 row meanings, numeric conversion, character ordering and collation, enumeration facets, and default-logical-result"
+ },
+ "why_this_target": "Richest executable seam in Clause 10, which was source-complete since batch110 with zero fixtures.",
+ "authoring": {
+  "author_context": "fresh subagent context in an isolated worktree based on 5fa3821",
+  "author_packet": "4222446",
+  "correction_commits": [
+   "a01aecf",
+   "345ca75"
+  ],
+  "generator": "tools/generate_relational_intrinsic_fixtures.py",
+  "generator_check_determinism": "verified by author and reviewer"
+ },
+ "independent_review": {
+  "reviewer_distinct_from_author": true,
+  "decision": "accept_after_corrections",
+  "review_rounds": 3,
+  "blocking_findings": 2,
+  "non_blocking_findings": 1,
+  "overruled_by_integrator": 1,
+  "reviewer_read_original_source": "10.1.5.5.1 including p8, PDF checksum verified independently"
+ },
+ "findings": [
+  {
+   "id": "C1055FR-001",
+   "severity": "blocking",
+   "location": "tests/fixtures/relational_intrinsic_default_logical_result/source.f90:9,20; generator lines 298,303; catalogue lines 510-515",
+   "issue": "THE DEFAULT-LOGICAL ORACLE WAS VACUOUS. It asserted KIND(observed) - KIND(.FALSE.) == 0, but observed is declared LOGICAL with no kind selector, so its kind is default BY DECLARATION. The oracle observed the VARIABLE, never the kind of the expression left < right. The test would pass even if the relational operation produced a non-default logical result, because assignment into observed would convert it.",
+   "principle": "An oracle must observe the EXPRESSION, not a variable that launders it. The assertion was true for a reason unrelated to the requirement.",
+   "closure": "Closed in a01aecf. The author chose to WITHDRAW the facet to pending rather than fabricate an oracle, recording that a future fixture must assert KIND(left < right) == KIND(.FALSE.) directly with a portable load-bearing non-default-kind mutation. Facet count accordingly fell from +13 to +12.",
+   "integrator_note": "Withdrawal was explicitly offered as an acceptable outcome. A smaller honest packet beats a larger one carrying a vacuous oracle, and kinds are processor dependent so a load-bearing non-default-kind mutation may not be portably constructible here."
+  },
+  {
+   "id": "C1055FR-003",
+   "severity": "non-blocking",
+   "location": "tests/fixtures/relational_intrinsic_same_length_character_equality/source.f90:8,34; generator lines 385-391",
+   "issue": "LEN(left) and LEN(same) were asserted but NOT LEN(different), before the false control left == different. The claim that every character length was asserted was overstated.",
+   "why_it_matters": "Character comparison blank-pads the shorter operand, so an unasserted length is exactly how a padding assumption slips through unnoticed.",
+   "closure": "Closed in a01aecf; LEN(different) == 2 guard added and covered by a mutation the reviewer re-ran directly."
+  },
+  {
+   "id": "C1055FR-004",
+   "severity": "blocking",
+   "location": "tools/generate_relational_intrinsic_fixtures.py:28-42,348-365; lt_symbolic_pair, eq_symbolic_pair and ne_symbolic_pair sources",
+   "issue": "WRONG-OPERATOR VACUITY. Four fixtures still passed when the relational operator was replaced by a DIFFERENT relational operator: < to <=, .LT. to .LE., == to <=, and /= to > all PASSED on both toolchains.",
+   "root_cause": "The operand pairs never exercised the rows where the operators differ. < and <= differ ONLY on equality; == and <= differ only when the left operand is less than the right; /= and > likewise. The chosen operands (-4,3) and (3,-4) and (7,7) and (7,-2) simply never hit those rows.",
+   "why_the_campaign_missed_it": "The author's 179-mutation campaign corrupted oracles, inputs and observations. A wrong-operator implementation survives all of them, because the oracle and the operator are wrong together consistently. Only substituting the OPERATOR UNDER TEST exposes it.",
+   "closure": "Closed in 345ca75. All six spelling-pair fixtures now assert three common rows - less (-4,3), equal (5,5), greater (8,1) - for both dotted and symbolic spellings on identical named operands.",
+   "why_the_fix_is_sound": "Those three rows give six truth-signatures: < is TFF, <= is TTF, > is FFT, >= is FTT, == is FTF, /= is TFT. All six are DISTINCT, so the three rows uniquely determine every operator. The integrator verified this discrimination independently and found NO collisions.",
+   "reviewer_verification": "The reviewer re-ran ALL 60 permanent substitutions: 120/120 compiler runs FAILED as required. The four original survivors now fail - < to <= and .LT. to .LE. at the equal row, == to <= and /= to > at the less row.",
+   "permanent_remedy": "60 wrong-operator substitutions (30 operator/alternative pairs across dotted and symbolic spellings) are now PERMANENT in the generator via OPERATOR_ORDER, TRUTH_TABLE, DISCRIMINATION_ROWS and emitted wrong-operator-substitution probes."
+  },
+  {
+   "id": "C1055FR-002",
+   "severity": "OVERRULED by integrator",
+   "issue": "The reviewer flagged that --audit reports catalogue_reviews[10.1.5.5.1] as stale and treated it as a packet defect.",
+   "adjudication": "OVERRULED. Binding facets stales a content-bound catalogue source review BY DESIGN, and renewal is an INTEGRATOR-ONLY operation. The author was explicitly barred from running any --record-* command and correctly did not. The stale state is the expected intermediate condition, resolved by the integrator in the same commit that integrates the packet - as done here and for the sibling 10.1.4 and 10.1.5.1 packets.",
+   "action_taken": "No author action. Recorded so the expectation is unambiguous for future fixture packets."
+  }
+ ],
+ "non_vacuity_by_mutation": {
+  "principle": "Non-vacuity must be proved by MUTATION, not by inspection - and the mutation must target the FEATURE UNDER TEST, not merely its oracle.",
+  "final_campaign": "263 mutations x 2 compilers, all failing: 60 wrong-operator substitutions, 45 logical flips, 20 select-case flips, 18 .NEQV. sentinel reversals, 83 omissions, plus completion, operand and blank-padding mutations.",
+  "reviewer_reran": "All 60 wrong-operator substitutions, 120/120 failing across both toolchains.",
+  "systemic_finding": "This is the SECOND packet in the same checkpoint to carry wrong-operator vacuity; the other was 10.1.5.1 (batch127). Two of three fixture packets shipped it. The defect class is systemic to fixture work in this project, not an individual slip."
+ },
+ "source_derivations_independently_confirmed": {
+  "blank_padding_rule": "10.1.5.5.1 p8: the SHORTER operand is extended on the right with blanks to the length of the LONGER operand.",
+  "case_A_vs_A_blank": "'A' (len 1) vs 'A ' (len 2): shorter becomes 'A ', all corresponding characters equal, so == is TRUE.",
+  "case_A_vs_A_blank_blank_B": "'A' (len 1) vs 'A  B' (len 4): shorter becomes 'A   '. Positions 1-3 match; position 4 is blank versus B, so == is FALSE and /= is TRUE. No collation-order oracle is needed.",
+  "zero_length": "p8 states EXPLICITLY that if both operands are of zero length they are equal. This is source-supported, NOT an assumption - the reviewer confirmed the text.",
+  "len_discipline": "LEN is asserted explicitly in every character fixture, because character comparison blank-pads the shorter operand."
+ },
+ "compiler_observations": {
+  "frozen_target": "lfortran 0.65.0-411-ga0afaa840b-dirty",
+  "frozen_target_result": "11/11 pass",
+  "qualifying_reference": "gfortran 16.1.0 with -std=f2023",
+  "reference_result": "11/11 pass",
+  "reproduced_by_integrator": true,
+  "lfortran_defects_found": 0,
+  "caveat": "The PATH lfortran is a newer build and was not used for any adjudicated run."
+ },
+ "explicit_limitations": [
+  "Twelve facets of 10.1.5.5.1 only. Thirty-three remain pending, including Table 10.7 row meanings, numeric conversion and character collation.",
+  "default-logical-result is NOT established. The packet makes no claim that the result of a relational operation is default logical; the only oracle attempted for it was vacuous and was withdrawn.",
+  "Character ordering and collation are NOT tested; only equality, inequality and blank-padding behaviour are.",
+  "All oracles use exact integer and character values. No real comparison appears, avoiding 7.4.3 approximation and 10.1.5.2.4 reassociation hazards.",
+  "Passing under two compilers is corroboration, not proof of universal conformance.",
+  "Source accounting is unchanged: declared_facets remains 7184."
+ ],
+ "preservation": {
+  "cases_before": 2161,
+  "cases_after": 2172,
+  "authored_facets_before": 1866,
+  "authored_facets_after": 1878,
+  "declared_facets_before": 7184,
+  "declared_facets_after": 7184,
+  "reference_validated_before": 1848,
+  "reference_validated_after": 1859,
+  "fixture_review_states_after": "1859 reference-validated / 274 source-reviewed / 1 needs-oracle",
+  "expected_failures_lines": 807,
+  "baseline_lines_changed_by_this_packet": 0,
+  "existing_case_ids_modified": 0
+ },
+ "validation_snapshot": {
+  "detailed_catalogues": 280,
+  "requirements": 1684,
+  "declared_facets": 7184,
+  "authored_facets": 1878,
+  "catalogue_reviews_draft": 1,
+  "catalogue_reviews_draft_note": "Only 18.3.7, pre-existing and untouched.",
+  "normal_audit_exit": 1,
+  "normal_audit_block": "the single retained needs-oracle real-BOZ case, which is the intended state and not a regression",
+  "python_suite_tests": 1003,
+  "python_suite_result": "OK"
+ }
+}

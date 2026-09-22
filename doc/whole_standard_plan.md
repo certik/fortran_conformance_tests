@@ -3998,6 +3998,68 @@ operation, so a stale review is the *correct* intermediate state, and renewing
 it is integrator work done at integration — as it was here for 10.1.5.1.
 See `doc/source_audits/batch_127.json`.
 
+## Batch 125 — relational operations, and a systemic defect confirmed
+
+Establishes **12 facets** of **10.1.5.5.1 Relational intrinsic operation
+interpretation** across 11 fixtures: the two-operand comparison, all six
+dotted/symbolic spelling pairs, and all five character equality and
+blank-padding facets. It took **three review rounds**.
+
+The blank-padding work was right from the start and the reviewer confirmed it
+against p8 independently: the **shorter** operand is extended on the right with
+blanks to the length of the longer, so `'A'` against `'A  B'` pads to `'A   '`
+and differs at position 4 — blank versus `B`. The **zero-length equality** case
+is stated **explicitly** in p8, so it is source-supported rather than assumed.
+No collation-order oracle was needed for any of it.
+
+Two findings blocked the packet, and one was overruled.
+
+**C1055FR-001** caught a vacuous oracle: `KIND(observed) - KIND(.FALSE.) == 0`,
+where `observed` is declared `LOGICAL` with no kind selector. Its kind is
+default **by declaration**, so the assertion observed the *variable* and never
+the kind of `left < right` — it would pass even if the relational operation
+produced a non-default logical result, because the assignment would convert it.
+The author was offered either a direct expression oracle or withdrawal, and
+chose **withdrawal to pending**. That was the right call: kinds are processor
+dependent, so a load-bearing non-default-kind mutation may not be portably
+constructible here, and a smaller honest packet beats a larger one carrying a
+dead assertion.
+
+**C1055FR-004** is the one that matters for the project. Applying the
+wrong-operator substitution technique that had just blocked the sibling 10.1.5.1
+packet, the reviewer found **four surviving mutants**: `<`→`<=`, `.LT.`→`.LE.`,
+`==`→`<=`, and `/=`→`>` all **passed** on both toolchains. The 179-mutation
+oracle/input/omission campaign could not possibly have caught them.
+
+The root cause is worth stating precisely, because it generalises: **the chosen
+operands never exercised the rows where the operators differ.** `<` and `<=`
+differ *only* on equality; `==` and `<=` differ only when the left operand is
+less than the right; `/=` and `>` likewise. Operands of `(-4,3)`, `(3,-4)`,
+`(7,7)` and `(7,-2)` simply never land on those rows.
+
+The fix is a **design rather than a patch**. All six pairs now assert the same
+three rows — less `(-4,3)`, equal `(5,5)`, greater `(8,1)` — which yield six
+truth-signatures: `TFF`, `TTF`, `FFT`, `FTT`, `FTF`, `TFT`. All six are
+**distinct**, so three rows uniquely determine every operator. That discrimination
+was verified independently at integration and has no collisions. Sixty
+substitutions (30 operator/alternative pairs across both spellings) are now
+**permanent in the generator**, and the reviewer re-ran **all** of them:
+**120 of 120 compiler runs failed** as required.
+
+**C1055FR-002 was overruled.** The reviewer flagged the post-binding stale
+catalogue review as a packet defect. It is not: binding facets stales a
+content-bound source review *by design*, authors are explicitly barred from
+running any `--record-*` command, and renewal is integrator work done at
+integration — as it was here.
+
+The headline for the project is not this packet but the pattern. **Two of the
+three fixture packets in this checkpoint shipped wrong-operator vacuity**, one of
+them surviving a 114-mutation campaign. That makes it systemic to fixture work
+rather than an individual lapse, and it is now a standing rule: for any packet
+testing an operator or a classification, build the discrimination table *before*
+writing code, and bake the substitutions into the generator permanently.
+See `doc/source_audits/batch_125.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
