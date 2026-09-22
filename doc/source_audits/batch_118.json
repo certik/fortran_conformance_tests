@@ -1,0 +1,134 @@
+{
+  "schema_version": 1,
+  "review_type": "independent-array-element-order-fixture-review",
+  "review_date": "2026-09-21",
+  "baseline_commit": "5153883",
+  "state": "reference-validated-runtime-effects",
+  "packet_kind": "FIXTURE",
+  "note": "This is a fixture packet, not a source packet. It adds executable test cases and therefore legitimately changes authored_facets and the case count - unlike the sixteen consecutive source packets that preceded it, which were required to leave both untouched.",
+  "scope": {
+    "target_catalogue": "doc/catalogues/array_element_order_9_5_3_3.json",
+    "section": "9.5.3.3",
+    "section_title": "Array element order",
+    "pending_facets_before": 8,
+    "facets_established": 6,
+    "facets_left_pending": 2,
+    "new_cases": 6,
+    "established": [
+      "array-elements-form-sequence",
+      "position-determined-by-subscript-order-value",
+      "rank-one-order-value",
+      "rank-two-order-value",
+      "rank-three-order-value",
+      "rank-fifteen-pattern"
+    ],
+    "left_pending": {
+      "table9-1-is-formula-source": "a source and PDF review claim, not an independently executable runtime effect",
+      "table-layout-ambiguity-recorded": "likewise a source-review claim; the reviewer confirmed no testable facet was silently dropped"
+    }
+  },
+  "why_this_target": "9.5.3.3 gives the subscript order value by an EXACT FORMULA with no processor latitude at all - unusual among recently registered material, and what makes it genuinely testable. The entire difficulty is non-vacuity.",
+  "authoring": {
+    "author_context": "fresh subagent context in an isolated worktree based on 1cb5857",
+    "author_packet": "2ea0412",
+    "generator": "tools/generate_array_element_order_fixtures.py",
+    "test_module": "tests/test_array_element_order_fixtures.py",
+    "generator_check_determinism": "passed - regeneration is byte-identical"
+  },
+  "independent_review": {
+    "receipt": "array-order-fixture-review.json",
+    "reviewer_distinct_from_author": true,
+    "decision": "eligible-with-nonblocking-observations",
+    "blocking_findings": 0,
+    "compiler_invocations": "the reviewer compiled and ran programs, which is expected and required for a fixture review"
+  },
+  "circularity_adjudication": {
+    "question": "The fixtures use a DATA statement to lay values down in array element order, then read back by subscript. Is that circular, given that 9.5.3.3 is itself the definition of array element order?",
+    "verdict": "NOT circular",
+    "reasoning": "9.5.3.3 owns the element-order formula and the sequence. The DATA statement, specified in 8.6.7, is a legitimate CONSUMER of that ordering rather than a restatement of it. The expected values are independently hand-computed literal constants, not values derived by the mechanism under test, and the read-back is by subscript, which is independent of the ordering mechanism.",
+    "excluded_mechanisms": "No fixture establishes order via RESHAPE, PACK, TRANSFER, sequence association, or any storage-layout assumption."
+  },
+  "non_vacuity_by_mutation": {
+    "principle": "A case that still passes when the thing it tests is broken establishes nothing. Inspection is not sufficient evidence of non-vacuity; mutation is.",
+    "mutations_applied": 13,
+    "mutations_that_failed_as_required": 13,
+    "mutation_classes": [
+      "row-major DATA ordering",
+      "transposed DATA ordering",
+      "same-multiset value swaps - catches an oracle that checks only the set of values rather than their positions",
+      "unit-lower-bound mutation - catches an off-by-one that a unit lower bound would hide",
+      "perturbation of expected literal constants"
+    ],
+    "verdict": "all 13 mutations produced a failing test, so the fixtures are demonstrably not vacuous"
+  },
+  "design_for_discrimination": {
+    "non_unit_lower_bounds": "every array uses them, so an off-by-one in the formula cannot hide",
+    "distinct_extents": "the rank-two arrays have distinct extents, so a transposed formula is caught",
+    "interior_subscripts": "the exercised subscripts are away from the first and last elements, where a wrong formula can still coincidentally agree",
+    "coordinate_coded_literals": "element values encode their own subscripts, so reading a position identifies unambiguously which element is there"
+  },
+  "hand_oracles": {
+    "status": "every oracle independently recomputed by the reviewer from the source formula",
+    "discrepancies_found": "none, including the rank-fifteen position value of 16",
+    "examples": [
+      "sequence rank-2 a(2:4,-1:2): (3,1) = 1 + (3-2) + (1-(-1))*3 = 8",
+      "rank-1 a(3:7): s1=5 gives 1 + (5-3) = 3",
+      "rank-2 a(-2:1,4:6): (0,5) gives 1 + (0-(-2)) + (5-4)*4 = 7",
+      "rank-3 a(-2:0,4:5,7:10): (-1,5,9) gives 1 + 1 + 1*3 + 2*2*3 = 17"
+    ]
+  },
+  "table_9_1": {
+    "method": "read row by row from the table itself, because extraction interleaves its columns",
+    "extraction_artefacts_confirmed": "a misplaced rank-fifteen multiplication sign and a stray character were confirmed to be extraction artefacts rather than content",
+    "consequence": "the table-layout-ambiguity facet was correctly left pending as a source-review claim"
+  },
+  "compiler_observations": {
+    "frozen_target": "lfortran 0.65.0-411-ga0afaa840b-dirty - the only LFortran permitted; the PATH lfortran is a newer build and was not used",
+    "frozen_target_result": "6 of 6 pass",
+    "qualifying_reference": "gfortran 16.1.0 with -std=f2023",
+    "reference_result": "6 of 6 pass; the runner reports agreement on 6 of 6 cases",
+    "reproduced_by_integrator": true,
+    "lfortran_gaps_observed": "none",
+    "caveat": "Compiler consensus is NOT an oracle. The hand arithmetic was verified independently of both compilers, and would have overridden them had they disagreed.",
+    "flang": "not used; it runs in f2018 mode and never qualifies as f2023 validation"
+  },
+  "nonblocking_observations": [
+    "The position oracle's wording slightly overstates how interior its subscripts are.",
+    "The rank-fifteen case has unit middle dimensions, which limits how much of the multiplier chain it exercises."
+  ],
+  "explicit_limitations": [
+    "Six facets of 9.5.3.3 are now established by reference-validated runtime effects. The remaining two are source-review claims and stay pending.",
+    "This establishes the subscript order value and the element sequence. It establishes nothing about storage association, sequence association, or physical memory layout.",
+    "Six cases is six cases. The corpus moves from 2083 to 2089; Clause 9 still has hundreds of pending facets.",
+    "tests/expected_failures.txt is unchanged - no new XFAIL was created or needed."
+  ],
+  "preservation": {
+    "cases_before": 2083,
+    "cases_after": 2089,
+    "authored_facets_before": 1788,
+    "authored_facets_after": 1794,
+    "pending_facets_before": 5096,
+    "pending_facets_after": 5090,
+    "fixture_review_states_before": "1770 reference-validated / 274 source-reviewed / 1 needs-oracle",
+    "fixture_review_states_after": "1776 reference-validated / 274 source-reviewed / 1 needs-oracle",
+    "raw_reviews_preserved": 2047,
+    "older_catalogues_preserved": 263,
+    "baseline_lines_changed": 0,
+    "baseline": "b153c75b",
+    "expected_failures_lines": 804
+  },
+  "validation_snapshot": {
+    "fixture_reviews_written": 6,
+    "inventory_reviews_written": 1,
+    "detailed_catalogues": 263,
+    "requirements": 1579,
+    "declared_facets": 6906,
+    "pending_facets": 5090,
+    "authored_facets": 1794,
+    "accounted_base_units": 2274,
+    "normal_audit_exit": 1,
+    "normal_audit_block": "one retained needs-oracle real-BOZ case",
+    "python_suite_tests": 966,
+    "python_suite_result": "OK"
+  }
+}

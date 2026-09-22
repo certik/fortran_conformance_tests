@@ -3397,6 +3397,70 @@ covers2,274base units. `authored_facets` is unchanged at1,788 and `tests/` is
 untouched.
 See `doc/source_audits/batch_116.json`.
 
+The hundred-and-eighteenth checkpoint is a **fixture packet** — the first
+after sixteen consecutive source packets. It therefore *legitimately* changes
+`authored_facets` and the case count, which its predecessors were required to
+leave untouched. Six of the eight pending facets of **9.5.3.3, array element
+order**, are now established by reference-validated runtime effects; the
+corpus moves from **2,083 to 2,089 cases**.
+
+9.5.3.3 was chosen because it gives the subscript order value by an **exact
+formula with no processor latitude at all** — unusual among recently
+registered material, and precisely what makes it testable. The entire
+difficulty is non-vacuity.
+
+The first question was **circularity**. The fixtures use a `DATA` statement to
+lay values down in array element order and then read back by subscript — but
+9.5.3.3 *is* the definition of array element order, so is that not assuming
+what it sets out to show? The reviewer adjudicated it **not circular**, and
+the reasoning is worth recording: 9.5.3.3 owns the formula and the sequence,
+while the `DATA` statement in 8.6.7 is a legitimate **consumer** of that
+ordering rather than a restatement of it; the expected values are
+independently hand-computed literal constants; and the read-back is by
+subscript, which is independent of the ordering mechanism. No fixture uses
+`RESHAPE`, `PACK`, `TRANSFER`, sequence association or any storage-layout
+assumption.
+
+The second question was whether the tests actually *discriminate*, and here
+the review did the thing that matters: it proved non-vacuity **by mutation
+rather than by inspection**. Thirteen mutations were applied — row-major and
+transposed `DATA` orderings, **same-multiset value swaps** (which catch an
+oracle that checks only the *set* of values rather than their positions), a
+**unit-lower-bound mutation** (which catches an off-by-one that unit bounds
+would otherwise hide), and perturbed expected literals — and **all thirteen
+produced a failing test**. A case that survives mutation establishes nothing;
+these do not survive it. The fixtures are built to discriminate: non-unit
+lower bounds throughout, distinct extents so a transposed formula is caught,
+interior subscripts rather than corners, and coordinate-coded literals so each
+element's value encodes its own position.
+
+Every hand oracle was independently recomputed from the source formula with no
+discrepancies, including the rank-fifteen value of 16. Table 9.1 was read row
+by row from the table itself, and the misplaced rank-fifteen multiplication
+sign and stray character were confirmed to be **extraction artefacts** rather
+than content — which is exactly why the table-layout facet was left pending.
+Both remaining facets are source-review claims rather than executable runtime
+effects, and the reviewer confirmed no testable facet was silently dropped.
+Leaving a facet pending for a good reason is a fine outcome; writing a
+circular test is not.
+
+I reproduced both compiler runs myself before recording any adjudication: 6 of
+6 pass under the frozen LFortran `0.65.0-411`, and 6 of 6 under gfortran
+16.1.0 with `-std=f2023`, which reports agreement on 6 of 6 cases. **Compiler
+consensus is not an oracle** — the hand arithmetic was verified independently
+and would have overridden both had they disagreed. No LFortran gap appeared
+and `tests/expected_failures.txt` is unchanged.
+
+What this establishes is the subscript order value and the element sequence.
+It establishes **nothing** about storage association, sequence association or
+physical memory layout. And six cases is six cases: Clause 9 still has
+hundreds of pending facets.
+
+There are now **2,089cases**, with **263catalogues,1,579requirements,
+1,794direct,22linked and5,090pending facets out of6,906**, and fixture review
+states of **1,776 reference-validated /274source-reviewed /1needs-oracle**.
+See `doc/source_audits/batch_118.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
