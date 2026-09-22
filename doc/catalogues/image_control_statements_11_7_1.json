@@ -1,0 +1,83 @@
+{
+  "schema_version": 1,
+  "section": "11.7.1",
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "structural",
+      "rationale": "Cross-reference to 5.3.5 for execution sequence; no local Clause 11.7.1 facet is owned here."
+    },
+    {
+      "unit": "p2",
+      "disposition": "requirements",
+      "requirements": [
+        "S11.7.1-001"
+      ]
+    },
+    {
+      "unit": "p3",
+      "disposition": "requirements",
+      "requirements": [
+        "S11.7.1-002"
+      ]
+    }
+  ],
+  "requirements": [
+    {
+      "id": "S11.7.1-001",
+      "title": "Image control statements divide an image execution sequence into segments and include the listed statement forms",
+      "source": "11.7.1 p2; J3/24-007 PDF p230.",
+      "source_units": [
+        "p2"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Execution of an image control statement divides the execution sequence on an image into segments. The listed statement classes are image control statements, including SYNC ALL, SYNC IMAGES, SYNC MEMORY, SYNC TEAM, selected coarray allocation and deallocation statements, CHANGE TEAM and END TEAM, CRITICAL and END CRITICAL, event, team, lock, MOVE_ALLOC-with-coarray, STOP, and main-program END forms.",
+      "facets": [
+        "image-control-statement-divides-segments",
+        "sync-statements-classified-image-control",
+        "coarray-allocation-deallocation-classified-image-control",
+        "team-critical-event-lock-stop-end-classified-image-control"
+      ],
+      "pending": {
+        "image-control-statement-divides-segments": "PENDING source-use plan recording segment boundaries introduced by execution of an image control statement. Segment boundaries are classification evidence here, not a runtime timing oracle.",
+        "sync-statements-classified-image-control": "PENDING source-use plan in which SYNC ALL, SYNC IMAGES, SYNC MEMORY, and SYNC TEAM are treated as image control statements by future owners of those constructs.",
+        "coarray-allocation-deallocation-classified-image-control": "PENDING source-use plan linking coarray ALLOCATE/DEALLOCATE forms to the already registered Clause 9 allocation material; this packet does not duplicate those allocation requirements.",
+        "team-critical-event-lock-stop-end-classified-image-control": "PENDING source-use plan linking CHANGE TEAM/END TEAM and CRITICAL/END CRITICAL to registered 11.1 material, and the remaining listed forms to their future section owners."
+      },
+      "oracle": "This requirement owns the 11.7.1 classification and segment-boundary consequence only. It does not approve a program that tries to observe scheduling, waiting, or cross-image ordering from executing the listed statements.",
+      "oracle_limitation": "This source-only catalogue records pending plans only. It creates no Fortran test program, invokes no processor, approves no fixture or oracle, and claims no coverage. Future fixtures must use independently derived source relations or portable single-image observations when such observations exist; they must not infer synchronization, segment ordering, scheduling, progress, failure, or waiting from timing, hangs, races, interleaving, or vacuous single-image execution; and they must not rely on diagnostic wording, compiler agreement, processor-dependent STAT or ERRMSG values, manufactured stopped or failed images, resource exhaustion, or unregistered multi-image infrastructure.",
+      "dependencies": "5.3.5 execution sequence NOT YET REGISTERED; 9.7 allocation/deallocation registered; 11.1.5 CHANGE TEAM and 11.1.6 CRITICAL registered; 11.7.3-11.7.6 in this packet; 11.7.7-11.7.11 NOT YET REGISTERED; Clauses 12-19 NOT YET REGISTERED for STOP, END, MOVE_ALLOC, teams, events, locks, and ISO_FORTRAN_ENV."
+    },
+    {
+      "id": "S11.7.1-002",
+      "title": "At most one procedure invocation in a statement may execute an image control statement other than CRITICAL or END CRITICAL",
+      "source": "11.7.1 p3; J3/24-007 PDF p230.",
+      "source_units": [
+        "p3"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "context-dependent",
+      "definition": "During execution of a statement that invokes more than one procedure, at most one invocation shall cause execution of an image control statement other than CRITICAL or END CRITICAL.",
+      "facets": [
+        "multi-procedure-single-image-control-control",
+        "second-noncritical-image-control-invocation-source-violation",
+        "critical-end-critical-exception-source-control"
+      ],
+      "pending": {
+        "multi-procedure-single-image-control-control": "PENDING source-control plan in which a statement invokes multiple procedures and no more than one can execute a non-CRITICAL image control statement.",
+        "second-noncritical-image-control-invocation-source-violation": "PENDING documentary violation record where the only changed property is that a second invoked procedure can execute a non-CRITICAL image control statement. This is a dynamic program restriction, not a required rejection or executable oracle.",
+        "critical-end-critical-exception-source-control": "PENDING source-control plan documenting that CRITICAL and END CRITICAL are excluded from this particular at-most-one count while remaining image control statements under p2."
+      },
+      "oracle": "The prohibiting word is a dynamic shall on procedure execution. This packet records source-control evidence only; a future diagnostic may be filed only under a rule that actually requires rejection of the specific source form.",
+      "oracle_limitation": "This source-only catalogue records pending plans only. Local source-form or value-domain facts may become implementable only through a future reviewed fixture that observes a purely local property without duplicating the feature under test and without using unregistered STAT=/ERRMSG= semantics or multi-image synchronization as the oracle.",
+      "dependencies": "11.7 image control statement owners; 11.1.6 CRITICAL registered; Clause 15 procedure invocation NOT YET REGISTERED."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_11_7_1.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "e902d810516a482e2c4fc3e17d20527986bbe656a860f8a616acb656a0e611a7",
+  "review_rationale": "Independent fresh-context source review against the pinned J3/24-007 PDF: doc/source_audits/batch_123.json. The reviewer re-read the original sections (PDF p230-235), re-derived unit hashes rather than accepting the author receipt, and independently recomputed the census. Two blocking findings were closed by correction commit cf1fff9 and re-verified by the same reviewer: C117SR-001 (11.7.4 image-set bounds collapsed the positive, upper-bound and no-repeated-values obligations into single facets, contradicting the packet's own compound sweep) and C117SR-002 (11.7.2 p3 and 11.7.5 p4 were dispositioned permission although each carries normative shall restrictions; both are now split so obligations and latitude are disposed separately). Source accounting only: no fixture was bound, authored_facets is unchanged at 1839, and no executable oracle or runtime credit is claimed. All of 11.7 is image execution control and this suite has no multi-image capability, so synchronization, segment ordering, scheduling and failure-dependent behaviour carry no executable oracle."
+}

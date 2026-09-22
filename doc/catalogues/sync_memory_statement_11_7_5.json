@@ -1,0 +1,193 @@
+{
+  "schema_version": 1,
+  "section": "11.7.5",
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "requirements",
+      "requirements": [
+        "S11.7.5-001"
+      ]
+    },
+    {
+      "unit": "R1172",
+      "disposition": "requirements",
+      "requirements": [
+        "R1172"
+      ]
+    },
+    {
+      "unit": "p2",
+      "disposition": "requirements",
+      "requirements": [
+        "S11.7.5-002"
+      ]
+    },
+    {
+      "unit": "p3",
+      "disposition": "definition",
+      "requirements": [
+        "S11.7.5-003"
+      ],
+      "rationale": "Defines when user-defined ordering occurs."
+    },
+    {
+      "unit": "p4",
+      "disposition": "structural",
+      "requirements": [
+        "S11.7.5-004"
+      ],
+      "rationale": "Mixed paragraph split into fine units: the first sentence is a shall dependency requirement, while the second sentence records processor-dependent mechanism latitude."
+    },
+    {
+      "unit": "p4.dependency-requirement",
+      "disposition": "requirements",
+      "requirements": [
+        "S11.7.5-004"
+      ]
+    },
+    {
+      "unit": "p4.processor-dependent-mechanisms",
+      "disposition": "permission",
+      "requirements": [
+        "S11.7.5-004"
+      ],
+      "rationale": "Accounts only the processor-dependent latitude for mechanisms available to create the required dependency."
+    },
+    {
+      "unit": "note1",
+      "disposition": "informative",
+      "rationale": "Informative optimization explanation; no independent oracle."
+    },
+    {
+      "unit": "note2",
+      "disposition": "informative",
+      "rationale": "Informative external synchronization example; no independent requirement."
+    }
+  ],
+  "requirements": [
+    {
+      "id": "S11.7.5-001",
+      "title": "SYNC MEMORY ends one segment and begins another for possible user-defined ordering",
+      "source": "11.7.5 p1; J3/24-007 PDF p234.",
+      "source_units": [
+        "p1"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Execution of SYNC MEMORY ends one segment and begins another; those two segments can be ordered by a user-defined way with respect to segments on other images.",
+      "facets": [
+        "sync-memory-segment-boundary-source-control",
+        "sync-memory-user-defined-ordering-source-control"
+      ],
+      "pending": {
+        "sync-memory-segment-boundary-source-control": "PENDING source-use plan recording the local segment boundary introduced by SYNC MEMORY.",
+        "sync-memory-user-defined-ordering-source-control": "PENDING source-control plan linking the boundary to a future user-defined ordering proof; no external synchronization oracle is approved."
+      },
+      "oracle": "The local segment boundary is source-use evidence; ordering with other images remains unobservable without a reviewed multi-image/user-defined oracle.",
+      "oracle_limitation": "This source-only catalogue records pending plans only. Local source-form or value-domain facts may become implementable only through a future reviewed fixture that observes a purely local property without duplicating the feature under test and without using unregistered STAT=/ERRMSG= semantics or multi-image synchronization as the oracle.",
+      "dependencies": "11.7.2 segments in this packet; external synchronization and procedures in Clause 15 NOT YET REGISTERED."
+    },
+    {
+      "id": "R1172",
+      "title": "A SYNC MEMORY statement is SYNC MEMORY with optional parenthesized sync status list",
+      "source": "11.7.5 R1172; J3/24-007 PDF p234.",
+      "source_units": [
+        "R1172"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "A sync-memory-stmt is SYNC MEMORY optionally followed by parentheses containing an optional sync-stat-list.",
+      "facets": [
+        "sync-memory-without-list",
+        "sync-memory-empty-parentheses",
+        "sync-memory-with-sync-stat-list"
+      ],
+      "pending": {
+        "sync-memory-without-list": "PENDING source-control plan for sync memory without list; no executable fixture or oracle is approved by this source packet.",
+        "sync-memory-empty-parentheses": "PENDING source-control plan for sync memory empty parentheses; no executable fixture or oracle is approved by this source packet.",
+        "sync-memory-with-sync-stat-list": "PENDING source-control plan for sync memory with sync stat list; no executable fixture or oracle is approved by this source packet."
+      },
+      "oracle": "",
+      "oracle_limitation": "This source-only catalogue records pending plans only. Local source-form or value-domain facts may become implementable only through a future reviewed fixture that observes a purely local property without duplicating the feature under test and without using unregistered STAT=/ERRMSG= semantics or multi-image synchronization as the oracle.",
+      "dependencies": "R1169/C1179/C1180 in 11.7.3; 11.7.11 effects NOT YET REGISTERED."
+    },
+    {
+      "id": "S11.7.5-002",
+      "title": "SYNC MEMORY orders actions on a variable across successful execution when the paragraph conditions hold",
+      "source": "11.7.5 p2; J3/24-007 PDF p234.",
+      "source_units": [
+        "p2"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "If statements on image P perform an action regarding X on image Q, that statement precedes a successful SYNC MEMORY, and a later statement performs an action regarding Y on image Q after the SYNC MEMORY, then the action regarding X on image Q precedes the action regarding Y on image Q.",
+      "facets": [
+        "sync-memory-action-precedence-source-control"
+      ],
+      "pending": {
+        "sync-memory-action-precedence-source-control": "PENDING source-control/documentary plan for the conditional action precedence; no executable multi-image memory ordering oracle is approved."
+      },
+      "oracle": "The rule is a conditional ordering effect involving images P and Q. Timing, cache visibility, and external synchronization observations are not portable evidence.",
+      "oracle_limitation": "This source-only catalogue records pending plans only. The specified synchronization, segment delay, segment precedence, or cross-image memory-order effect is not approved as an executable oracle in the current single-image suite: a one-image run would be vacuous and multi-image timing, scheduling, interleaving, progress, deadlock, race, or failure observations are not portable evidence.",
+      "dependencies": "11.7.2 action/segment ordering in this packet; Clause 15 external procedure interactions NOT YET REGISTERED."
+    },
+    {
+      "id": "S11.7.5-003",
+      "title": "User-defined ordering occurs through image-control boundaries and cooperative synchronization",
+      "source": "11.7.5 p3; J3/24-007 PDF p235.",
+      "source_units": [
+        "p3"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "User-defined ordering of segment Pi on image P to precede segment Qj on image Q occurs when image P executes an image control statement ending Pi, then initiates cooperative synchronization between P and Q, and image Q completes the cooperative synchronization and then executes an image control statement beginning Qj.",
+      "facets": [
+        "user-defined-ordering-initiate-complete-source-control",
+        "user-defined-ordering-boundary-image-control-source-control"
+      ],
+      "pending": {
+        "user-defined-ordering-initiate-complete-source-control": "PENDING source-control plan documenting initiation on P and completion on Q of cooperative synchronization; no executable external synchronization oracle is approved.",
+        "user-defined-ordering-boundary-image-control-source-control": "PENDING source-use plan showing image control statement boundaries around the cooperative synchronization."
+      },
+      "oracle": "This definition cannot be validated by assuming an external procedure synchronized images; any future fixture needs a reviewed non-timing dependency mechanism.",
+      "oracle_limitation": "This source-only catalogue records pending plans only. The specified synchronization, segment delay, segment precedence, or cross-image memory-order effect is not approved as an executable oracle in the current single-image suite: a one-image run would be vacuous and multi-image timing, scheduling, interleaving, progress, deadlock, race, or failure observations are not portable evidence.",
+      "dependencies": "11.7.1 image control statements and 11.7.2 segments in this packet; Clause 15 external procedures NOT YET REGISTERED."
+    },
+    {
+      "id": "S11.7.5-004",
+      "title": "Cooperative synchronization for user-defined ordering includes a dependency; dependency mechanisms are processor dependent",
+      "source": "11.7.5 p4; J3/24-007 PDF p235.",
+      "source_units": [
+        "p4.dependency-requirement",
+        "p4.processor-dependent-mechanisms"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "context-dependent",
+      "definition": "Execution of the cooperative synchronization between images P and Q shall include a dependency forcing execution on image P of the initiating statements to precede execution on image Q of the completing statements. The mechanisms available for creating such a dependency are processor dependent.",
+      "facets": [
+        "cooperative-synchronization-dependency-source-control",
+        "processor-dependent-dependency-mechanism-permission"
+      ],
+      "pending": {
+        "cooperative-synchronization-dependency-source-control": "PENDING source-control/documentary plan requiring a dependency from P initiation to Q completion; no diagnostic or timing oracle is approved.",
+        "processor-dependent-dependency-mechanism-permission": "PENDING permission record: the available mechanisms are processor dependent and no fixture may require or claim a particular mechanism."
+      },
+      "oracle": "The dependency requirement is dynamic and external; the mechanism sentence is processor latitude. This packet records neither as executable evidence.",
+      "oracle_limitation": "This source-only catalogue records pending plans only. The specified synchronization, segment delay, segment precedence, or cross-image memory-order effect is not approved as an executable oracle in the current single-image suite: a one-image run would be vacuous and multi-image timing, scheduling, interleaving, progress, deadlock, race, or failure observations are not portable evidence.",
+      "dependencies": "Clause 15 procedures and processor-dependent facilities NOT YET REGISTERED; 11.7.2 segments in this packet."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_11_7_5.md"
+  },
+  "subunits": {
+    "p4": [
+      "p4.dependency-requirement",
+      "p4.processor-dependent-mechanisms"
+    ]
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "0b8d78f309a1ff8510d28799fa3d16eaec834023d2aff95266c4c48edea846f4",
+  "review_rationale": "Independent fresh-context source review against the pinned J3/24-007 PDF: doc/source_audits/batch_123.json. The reviewer re-read the original sections (PDF p230-235), re-derived unit hashes rather than accepting the author receipt, and independently recomputed the census. Two blocking findings were closed by correction commit cf1fff9 and re-verified by the same reviewer: C117SR-001 (11.7.4 image-set bounds collapsed the positive, upper-bound and no-repeated-values obligations into single facets, contradicting the packet's own compound sweep) and C117SR-002 (11.7.2 p3 and 11.7.5 p4 were dispositioned permission although each carries normative shall restrictions; both are now split so obligations and latitude are disposed separately). Source accounting only: no fixture was bound, authored_facets is unchanged at 1839, and no executable oracle or runtime credit is claimed. All of 11.7 is image execution control and this suite has no multi-image capability, so synchronization, segment ordering, scheduling and failure-dependent behaviour carry no executable oracle."
+}

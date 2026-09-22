@@ -1,0 +1,112 @@
+{
+  "schema_version": 1,
+  "section": "11.7.6",
+  "accounting": [
+    {
+      "unit": "R1173",
+      "disposition": "requirements",
+      "requirements": [
+        "R1173"
+      ]
+    },
+    {
+      "unit": "p1",
+      "disposition": "requirements",
+      "requirements": [
+        "S11.7.6-001"
+      ]
+    },
+    {
+      "unit": "p2",
+      "disposition": "requirements",
+      "requirements": [
+        "S11.7.6-002"
+      ]
+    },
+    {
+      "unit": "note-unnumbered",
+      "disposition": "informative",
+      "rationale": "Informative comparison with SYNC ALL; no independent requirement."
+    }
+  ],
+  "requirements": [
+    {
+      "id": "R1173",
+      "title": "A SYNC TEAM statement specifies a team value with optional sync status list",
+      "source": "11.7.6 R1173; J3/24-007 PDF p235.",
+      "source_units": [
+        "R1173"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "A sync-team-stmt is SYNC TEAM ( team-value [ , sync-stat-list ] ).",
+      "facets": [
+        "sync-team-team-value-only",
+        "sync-team-with-sync-stat-list"
+      ],
+      "pending": {
+        "sync-team-team-value-only": "PENDING source-control plan for sync team team value only; no executable fixture or oracle is approved by this source packet.",
+        "sync-team-with-sync-stat-list": "PENDING source-control plan for sync team with sync stat list; no executable fixture or oracle is approved by this source packet."
+      },
+      "oracle": "",
+      "oracle_limitation": "This source-only catalogue records pending plans only. Local source-form or value-domain facts may become implementable only through a future reviewed fixture that observes a purely local property without duplicating the feature under test and without using unregistered STAT=/ERRMSG= semantics or multi-image synchronization as the oracle.",
+      "dependencies": "R1169/C1179/C1180 in 11.7.3; 11.7.11 effects NOT YET REGISTERED; 16 TEAM_TYPE/ISO_FORTRAN_ENV NOT YET REGISTERED."
+    },
+    {
+      "id": "S11.7.6-001",
+      "title": "SYNC TEAM team-value identifies a permitted related team and the executing image is a member",
+      "source": "11.7.6 p1; J3/24-007 PDF p235.",
+      "source_units": [
+        "p1"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "context-dependent",
+      "definition": "The team-value shall identify an ancestor team, the current team, or a team whose parent is the current team. The executing image shall be a member of the specified team.",
+      "facets": [
+        "sync-team-ancestor-current-child-team-control",
+        "sync-team-unrelated-team-source-violation",
+        "sync-team-executing-image-member-control",
+        "sync-team-nonmember-image-source-violation"
+      ],
+      "pending": {
+        "sync-team-ancestor-current-child-team-control": "PENDING source-control plan where team-value identifies an ancestor team, current team, or child team.",
+        "sync-team-unrelated-team-source-violation": "PENDING documentary violation record where the only changed property is that team-value identifies a team outside the allowed ancestry relation; no diagnostic expectation is approved.",
+        "sync-team-executing-image-member-control": "PENDING source-control plan documenting that the executing image is a member of the specified team.",
+        "sync-team-nonmember-image-source-violation": "PENDING documentary violation record for a nonmember executing image; no diagnostic expectation is approved."
+      },
+      "oracle": "The restrictions depend on runtime team identity and membership. They are not required diagnostics and cannot be tested by manufacturing team states in this source packet.",
+      "oracle_limitation": "This source-only catalogue records pending plans only. The specified synchronization, segment delay, segment precedence, or cross-image memory-order effect is not approved as an executable oracle in the current single-image suite: a one-image run would be vacuous and multi-image timing, scheduling, interleaving, progress, deadlock, race, or failure observations are not portable evidence.",
+      "dependencies": "11.7.9 FORM TEAM NOT YET REGISTERED; 11.1.5 CHANGE TEAM registered; 16 TEAM_TYPE and team inquiries NOT YET REGISTERED."
+    },
+    {
+      "id": "S11.7.6-002",
+      "title": "Successful SYNC TEAM synchronizes the specified team and orders surrounding segments",
+      "source": "11.7.6 p2; J3/24-007 PDF p235.",
+      "source_units": [
+        "p2"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Successful execution of SYNC TEAM synchronizes the team identified by team-value. The following segment on image M is delayed until each other image of the specified team has executed SYNC TEAM specifying the same team as many times as M in this team. Segments before the statement on one image precede segments after the corresponding statement on another image.",
+      "facets": [
+        "sync-team-synchronizes-specified-team-source-control",
+        "sync-team-following-segment-delay-source-control",
+        "sync-team-cross-image-segment-precedence"
+      ],
+      "pending": {
+        "sync-team-synchronizes-specified-team-source-control": "PENDING source-control/documentary plan for synchronization of the specified team; no waiting or release oracle is approved.",
+        "sync-team-following-segment-delay-source-control": "PENDING source-control plan for same-team same-count delay; single-image evidence would be vacuous.",
+        "sync-team-cross-image-segment-precedence": "PENDING documentary plan for cross-image segment precedence around corresponding SYNC TEAM statements."
+      },
+      "oracle": "All owned effects are cross-image team synchronization effects; no single-image run can non-vacuously prove them.",
+      "oracle_limitation": "This source-only catalogue records pending plans only. The specified synchronization, segment delay, segment precedence, or cross-image memory-order effect is not approved as an executable oracle in the current single-image suite: a one-image run would be vacuous and multi-image timing, scheduling, interleaving, progress, deadlock, race, or failure observations are not portable evidence.",
+      "dependencies": "11.7.2 segments in this packet; 11.7.9 FORM TEAM and 11.7.11 STAT=/ERRMSG= NOT YET REGISTERED; 16 TEAM_TYPE NOT YET REGISTERED."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_11_7_6.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "78b107c735ed786495d5cf738ea4d54ae571b21d80ec0c589e2a37d140d9758a",
+  "review_rationale": "Independent fresh-context source review against the pinned J3/24-007 PDF: doc/source_audits/batch_123.json. The reviewer re-read the original sections (PDF p230-235), re-derived unit hashes rather than accepting the author receipt, and independently recomputed the census. Two blocking findings were closed by correction commit cf1fff9 and re-verified by the same reviewer: C117SR-001 (11.7.4 image-set bounds collapsed the positive, upper-bound and no-repeated-values obligations into single facets, contradicting the packet's own compound sweep) and C117SR-002 (11.7.2 p3 and 11.7.5 p4 were dispositioned permission although each carries normative shall restrictions; both are now split so obligations and latitude are disposed separately). Source accounting only: no fixture was bound, authored_facets is unchanged at 1839, and no executable oracle or runtime credit is claimed. All of 11.7 is image execution control and this suite has no multi-image capability, so synchronization, segment ordering, scheduling and failure-dependent behaviour carry no executable oracle."
+}

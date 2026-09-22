@@ -1,0 +1,208 @@
+{
+  "schema_version": 1,
+  "section": "11.7.2",
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "definition",
+      "requirements": [
+        "S11.7.2-001"
+      ],
+      "rationale": "Defines segment boundaries on an image."
+    },
+    {
+      "unit": "p2",
+      "disposition": "permission",
+      "requirements": [
+        "S11.7.2-002"
+      ],
+      "rationale": "Defines ordered/unordered segments and gives execution-overlap latitude for unordered segments."
+    },
+    {
+      "unit": "p3",
+      "disposition": "structural",
+      "requirements": [
+        "S11.7.2-003",
+        "S11.7.2-004"
+      ],
+      "rationale": "Mixed paragraph split into fine units: the first sentences are unordered-segment permissions/exceptions, while the otherwise bullets are normative shall restrictions."
+    },
+    {
+      "unit": "p3.atomic-event-notify-permissions",
+      "disposition": "permission",
+      "requirements": [
+        "S11.7.2-003"
+      ],
+      "rationale": "Accounts only the atomic, event, notify, and satisfied NOTIFY= exceptions allowed in unordered segments."
+    },
+    {
+      "unit": "p3.otherwise-ordering-restrictions",
+      "disposition": "requirements",
+      "requirements": [
+        "S11.7.2-004"
+      ]
+    },
+    {
+      "unit": "p4",
+      "disposition": "requirements",
+      "requirements": [
+        "S11.7.2-005"
+      ]
+    },
+    {
+      "unit": "note1",
+      "disposition": "informative",
+      "rationale": "Informative note explaining partial order; no independent requirement."
+    },
+    {
+      "unit": "note2",
+      "disposition": "informative",
+      "rationale": "Informative expectation of equitable resources; no portable oracle or normative processor requirement."
+    },
+    {
+      "unit": "note3",
+      "disposition": "informative",
+      "rationale": "Informative optimization explanation."
+    },
+    {
+      "unit": "note4",
+      "disposition": "informative",
+      "rationale": "Informative memory model and optimization explanation; atomic procedure details are future dependencies."
+    },
+    {
+      "unit": "note5",
+      "disposition": "informative",
+      "rationale": "Informative warning about indefinite suspension from incorrect sequencing; no test oracle."
+    }
+  ],
+  "requirements": [
+    {
+      "id": "S11.7.2-001",
+      "title": "Segments are statement sequences before, between, or after image control statements on an image",
+      "source": "11.7.2 p1; J3/24-007 PDF p231.",
+      "source_units": [
+        "p1"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "On each image, the sequence of statements before the first image control statement, between two image control statements, or after the last image control statement is a segment. The immediately preceding segment includes expression evaluation within the image control statement; if no image control statement executes before termination, the whole statement execution sequence is one segment.",
+      "facets": [
+        "segment-before-between-after-image-control",
+        "preceding-segment-includes-ics-expression-evaluation",
+        "no-image-control-entire-execution-single-segment"
+      ],
+      "pending": {
+        "segment-before-between-after-image-control": "PENDING source-use plan identifying segments from image-control-statement placement in source.",
+        "preceding-segment-includes-ics-expression-evaluation": "PENDING source-control plan recording that expression evaluation within an image control statement belongs to the immediately preceding segment; no side-effect count oracle is approved.",
+        "no-image-control-entire-execution-single-segment": "PENDING source-use plan for a program with no image control statement before termination, recorded as one segment only for later source-use reasoning."
+      },
+      "oracle": "These definitions are needed by later ordering rules but do not by themselves provide an executable single-image observation.",
+      "oracle_limitation": "This source-only catalogue records pending plans only. Local source-form or value-domain facts may become implementable only through a future reviewed fixture that observes a purely local property without duplicating the feature under test and without using unregistered STAT=/ERRMSG= semantics or multi-image synchronization as the oracle.",
+      "dependencies": "11.7.1 in this packet; 5.3.5 execution sequence NOT YET REGISTERED."
+    },
+    {
+      "id": "S11.7.2-002",
+      "title": "Programs can establish segment ordering; otherwise cross-image segments are unordered and may overlap",
+      "source": "11.7.2 p2; J3/24-007 PDF p231.",
+      "source_units": [
+        "p2"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "By image control statements or user-defined ordering, a program can ensure that one image segment precedes or succeeds a segment on another image. If the program does not ensure this, the segments are unordered; depending on relative execution speeds, some or all execution of the unordered segments may take place at the same time.",
+      "facets": [
+        "image-control-or-user-defined-ordering-source-control",
+        "unordered-segments-source-control",
+        "unordered-segment-overlap-permission"
+      ],
+      "pending": {
+        "image-control-or-user-defined-ordering-source-control": "PENDING source-control plan showing explicit ordering constructs; actual ordering evidence belongs to the construct owners.",
+        "unordered-segments-source-control": "PENDING source-control plan identifying a pair of segments for which no standard ordering mechanism is present.",
+        "unordered-segment-overlap-permission": "PENDING permission record: the standard allows overlap depending on relative execution speeds, but no fixture may assert that a processor exercised this latitude."
+      },
+      "oracle": "The overlap sentence is processor/scheduler latitude, not an obligation. No runtime timing or interleaving observation is a portable oracle.",
+      "oracle_limitation": "This source-only catalogue records pending plans only. The specified synchronization, segment delay, segment precedence, or cross-image memory-order effect is not approved as an executable oracle in the current single-image suite: a one-image run would be vacuous and multi-image timing, scheduling, interleaving, progress, deadlock, race, or failure observations are not portable evidence.",
+      "dependencies": "11.7.3-11.7.6 in this packet; 11.7.7-11.7.11 NOT YET REGISTERED; user-defined ordering 11.7.5 in this packet."
+    },
+    {
+      "id": "S11.7.2-003",
+      "title": "Atomic, event, notify, and satisfied NOTIFY= interactions are permitted in specified unordered segments",
+      "source": "11.7.2 p3 first three sentences; J3/24-007 PDF p231.",
+      "source_units": [
+        "p3.atomic-event-notify-permissions"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The standard permits specified unordered-segment interactions involving atomic subroutines, event variables or notify variables, and a variable defined in an unordered segment only by an assignment statement with a NOTIFY= specifier after a satisfying NOTIFY WAIT statement.",
+      "facets": [
+        "atomic-unordered-segment-permission",
+        "event-notify-unordered-segment-permission",
+        "notify-assignment-after-wait-permission"
+      ],
+      "pending": {
+        "atomic-unordered-segment-permission": "PENDING permission record for atomic subroutine references/definitions in unordered segments; no processor behavior is claimed.",
+        "event-notify-unordered-segment-permission": "PENDING permission record for event and notify variables in the specified unordered segments.",
+        "notify-assignment-after-wait-permission": "PENDING permission record for a variable defined only by NOTIFY= assignment and subsequently used after a satisfying NOTIFY WAIT."
+      },
+      "oracle": "These are source permissions/exceptions. They do not prove synchronization, fairness, or atomic implementation behavior.",
+      "oracle_limitation": "This source-only catalogue records pending plans only. The specified synchronization, segment delay, segment precedence, or cross-image memory-order effect is not approved as an executable oracle in the current single-image suite: a one-image run would be vacuous and multi-image timing, scheduling, interleaving, progress, deadlock, race, or failure observations are not portable evidence.",
+      "dependencies": "11.7.7-11.7.8 event/notify material NOT YET REGISTERED; Clause 16/17 atomic and notify facilities NOT YET REGISTERED."
+    },
+    {
+      "id": "S11.7.2-004",
+      "title": "Unordered cross-image segments are restricted for ordinary variables, coarray subobjects, and effective arguments",
+      "source": "11.7.2 p3 otherwise bullets; J3/24-007 PDF p231.",
+      "source_units": [
+        "p3.otherwise-ordering-restrictions"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "context-dependent",
+      "definition": "Except for the specified atomic, event, notify, and satisfied NOTIFY= cases, unordered segments shall not contain conflicting cross-image ordinary variable actions, shall not inquire about or change specified coarray subobject properties across images unless ordered, and shall not access an effective argument on another image while the defining noncoarray dummy argument procedure invocation is in execution unless the other segment precedes the first or succeeds the last procedure segment.",
+      "facets": [
+        "unordered-variable-conflict-source-violation",
+        "unordered-coarray-subobject-conflict-source-violation",
+        "dummy-effective-argument-unordered-conflict-source-violation"
+      ],
+      "pending": {
+        "unordered-variable-conflict-source-violation": "PENDING documentary violation record for the first otherwise bullet; no diagnostic expectation or executable oracle is approved.",
+        "unordered-coarray-subobject-conflict-source-violation": "PENDING documentary violation record for the coarray subobject allocation, pointer association, dynamic type, bounds, shape, and deferred-parameter bullet.",
+        "dummy-effective-argument-unordered-conflict-source-violation": "PENDING documentary violation record for the effective-argument bullet involving procedure execution over segments Pi through Pk."
+      },
+      "oracle": "These are dynamic cross-image program restrictions. They are not required diagnostics, and observing a violation would require nonportable multi-image interleaving or race evidence.",
+      "oracle_limitation": "This source-only catalogue records pending plans only. The specified synchronization, segment delay, segment precedence, or cross-image memory-order effect is not approved as an executable oracle in the current single-image suite: a one-image run would be vacuous and multi-image timing, scheduling, interleaving, progress, deadlock, race, or failure observations are not portable evidence.",
+      "dependencies": "Clause 8/9 variable, allocation, pointer and coarray fundamentals registered; Clause 15 procedure invocation NOT YET REGISTERED; 11.7.7-11.7.11 NOT YET REGISTERED."
+    },
+    {
+      "id": "S11.7.2-005",
+      "title": "Actions on a variable are ordered when their containing segments are ordered",
+      "source": "11.7.2 p4; J3/24-007 PDF p231.",
+      "source_units": [
+        "p4"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "If an action regarding X occurs in segment Pi on image P, segment Pi precedes segment Qj on image Q, and an action regarding X occurs in segment Qj, then the action regarding X in Pi precedes the action regarding X in Qj.",
+      "facets": [
+        "ordered-segment-actions-precedence"
+      ],
+      "pending": {
+        "ordered-segment-actions-precedence": "PENDING source-control/documentary plan linking already established segment precedence to action precedence for X; no executable cross-image oracle is approved."
+      },
+      "oracle": "The rule transfers established segment ordering to actions regarding X. It does not create a way to observe multi-image ordering in this suite.",
+      "oracle_limitation": "This source-only catalogue records pending plans only. The specified synchronization, segment delay, segment precedence, or cross-image memory-order effect is not approved as an executable oracle in the current single-image suite: a one-image run would be vacuous and multi-image timing, scheduling, interleaving, progress, deadlock, race, or failure observations are not portable evidence.",
+      "dependencies": "11.7.2 p2-p3 in this packet; all ordering construct owners; variable/action fundamentals in Clauses 7-10 registered where applicable."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_11_7_2.md"
+  },
+  "subunits": {
+    "p3": [
+      "p3.atomic-event-notify-permissions",
+      "p3.otherwise-ordering-restrictions"
+    ]
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "ffc775c6b4a10efbc8091e13d263da4a7cd23f6a172db94d2eddfdb3d2442a78",
+  "review_rationale": "Independent fresh-context source review against the pinned J3/24-007 PDF: doc/source_audits/batch_123.json. The reviewer re-read the original sections (PDF p230-235), re-derived unit hashes rather than accepting the author receipt, and independently recomputed the census. Two blocking findings were closed by correction commit cf1fff9 and re-verified by the same reviewer: C117SR-001 (11.7.4 image-set bounds collapsed the positive, upper-bound and no-repeated-values obligations into single facets, contradicting the packet's own compound sweep) and C117SR-002 (11.7.2 p3 and 11.7.5 p4 were dispositioned permission although each carries normative shall restrictions; both are now split so obligations and latitude are disposed separately). Source accounting only: no fixture was bound, authored_facets is unchanged at 1839, and no executable oracle or runtime credit is claimed. All of 11.7 is image execution control and this suite has no multi-image capability, so synchronization, segment ordering, scheduling and failure-dependent behaviour carry no executable oracle."
+}

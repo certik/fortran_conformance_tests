@@ -3725,6 +3725,69 @@ Source accounting only: no fixture bound, no case added, no compiler invoked.
 `tests/expected_failures.txt` at **807 lines**, byte-unchanged.
 See `doc/source_audits/batch_122.json`.
 
+## Batch 123 — image control statements, segments and the SYNC statements
+
+Registers **11.7.1 Image control statements, 11.7.2 Segments, 11.7.3 SYNC ALL,
+11.7.4 SYNC IMAGES, 11.7.5 SYNC MEMORY and 11.7.6 SYNC TEAM** — 43 base units
+over PDF pages 230–235, of which only 10 were already counted, so **33 are
+newly accounted**, in six catalogues with 28 requirements and 74 pending
+facets. 11.7.1 and 11.7.2 contain no numbered items at all, which is why their
+base units are accounted entirely fresh.
+
+The reviewer **blocked** the packet on two findings, both about decomposition
+and disposition rather than about the author's observability judgement, which
+was endorsed unchanged.
+
+C117SR-001 is a self-contradiction worth noting: 11.7.4 p1 and p2 collapsed the
+*positive*, *upper-bound* and *no-repeated-values* obligations into single
+facets — while the packet's **own compound sweep** correctly listed them
+separately. The sweep and the catalogue disagreed with each other. They are now
+split, all source-control, with **no** diagnostic expectation, because an
+out-of-range image set is a value requirement on the *program*, not something a
+conforming processor is required to reject.
+
+C117SR-002 is the more consequential. **11.7.2 p3 and 11.7.5 p4 were
+dispositioned `permission`** although each carries normative `shall`
+restrictions — "shall not be referenced, defined, or become undefined … unless
+the segments are ordered", and "shall include a dependency". Only the
+atomic/event/notify exceptions, and the sentence saying the dependency
+*mechanisms* are processor dependent, are genuine latitude. Both units were
+**split** into a requirements half and a permission half rather than merely
+re-dispositioned, since each genuinely mixes the two; the reviewer specifically
+confirmed the resulting structural parents are not silently emptied of content,
+and re-read 11.7.2 to confirm no other ordering `shall` remained misfiled.
+
+That finding matters more than its size suggests. **11.7.2 defines the ordering
+model that the whole of 11.7 — and every synchronization statement in the
+language — depends on.** Recording its `shall not` restrictions as processor
+latitude would have propagated a false permission through every section
+downstream. It is also a clean illustration of why latitude is checked in
+**both** directions: a requirement misfiled as a permission is exactly as much
+a defect as a permission inflated into a requirement.
+
+The correction is what created this packet's **four fine units**, where the
+original reported zero; the reviewer confirmed the base count is still 43 and
+that nothing was promoted into a base unit or left unaccounted.
+
+Implementability is **26 implementable / 26 source-control / 22
+unimplementable-context-dependent**, and the reviewer, required to report
+over-suppression as readily as under-suppression, would reclassify nothing.
+The unimplementable set is the honest one: synchronization actually occurring,
+segment ordering and precedence, timing, scheduling, interleaving, progress,
+team membership runtime state, and anything needing a **failed or stopped
+image**, which cannot be portably induced. That the majority of this scope
+cannot be executed is the correct consequence of the batch112 precedent, not a
+coverage shortfall — and it is far better than facets a single-image run would
+satisfy **vacuously**.
+
+The pre-existing fixture check over `R1168`–`R1173` and `C1179`–`C1182` found
+no legacy cases, including the `SYNC ALL` material flagged as the likeliest to
+carry them.
+
+Source accounting only. `authored_facets` stays **1,839**, cases **2,134**, and
+`tests/expected_failures.txt` byte-unchanged at **807 lines**.
+See `doc/source_audits/batch_123.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must

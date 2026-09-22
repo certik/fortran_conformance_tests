@@ -1,0 +1,147 @@
+{
+ "schema_version": 1,
+ "review_type": "independent-image-execution-control-and-segments-source-review",
+ "review_date": "2026-09-21",
+ "baseline_commit": "fe551fe",
+ "packet_base_commit": "df0feaf",
+ "state": "reviewed-source-only",
+ "packet_kind": "source",
+ "scope": {
+  "sections": ["11.7.1", "11.7.2", "11.7.3", "11.7.4", "11.7.5", "11.7.6"],
+  "section_titles_verified_from_source": {
+   "11.7.1": "Image control statements",
+   "11.7.2": "Segments",
+   "11.7.3": "SYNC ALL statement",
+   "11.7.4": "SYNC IMAGES statement",
+   "11.7.5": "SYNC MEMORY statement",
+   "11.7.6": "SYNC TEAM statement"
+  },
+  "pdf_pages": "230-235",
+  "base_units": 43,
+  "fine_units": 4,
+  "fine_units_note": "The original packet reported 0 fine units. The four fine units were created by the C117SR-002 correction, which split 11.7.2 p3 and 11.7.5 p4 into a requirements half and a permission half each. The reviewer confirmed the base-unit count is still 43, that nothing was promoted into a base unit, and that each new fine unit is properly accounted.",
+  "already_counted_numbered_units": 10,
+  "newly_accounted_base_units": 33,
+  "new_catalogues": 6,
+  "new_requirements": 28,
+  "new_pending_facets": 74,
+  "new_cases": 0,
+  "note": "The 10 numbered items are R1168, R1169, C1179 and C1180 (11.7.3), R1170, R1171, C1181 and C1182 (11.7.4), R1172 (11.7.5) and R1173 (11.7.6). 11.7.1 and 11.7.2 contain NO numbered items, which is why their base units are entirely newly accounted.",
+  "per_section": {
+   "11.7.1": {"base_units": 3, "already_counted": 0, "newly_accounted": 3},
+   "11.7.2": {"base_units": 9, "already_counted": 0, "newly_accounted": 9},
+   "11.7.3": {"base_units": 8, "already_counted": 4, "newly_accounted": 4},
+   "11.7.4": {"base_units": 12, "already_counted": 4, "newly_accounted": 8},
+   "11.7.5": {"base_units": 7, "already_counted": 1, "newly_accounted": 6},
+   "11.7.6": {"base_units": 4, "already_counted": 1, "newly_accounted": 3}
+  }
+ },
+ "why_this_target": "One of three parallel packets closing Clause 11. 11.7.2 Segments is the conceptual core: it defines the ordering model that the whole of 11.7, and every synchronization statement in the language, depends on. A misclassification there does more downstream damage than anywhere else in the clause.",
+ "authoring": {
+  "author_context": "fresh subagent context in an isolated worktree based on df0feaf",
+  "author_packet": "c338bd2",
+  "correction_commit": "cf1fff9",
+  "source_read_receipt": "receipts-batch123-source.json",
+  "source_read_receipt_sha256": "90c7aa53a78c7332bcfad1d288651c842cdb80c5e6ba83d07c4d558e28a0d853",
+  "note": "Authored in parallel with batch122 (11.2-11.6) and batch124 (11.7.7-11.7.11) from the same base."
+ },
+ "independent_review": {
+  "reviewer_distinct_from_author": true,
+  "decision": "accept_after_corrections",
+  "blocking_findings": 2,
+  "scoped_original_units_read_in_full": 43,
+  "compiler_invocations": 0,
+  "reviewer_re_derived_unit_hashes": true
+ },
+ "findings": [
+  {
+   "id": "C117SR-001",
+   "severity": "blocking",
+   "location": "11.7.4 p1 and p2, PDF p233",
+   "source_text": "p1: 'the value of each element shall be positive and not greater than the number of images in the current team, and there shall be no repeated values.' p2: 'its value shall be positive and not greater than the number of images in the current team.'",
+   "issue": "The packet's own compound sweep correctly identified separate positive and upper-bound obligations, but the catalogue collapsed them into single facets array-image-set-out-of-range-source-violation and scalar-image-set-out-of-range-source-violation. The sweep and the catalogue contradicted each other, and the 'no repeated values' obligation was not carried separately.",
+   "precedent": "Compound-obligation precedent (C1161): a compound shall sentence can carry more than one obligation.",
+   "closure": "Closed in cf1fff9. The array case (p1) now carries a positive/in-range control plus separate nonpositive, too-large and repeated-value facets; the scalar case (p2) carries a control plus separate nonpositive and too-large facets. All are source-control; no diagnostic expectation was added, because these are value requirements on the program rather than constraints a processor is required to diagnose.",
+   "reviewer_verification": "Re-verified; the rendered compound sweep now agrees with the catalogue."
+  },
+  {
+   "id": "C117SR-002",
+   "severity": "blocking",
+   "location": "11.7.2 p3 (PDF p231) and 11.7.5 p4 (PDF p235)",
+   "source_text": "11.7.2 p3 otherwise bullets: 'it shall not be referenced, defined, or become undefined ... unless the segments are ordered'; 'that subobject shall not be referenced, defined, or have ... inquired about ... unless the segments are ordered'; 'the effective argument shall not be referenced, defined, or become undefined ... unless ...'. 11.7.5 p4: 'Execution of the cooperative synchronization ... shall include a dependency ... The mechanisms available for creating such a dependency are processor dependent.'",
+   "issue": "Both units were dispositioned permission, but each contains normative shall restrictions. Only the atomic/event/notify exceptions in 11.7.2 p3, and only the 'mechanisms ... are processor dependent' sentence in 11.7.5 p4, are genuine latitude.",
+   "precedent": "Processor latitude is a permission, never a requirement, and the check runs in BOTH directions: a requirement misfiled as a permission is exactly as much a defect as the reverse. Also engages the rule distinguishing a permission from a merely absent restriction.",
+   "closure": "Closed in cf1fff9 by SPLITTING rather than re-dispositioning, since each unit genuinely mixes both. 11.7.2 p3 -> p3.atomic-event-notify-permissions (permission, covering only the three may-exceptions) and p3.otherwise-ordering-restrictions (requirements, covering the three shall-not bullets). 11.7.5 p4 -> p4.dependency-requirement (requirements) and p4.processor-dependent-mechanisms (permission). The p3 and p4 parents became structural.",
+   "reviewer_verification": "Re-verified. The reviewer specifically confirmed the structural parents are NOT silently emptied of content - they map to the split requirements and are backed by declared subunits - and independently re-read 11.7.2 to confirm no other ordering shall remains disposed as mere definition or permission.",
+   "why_it_mattered": "11.7.2 defines the ordering model on which all of 11.7 depends. Treating its shall-not restrictions as processor latitude would have propagated a false permission through every synchronization section."
+  }
+ ],
+ "pre_existing_fixture_check": {
+  "why": "Batch113 was blocked because it registered numbered rules that already had legacy fixture files. Registering such a rule STRUCTURALLY FORCES binding them, because validate_case_requirement runs once a rule is catalogued and rejects an empty facet list. A source packet must never bind fixtures.",
+  "identifiers_checked": ["R1168", "R1169", "C1179", "C1180", "R1170", "R1171", "C1181", "C1182", "R1172", "R1173"],
+  "result": "No pre-existing cases under tests/ for any identifier, including the SYNC ALL material that was flagged as the likeliest to carry legacy cases. Nothing needed deferral.",
+  "independently_confirmed_by_reviewer": true
+ },
+ "attribution_table_audited": {
+  "status": "The reviewer audited the attribution table against the source rather than accepting it.",
+  "diagnostic_facets": 7,
+  "verdict": "All seven are filed under numbered constraints whose prohibiting words are accurate: C1179 duplicate STAT/ERRMSG specifiers, C1180 coindexed STAT/ERRMSG variables, C1181 image-set rank, C1182 image-set dependence on the stat or errmsg variable.",
+  "c1182_note": "C1182 was the author's own declared top interpretation risk. The reviewer confirmed it is a genuine numbered constraint, valid so long as any future fixture keeps dependency as the only differing property between the invalid program and its control."
+ },
+ "implementability": {
+  "split": "26 implementable / 26 source-control / 22 unimplementable-context-dependent (74 facets)",
+  "split_before_correction": "26 / 24 / 22 (72 facets); the two facets added by the C117SR-001 correction are source-control",
+  "principle": "This suite has no multi-image capability. A facet may carry a diagnostic expectation only if a conforming processor is REQUIRED to reject, and an executable oracle only if a conforming SINGLE-IMAGE program can PORTABLY OBSERVE the effect. A dynamic multi-image synchronization obligation satisfies neither.",
+  "classified_unimplementable": "Synchronization actually occurring, waiting and release, segment ordering and precedence, timing, scheduling, interleaving and progress, team membership runtime state, and any failure-dependent behaviour - a failed or stopped image cannot be portably induced.",
+  "both_directions_audited": "The reviewer was required to report over-suppression as readily as under-suppression, on the standing principle that an unobservability claim which is too broad is itself a defect. The reviewer would not reclassify any existing facet in either direction: local syntax, constraint diagnostics, coindexed and dependency checks, and local value-domain controls remain implementable or source-control rather than buried under a blanket multi-image disclaimer."
+ },
+ "permissions_recorded": [
+  "11.7.2 p2: unordered overlap latitude.",
+  "11.7.2 p3 (split half): the atomic, event and notify unordered exceptions.",
+  "11.7.5 p4 (split half): the mechanisms available for creating a dependency are processor dependent."
+ ],
+ "explicit_limitations": [
+  "This is source accounting only. No fixture was bound, no case was added, no compiler was invoked and no runtime credit is claimed.",
+  "All 74 facets remain pending. Registering a requirement is not evidence that any processor implements it.",
+  "The majority of this scope is unimplementable in the current single-image observational regime. That is the accurate result of applying the batch112 precedent, not a coverage shortfall.",
+  "SYNC TEAM syntax is locally checkable, but team CONSTRUCTION remains unregistered, so the facets depending on it cannot be discharged yet.",
+  "Non-numbered value shall rules in 11.7.4 intentionally carry NO diagnostic expectation: a processor is not required to reject an out-of-range image set.",
+  "Clause 16 ISO_FORTRAN_ENV (TEAM_TYPE, STAT_FAILED_IMAGE, STAT_STOPPED_IMAGE) and Clause 15 procedures are unregistered dependencies; 11.1.5 CHANGE TEAM and 11.1.6 CRITICAL are registered and were cited rather than duplicated."
+ ],
+ "preservation": {
+  "cases_before": 2134,
+  "cases_after": 2134,
+  "authored_facets_before": 1839,
+  "authored_facets_after": 1839,
+  "accounted_base_before": 2290,
+  "accounted_base_after": 2323,
+  "unresolved_base_before": 4183,
+  "unresolved_base_after": 4150,
+  "declared_facets_before": 6970,
+  "declared_facets_after": 7044,
+  "pending_facets_before": 5109,
+  "pending_facets_after": 5183,
+  "requirements_before": 1602,
+  "requirements_after": 1630,
+  "detailed_catalogues_before": 269,
+  "detailed_catalogues_after": 275,
+  "fixture_review_states_after": "1821 reference-validated / 274 source-reviewed / 1 needs-oracle",
+  "expected_failures_lines": 807,
+  "baseline_lines_changed_by_this_packet": 0,
+  "tests_directory_diff": "empty"
+ },
+ "validation_snapshot": {
+  "detailed_catalogues": 275,
+  "requirements": 1630,
+  "declared_facets": 7044,
+  "pending_facets": 5183,
+  "authored_facets": 1839,
+  "catalogue_reviews_reviewed": 274,
+  "catalogue_reviews_draft": 1,
+  "catalogue_reviews_draft_note": "Only 18.3.7 remains draft; it is pre-existing in doc/catalogues/c_interop.json and predates this session.",
+  "normal_audit_exit": 1,
+  "normal_audit_block": "the single retained needs-oracle real-BOZ case, which is the intended state and not a regression",
+  "python_suite_tests": 984,
+  "python_suite_result": "OK"
+ }
+}
