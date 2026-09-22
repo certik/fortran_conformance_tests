@@ -3461,6 +3461,60 @@ There are now **2,089cases**, with **263catalogues,1,579requirements,
 states of **1,776 reference-validated /274source-reviewed /1needs-oracle**.
 See `doc/source_audits/batch_118.json`.
 
+The hundred-and-nineteenth checkpoint is the first of a **fixtures-only**
+round. It establishes **13 of the 15** pending facets of **10.1.5.2.2 integer
+division** and **10.1.5.3.1 the character intrinsic operation**, taking the
+corpus from **2,089 to 2,102 cases**.
+
+These two subclauses were chosen because the batch101 review singled them out
+as the part of the numeric and character material that is **genuinely
+portable**. Everything around them is hedged — 7.4.3 makes real and complex
+values approximations, and 10.1.5.2.4 lets the processor evaluate any
+mathematically equivalent alternative — but these two are exact. Integer
+division requires the result to be *the integer closest to the mathematical
+quotient and between zero and the quotient inclusively*, which is truncation
+toward zero; concatenation appends the right operand to the left and its
+length is the sum.
+
+Non-vacuity was again proved **by mutation**. Twenty-eight numeric literals
+perturbed by one, nine character literals altered at equal length, three
+kind-expression expectations, thirteen completion tokens, an operand-order
+swap and a changed `LEN` assertion — all failed as required.
+
+**One mutation survived, and it is recorded rather than glossed.** Appending a
+trailing blank to an expected character literal survives for all nine
+character value assertions, because **character comparison blank-pads the
+shorter operand**. That is the exact trap this project has warned about since
+batch099. It is non-blocking only because each value comparison is *paired*
+with an explicit `LEN` assertion and with test-module content pins, so a wrong
+length is still caught. The design holds as a pair; the value comparison alone
+does not.
+
+The second honest limitation concerns the decisive question for integer
+division. The standard requires truncation toward zero; the common wrong
+implementation is flooring. Only **2 of the 4** integer-division fixtures
+actually discriminate between them — the negative-dividend case, where `-8/3`
+is `-2` under the standard and `-3` under flooring, and the negative-divisor
+case. The other two use operands where truncation and flooring agree, and so
+establish the result type and the quotient but say **nothing about the
+direction**. That is worth stating plainly rather than reporting "4 of 4
+established".
+
+No fixture computes an expected value with `MOD`, `MODULO`, `FLOOR`,
+`CEILING`, `INT` or `NINT` for division, or with `TRIM`, `INDEX`, `REPEAT` or
+`LEN_TRIM` for concatenation — expected values are hand-computed literals.
+Table 10.4 was verified row by row. Two facets were correctly left pending:
+nondefault character kinds are processor dependent, and a mixed-kind
+concatenation is a diagnostic boundary rather than a runtime effect.
+
+I reproduced both runs before recording: 13 of 13 under the frozen LFortran,
+13 of 13 under gfortran 16.1.0 `-std=f2023`, with agreement on 13 of 13. No
+LFortran gap appeared and `tests/expected_failures.txt` is unchanged.
+
+There are now **2,102cases**, with **1,807direct facets** and **5,077pending**,
+and fixture review states of **1,789 reference-validated /274/1**.
+See `doc/source_audits/batch_119.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must

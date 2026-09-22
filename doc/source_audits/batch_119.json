@@ -1,0 +1,106 @@
+{
+  "schema_version": 1,
+  "review_type": "independent-exact-arithmetic-fixture-review",
+  "review_date": "2026-09-21",
+  "baseline_commit": "155d775",
+  "state": "reference-validated-runtime-effects",
+  "packet_kind": "FIXTURE",
+  "scope": {
+    "targets": ["10.1.5.2.2 integer division", "10.1.5.3.1 character intrinsic operation"],
+    "pending_before": {"10.1.5.2.2": 4, "10.1.5.3.1": 11, "total": 15},
+    "facets_established": 13,
+    "facets_left_pending": 2,
+    "new_cases": 13,
+    "left_pending": {
+      "nondefault-same-kind-profile": "nondefault character kinds are processor dependent",
+      "different-kind-boundary": "a mixed-kind concatenation is a diagnostic boundary, not a portable runtime effect"
+    }
+  },
+  "why_this_target": "The batch101 review singled these two subclauses out as the part of the numeric and character operation material that is GENUINELY PORTABLE. Everything around them is hedged - 7.4.3 makes real and complex values approximations, and 10.1.5.2.4 permits the processor to evaluate any mathematically equivalent alternative - but these two are exact. Integer division requires the result to be the integer closest to the mathematical quotient and between zero and the quotient inclusively, which is truncation toward zero. Concatenation appends the right operand to the left, and its length is the sum of the operand lengths.",
+  "authoring": {
+    "author_context": "fresh subagent context in an isolated worktree based on 155d775",
+    "author_packet": "40c6db2",
+    "generator": "tools/generate_exact_arithmetic_fixtures.py",
+    "generator_check_determinism": "passed - regeneration is byte-identical"
+  },
+  "independent_review": {
+    "receipt": "exact-arith-fixture-review.json",
+    "reviewer_distinct_from_author": true,
+    "decision": "eligible-with-nonblocking-observations",
+    "blocking_findings": 0
+  },
+  "non_vacuity_by_mutation": {
+    "principle": "Per the batch118 precedent, non-vacuity is proved by MUTATION, not inspection. Inspecting a fixture and concluding it looks right is not evidence.",
+    "mutations_applied_and_failed_as_required": [
+      "28 numeric expected literals perturbed by one - all failed",
+      "9 character expected literals altered at equal length - all failed",
+      "3 kind-expression expectations perturbed - all failed",
+      "13 completion-token literals altered - all failed the suite stdout expectation",
+      "an operand-order swap in a concatenation fixture - failed",
+      "a LEN assertion changed from 5 to 4 - failed"
+    ],
+    "mutation_that_SURVIVED": {
+      "mutation": "appending a trailing blank to an expected character literal",
+      "result": "survived for all 9 character value assertions",
+      "why": "character comparison BLANK-PADS the shorter operand, so a value comparison against a longer literal still succeeds",
+      "why_non_blocking": "Each value comparison is PAIRED with an explicit LEN assertion and with test-module content pins, so a wrong length is caught even though the value comparison alone would not catch it. The design holds as a pair; the reviewer judged it non-blocking on that basis.",
+      "recorded_as_a_limitation": true
+    }
+  },
+  "truncation_versus_flooring": {
+    "why_it_matters": "The standard requires truncation toward zero. The common wrong implementation is flooring. A fixture whose operands give the same answer under both establishes the result type and the basic quotient, but says NOTHING about the truncation direction.",
+    "fixtures_that_discriminate": 2,
+    "fixtures_total": 4,
+    "discriminating_cases": [
+      "negative dividend: -8/3 is -2 under the standard and -3 under flooring",
+      "negative divisor: 8/(-3), likewise discriminating"
+    ],
+    "non_discriminating_cases": "The other two use operands where truncation and flooring agree; they establish the result type and quotient rather than the direction.",
+    "recorded_rather_than_glossed": true
+  },
+  "oracle_independence": "No fixture computes an expected value with MOD, MODULO, FLOOR, CEILING, INT or NINT for division, or with TRIM, INDEX, REPEAT or LEN_TRIM for concatenation. Expected values are hand-computed literal constants. No oracle is built over real or complex values.",
+  "hand_oracles": "Every oracle independently recomputed by the reviewer from the source text; no differences found.",
+  "table_10_4": "Verified row by row from the table itself, because extraction interleaves columns: the concatenation operator, its name, the x1 // x2 form, and the operation description.",
+  "compiler_observations": {
+    "frozen_target": "lfortran 0.65.0-411-ga0afaa840b-dirty - the only LFortran permitted",
+    "frozen_target_result": "13 of 13 pass",
+    "qualifying_reference": "gfortran 16.1.0 with -std=f2023",
+    "reference_result": "13 of 13 pass; the runner reports agreement on 13 of 13 cases",
+    "reproduced_by_integrator": true,
+    "lfortran_gaps_observed": "none",
+    "caveat": "Compiler consensus is NOT an oracle. The hand arithmetic was verified independently and would have overridden both had they disagreed."
+  },
+  "explicit_limitations": [
+    "13 facets of 10.1.5.2.2 and 10.1.5.3.1 are established. Two remain pending as non-portable or diagnostic-boundary claims.",
+    "Only 2 of the 4 integer-division fixtures distinguish truncation toward zero from flooring. The other two establish the result type and quotient only.",
+    "The character value comparisons do not by themselves catch a trailing-blank difference, because comparison blank-pads. They are sound only in combination with the explicit LEN assertions.",
+    "This establishes integer division and character concatenation semantics. It establishes nothing about real or complex arithmetic, nondefault character kinds, or mixed-kind concatenation.",
+    "tests/expected_failures.txt is unchanged - no new XFAIL was created or needed."
+  ],
+  "preservation": {
+    "cases_before": 2089,
+    "cases_after": 2102,
+    "authored_facets_before": 1794,
+    "authored_facets_after": 1807,
+    "pending_facets_before": 5090,
+    "pending_facets_after": 5077,
+    "fixture_review_states_before": "1776 reference-validated / 274 source-reviewed / 1 needs-oracle",
+    "fixture_review_states_after": "1789 reference-validated / 274 source-reviewed / 1 needs-oracle",
+    "baseline_lines_changed": 0,
+    "baseline": "b153c75b",
+    "expected_failures_lines": 804
+  },
+  "validation_snapshot": {
+    "fixture_reviews_written": 13,
+    "inventory_reviews_written": 1,
+    "detailed_catalogues": 263,
+    "requirements": 1579,
+    "declared_facets": 6906,
+    "pending_facets": 5077,
+    "authored_facets": 1807,
+    "normal_audit_exit": 1,
+    "normal_audit_block": "one retained needs-oracle real-BOZ case",
+    "python_suite_tests": 972,
+    "python_suite_result": "OK"
+  }
+}
