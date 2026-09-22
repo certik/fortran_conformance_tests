@@ -5876,6 +5876,35 @@
         "No TRANSFER/LOC/address oracle, no undefined value read, no ERRMSG text oracle, and NO resource-exhaustion STAT= test (deliberately failing an allocation with a huge request is not portable).",
         "Coarray, team and error paths remain unexercised; polymorphic ancestor allocation and the undefined-source boundary remain pending."
       ]
+    },
+    {
+      "id": "clause8-initialization-fixtures-129",
+      "state": "reference-validated-runtime-effects",
+      "packet_kind": "FIXTURE",
+      "baseline_commit": "2681f00",
+      "packet_base_commit": "20d5174",
+      "sections": ["8.4"],
+      "author_handoffs": {
+        "proposal": "eda3fe4"
+      },
+      "source_reviews": ["doc/source_audits/batch_129.json"],
+      "new_executions": 10,
+      "fixture_accounting": {
+        "facets_established": 10,
+        "new_cases": 10,
+        "authored_facets": "1898 -> 1908",
+        "cases": "2186 -> 2196",
+        "reference_validated": "1873 -> 1883",
+        "expected_failures": "810 -> 812"
+      },
+      "coordination": "INITIALIZATION HAS A UNIQUELY DANGEROUS VACUITY MODE: uninitialized memory is very often already ZERO and many compilers zero-fill, so asserting x==0 after INTEGER::x=0 proves NOTHING - it passes identically on a processor that IGNORES INITIALIZATION ENTIRELY. The packet was therefore required to use only distinctive non-default sentinels (-31417,.TRUE.,2719,'Zq7R','Bx',-24681,13579,[2,3,5],-22231,-27182,-12345) and the reviewer audited a FULL SENTINEL TABLE recording, for each, what an initialization-ignoring processor would produce instead. The decisive feature-level mutation here is REMOVING THE INITIALIZER; the reviewer re-ran these across a scalar, an array constructor, a character truncation, a DATA statement and a pointer target, ALL failing as required. TWO DELIBERATE EXCLUSIONS were audited and upheld: a .FALSE. initializer is vacuous under zero/default fill, and a length-zero character leaves no payload to observe - correct restraint rather than over-breadth. TWO GENUINE LFORTRAN DEFECTS:(1) initial pointer target rejected ('Initialization of p must reduce to a compile time constant') although8.2R805 permits it and the target satisfies every C770 condition - nonallocatable, noncoindexed, TARGET and SAVE;(2) DATA-part SAVE retention fails, although8.6.7p4 gives SAVE to a named variable if ANY PART is initialized in a DATA statement and8.5.16p1 requires the value be retained. The reviewer was warned that 'variable in a DATA statement', 'initialization implies SAVE' and 'retention across calls' are DISTINCT claims and established the chain through all three.",
+      "remaining_observations": [
+        "Kind conversion uses selected_int_kind(18), PORTABLE because7.4.3.1p2 requires an integer range of at least18- no numeric kind code is assumed to exist.",
+        "Character truncation/padding traced to10.2.1.3p11 with LEN asserted explicitly; the nonblank PREFIX, not the blanks, is what makes those cases load-bearing.",
+        "XFAIL sequence followed as separate operations;810->812, exactly two additions, zero modifications. Frozen-target result reproduced independently:2FAIL /8PASS.",
+        "These two cases are evidence of DEFECTS in the frozen toolchain, not of conformance.",
+        "Enum, pointer variants, allocatable components and COMMON facets remain pending."
+      ]
     }
   ],
   "cross_batch_followups": [

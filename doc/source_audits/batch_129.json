@@ -1,0 +1,187 @@
+{
+ "schema_version": 1,
+ "review_type": "independent-initialization-fixture-review",
+ "review_date": "2026-09-22",
+ "baseline_commit": "2681f00",
+ "packet_base_commit": "20d5174",
+ "state": "reference-validated-runtime-effects",
+ "packet_kind": "FIXTURE",
+ "scope": {
+  "sections": [
+   "8.4"
+  ],
+  "section_title_verified_from_source": "Initialization",
+  "facets_established": 10,
+  "new_cases": 10,
+  "requirements_touched": [
+   "S8.4-001",
+   "S8.4-004",
+   "S8.4-005"
+  ],
+  "breakdown": {
+   "S8.4-001": "scalar/logical, kind conversion, character length, scalar array expansion, array values, derived-type override",
+   "S8.4-004": "saved scalar target",
+   "S8.4-005": "subprogram retention, BLOCK retention, DATA-part retention"
+  },
+  "left_pending": "enum/representation; null, array and deferred-character pointer and source-use; saved pointer; allocatable component; COMMON, source-use and default-versus-explicit facets"
+ },
+ "independent_review": {
+  "reviewer_distinct_from_author": true,
+  "decision": "accept_no_blocking_findings",
+  "blocking_findings": 0,
+  "reviewer_read_original_source": "8.4, 8.2 R805, 7.5.4.6 C770, 8.6.7, 8.5.16, 10.2.1.3, 7.4.3.1; PDF checksum verified independently"
+ },
+ "the_dominant_vacuity_trap": {
+  "problem": "Uninitialized memory is very often already zero, and many compilers zero-fill. A test asserting x == 0 after INTEGER :: x = 0 proves NOTHING - it passes identically on a processor that ignores initialization entirely. This is the single most dangerous failure mode in this section.",
+  "rule_enforced": "No 0, 0.0, .FALSE. or blank may be used as an initialization value the test expects to observe. Every observed sentinel must be a distinctive non-default value that no plausible wrong implementation would produce.",
+  "sentinel_audit": [
+   {
+    "fixture": "scalar/logical",
+    "sentinels": "-31417, .TRUE.",
+    "ignoring_initialization_yields": "integer zero or undefined; logical false",
+    "rejected_by": "i /= -31417 and .not. flag"
+   },
+   {
+    "fixture": "kind conversion",
+    "sentinels": "-31417, 2719",
+    "ignoring_initialization_yields": "zero or undefined integers",
+    "rejected_by": "both value guards"
+   },
+   {
+    "fixture": "character length",
+    "sentinels": "'Zq7R' truncated to 'Zq'; 'Bx' padded to 'Bx   '",
+    "ignoring_initialization_yields": "blank-filled characters",
+    "rejected_by": "trunc(1:2) and padded(1:2) nonblank prefixes plus explicit LEN"
+   },
+   {
+    "fixture": "scalar array expansion",
+    "sentinels": "-24681, 13579",
+    "ignoring_initialization_yields": "zero elements",
+    "rejected_by": "every element guard"
+   },
+   {
+    "fixture": "array values",
+    "sentinels": "[2,3,5]",
+    "ignoring_initialization_yields": "zero elements",
+    "rejected_by": "v(4:6) guards"
+   },
+   {
+    "fixture": "derived override",
+    "sentinels": "2719 against default -111",
+    "ignoring_initialization_yields": "default-only -111",
+    "rejected_by": "component guard"
+   },
+   {
+    "fixture": "pointer target",
+    "sentinels": "-22231, updated to -22230",
+    "ignoring_initialization_yields": "undefined or disassociated pointer, or zero target",
+    "rejected_by": "association, value and update guards"
+   },
+   {
+    "fixture": "subprogram SAVE",
+    "sentinels": "-31417 then -31416",
+    "ignoring_initialization_yields": "zero, undefined, or reinitialization",
+    "rejected_by": "first and second snapshots"
+   },
+   {
+    "fixture": "BLOCK SAVE",
+    "sentinels": "-27182 then -27181",
+    "ignoring_initialization_yields": "zero, undefined, or reinitialization",
+    "rejected_by": "first and second snapshots"
+   },
+   {
+    "fixture": "DATA SAVE",
+    "sentinels": "-12345, retained -12344 and 2468",
+    "ignoring_initialization_yields": "undefined or zero, and no retention",
+    "rejected_by": "first and second snapshots"
+   }
+  ],
+  "note": "The character blank-padding checks are not standalone sentinels; it is the nonblank prefix plus the explicit LEN assertion that makes those cases load-bearing."
+ },
+ "non_vacuity_by_mutation": {
+  "principle": "Non-vacuity must be proved by MUTATION targeting the FEATURE UNDER TEST. For initialization the decisive feature-level mutation is REMOVING THE INITIALIZER.",
+  "author_campaign": "95 gfortran mutations all failing, plus 14 initializer-removal mutations all failing, plus a reverse sentinel mutation that passed when matched and failed when removed.",
+  "reviewer_reran_initializer_removal": [
+   "scalar integer: failed at INIT:scalar_integer_logical:integer-initial-value",
+   "array constructor: failed at INIT:array_values:v4",
+   "character truncation: failed at INIT:character_length_conversion:trunc-value",
+   "DATA statement: failed at INIT:data_part_retention:first-initialized-part",
+   "pointer target: failed at INIT:saved_scalar_target:associated-with-target"
+  ],
+  "verdict": "Every sampled initializer removal FAILED as required, so no fixture passes with initialization absent."
+ },
+ "deliberate_exclusions_judged_correct": {
+  "false_logical": "A .FALSE. initializer was deliberately NOT established: observing false is vacuous under zero or default fill. The reviewer confirmed this is correct restraint, not over-breadth.",
+  "zero_length_character": "A length-zero character initializer was deliberately NOT established for runtime effect: the length is declared and no payload remains to observe.",
+  "principle": "An unobservability claim that is too broad is itself a defect, so both exclusions were audited rather than accepted; both stand."
+ },
+ "lfortran_defects_verified": [
+  {
+   "id": "C84FR-001",
+   "defect": "Pointer initial target is rejected at compile time",
+   "standard_basis": "8.2 R805 permits initialization '=> initial-data-target'. 7.5.4.6 C770 requires that an initial-data-target designate a nonallocatable, noncoindexed variable with the TARGET and SAVE attributes. 8.4 p2: 'If initial-data-target appears, the object is initially associated with the target.' The fixture target, integer with TARGET and SAVE, satisfies every one of those conditions, and p is a matching integer pointer.",
+   "gfortran_16_1_0_f2023": "INITIALIZATION SAVED SCALAR TARGET OK",
+   "frozen_lfortran_0_65_0_411": "semantic error: Initialization of 'p' must reduce to a compile time constant",
+   "verdict": "GENUINE LFORTRAN DEFECT",
+   "case_xfailed": "S8_4_004_valid__initialization_saved_scalar_target"
+  },
+  {
+   "id": "C84FR-002",
+   "defect": "DATA-part SAVE retention fails",
+   "standard_basis": "8.6.7 p1: 'The DATA statement specifies explicit initialization (8.4).' 8.6.7 p4: 'Except for variables in named common blocks, a named variable has the SAVE attribute if any part of it is initialized in a DATA statement.' 8.5.16 p1: SAVE retains association, allocation, definition status and value after RETURN or END. So data a(-2) /-12345/ saves the WHOLE named array a, and after the first call a(-2)=-12344 and a(-1)=2468 must be retained.",
+   "gfortran_16_1_0_f2023": "INITIALIZATION DATA PART RETENTION OK",
+   "frozen_lfortran_0_65_0_411": "compiles, then fails at runtime with stdout 'INIT:data_part_retention:second-retained-initialized-part' and ERROR STOP",
+   "verdict": "GENUINE LFORTRAN DEFECT",
+   "case_xfailed": "S8_4_005_valid__initialization_data_part_retention",
+   "note": "The reviewer was specifically warned that 'a variable in a DATA statement', 'initialization implying SAVE', and 'retention across calls' are DISTINCT claims, and it established the chain through all three rather than asserting retention directly."
+  }
+ ],
+ "source_derivations_independently_confirmed": {
+  "kind_conversion": "Supported by 8.4 p1 with 10.2.1.3 and Table 10.9. selected_int_kind(18) is PORTABLE because 7.4.3.1 p2 requires an integer representation range of at least 18; no numeric kind code is assumed to exist, and the default value 2719 is representable.",
+  "character_conversion": "Supported by 10.2.1.3 p11: a shorter variable truncates on the right, a longer one pads on the right with blanks. LEN is asserted explicitly.",
+  "scalar_array_expansion": "Supported by 10.2.1.3 p5; bounds and every element are asserted.",
+  "derived_override": "Supported by the structure-constructor rules: the supplied component 2719 prevents the default -111, which is what distinguishes explicit initialization from default initialization."
+ },
+ "xfail_discipline": {
+  "sequence": "full suite gate -> --record-execution-review -> --update-xfail, as separate operations; --update-xfail was never combined with a review recording.",
+  "reproduced_by_integrator": "Yes - 2 FAIL / 8 PASS under the frozen target, matching the reviewer.",
+  "baseline_movement": "810 -> 812 lines, exactly two additions and no modifications to any existing line."
+ },
+ "explicit_limitations": [
+  "Ten facets of 8.4 only; enum, pointer variants, allocatable components and COMMON facets remain pending.",
+  "A .FALSE. initializer and a length-zero character initializer are explicitly NOT established, on vacuity grounds.",
+  "Two cases FAIL under the frozen LFortran and are recorded as XFAILs. They are evidence of defects in that toolchain, not of conformance.",
+  "Passing under gfortran is corroboration, not proof of universal conformance.",
+  "Source accounting is unchanged: declared_facets remains 7184."
+ ],
+ "preservation": {
+  "cases_before": 2186,
+  "cases_after": 2196,
+  "authored_facets_before": 1898,
+  "authored_facets_after": 1908,
+  "declared_facets_before": 7184,
+  "declared_facets_after": 7184,
+  "reference_validated_before": 1873,
+  "reference_validated_after": 1883,
+  "fixture_review_states_after": "1883 reference-validated / 274 source-reviewed / 1 needs-oracle",
+  "expected_failures_lines_before": 810,
+  "expected_failures_lines_after": 812,
+  "baseline_lines_added": 2,
+  "baseline_lines_modified": 0,
+  "existing_case_ids_modified": 0
+ },
+ "validation_snapshot": {
+  "detailed_catalogues": 280,
+  "requirements": 1684,
+  "declared_facets": 7184,
+  "authored_facets": 1908,
+  "catalogue_reviews_draft": 1,
+  "catalogue_reviews_draft_note": "Only 18.3.7, pre-existing and untouched.",
+  "frozen_lfortran_result": "8 PASS / 2 FAIL, both XFAILed",
+  "gfortran_result": "10/10 pass",
+  "normal_audit_exit": 1,
+  "normal_audit_block": "the single retained needs-oracle real-BOZ case, which is the intended state and not a regression",
+  "python_suite_tests": 1016,
+  "python_suite_result": "OK"
+ }
+}

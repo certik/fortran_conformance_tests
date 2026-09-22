@@ -314,7 +314,7 @@ class TypeParameterEntryFixturesTests(unittest.TestCase):
         preserved_c814 = copy.deepcopy(c814)
         updated = generated.synced_catalogue(catalogue)
         self.assertEqual(next(r for r in updated["requirements"] if r["id"] == "C814"), preserved_c814)
-        self.assertEqual(sum(len(r["pending"]) for r in self.registry.catalogues["8.4"]["requirements"]), 35)
+        self.assertEqual(sum(len(r["pending"]) for r in self.registry.catalogues["8.4"]["requirements"]), 25)
         self.assertEqual(updated, catalogue)
         self.assertEqual(generated.render_view(catalogue, self.specs), (ROOT / generated.VIEW).read_text())
         native = Registry(ROOT)

@@ -1,8 +1,7 @@
 # Fortran 2023 8.4: Initialization
 
-**INDEPENDENTLY SOURCE-REVIEWED; ALL FIXTURES PENDING.** All facets remain
-pending, with no new fixtures, executable models, compiler probes, policies
-or fixture approvals. Source/inventory adjudication is recorded in
+**INDEPENDENTLY SOURCE-REVIEWED; SELECTED FIXTURES ADDED.** Ten effect facets now have
+runtime fixtures; remaining facets stay pending, with no fixture approvals. Source/inventory adjudication is recorded in
 `doc/source_audits/batch_027.json`.
 `doc/catalogues/initialization_8_4.json` holds the complete finite plans,
 conditions, duty classifications and reciprocal source accounting.
@@ -22,8 +21,8 @@ pinned PDF; the original body text stays in session artifacts.
 | `p3` | 21-22 | COMMON-qualified SAVE implication and permission to confirm it explicitly |
 
 Three base units have twenty-seven fine subdivisions and thirty accounting
-rows. Five append-only local S requirements have thirty-five facets, all
-pending. The definition and qualified permissions do not become no-op
+rows. Five append-only local S requirements have thirty-five facets; ten effect facets
+now have executable fixtures and the rest remain pending. The definition and qualified permissions do not become no-op
 programs. Neither prose restriction is assigned a mandatory diagnostic
 policy; their nonconforming contrasts remain documentary.
 
@@ -46,6 +45,14 @@ source-context inventory without changing any case or link approval.
 
 The definitions below are generated with `Registry.render(write=True)`
 for the owned view only. Complete per-facet plans are in the catalogue.
+
+<!-- BEGIN INITIALIZATION FIXTURES -->
+## Initialization runtime observations
+
+Ten complete run/effect/f2023 programs cover six declaration-initializer facets, one pointer target-initialization facet and three implied-SAVE facets. Every asserted initialized value uses a distinctive nonzero, nonblank or .TRUE. sentinel; no fixture expects 0, 0.0, .FALSE. or a blank string as the initialized value. Character fixtures assert LEN explicitly, and array fixtures use nonunit lower bounds; rank-two arrays use distinct extents and explicit LBOUND/UBOUND checks.
+
+Each source has exact completion output plus wrong-oracle, input-literal and initializer-removal mutation plans. The pointer and SAVE initializer-removal mutants are sensitivity probes, not portable conforming programs with defined no-initializer values. `enum-and-enumeration-values`, `numeric-representation-source-use`, null/array/deferred-character pointer cases and the remaining SAVE/source-use facets remain pending.
+<!-- END INITIALIZATION FIXTURES -->
 
 <!-- BEGIN GENERATED 8.4 -->
 
@@ -70,11 +77,41 @@ conversion semantics come from the original standard, never a second execution o
 same conversion or compiler consensus. Type-family plans retain their specific
 conformance and constant-expression premises.
 
-**Oracle limitation:** All facets remain pending. No real/complex exactness, floating tolerance, optional kind,
-native representation or REAL BOZ value is invented. C808 excludes
+S8.4-001 declaration-initializer runtime fixtures: six complete run/effect/f2023
+programs observe declaration initializers before any executable assignment to the
+initialized variables. The scalar case checks INTEGER -31417 and a .TRUE. LOGICAL
+branch; the pending .FALSE. subcase from the original plan is deliberately not used as
+an asserted initializer sentinel. The integer-kind case uses SELECTED_INT_KIND(18) and
+checks default-to-selected -31417 plus selected-to-default 2719, never a numeric
+KIND-code oracle. The character case checks LEN explicitly while observing truncation of
+'Zq7R' to LEN 2 as 'Zq' and padding of 'Bx' to LEN 5 with three blanks; the load-bearing
+nonblank source characters reject a zero/blank-fill implementation. The scalar-array
+case uses INTEGER a(-3:-1)=-24681 and b(5:6,-2:0)=13579, checking LBOUND/UBOUND and
+every element, with rank-two extents 2 and 3. The array-value case uses v(4:6)=[2,3,5],
+checking nonunit bounds and all elements. The derived case declares a component default
+-111 and an object explicitly initialized by sample(2719), then observes 2719 so default
+initialization alone cannot pass. Expected values are finite literals hand-derived from
+8.4 p1 and intrinsic-assignment conversion; no compiler consensus, storage layout,
+TRANSFER or address oracle is used. Wrong-oracle, input-literal and initializer-removal
+mutations bind complete-parent byte spans.
+
+**Oracle limitation:** Unimplemented facets remain pending. No real/complex exactness, floating tolerance,
+optional kind, native representation or REAL BOZ value is invented. C808 excludes
 dummy/result/automatic/ALLOCATABLE and the specified COMMON contexts; C811 distinguishes
 equals from pointer initialization. A successful declaration is not execution evidence,
 and initial values are not reimposed after every executable redefinition.
+
+S8.4-001 declaration-initializer fixture boundaries: only scalar-integer-and-logical,
+integer-kind-conversion, character-length-conversion, scalar-array-expansion,
+array-values and derived-explicit-override are represented. The length-zero character
+subcase from the original plan is not represented because deleting its initializer
+leaves no load-bearing character value to observe. The scalar logical coverage uses
+.TRUE. only; no case asserts an initialized .FALSE. value because that would be a
+vacuous default-fill sentinel under this packet's non-vacuity rule.
+enum-and-enumeration-values and numeric-representation-source-use remain pending. The
+fixtures do not cover real/complex approximation, BOZ representation, nondefault
+character kinds, ALLOCATABLE entities, PARAMETER receivers, pointer initialization,
+default component initialization as an owner, diagnostics or repeated initialization.
 
 **Dependencies:** 8.2 R805/C808/C811 andp4; 8.5.13; 10.1.12; 10.2.1.2 Table10.8 and10.2.1.3
 Table10.9/p5/p11/p15; 7.4.3.1; 7.5.4.6p6 and7.5.10; 7.6.1/.2; 7.7 C7119/7.8 C7126-C7127;
@@ -153,12 +190,29 @@ target/parameter observations, with an independent target-update alias check. C7
 static lifetime and C812 compatibility are prerequisites, not results inferred from
 compiler acceptance.
 
+S8.4-004 pointer target-initialization runtime fixture: one complete run/effect/f2023
+program initializes an INTEGER POINTER to a saved module TARGET whose declaration value
+is -22231. It first requires ASSOCIATED(p,target_value), then reads -22231, changes the
+target to -22230 and reads -22230 through the pointer. This distinguishes association
+from a one-time value copy without TRANSFER, LOC, C_LOC or address comparison. The
+target values are distinct nonzero sentinels; the initializer-removal mutation is a
+sensitivity check on the nonconforming mutant and is not used as a portable oracle for
+undefined pointer status.
+
 **Oracle limitation:** No negative twin, unavailable pointer inquiry, dangling target, numeric address or
 allocation claim. A saved pointer does not extend an unsaved target's lifetime.
 ASSOCIATED(pointer,target) has additional nonzero-size/storage-sequence premises and is
 not interchangeable with the one-argument status inquiry. Existing C770 and
 component-default programs remain unchanged and cannot be relabelled as newly executed
 standalone declaration effects.
+
+S8.4-004 pointer target-initialization fixture boundaries: only saved-scalar-target is
+represented. Null pointer initializers, array and element targets, deferred-length
+character targets and DATA/procedure-pointer source-use remain pending because this
+packet does not create a portable no-initializer counterfactual for undefined
+association status. The valid parent queries association only while the pointer is
+declaration-initialized and defined. It does not claim target lifetime extension beyond
+the saved module target or any allocation/storage-address behavior.
 
 **Dependencies:** 5.4.4/5.4.5/5.4.9; 7.5.4.6p2/R744/C770; 8.2 C811-C813; 8.5.14/.16; 8.6.7p9; 15.4.3.6p6;
 16.9.155 NULL and16.9.20 ASSOCIATED; 19.5.2.3-.5 and19.6.3/.4.
@@ -183,12 +237,32 @@ successful single call or a storage-address comparison. All observations occur w
 relevant data and association states are defined; the finite program counts expose
 omitted second visits.
 
-**Oracle limitation:** All plans remain pending and genuine runs. Do not infer physical memory clearing or
-demand a trap for an unsaved variable; do not preserve a pointer's status by ignoring
-the target-undefinition exceptions at RETURN/BLOCK exit. DATA/default-derived
-qualifications remain recorded separately. Explicit initialization is incompatible with
-the excluded C808/C880 entities; permitted explicit SAVE confirmation is not a second
-initialization.
+S8.4-005 implied-SAVE initialization runtime fixtures: three complete run/effect/f2023
+programs execute the same initialized entity more than once. The subprogram case has
+local INTEGER kept=-31417, returning -31417 on the first call and -31416 after the first
+call increments it. The BLOCK case executes one textual BLOCK twice and observes -27182
+then the retained -27181. The DATA-part case initializes only a(-2) to -12345 by DATA in
+a local array a(-2:-1), defines a(-1)=2468 before any read, and on the second call
+observes retained -12344/2468. Each case uses exact visit counts and independent caller
+snapshots so a reinitializing implementation, a single-call program or an endpoint-only
+check cannot pass. The array DATA case checks nonunit bounds and makes clear that the
+uninitialized part is first defined before observation.
+
+**Oracle limitation:** Unimplemented plans remain pending; selected facets below are genuine runs. Do not infer
+physical memory clearing or demand a trap for an unsaved variable; do not preserve a
+pointer's status by ignoring the target-undefinition exceptions at RETURN/BLOCK exit.
+DATA/default-derived qualifications remain recorded separately. Explicit initialization
+is incompatible with the excluded C808/C880 entities; permitted explicit SAVE
+confirmation is not a second initialization.
+
+S8.4-005 implied-SAVE fixture boundaries: only subprogram-retention, block-retention and
+data-part-retention are represented. saved-pointer-live-target,
+allocated-component-retention, common-and-implicit-save-source-use and
+default-versus-explicit-source-use remain pending. The fixtures do not read an undefined
+variable part, infer physical static storage, test COMMON behavior, component default
+reinitialization, explicit SAVE confirmation, finalization, recursion, coarrays or
+thread interactions. Initializer-removal mutants are negative sensitivity probes rather
+than conforming programs with a portable value.
 
 **Dependencies:** 8.2 C808; 7.5.4.6p6-p8 and7.5.10 constant constructor conditions; 8.5.1
 C815/8.5.16p1-p4,C861,C862; 8.6.7p4,C880; 8.6.14 C893; 11.1.4 C1108 andNOTE; 15.4.3.6p6

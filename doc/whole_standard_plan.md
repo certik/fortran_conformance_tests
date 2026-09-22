@@ -4184,6 +4184,63 @@ These three cases are not evidence of conformance under the frozen toolchain.
 They are evidence of defects in it.
 See `doc/source_audits/batch_128.json`.
 
+## Batch 129 — initialization, where zero is the enemy
+
+Establishes **10 facets** of **8.4 Initialization** across 10 fixtures, and adds
+two more verified frozen-LFortran defects.
+
+This section has a uniquely dangerous vacuity mode, and it is worth stating
+plainly because it is counter-intuitive: **uninitialized memory is very often
+already zero, and many compilers zero-fill.** A test asserting `x == 0` after
+`INTEGER :: x = 0` therefore proves **nothing** — it passes identically on a
+processor that ignores initialization entirely. The same applies to `.FALSE.`
+and to blank strings.
+
+The packet was required to use only distinctive non-default sentinels, and the
+reviewer audited a **full sentinel table**, recording for each fixture what an
+initialization-ignoring processor would produce instead and which guard rejects
+it: `-31417`, `.TRUE.`, `2719`, `'Zq7R'`, `'Bx'`, `-24681`, `13579`, `[2,3,5]`,
+`-22231`, `-27182`, `-12345`. For the character cases it noted the right
+subtlety — it is the **nonblank prefix** plus the explicit `LEN` assertion that
+carries the case, not the blanks themselves.
+
+The decisive feature-level mutation here is **removing the initializer**, and
+the reviewer re-ran that across a scalar, an array constructor, a character
+truncation, a `DATA` statement and a pointer target. All failed as required, so
+no fixture passes with initialization absent.
+
+Two **deliberate exclusions** were audited rather than accepted, on the
+principle that an over-broad unobservability claim is itself a defect. Both
+stand: a `.FALSE.` initializer is vacuous under zero or default fill, and a
+length-zero character initializer leaves no payload to observe.
+
+**Defect 1 — initial pointer target rejected.** 8.2 R805 permits
+`=> initial-data-target`, 7.5.4.6 C770 requires the target be a nonallocatable,
+noncoindexed variable with `TARGET` and `SAVE`, and 8.4 p2 says the object is
+then initially associated with it. The fixture's target satisfies every one of
+those conditions, yet the frozen LFortran rejects with *"Initialization of `p`
+must reduce to a compile time constant"*. gfortran accepts.
+
+**Defect 2 — `DATA`-part `SAVE` retention fails.** The reviewer was warned that
+*"a variable in a `DATA` statement"*, *"initialization implies `SAVE`"*, and
+*"retention across calls"* are three **distinct** claims, and it established the
+chain through all three rather than asserting the conclusion: 8.6.7 p1 makes a
+`DATA` statement explicit initialization; 8.6.7 p4 gives a named variable the
+`SAVE` attribute if **any part** of it is initialized in a `DATA` statement; and
+8.5.16 p1 requires the value be retained after `RETURN`/`END`. So
+`data a(-2) /-12345/` saves the **whole** array, and the updated values must
+survive the second call. The frozen LFortran compiles but fails at runtime.
+
+One derivation is worth recording for reuse: the kind-conversion fixture uses
+`selected_int_kind(18)`, which is **portable** because 7.4.3.1 p2 requires an
+integer representation range of at least 18. That avoids the usual trap of
+assuming a particular numeric kind code exists.
+
+The XFAIL sequence was again run as separate operations, moving the baseline
+**810 → 812** with exactly two additions and no modifications. I reproduced the
+frozen-target result independently: 2 FAIL, 8 PASS.
+See `doc/source_audits/batch_129.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
