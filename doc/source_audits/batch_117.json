@@ -1,0 +1,133 @@
+{
+  "schema_version": 1,
+  "review_type": "independent-select-type-and-exit-statement-source-review",
+  "review_date": "2026-09-21",
+  "baseline_commit": "1cb5857",
+  "state": "reviewed-source-only",
+  "scope": {
+    "sections": ["11.1.11.1", "11.1.11.2", "11.1.11.3", "11.1.12"],
+    "section_titles_verified_from_source": {
+      "11.1.11.1": "Purpose and form of the SELECT TYPE construct",
+      "11.1.11.2": "Execution of the SELECT TYPE construct",
+      "11.1.11.3": "Examples of the SELECT TYPE construct",
+      "11.1.12": "EXIT statement"
+    },
+    "base_units": 35,
+    "already_counted_numbered_units": 17,
+    "newly_accounted_base_units": 18,
+    "new_requirements": 30,
+    "new_numbered_requirements": 17,
+    "new_S_requirements": 13,
+    "new_pending_facets": 89,
+    "new_cases": 0,
+    "note": "The 17 numbered items are R1154, R1155, C1162, C1163, C1164, R1156, C1165, C1166, C1167, C1168, C1169, R1157 and C1170 in 11.1.11.1, and R1158, C1171, C1172 and C1173 in 11.1.12. There are NONE in 11.1.11.2 or 11.1.11.3 - the 13/0/0/4 asymmetry was independently confirmed. 11.1.11 is a structural parent with no catalogue.",
+    "per_section": {
+      "11.1.11.1": {"base_units": 15, "requirements": 15, "pending_facets": 43, "already_counted": 13, "newly_accounted": 2},
+      "11.1.11.2": {"base_units": 11, "requirements": 8, "pending_facets": 25, "already_counted": 0, "newly_accounted": 11},
+      "11.1.11.3": {"base_units": 2, "requirements": 0, "pending_facets": 0, "newly_accounted": 2},
+      "11.1.12": {"base_units": 7, "requirements": 7, "pending_facets": 21, "already_counted": 4, "newly_accounted": 3}
+    }
+  },
+  "authoring": {
+    "author_context": "fresh subagent context in an isolated worktree based on 1cb5857",
+    "author_packet": "89edd1e",
+    "source_read_receipt": "receipts-batch117-source.json",
+    "note": "Authored in parallel with batch116 (SELECT RANK). The authoring prompt did not name the constructs; the author established them from the source and the reviewer verified the titles independently."
+  },
+  "independent_review": {
+    "receipt": "c11-selecttype-source-review.json",
+    "reviewer_distinct_from_author": true,
+    "decision": "accept_no_blocking_findings",
+    "blocking_findings": 0,
+    "scoped_original_units_read_in_full": 35,
+    "compiler_invocations": 0
+  },
+  "pre_existing_fixture_check": {
+    "why": "Batch113 was blocked because it registered numbered rules that already had legacy fixture files. Registering such a rule STRUCTURALLY FORCES binding them, because validate_case_requirement runs once a rule is catalogued and rejects an empty facet list, while covers headers are optional for numbered rules. A source packet must never bind fixtures.",
+    "identifiers_checked": ["R1154", "R1155", "R1156", "R1157", "R1158", "C1162", "C1163", "C1164", "C1165", "C1166", "C1167", "C1168", "C1169", "C1170", "C1171", "C1172", "C1173"],
+    "result": "No pre-existing cases under tests/ for any identifier. Registering them is therefore safe, and nothing needed deferral.",
+    "independently_confirmed_by_reviewer": true
+  },
+  "type_guard_matching_rules": {
+    "status": "independently derived by the reviewer from the source BEFORE comparing with the catalogue, and verified word for word",
+    "p3": "A TYPE IS type guard statement matches the selector if the dynamic type and kind type parameter values of the selector are the same as those specified by the statement. A CLASS IS type guard statement matches if the dynamic type of the selector is an extension of the type specified.",
+    "p4_selection_order": "If a TYPE IS guard matches, that block is selected. Otherwise, if exactly one CLASS IS guard matches, that block is selected. Otherwise, if several CLASS IS guards match, the one selected specifies A TYPE THAT IS AN EXTENSION OF ALL THE TYPES SPECIFIED IN THE OTHERS. Otherwise, if a CLASS DEFAULT guard appears, that block is selected. Otherwise, no block is selected.",
+    "verdict": "the catalogue states the most-specific-match rule correctly - this is the single easiest thing in Clause 11 to paraphrase almost-correctly, and everything downstream depends on it"
+  },
+  "permissions": [
+    {
+      "unit": "11.1.11.2#p9",
+      "detail": "The internal branch to an end-select-type-stmt is a permission, and the word 'only' also supplies the paired outside-branch restriction. Both halves are captured, per the batch111 precedent."
+    }
+  ],
+  "zero_processor_latitude": "Verified. No unit in this scope grants the processor latitude, so no such permission was registered - and none was invented. Both failure directions were checked.",
+  "attribution_table_audit": {
+    "rows_checked": [
+      "The three C1163 rows - nonvariable-selector definition, vector-subscript-selector definition, and pointer association context",
+      "The three C1170 rows - END name mismatch, unnamed construct with named END, and guard name mismatch",
+      "C1166, split into BIND and SEQUENCE rows from one sentence",
+      "C1168, split into duplicate TYPE IS and duplicate CLASS IS rows",
+      "C1172 and C1173, the EXIT restrictions"
+    ],
+    "c1168_reading": "CONFIRMED CORRECT. C1168 does NOT prohibit one TYPE IS guard together with one CLASS IS guard specifying the same type; it prohibits the same type being specified in more than one TYPE IS, and in more than one CLASS IS, separately.",
+    "c1172_reading": "CONFIRMED CORRECT. C1172 is NOT a blanket ban on a textual EXIT appearing inside a DO CONCURRENT construct; it turns on which construct the EXIT statement BELONGS TO. The negatives isolate exactly that property.",
+    "missing_from_table": "none",
+    "verdict": "sound"
+  },
+  "ownership_boundary_with_11_1_3_3": {
+    "verdict": "correct in both directions - no duplication and no gap",
+    "this_packet_owns": "SELECT TYPE syntax, guard matching, selected-block semantics, associate-name choice, and the p5 through p7 associating-entity type and declaration changes.",
+    "11_1_3_3_retains": "The other general attributes of associate names: rank and bounds, corank and cobounds, ASYNCHRONOUS and VOLATILE, OPTIONAL absence, contiguity, and definability transfer.",
+    "note": "11.1.11.2 p8 is structural."
+  },
+  "oracle_discipline": {
+    "no_duplicating_intrinsic": "No plan uses SAME_TYPE_AS or EXTENDS_TYPE_OF as an oracle basis; doing so would duplicate the feature under test.",
+    "observability_scoping": "Which block executed is observable; which guard was evaluated is not, and Fortran guarantees no short-circuiting. The unobservability claim is scoped so it does not suppress the observable block-selection fact - an overbroad claim would itself be a defect.",
+    "non_vacuity": "Declared and dynamic types are made genuinely to differ so a wrong selection rule is caught, and sentinels are distinct from every value any block could write."
+  },
+  "zero_facet_section": "11.1.11.3 yields zero requirements and zero facets because it is examples. Both base units and all fine units remain accounted; the zero records the absence of a testable obligation, not an omission.",
+  "unregistered_dependencies_flagged": [
+    "11.1.10 SELECT RANK (parallel packet batch116)",
+    "11.2 branch statements",
+    "Clause 15 polymorphic dummy and procedure contexts",
+    "Clause 16 type inquiry intrinsics - SAME_TYPE_AS and EXTENDS_TYPE_OF, explicitly NOT used as oracle basis",
+    "Clause 19 association, scope and definition contexts",
+    "END TEAM STAT= and ERRMSG= details"
+  ],
+  "explicit_limitations": [
+    "This batch registers source accounting only. It is not fixture approval, it supplies no execution, and it creates no test case. authored_facets remains 1788, fixture review states remain 1770 / 274 / 1, and tests/ is untouched.",
+    "All 89 facets in scope remain pending.",
+    "No guard-evaluation, call-count or short-circuit oracle is approved.",
+    "Several facets reach into unregistered Clause 15, 16 and 19 material and cannot be implemented until those clauses are registered.",
+    "No compiler was invoked during authoring or review."
+  ],
+  "preservation": {
+    "cases_preserved": 2083,
+    "raw_reviews_preserved": 2047,
+    "older_catalogues_preserved": 255,
+    "linked_facets_preserved": 22,
+    "current_source_use_inventories_preserved": 1,
+    "baseline_lines_changed": 0,
+    "baseline": "b153c75b",
+    "expected_failures_lines": 804,
+    "authored_facets_unchanged": 1788,
+    "tests_directory_untouched": true,
+    "new_compiler_invocations": 0,
+    "integrated_files_byte_identical_to_reviewed_branch": true
+  },
+  "validation_snapshot": {
+    "catalogue_reviews_written": 4,
+    "inventory_reviews_written": 1,
+    "detailed_catalogues": 259,
+    "requirements": 1558,
+    "declared_facets": 6843,
+    "pending_facets": 5033,
+    "authored_facets": 1788,
+    "accounted_base_units": 2264,
+    "unresolved_base_units": 4209,
+    "normal_audit_exit": 1,
+    "normal_audit_block": "one retained needs-oracle real-BOZ case",
+    "python_suite_tests": 960,
+    "python_suite_result": "OK"
+  }
+}

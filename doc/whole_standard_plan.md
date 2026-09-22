@@ -3281,6 +3281,64 @@ untouched. All2,083case bindings,2,047reviews,248older catalogues,22links,
 R402 and the `b153c75b` baseline are preserved, and no compiler was invoked.
 See `doc/source_audits/batch_115.json`.
 
+The hundred-and-seventeenth checkpoint registers the independently reviewed
+`SELECT TYPE` construct and `EXIT` statement source:35base units across
+11.1.11.1,11.1.11.2,11.1.11.3 and11.1.12,30requirements and89pending facets.
+Seventeen numbered items were already accounted, so18base units are newly
+accounted. The authoring prompt did not name the constructs; the author
+established them from the source and the reviewer verified the titles
+independently.
+
+The first thing this packet got right was **not** walking into the trap that
+blocked batch113. Before registering any numbered rule, the author checked
+whether `tests/` already held cases for it — because registering a numbered
+rule that already has legacy fixtures *structurally forces* binding them, and
+a source packet must never do that. None of R1154–R1158 or C1162–C1173 had
+pre-existing cases, so registration was safe and nothing needed deferring. The
+reviewer confirmed that check independently.
+
+The substance is the **type-guard matching rule**, and it was derived from the
+source and verified word for word, because it is the single easiest thing in
+Clause 11 to paraphrase almost-correctly. A `TYPE IS` guard matches when the
+dynamic type *and kind type parameter values* are the same as specified. A
+`CLASS IS` guard matches when the dynamic type is an extension of the
+specified type. Selection then prefers a matching `TYPE IS`; failing that, a
+unique matching `CLASS IS`; failing that, among several matching `CLASS IS`
+guards, the one specifying **a type that is an extension of all the types
+specified in the others**; failing that, `CLASS DEFAULT`; failing that, no
+block is selected.
+
+There is **no processor latitude anywhere in this scope**, and none was
+invented — the single permission is the11.1.11.2p9 internal branch to
+`end-select-type-stmt`, whose "only" wording again supplies the paired
+restriction.
+
+Two subtle readings were checked and **confirmed correct**, both of which a
+careless packet would have got wrong in the direction of over-claiming.
+**C1168** does *not* prohibit one `TYPE IS` guard together with one `CLASS IS`
+guard specifying the same type; it prohibits the same type appearing in more
+than one `TYPE IS`, and in more than one `CLASS IS`, separately. And **C1172**
+is *not* a blanket ban on a textual `EXIT` inside a `DO CONCURRENT` construct
+— it turns on which construct the `EXIT` **belongs to**, and the negatives
+isolate exactly that property.
+
+The boundary against11.1.3.3 was checked in both directions: this packet owns
+the syntax, guard matching, selected-block semantics, associate-name choice
+and the p5–p7 associating-entity type and declaration changes, while11.1.3.3
+retains rank and bounds, corank and cobounds, `ASYNCHRONOUS` and `VOLATILE`,
+`OPTIONAL` absence, contiguity and definability transfer. No plan uses
+`SAME_TYPE_AS` or `EXTENDS_TYPE_OF` as an oracle basis, since that would
+duplicate the feature under test, and the guard-evaluation unobservability
+claim is scoped so it does not suppress the observable block-selection fact.
+11.1.11.3 yields zero facets because it is examples. There were no blocking
+findings.
+
+There remain **2,083cases**, now with **259catalogues,1,558requirements,
+1,788direct,22linked and5,033pending facets out of6,843**. Source accounting
+covers2,264base units. `authored_facets` is unchanged at1,788 and `tests/` is
+untouched.
+See `doc/source_audits/batch_117.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
