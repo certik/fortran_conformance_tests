@@ -1,0 +1,131 @@
+{
+  "schema_version": 1,
+  "review_type": "independent-do-construct-execution-and-do-concurrent-source-review",
+  "review_date": "2026-09-21",
+  "baseline_commit": "7d4f73f",
+  "state": "reviewed-source-only-with-locality-rules-independently-derived",
+  "scope": {
+    "sections": ["11.1.7.4.1", "11.1.7.4.2", "11.1.7.4.3", "11.1.7.4.4", "11.1.7.4.5", "11.1.7.5", "11.1.7.6"],
+    "base_units": 50,
+    "fine_units": 115,
+    "already_counted_numbered_units": 10,
+    "newly_accounted_base_units": 40,
+    "new_requirements": 43,
+    "new_numbered_requirements": 10,
+    "new_S_requirements": 33,
+    "new_pending_facets": 125,
+    "new_cases": 0,
+    "note": "The ten numbered items are R1135, C1138 and C1139 in 11.1.7.4.4, and C1140 through C1146 in 11.1.7.5. All were already accounted, so the 40 newly accounted units are the non-numbered paragraphs, notes and Table 11.1. 11.1.7 and 11.1.7.4 are structural parents with no catalogue.",
+    "per_section": {
+      "11.1.7.4.1": {"base_units": 5, "fine_units": 11, "requirements": 4, "pending_facets": 11},
+      "11.1.7.4.2": {"base_units": 5, "fine_units": 13, "requirements": 3, "pending_facets": 12},
+      "11.1.7.4.3": {"base_units": 3, "fine_units": 10, "requirements": 4, "pending_facets": 10},
+      "11.1.7.4.4": {"base_units": 8, "fine_units": 12, "requirements": 8, "pending_facets": 17, "already_counted": 3},
+      "11.1.7.4.5": {"base_units": 3, "fine_units": 7, "requirements": 3, "pending_facets": 8},
+      "11.1.7.5": {"base_units": 20, "fine_units": 56, "requirements": 21, "pending_facets": 67, "already_counted": 7},
+      "11.1.7.6": {"base_units": 6, "fine_units": 6, "requirements": 0, "pending_facets": 0}
+    }
+  },
+  "authoring": {
+    "author_context": "fresh subagent context in an isolated worktree based on 7d4f73f",
+    "author_packet": "0c09a1c",
+    "source_read_receipt": "receipts-batch114-source.json",
+    "note": "Authored in parallel with batch113, which took 11.1.7.1 through 11.1.7.3. Neither author read the other's worktree; both read the neighbouring sections from the pinned PDF to place the boundary."
+  },
+  "independent_review": {
+    "receipt": "c11-do-exec-source-review.json",
+    "reviewer_distinct_from_author": true,
+    "decision": "source-eligible-with-nonblocking-observations",
+    "blocking_findings": 0,
+    "scoped_original_units_read_in_full": 50,
+    "pdf_pages_read": [210, 211, 212, 213, 214, 215, 216, 217, 218, 219],
+    "compiler_invocations": 0,
+    "why_this_scope_is_high_risk": "This is the most latitude-dense material in Clause 11. DO CONCURRENT grants the processor substantial freedom over iteration order, and the locality rules are intricate enough that a plausible paraphrase is almost certainly wrong. The failure modes are an order-detecting plan, a floating-point reduction oracle, and reading a variable whose locality leaves it undefined."
+  },
+  "accounting_verification": {
+    "claim": "+40 newly accounted base units, not +50",
+    "verdict": "verified independently",
+    "already_accounted_numbered_units": ["R1135", "C1138", "C1139", "C1140", "C1141", "C1142", "C1143", "C1144", "C1145", "C1146"],
+    "fine_unit_representation": "The pinned reader reports 0 pre-existing fine units for all seven sections while the packet declares 115 catalogue subdivisions. The reviewer confirmed this is consistent with how other catalogues represent authored fine units."
+  },
+  "locality_rules": {
+    "status": "independently derived by the reviewer from the source BEFORE comparing with the catalogue",
+    "classes": "LOCAL, LOCAL_INIT, REDUCE, SHARED, or unspecified.",
+    "local": "A variable with LOCAL locality is a construct entity; the outside variable is inaccessible by that name within the construct. At the start of each iteration, if it is a pointer it has undefined pointer association status, and otherwise it is undefined except for any subobjects that are default-initialized.",
+    "local_init": "Takes the pointer association status and definition status of the outside variable of that name.",
+    "reduce": "A construct entity whose initial value comes from Table 11.1; the final update combines the values from completed iterations, and the processor MAY COMBINE THEM IN ANY ORDER.",
+    "shared": "Appearances refer to the variable in the innermost executable construct or scoping unit.",
+    "unspecified": "References, definitions, pointer and allocatable uses must satisfy the listed same-iteration or no-other-iteration obligations; multiple definitions or pointer changes leave the status undefined after termination.",
+    "table_11_1": "Verified row by row against the table itself, since extraction interleaves its columns.",
+    "undefined_state_discipline": "No plan reads, compares or inquires about a LOCAL variable in its undefined state - that would not be a conforming program. The unobservability claim is scoped precisely to that state and does not suppress what is observable, such as the final value of a SHARED or REDUCE variable after the construct."
+  },
+  "permissions": [
+    {"unit": "11.1.7.4.2#p1.expressions-any-order", "detail": "Concurrent limit and step expressions may be evaluated in any order."},
+    {"unit": "11.1.7.4.3#p3.executions-any-order", "detail": "DO CONCURRENT iterations may occur in any order. No order oracle is permitted."},
+    {"unit": "11.1.7.4.4#p1 and .cycle-curtails-iteration", "detail": "CYCLE may curtail an iteration."},
+    {"unit": "11.1.7.5#p5.reduce-combine-any-order", "detail": "The processor may combine REDUCE values in any order."},
+    {"unit": "11.1.7.5#p9.sequential-record-order-processor-dependent", "detail": "Sequential record ordering across iterations is processor dependent."}
+  ],
+  "permissions_verdict": "All five verified in both directions. No plan infers an iteration order, counts invocations, relies on a side effect, or observes a temporary.",
+  "reduce_floating_point_exclusion": {
+    "issue": "Because the processor may combine reduction values in ANY ORDER, and real and complex values are approximations under 7.4.3 with mathematically equivalent rewriting permitted by 10.1.5.2.4, a REDUCE result over reals is order-sensitive and cannot be a value oracle.",
+    "verdict": "correctly excluded. Only order-insensitive integer and logical reductions are planned."
+  },
+  "tables_audited": {
+    "attribution_table": "Audited against the source. Rows filed under the 11.1.7.5 paragraphs - p2, p3, p4, p6, p7, p9 - cite paragraph shall text rather than numbered constraints, and each was adjudicated for whether it is genuinely non-diagnosable or whether a real negative had been given away. C1139's conditional prohibition and C1144's broad 'might result in' wording were checked for second-reason rejectability. C1143, C1145 and C1146 reach into unregistered Clause 15 and Clause 17; the dependencies are flagged and the negatives remain attributable to the constraints themselves.",
+    "implementability_table": "Audited in BOTH directions. Nothing marked unimplementable or source-control is in fact observable by a conforming single-image program - the final value of a SHARED or REDUCE variable after the construct remains implementable - and nothing marked implementable secretly requires order, timing or multi-image observation or could pass vacuously."
+  },
+  "zero_facet_11_1_7_6": "Correct. 11.1.7.6 is examples; all six note base units and their fine units remain accounted, and the zero records the absence of a testable obligation rather than an omission.",
+  "ownership_boundaries": {
+    "parallel_11_1_7_1_to_3": "Those sections own the DO construct's purpose and form, loop-control syntax, construct names, the active and inactive concept, and the iteration-count rule. This packet owns execution after the DO statement: initiation, DO CONCURRENT active combinations, the execution cycle, CYCLE execution, termination, locality, reduction, shared and unspecified semantics, and the 11.1.7.5 restrictions. No catalogue was added for 11.1.7, 11.1.7.4 or 11.1.7.1 through .3.",
+    "registered_forall": "10.2.4.x retains ownership of FORALL active-combination execution, assignment staging, statement sequencing and its own order permissions. This packet applies analogous safeguards to DO CONCURRENT without duplicating FORALL assignment semantics."
+  },
+  "unregistered_dependencies_flagged": [
+    "11.1.7.1 through 11.1.7.3 (parallel packet)",
+    "11.2 branch, EXIT and RETURN",
+    "11.6 and 11.7 image control statements and segments",
+    "Clause 12 input/output",
+    "Clause 15 pure procedures, procedure characteristics, finalization",
+    "Clause 17 IEEE modules (C1145, C1146)",
+    "Clause 19 definedness, status and scoping"
+  ],
+  "explicit_limitations": [
+    "This batch registers source accounting only. It is not fixture approval, it supplies no execution, and it creates no test case. authored_facets remains 1788 and the fixture review states remain 1770 / 274 / 1.",
+    "All 125 facets in scope remain pending, and a substantial number are recorded as unimplementable or source-control only rather than merely unwritten.",
+    "No iteration order, call count, side effect, simultaneity or temporary is observable, and no plan attempts to observe one.",
+    "No REDUCE result over real or complex values is a value oracle.",
+    "No LOCAL variable is read in its undefined state.",
+    "Several restrictions depend on unregistered Clause 15 purity and Clause 17 IEEE material and cannot be implemented until those clauses are registered.",
+    "No compiler was invoked during authoring or review. The eight substring executions integrated in batch099 remain the latest actual observations."
+  ],
+  "preservation": {
+    "cases_preserved": 2083,
+    "raw_reviews_preserved": 2047,
+    "older_catalogues_preserved": 238,
+    "linked_facets_preserved": 22,
+    "current_source_use_inventories_preserved": 1,
+    "baseline_lines_changed": 0,
+    "baseline": "b153c75b",
+    "expected_failures_lines": 804,
+    "authored_facets_unchanged": 1788,
+    "fixture_review_states_unchanged": "1770 reference-validated / 274 source-reviewed / 1 needs-oracle",
+    "tests_directory_untouched": true,
+    "new_compiler_invocations": 0,
+    "integrated_files_byte_identical_to_reviewed_branch": true
+  },
+  "validation_snapshot": {
+    "catalogue_reviews_written": 7,
+    "inventory_reviews_written": 1,
+    "detailed_catalogues": 245,
+    "requirements": 1454,
+    "declared_facets": 6549,
+    "pending_facets": 4739,
+    "authored_facets": 1788,
+    "accounted_base_units": 2224,
+    "unresolved_base_units": 4249,
+    "normal_audit_exit": 1,
+    "normal_audit_block": "one retained needs-oracle real-BOZ case",
+    "python_suite_tests": 960,
+    "python_suite_result": "OK"
+  }
+}

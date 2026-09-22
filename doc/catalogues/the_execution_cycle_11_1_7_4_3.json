@@ -1,0 +1,227 @@
+{
+  "schema_version": 1,
+  "section": "11.1.7.4.3",
+  "review_state": "reviewed",
+  "subunits": {
+    "p1": [
+      "p1.count-test-termination",
+      "p1.while-test-termination",
+      "p1.block-execution-step",
+      "p1.decrement-and-increment-step"
+    ],
+    "p2": [
+      "p2.do-variable-no-redefinition",
+      "p2.do-variable-no-undefinition",
+      "p2.increment-exception"
+    ],
+    "p3": [
+      "p3.every-active-combination",
+      "p3.execution-is-iteration",
+      "p3.executions-any-order"
+    ]
+  },
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "requirements",
+      "requirements": [
+        "S11.1.7.4.3-001"
+      ]
+    },
+    {
+      "unit": "p1.count-test-termination",
+      "disposition": "requirements",
+      "requirements": [
+        "S11.1.7.4.3-001"
+      ]
+    },
+    {
+      "unit": "p1.while-test-termination",
+      "disposition": "requirements",
+      "requirements": [
+        "S11.1.7.4.3-001"
+      ]
+    },
+    {
+      "unit": "p1.block-execution-step",
+      "disposition": "requirements",
+      "requirements": [
+        "S11.1.7.4.3-001"
+      ]
+    },
+    {
+      "unit": "p1.decrement-and-increment-step",
+      "disposition": "requirements",
+      "requirements": [
+        "S11.1.7.4.3-001"
+      ]
+    },
+    {
+      "unit": "p2",
+      "disposition": "requirements",
+      "requirements": [
+        "S11.1.7.4.3-002"
+      ]
+    },
+    {
+      "unit": "p2.do-variable-no-redefinition",
+      "disposition": "requirements",
+      "requirements": [
+        "S11.1.7.4.3-002"
+      ]
+    },
+    {
+      "unit": "p2.do-variable-no-undefinition",
+      "disposition": "requirements",
+      "requirements": [
+        "S11.1.7.4.3-002"
+      ]
+    },
+    {
+      "unit": "p2.increment-exception",
+      "disposition": "requirements",
+      "requirements": [
+        "S11.1.7.4.3-002"
+      ]
+    },
+    {
+      "unit": "p3",
+      "disposition": "requirements",
+      "requirements": [
+        "S11.1.7.4.3-003",
+        "S11.1.7.4.3-004"
+      ]
+    },
+    {
+      "unit": "p3.every-active-combination",
+      "disposition": "requirements",
+      "requirements": [
+        "S11.1.7.4.3-003"
+      ]
+    },
+    {
+      "unit": "p3.execution-is-iteration",
+      "disposition": "requirements",
+      "requirements": [
+        "S11.1.7.4.3-003"
+      ]
+    },
+    {
+      "unit": "p3.executions-any-order",
+      "disposition": "permission",
+      "requirements": [
+        "S11.1.7.4.3-004"
+      ],
+      "rationale": "Processor latitude: a fixture must not require or observe any iteration order."
+    }
+  ],
+  "requirements": [
+    {
+      "id": "S11.1.7.4.3-001",
+      "title": "A non-DO-CONCURRENT execution cycle tests for termination, executes the block, then decrements the count and increments the DO variable",
+      "source": "11.1.7.4.3 p1; J3/24-007 PDF p213.",
+      "source_units": [
+        "p1",
+        "p1.count-test-termination",
+        "p1.while-test-termination",
+        "p1.block-execution-step",
+        "p1.decrement-and-increment-step"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The execution cycle of a DO construct that is not DO CONCURRENT repeatedly performs, in sequence, testing the iteration count and WHILE expression for termination, executing the loop block, and then decrementing the iteration count and incrementing the DO variable by m3.",
+      "facets": [
+        "count-zero-terminates-before-block",
+        "while-false-terminates-before-block",
+        "block-executes-between-test-and-increment",
+        "do-variable-increment-after-block"
+      ],
+      "pending": {
+        "count-zero-terminates-before-block": "PENDING positive plan with zero initial count and a body sentinel proving the block is skipped before any body effect.",
+        "while-false-terminates-before-block": "PENDING positive plan with a WHILE condition false at the top and a body sentinel proving no body execution occurs.",
+        "block-executes-between-test-and-increment": "PENDING positive plan in which the body records the current DO-variable value and final values prove the increment happened only after the body.",
+        "do-variable-increment-after-block": "PENDING positive plan with nonunit increment and final retained DO-variable value proving the step-three increment."
+      },
+      "oracle": "Positive source plans establish source form, final values, scope, locality, or status without relying on order, side effects, temporary storage, or compiler agreement. Assignment effects, expression evaluation latitude, intrinsic operation semantics, pointer and allocatable status, I/O semantics, pure-procedure classification, IEEE modules, and branch-statement forms are credited to their registered owner clauses where applicable.",
+      "oracle_limitation": "This source-only catalogue records pending plans only. It creates no Fortran test program, invokes no processor, approves no fixture or oracle, and claims no coverage. Future DO and DO CONCURRENT fixtures must use independently derived literal, inquiry, or source-relation oracles; must inspect only final values and defined statuses that the standard makes observable; must preload untouched objects with sentinels distinct from every value the program can write; must not infer iteration order, expression evaluation order, side-effect counts, procedure call counts, simultaneity, temporary storage, scheduler choices, or processor-dependent ordering; must not read a variable whose value, pointer association status, or allocation status is undefined; and must not rely on compiler agreement, diagnostic wording, resource exhaustion, unsupported multi-image execution, or processor-dependent kind availability.",
+      "dependencies": "11.1.7.4.1 initiation and 11.1.7.4.5 termination registered in this packet."
+    },
+    {
+      "id": "S11.1.7.4.3-002",
+      "title": "A non-DO-CONCURRENT DO variable is not redefined or made undefined while active except for the cycle increment",
+      "source": "11.1.7.4.3 p2; J3/24-007 PDF p213.",
+      "source_units": [
+        "p2",
+        "p2.do-variable-no-redefinition",
+        "p2.do-variable-no-undefinition",
+        "p2.increment-exception"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "context-dependent",
+      "definition": "Except for incrementation of the DO variable in step (3), the DO variable shall neither be redefined nor become undefined while the DO construct is active.",
+      "facets": [
+        "do-variable-not-redefined-source-control",
+        "do-variable-not-undefined-source-control",
+        "step-three-increment-is-exception-control"
+      ],
+      "pending": {
+        "do-variable-not-redefined-source-control": "PENDING source-control/control pair where the control does not assign to the DO variable inside the active construct; no diagnostic expectation is claimed for a nonconstraint redefinition.",
+        "do-variable-not-undefined-source-control": "PENDING source-control/control pair ensuring the DO variable is not deallocated, pointer-status-changed, or otherwise made undefined while active; executable approval depends on registered definedness rules.",
+        "step-three-increment-is-exception-control": "PENDING positive plan showing the standard step-three increment remains present and is not treated as a prohibited redefinition."
+      },
+      "oracle": "This source rule is a program obligation or context-dependent restriction, not a portable executable oracle in this packet. Pending evidence is source-control/documentary unless a future reviewed fixture can observe only a defined final state under all permitted execution orders.",
+      "oracle_limitation": "This source-only catalogue records pending plans only. It creates no Fortran test program, invokes no processor, approves no fixture or oracle, and claims no coverage. Future DO and DO CONCURRENT fixtures must use independently derived literal, inquiry, or source-relation oracles; must inspect only final values and defined statuses that the standard makes observable; must preload untouched objects with sentinels distinct from every value the program can write; must not infer iteration order, expression evaluation order, side-effect counts, procedure call counts, simultaneity, temporary storage, scheduler choices, or processor-dependent ordering; must not read a variable whose value, pointer association status, or allocation status is undefined; and must not rely on compiler agreement, diagnostic wording, resource exhaustion, unsupported multi-image execution, or processor-dependent kind availability.",
+      "dependencies": "19 definedness and pointer/allocatable status NOT YET REGISTERED."
+    },
+    {
+      "id": "S11.1.7.4.3-003",
+      "title": "A DO CONCURRENT block executes once for every active combination and each execution is an iteration",
+      "source": "11.1.7.4.3 p3; J3/24-007 PDF p213.",
+      "source_units": [
+        "p3",
+        "p3.every-active-combination",
+        "p3.execution-is-iteration"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The block of a DO CONCURRENT construct is executed for every active combination of the index-name values, and each execution of the block is an iteration.",
+      "facets": [
+        "all-active-combinations-execute",
+        "each-block-execution-is-an-iteration"
+      ],
+      "pending": {
+        "all-active-combinations-execute": "PENDING positive plan with independent expected final array elements for all active combinations and sentinels for inactive combinations, checking only final state.",
+        "each-block-execution-is-an-iteration": "PENDING source-control plan tying locality and CYCLE facets to a single block execution per active combination without counting calls or observing scheduling."
+      },
+      "oracle": "Positive source plans establish source form, final values, scope, locality, or status without relying on order, side effects, temporary storage, or compiler agreement. Assignment effects, expression evaluation latitude, intrinsic operation semantics, pointer and allocatable status, I/O semantics, pure-procedure classification, IEEE modules, and branch-statement forms are credited to their registered owner clauses where applicable.",
+      "oracle_limitation": "This source-only catalogue records pending plans only. It creates no Fortran test program, invokes no processor, approves no fixture or oracle, and claims no coverage. Future DO and DO CONCURRENT fixtures must use independently derived literal, inquiry, or source-relation oracles; must inspect only final values and defined statuses that the standard makes observable; must preload untouched objects with sentinels distinct from every value the program can write; must not infer iteration order, expression evaluation order, side-effect counts, procedure call counts, simultaneity, temporary storage, scheduler choices, or processor-dependent ordering; must not read a variable whose value, pointer association status, or allocation status is undefined; and must not rely on compiler agreement, diagnostic wording, resource exhaustion, unsupported multi-image execution, or processor-dependent kind availability.",
+      "dependencies": "11.1.7.4.2 active combinations registered in this packet."
+    },
+    {
+      "id": "S11.1.7.4.3-004",
+      "title": "DO CONCURRENT iterations may execute in any order",
+      "source": "11.1.7.4.3 p3; J3/24-007 PDF p213.",
+      "source_units": [
+        "p3",
+        "p3.executions-any-order"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The executions of the DO CONCURRENT block for the active combinations may occur in any order.",
+      "facets": [
+        "iteration-order-unobservable-source-control"
+      ],
+      "pending": {
+        "iteration-order-unobservable-source-control": "PENDING source-control evidence that future DO CONCURRENT fixtures are invariant under every iteration order and do not count calls, observe side effects, or infer temporaries."
+      },
+      "oracle": "This records processor or source latitude, not a required observable behavior. It supports rejecting order-sensitive or latitude-sensitive oracles and cannot support a test that requires the processor to exercise any particular order, grouping, temporary, or implementation strategy.",
+      "oracle_limitation": "This source-only catalogue records pending plans only. It creates no Fortran test program, invokes no processor, approves no fixture or oracle, and claims no coverage. Future DO and DO CONCURRENT fixtures must use independently derived literal, inquiry, or source-relation oracles; must inspect only final values and defined statuses that the standard makes observable; must preload untouched objects with sentinels distinct from every value the program can write; must not infer iteration order, expression evaluation order, side-effect counts, procedure call counts, simultaneity, temporary storage, scheduler choices, or processor-dependent ordering; must not read a variable whose value, pointer association status, or allocation status is undefined; and must not rely on compiler agreement, diagnostic wording, resource exhaustion, unsupported multi-image execution, or processor-dependent kind availability.",
+      "dependencies": "10.1.4 evaluation latitude registered;15 pure procedure side-effect rules NOT YET REGISTERED."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_11_1_7_4_3.md"
+  },
+  "review_fingerprint": "af97ceac35544a8df86f72b838e451908415e262e181cc333bb3bda249995e65",
+  "review_rationale": "batch114: independent fresh-context source review against pinned J3/24-007 (sha256 7371e889...). Reviewer read all 50 base units of 11.1.7.4.1 through 11.1.7.4.5, 11.1.7.5 and 11.1.7.6 in the original PDF across pages 210 to 219, verified 50 base / 115 fine units, 43 requirements and 125 facets (all pending), and confirmed the accounting claim that 40 base units are newly accounted because the ten numbered items R1135, C1138 and C1139 in 11.1.7.4.4 and C1140 through C1146 in 11.1.7.5 were already counted. This is the most latitude-dense material in Clause 11. The locality rules were derived independently from the source before comparison, covering LOCAL, LOCAL_INIT, SHARED, REDUCE and unspecified locality, and Table 11.1 was verified row by row because extraction interleaves its columns. A variable with LOCAL locality is undefined at the start of each iteration except for default-initialized subobjects and undefined after the construct, so no plan reads, compares or inquires about it in that state, and the unobservability claim is scoped to that state rather than being overbroad. Five permissions were adjudicated and accepted: the any-order evaluation of concurrent limit and step expressions, the any-order execution of DO CONCURRENT iterations, the CYCLE curtailment effect, the processor's freedom to combine REDUCE values in any order, and the processor-dependent sequential record ordering across iterations. No plan infers an iteration order, counts invocations, relies on a side effect or observes a temporary; a program able to detect the order would not be a conforming test. The REDUCE floating-point trap was checked specifically: because the processor may combine reduction values in any order, and real and complex values are approximations under 7.4.3 with reassociation permitted by 10.1.5.2.4, no REDUCE result over reals is used as a value oracle, and only order-insensitive integer and logical reductions are planned. Both the attribution table and a separate implementability table were audited, the latter in both directions, confirming that nothing observable was suppressed and nothing marked implementable secretly requires order, timing or multi-image observation or could pass vacuously. 11.1.7.6 yields zero requirements and zero facets because it is examples, with all six note base units still accounted. Ownership was checked against the parallel 11.1.7.1 through 11.1.7.3 packet, which owns the DO form and loop control including the iteration-count rule, and against registered FORALL in 10.2.4.x, which retains its own active-combination execution and assignment staging. Decision: source-eligible, no blocking findings. This registers source accounting only: it is not fixture approval, it supplies no execution, and it approves no oracle."
+}

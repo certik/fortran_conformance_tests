@@ -3088,6 +3088,71 @@ catalogues,22links,R402 and the `b153c75b` baseline are preserved, and no
 compiler was invoked.
 See `doc/source_audits/batch_112.json`.
 
+The hundred-and-fourteenth checkpoint registers the independently reviewed
+`DO` construct **execution** source, including `DO CONCURRENT`:50base/115fine
+units across11.1.7.4.1 through11.1.7.4.5,11.1.7.5 and11.1.7.6,43requirements
+and125pending facets. Ten numbered items were already accounted, so40base
+units are newly accounted — the non-numbered paragraphs, the notes, and
+Table11.1.
+
+This is the most **latitude-dense** material in Clause 11, and almost all of
+its value depends on getting two intricate things exactly right.
+
+The first is **locality**. The reviewer derived `LOCAL`, `LOCAL_INIT`,
+`SHARED`, `REDUCE` and unspecified locality from the source before looking at
+the catalogue, and verified **Table 11.1 row by row**, since extraction
+interleaves its columns. The rule that governs everything else is this: a
+variable with `LOCAL` locality is **undefined** at the start of each iteration
+— except for default-initialized subobjects — and undefined again after the
+construct. Reading, comparing or inquiring about it in that state is not a
+conforming program at all. No plan does. Equally important, that
+unobservability claim is **scoped to exactly that state**: it does not
+suppress the final value of a `SHARED` or `REDUCE` variable after the
+construct, which remains plainly observable.
+
+The second is the **reduction trap**. The processor may combine `REDUCE`
+values in **any order**. Real and complex values are approximations under
+7.4.3, and 10.1.5.2.4 permits mathematically equivalent rewriting. A floating
+reduction is therefore order-sensitive, and **no `REDUCE` result over reals
+may be a value oracle**. Only order-insensitive integer and logical reductions
+are planned.
+
+Five permissions are recorded: any-order evaluation of the concurrent limit
+and step expressions; any-order execution of `DO CONCURRENT` iterations; the
+`CYCLE` curtailment effect; the processor's freedom to combine `REDUCE` values
+in any order; and processor-dependent sequential record ordering across
+iterations. No plan infers an iteration order, counts invocations, relies on a
+side effect, or observes a temporary — a program able to detect the order is
+not a conforming test.
+
+This packet produced two tables rather than one. Alongside the usual
+**attribution** table, the author supplied an **implementability** table
+classifying every facet as implementable, source-control only, or
+unimplementable and context-dependent — the discipline established in
+batch112. The reviewer audited it **in both directions**: nothing marked
+unimplementable turned out to be observable by a conforming single-image
+program, and nothing marked implementable secretly required order, timing or
+multi-image observation, or could pass vacuously. The paragraph-level `shall`
+rules in11.1.7.5 needed the most care, since several are obligations on the
+program that a processor is not required to diagnose; each was adjudicated
+individually rather than swept into one category.
+
+11.1.7.6 yields zero requirements and zero facets because it is examples, with
+all six note base units still accounted. There were no blocking findings.
+
+A real limit: several restrictions — C1143 on purity, C1145 and C1146 on the
+IEEE modules — depend on **unregistered Clause 15 and Clause 17** material and
+cannot be implemented until those clauses are registered.
+
+There remain **2,083cases**, now with **245catalogues,1,454requirements,
+1,788direct,22linked and4,739pending facets out of6,549**. Source accounting
+covers2,224base units. `authored_facets` is unchanged at1,788 and the fixture
+review states are unchanged at1,770/274/1 — this packet touches nothing under
+`tests/` and claims no execution credit. All2,083case bindings,2,047reviews,
+238older catalogues,22links,R402 and the `b153c75b` baseline are preserved,
+and no compiler was invoked.
+See `doc/source_audits/batch_114.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
