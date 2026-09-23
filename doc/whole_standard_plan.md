@@ -5516,6 +5516,20 @@ latitude; IOMSG unchanged when nothing goes wrong, but its message text never a
 basis for comparison.
 See `doc/source_audits/batch_166.json`.
 
+## Batch 174 — PROTECTED
+
+Nineteen facets of 8.5.15 across twenty-seven fixtures, accepted with no findings.
+The attribute has two halves that the fixtures keep apart: a protected
+*nonpointer* may not appear in any variable definition context outside its
+module, while a protected *pointer* only has its **association** protected — its
+target may be defined anywhere. Frozen LFortran gets both halves wrong: it accepts
+five kinds of misuse the constraints require it to diagnose (assignment through a
+data target, a DO variable, an OUT actual, pointer assignment and NULLIFY), and it
+rejects the conforming definition of a protected pointer's target. The author
+shipped that last case rather than withholding it, which is exactly what the
+checklist now asks for.
+See `doc/source_audits/batch_174.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
