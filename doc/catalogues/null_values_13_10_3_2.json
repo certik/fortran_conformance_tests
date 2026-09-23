@@ -1,0 +1,122 @@
+{
+  "schema_version": 1,
+  "section": "13.10.3.2",
+  "requirements": [
+    {
+      "id": "S13.10.3.2-001",
+      "title": "List-directed null values are r*, empty fields, or leading empty first fields",
+      "source": "S13.10.3.2, J3/24-007, 18 December 2023, physical PDF309.",
+      "source_units": [
+        "p1"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A null value is specified by r*, by no characters between consecutive value separators, or by no characters before the first value separator in the first record read for the input statement.",
+      "facets": [
+        "repeat-null-form",
+        "empty-between-separators",
+        "leading-empty-first-record"
+      ],
+      "pending": {
+        "repeat-null-form": "Initialize integer x=9; internal READ record '1*' into x; expected x remains 9.",
+        "empty-between-separators": "Initialize integer array [1,2,3]; internal READ record '10,,30'; expected values [10,2,30].",
+        "leading-empty-first-record": "Initialize integers x=7,y=8; internal READ record ',9' into x,y; expected x remains 7 and y becomes 9."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use internal READ or internal WRITE where possible; input plans name exact record text and resulting values, and output plans name exact characters when the source fixes them. Processor-dependent list-directed or namelist output spelling, field widths, separator choice, record length, and record breaks are explicitly left unasserted. No fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim is created by this packet.",
+      "oracle_limitation": "Source accounting only. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics. A future diagnostic facet is allowed only if a later owner identifies a numbered syntax rule or constraint, a required rejection, and a single-image portable observation. Clause 12 I/O statement mechanics remain unregistered and are treated as dependencies, not as evidence owned by this packet.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, designators, character assignment, arrays, and execution constructs; 13.1-13.4 for format concepts already registered by batch136. Unregistered dependencies explicitly retained: 13.5-13.9 parallel sibling material for decimal/delim modes and edit descriptors; clause 12 for data transfer, internal files, effective items, defined I/O, DELIM=, DECIMAL=, NML=, stream and record structure; clause 15 for defined I/O; clause 16 if future fixtures use intrinsics; clauses 3, 5, 14, 17, and 19 where terminology, kind, processor-dependency, coarray/image, or scope rules are reached."
+    },
+    {
+      "id": "S13.10.3.2-002",
+      "title": "List-directed null values preserve definition status and cannot be complex parts",
+      "source": "S13.10.3.2, J3/24-007, 18 December 2023, physical PDF310.",
+      "source_units": [
+        "p2"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "A null value has no effect on the next effective item definition status; it shall not be used for either complex part, but one null may represent an entire complex constant.",
+      "facets": [
+        "null-preserves-value",
+        "single-null-entire-complex",
+        "null-not-complex-part"
+      ],
+      "pending": {
+        "null-preserves-value": "Initialize integer x=7; internal READ record ',' into x followed by another item; expected x remains 7.",
+        "single-null-entire-complex": "Initialize complex z=(1.0,2.0); internal READ record ',' into z followed by another item; expected z remains approximately (1.0,2.0).",
+        "null-not-complex-part": "Deferred input-error plan: '(,2.0)' differs from '(1.0,2.0)' only by a null real part; observe IOSTAT if Clause 12 makes it portable, not a diagnostic."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use internal READ or internal WRITE where possible; input plans name exact record text and resulting values, and output plans name exact characters when the source fixes them. Processor-dependent list-directed or namelist output spelling, field widths, separator choice, record length, and record breaks are explicitly left unasserted. No fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim is created by this packet.",
+      "oracle_limitation": "Source accounting only. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics. A future diagnostic facet is allowed only if a later owner identifies a numbered syntax rule or constraint, a required rejection, and a single-image portable observation. Clause 12 I/O statement mechanics remain unregistered and are treated as dependencies, not as evidence owned by this packet.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, designators, character assignment, arrays, and execution constructs; 13.1-13.4 for format concepts already registered by batch136. Unregistered dependencies explicitly retained: 13.5-13.9 parallel sibling material for decimal/delim modes and edit descriptors; clause 12 for data transfer, internal files, effective items, defined I/O, DELIM=, DECIMAL=, NML=, stream and record structure; clause 15 for defined I/O; clause 16 if future fixtures use intrinsics; clauses 3, 5, 14, 17, and 19 where terminology, kind, processor-dependency, coarray/image, or scope rules are reached."
+    },
+    {
+      "id": "S13.10.3.2-003",
+      "title": "Slash terminates list-directed input and null-supplies remaining effective items",
+      "source": "S13.10.3.2, J3/24-007, 18 December 2023, physical PDF310.",
+      "source_units": [
+        "p3"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A slash value separator terminates the input statement after the previous value, ignores the rest of the record, and supplies null values for additional effective items and input-list do-variables as needed.",
+      "facets": [
+        "slash-terminates",
+        "slash-ignores-rest",
+        "slash-null-supplies-remaining"
+      ],
+      "pending": {
+        "slash-terminates": "Initialize x=-1,y=-2; internal READ record '1 / 99' into x,y; expected x=1 and y remains -2.",
+        "slash-ignores-rest": "Same record '1 / not_an_integer' into x,y; expected no attempt to parse trailing text after slash when portable IOSTAT context is supplied.",
+        "slash-null-supplies-remaining": "Initialize integer array [5,6,7]; internal READ record '1 /' into all elements; expected [1,6,7]."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use internal READ or internal WRITE where possible; input plans name exact record text and resulting values, and output plans name exact characters when the source fixes them. Processor-dependent list-directed or namelist output spelling, field widths, separator choice, record length, and record breaks are explicitly left unasserted. No fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim is created by this packet.",
+      "oracle_limitation": "Source accounting only. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics. A future diagnostic facet is allowed only if a later owner identifies a numbered syntax rule or constraint, a required rejection, and a single-image portable observation. Clause 12 I/O statement mechanics remain unregistered and are treated as dependencies, not as evidence owned by this packet.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, designators, character assignment, arrays, and execution constructs; 13.1-13.4 for format concepts already registered by batch136. Unregistered dependencies explicitly retained: 13.5-13.9 parallel sibling material for decimal/delim modes and edit descriptors; clause 12 for data transfer, internal files, effective items, defined I/O, DELIM=, DECIMAL=, NML=, stream and record structure; clause 15 for defined I/O; clause 16 if future fixtures use intrinsics; clauses 3, 5, 14, 17, and 19 where terminology, kind, processor-dependency, coarray/image, or scope rules are reached."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "requirements",
+      "requirements": [
+        "S13.10.3.2-001"
+      ]
+    },
+    {
+      "unit": "note1",
+      "disposition": "informative",
+      "rationale": "Clarifies that end of record after another separator does not create a null; p1 owns the normative null forms."
+    },
+    {
+      "unit": "p2",
+      "disposition": "requirements",
+      "requirements": [
+        "S13.10.3.2-002"
+      ]
+    },
+    {
+      "unit": "p3",
+      "disposition": "requirements",
+      "requirements": [
+        "S13.10.3.2-003"
+      ]
+    },
+    {
+      "unit": "note2",
+      "disposition": "informative",
+      "rationale": "Summarizes blank treatment exceptions; normative blank handling is accounted in 13.10.2 and 13.10.3.1."
+    },
+    {
+      "unit": "note3",
+      "disposition": "informative",
+      "rationale": "Example table only. I verified the Variable/Value rows visually in the PDF: I=12345, X(1)=12345.0, X(2)=unchanged, X(3)=1.5, X(4)=1.5, X(5)-X(8)=unchanged, P=ISN'T_BOB'S, Z=(123.0,0.0), G=true."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_13_10_3_2.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "15a600768537666c1c137507febfdd78c87853be4a58d3aba536486a8d4942f2",
+  "review_rationale": "Independent fresh-context source review, two rounds: doc/source_audits/batch_139.json. This COMPLETES the list-directed and namelist half of Clause 13. The reviewer re-derived unit hashes, re-partitioned the four sections sharing PDF p312 unit by unit, verified the zero-numbered-R/C claim across all 77 units, re-read both note result tables row-by-row (13.10.3.2 NOTE 3 and 13.11.3.6 NOTE), and confirmed 13.10.4 contains no table despite being the flagged candidate. THE CRUX of this scope is the REQUIRED versus PROCESSOR-DEPENDENT split, and the reviewer audited it in BOTH directions, producing two blocking findings that are the same error in mirror image. C139SR-001: the F/E choice for real list-directed output was marked WHOLLY processor-dependent, but 13.10.4 p5 fixes one case - a real ZERO must use F form - so the claim was TOO BROAD, which is itself a defect; the unit is now split, with a required facet asserting ONLY the form (no E-form exponent marker) and explicitly not the width, digits, sign or decimal spelling, and 13.11.4.2 propagating it through namelist editing. C139SR-002 ran the other way: a plan asserted the exact substring I= while the same packet marked spacing around equals processor-dependent, and a conforming processor may emit I with a space; the plan now asserts the uppercase object-name token only. The genuine obligations survive and were hand-verified including their leading blanks: ' T' and ' F' from 13.10.4 p3 with p13, ' AB' for delimiter mode NONE from p8, and the namelist prefix ' &G' from 13.11.4.3 p3 and p5. Source accounting only: authored_facets unchanged at 1977, no fixture bound, no compiler invoked."
+}

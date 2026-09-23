@@ -1,0 +1,172 @@
+{
+  "schema_version": 1,
+  "section": "13.11.3.2",
+  "requirements": [
+    {
+      "id": "S13.11.3.2-001",
+      "title": "Namelist name-value subsequences are processed serially and leave untouched objects unchanged",
+      "source": "S13.11.3.2, J3/24-007, 18 December 2023, physical PDF312.",
+      "source_units": [
+        "p1"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Name-value subsequences are evaluated serially left to right; a designator may appear in more than one subsequence; objects not subobjects of any designator remain unchanged.",
+      "facets": [
+        "serial-left-to-right",
+        "repeated-designator-last-effect",
+        "unmentioned-object-unchanged"
+      ],
+      "pending": {
+        "serial-left-to-right": "Internal READ '&G I=1, I=2 /'; expected I=2 after left-to-right serial processing.",
+        "repeated-designator-last-effect": "Internal READ '&G A(1)=1, A(1)=3 /'; expected A(1)=3.",
+        "unmentioned-object-unchanged": "Initialize I=1,J=9; internal READ '&G I=2 /'; expected J remains 9."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use internal READ or internal WRITE where possible; input plans name exact record text and resulting values, and output plans name exact characters when the source fixes them. Processor-dependent list-directed or namelist output spelling, field widths, separator choice, record length, and record breaks are explicitly left unasserted. No fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim is created by this packet.",
+      "oracle_limitation": "Source accounting only. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics. A future diagnostic facet is allowed only if a later owner identifies a numbered syntax rule or constraint, a required rejection, and a single-image portable observation. Clause 12 I/O statement mechanics remain unregistered and are treated as dependencies, not as evidence owned by this packet.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, designators, character assignment, arrays, and execution constructs; 13.1-13.4 for format concepts already registered by batch136. Unregistered dependencies explicitly retained: 13.5-13.9 parallel sibling material for decimal/delim modes and edit descriptors; clause 12 for data transfer, internal files, effective items, defined I/O, DELIM=, DECIMAL=, NML=, stream and record structure; clause 15 for defined I/O; clause 16 if future fixtures use intrinsics; clauses 3, 5, 14, 17, and 19 where terminology, kind, processor-dependency, coarray/image, or scope rules are reached."
+    },
+    {
+      "id": "S13.11.3.2-002",
+      "title": "Aggregate namelist designators expand to effective items with bounded following values",
+      "source": "S13.11.3.2, J3/24-007, 18 December 2023, physical PDF313.",
+      "source_units": [
+        "p2"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "Array or derived-type designators expand to scalar effective items as formatted I/O lists do; values after equals shall not exceed the number of effective items but may be fewer, in which case nulls are appended; unacceptable forms cause an error condition.",
+      "facets": [
+        "aggregate-expands-effective-items",
+        "value-count-not-exceed-items",
+        "fewer-values-null-appended",
+        "unacceptable-value-error"
+      ],
+      "pending": {
+        "aggregate-expands-effective-items": "For integer A(3), internal READ '&G A=1,2,3 /'; expected A=[1,2,3] in array element order.",
+        "value-count-not-exceed-items": "Deferred input-error plan: '&G A=1,2,3,4 /' for A(3) differs from control only by one excess value; observe IOSTAT if portable.",
+        "fewer-values-null-appended": "Initialize A=[7,8,9]; internal READ '&G A=1 /'; expected A=[1,8,9].",
+        "unacceptable-value-error": "Deferred input-error plan: '&G A=abc /' for integer A differs from control '&G A=1 /' only by unacceptable value form."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use internal READ or internal WRITE where possible; input plans name exact record text and resulting values, and output plans name exact characters when the source fixes them. Processor-dependent list-directed or namelist output spelling, field widths, separator choice, record length, and record breaks are explicitly left unasserted. No fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim is created by this packet.",
+      "oracle_limitation": "Source accounting only. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics. A future diagnostic facet is allowed only if a later owner identifies a numbered syntax rule or constraint, a required rejection, and a single-image portable observation. Clause 12 I/O statement mechanics remain unregistered and are treated as dependencies, not as evidence owned by this packet.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, designators, character assignment, arrays, and execution constructs; 13.1-13.4 for format concepts already registered by batch136. Unregistered dependencies explicitly retained: 13.5-13.9 parallel sibling material for decimal/delim modes and edit descriptors; clause 12 for data transfer, internal files, effective items, defined I/O, DELIM=, DECIMAL=, NML=, stream and record structure; clause 15 for defined I/O; clause 16 if future fixtures use intrinsics; clauses 3, 5, 14, 17, and 19 where terminology, kind, processor-dependency, coarray/image, or scope rules are reached."
+    },
+    {
+      "id": "S13.11.3.2-003",
+      "title": "Slash terminates namelist input and null-supplies remaining current-object items",
+      "source": "S13.11.3.2, J3/24-007, 18 December 2023, physical PDF313.",
+      "source_units": [
+        "p3"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A slash value separator terminates namelist input after previous value; additional items in the current namelist group object are treated as supplied null values.",
+      "facets": [
+        "namelist-slash-terminates",
+        "namelist-slash-null-supplies-current-object"
+      ],
+      "pending": {
+        "namelist-slash-terminates": "Initialize I=0,J=9; internal READ '&G I=1 / J=2'; expected I=1,J=9 because slash terminates before J=2.",
+        "namelist-slash-null-supplies-current-object": "Initialize A=[7,8,9]; internal READ '&G A=1 /'; expected A=[1,8,9]."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use internal READ or internal WRITE where possible; input plans name exact record text and resulting values, and output plans name exact characters when the source fixes them. Processor-dependent list-directed or namelist output spelling, field widths, separator choice, record length, and record breaks are explicitly left unasserted. No fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim is created by this packet.",
+      "oracle_limitation": "Source accounting only. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics. A future diagnostic facet is allowed only if a later owner identifies a numbered syntax rule or constraint, a required rejection, and a single-image portable observation. Clause 12 I/O statement mechanics remain unregistered and are treated as dependencies, not as evidence owned by this packet.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, designators, character assignment, arrays, and execution constructs; 13.1-13.4 for format concepts already registered by batch136. Unregistered dependencies explicitly retained: 13.5-13.9 parallel sibling material for decimal/delim modes and edit descriptors; clause 12 for data transfer, internal files, effective items, defined I/O, DELIM=, DECIMAL=, NML=, stream and record structure; clause 15 for defined I/O; clause 16 if future fixtures use intrinsics; clauses 3, 5, 14, 17, and 19 where terminology, kind, processor-dependency, coarray/image, or scope rules are reached."
+    },
+    {
+      "id": "S13.11.3.2-004",
+      "title": "Namelist input reads successive records until slash and ignores record remainder",
+      "source": "S13.11.3.2, J3/24-007, 18 December 2023, physical PDF313.",
+      "source_units": [
+        "p4"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Successive namelist records are read until slash; the remainder of the slash record is ignored.",
+      "facets": [
+        "successive-records-until-slash",
+        "slash-record-remainder-ignored"
+      ],
+      "pending": {
+        "successive-records-until-slash": "Internal READ records ['&G I=1,', 'J=2 /']; expected I=1,J=2.",
+        "slash-record-remainder-ignored": "Internal READ record '&G I=1 / J=bad'; expected I=1 and no parse of trailing J=bad."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use internal READ or internal WRITE where possible; input plans name exact record text and resulting values, and output plans name exact characters when the source fixes them. Processor-dependent list-directed or namelist output spelling, field widths, separator choice, record length, and record breaks are explicitly left unasserted. No fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim is created by this packet.",
+      "oracle_limitation": "Source accounting only. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics. A future diagnostic facet is allowed only if a later owner identifies a numbered syntax rule or constraint, a required rejection, and a single-image portable observation. Clause 12 I/O statement mechanics remain unregistered and are treated as dependencies, not as evidence owned by this packet.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, designators, character assignment, arrays, and execution constructs; 13.1-13.4 for format concepts already registered by batch136. Unregistered dependencies explicitly retained: 13.5-13.9 parallel sibling material for decimal/delim modes and edit descriptors; clause 12 for data transfer, internal files, effective items, defined I/O, DELIM=, DECIMAL=, NML=, stream and record structure; clause 15 for defined I/O; clause 16 if future fixtures use intrinsics; clauses 3, 5, 14, 17, and 19 where terminology, kind, processor-dependency, coarray/image, or scope rules are reached."
+    },
+    {
+      "id": "S13.11.3.2-005",
+      "title": "Namelist comments may follow separators except slash or start a record",
+      "source": "S13.11.3.2, J3/24-007, 18 December 2023, physical PDF313.",
+      "source_units": [
+        "p5"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A namelist comment may appear after any value separator except terminating slash, and may start in the first nonblank position outside character literals.",
+      "facets": [
+        "comment-after-nonslash-separator",
+        "comment-first-nonblank-position",
+        "no-comment-after-slash"
+      ],
+      "pending": {
+        "comment-after-nonslash-separator": "Internal READ records ['&G I=1, ! after comma', 'J=2 /']; expected I=1,J=2.",
+        "comment-first-nonblank-position": "Internal READ records ['! leading comment', '&G I=1 /']; expected I=1.",
+        "no-comment-after-slash": "Do not treat text after slash as a comment facet; slash termination and ignored remainder are p3/p4-owned."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use internal READ or internal WRITE where possible; input plans name exact record text and resulting values, and output plans name exact characters when the source fixes them. Processor-dependent list-directed or namelist output spelling, field widths, separator choice, record length, and record breaks are explicitly left unasserted. No fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim is created by this packet.",
+      "oracle_limitation": "Source accounting only. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics. A future diagnostic facet is allowed only if a later owner identifies a numbered syntax rule or constraint, a required rejection, and a single-image portable observation. Clause 12 I/O statement mechanics remain unregistered and are treated as dependencies, not as evidence owned by this packet.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, designators, character assignment, arrays, and execution constructs; 13.1-13.4 for format concepts already registered by batch136. Unregistered dependencies explicitly retained: 13.5-13.9 parallel sibling material for decimal/delim modes and edit descriptors; clause 12 for data transfer, internal files, effective items, defined I/O, DELIM=, DECIMAL=, NML=, stream and record structure; clause 15 for defined I/O; clause 16 if future fixtures use intrinsics; clauses 3, 5, 14, 17, and 19 where terminology, kind, processor-dependency, coarray/image, or scope rules are reached."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "requirements",
+      "requirements": [
+        "S13.11.3.2-001"
+      ]
+    },
+    {
+      "unit": "p2",
+      "disposition": "requirements",
+      "requirements": [
+        "S13.11.3.2-002"
+      ]
+    },
+    {
+      "unit": "note-unnumbered",
+      "disposition": "informative",
+      "rationale": "Example of array effective-item expansion in array element order; normative expansion and bounds are in p2."
+    },
+    {
+      "unit": "p3",
+      "disposition": "requirements",
+      "requirements": [
+        "S13.11.3.2-003"
+      ]
+    },
+    {
+      "unit": "p4",
+      "disposition": "requirements",
+      "requirements": [
+        "S13.11.3.2-004"
+      ]
+    },
+    {
+      "unit": "p5",
+      "disposition": "requirements",
+      "requirements": [
+        "S13.11.3.2-005"
+      ]
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_13_11_3_2.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "97d17abeea8a82cc7f3fd2f75a9e7abd2e38e5a3a57e3852936c2509299787e6",
+  "review_rationale": "Independent fresh-context source review, two rounds: doc/source_audits/batch_139.json. This COMPLETES the list-directed and namelist half of Clause 13. The reviewer re-derived unit hashes, re-partitioned the four sections sharing PDF p312 unit by unit, verified the zero-numbered-R/C claim across all 77 units, re-read both note result tables row-by-row (13.10.3.2 NOTE 3 and 13.11.3.6 NOTE), and confirmed 13.10.4 contains no table despite being the flagged candidate. THE CRUX of this scope is the REQUIRED versus PROCESSOR-DEPENDENT split, and the reviewer audited it in BOTH directions, producing two blocking findings that are the same error in mirror image. C139SR-001: the F/E choice for real list-directed output was marked WHOLLY processor-dependent, but 13.10.4 p5 fixes one case - a real ZERO must use F form - so the claim was TOO BROAD, which is itself a defect; the unit is now split, with a required facet asserting ONLY the form (no E-form exponent marker) and explicitly not the width, digits, sign or decimal spelling, and 13.11.4.2 propagating it through namelist editing. C139SR-002 ran the other way: a plan asserted the exact substring I= while the same packet marked spacing around equals processor-dependent, and a conforming processor may emit I with a space; the plan now asserts the uppercase object-name token only. The genuine obligations survive and were hand-verified including their leading blanks: ' T' and ' F' from 13.10.4 p3 with p13, ' AB' for delimiter mode NONE from p8, and the namelist prefix ' &G' from 13.11.4.3 p3 and p5. Source accounting only: authored_facets unchanged at 1977, no fixture bound, no compiler invoked."
+}

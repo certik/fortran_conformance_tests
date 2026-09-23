@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "section": "13.11.4.2",
+  "requirements": [
+    {
+      "id": "S13.11.4.2-001",
+      "title": "Namelist output values use list-directed output editing",
+      "source": "S13.11.4.2, J3/24-007, 18 December 2023, physical PDF315.",
+      "source_units": [
+        "p1"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Values in namelist output records are edited as for list-directed output.",
+      "facets": [
+        "values-edited-as-list-directed-output",
+        "real-zero-value-uses-list-directed-F-form"
+      ],
+      "pending": {
+        "values-edited-as-list-directed-output": "For logical L=.true. in NAMELIST /G/ L, future fixture may assert the value character T as in 13.10.4 p3, but must not assert processor-dependent spacing, separator choice, or record breaks.",
+        "real-zero-value-uses-list-directed-F-form": "For real X=0.0 in NAMELIST /G/ X, values are edited as for list-directed output, so the zero value inherits 13.10.4 p5's required F form. Assert only the F-form property of the value token, such as absence of an E-form exponent marker; do not assert width, digit count, spacing around X or equals, separator choice, or record breaks."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use internal READ or internal WRITE where possible; input plans name exact record text and resulting values, and output plans name exact characters when the source fixes them. Processor-dependent list-directed or namelist output spelling, field widths, separator choice, record length, and record breaks are explicitly left unasserted. No fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim is created by this packet.",
+      "oracle_limitation": "Source accounting only. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics. A future diagnostic facet is allowed only if a later owner identifies a numbered syntax rule or constraint, a required rejection, and a single-image portable observation. Clause 12 I/O statement mechanics remain unregistered and are treated as dependencies, not as evidence owned by this packet.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, designators, character assignment, arrays, and execution constructs; 13.1-13.4 for format concepts already registered by batch136. Unregistered dependencies explicitly retained: 13.5-13.9 parallel sibling material for decimal/delim modes and edit descriptors; clause 12 for data transfer, internal files, effective items, defined I/O, DELIM=, DECIMAL=, NML=, stream and record structure; clause 15 for defined I/O; clause 16 if future fixtures use intrinsics; clauses 3, 5, 14, 17, and 19 where terminology, kind, processor-dependency, coarray/image, or scope rules are reached."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "requirements",
+      "requirements": [
+        "S13.11.4.2-001"
+      ]
+    },
+    {
+      "unit": "note-unnumbered",
+      "disposition": "informative",
+      "rationale": "Warns that DELIM=NONE character output may not be acceptable as namelist input; normative character output form is accounted through 13.10.4 and 13.11.4.1."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_13_11_4_2.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "df5f0ab31fc4edbaee39bc30b6167e3c910d1bb099cb9cacc3f5ac7b20e42c9b",
+  "review_rationale": "Independent fresh-context source review, two rounds: doc/source_audits/batch_139.json. This COMPLETES the list-directed and namelist half of Clause 13. The reviewer re-derived unit hashes, re-partitioned the four sections sharing PDF p312 unit by unit, verified the zero-numbered-R/C claim across all 77 units, re-read both note result tables row-by-row (13.10.3.2 NOTE 3 and 13.11.3.6 NOTE), and confirmed 13.10.4 contains no table despite being the flagged candidate. THE CRUX of this scope is the REQUIRED versus PROCESSOR-DEPENDENT split, and the reviewer audited it in BOTH directions, producing two blocking findings that are the same error in mirror image. C139SR-001: the F/E choice for real list-directed output was marked WHOLLY processor-dependent, but 13.10.4 p5 fixes one case - a real ZERO must use F form - so the claim was TOO BROAD, which is itself a defect; the unit is now split, with a required facet asserting ONLY the form (no E-form exponent marker) and explicitly not the width, digits, sign or decimal spelling, and 13.11.4.2 propagating it through namelist editing. C139SR-002 ran the other way: a plan asserted the exact substring I= while the same packet marked spacing around equals processor-dependent, and a conforming processor may emit I with a space; the plan now asserts the uppercase object-name token only. The genuine obligations survive and were hand-verified including their leading blanks: ' T' and ' F' from 13.10.4 p3 with p13, ' AB' for delimiter mode NONE from p8, and the namelist prefix ' &G' from 13.11.4.3 p3 and p5. Source accounting only: authored_facets unchanged at 1977, no fixture bound, no compiler invoked."
+}

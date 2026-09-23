@@ -1,0 +1,117 @@
+{
+ "schema_version": 1,
+ "review_type": "independent-list-directed-and-namelist-formatting-source-review",
+ "review_date": "2026-09-22",
+ "baseline_commit": "ad08066",
+ "state": "reviewed-source-only",
+ "packet_kind": "SOURCE",
+ "scope": {
+  "sections": ["13.10.1", "13.10.2", "13.10.3.1", "13.10.3.2", "13.10.4", "13.11.1", "13.11.2", "13.11.3.1", "13.11.3.2", "13.11.3.3", "13.11.3.4", "13.11.3.5", "13.11.3.6", "13.11.4.1", "13.11.4.2", "13.11.4.3"],
+  "section_titles_verified_from_source": {
+   "13.10.1": "Purpose of list-directed formatting",
+   "13.10.2": "Values and value separators",
+   "13.10.3.1": "List-directed input forms",
+   "13.10.3.2": "Null values",
+   "13.10.4": "List-directed output",
+   "13.11.1": "Purpose of namelist formatting",
+   "13.11.2": "Name-value subsequences",
+   "13.11.3.1": "Overall syntax",
+   "13.11.3.2": "Namelist input processing",
+   "13.11.3.3": "Namelist input values",
+   "13.11.3.4": "Null values",
+   "13.11.3.5": "Blanks",
+   "13.11.3.6": "Namelist comments",
+   "13.11.4.1": "Form of namelist output",
+   "13.11.4.2": "Namelist output editing",
+   "13.11.4.3": "Namelist output records"
+  },
+  "pdf_pages": "308-316",
+  "base_units": 77,
+  "fine_units": 0,
+  "already_counted_numbered_units": 0,
+  "newly_accounted_base_units": 77,
+  "new_catalogues": 16,
+  "new_cases": 0
+ },
+ "authoring": {
+  "author_context": "fresh subagent context in an isolated worktree based on ad08066",
+  "author_packet": "2606981",
+  "correction_commit": "c2936bf",
+  "source_read_receipt": "receipts-batch139-source.json",
+  "source_read_receipt_sha256": "7bc2ac3c...a8542f9 (re-derived exactly by the reviewer)"
+ },
+ "independent_review": {
+  "reviewer_distinct_from_author": true,
+  "decision": "accept_after_corrections",
+  "review_rounds": 2,
+  "blocking_findings": 2,
+  "reviewer_re_derived_unit_hashes": true
+ },
+ "the_crux_required_versus_processor_dependent": {
+  "why": "List-directed and namelist OUTPUT form is largely processor dependent - field widths, separator spelling, record wrapping and value representation are frequently not fixed - while the INPUT rules for separators, repeat counts, null values, slash termination and name matching are tightly specified and genuinely assertable. Getting this split wrong in either direction produces either an untestable claim or a test that fails on a conforming compiler.",
+  "both_findings_are_the_same_error_mirrored": "C139SR-001 claimed latitude where a requirement exists; C139SR-002 claimed a requirement where latitude exists. Catching both in one packet is why the check must run in both directions.",
+  "required_and_hand_verified": [
+   "' T' and ' F' - required by 13.10.4 p3 for logical values, plus the p13 leading blank",
+   "' AB' - required for delimiter mode NONE by 13.10.4 p8, plus the p13 leading blank",
+   "' &G' - required by 13.11.4.3 p3 (ampersand plus group name), p5 (leading blank) and the uppercase-name rule"
+  ],
+  "processor_dependent": "Output field widths, the real F/E choice for NONZERO values, numeric w/d/e, separator spelling and counts, record length and wrapping, defined-output spelling, the repeated-constant abbreviation option, and delimiter-mode setup dependencies."
+ },
+ "findings": [
+  {
+   "id": "C139SR-001",
+   "severity": "blocking",
+   "location": "doc/catalogues/list_directed_output_13_10_4.json, the p5 real-output facet",
+   "source_text": "13.10.4 p5: real constants use F form when the value is within the processor-dependent range OR IS ZERO; E form otherwise.",
+   "issue": "The packet treated the F/E choice as WHOLLY processor dependent and unassertable. It is not: ZERO IS FIXED - a real zero must use F form. The claim was therefore too broad, and an over-broad unobservability claim is itself a defect. Marking a whole unit unassertable because most of it is latitude silently discards the part that is required, and nothing downstream revisits it.",
+   "propagation": "The same rule reaches namelist output through 13.11.4.2 p1.",
+   "closure": "Closed in c2936bf. p5 is split: required facet real-zero-uses-F-form, and latitude facet real-nonzero-F-or-E-processor-dependent.",
+   "precision_of_the_fix": "The required facet asserts ONLY that the produced real constant uses F form - that no E-form exponent marker is present - and explicitly does NOT assert field width, number of digits, sign, decimal symbol spelling or surrounding separators. Over-asserting there would have replaced one defect with its mirror image.",
+   "reviewer_verification": "Confirmed the split is faithful to p5 and that the required facet does not creep into width or digit assertions."
+  },
+  {
+   "id": "C139SR-002",
+   "severity": "blocking",
+   "location": "doc/catalogues/form_of_namelist_output_13_11_4_1.json:23",
+   "issue": "The plan asserted the exact substring 'I=' while the same packet marked spacing around the equals sign processor dependent. Both cannot be true.",
+   "source_basis": "13.11.4.1 p1 requires uppercase names and output suitable for input; 13.11.2 p1 permits blanks around = on input; 13.11.4.3 p2 says the name is FOLLOWED BY an equals sign, not 'immediately followed'. A conforming processor may therefore emit 'I ='.",
+   "why_it_matters": "An exact-string plan that a conforming processor can fail is worse than no plan: it becomes a fixture that fails on correct compilers.",
+   "closure": "Closed in c2936bf. The plan now asserts the uppercase object-name token only and explicitly permits both 'I=' and 'I ='. 13.11.4.3 object-name and value-list wording was relaxed correspondingly.",
+   "reviewer_verification": "Confirmed the relaxation did NOT go too far in the other direction: 13.11.4.3 still requires the uppercase token order, ampersand-group-start still requires the exact prefix ' &G', and the leading blank remains required."
+  }
+ ],
+ "verified_by_reviewer": {
+  "p312_boundary": "Four sections begin on p312 and were re-partitioned unit by unit: 13.11.1 p1; 13.11.2 p1-p3; 13.11.3.1 p1/note/p2/p3; 13.11.3.2 p1 ONLY, with p2 starting on p313. A misattributed paragraph would have been invisible in the totals, since 77 would still be 77.",
+  "zero_numbered_rules": "Verified across all 77 units: there are no numbered R or C units in scope. R901 appears only as a cross-reference, and grep -rl 'R901' tests/ found no matches. This was checked because batch136 found 19 numbered items in 13.1-13.4 and a sibling found R1323, so zero was an unusual claim.",
+  "tables": "13.10.4 contains NO table, despite being the flagged candidate as the densest remaining block. Two NOTE result tables were re-read row-by-row: 13.10.3.2 NOTE 3 and 13.11.3.6 NOTE, both preserved as Variable/Value pairs and matching.",
+  "zero_diagnostic_facets": "Accepted. No numbered syntax or constraint unit in scope requires processor rejection; the unnumbered shall input restrictions carry input-error plans only. A facet may carry a diagnostic expectation only if the unit actually prohibits something, a processor is required to reject, and a single-image program can portably observe it."
+ },
+ "explicit_limitations": [
+  "Source accounting only: no fixture bound, no case added, no compiler invoked. authored_facets unchanged at 1977.",
+  "All facets remain PENDING. Registering a requirement is not evidence any processor implements it.",
+  "Most list-directed and namelist OUTPUT form is processor dependent and is explicitly marked unassertable; only the enumerated fixed forms may ever carry an exact oracle.",
+  "Clause 12 is unregistered, and namelist in particular leans on it for internal file, NML, DELIM and DECIMAL mechanics.",
+  "Real values are approximations and kind support is processor dependent; character comparisons will need explicit length and padding checks."
+ ],
+ "preservation": {
+  "cases_before": 2250,
+  "cases_after": 2250,
+  "authored_facets_before": 1977,
+  "authored_facets_after": 1977,
+  "accounted_base_before": 2392,
+  "accounted_base_after": 2469,
+  "unresolved_base_before": 4081,
+  "unresolved_base_after": 4004,
+  "expected_failures_lines": 819,
+  "baseline_lines_changed_by_this_packet": 0,
+  "tests_directory_diff": "empty"
+ },
+ "validation_snapshot": {
+  "declared_facets": 7535,
+  "authored_facets": 1977,
+  "normal_audit_exit": 1,
+  "normal_audit_block": "the single retained needs-oracle real-BOZ case, which is the intended state and not a regression",
+  "python_suite_tests": 1045,
+  "python_suite_result": "pending integrator gate"
+ }
+}

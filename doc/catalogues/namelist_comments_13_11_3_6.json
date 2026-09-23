@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "section": "13.11.3.6",
+  "requirements": [
+    {
+      "id": "S13.11.3.6-001",
+      "title": "Namelist exclamation comments are ignored and stream input excludes comments",
+      "source": "S13.11.3.6, J3/24-007, 18 December 2023, physical PDF314.",
+      "source_units": [
+        "p1"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "Outside character literals, ! after a value separator or in first nonblank position starts a comment to end of record; comments may contain processor-dependent graphic characters, are ignored, and slash inside them does not terminate input; namelist comments are not allowed in stream input.",
+      "facets": [
+        "comment-after-separator",
+        "comment-first-nonblank",
+        "comment-ignored",
+        "slash-in-comment-not-terminating",
+        "stream-input-comments-not-allowed"
+      ],
+      "pending": {
+        "comment-after-separator": "Internal READ records ['&G I=1, ! comment', 'J=2 /']; expected I=1,J=2.",
+        "comment-first-nonblank": "Internal READ records ['! full-line comment /', '&G I=1 /']; expected I=1; slash in comment does not terminate the later input.",
+        "comment-ignored": "Record text after ! does not affect values; use '! J=99' after a separator and expect J to retain the value supplied later, not 99 from the comment.",
+        "slash-in-comment-not-terminating": "Internal READ records ['&G I=1, ! / inside comment', 'J=2 /']; expected I=1,J=2.",
+        "stream-input-comments-not-allowed": "Deferred negative: requires stream input setup from Clause 12; do not claim a diagnostic unless a required rejection and portable observation are established."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use internal READ or internal WRITE where possible; input plans name exact record text and resulting values, and output plans name exact characters when the source fixes them. Processor-dependent list-directed or namelist output spelling, field widths, separator choice, record length, and record breaks are explicitly left unasserted. No fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim is created by this packet.",
+      "oracle_limitation": "Source accounting only. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics. A future diagnostic facet is allowed only if a later owner identifies a numbered syntax rule or constraint, a required rejection, and a single-image portable observation. Clause 12 I/O statement mechanics remain unregistered and are treated as dependencies, not as evidence owned by this packet.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, designators, character assignment, arrays, and execution constructs; 13.1-13.4 for format concepts already registered by batch136. Unregistered dependencies explicitly retained: 13.5-13.9 parallel sibling material for decimal/delim modes and edit descriptors; clause 12 for data transfer, internal files, effective items, defined I/O, DELIM=, DECIMAL=, NML=, stream and record structure; clause 15 for defined I/O; clause 16 if future fixtures use intrinsics; clauses 3, 5, 14, 17, and 19 where terminology, kind, processor-dependency, coarray/image, or scope rules are reached."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "requirements",
+      "requirements": [
+        "S13.11.3.6-001"
+      ]
+    },
+    {
+      "unit": "note-unnumbered",
+      "disposition": "informative",
+      "rationale": "Example table only. I verified the Variable/Value rows visually in the PDF: I=6, X(1)=12345.0, X(2)=unchanged, X(3)=1.5, X(4)=1.5, X(5)-X(8)=unchanged, P=ISN'T_BOB'S, Z=(123.0,0.0), G=unchanged."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_13_11_3_6.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "480099d1bb5e4542f0aa260927939c1106dc07304266a153afa64fee9a05036b",
+  "review_rationale": "Independent fresh-context source review, two rounds: doc/source_audits/batch_139.json. This COMPLETES the list-directed and namelist half of Clause 13. The reviewer re-derived unit hashes, re-partitioned the four sections sharing PDF p312 unit by unit, verified the zero-numbered-R/C claim across all 77 units, re-read both note result tables row-by-row (13.10.3.2 NOTE 3 and 13.11.3.6 NOTE), and confirmed 13.10.4 contains no table despite being the flagged candidate. THE CRUX of this scope is the REQUIRED versus PROCESSOR-DEPENDENT split, and the reviewer audited it in BOTH directions, producing two blocking findings that are the same error in mirror image. C139SR-001: the F/E choice for real list-directed output was marked WHOLLY processor-dependent, but 13.10.4 p5 fixes one case - a real ZERO must use F form - so the claim was TOO BROAD, which is itself a defect; the unit is now split, with a required facet asserting ONLY the form (no E-form exponent marker) and explicitly not the width, digits, sign or decimal spelling, and 13.11.4.2 propagating it through namelist editing. C139SR-002 ran the other way: a plan asserted the exact substring I= while the same packet marked spacing around equals processor-dependent, and a conforming processor may emit I with a space; the plan now asserts the uppercase object-name token only. The genuine obligations survive and were hand-verified including their leading blanks: ' T' and ' F' from 13.10.4 p3 with p13, ' AB' for delimiter mode NONE from p8, and the namelist prefix ' &G' from 13.11.4.3 p3 and p5. Source accounting only: authored_facets unchanged at 1977, no fixture bound, no compiler invoked."
+}

@@ -4589,6 +4589,64 @@ runtime failure. It lies outside this packet's scope, which covers only
 silently absorbed.
 See `doc/source_audits/batch_135.json`.
 
+## Batch 139 — list-directed and namelist, and one error in mirror image
+
+Registers **13.10.1–13.11.4.3** — 77 base units over PDF pages 308–316, in
+sixteen catalogues, all newly accounted.
+
+The whole packet turns on a single judgement: **which parts of list-directed and
+namelist formatting are required, and which are processor dependent.** Output
+form is largely latitude — field widths, separator spelling, record wrapping and
+value representation are frequently not fixed — while the **input** rules for
+separators, repeat counts, null values, slash termination and name matching are
+tightly specified and genuinely assertable.
+
+The two blocking findings are **the same error in mirror image**, which is
+exactly why the check has to run in both directions.
+
+**C139SR-001 claimed latitude where a requirement exists.** The F/E choice for
+real output was marked *wholly* processor dependent — but 13.10.4 p5 fixes one
+case: a real **zero must use F form**. The claim was too broad, and **an
+over-broad unobservability claim is itself a defect**. Marking a whole unit
+unassertable because *most* of it is latitude silently discards the part that is
+required, and nothing downstream ever revisits it. The rule propagates to
+namelist output through 13.11.4.2 p1.
+
+**C139SR-002 ran the other way, claiming a requirement where latitude exists.**
+A plan asserted the exact substring `'I='` while the same packet marked spacing
+around the equals sign processor dependent. 13.11.4.3 p2 says the name is
+*followed by* an equals sign — **not** "immediately followed" — so a conforming
+processor may emit `I =`. An exact-string plan that a conforming processor can
+fail is **worse than no plan**: it becomes a fixture that fails on correct
+compilers.
+
+The correction for the first was written carefully enough not to become the
+second. The new `real-zero-uses-F-form` facet asserts **only the form** — that
+no E-form exponent marker appears — and explicitly **not** the width, digit
+count, sign, decimal spelling or separators. Over-asserting there would have
+replaced one defect with its mirror.
+
+Four fixed forms survive and were hand-verified **including their leading
+blanks**: `' T'` and `' F'` from 13.10.4 p3 with p13, `' AB'` for delimiter mode
+`NONE` from p8, and the namelist prefix `' &G'` from 13.11.4.3 p3 and p5. The
+reviewer specifically checked that relaxing the equals-spacing claim had not
+discarded the genuine obligations around it.
+
+Three verifications are worth recording because each was a claim that could have
+hidden an error. **Zero numbered R or C units across all 77** — unusual enough to
+demand checking, since batch136 found nineteen in 13.1–13.4 and a sibling found
+`R1323`; confirmed, with `R901` appearing only as a cross-reference. **13.10.4
+contains no table** despite being the flagged candidate as the densest remaining
+block, with the two NOTE result tables re-read row-by-row. And the **four
+sections sharing page 312** were re-partitioned unit by unit — a misattributed
+paragraph would have been completely invisible in the totals, since 77 would
+still have been 77.
+
+Source accounting only: `authored_facets` unchanged at **1,977**, no fixture
+bound, no compiler invoked. Clause 12 remains unregistered, and namelist leans
+on it for internal-file, `NML`, `DELIM` and `DECIMAL` mechanics.
+See `doc/source_audits/batch_139.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
