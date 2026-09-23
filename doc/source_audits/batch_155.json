@@ -1,0 +1,12 @@
+{"schema_version": 1, "review_type": "independent-allocate-statement-fixture-review", "review_date": "2026-09-23", "baseline_commit": "ff29924",
+ "state": "reference-validated-runtime-effects-and-diagnostics", "packet_kind": "FIXTURE",
+ "scope": {"sections": ["9.7.1.1"], "facets_established": 21, "new_cases": 22},
+ "review_rounds": [
+  {"round": 1, "commit": "47e6979", "decision": "BLOCKED", "findings": [
+   {"id": "ASFR-001", "issue": "The R930/R931 positives never checked allocated(x) or the SOURCE= value; dropping SOURCE= or ERRMSG= still passed on both compilers.", "resolution": "Now assert allocated(x), x == 37 from scalar SOURCE=, STAT == 0, and a distinguished non-blank ERRMSG unchanged on success (9.7.5 p2)."},
+   {"id": "ASFR-002", "issue": "C944 and C949 were discharged by positives whose only mutations did not reach those constraints (removing the ALLOCATE; changing a length).", "resolution": "Negatives with one-property controls added."}]},
+  {"round": 2, "commit": "9440f9a", "decision": "BLOCKED", "findings": [
+   {"id": "ASFR-003", "issue": "The new C944 negative allocate(x(1)) on a scalar ALSO violates C946 (shape-spec count must equal the rank, and a scalar has rank 0).", "resolution": "Withdrawn: ANY shape-spec list on a scalar violates C946 too, so no C944-only negative exists. Unlike batch153's C1224 case, the overlapping rule is itself NUMBERED, so the negative cannot be attributed to C944 alone. scalar-shape-spec-rejected stays pending with that reasoning."}]},
+  {"round": 3, "commit": "db2d807", "decision": "VERIFIED", "findings": []}],
+ "lfortran_defects_recorded": {"count": 3, "cases": {"R930 options": "scalar SOURCE= value not transferred (x /= 37) - distinct from the batch128 shaped SOURCE=/MOLD= defect", "R931 errmsg": "same scalar SOURCE= value-transfer failure", "C949 type-spec with SOURCE=": "accepted; the constraint requires a diagnosis"}, "expected_failures": "840 -> 843"},
+ "non_vacuity": {"runtime_mutations": 21, "compile_fail_runtime_mutants": 0}}

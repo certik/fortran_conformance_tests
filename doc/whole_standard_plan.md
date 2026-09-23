@@ -5297,6 +5297,27 @@ recommendation. This was also the first packet of the parallel wave whose
 section order is routine.
 See `doc/source_audits/batch_146.json`.
 
+## Batch 155 — the ALLOCATE statement, and an unattributable negative
+
+Twenty-one facets of 9.7.1.1 across twenty-two fixtures, after **three** rounds.
+The first two findings were familiar — positives for `SOURCE=` and `ERRMSG=` that
+never checked the transferred value, and constraint facets discharged by
+positives whose mutations never reached the constraint.
+
+The third is worth recording as a rule. The replacement C944 negative,
+`allocate(x(1))` on a scalar, also violates **C946**: the number of shape-specs
+must equal the rank, and a scalar has rank zero. *Every* program that puts a
+shape-spec on a scalar breaks both, so no negative can be attributed to C944
+alone, and the facet stays pending. Contrast batch153's C1224, whose unavoidable
+overlap was with an *unnumbered* restriction that no processor must diagnose —
+there the negative could still be attributed to the only diagnosable rule. When
+the overlap is with another **numbered** constraint, it cannot.
+
+Frozen LFortran fails three cases: it does not transfer a **scalar** `SOURCE=`
+value — a new defect, distinct from batch128's shaped `SOURCE=`/`MOLD=` one — and
+it accepts a type-spec together with `SOURCE=`, which C949 requires it to reject.
+See `doc/source_audits/batch_155.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
