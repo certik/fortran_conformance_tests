@@ -5570,6 +5570,21 @@ processor-dependent form* (latitude) — and neither half turns out to be portab
 observable.
 See `doc/source_audits/batch_161.json`.
 
+## Batch 172 — DO CONCURRENT locality and REDUCE
+
+Twenty-two facets of 11.1.7.5 across nine fixtures, after three rounds. Since
+iteration order is unspecified, every oracle is order-independent: LOCAL and
+LOCAL_INIT leave the outside variable unchanged, SHARED refers to it, and REDUCE
+is checked for each operator's initial identity and final value using operators
+that are associative and commutative on the chosen values.
+
+The first finding was again a **withheld** LFortran-only failure: logical REDUCE
+is conforming and gfortran runs it, but it had been left pending because frozen
+LFortran cannot parse `.AND.` there. It now ships. The rest tidied stale
+catalogue text and added remove-feature mutants. Frozen LFortran also leaks
+LOCAL and LOCAL_INIT construct entities into the outside variables.
+See `doc/source_audits/batch_172.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
