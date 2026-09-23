@@ -1,6 +1,6 @@
 # Fortran 2023: 7.8 Array constructors - ordinary value implementation
 
-**Catalogue source review: stale.** Source and case/evidence adjudications remain separate content-bound records.
+**Catalogue source review: reviewed.** Source and case/evidence adjudications remain separate content-bound records.
 
 The value corpus has **9 shared valid run/effect programs**, **129 primitive value/shape/length guards** and one completion guard per program. The shared catalogue now has **37 of 107 facets represented; 70 remain PENDING.** No source/case/link/inventory approval is implied.
 
