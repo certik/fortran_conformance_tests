@@ -5443,6 +5443,22 @@ negatives lacked the ICE exclusion. Frozen LFortran accepts IMPORT in an externa
 subprogram, which C8100 requires it to reject.
 See `doc/source_audits/batch_168.json`.
 
+## Batch 173 — IMPLICIT, observed by generic resolution
+
+Twelve facets of 8.7 across fourteen fixtures, accepted with no findings. The
+design point is that an implicit **type** cannot be observed by a **value**: an
+INTEGER and a REAL can hold the same number. Each fixture therefore passes the
+implicitly typed entity to a generic with distinguishable INTEGER and REAL
+specifics and checks which one was chosen, and each mutation moves a letter so
+the chosen specific changes.
+
+Frozen LFortran fails seven cases. Five share one root cause — it ignores a
+non-default implicit mapping (`IMPLICIT INTEGER(A)`, `IMPLICIT REAL(I)`, ranges,
+host-inherited maps) when resolving the generic. It also rejects the conforming
+`IMPLICIT NONE(EXTERNAL)` plus an ordinary map, and accepts a CALL to an
+undeclared external under `IMPLICIT NONE(EXTERNAL)`.
+See `doc/source_audits/batch_173.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must

@@ -138,6 +138,16 @@ source packet adds no fixture, compiler observation, link, SourceUse,
 baseline entry or inventory renewal. Global source coverage remains
 incomplete.
 
+<!-- BEGIN IMPLICIT STATEMENT FIXTURES -->
+## IMPLICIT statement fixture packet
+
+Fourteen complete fixtures cover twelve selected 8.7 facets. Six runtime programs observe default, ordinary singleton, ordinary range and inherited host mappings through a type-sensitive generic interface with INTEGER and REAL specifics; numeric assignments supply defined payload only and are not the type oracle. Feature mutants remove or move the selected map/range/name so the generic specific changes while the mutant remains conforming.
+
+The diagnostic fixtures are restricted to numbered constraints with controls. C897 is checked by bare IMPLICIT NONE followed by one ordinary map, with the control deleting only that map. C899 is checked by a NONE(EXTERNAL) external subroutine call missing EXTERNAL, with the control adding only EXTERNAL PING. Prose repeated-letter p2/S8.7-001, C895 ordering/cardinality and C896 duplicate specifier plans remain pending in this packet.
+
+The frozen LFortran target currently resolves generic calls for explicitly implicitly typed local names as if their default first-letter mapping still applied, and it also accepts the C899 negative; the reference compiler validates the selected sources.
+<!-- END IMPLICIT STATEMENT FIXTURES -->
+
 <!-- BEGIN GENERATED 8.7 -->
 
 ### R866: IMPLICIT has a typed-list form and a NONE form with independently optional parentheses and specifiers
@@ -159,12 +169,28 @@ mapping/EXTERNAL branch, scope, ordering and canonical type/interface prerequisi
 source interpretation determines the oracle; neither one compiler's vocabulary nor an
 empty run proves mapping semantics.
 
+Batch173 IMPLICIT statement fixtures for R866: three complete controls admit IMPLICIT
+NONE(), IMPLICIT NONE(TYPE), and a host/internal inherited ordinary mapping. The host
+case maps A to INTEGER in the host and observes the internal procedure's unspecified A
+mapping through generic resolution, so the inherited mapping is a source property rather
+than a value coincidence.
+
 **Oracle limitation:** Required reporting capability is not obligatory fatal status, printed R866 or fixed
 English. Future complete diagnostics need their real forbidden form, control, phase/mode
 and legitimate staged origin. Unsupported facilities, arbitrary error tokens, echoes,
 wrong scopes, missing providers or native/internal/resource failures do not establish
 the intended predicate. No current observation, coverage, approval or whole-standard
 completion is supplied.
+
+Batch173 IMPLICIT statement fixture boundaries for R866: Only the listed facets are
+represented. Character length maps, derived-type identity maps, TYPEOF/CLASSOF
+exclusions, NONE ordering before PARAMETER, repeated NONE specifiers, C898 range-order
+diagnostics, prose repeated-letter diagnostics, nondefault kind codes, interface-body
+defaults, module subprogram defaults, BLOCK propagation, dummy procedures,
+explicit-interface alternatives and function result override boundaries remain pending
+unless named here. Runtime fixtures use exact small numeric assignments only as defined
+payload; type is observed through generic resolution, not through a value that INTEGER
+and REAL could share.
 
 **Dependencies:** 4.1.1-.3/R401;4.2;5.1R504-R506;5.3.2Tables5.1-5.2;R867-R869/C895-C899/p3-p4;7.3.2.1;8.5.9;14.2.3;15.4.2.1/.2;15.6.2.5;19.4;19.5.1.4.
 
@@ -187,11 +213,25 @@ mapping the letters. Every kind, length, derived-type identity and interface pre
 explicit; source relationships and finite admissions remain pending rather than becoming
 empty execution classifiers.
 
+Batch173 IMPLICIT statement fixtures for R867: one complete runtime program uses
+IMPLICIT INTEGER(A) and a type-sensitive generic interface with INTEGER and REAL
+specifics to observe that ALPHA is an INTEGER implicit data entity.
+
 **Oracle limitation:** Type mapping does not define values, choose literal suffixes, allocate objects or
 establish pointer association. Nonconstant/unsupported selectors, inaccessible
 definitions, invalid polymorphic/assumed categories and missing interfaces cannot be
 disguised as R867 syntax. Compiler agreement cannot replace the original type rules, and
 no preexisting real-BOZ/profile decision is renewed.
+
+Batch173 IMPLICIT statement fixture boundaries for R867: Only the listed facets are
+represented. Character length maps, derived-type identity maps, TYPEOF/CLASSOF
+exclusions, NONE ordering before PARAMETER, repeated NONE specifiers, C898 range-order
+diagnostics, prose repeated-letter diagnostics, nondefault kind codes, interface-body
+defaults, module subprogram defaults, BLOCK propagation, dummy procedures,
+explicit-interface alternatives and function result override boundaries remain pending
+unless named here. Runtime fixtures use exact small numeric assignments only as defined
+payload; type is observed through generic resolution, not through a value that INTEGER
+and REAL could share.
 
 **Dependencies:** R703/C704-C714;7.3.2.1-.3;7.4.1R704-R706/C717;7.4.3.1/.2;7.4.4.1/.2C724-C731;7.4.5;7.5.3.2;7.5.9;R868/p3-p4/notes1-2.2;8.2;8.6.11;10.1.11/.12;14.2.2;15.4.2;15.6.2.2;19.5.1.4.
 
@@ -212,10 +252,25 @@ expansion and independently forbids repeated membership.
 established type-list context. The explicit syntactic class letter and canonical
 name/list rules determine roles.
 
+Batch173 IMPLICIT statement fixtures for R868: two complete runtime programs distinguish
+a singleton IMPLICIT REAL(I) map and an ascending IMPLICIT INTEGER(A-C) range. Each is
+observed by generic resolution and has conforming feature mutants that remove the
+statement or change the selected letter/range so the actual's type changes.
+
 **Oracle limitation:** R868 does not permit digits, underscores, arbitrary names, missing endpoints or
 character-value expressions merely because a compiler accepts them. It does not impose
 the prose nonoverlap condition as a new numbered syntax rule. Reporting is capability
 without mandatory status, wording or code.
+
+Batch173 IMPLICIT statement fixture boundaries for R868: Only the listed facets are
+represented. Character length maps, derived-type identity maps, TYPEOF/CLASSOF
+exclusions, NONE ordering before PARAMETER, repeated NONE specifiers, C898 range-order
+diagnostics, prose repeated-letter diagnostics, nondefault kind codes, interface-body
+defaults, module subprogram defaults, BLOCK propagation, dummy procedures,
+explicit-interface alternatives and function result override boundaries remain pending
+unless named here. Runtime fixtures use exact small numeric assignments only as defined
+payload; type is observed through generic resolution, not through a value that INTEGER
+and REAL could share.
 
 **Dependencies:** 6.1.1R601;6.1.2p1-p3;6.2.2R603;R867/C898/p2;4.1.3R401;4.2p2.
 
@@ -234,10 +289,24 @@ keywords. R866 separately permits no list at all.
 **Oracle:** The two literal keyword alternatives are tied to complete contexts and their actual
 different semantics, with one-token repairs for excluded alternatives.
 
+Batch173 IMPLICIT statement fixtures for R869: the TYPE keyword is admitted in a
+complete IMPLICIT NONE(TYPE) control whose data entity is explicitly typed,
+distinguishing the keyword syntax from an undeclared-name diagnostic.
+
 **Oracle limitation:** Neither order of a distinct TYPE/EXTERNAL pair is forbidden by R869 itself; C895-C897
 and overall ordering still apply. The bare and empty-list alternatives belong to
 R866/p3, not a fabricated third keyword. No canonical approval or runtime evidence is
 supplied.
+
+Batch173 IMPLICIT statement fixture boundaries for R869: Only the listed facets are
+represented. Character length maps, derived-type identity maps, TYPEOF/CLASSOF
+exclusions, NONE ordering before PARAMETER, repeated NONE specifiers, C898 range-order
+diagnostics, prose repeated-letter diagnostics, nondefault kind codes, interface-body
+defaults, module subprogram defaults, BLOCK propagation, dummy procedures,
+explicit-interface alternatives and function result override boundaries remain pending
+unless named here. Runtime fixtures use exact small numeric assignments only as defined
+payload; type is observed through generic resolution, not through a value that INTEGER
+and REAL could share.
 
 **Dependencies:** R866;C895-C899;p3;8.5.9;15.4.2.1;15.4.3.5/.6;4.2p2.
 
@@ -304,9 +373,25 @@ obeys C895, p2-p4 and statement order.
 complete scope, with a statement-deletion repair and a separately valid EXTERNAL-only
 boundary.
 
+Batch173 IMPLICIT statement fixtures for C897: one numbered diagnostic violates only the
+no-other-IMPLICIT rule by placing an ordinary map after bare IMPLICIT NONE; its
+one-property control deletes that map. A separate EXTERNAL-only control shows that
+IMPLICIT NONE(EXTERNAL) has a false C897 antecedent and can coexist with a later
+ordinary map.
+
 **Oracle limitation:** No generic ban on all statements containing NONE is inferred. Source scope, statement
 category, default/null typing and procedure duty are distinct; unsupported or unrelated
 output is not causal evidence. No new native result or review is supplied.
+
+Batch173 IMPLICIT statement fixture boundaries for C897: Only the listed facets are
+represented. Character length maps, derived-type identity maps, TYPEOF/CLASSOF
+exclusions, NONE ordering before PARAMETER, repeated NONE specifiers, C898 range-order
+diagnostics, prose repeated-letter diagnostics, nondefault kind codes, interface-body
+defaults, module subprogram defaults, BLOCK propagation, dummy procedures,
+explicit-interface alternatives and function result override boundaries remain pending
+unless named here. Runtime fixtures use exact small numeric assignments only as defined
+payload; type is observed through generic resolution, not through a value that INTEGER
+and REAL could share.
 
 **Dependencies:** R866/R869;C895/C896/C899;p2-p4;3.120;5.1/5.3.2;14.2.2;19.5.1.4;4.2p2.
 
@@ -352,11 +437,26 @@ interface route, actual role resolution and source-minimal repairs. Scope propag
 interface alternatives and data typing are checked independently before a report is
 attributed to C899.
 
+Batch173 IMPLICIT statement fixtures for C899: one numbered diagnostic calls an external
+subroutine under IMPLICIT NONE(EXTERNAL) without an explicit interface or EXTERNAL
+declaration. Its one-property control is bound to the same facet and adds only EXTERNAL
+PING, the explicit-EXTERNAL alternative named by C899.
+
 **Oracle limitation:** No missing-module/link failure, argument mismatch, undeclared data value, intrinsic-name
 assumption or unrelated parser error is accepted as this condition. Reporting can be
 nonfatal and need not use particular English or C899. Actual f2018 acceptance is not
 f2023 corroboration, and no current fixture, compiler observation or approval is
 created.
+
+Batch173 IMPLICIT statement fixture boundaries for C899: Only the listed facets are
+represented. Character length maps, derived-type identity maps, TYPEOF/CLASSOF
+exclusions, NONE ordering before PARAMETER, repeated NONE specifiers, C898 range-order
+diagnostics, prose repeated-letter diagnostics, nondefault kind codes, interface-body
+defaults, module subprogram defaults, BLOCK propagation, dummy procedures,
+explicit-interface alternatives and function result override boundaries remain pending
+unless named here. Runtime fixtures use exact small numeric assignments only as defined
+payload; type is observed through generic resolution, not through a value that INTEGER
+and REAL could share.
 
 **Dependencies:** R866/R869;8.5.9C842-C844/p1-p2;8.8;11.1.4R1109;14.2.1-.3;15.2.2.1-.5;15.4.2.1/.2;15.4.3.2/.5R1511/.6R1512;15.6.2.2;19.3.1/.3;19.5.1.4;4.2p2.
 
@@ -403,11 +503,27 @@ declaration-confirmation rules retain their existing owners.
 route and exempt entity roles from complete source before choosing an evidence class.
 Finite source/interface plans are not fabricated passing runtime tests.
 
+Batch173 IMPLICIT statement fixtures for S8.7-002: one default-map positive uses no
+IMPLICIT statement and observes I through N as INTEGER and A as REAL by generic
+resolution. One prior-map positive uses an explicit host IMPLICIT statement before the
+internal implicit declaration and observes the inherited INTEGER map by generic
+resolution.
+
 **Oracle limitation:** This prose obligation does not impose mandatory fatal reporting. A source-only/control
 relation or explicitly justified policy is required before any invalid diagnostic
 fixture. Type selection does not initialize values, certify interfaces, change literal
 kinds or discharge real-BOZ/processor-profile conditions. All current source, case,
 link, inventory and baseline records remain unrenewed.
+
+Batch173 IMPLICIT statement fixture boundaries for S8.7-002: Only the listed facets are
+represented. Character length maps, derived-type identity maps, TYPEOF/CLASSOF
+exclusions, NONE ordering before PARAMETER, repeated NONE specifiers, C898 range-order
+diagnostics, prose repeated-letter diagnostics, nondefault kind codes, interface-body
+defaults, module subprogram defaults, BLOCK propagation, dummy procedures,
+explicit-interface alternatives and function result override boundaries remain pending
+unless named here. Runtime fixtures use exact small numeric assignments only as defined
+payload; type is observed through generic resolution, not through a value that INTEGER
+and REAL could share.
 
 **Dependencies:** 8.7p3/p4;R866/R867;5.1/5.3.2;5.4.3;7.3.2.1C710;8.2;8.6.7S8.6.7-002;8.6.11S8.6.11-001;10.1.11p6;15.6.2.2p3-p4;19.3.3;19.5.1.4;4.1.2/4.2.
 
