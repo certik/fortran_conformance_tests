@@ -1,0 +1,1151 @@
+{
+  "schema_version": 1,
+  "section": "12.6.3",
+  "subunits": {
+    "p3": [
+      "p3.input-pointer",
+      "p3.output-pointer"
+    ],
+    "p5": [
+      "p5.dtio-polymorphic-admission",
+      "p5.polymorphic-restriction"
+    ],
+    "p6": [
+      "p6.list-directed-enum",
+      "p6.formatted-enum-descriptor"
+    ],
+    "p8": [
+      "p8.reapply-expansion-rules",
+      "p8.array-expansion",
+      "p8.input-array-expression-affect-restriction",
+      "p8.input-array-duplicate-element-restriction"
+    ],
+    "note3": [
+      "note3.example",
+      "note3.unformatted-dtio-subobject-expansion",
+      "note3.unformatted-derived-single-value",
+      "note3.unformatted-derived-processor-dependent-form"
+    ],
+    "note4": [
+      "note4.note",
+      "note4.formatted-derived-expansion",
+      "note4.unexpanded-derived-subcomponent-restrictions",
+      "note4.io-implied-do-execution"
+    ],
+    "p9": [
+      "p9.effective-item-definition",
+      "p9.zero-sized-array",
+      "p9.zero-count-implied-do",
+      "p9.zero-length-character"
+    ],
+    "p10": [
+      "p10.default-internal-file-character-kind",
+      "p10.iso10646-internal-file-character-kind",
+      "p10.ascii-internal-file-character-kind"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S12.6.3-001",
+      "title": "An input/output list identifies the entities whose values are transferred",
+      "source": "S12.6.3, J3/24-007, 18 December 2023, physical PDF262.",
+      "source_units": [
+        "p1"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "An input/output list specifies the entities whose values are transferred by a data transfer statement.",
+      "facets": [
+        "io-list-specifies-transferred-entities"
+      ],
+      "pending": {
+        "io-list-specifies-transferred-entities": "Future paired internal READ and WRITE controls use lists with two nondefault entities and no-list controls; initialize input targets and output buffers to sentinels and assert that only listed entities are transferred."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by reading known internal records into nonzero/nonblank sentinels, writing to sentinel-prefilled internal files, initializing pointed-to or allocatable targets, or using compile-only conforming controls) and then observe only portable properties: exact internal records, successful IOSTAT zero where status is owned by a later rule, required diagnosis of a numbered syntax rule or constraint, or source-control admission/rejection without relying on IOMSG text, external byte representation, processor-dependent unit numbers, or specific numeric status values.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostic facets are future source-control plans only where the cited numbered rule is reached by a one-property change; unnumbered shall-not rules are not promoted to required diagnostics. IOMSG wording, processor-dependent external representations, defined-I/O side-effect ordering beyond what the source fixes, and processor-dependent character-kind support are never asserted as portable oracles.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, existing 12.6.1 and 12.6.2.1 catalogues, and existing clause 13 catalogues for source form, declaration attributes, variables, expressions, execution constructs, data-transfer statement forms, io-control-spec placement, and formatting syntax where pending controls need them. Unregistered dependencies explicitly retained: 12.6.2.2-12.6.2.16 specifier subclauses; later 12.6.4 transfer execution and defined I/O; 12.7-12.11 connection, internal-file, status, and asynchronous semantics; clause 15 defined input/output procedures; clause 16 inquiry and selected character kind intrinsics where future guarded plans need them; clause 19 scope and accessibility controls."
+    },
+    {
+      "id": "R1216",
+      "title": "An input item is a variable or an I/O implied DO",
+      "source": "S12.6.3, J3/24-007, 18 December 2023, physical PDF262.",
+      "source_units": [
+        "R1216"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "An input-item is either a variable or an io-implied-do.",
+      "facets": [
+        "input-variable-form",
+        "input-io-implied-do-form",
+        "input-nonvariable-rejected"
+      ],
+      "pending": {
+        "input-variable-form": "Positive control reads an internal record such as \"7\" into an integer variable initialized to -777 and checks the changed value.",
+        "input-io-implied-do-form": "Positive control reads a record containing distinct integers into an array through `(a(i), i=1,3)`, with every element initialized to a nondefault sentinel first.",
+        "input-nonvariable-rejected": "Diagnostic/control pair changes only a READ input item from a variable to a literal or parenthesized expression, so the statement reaches R1216 and the repair restores variable syntax."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by reading known internal records into nonzero/nonblank sentinels, writing to sentinel-prefilled internal files, initializing pointed-to or allocatable targets, or using compile-only conforming controls) and then observe only portable properties: exact internal records, successful IOSTAT zero where status is owned by a later rule, required diagnosis of a numbered syntax rule or constraint, or source-control admission/rejection without relying on IOMSG text, external byte representation, processor-dependent unit numbers, or specific numeric status values.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostic facets are future source-control plans only where the cited numbered rule is reached by a one-property change; unnumbered shall-not rules are not promoted to required diagnostics. IOMSG wording, processor-dependent external representations, defined-I/O side-effect ordering beyond what the source fixes, and processor-dependent character-kind support are never asserted as portable oracles.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, existing 12.6.1 and 12.6.2.1 catalogues, and existing clause 13 catalogues for source form, declaration attributes, variables, expressions, execution constructs, data-transfer statement forms, io-control-spec placement, and formatting syntax where pending controls need them. Unregistered dependencies explicitly retained: 12.6.2.2-12.6.2.16 specifier subclauses; later 12.6.4 transfer execution and defined I/O; 12.7-12.11 connection, internal-file, status, and asynchronous semantics; clause 15 defined input/output procedures; clause 16 inquiry and selected character kind intrinsics where future guarded plans need them; clause 19 scope and accessibility controls."
+    },
+    {
+      "id": "R1217",
+      "title": "An output item is an expression or an I/O implied DO",
+      "source": "S12.6.3, J3/24-007, 18 December 2023, physical PDF262.",
+      "source_units": [
+        "R1217"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "An output-item is either an expr or an io-implied-do.",
+      "facets": [
+        "output-expression-form",
+        "output-io-implied-do-form"
+      ],
+      "pending": {
+        "output-expression-form": "Positive control writes a nondefault scalar expression such as `i+1` to a sentinel-prefilled internal file with an explicit format and checks the exact characters.",
+        "output-io-implied-do-form": "Positive control writes `(a(i), i=1,3)` where `a` holds distinct values and checks that the sentinel-prefilled internal record reflects the implied-DO sequence."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by reading known internal records into nonzero/nonblank sentinels, writing to sentinel-prefilled internal files, initializing pointed-to or allocatable targets, or using compile-only conforming controls) and then observe only portable properties: exact internal records, successful IOSTAT zero where status is owned by a later rule, required diagnosis of a numbered syntax rule or constraint, or source-control admission/rejection without relying on IOMSG text, external byte representation, processor-dependent unit numbers, or specific numeric status values.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostic facets are future source-control plans only where the cited numbered rule is reached by a one-property change; unnumbered shall-not rules are not promoted to required diagnostics. IOMSG wording, processor-dependent external representations, defined-I/O side-effect ordering beyond what the source fixes, and processor-dependent character-kind support are never asserted as portable oracles.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, existing 12.6.1 and 12.6.2.1 catalogues, and existing clause 13 catalogues for source form, declaration attributes, variables, expressions, execution constructs, data-transfer statement forms, io-control-spec placement, and formatting syntax where pending controls need them. Unregistered dependencies explicitly retained: 12.6.2.2-12.6.2.16 specifier subclauses; later 12.6.4 transfer execution and defined I/O; 12.7-12.11 connection, internal-file, status, and asynchronous semantics; clause 15 defined input/output procedures; clause 16 inquiry and selected character kind intrinsics where future guarded plans need them; clause 19 scope and accessibility controls."
+    },
+    {
+      "id": "R1218",
+      "title": "An I/O implied DO has an object list and control in parentheses",
+      "source": "S12.6.3, J3/24-007, 18 December 2023, physical PDF262.",
+      "source_units": [
+        "R1218"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "An io-implied-do is a parenthesized io-implied-do-object-list followed by a comma and an io-implied-do-control.",
+      "facets": [
+        "io-implied-do-parenthesized-form",
+        "io-implied-do-object-list-form",
+        "io-implied-do-control-form"
+      ],
+      "pending": {
+        "io-implied-do-parenthesized-form": "Positive controls use both READ and WRITE implied-DO forms with parentheses; syntax negatives remove one parenthesis while leaving the object list and control otherwise unchanged.",
+        "io-implied-do-object-list-form": "Positive control uses two objects `(a(i), b(i), i=1,2)` with nondefault sentinels and checks both objects are reached in each iteration.",
+        "io-implied-do-control-form": "Positive control uses a complete `i=1,3` control; paired syntax negative removes only the control after the object list."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by reading known internal records into nonzero/nonblank sentinels, writing to sentinel-prefilled internal files, initializing pointed-to or allocatable targets, or using compile-only conforming controls) and then observe only portable properties: exact internal records, successful IOSTAT zero where status is owned by a later rule, required diagnosis of a numbered syntax rule or constraint, or source-control admission/rejection without relying on IOMSG text, external byte representation, processor-dependent unit numbers, or specific numeric status values.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostic facets are future source-control plans only where the cited numbered rule is reached by a one-property change; unnumbered shall-not rules are not promoted to required diagnostics. IOMSG wording, processor-dependent external representations, defined-I/O side-effect ordering beyond what the source fixes, and processor-dependent character-kind support are never asserted as portable oracles.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, existing 12.6.1 and 12.6.2.1 catalogues, and existing clause 13 catalogues for source form, declaration attributes, variables, expressions, execution constructs, data-transfer statement forms, io-control-spec placement, and formatting syntax where pending controls need them. Unregistered dependencies explicitly retained: 12.6.2.2-12.6.2.16 specifier subclauses; later 12.6.4 transfer execution and defined I/O; 12.7-12.11 connection, internal-file, status, and asynchronous semantics; clause 15 defined input/output procedures; clause 16 inquiry and selected character kind intrinsics where future guarded plans need them; clause 19 scope and accessibility controls."
+    },
+    {
+      "id": "R1219",
+      "title": "An I/O implied-DO object is an input item or an output item",
+      "source": "S12.6.3, J3/24-007, 18 December 2023, physical PDF262.",
+      "source_units": [
+        "R1219"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "An io-implied-do-object is either an input-item or an output-item.",
+      "facets": [
+        "implied-do-object-input-item-form",
+        "implied-do-object-output-item-form"
+      ],
+      "pending": {
+        "implied-do-object-input-item-form": "Positive READ control uses an implied-DO object that is a variable input item, initialized to a sentinel before the transfer.",
+        "implied-do-object-output-item-form": "Positive WRITE control uses an implied-DO object that is an expression output item, with exact internal output checked."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by reading known internal records into nonzero/nonblank sentinels, writing to sentinel-prefilled internal files, initializing pointed-to or allocatable targets, or using compile-only conforming controls) and then observe only portable properties: exact internal records, successful IOSTAT zero where status is owned by a later rule, required diagnosis of a numbered syntax rule or constraint, or source-control admission/rejection without relying on IOMSG text, external byte representation, processor-dependent unit numbers, or specific numeric status values.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostic facets are future source-control plans only where the cited numbered rule is reached by a one-property change; unnumbered shall-not rules are not promoted to required diagnostics. IOMSG wording, processor-dependent external representations, defined-I/O side-effect ordering beyond what the source fixes, and processor-dependent character-kind support are never asserted as portable oracles.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, existing 12.6.1 and 12.6.2.1 catalogues, and existing clause 13 catalogues for source form, declaration attributes, variables, expressions, execution constructs, data-transfer statement forms, io-control-spec placement, and formatting syntax where pending controls need them. Unregistered dependencies explicitly retained: 12.6.2.2-12.6.2.16 specifier subclauses; later 12.6.4 transfer execution and defined I/O; 12.7-12.11 connection, internal-file, status, and asynchronous semantics; clause 15 defined input/output procedures; clause 16 inquiry and selected character kind intrinsics where future guarded plans need them; clause 19 scope and accessibility controls."
+    },
+    {
+      "id": "R1220",
+      "title": "An I/O implied-DO control specifies a do variable, bounds, and optional increment",
+      "source": "S12.6.3, J3/24-007, 18 December 2023, physical PDF262.",
+      "source_units": [
+        "R1220"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "An io-implied-do-control is a do-variable, an equals sign, two scalar integer expressions for initial and terminal values, and an optional scalar integer expression increment.",
+      "facets": [
+        "implied-do-control-do-variable",
+        "implied-do-control-initial-expr",
+        "implied-do-control-terminal-expr",
+        "implied-do-control-optional-increment"
+      ],
+      "pending": {
+        "implied-do-control-do-variable": "Positive control uses an integer do variable distinct from all transferred items; a syntax negative removes only the do-variable name.",
+        "implied-do-control-initial-expr": "Positive control uses a nonconstant scalar integer initial expression such as `lo+1` whose value is initialized before the transfer.",
+        "implied-do-control-terminal-expr": "Positive control uses a scalar integer terminal expression initialized to produce a known iteration count.",
+        "implied-do-control-optional-increment": "Positive pair uses one implied DO without an increment and one with increment 2, checking distinct transferred sequences from sentinel-initialized arrays."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by reading known internal records into nonzero/nonblank sentinels, writing to sentinel-prefilled internal files, initializing pointed-to or allocatable targets, or using compile-only conforming controls) and then observe only portable properties: exact internal records, successful IOSTAT zero where status is owned by a later rule, required diagnosis of a numbered syntax rule or constraint, or source-control admission/rejection without relying on IOMSG text, external byte representation, processor-dependent unit numbers, or specific numeric status values.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostic facets are future source-control plans only where the cited numbered rule is reached by a one-property change; unnumbered shall-not rules are not promoted to required diagnostics. IOMSG wording, processor-dependent external representations, defined-I/O side-effect ordering beyond what the source fixes, and processor-dependent character-kind support are never asserted as portable oracles.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, existing 12.6.1 and 12.6.2.1 catalogues, and existing clause 13 catalogues for source form, declaration attributes, variables, expressions, execution constructs, data-transfer statement forms, io-control-spec placement, and formatting syntax where pending controls need them. Unregistered dependencies explicitly retained: 12.6.2.2-12.6.2.16 specifier subclauses; later 12.6.4 transfer execution and defined I/O; 12.7-12.11 connection, internal-file, status, and asynchronous semantics; clause 15 defined input/output procedures; clause 16 inquiry and selected character kind intrinsics where future guarded plans need them; clause 19 scope and accessibility controls."
+    },
+    {
+      "id": "C1233",
+      "title": "Whole assumed-size arrays are not input items",
+      "source": "S12.6.3, J3/24-007, 18 December 2023, physical PDF262.",
+      "source_units": [
+        "C1233"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "A variable that is an input-item shall not be a whole assumed-size array.",
+      "facets": [
+        "whole-assumed-size-input-item-rejected"
+      ],
+      "pending": {
+        "whole-assumed-size-input-item-rejected": "Diagnostic/control pair places `READ(record,*) a` in a subroutine with `a(*)`; the conforming repair changes only the input item to `a(1)` or an explicit-size dummy element, so the violation reaches C1233."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by reading known internal records into nonzero/nonblank sentinels, writing to sentinel-prefilled internal files, initializing pointed-to or allocatable targets, or using compile-only conforming controls) and then observe only portable properties: exact internal records, successful IOSTAT zero where status is owned by a later rule, required diagnosis of a numbered syntax rule or constraint, or source-control admission/rejection without relying on IOMSG text, external byte representation, processor-dependent unit numbers, or specific numeric status values.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostic facets are future source-control plans only where the cited numbered rule is reached by a one-property change; unnumbered shall-not rules are not promoted to required diagnostics. IOMSG wording, processor-dependent external representations, defined-I/O side-effect ordering beyond what the source fixes, and processor-dependent character-kind support are never asserted as portable oracles.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, existing 12.6.1 and 12.6.2.1 catalogues, and existing clause 13 catalogues for source form, declaration attributes, variables, expressions, execution constructs, data-transfer statement forms, io-control-spec placement, and formatting syntax where pending controls need them. Unregistered dependencies explicitly retained: 12.6.2.2-12.6.2.16 specifier subclauses; later 12.6.4 transfer execution and defined I/O; 12.7-12.11 connection, internal-file, status, and asynchronous semantics; clause 15 defined input/output procedures; clause 16 inquiry and selected character kind intrinsics where future guarded plans need them; clause 19 scope and accessibility controls."
+    },
+    {
+      "id": "C1234",
+      "title": "Implied-DO objects match the surrounding input or output list",
+      "source": "S12.6.3, J3/24-007, 18 December 2023, physical PDF262.",
+      "source_units": [
+        "C1234"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "In an input-item-list, an io-implied-do-object shall be an input-item. In an output-item-list, an io-implied-do-object shall be an output-item.",
+      "facets": [
+        "input-list-implied-do-object-input-item",
+        "input-list-output-expression-object-rejected",
+        "output-list-implied-do-object-output-item"
+      ],
+      "pending": {
+        "input-list-implied-do-object-input-item": "Positive READ control uses only variable input items inside `(a(i), i=1,3)` and confirms sentinel-initialized elements change.",
+        "input-list-output-expression-object-rejected": "Diagnostic/control pair changes only the implied-DO object in a READ from `a(i)` to `a(i)+1`; the outer input item remains an io-implied-do, so C1234 is the reached numbered constraint.",
+        "output-list-implied-do-object-output-item": "Positive WRITE control uses variable and expression output objects inside an implied DO and checks exact internal output; no distinct output-side negative is registered because variables and nested implied DOs admitted as input-item syntax are also output expressions or output items."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by reading known internal records into nonzero/nonblank sentinels, writing to sentinel-prefilled internal files, initializing pointed-to or allocatable targets, or using compile-only conforming controls) and then observe only portable properties: exact internal records, successful IOSTAT zero where status is owned by a later rule, required diagnosis of a numbered syntax rule or constraint, or source-control admission/rejection without relying on IOMSG text, external byte representation, processor-dependent unit numbers, or specific numeric status values.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostic facets are future source-control plans only where the cited numbered rule is reached by a one-property change; unnumbered shall-not rules are not promoted to required diagnostics. IOMSG wording, processor-dependent external representations, defined-I/O side-effect ordering beyond what the source fixes, and processor-dependent character-kind support are never asserted as portable oracles.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, existing 12.6.1 and 12.6.2.1 catalogues, and existing clause 13 catalogues for source form, declaration attributes, variables, expressions, execution constructs, data-transfer statement forms, io-control-spec placement, and formatting syntax where pending controls need them. Unregistered dependencies explicitly retained: 12.6.2.2-12.6.2.16 specifier subclauses; later 12.6.4 transfer execution and defined I/O; 12.7-12.11 connection, internal-file, status, and asynchronous semantics; clause 15 defined input/output procedures; clause 16 inquiry and selected character kind intrinsics where future guarded plans need them; clause 19 scope and accessibility controls."
+    },
+    {
+      "id": "C1235",
+      "title": "Output item expressions do not have procedure pointer values",
+      "source": "S12.6.3, J3/24-007, 18 December 2023, physical PDF262.",
+      "source_units": [
+        "C1235"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "An expression that is an output-item shall not have a value that is a procedure pointer.",
+      "facets": [
+        "ordinary-output-expression-control",
+        "procedure-pointer-output-expression-rejected"
+      ],
+      "pending": {
+        "ordinary-output-expression-control": "Positive control writes the result of invoking an associated procedure pointer function, such as `p()`, whose integer result is nondefault and exactly formatted.",
+        "procedure-pointer-output-expression-rejected": "Diagnostic/control pair changes only the output item from a data result such as `p()` or an integer variable to an associated procedure pointer designator `p`, so the output-item expression has a procedure pointer value."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by reading known internal records into nonzero/nonblank sentinels, writing to sentinel-prefilled internal files, initializing pointed-to or allocatable targets, or using compile-only conforming controls) and then observe only portable properties: exact internal records, successful IOSTAT zero where status is owned by a later rule, required diagnosis of a numbered syntax rule or constraint, or source-control admission/rejection without relying on IOMSG text, external byte representation, processor-dependent unit numbers, or specific numeric status values.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostic facets are future source-control plans only where the cited numbered rule is reached by a one-property change; unnumbered shall-not rules are not promoted to required diagnostics. IOMSG wording, processor-dependent external representations, defined-I/O side-effect ordering beyond what the source fixes, and processor-dependent character-kind support are never asserted as portable oracles.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, existing 12.6.1 and 12.6.2.1 catalogues, and existing clause 13 catalogues for source form, declaration attributes, variables, expressions, execution constructs, data-transfer statement forms, io-control-spec placement, and formatting syntax where pending controls need them. Unregistered dependencies explicitly retained: 12.6.2.2-12.6.2.16 specifier subclauses; later 12.6.4 transfer execution and defined I/O; 12.7-12.11 connection, internal-file, status, and asynchronous semantics; clause 15 defined input/output procedures; clause 16 inquiry and selected character kind intrinsics where future guarded plans need them; clause 19 scope and accessibility controls."
+    },
+    {
+      "id": "S12.6.3-002",
+      "title": "Input items are not the do variable of a containing I/O implied DO",
+      "source": "S12.6.3, J3/24-007, 18 December 2023, physical PDF262.",
+      "source_units": [
+        "p2"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "An input-item shall not appear as, nor be associated with, the do-variable of any io-implied-do that contains the input-item.",
+      "facets": [
+        "input-item-not-containing-do-variable",
+        "input-item-not-associated-with-containing-do-variable"
+      ],
+      "pending": {
+        "input-item-not-containing-do-variable": "Source-control plan contrasts `READ(record,*) (a(i), i=1,3)` with a source changing only the object to `i`; the rule is unnumbered, so no required diagnostic wording or exit status is claimed.",
+        "input-item-not-associated-with-containing-do-variable": "Source-control plan uses pointer association to make an input item associated with the containing implied-DO variable after a conforming nonassociated control is established; it claims only source rejection/admission, not a portable runtime status."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by reading known internal records into nonzero/nonblank sentinels, writing to sentinel-prefilled internal files, initializing pointed-to or allocatable targets, or using compile-only conforming controls) and then observe only portable properties: exact internal records, successful IOSTAT zero where status is owned by a later rule, required diagnosis of a numbered syntax rule or constraint, or source-control admission/rejection without relying on IOMSG text, external byte representation, processor-dependent unit numbers, or specific numeric status values.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostic facets are future source-control plans only where the cited numbered rule is reached by a one-property change; unnumbered shall-not rules are not promoted to required diagnostics. IOMSG wording, processor-dependent external representations, defined-I/O side-effect ordering beyond what the source fixes, and processor-dependent character-kind support are never asserted as portable oracles.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, existing 12.6.1 and 12.6.2.1 catalogues, and existing clause 13 catalogues for source form, declaration attributes, variables, expressions, execution constructs, data-transfer statement forms, io-control-spec placement, and formatting syntax where pending controls need them. Unregistered dependencies explicitly retained: 12.6.2.2-12.6.2.16 specifier subclauses; later 12.6.4 transfer execution and defined I/O; 12.7-12.11 connection, internal-file, status, and asynchronous semantics; clause 15 defined input/output procedures; clause 16 inquiry and selected character kind intrinsics where future guarded plans need them; clause 19 scope and accessibility controls."
+    },
+    {
+      "id": "S12.6.3-003",
+      "title": "Input pointers are associated with definable targets and receive transferred data",
+      "source": "S12.6.3, J3/24-007, 18 December 2023, physical PDF262.",
+      "source_units": [
+        "p3.input-pointer"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "If an input item is a pointer, it shall be associated with a definable target, and data are transferred from the file to the associated target.",
+      "facets": [
+        "input-pointer-definable-associated-target",
+        "input-pointer-transfer-to-target"
+      ],
+      "pending": {
+        "input-pointer-definable-associated-target": "Positive control pointer-associates `p` with an integer target initialized to -777 before `READ(record,*) p`; a source-control negative disassociates `p` or associates it with a nondefinable target without claiming a required diagnostic.",
+        "input-pointer-transfer-to-target": "Read a known nonzero value through pointer `p` and assert that the target, not merely the pointer variable, changes from its sentinel."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by reading known internal records into nonzero/nonblank sentinels, writing to sentinel-prefilled internal files, initializing pointed-to or allocatable targets, or using compile-only conforming controls) and then observe only portable properties: exact internal records, successful IOSTAT zero where status is owned by a later rule, required diagnosis of a numbered syntax rule or constraint, or source-control admission/rejection without relying on IOMSG text, external byte representation, processor-dependent unit numbers, or specific numeric status values.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostic facets are future source-control plans only where the cited numbered rule is reached by a one-property change; unnumbered shall-not rules are not promoted to required diagnostics. IOMSG wording, processor-dependent external representations, defined-I/O side-effect ordering beyond what the source fixes, and processor-dependent character-kind support are never asserted as portable oracles.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, existing 12.6.1 and 12.6.2.1 catalogues, and existing clause 13 catalogues for source form, declaration attributes, variables, expressions, execution constructs, data-transfer statement forms, io-control-spec placement, and formatting syntax where pending controls need them. Unregistered dependencies explicitly retained: 12.6.2.2-12.6.2.16 specifier subclauses; later 12.6.4 transfer execution and defined I/O; 12.7-12.11 connection, internal-file, status, and asynchronous semantics; clause 15 defined input/output procedures; clause 16 inquiry and selected character kind intrinsics where future guarded plans need them; clause 19 scope and accessibility controls."
+    },
+    {
+      "id": "S12.6.3-004",
+      "title": "Output pointers are associated with targets and transfer target values",
+      "source": "S12.6.3, J3/24-007, 18 December 2023, physical PDF262.",
+      "source_units": [
+        "p3.output-pointer"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "If an output item is a pointer, it shall be associated with a target, and data are transferred from the target to the file.",
+      "facets": [
+        "output-pointer-associated-target",
+        "output-pointer-transfer-from-target"
+      ],
+      "pending": {
+        "output-pointer-associated-target": "Positive control pointer-associates `p` with a target holding a nondefault value before WRITE; a source-control negative leaves `p` disassociated without claiming a required diagnostic.",
+        "output-pointer-transfer-from-target": "Write pointer `p` to a sentinel-prefilled internal file and assert the exact characters for the target value, not any pointer representation."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by reading known internal records into nonzero/nonblank sentinels, writing to sentinel-prefilled internal files, initializing pointed-to or allocatable targets, or using compile-only conforming controls) and then observe only portable properties: exact internal records, successful IOSTAT zero where status is owned by a later rule, required diagnosis of a numbered syntax rule or constraint, or source-control admission/rejection without relying on IOMSG text, external byte representation, processor-dependent unit numbers, or specific numeric status values.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostic facets are future source-control plans only where the cited numbered rule is reached by a one-property change; unnumbered shall-not rules are not promoted to required diagnostics. IOMSG wording, processor-dependent external representations, defined-I/O side-effect ordering beyond what the source fixes, and processor-dependent character-kind support are never asserted as portable oracles.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, existing 12.6.1 and 12.6.2.1 catalogues, and existing clause 13 catalogues for source form, declaration attributes, variables, expressions, execution constructs, data-transfer statement forms, io-control-spec placement, and formatting syntax where pending controls need them. Unregistered dependencies explicitly retained: 12.6.2.2-12.6.2.16 specifier subclauses; later 12.6.4 transfer execution and defined I/O; 12.7-12.11 connection, internal-file, status, and asynchronous semantics; clause 15 defined input/output procedures; clause 16 inquiry and selected character kind intrinsics where future guarded plans need them; clause 19 scope and accessibility controls."
+    },
+    {
+      "id": "S12.6.3-005",
+      "title": "Allocatable list items are allocated",
+      "source": "S12.6.3, J3/24-007, 18 December 2023, physical PDF263.",
+      "source_units": [
+        "p4"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "If an input item or an output item is allocatable, it shall be allocated.",
+      "facets": [
+        "allocatable-input-item-allocated",
+        "allocatable-output-item-allocated"
+      ],
+      "pending": {
+        "allocatable-input-item-allocated": "Positive control allocates an integer allocatable, initializes it to -777, reads a known record into it, and asserts the changed value; unallocated input is only a source-control negative.",
+        "allocatable-output-item-allocated": "Positive control allocates an integer allocatable with a nondefault value, writes it to a sentinel-prefilled internal file, and asserts exact output; unallocated output is only a source-control negative."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by reading known internal records into nonzero/nonblank sentinels, writing to sentinel-prefilled internal files, initializing pointed-to or allocatable targets, or using compile-only conforming controls) and then observe only portable properties: exact internal records, successful IOSTAT zero where status is owned by a later rule, required diagnosis of a numbered syntax rule or constraint, or source-control admission/rejection without relying on IOMSG text, external byte representation, processor-dependent unit numbers, or specific numeric status values.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostic facets are future source-control plans only where the cited numbered rule is reached by a one-property change; unnumbered shall-not rules are not promoted to required diagnostics. IOMSG wording, processor-dependent external representations, defined-I/O side-effect ordering beyond what the source fixes, and processor-dependent character-kind support are never asserted as portable oracles.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, existing 12.6.1 and 12.6.2.1 catalogues, and existing clause 13 catalogues for source form, declaration attributes, variables, expressions, execution constructs, data-transfer statement forms, io-control-spec placement, and formatting syntax where pending controls need them. Unregistered dependencies explicitly retained: 12.6.2.2-12.6.2.16 specifier subclauses; later 12.6.4 transfer execution and defined I/O; 12.7-12.11 connection, internal-file, status, and asynchronous semantics; clause 15 defined input/output procedures; clause 16 inquiry and selected character kind intrinsics where future guarded plans need them; clause 19 scope and accessibility controls."
+    },
+    {
+      "id": "S12.6.3-006",
+      "title": "Defined input/output admits polymorphic list-item processing",
+      "source": "S12.6.3, J3/24-007, 18 December 2023, physical PDF263.",
+      "source_units": [
+        "p5.dtio-polymorphic-admission"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A polymorphic list item is admitted when it is processed by a defined input/output procedure.",
+      "facets": [
+        "polymorphic-list-item-dtio-admitted"
+      ],
+      "pending": {
+        "polymorphic-list-item-dtio-admitted": "Positive source-control plan defines a type with defined formatted or unformatted I/O, passes a polymorphic list item through that procedure, and uses nondefault component sentinels to observe the procedure-owned transfer."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by reading known internal records into nonzero/nonblank sentinels, writing to sentinel-prefilled internal files, initializing pointed-to or allocatable targets, or using compile-only conforming controls) and then observe only portable properties: exact internal records, successful IOSTAT zero where status is owned by a later rule, required diagnosis of a numbered syntax rule or constraint, or source-control admission/rejection without relying on IOMSG text, external byte representation, processor-dependent unit numbers, or specific numeric status values.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostic facets are future source-control plans only where the cited numbered rule is reached by a one-property change; unnumbered shall-not rules are not promoted to required diagnostics. IOMSG wording, processor-dependent external representations, defined-I/O side-effect ordering beyond what the source fixes, and processor-dependent character-kind support are never asserted as portable oracles.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, existing 12.6.1 and 12.6.2.1 catalogues, and existing clause 13 catalogues for source form, declaration attributes, variables, expressions, execution constructs, data-transfer statement forms, io-control-spec placement, and formatting syntax where pending controls need them. Unregistered dependencies explicitly retained: 12.6.2.2-12.6.2.16 specifier subclauses; later 12.6.4 transfer execution and defined I/O; 12.7-12.11 connection, internal-file, status, and asynchronous semantics; clause 15 defined input/output procedures; clause 16 inquiry and selected character kind intrinsics where future guarded plans need them; clause 19 scope and accessibility controls."
+    },
+    {
+      "id": "S12.6.3-007",
+      "title": "Non-DTIO list items are not polymorphic",
+      "source": "S12.6.3, J3/24-007, 18 December 2023, physical PDF263.",
+      "source_units": [
+        "p5.polymorphic-restriction"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "A list item shall not be polymorphic unless it is processed by a defined input/output procedure.",
+      "facets": [
+        "polymorphic-list-item-without-dtio-restricted"
+      ],
+      "pending": {
+        "polymorphic-list-item-without-dtio-restricted": "Source-control negative removes the defined I/O binding from the admitted polymorphic control while changing no dynamic type or data value; the rule is unnumbered, so no required diagnostic claim is made."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by reading known internal records into nonzero/nonblank sentinels, writing to sentinel-prefilled internal files, initializing pointed-to or allocatable targets, or using compile-only conforming controls) and then observe only portable properties: exact internal records, successful IOSTAT zero where status is owned by a later rule, required diagnosis of a numbered syntax rule or constraint, or source-control admission/rejection without relying on IOMSG text, external byte representation, processor-dependent unit numbers, or specific numeric status values.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostic facets are future source-control plans only where the cited numbered rule is reached by a one-property change; unnumbered shall-not rules are not promoted to required diagnostics. IOMSG wording, processor-dependent external representations, defined-I/O side-effect ordering beyond what the source fixes, and processor-dependent character-kind support are never asserted as portable oracles.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, existing 12.6.1 and 12.6.2.1 catalogues, and existing clause 13 catalogues for source form, declaration attributes, variables, expressions, execution constructs, data-transfer statement forms, io-control-spec placement, and formatting syntax where pending controls need them. Unregistered dependencies explicitly retained: 12.6.2.2-12.6.2.16 specifier subclauses; later 12.6.4 transfer execution and defined I/O; 12.7-12.11 connection, internal-file, status, and asynchronous semantics; clause 15 defined input/output procedures; clause 16 inquiry and selected character kind intrinsics where future guarded plans need them; clause 19 scope and accessibility controls."
+    },
+    {
+      "id": "S12.6.3-008",
+      "title": "Enumeration list items do not appear in list-directed transfers",
+      "source": "S12.6.3, J3/24-007, 18 December 2023, physical PDF263.",
+      "source_units": [
+        "p6.list-directed-enum"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "A list item of an enumeration type shall not appear in a list-directed data transfer statement.",
+      "facets": [
+        "enum-list-directed-transfer-restricted"
+      ],
+      "pending": {
+        "enum-list-directed-transfer-restricted": "Source-control negative changes only the format of a conforming formatted enumeration transfer to list-directed `*`; no required diagnostic is claimed for this unnumbered restriction."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by reading known internal records into nonzero/nonblank sentinels, writing to sentinel-prefilled internal files, initializing pointed-to or allocatable targets, or using compile-only conforming controls) and then observe only portable properties: exact internal records, successful IOSTAT zero where status is owned by a later rule, required diagnosis of a numbered syntax rule or constraint, or source-control admission/rejection without relying on IOMSG text, external byte representation, processor-dependent unit numbers, or specific numeric status values.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostic facets are future source-control plans only where the cited numbered rule is reached by a one-property change; unnumbered shall-not rules are not promoted to required diagnostics. IOMSG wording, processor-dependent external representations, defined-I/O side-effect ordering beyond what the source fixes, and processor-dependent character-kind support are never asserted as portable oracles.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, existing 12.6.1 and 12.6.2.1 catalogues, and existing clause 13 catalogues for source form, declaration attributes, variables, expressions, execution constructs, data-transfer statement forms, io-control-spec placement, and formatting syntax where pending controls need them. Unregistered dependencies explicitly retained: 12.6.2.2-12.6.2.16 specifier subclauses; later 12.6.4 transfer execution and defined I/O; 12.7-12.11 connection, internal-file, status, and asynchronous semantics; clause 15 defined input/output procedures; clause 16 inquiry and selected character kind intrinsics where future guarded plans need them; clause 19 scope and accessibility controls."
+    },
+    {
+      "id": "S12.6.3-009",
+      "title": "Formatted enumeration list items correspond to I, B, O, or Z editing",
+      "source": "S12.6.3, J3/24-007, 18 December 2023, physical PDF263.",
+      "source_units": [
+        "p6.formatted-enum-descriptor"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "In a formatted data transfer statement, a list item of enumeration type shall correspond to an I, B, O, or Z edit descriptor.",
+      "facets": [
+        "enum-formatted-i-descriptor",
+        "enum-formatted-b-o-z-descriptors",
+        "enum-formatted-other-descriptor-restricted"
+      ],
+      "pending": {
+        "enum-formatted-i-descriptor": "Positive formatted internal WRITE uses an enumeration value with an I descriptor and a sentinel-prefilled buffer; exact digits are derived from the enumeration value rules when those are bound.",
+        "enum-formatted-b-o-z-descriptors": "Positive controls use B, O, and Z descriptors only for representation properties fixed by clause 13 BOZ/integer editing; no processor-dependent spacing beyond the descriptor rules is asserted.",
+        "enum-formatted-other-descriptor-restricted": "Source-control negative changes only the descriptor to a non I/B/O/Z data edit descriptor in an otherwise conforming formatted enumeration transfer; no required diagnostic is claimed."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by reading known internal records into nonzero/nonblank sentinels, writing to sentinel-prefilled internal files, initializing pointed-to or allocatable targets, or using compile-only conforming controls) and then observe only portable properties: exact internal records, successful IOSTAT zero where status is owned by a later rule, required diagnosis of a numbered syntax rule or constraint, or source-control admission/rejection without relying on IOMSG text, external byte representation, processor-dependent unit numbers, or specific numeric status values.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostic facets are future source-control plans only where the cited numbered rule is reached by a one-property change; unnumbered shall-not rules are not promoted to required diagnostics. IOMSG wording, processor-dependent external representations, defined-I/O side-effect ordering beyond what the source fixes, and processor-dependent character-kind support are never asserted as portable oracles.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, existing 12.6.1 and 12.6.2.1 catalogues, and existing clause 13 catalogues for source form, declaration attributes, variables, expressions, execution constructs, data-transfer statement forms, io-control-spec placement, and formatting syntax where pending controls need them. Unregistered dependencies explicitly retained: 12.6.2.2-12.6.2.16 specifier subclauses; later 12.6.4 transfer execution and defined I/O; 12.7-12.11 connection, internal-file, status, and asynchronous semantics; clause 15 defined input/output procedures; clause 16 inquiry and selected character kind intrinsics where future guarded plans need them; clause 19 scope and accessibility controls."
+    },
+    {
+      "id": "S12.6.3-010",
+      "title": "Nested I/O implied-DO variables are distinct from containing do variables",
+      "source": "S12.6.3, J3/24-007, 18 December 2023, physical PDF263.",
+      "source_units": [
+        "p7"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "The do-variable of an io-implied-do that is in another io-implied-do shall not appear as, nor be associated with, the do-variable of the containing io-implied-do.",
+      "facets": [
+        "nested-implied-do-variable-not-containing-variable",
+        "nested-implied-do-variable-not-associated-with-containing-variable"
+      ],
+      "pending": {
+        "nested-implied-do-variable-not-containing-variable": "Positive control uses distinct outer and inner integer do variables with a nondefault array; source-control negative changes only the inner do-variable name to the outer name.",
+        "nested-implied-do-variable-not-associated-with-containing-variable": "Source-control negative uses association to make nested and containing do variables associated after a conforming nonassociated control; the unnumbered rule carries no required diagnostic claim."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by reading known internal records into nonzero/nonblank sentinels, writing to sentinel-prefilled internal files, initializing pointed-to or allocatable targets, or using compile-only conforming controls) and then observe only portable properties: exact internal records, successful IOSTAT zero where status is owned by a later rule, required diagnosis of a numbered syntax rule or constraint, or source-control admission/rejection without relying on IOMSG text, external byte representation, processor-dependent unit numbers, or specific numeric status values.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostic facets are future source-control plans only where the cited numbered rule is reached by a one-property change; unnumbered shall-not rules are not promoted to required diagnostics. IOMSG wording, processor-dependent external representations, defined-I/O side-effect ordering beyond what the source fixes, and processor-dependent character-kind support are never asserted as portable oracles.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, existing 12.6.1 and 12.6.2.1 catalogues, and existing clause 13 catalogues for source form, declaration attributes, variables, expressions, execution constructs, data-transfer statement forms, io-control-spec placement, and formatting syntax where pending controls need them. Unregistered dependencies explicitly retained: 12.6.2.2-12.6.2.16 specifier subclauses; later 12.6.4 transfer execution and defined I/O; 12.7-12.11 connection, internal-file, status, and asynchronous semantics; clause 15 defined input/output procedures; clause 16 inquiry and selected character kind intrinsics where future guarded plans need them; clause 19 scope and accessibility controls."
+    },
+    {
+      "id": "S12.6.3-011",
+      "title": "Input/output list expansion rules are reapplied until none apply",
+      "source": "S12.6.3, J3/24-007, 18 December 2023, physical PDF263.",
+      "source_units": [
+        "p8.reapply-expansion-rules"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The rules for expanding input/output list items are reapplied to each expanded list item until none of the rules apply.",
+      "facets": [
+        "io-list-expansion-rules-reapplied"
+      ],
+      "pending": {
+        "io-list-expansion-rules-reapplied": "Use a derived type containing an array component in formatted internal output; initialize components with distinct values and assert component order followed by array element order after repeated expansion."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by reading known internal records into nonzero/nonblank sentinels, writing to sentinel-prefilled internal files, initializing pointed-to or allocatable targets, or using compile-only conforming controls) and then observe only portable properties: exact internal records, successful IOSTAT zero where status is owned by a later rule, required diagnosis of a numbered syntax rule or constraint, or source-control admission/rejection without relying on IOMSG text, external byte representation, processor-dependent unit numbers, or specific numeric status values.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostic facets are future source-control plans only where the cited numbered rule is reached by a one-property change; unnumbered shall-not rules are not promoted to required diagnostics. IOMSG wording, processor-dependent external representations, defined-I/O side-effect ordering beyond what the source fixes, and processor-dependent character-kind support are never asserted as portable oracles.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, existing 12.6.1 and 12.6.2.1 catalogues, and existing clause 13 catalogues for source form, declaration attributes, variables, expressions, execution constructs, data-transfer statement forms, io-control-spec placement, and formatting syntax where pending controls need them. Unregistered dependencies explicitly retained: 12.6.2.2-12.6.2.16 specifier subclauses; later 12.6.4 transfer execution and defined I/O; 12.7-12.11 connection, internal-file, status, and asynchronous semantics; clause 15 defined input/output procedures; clause 16 inquiry and selected character kind intrinsics where future guarded plans need them; clause 19 scope and accessibility controls."
+    },
+    {
+      "id": "S12.6.3-012",
+      "title": "Array list items expand in array element order",
+      "source": "S12.6.3, J3/24-007, 18 December 2023, physical PDF263.",
+      "source_units": [
+        "p8.array-expansion"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "If an array appears as an input/output list item, it is treated as if its elements, if any, were specified in array element order.",
+      "facets": [
+        "array-list-item-expands-in-element-order"
+      ],
+      "pending": {
+        "array-list-item-expands-in-element-order": "Formatted internal WRITE uses a rank-two array with values chosen to distinguish column-major array element order, prefilled output sentinels, and an exact format-derived string."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by reading known internal records into nonzero/nonblank sentinels, writing to sentinel-prefilled internal files, initializing pointed-to or allocatable targets, or using compile-only conforming controls) and then observe only portable properties: exact internal records, successful IOSTAT zero where status is owned by a later rule, required diagnosis of a numbered syntax rule or constraint, or source-control admission/rejection without relying on IOMSG text, external byte representation, processor-dependent unit numbers, or specific numeric status values.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostic facets are future source-control plans only where the cited numbered rule is reached by a one-property change; unnumbered shall-not rules are not promoted to required diagnostics. IOMSG wording, processor-dependent external representations, defined-I/O side-effect ordering beyond what the source fixes, and processor-dependent character-kind support are never asserted as portable oracles.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, existing 12.6.1 and 12.6.2.1 catalogues, and existing clause 13 catalogues for source form, declaration attributes, variables, expressions, execution constructs, data-transfer statement forms, io-control-spec placement, and formatting syntax where pending controls need them. Unregistered dependencies explicitly retained: 12.6.2.2-12.6.2.16 specifier subclauses; later 12.6.4 transfer execution and defined I/O; 12.7-12.11 connection, internal-file, status, and asynchronous semantics; clause 15 defined input/output procedures; clause 16 inquiry and selected character kind intrinsics where future guarded plans need them; clause 19 scope and accessibility controls."
+    },
+    {
+      "id": "S12.6.3-013",
+      "title": "Input array elements do not affect expressions in the input item",
+      "source": "S12.6.3, J3/24-007, 18 December 2023, physical PDF263.",
+      "source_units": [
+        "p8.input-array-expression-affect-restriction"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "No element of an array input/output list item shall affect the value of any expression in the input-item.",
+      "facets": [
+        "input-array-element-not-affect-expression"
+      ],
+      "pending": {
+        "input-array-element-not-affect-expression": "Source-control negative follows the standard example shape by making an input array element determine a subscript or bound expression for the same input item; the conforming control uses LBOUND/UBOUND values unaffected by transferred elements."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by reading known internal records into nonzero/nonblank sentinels, writing to sentinel-prefilled internal files, initializing pointed-to or allocatable targets, or using compile-only conforming controls) and then observe only portable properties: exact internal records, successful IOSTAT zero where status is owned by a later rule, required diagnosis of a numbered syntax rule or constraint, or source-control admission/rejection without relying on IOMSG text, external byte representation, processor-dependent unit numbers, or specific numeric status values.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostic facets are future source-control plans only where the cited numbered rule is reached by a one-property change; unnumbered shall-not rules are not promoted to required diagnostics. IOMSG wording, processor-dependent external representations, defined-I/O side-effect ordering beyond what the source fixes, and processor-dependent character-kind support are never asserted as portable oracles.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, existing 12.6.1 and 12.6.2.1 catalogues, and existing clause 13 catalogues for source form, declaration attributes, variables, expressions, execution constructs, data-transfer statement forms, io-control-spec placement, and formatting syntax where pending controls need them. Unregistered dependencies explicitly retained: 12.6.2.2-12.6.2.16 specifier subclauses; later 12.6.4 transfer execution and defined I/O; 12.7-12.11 connection, internal-file, status, and asynchronous semantics; clause 15 defined input/output procedures; clause 16 inquiry and selected character kind intrinsics where future guarded plans need them; clause 19 scope and accessibility controls."
+    },
+    {
+      "id": "S12.6.3-014",
+      "title": "Array elements do not appear more than once in a given input item",
+      "source": "S12.6.3, J3/24-007, 18 December 2023, physical PDF263.",
+      "source_units": [
+        "p8.input-array-duplicate-element-restriction"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "No array element shall appear more than once in a given input-item.",
+      "facets": [
+        "input-array-element-not-duplicated"
+      ],
+      "pending": {
+        "input-array-element-not-duplicated": "Source-control negative uses a vector subscript with a duplicate index in a READ input item; the conforming control changes only the vector values so every selected element is distinct."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by reading known internal records into nonzero/nonblank sentinels, writing to sentinel-prefilled internal files, initializing pointed-to or allocatable targets, or using compile-only conforming controls) and then observe only portable properties: exact internal records, successful IOSTAT zero where status is owned by a later rule, required diagnosis of a numbered syntax rule or constraint, or source-control admission/rejection without relying on IOMSG text, external byte representation, processor-dependent unit numbers, or specific numeric status values.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostic facets are future source-control plans only where the cited numbered rule is reached by a one-property change; unnumbered shall-not rules are not promoted to required diagnostics. IOMSG wording, processor-dependent external representations, defined-I/O side-effect ordering beyond what the source fixes, and processor-dependent character-kind support are never asserted as portable oracles.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, existing 12.6.1 and 12.6.2.1 catalogues, and existing clause 13 catalogues for source form, declaration attributes, variables, expressions, execution constructs, data-transfer statement forms, io-control-spec placement, and formatting syntax where pending controls need them. Unregistered dependencies explicitly retained: 12.6.2.2-12.6.2.16 specifier subclauses; later 12.6.4 transfer execution and defined I/O; 12.7-12.11 connection, internal-file, status, and asynchronous semantics; clause 15 defined input/output procedures; clause 16 inquiry and selected character kind intrinsics where future guarded plans need them; clause 19 scope and accessibility controls."
+    },
+    {
+      "id": "S12.6.3-015",
+      "title": "Unformatted derived effective items expand when a subobject has defined I/O",
+      "source": "S12.6.3, J3/24-007, 18 December 2023, physical PDF263.",
+      "source_units": [
+        "note3.unformatted-dtio-subobject-expansion"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "If an effective item of derived type in an unformatted input/output statement is not processed by a defined input/output procedure, and any subobject would be processed by one, the effective item is treated as its components in component order; those components shall be accessible and shall not be pointers or allocatable.",
+      "facets": [
+        "unformatted-derived-dtio-subobject-component-expansion",
+        "unformatted-derived-dtio-components-accessible",
+        "unformatted-derived-dtio-components-not-pointer-allocatable"
+      ],
+      "pending": {
+        "unformatted-derived-dtio-subobject-component-expansion": "Define a parent type with a component whose type has defined unformatted I/O; WRITE the parent object and have the component procedure record a nondefault sequence number so component-order expansion is observed without inspecting file bytes.",
+        "unformatted-derived-dtio-components-accessible": "Source-control negative moves one component behind inaccessible PRIVATE access in the scoping unit containing the unformatted transfer; the positive control keeps all components accessible.",
+        "unformatted-derived-dtio-components-not-pointer-allocatable": "Source-control negatives change exactly one expanded component to POINTER or ALLOCATABLE while keeping the defined-I/O subobject premise; no required diagnostic is claimed."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by reading known internal records into nonzero/nonblank sentinels, writing to sentinel-prefilled internal files, initializing pointed-to or allocatable targets, or using compile-only conforming controls) and then observe only portable properties: exact internal records, successful IOSTAT zero where status is owned by a later rule, required diagnosis of a numbered syntax rule or constraint, or source-control admission/rejection without relying on IOMSG text, external byte representation, processor-dependent unit numbers, or specific numeric status values.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostic facets are future source-control plans only where the cited numbered rule is reached by a one-property change; unnumbered shall-not rules are not promoted to required diagnostics. IOMSG wording, processor-dependent external representations, defined-I/O side-effect ordering beyond what the source fixes, and processor-dependent character-kind support are never asserted as portable oracles.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, existing 12.6.1 and 12.6.2.1 catalogues, and existing clause 13 catalogues for source form, declaration attributes, variables, expressions, execution constructs, data-transfer statement forms, io-control-spec placement, and formatting syntax where pending controls need them. Unregistered dependencies explicitly retained: 12.6.2.2-12.6.2.16 specifier subclauses; later 12.6.4 transfer execution and defined I/O; 12.7-12.11 connection, internal-file, status, and asynchronous semantics; clause 15 defined input/output procedures; clause 16 inquiry and selected character kind intrinsics where future guarded plans need them; clause 19 scope and accessibility controls."
+    },
+    {
+      "id": "S12.6.3-016",
+      "title": "Unformatted non-DTIO derived effective items are treated as a single value",
+      "source": "S12.6.3, J3/24-007, 18 December 2023, physical PDF263.",
+      "source_units": [
+        "note3.unformatted-derived-single-value"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "An effective item of derived type in an unformatted input/output statement is treated as a single value unless the effective item or a subobject thereof is processed by a defined input/output procedure.",
+      "facets": [
+        "unformatted-derived-single-value-treatment"
+      ],
+      "pending": {
+        "unformatted-derived-single-value-treatment": "No portable single-image oracle is registered: ordinary unformatted WRITE followed by READ of a derived object into the same declared type succeeds whether the processor represents the object as a whole value or in a form that happens to match a component-list sequence; INQUIRE(IOLENGTH=), record length, and file storage layout for the derived object versus its components listed separately are processor dependent. Future fixtures may use same-type round trip only as context, not as proof that whole-object single-value treatment was distinguished from component-list expansion."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by reading known internal records into nonzero/nonblank sentinels, writing to sentinel-prefilled internal files, initializing pointed-to or allocatable targets, or using compile-only conforming controls) and then observe only portable properties: exact internal records, successful IOSTAT zero where status is owned by a later rule, required diagnosis of a numbered syntax rule or constraint, or source-control admission/rejection without relying on IOMSG text, external byte representation, processor-dependent unit numbers, or specific numeric status values.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostic facets are future source-control plans only where the cited numbered rule is reached by a one-property change; unnumbered shall-not rules are not promoted to required diagnostics. IOMSG wording, processor-dependent external representations, defined-I/O side-effect ordering beyond what the source fixes, and processor-dependent character-kind support are never asserted as portable oracles.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, existing 12.6.1 and 12.6.2.1 catalogues, and existing clause 13 catalogues for source form, declaration attributes, variables, expressions, execution constructs, data-transfer statement forms, io-control-spec placement, and formatting syntax where pending controls need them. Unregistered dependencies explicitly retained: 12.6.2.2-12.6.2.16 specifier subclauses; later 12.6.4 transfer execution and defined I/O; 12.7-12.11 connection, internal-file, status, and asynchronous semantics; clause 15 defined input/output procedures; clause 16 inquiry and selected character kind intrinsics where future guarded plans need them; clause 19 scope and accessibility controls."
+    },
+    {
+      "id": "S12.6.3-028",
+      "title": "Unformatted non-DTIO derived effective item form is processor dependent",
+      "source": "S12.6.3, J3/24-007, 18 December 2023, physical PDF263.",
+      "source_units": [
+        "note3.unformatted-derived-processor-dependent-form"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For an effective item of derived type in an unformatted input/output statement that is not processed by a defined input/output procedure and has no subobject processed by one, the single-value form is processor dependent.",
+      "facets": [
+        "unformatted-derived-representation-processor-dependent"
+      ],
+      "pending": {
+        "unformatted-derived-representation-processor-dependent": "No portable oracle exists for the processor-dependent form: do not compare raw storage units, INQUIRE(IOLENGTH=) values, record lengths, or derived-object bytes with a separately listed component sequence; only same-type round trip values may be used as context and they do not constrain the chosen form."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by reading known internal records into nonzero/nonblank sentinels, writing to sentinel-prefilled internal files, initializing pointed-to or allocatable targets, or using compile-only conforming controls) and then observe only portable properties: exact internal records, successful IOSTAT zero where status is owned by a later rule, required diagnosis of a numbered syntax rule or constraint, or source-control admission/rejection without relying on IOMSG text, external byte representation, processor-dependent unit numbers, or specific numeric status values.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostic facets are future source-control plans only where the cited numbered rule is reached by a one-property change; unnumbered shall-not rules are not promoted to required diagnostics. IOMSG wording, processor-dependent external representations, defined-I/O side-effect ordering beyond what the source fixes, and processor-dependent character-kind support are never asserted as portable oracles.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, existing 12.6.1 and 12.6.2.1 catalogues, and existing clause 13 catalogues for source form, declaration attributes, variables, expressions, execution constructs, data-transfer statement forms, io-control-spec placement, and formatting syntax where pending controls need them. Unregistered dependencies explicitly retained: 12.6.2.2-12.6.2.16 specifier subclauses; later 12.6.4 transfer execution and defined I/O; 12.7-12.11 connection, internal-file, status, and asynchronous semantics; clause 15 defined input/output procedures; clause 16 inquiry and selected character kind intrinsics where future guarded plans need them; clause 19 scope and accessibility controls."
+    },
+    {
+      "id": "S12.6.3-017",
+      "title": "Formatted derived effective items expand into accessible nonpointer nonallocatable components",
+      "source": "S12.6.3, J3/24-007, 18 December 2023, physical PDF263.",
+      "source_units": [
+        "note4.formatted-derived-expansion"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "If an effective item of derived type in a formatted input/output statement is not processed by a defined input/output procedure, it is treated as its components in component order; those components shall be accessible and shall not be pointers or allocatable.",
+      "facets": [
+        "formatted-derived-component-order-expansion",
+        "formatted-derived-components-accessible",
+        "formatted-derived-components-not-pointer-allocatable"
+      ],
+      "pending": {
+        "formatted-derived-component-order-expansion": "Formatted internal WRITE of a derived object with two distinguishable scalar components uses an explicit format and sentinel-prefilled buffer; exact output proves component-order expansion.",
+        "formatted-derived-components-accessible": "Source-control negative makes one component inaccessible in the transfer scoping unit while the control keeps it public; no diagnostic wording is asserted.",
+        "formatted-derived-components-not-pointer-allocatable": "Source-control negatives change exactly one formatted-expanded component to POINTER or ALLOCATABLE while keeping all other components scalar and accessible."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by reading known internal records into nonzero/nonblank sentinels, writing to sentinel-prefilled internal files, initializing pointed-to or allocatable targets, or using compile-only conforming controls) and then observe only portable properties: exact internal records, successful IOSTAT zero where status is owned by a later rule, required diagnosis of a numbered syntax rule or constraint, or source-control admission/rejection without relying on IOMSG text, external byte representation, processor-dependent unit numbers, or specific numeric status values.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostic facets are future source-control plans only where the cited numbered rule is reached by a one-property change; unnumbered shall-not rules are not promoted to required diagnostics. IOMSG wording, processor-dependent external representations, defined-I/O side-effect ordering beyond what the source fixes, and processor-dependent character-kind support are never asserted as portable oracles.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, existing 12.6.1 and 12.6.2.1 catalogues, and existing clause 13 catalogues for source form, declaration attributes, variables, expressions, execution constructs, data-transfer statement forms, io-control-spec placement, and formatting syntax where pending controls need them. Unregistered dependencies explicitly retained: 12.6.2.2-12.6.2.16 specifier subclauses; later 12.6.4 transfer execution and defined I/O; 12.7-12.11 connection, internal-file, status, and asynchronous semantics; clause 15 defined input/output procedures; clause 16 inquiry and selected character kind intrinsics where future guarded plans need them; clause 19 scope and accessibility controls."
+    },
+    {
+      "id": "S12.6.3-018",
+      "title": "Unexpanded non-DTIO derived list items have accessible nonpointer nonallocatable subcomponents",
+      "source": "S12.6.3, J3/24-007, 18 December 2023, physical PDF263.",
+      "source_units": [
+        "note4.unexpanded-derived-subcomponent-restrictions"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "If a derived-type list item is not processed by a defined input/output procedure and is not treated as a list of its individual components, all its subcomponents shall be accessible in the scoping unit and shall not be pointers or allocatable.",
+      "facets": [
+        "unexpanded-derived-subcomponents-accessible",
+        "unexpanded-derived-subcomponents-not-pointer-allocatable"
+      ],
+      "pending": {
+        "unexpanded-derived-subcomponents-accessible": "Source-control negative uses unformatted non-DTIO whole-object transfer of a derived type with an inaccessible subcomponent from the transfer scoping unit; the control makes that subcomponent accessible.",
+        "unexpanded-derived-subcomponents-not-pointer-allocatable": "Source-control negatives change exactly one subcomponent of the unexpanded non-DTIO derived list item to POINTER or ALLOCATABLE."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by reading known internal records into nonzero/nonblank sentinels, writing to sentinel-prefilled internal files, initializing pointed-to or allocatable targets, or using compile-only conforming controls) and then observe only portable properties: exact internal records, successful IOSTAT zero where status is owned by a later rule, required diagnosis of a numbered syntax rule or constraint, or source-control admission/rejection without relying on IOMSG text, external byte representation, processor-dependent unit numbers, or specific numeric status values.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostic facets are future source-control plans only where the cited numbered rule is reached by a one-property change; unnumbered shall-not rules are not promoted to required diagnostics. IOMSG wording, processor-dependent external representations, defined-I/O side-effect ordering beyond what the source fixes, and processor-dependent character-kind support are never asserted as portable oracles.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, existing 12.6.1 and 12.6.2.1 catalogues, and existing clause 13 catalogues for source form, declaration attributes, variables, expressions, execution constructs, data-transfer statement forms, io-control-spec placement, and formatting syntax where pending controls need them. Unregistered dependencies explicitly retained: 12.6.2.2-12.6.2.16 specifier subclauses; later 12.6.4 transfer execution and defined I/O; 12.7-12.11 connection, internal-file, status, and asynchronous semantics; clause 15 defined input/output procedures; clause 16 inquiry and selected character kind intrinsics where future guarded plans need them; clause 19 scope and accessibility controls."
+    },
+    {
+      "id": "S12.6.3-019",
+      "title": "I/O implied-DO loop initialization and execution match DO constructs",
+      "source": "S12.6.3, J3/24-007, 18 December 2023, physical PDF263.",
+      "source_units": [
+        "note4.io-implied-do-execution"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For an io-implied-do, the loop initialization and execution are the same as for a DO construct.",
+      "facets": [
+        "io-implied-do-do-construct-execution"
+      ],
+      "pending": {
+        "io-implied-do-do-construct-execution": "Use implied-DO controls with positive, negative, and zero iteration-count cases mirrored by ordinary DO controls; initialize arrays and output buffers to sentinels and assert the same transferred subsequence."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by reading known internal records into nonzero/nonblank sentinels, writing to sentinel-prefilled internal files, initializing pointed-to or allocatable targets, or using compile-only conforming controls) and then observe only portable properties: exact internal records, successful IOSTAT zero where status is owned by a later rule, required diagnosis of a numbered syntax rule or constraint, or source-control admission/rejection without relying on IOMSG text, external byte representation, processor-dependent unit numbers, or specific numeric status values.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostic facets are future source-control plans only where the cited numbered rule is reached by a one-property change; unnumbered shall-not rules are not promoted to required diagnostics. IOMSG wording, processor-dependent external representations, defined-I/O side-effect ordering beyond what the source fixes, and processor-dependent character-kind support are never asserted as portable oracles.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, existing 12.6.1 and 12.6.2.1 catalogues, and existing clause 13 catalogues for source form, declaration attributes, variables, expressions, execution constructs, data-transfer statement forms, io-control-spec placement, and formatting syntax where pending controls need them. Unregistered dependencies explicitly retained: 12.6.2.2-12.6.2.16 specifier subclauses; later 12.6.4 transfer execution and defined I/O; 12.7-12.11 connection, internal-file, status, and asynchronous semantics; clause 15 defined input/output procedures; clause 16 inquiry and selected character kind intrinsics where future guarded plans need them; clause 19 scope and accessibility controls."
+    },
+    {
+      "id": "S12.6.3-020",
+      "title": "Scalar objects after expansion are effective items",
+      "source": "S12.6.3, J3/24-007, 18 December 2023, physical PDF264.",
+      "source_units": [
+        "p9.effective-item-definition"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The scalar objects resulting when data-transfer list items are expanded according to the array and derived-type rules are called effective items.",
+      "facets": [
+        "effective-items-are-expanded-scalar-objects"
+      ],
+      "pending": {
+        "effective-items-are-expanded-scalar-objects": "Future formatted internal WRITE uses a scalar, an array, and a derived object whose expansion is independently observed; edit descriptor association is checked only for the resulting scalar sequence."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by reading known internal records into nonzero/nonblank sentinels, writing to sentinel-prefilled internal files, initializing pointed-to or allocatable targets, or using compile-only conforming controls) and then observe only portable properties: exact internal records, successful IOSTAT zero where status is owned by a later rule, required diagnosis of a numbered syntax rule or constraint, or source-control admission/rejection without relying on IOMSG text, external byte representation, processor-dependent unit numbers, or specific numeric status values.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostic facets are future source-control plans only where the cited numbered rule is reached by a one-property change; unnumbered shall-not rules are not promoted to required diagnostics. IOMSG wording, processor-dependent external representations, defined-I/O side-effect ordering beyond what the source fixes, and processor-dependent character-kind support are never asserted as portable oracles.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, existing 12.6.1 and 12.6.2.1 catalogues, and existing clause 13 catalogues for source form, declaration attributes, variables, expressions, execution constructs, data-transfer statement forms, io-control-spec placement, and formatting syntax where pending controls need them. Unregistered dependencies explicitly retained: 12.6.2.2-12.6.2.16 specifier subclauses; later 12.6.4 transfer execution and defined I/O; 12.7-12.11 connection, internal-file, status, and asynchronous semantics; clause 15 defined input/output procedures; clause 16 inquiry and selected character kind intrinsics where future guarded plans need them; clause 19 scope and accessibility controls."
+    },
+    {
+      "id": "S12.6.3-021",
+      "title": "Zero-sized arrays contribute no effective items",
+      "source": "S12.6.3, J3/24-007, 18 December 2023, physical PDF264.",
+      "source_units": [
+        "p9.zero-sized-array"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Zero-sized arrays do not contribute to the list of effective items.",
+      "facets": [
+        "zero-sized-array-no-effective-items"
+      ],
+      "pending": {
+        "zero-sized-array-no-effective-items": "Formatted internal WRITE places a zero-sized array before a nondefault scalar marker and uses a format whose first consuming descriptor must be used by the marker if the array contributes no items; the buffer is prefilled with sentinels."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by reading known internal records into nonzero/nonblank sentinels, writing to sentinel-prefilled internal files, initializing pointed-to or allocatable targets, or using compile-only conforming controls) and then observe only portable properties: exact internal records, successful IOSTAT zero where status is owned by a later rule, required diagnosis of a numbered syntax rule or constraint, or source-control admission/rejection without relying on IOMSG text, external byte representation, processor-dependent unit numbers, or specific numeric status values.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostic facets are future source-control plans only where the cited numbered rule is reached by a one-property change; unnumbered shall-not rules are not promoted to required diagnostics. IOMSG wording, processor-dependent external representations, defined-I/O side-effect ordering beyond what the source fixes, and processor-dependent character-kind support are never asserted as portable oracles.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, existing 12.6.1 and 12.6.2.1 catalogues, and existing clause 13 catalogues for source form, declaration attributes, variables, expressions, execution constructs, data-transfer statement forms, io-control-spec placement, and formatting syntax where pending controls need them. Unregistered dependencies explicitly retained: 12.6.2.2-12.6.2.16 specifier subclauses; later 12.6.4 transfer execution and defined I/O; 12.7-12.11 connection, internal-file, status, and asynchronous semantics; clause 15 defined input/output procedures; clause 16 inquiry and selected character kind intrinsics where future guarded plans need them; clause 19 scope and accessibility controls."
+    },
+    {
+      "id": "S12.6.3-022",
+      "title": "Zero-iteration I/O implied DOs contribute no effective items",
+      "source": "S12.6.3, J3/24-007, 18 December 2023, physical PDF264.",
+      "source_units": [
+        "p9.zero-count-implied-do"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "I/O implied DOs with an iteration count of zero do not contribute to the list of effective items.",
+      "facets": [
+        "zero-count-implied-do-no-effective-items"
+      ],
+      "pending": {
+        "zero-count-implied-do-no-effective-items": "Formatted internal WRITE places `(a(i), i=1,0)` before a nondefault scalar marker and asserts the marker consumes the first data edit descriptor, with array elements initialized to values that would be visible if transferred."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by reading known internal records into nonzero/nonblank sentinels, writing to sentinel-prefilled internal files, initializing pointed-to or allocatable targets, or using compile-only conforming controls) and then observe only portable properties: exact internal records, successful IOSTAT zero where status is owned by a later rule, required diagnosis of a numbered syntax rule or constraint, or source-control admission/rejection without relying on IOMSG text, external byte representation, processor-dependent unit numbers, or specific numeric status values.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostic facets are future source-control plans only where the cited numbered rule is reached by a one-property change; unnumbered shall-not rules are not promoted to required diagnostics. IOMSG wording, processor-dependent external representations, defined-I/O side-effect ordering beyond what the source fixes, and processor-dependent character-kind support are never asserted as portable oracles.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, existing 12.6.1 and 12.6.2.1 catalogues, and existing clause 13 catalogues for source form, declaration attributes, variables, expressions, execution constructs, data-transfer statement forms, io-control-spec placement, and formatting syntax where pending controls need them. Unregistered dependencies explicitly retained: 12.6.2.2-12.6.2.16 specifier subclauses; later 12.6.4 transfer execution and defined I/O; 12.7-12.11 connection, internal-file, status, and asynchronous semantics; clause 15 defined input/output procedures; clause 16 inquiry and selected character kind intrinsics where future guarded plans need them; clause 19 scope and accessibility controls."
+    },
+    {
+      "id": "S12.6.3-023",
+      "title": "Zero-length scalar character items are effective items",
+      "source": "S12.6.3, J3/24-007, 18 December 2023, physical PDF264.",
+      "source_units": [
+        "p9.zero-length-character"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A scalar character item of zero length is an effective item.",
+      "facets": [
+        "zero-length-character-is-effective-item"
+      ],
+      "pending": {
+        "zero-length-character-is-effective-item": "Formatted internal WRITE uses a zero-length character item followed by integer 7 with format `(A,I0)`; a sentinel-prefilled buffer should contain only the integer characters because the A descriptor was consumed by the zero-length effective item."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by reading known internal records into nonzero/nonblank sentinels, writing to sentinel-prefilled internal files, initializing pointed-to or allocatable targets, or using compile-only conforming controls) and then observe only portable properties: exact internal records, successful IOSTAT zero where status is owned by a later rule, required diagnosis of a numbered syntax rule or constraint, or source-control admission/rejection without relying on IOMSG text, external byte representation, processor-dependent unit numbers, or specific numeric status values.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostic facets are future source-control plans only where the cited numbered rule is reached by a one-property change; unnumbered shall-not rules are not promoted to required diagnostics. IOMSG wording, processor-dependent external representations, defined-I/O side-effect ordering beyond what the source fixes, and processor-dependent character-kind support are never asserted as portable oracles.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, existing 12.6.1 and 12.6.2.1 catalogues, and existing clause 13 catalogues for source form, declaration attributes, variables, expressions, execution constructs, data-transfer statement forms, io-control-spec placement, and formatting syntax where pending controls need them. Unregistered dependencies explicitly retained: 12.6.2.2-12.6.2.16 specifier subclauses; later 12.6.4 transfer execution and defined I/O; 12.7-12.11 connection, internal-file, status, and asynchronous semantics; clause 15 defined input/output procedures; clause 16 inquiry and selected character kind intrinsics where future guarded plans need them; clause 19 scope and accessibility controls."
+    },
+    {
+      "id": "S12.6.3-024",
+      "title": "Default-character internal files exclude nondefault character effective items",
+      "source": "S12.6.3, J3/24-007, 18 December 2023, physical PDF264.",
+      "source_units": [
+        "p10.default-internal-file-character-kind"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "An input/output list shall not contain an effective item of nondefault character kind if the data transfer statement specifies an internal file of default character kind.",
+      "facets": [
+        "default-internal-file-nondefault-character-restricted"
+      ],
+      "pending": {
+        "default-internal-file-nondefault-character-restricted": "No unconditional portable negative exists because a distinct supported nondefault character kind is not guaranteed. A future guarded source-control may first prove a selected character kind is positive and distinct from default, then use it as the only changed effective item kind."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by reading known internal records into nonzero/nonblank sentinels, writing to sentinel-prefilled internal files, initializing pointed-to or allocatable targets, or using compile-only conforming controls) and then observe only portable properties: exact internal records, successful IOSTAT zero where status is owned by a later rule, required diagnosis of a numbered syntax rule or constraint, or source-control admission/rejection without relying on IOMSG text, external byte representation, processor-dependent unit numbers, or specific numeric status values.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostic facets are future source-control plans only where the cited numbered rule is reached by a one-property change; unnumbered shall-not rules are not promoted to required diagnostics. IOMSG wording, processor-dependent external representations, defined-I/O side-effect ordering beyond what the source fixes, and processor-dependent character-kind support are never asserted as portable oracles.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, existing 12.6.1 and 12.6.2.1 catalogues, and existing clause 13 catalogues for source form, declaration attributes, variables, expressions, execution constructs, data-transfer statement forms, io-control-spec placement, and formatting syntax where pending controls need them. Unregistered dependencies explicitly retained: 12.6.2.2-12.6.2.16 specifier subclauses; later 12.6.4 transfer execution and defined I/O; 12.7-12.11 connection, internal-file, status, and asynchronous semantics; clause 15 defined input/output procedures; clause 16 inquiry and selected character kind intrinsics where future guarded plans need them; clause 19 scope and accessibility controls."
+    },
+    {
+      "id": "S12.6.3-025",
+      "title": "ISO 10646 internal files admit only default, ISO 10646, or ASCII character effective items",
+      "source": "S12.6.3, J3/24-007, 18 December 2023, physical PDF264.",
+      "source_units": [
+        "p10.iso10646-internal-file-character-kind"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "If the data transfer statement specifies an internal file of ISO 10646 character kind, the input/output list shall not contain an effective item that is nondefault character except for ISO 10646 or ASCII character.",
+      "facets": [
+        "iso10646-internal-file-character-kind-set"
+      ],
+      "pending": {
+        "iso10646-internal-file-character-kind-set": "Guarded source-control plan first proves ISO_10646 internal files and any additional distinct nondefault kind are supported; it then contrasts default/ISO_10646/ASCII effective items with the other kind. Without those supported distinct kinds there is no portable negative oracle."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by reading known internal records into nonzero/nonblank sentinels, writing to sentinel-prefilled internal files, initializing pointed-to or allocatable targets, or using compile-only conforming controls) and then observe only portable properties: exact internal records, successful IOSTAT zero where status is owned by a later rule, required diagnosis of a numbered syntax rule or constraint, or source-control admission/rejection without relying on IOMSG text, external byte representation, processor-dependent unit numbers, or specific numeric status values.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostic facets are future source-control plans only where the cited numbered rule is reached by a one-property change; unnumbered shall-not rules are not promoted to required diagnostics. IOMSG wording, processor-dependent external representations, defined-I/O side-effect ordering beyond what the source fixes, and processor-dependent character-kind support are never asserted as portable oracles.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, existing 12.6.1 and 12.6.2.1 catalogues, and existing clause 13 catalogues for source form, declaration attributes, variables, expressions, execution constructs, data-transfer statement forms, io-control-spec placement, and formatting syntax where pending controls need them. Unregistered dependencies explicitly retained: 12.6.2.2-12.6.2.16 specifier subclauses; later 12.6.4 transfer execution and defined I/O; 12.7-12.11 connection, internal-file, status, and asynchronous semantics; clause 15 defined input/output procedures; clause 16 inquiry and selected character kind intrinsics where future guarded plans need them; clause 19 scope and accessibility controls."
+    },
+    {
+      "id": "S12.6.3-026",
+      "title": "ASCII internal files admit only ASCII character effective items",
+      "source": "S12.6.3, J3/24-007, 18 December 2023, physical PDF264.",
+      "source_units": [
+        "p10.ascii-internal-file-character-kind"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "If the data transfer statement specifies an ASCII character internal file, the input/output list shall not contain an effective item of type character of any kind other than ASCII.",
+      "facets": [
+        "ascii-internal-file-only-ascii-character"
+      ],
+      "pending": {
+        "ascii-internal-file-only-ascii-character": "Guarded source-control plan first proves ASCII character kind support and a distinct non-ASCII character kind; it then changes only the effective item kind. If ASCII is unsupported or not distinct, no portable negative is claimed."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by reading known internal records into nonzero/nonblank sentinels, writing to sentinel-prefilled internal files, initializing pointed-to or allocatable targets, or using compile-only conforming controls) and then observe only portable properties: exact internal records, successful IOSTAT zero where status is owned by a later rule, required diagnosis of a numbered syntax rule or constraint, or source-control admission/rejection without relying on IOMSG text, external byte representation, processor-dependent unit numbers, or specific numeric status values.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostic facets are future source-control plans only where the cited numbered rule is reached by a one-property change; unnumbered shall-not rules are not promoted to required diagnostics. IOMSG wording, processor-dependent external representations, defined-I/O side-effect ordering beyond what the source fixes, and processor-dependent character-kind support are never asserted as portable oracles.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, existing 12.6.1 and 12.6.2.1 catalogues, and existing clause 13 catalogues for source form, declaration attributes, variables, expressions, execution constructs, data-transfer statement forms, io-control-spec placement, and formatting syntax where pending controls need them. Unregistered dependencies explicitly retained: 12.6.2.2-12.6.2.16 specifier subclauses; later 12.6.4 transfer execution and defined I/O; 12.7-12.11 connection, internal-file, status, and asynchronous semantics; clause 15 defined input/output procedures; clause 16 inquiry and selected character kind intrinsics where future guarded plans need them; clause 19 scope and accessibility controls."
+    },
+    {
+      "id": "S12.6.3-027",
+      "title": "Output lists do not contain BOZ literal effective items",
+      "source": "S12.6.3, J3/24-007, 18 December 2023, physical PDF264.",
+      "source_units": [
+        "p11"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "An output list shall not contain an effective item that is a boz-literal-constant.",
+      "facets": [
+        "boz-literal-output-effective-item-restricted"
+      ],
+      "pending": {
+        "boz-literal-output-effective-item-restricted": "Source-control negative writes `z'ff'` as an output effective item; the conforming control changes only the item to `int(z'ff')` or an initialized integer value with the same descriptor. No required diagnostic is claimed for this unnumbered rule."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by reading known internal records into nonzero/nonblank sentinels, writing to sentinel-prefilled internal files, initializing pointed-to or allocatable targets, or using compile-only conforming controls) and then observe only portable properties: exact internal records, successful IOSTAT zero where status is owned by a later rule, required diagnosis of a numbered syntax rule or constraint, or source-control admission/rejection without relying on IOMSG text, external byte representation, processor-dependent unit numbers, or specific numeric status values.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostic facets are future source-control plans only where the cited numbered rule is reached by a one-property change; unnumbered shall-not rules are not promoted to required diagnostics. IOMSG wording, processor-dependent external representations, defined-I/O side-effect ordering beyond what the source fixes, and processor-dependent character-kind support are never asserted as portable oracles.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, existing 12.6.1 and 12.6.2.1 catalogues, and existing clause 13 catalogues for source form, declaration attributes, variables, expressions, execution constructs, data-transfer statement forms, io-control-spec placement, and formatting syntax where pending controls need them. Unregistered dependencies explicitly retained: 12.6.2.2-12.6.2.16 specifier subclauses; later 12.6.4 transfer execution and defined I/O; 12.7-12.11 connection, internal-file, status, and asynchronous semantics; clause 15 defined input/output procedures; clause 16 inquiry and selected character kind intrinsics where future guarded plans need them; clause 19 scope and accessibility controls."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "definition",
+      "requirements": [
+        "S12.6.3-001"
+      ],
+      "rationale": "Classifies this source unit as definition and maps it to the listed requirement entry where applicable."
+    },
+    {
+      "unit": "R1216",
+      "disposition": "requirements",
+      "requirements": [
+        "R1216"
+      ]
+    },
+    {
+      "unit": "R1217",
+      "disposition": "requirements",
+      "requirements": [
+        "R1217"
+      ]
+    },
+    {
+      "unit": "R1218",
+      "disposition": "requirements",
+      "requirements": [
+        "R1218"
+      ]
+    },
+    {
+      "unit": "R1219",
+      "disposition": "requirements",
+      "requirements": [
+        "R1219"
+      ]
+    },
+    {
+      "unit": "R1220",
+      "disposition": "requirements",
+      "requirements": [
+        "R1220"
+      ]
+    },
+    {
+      "unit": "C1233",
+      "disposition": "requirements",
+      "requirements": [
+        "C1233"
+      ]
+    },
+    {
+      "unit": "C1234",
+      "disposition": "requirements",
+      "requirements": [
+        "C1234"
+      ]
+    },
+    {
+      "unit": "C1235",
+      "disposition": "requirements",
+      "requirements": [
+        "C1235"
+      ]
+    },
+    {
+      "unit": "p2",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.6.3-002"
+      ]
+    },
+    {
+      "unit": "note1",
+      "disposition": "informative",
+      "rationale": "NOTE 1 explains consequences of R1216 input-item syntax; no requirement is based on the note."
+    },
+    {
+      "unit": "p3",
+      "disposition": "structural",
+      "rationale": "Pointer input and output obligations are split by transfer direction."
+    },
+    {
+      "unit": "p3.input-pointer",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.6.3-003"
+      ]
+    },
+    {
+      "unit": "p3.output-pointer",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.6.3-004"
+      ]
+    },
+    {
+      "unit": "note2",
+      "disposition": "informative",
+      "rationale": "NOTE 2 explains pointer I/O intuition; normative pointer obligations are accounted in p3."
+    },
+    {
+      "unit": "p4",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.6.3-005"
+      ]
+    },
+    {
+      "unit": "p5",
+      "disposition": "structural",
+      "rationale": "The unless clause carries both admission for defined I/O and restriction otherwise."
+    },
+    {
+      "unit": "p5.dtio-polymorphic-admission",
+      "disposition": "permission",
+      "requirements": [
+        "S12.6.3-006"
+      ],
+      "rationale": "Classifies this source unit as permission and maps it to the listed requirement entry where applicable."
+    },
+    {
+      "unit": "p5.polymorphic-restriction",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.6.3-007"
+      ]
+    },
+    {
+      "unit": "p6",
+      "disposition": "structural",
+      "rationale": "Enumeration list-item rules split list-directed exclusion from formatted descriptor correspondence."
+    },
+    {
+      "unit": "p6.list-directed-enum",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.6.3-008"
+      ]
+    },
+    {
+      "unit": "p6.formatted-enum-descriptor",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.6.3-009"
+      ]
+    },
+    {
+      "unit": "p7",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.6.3-010"
+      ]
+    },
+    {
+      "unit": "p8",
+      "disposition": "structural",
+      "rationale": "Expansion-rule introduction, array expansion effect, and two input-array restrictions are split."
+    },
+    {
+      "unit": "p8.reapply-expansion-rules",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.6.3-011"
+      ]
+    },
+    {
+      "unit": "p8.array-expansion",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.6.3-012"
+      ]
+    },
+    {
+      "unit": "p8.input-array-expression-affect-restriction",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.6.3-013"
+      ]
+    },
+    {
+      "unit": "p8.input-array-duplicate-element-restriction",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.6.3-014"
+      ]
+    },
+    {
+      "unit": "note3",
+      "disposition": "structural",
+      "rationale": "The PDF reader labels the boxed NOTE 3 text and the following continuing p8 bullets as one note3 unit. The coordinator visually confirmed that NOTE 3 itself contains only the boxed example text; the following bullets are normative p8 material and are accounted as fine units here pending a cross-batch census follow-up."
+    },
+    {
+      "unit": "note3.example",
+      "disposition": "informative",
+      "rationale": "NOTE 3 examples illustrate array input restrictions; no requirement is based on the note text itself."
+    },
+    {
+      "unit": "note3.unformatted-dtio-subobject-expansion",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.6.3-015"
+      ]
+    },
+    {
+      "unit": "note3.unformatted-derived-single-value",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.6.3-016"
+      ]
+    },
+    {
+      "unit": "note3.unformatted-derived-processor-dependent-form",
+      "disposition": "permission",
+      "requirements": [
+        "S12.6.3-028"
+      ],
+      "rationale": "Processor latitude half of the unformatted derived effective item single-value sentence; the single-value treatment is accounted separately in S12.6.3-016."
+    },
+    {
+      "unit": "note4",
+      "disposition": "structural",
+      "rationale": "The PDF reader labels the boxed NOTE 4 text and the following continuing p8 bullets as one note4 unit. The coordinator visually confirmed that NOTE 4 itself contains only the boxed explanatory text; the following bullets are normative p8 material and are accounted as fine units here pending a cross-batch census follow-up."
+    },
+    {
+      "unit": "note4.note",
+      "disposition": "informative",
+      "rationale": "NOTE 4 explains derived-type unformatted I/O latitude; normative bullets are separate fine units."
+    },
+    {
+      "unit": "note4.formatted-derived-expansion",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.6.3-017"
+      ]
+    },
+    {
+      "unit": "note4.unexpanded-derived-subcomponent-restrictions",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.6.3-018"
+      ]
+    },
+    {
+      "unit": "note4.io-implied-do-execution",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.6.3-019"
+      ]
+    },
+    {
+      "unit": "note5",
+      "disposition": "informative",
+      "rationale": "NOTE 5 gives an implied-DO output-list example; not normative."
+    },
+    {
+      "unit": "p9",
+      "disposition": "structural",
+      "rationale": "Effective-item definition and zero-contribution/effective zero-length cases are split."
+    },
+    {
+      "unit": "p9.effective-item-definition",
+      "disposition": "definition",
+      "requirements": [
+        "S12.6.3-020"
+      ],
+      "rationale": "Classifies this source unit as definition and maps it to the listed requirement entry where applicable."
+    },
+    {
+      "unit": "p9.zero-sized-array",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.6.3-021"
+      ]
+    },
+    {
+      "unit": "p9.zero-count-implied-do",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.6.3-022"
+      ]
+    },
+    {
+      "unit": "p9.zero-length-character",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.6.3-023"
+      ]
+    },
+    {
+      "unit": "note6",
+      "disposition": "informative",
+      "rationale": "NOTE 6 explains formatted edit descriptor association with effective items; normative association rules are elsewhere."
+    },
+    {
+      "unit": "p10",
+      "disposition": "structural",
+      "rationale": "Three internal-file character-kind restrictions are split by internal file kind."
+    },
+    {
+      "unit": "p10.default-internal-file-character-kind",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.6.3-024"
+      ]
+    },
+    {
+      "unit": "p10.iso10646-internal-file-character-kind",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.6.3-025"
+      ]
+    },
+    {
+      "unit": "p10.ascii-internal-file-character-kind",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.6.3-026"
+      ]
+    },
+    {
+      "unit": "p11",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.6.3-027"
+      ]
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_12_6_3.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "911753614eb8db38b9c8ce94e8997ecc8ab0b39c405f0ae0e413b5b6b7699743",
+  "review_rationale": "Source registration for 12.6.3, the data transfer input/output list (batch161). Every unit hash-verified by an independent reviewer across two rounds, including a visual check of the PDF that the census labels note3 and note4 cover normative p8 bullets as well as the boxed NOTE prose; only the boxed prose is treated as informative, and the census mismatch is recorded. Round 1 split the unformatted derived-type rule into a single-value requirement and a processor-dependent-form permission; neither has a portable discriminating oracle. Eight numbered rules were pre-accounted. Source accounting only."
+}

@@ -5557,6 +5557,19 @@ standard requires: from after the endfile record it lands before it, so the next
 READ must report `IOSTAT_END`.
 See `doc/source_audits/batch_164.json`.
 
+## Batch 161 — the input/output list, and a census defect
+
+Twenty-five units of 12.6.3, after two rounds. The author noticed something new:
+the pinned reader labels two units "note3" and "note4", but in the PDF each is a
+boxed NOTE *followed by* normative p8 bullets. The reviewer checked visually and
+agreed. Since NOTES can never ground a requirement, this matters: only the boxed
+prose is treated as informative here, the mismatch is recorded in the catalogue,
+and the census itself is now a followup. The blocking finding split a merged unit —
+an unformatted derived-type item is treated as *a single value* (required) *in a
+processor-dependent form* (latitude) — and neither half turns out to be portably
+observable.
+See `doc/source_audits/batch_161.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
