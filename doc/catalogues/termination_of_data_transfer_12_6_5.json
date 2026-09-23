@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "section": "12.6.5",
+  "requirements": [
+    {
+      "id": "S12.6.5-001",
+      "title": "Data transfer termination occurs under the listed format, list, status, separator, and nonadvancing conditions",
+      "source": "S12.6.5, J3/24-007, 18 December 2023, physical PDF275.",
+      "source_units": [
+        "p1"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Termination of a data transfer statement occurs when one of the listed conditions is reached: exhausted item or namelist lists, specified format/list separators, error, end-of-file, or nonadvancing end-of-record.",
+      "facets": [
+        "format-colon-or-data-edit-no-items-terminates",
+        "unformatted-or-list-directed-exhaustion-terminates",
+        "namelist-output-exhaustion-terminates",
+        "error-condition-terminates-transfer",
+        "end-of-file-condition-terminates-transfer",
+        "slash-separator-terminates-list-or-namelist-input",
+        "nonadvancing-eor-terminates-transfer"
+      ],
+      "pending": {
+        "format-colon-or-data-edit-no-items-terminates": "Use a formatted internal or named-file transfer with more format descriptors than output items and sentinel-filled output; assert only that transfer stops after the last item and leaves following sentinel storage untouched.",
+        "unformatted-or-list-directed-exhaustion-terminates": "Use list-directed or unformatted sequential transfer with a finite item list initialized to distinct sentinels and surrounding records; assert successful termination after the list is exhausted without consuming a following record.",
+        "namelist-output-exhaustion-terminates": "Use a namelist group with known nondefault values and an output record prefilled with sentinels; assert that all group objects are represented and no additional object is required.",
+        "error-condition-terminates-transfer": "Use a future controlled data-transfer error that is attributable to its owning rule; observe only nonzero IOSTAT or a named status constant and never compare IOMSG text or a processor numeric code.",
+        "end-of-file-condition-terminates-transfer": "Create a named sequential file with known records followed by an endfile record; read with a sentinel target until a portable end condition is observed, proving transfer termination without relying on marker bytes.",
+        "slash-separator-terminates-list-or-namelist-input": "Read list-directed or namelist input containing a slash after a nondefault first value and before sentinel-protected later values; assert the first target changed and later targets retain their pre-read sentinels.",
+        "nonadvancing-eor-terminates-transfer": "Use nonadvancing input on a known short record into a nonblank sentinel buffer; observe the portable EOR status and changed prefix only, with the next record used to show no further transfer occurred."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by creating a named external file with known records, initializing variables to nonzero/nonblank sentinels, or using a conforming labelled control path) and then observe only portable properties: exact record values, successful IOSTAT zero, nonzero IOSTAT or named status values where the standard names them, required diagnosis of a numbered syntax rule or constraint, or file existence/position effects fixed by the source. Processor-dependent unit numbers, file encodings, buffering, timing, interprocess visibility, IOMSG text, and specific numeric status values are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint, or otherwise requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle; unnumbered program restrictions are not promoted to required diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, labels, names, expressions, variables, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: earlier and later clause 12 connection, file-existence, access-mode, asynchronous-transfer, wait, status, and file-position rules; clause 13 formatting and value-separator rules; clause 15 defined I/O; clause 16 inquiry and ISO_FORTRAN_ENV status constants where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.6.5-001"
+      ],
+      "rationale": "Lists the conditions that terminate a data transfer statement."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_12_6_5.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "6554a770bf8a5079e21dd5e1c56081e8fd8b0a8d847ef6dc5acff122b84cea8a",
+  "review_rationale": "Source registration for 12.6.5-12.9: termination of data transfer, WAIT, BACKSPACE, ENDFILE, REWIND and FLUSH (batch164). Every unit hash-verified by an independent reviewer across two rounds. Round 1 found the portable WAIT no-operation cases missing - WAIT with ID=0 (explicitly permitted by 12.7.2 p3) and with ID= omitted on an asynchronous connection with nothing pending must succeed with IOSTAT zero - and an ENDFILE position plan that used REWIND, destroying the state under test; ENDFILE is now observed by the BACKSPACE that 12.8.3 p2 requires before the next transfer, after which a READ must report IOSTAT_END. Seventeen numbered rules were pre-accounted. Source accounting only."
+}

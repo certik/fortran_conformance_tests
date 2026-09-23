@@ -1,0 +1,331 @@
+{
+  "schema_version": 1,
+  "section": "12.7.1",
+  "subunits": {
+    "p1": [
+      "p1.initiates-pending",
+      "p1.multiple-pending-permitted",
+      "p1.remains-pending-until-wait",
+      "p1.wait-operation-statement-set"
+    ],
+    "p2": [
+      "p2.completes-single-operation",
+      "p2.statement-multiple-waits-permitted"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S12.7.1-001",
+      "title": "Asynchronous transfer without an immediate status condition initiates a pending operation",
+      "source": "S12.7.1, J3/24-007, 18 December 2023, physical PDF275.",
+      "source_units": [
+        "p1.initiates-pending"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Execution of an asynchronous data transfer statement in which no error, end-of-record, or end-of-file condition occurs initiates a pending data transfer operation.",
+      "facets": [
+        "async-transfer-initiates-pending-operation"
+      ],
+      "pending": {
+        "async-transfer-initiates-pending-operation": "Use a future asynchronous named-file transfer with ID= into an initialized status variable; after the transfer begins, perform a WAIT on that ID and verify the transferred value from nondefault sentinels, not timing."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by creating a named external file with known records, initializing variables to nonzero/nonblank sentinels, or using a conforming labelled control path) and then observe only portable properties: exact record values, successful IOSTAT zero, nonzero IOSTAT or named status values where the standard names them, required diagnosis of a numbered syntax rule or constraint, or file existence/position effects fixed by the source. Processor-dependent unit numbers, file encodings, buffering, timing, interprocess visibility, IOMSG text, and specific numeric status values are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint, or otherwise requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle; unnumbered program restrictions are not promoted to required diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, labels, names, expressions, variables, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: earlier and later clause 12 connection, file-existence, access-mode, asynchronous-transfer, wait, status, and file-position rules; clause 13 formatting and value-separator rules; clause 15 defined I/O; clause 16 inquiry and ISO_FORTRAN_ENV status constants where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.7.1-002",
+      "title": "Multiple pending asynchronous transfers are permitted simultaneously",
+      "source": "S12.7.1, J3/24-007, 18 December 2023, physical PDF275.",
+      "source_units": [
+        "p1.multiple-pending-permitted"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "There may be multiple pending data transfer operations for the same or for multiple units simultaneously.",
+      "facets": [
+        "multiple-pending-same-or-multiple-units-permitted"
+      ],
+      "pending": {
+        "multiple-pending-same-or-multiple-units-permitted": "No portable oracle requires a processor or environment to make useful overlap observable; a future fixture may issue two conforming ASYNCHRONOUS transfers and then WAIT for both, asserting completion values only and not timing or concurrency."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by creating a named external file with known records, initializing variables to nonzero/nonblank sentinels, or using a conforming labelled control path) and then observe only portable properties: exact record values, successful IOSTAT zero, nonzero IOSTAT or named status values where the standard names them, required diagnosis of a numbered syntax rule or constraint, or file existence/position effects fixed by the source. Processor-dependent unit numbers, file encodings, buffering, timing, interprocess visibility, IOMSG text, and specific numeric status values are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint, or otherwise requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle; unnumbered program restrictions are not promoted to required diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, labels, names, expressions, variables, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: earlier and later clause 12 connection, file-existence, access-mode, asynchronous-transfer, wait, status, and file-position rules; clause 13 formatting and value-separator rules; clause 15 defined I/O; clause 16 inquiry and ISO_FORTRAN_ENV status constants where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.7.1-003",
+      "title": "A pending operation remains pending until a corresponding wait operation",
+      "source": "S12.7.1, J3/24-007, 18 December 2023, physical PDF275.",
+      "source_units": [
+        "p1.remains-pending-until-wait"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A pending data transfer operation remains pending until a corresponding wait operation is performed.",
+      "facets": [
+        "pending-operation-remains-until-wait"
+      ],
+      "pending": {
+        "pending-operation-remains-until-wait": "Start with an asynchronous READ into sentinel storage and use WAIT as the first operation allowed to make the input storage sequence defined; the positive observation is the post-WAIT changed value."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by creating a named external file with known records, initializing variables to nonzero/nonblank sentinels, or using a conforming labelled control path) and then observe only portable properties: exact record values, successful IOSTAT zero, nonzero IOSTAT or named status values where the standard names them, required diagnosis of a numbered syntax rule or constraint, or file existence/position effects fixed by the source. Processor-dependent unit numbers, file encodings, buffering, timing, interprocess visibility, IOMSG text, and specific numeric status values are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint, or otherwise requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle; unnumbered program restrictions are not promoted to required diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, labels, names, expressions, variables, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: earlier and later clause 12 connection, file-existence, access-mode, asynchronous-transfer, wait, status, and file-position rules; clause 13 formatting and value-separator rules; clause 15 defined I/O; clause 16 inquiry and ISO_FORTRAN_ENV status constants where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.7.1-004",
+      "title": "The listed input/output statements can perform wait operations",
+      "source": "S12.7.1, J3/24-007, 18 December 2023, physical PDF275.",
+      "source_units": [
+        "p1.wait-operation-statement-set"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A wait operation can be performed by BACKSPACE, CLOSE, ENDFILE, FLUSH, INQUIRE, PRINT, READ, REWIND, WAIT, or WRITE.",
+      "facets": [
+        "listed-statements-can-perform-wait-operations"
+      ],
+      "pending": {
+        "listed-statements-can-perform-wait-operations": "For each listed statement, a future fixture first initiates a pending asynchronous transfer on a named file, then executes the statement in a form otherwise conforming for that unit and observes only the transferred data or required status effect owned by that statement."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by creating a named external file with known records, initializing variables to nonzero/nonblank sentinels, or using a conforming labelled control path) and then observe only portable properties: exact record values, successful IOSTAT zero, nonzero IOSTAT or named status values where the standard names them, required diagnosis of a numbered syntax rule or constraint, or file existence/position effects fixed by the source. Processor-dependent unit numbers, file encodings, buffering, timing, interprocess visibility, IOMSG text, and specific numeric status values are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint, or otherwise requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle; unnumbered program restrictions are not promoted to required diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, labels, names, expressions, variables, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: earlier and later clause 12 connection, file-existence, access-mode, asynchronous-transfer, wait, status, and file-position rules; clause 13 formatting and value-separator rules; clause 15 defined I/O; clause 16 inquiry and ISO_FORTRAN_ENV status constants where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.7.1-005",
+      "title": "Each wait operation completes processing for only one data transfer operation",
+      "source": "S12.7.1, J3/24-007, 18 December 2023, physical PDF275.",
+      "source_units": [
+        "p2.completes-single-operation"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A wait operation completes the processing of a pending data transfer operation, and each wait operation completes only a single data transfer operation.",
+      "facets": [
+        "wait-completes-processing",
+        "wait-completes-only-single-operation"
+      ],
+      "pending": {
+        "wait-completes-processing": "Initiate a pending asynchronous transfer into nondefault storage, WAIT for it, and assert the resulting data/status after WAIT.",
+        "wait-completes-only-single-operation": "Initiate two pending transfers with distinct IDs and sentinel targets; WAIT for one ID and then separately WAIT for the other before asserting both values, avoiding any claim that one ID wait completed both."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by creating a named external file with known records, initializing variables to nonzero/nonblank sentinels, or using a conforming labelled control path) and then observe only portable properties: exact record values, successful IOSTAT zero, nonzero IOSTAT or named status values where the standard names them, required diagnosis of a numbered syntax rule or constraint, or file existence/position effects fixed by the source. Processor-dependent unit numbers, file encodings, buffering, timing, interprocess visibility, IOMSG text, and specific numeric status values are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint, or otherwise requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle; unnumbered program restrictions are not promoted to required diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, labels, names, expressions, variables, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: earlier and later clause 12 connection, file-existence, access-mode, asynchronous-transfer, wait, status, and file-position rules; clause 13 formatting and value-separator rules; clause 15 defined I/O; clause 16 inquiry and ISO_FORTRAN_ENV status constants where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.7.1-006",
+      "title": "A single statement may perform multiple wait operations",
+      "source": "S12.7.1, J3/24-007, 18 December 2023, physical PDF275.",
+      "source_units": [
+        "p2.statement-multiple-waits-permitted"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A single statement may perform multiple wait operations.",
+      "facets": [
+        "single-statement-multiple-waits-permitted"
+      ],
+      "pending": {
+        "single-statement-multiple-waits-permitted": "After initiating multiple asynchronous operations for one unit, use a statement such as WAIT without ID= or a positioning statement that waits for all pending operations; assert final data values only, not overlap timing."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by creating a named external file with known records, initializing variables to nonzero/nonblank sentinels, or using a conforming labelled control path) and then observe only portable properties: exact record values, successful IOSTAT zero, nonzero IOSTAT or named status values where the standard names them, required diagnosis of a numbered syntax rule or constraint, or file existence/position effects fixed by the source. Processor-dependent unit numbers, file encodings, buffering, timing, interprocess visibility, IOMSG text, and specific numeric status values are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint, or otherwise requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle; unnumbered program restrictions are not promoted to required diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, labels, names, expressions, variables, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: earlier and later clause 12 connection, file-existence, access-mode, asynchronous-transfer, wait, status, and file-position rules; clause 13 formatting and value-separator rules; clause 15 defined I/O; clause 16 inquiry and ISO_FORTRAN_ENV status constants where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.7.1-007",
+      "title": "A wait operation waits for incomplete transfer and defines successful input storage",
+      "source": "S12.7.1, J3/24-007, 18 December 2023, physical PDF275.",
+      "source_units": [
+        "p3"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "If the actual data transfer is not yet complete, the wait operation first waits for completion; if a pending input operation completes without error, the storage units of the input/output storage sequence become defined with the transferred values.",
+      "facets": [
+        "wait-waits-for-actual-completion",
+        "successful-input-wait-defines-storage-values"
+      ],
+      "pending": {
+        "wait-waits-for-actual-completion": "Use a pending asynchronous input with the target prefilled by nondefault sentinels and perform WAIT before reading the target; the oracle is the post-WAIT value, not elapsed time.",
+        "successful-input-wait-defines-storage-values": "Read known records asynchronously into sentinel storage and after successful WAIT assert the exact values described by the registered data-transfer rules."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by creating a named external file with known records, initializing variables to nonzero/nonblank sentinels, or using a conforming labelled control path) and then observe only portable properties: exact record values, successful IOSTAT zero, nonzero IOSTAT or named status values where the standard names them, required diagnosis of a numbered syntax rule or constraint, or file existence/position effects fixed by the source. Processor-dependent unit numbers, file encodings, buffering, timing, interprocess visibility, IOMSG text, and specific numeric status values are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint, or otherwise requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle; unnumbered program restrictions are not promoted to required diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, labels, names, expressions, variables, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: earlier and later clause 12 connection, file-existence, access-mode, asynchronous-transfer, wait, status, and file-position rules; clause 13 formatting and value-separator rules; clause 15 defined I/O; clause 16 inquiry and ISO_FORTRAN_ENV status constants where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.7.1-008",
+      "title": "Wait-operation status conditions take the wait statement specifier actions",
+      "source": "S12.7.1, J3/24-007, 18 December 2023, physical PDF275.",
+      "source_units": [
+        "p4"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "If an error, end-of-file, or end-of-record condition occurs during a wait operation, the applicable IOSTAT=, IOMSG=, ERR=, END=, and EOR= actions of the statement performing the wait operation are taken.",
+      "facets": [
+        "wait-error-actions",
+        "wait-end-actions",
+        "wait-eor-actions"
+      ],
+      "pending": {
+        "wait-error-actions": "Use only a future status condition attributable to another registered rule; initialize IOSTAT and a labelled branch sentinel, then assert nonzero/named status or branch selection, never IOMSG text.",
+        "wait-end-actions": "Create a named file with a known end condition and a pending asynchronous READ; WAIT with END= and IOSTAT initialized to sentinels and assert only the portable end status/branch.",
+        "wait-eor-actions": "Use nonadvancing asynchronous input that reaches EOR; WAIT with EOR= and sentinel status/branch variables, asserting only the portable EOR outcome."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by creating a named external file with known records, initializing variables to nonzero/nonblank sentinels, or using a conforming labelled control path) and then observe only portable properties: exact record values, successful IOSTAT zero, nonzero IOSTAT or named status values where the standard names them, required diagnosis of a numbered syntax rule or constraint, or file existence/position effects fixed by the source. Processor-dependent unit numbers, file encodings, buffering, timing, interprocess visibility, IOMSG text, and specific numeric status values are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint, or otherwise requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle; unnumbered program restrictions are not promoted to required diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, labels, names, expressions, variables, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: earlier and later clause 12 connection, file-existence, access-mode, asynchronous-transfer, wait, status, and file-position rules; clause 13 formatting and value-separator rules; clause 15 defined I/O; clause 16 inquiry and ISO_FORTRAN_ENV status constants where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.7.1-009",
+      "title": "An error or end-of-file during a unit wait causes waits for all pending transfers on that unit",
+      "source": "S12.7.1, J3/24-007, 18 December 2023, physical PDF275.",
+      "source_units": [
+        "p5"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "If an error or end-of-file condition occurs during a wait operation for a unit, the processor performs a wait operation for all pending data transfer operations for that unit.",
+      "facets": [
+        "unit-error-or-eof-waits-all-pending-for-unit"
+      ],
+      "pending": {
+        "unit-error-or-eof-waits-all-pending-for-unit": "Initiate at least two pending transfers on one named unit with distinct nondefault targets, arrange one portable end/error condition, then after the wait and recovery assert all operations for that unit have either completed with portable status or produced their expected values."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by creating a named external file with known records, initializing variables to nonzero/nonblank sentinels, or using a conforming labelled control path) and then observe only portable properties: exact record values, successful IOSTAT zero, nonzero IOSTAT or named status values where the standard names them, required diagnosis of a numbered syntax rule or constraint, or file existence/position effects fixed by the source. Processor-dependent unit numbers, file encodings, buffering, timing, interprocess visibility, IOMSG text, and specific numeric status values are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint, or otherwise requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle; unnumbered program restrictions are not promoted to required diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, labels, names, expressions, variables, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: earlier and later clause 12 connection, file-existence, access-mode, asynchronous-transfer, wait, status, and file-position rules; clause 13 formatting and value-separator rules; clause 15 defined I/O; clause 16 inquiry and ISO_FORTRAN_ENV status constants where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.7.1-010",
+      "title": "Completed wait operations leave the operation and storage sequence no longer pending",
+      "source": "S12.7.1, J3/24-007, 18 December 2023, physical PDF275.",
+      "source_units": [
+        "p6"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "After completion of the wait operation, the data transfer operation and its input/output storage sequence are no longer considered pending.",
+      "facets": [
+        "operation-no-longer-pending-after-wait",
+        "storage-sequence-no-longer-pending-after-wait"
+      ],
+      "pending": {
+        "operation-no-longer-pending-after-wait": "After a WAIT for a specific ID, a second WAIT for all operations on the same unit should have no remaining operation to complete; assert no additional data change beyond the established result.",
+        "storage-sequence-no-longer-pending-after-wait": "After WAIT, use the formerly pending input storage in an ordinary comparison against the known transferred value; the pre-WAIT sentinel establishes non-vacuity."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by creating a named external file with known records, initializing variables to nonzero/nonblank sentinels, or using a conforming labelled control path) and then observe only portable properties: exact record values, successful IOSTAT zero, nonzero IOSTAT or named status values where the standard names them, required diagnosis of a numbered syntax rule or constraint, or file existence/position effects fixed by the source. Processor-dependent unit numbers, file encodings, buffering, timing, interprocess visibility, IOMSG text, and specific numeric status values are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint, or otherwise requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle; unnumbered program restrictions are not promoted to required diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, labels, names, expressions, variables, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: earlier and later clause 12 connection, file-existence, access-mode, asynchronous-transfer, wait, status, and file-position rules; clause 13 formatting and value-separator rules; clause 15 defined I/O; clause 16 inquiry and ISO_FORTRAN_ENV status constants where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "structural",
+      "rationale": "Pending-operation initiation, permissions, duration, and statement-set admission are split."
+    },
+    {
+      "unit": "p1.initiates-pending",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.7.1-001"
+      ],
+      "rationale": "Asynchronous transfer initiates a pending operation."
+    },
+    {
+      "unit": "p1.multiple-pending-permitted",
+      "disposition": "permission",
+      "requirements": [
+        "S12.7.1-002"
+      ],
+      "rationale": "Multiple pending transfers are permitted."
+    },
+    {
+      "unit": "p1.remains-pending-until-wait",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.7.1-003"
+      ],
+      "rationale": "Pending duration is fixed until a corresponding wait."
+    },
+    {
+      "unit": "p1.wait-operation-statement-set",
+      "disposition": "definition",
+      "requirements": [
+        "S12.7.1-004"
+      ],
+      "rationale": "Defines the statements that can perform wait operations."
+    },
+    {
+      "unit": "p2",
+      "disposition": "structural",
+      "rationale": "Single-operation completion and single-statement multiple-wait permission are split."
+    },
+    {
+      "unit": "p2.completes-single-operation",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.7.1-005"
+      ],
+      "rationale": "A wait completes processing for only one operation."
+    },
+    {
+      "unit": "p2.statement-multiple-waits-permitted",
+      "disposition": "permission",
+      "requirements": [
+        "S12.7.1-006"
+      ],
+      "rationale": "A statement may perform multiple waits."
+    },
+    {
+      "unit": "p3",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.7.1-007"
+      ],
+      "rationale": "Waits for actual completion and defines successful input storage."
+    },
+    {
+      "unit": "p4",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.7.1-008"
+      ],
+      "rationale": "Status conditions during wait take the wait statement actions."
+    },
+    {
+      "unit": "p5",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.7.1-009"
+      ],
+      "rationale": "Error or EOF during wait causes waits for all pending operations for the unit."
+    },
+    {
+      "unit": "note-unnumbered",
+      "disposition": "informative",
+      "rationale": "NOTE explains possible timing of asynchronous status conditions; not normative."
+    },
+    {
+      "unit": "p6",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.7.1-010"
+      ],
+      "rationale": "Completion makes the operation and storage sequence no longer pending."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_12_7_1.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "1c6adf670f6997314ed4caeadffa8a6ca4108f0341fd41d870486ae3608a3894",
+  "review_rationale": "Source registration for 12.6.5-12.9: termination of data transfer, WAIT, BACKSPACE, ENDFILE, REWIND and FLUSH (batch164). Every unit hash-verified by an independent reviewer across two rounds. Round 1 found the portable WAIT no-operation cases missing - WAIT with ID=0 (explicitly permitted by 12.7.2 p3) and with ID= omitted on an asynchronous connection with nothing pending must succeed with IOSTAT zero - and an ENDFILE position plan that used REWIND, destroying the state under test; ENDFILE is now observed by the BACKSPACE that 12.8.3 p2 requires before the next transfer, after which a READ must report IOSTAT_END. Seventeen numbered rules were pre-accounted. Source accounting only."
+}

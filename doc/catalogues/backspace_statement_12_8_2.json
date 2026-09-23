@@ -1,0 +1,142 @@
+{
+  "schema_version": 1,
+  "section": "12.8.2",
+  "requirements": [
+    {
+      "id": "S12.8.2-001",
+      "title": "BACKSPACE positions before the current or preceding record and leaves the initial point unchanged",
+      "source": "S12.8.2, J3/24-007, 18 December 2023, physical PDF277.",
+      "source_units": [
+        "p1"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Execution of BACKSPACE positions the connected file before the current record if one exists, before the preceding record if no current record exists, and leaves the position unchanged at the initial point.",
+      "facets": [
+        "backspace-before-current-record",
+        "backspace-before-preceding-record",
+        "backspace-at-initial-point-unchanged"
+      ],
+      "pending": {
+        "backspace-before-current-record": "Create a named sequential file with records A and B, read part or all of the current record as allowed, BACKSPACE, then read into a nonblank sentinel and expect that current record again.",
+        "backspace-before-preceding-record": "Read known records A then B so there is no current record and B is preceding; BACKSPACE and read into a sentinel, expecting B.",
+        "backspace-at-initial-point-unchanged": "Open or REWIND a named file to its initial point, BACKSPACE, and read into a sentinel, expecting the first known record."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by creating a named external file with known records, initializing variables to nonzero/nonblank sentinels, or using a conforming labelled control path) and then observe only portable properties: exact record values, successful IOSTAT zero, nonzero IOSTAT or named status values where the standard names them, required diagnosis of a numbered syntax rule or constraint, or file existence/position effects fixed by the source. Processor-dependent unit numbers, file encodings, buffering, timing, interprocess visibility, IOMSG text, and specific numeric status values are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint, or otherwise requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle; unnumbered program restrictions are not promoted to required diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, labels, names, expressions, variables, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: earlier and later clause 12 connection, file-existence, access-mode, asynchronous-transfer, wait, status, and file-position rules; clause 13 formatting and value-separator rules; clause 15 defined I/O; clause 16 inquiry and ISO_FORTRAN_ENV status constants where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.8.2-002",
+      "title": "BACKSPACE after implicit endfile writing positions before the record preceding the endfile record",
+      "source": "S12.8.2, J3/24-007, 18 December 2023, physical PDF277.",
+      "source_units": [
+        "p2"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "If BACKSPACE causes implicit writing of an endfile record, the file is positioned before the record that precedes the endfile record.",
+      "facets": [
+        "backspace-implicit-endfile-before-preceding-record"
+      ],
+      "pending": {
+        "backspace-implicit-endfile-before-preceding-record": "Write two distinctive sequential records to a named file, perform the operation that requires an implicit endfile record, then BACKSPACE and read; expect the second data record, not marker bytes."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by creating a named external file with known records, initializing variables to nonzero/nonblank sentinels, or using a conforming labelled control path) and then observe only portable properties: exact record values, successful IOSTAT zero, nonzero IOSTAT or named status values where the standard names them, required diagnosis of a numbered syntax rule or constraint, or file existence/position effects fixed by the source. Processor-dependent unit numbers, file encodings, buffering, timing, interprocess visibility, IOMSG text, and specific numeric status values are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint, or otherwise requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle; unnumbered program restrictions are not promoted to required diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, labels, names, expressions, variables, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: earlier and later clause 12 connection, file-existence, access-mode, asynchronous-transfer, wait, status, and file-position rules; clause 13 formatting and value-separator rules; clause 15 defined I/O; clause 16 inquiry and ISO_FORTRAN_ENV status constants where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.8.2-003",
+      "title": "Backspacing a connected nonexistent file is prohibited",
+      "source": "S12.8.2, J3/24-007, 18 December 2023, physical PDF277.",
+      "source_units": [
+        "p3"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "Backspacing a file that is connected but does not exist is prohibited.",
+      "facets": [
+        "backspace-connected-nonexistent-file-prohibited"
+      ],
+      "pending": {
+        "backspace-connected-nonexistent-file-prohibited": "No portable oracle: a future guarded source-control may look for a connected unit whose named file still does not exist, but the unnumbered prohibition does not require a diagnostic and many processors create the file at OPEN."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by creating a named external file with known records, initializing variables to nonzero/nonblank sentinels, or using a conforming labelled control path) and then observe only portable properties: exact record values, successful IOSTAT zero, nonzero IOSTAT or named status values where the standard names them, required diagnosis of a numbered syntax rule or constraint, or file existence/position effects fixed by the source. Processor-dependent unit numbers, file encodings, buffering, timing, interprocess visibility, IOMSG text, and specific numeric status values are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint, or otherwise requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle; unnumbered program restrictions are not promoted to required diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, labels, names, expressions, variables, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: earlier and later clause 12 connection, file-existence, access-mode, asynchronous-transfer, wait, status, and file-position rules; clause 13 formatting and value-separator rules; clause 15 defined I/O; clause 16 inquiry and ISO_FORTRAN_ENV status constants where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.8.2-004",
+      "title": "Backspacing over list-directed or namelist records is prohibited",
+      "source": "S12.8.2, J3/24-007, 18 December 2023, physical PDF277.",
+      "source_units": [
+        "p4"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "Backspacing over records written using list-directed or namelist formatting is prohibited.",
+      "facets": [
+        "backspace-over-list-directed-record-prohibited",
+        "backspace-over-namelist-record-prohibited"
+      ],
+      "pending": {
+        "backspace-over-list-directed-record-prohibited": "Negative source-control writes a distinctive list-directed record to a named file and then BACKSPACE over it; no portable diagnostic or IOSTAT value is required for this unnumbered prohibition.",
+        "backspace-over-namelist-record-prohibited": "Negative source-control writes a distinctive namelist record and then BACKSPACE over it; no portable diagnostic or IOSTAT value is required."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by creating a named external file with known records, initializing variables to nonzero/nonblank sentinels, or using a conforming labelled control path) and then observe only portable properties: exact record values, successful IOSTAT zero, nonzero IOSTAT or named status values where the standard names them, required diagnosis of a numbered syntax rule or constraint, or file existence/position effects fixed by the source. Processor-dependent unit numbers, file encodings, buffering, timing, interprocess visibility, IOMSG text, and specific numeric status values are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint, or otherwise requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle; unnumbered program restrictions are not promoted to required diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, labels, names, expressions, variables, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: earlier and later clause 12 connection, file-existence, access-mode, asynchronous-transfer, wait, status, and file-position rules; clause 13 formatting and value-separator rules; clause 15 defined I/O; clause 16 inquiry and ISO_FORTRAN_ENV status constants where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.8.2-001"
+      ],
+      "rationale": "BACKSPACE positioning effects for current, preceding, and initial positions."
+    },
+    {
+      "unit": "note1",
+      "disposition": "informative",
+      "rationale": "NOTE explains behavior when the preceding record is an endfile record; not normative."
+    },
+    {
+      "unit": "p2",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.8.2-002"
+      ],
+      "rationale": "Implicit endfile BACKSPACE positioning effect."
+    },
+    {
+      "unit": "p3",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.8.2-003"
+      ],
+      "rationale": "Unnumbered prohibition on backspacing connected nonexistent files."
+    },
+    {
+      "unit": "p4",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.8.2-004"
+      ],
+      "rationale": "Unnumbered prohibition on backspacing over list-directed or namelist records."
+    },
+    {
+      "unit": "note2",
+      "disposition": "informative",
+      "rationale": "NOTE gives a BACKSPACE example; not normative."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_12_8_2.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "e3a595da317757d27b8c05bc6b5418c11b74fd0b4e009750a5fa74f6122d6850",
+  "review_rationale": "Source registration for 12.6.5-12.9: termination of data transfer, WAIT, BACKSPACE, ENDFILE, REWIND and FLUSH (batch164). Every unit hash-verified by an independent reviewer across two rounds. Round 1 found the portable WAIT no-operation cases missing - WAIT with ID=0 (explicitly permitted by 12.7.2 p3) and with ID= omitted on an asynchronous connection with nothing pending must succeed with IOSTAT zero - and an ENDFILE position plan that used REWIND, destroying the state under test; ENDFILE is now observed by the BACKSPACE that 12.8.3 p2 requires before the next transfer, after which a READ must report IOSTAT_END. Seventeen numbered rules were pre-accounted. Source accounting only."
+}

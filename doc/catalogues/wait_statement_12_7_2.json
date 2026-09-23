@@ -1,0 +1,376 @@
+{
+  "schema_version": 1,
+  "section": "12.7.2",
+  "subunits": {
+    "p3": [
+      "p3.id-value-restriction",
+      "p3.id-wait-selection"
+    ],
+    "p4": [
+      "p4.unavailable-no-id-permission",
+      "p4.unavailable-no-id-no-error",
+      "p4.unavailable-id-restriction"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S12.7.2-001",
+      "title": "A WAIT statement performs a wait operation for specified pending asynchronous transfers",
+      "source": "S12.7.2, J3/24-007, 18 December 2023, physical PDF275.",
+      "source_units": [
+        "p1"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A WAIT statement performs a wait operation for specified pending asynchronous data transfer operations.",
+      "facets": [
+        "wait-statement-performs-wait-operation"
+      ],
+      "pending": {
+        "wait-statement-performs-wait-operation": "Initiate an asynchronous named-file transfer with an ID variable initialized to a sentinel, execute WAIT on the unit or ID, and assert the known transferred value after successful status."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by creating a named external file with known records, initializing variables to nonzero/nonblank sentinels, or using a conforming labelled control path) and then observe only portable properties: exact record values, successful IOSTAT zero, nonzero IOSTAT or named status values where the standard names them, required diagnosis of a numbered syntax rule or constraint, or file existence/position effects fixed by the source. Processor-dependent unit numbers, file encodings, buffering, timing, interprocess visibility, IOMSG text, and specific numeric status values are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint, or otherwise requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle; unnumbered program restrictions are not promoted to required diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, labels, names, expressions, variables, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: earlier and later clause 12 connection, file-existence, access-mode, asynchronous-transfer, wait, status, and file-position rules; clause 13 formatting and value-separator rules; clause 15 defined I/O; clause 16 inquiry and ISO_FORTRAN_ENV status constants where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "R1222",
+      "title": "A WAIT statement has a parenthesized wait-spec list",
+      "source": "S12.7.2, J3/24-007, 18 December 2023, physical PDF275.",
+      "source_units": [
+        "R1222"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "A wait-stmt is WAIT followed by a parenthesized wait-spec-list.",
+      "facets": [
+        "wait-parenthesized-spec-list-form"
+      ],
+      "pending": {
+        "wait-parenthesized-spec-list-form": "Compile and run a conforming `WAIT (UNIT=u, IOSTAT=ios)` after opening a named asynchronous-capable file; a syntax negative removes the parentheses or list while keeping the same unit premise."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by creating a named external file with known records, initializing variables to nonzero/nonblank sentinels, or using a conforming labelled control path) and then observe only portable properties: exact record values, successful IOSTAT zero, nonzero IOSTAT or named status values where the standard names them, required diagnosis of a numbered syntax rule or constraint, or file existence/position effects fixed by the source. Processor-dependent unit numbers, file encodings, buffering, timing, interprocess visibility, IOMSG text, and specific numeric status values are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint, or otherwise requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle; unnumbered program restrictions are not promoted to required diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, labels, names, expressions, variables, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: earlier and later clause 12 connection, file-existence, access-mode, asynchronous-transfer, wait, status, and file-position rules; clause 13 formatting and value-separator rules; clause 15 defined I/O; clause 16 inquiry and ISO_FORTRAN_ENV status constants where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "R1223",
+      "title": "WAIT specifiers include optional UNIT, branch labels, ID, IOMSG, and IOSTAT",
+      "source": "S12.7.2, J3/24-007, 18 December 2023, physical PDF275.",
+      "source_units": [
+        "R1223"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "A wait-spec is optionally keyworded UNIT=file-unit-number, END=label, EOR=label, ERR=label, ID=scalar-int-expr, IOMSG=iomsg-variable, or IOSTAT=stat-variable.",
+      "facets": [
+        "wait-unit-specifier-form",
+        "wait-end-label-specifier-form",
+        "wait-eor-label-specifier-form",
+        "wait-err-label-specifier-form",
+        "wait-id-specifier-form",
+        "wait-iomsg-specifier-form",
+        "wait-iostat-specifier-form"
+      ],
+      "pending": {
+        "wait-unit-specifier-form": "Compile conforming WAIT controls using both `WAIT (UNIT=u)` and `WAIT (u)`; placement restrictions remain owned by C1239.",
+        "wait-end-label-specifier-form": "Compile a conforming WAIT with END= to a same-scope branch target and a named-file end condition control; the paired syntax negative deletes only the label operand.",
+        "wait-eor-label-specifier-form": "Compile a conforming WAIT with EOR= to a same-scope branch target in a nonadvancing asynchronous-read control; the paired syntax negative deletes only the label operand.",
+        "wait-err-label-specifier-form": "Compile a conforming WAIT with ERR= to a same-scope branch target; the paired syntax negative deletes only the label operand.",
+        "wait-id-specifier-form": "Use `ID=0` or a captured asynchronous ID in a conforming WAIT; the paired syntax negative deletes only the scalar integer expression.",
+        "wait-iomsg-specifier-form": "Compile a conforming WAIT with a character IOMSG variable prefilled with nonblank sentinels; no fixture compares its text.",
+        "wait-iostat-specifier-form": "Compile/run a conforming WAIT with IOSTAT initialized to a nonzero sentinel and assert only zero/nonzero or named status as applicable."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by creating a named external file with known records, initializing variables to nonzero/nonblank sentinels, or using a conforming labelled control path) and then observe only portable properties: exact record values, successful IOSTAT zero, nonzero IOSTAT or named status values where the standard names them, required diagnosis of a numbered syntax rule or constraint, or file existence/position effects fixed by the source. Processor-dependent unit numbers, file encodings, buffering, timing, interprocess visibility, IOMSG text, and specific numeric status values are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint, or otherwise requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle; unnumbered program restrictions are not promoted to required diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, labels, names, expressions, variables, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: earlier and later clause 12 connection, file-existence, access-mode, asynchronous-transfer, wait, status, and file-position rules; clause 13 formatting and value-separator rules; clause 15 defined I/O; clause 16 inquiry and ISO_FORTRAN_ENV status constants where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "C1238",
+      "title": "No WAIT specifier appears more than once",
+      "source": "S12.7.2, J3/24-007, 18 December 2023, physical PDF276.",
+      "source_units": [
+        "C1238"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "No specifier shall appear more than once in a given wait-spec-list.",
+      "facets": [
+        "wait-duplicate-specifier-rejected"
+      ],
+      "pending": {
+        "wait-duplicate-specifier-rejected": "Diagnostic/control pair duplicates IOSTAT= in `WAIT (UNIT=u, IOSTAT=ios, IOSTAT=ios2)`; the repair removes only the second IOSTAT= so the violation reaches C1238."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by creating a named external file with known records, initializing variables to nonzero/nonblank sentinels, or using a conforming labelled control path) and then observe only portable properties: exact record values, successful IOSTAT zero, nonzero IOSTAT or named status values where the standard names them, required diagnosis of a numbered syntax rule or constraint, or file existence/position effects fixed by the source. Processor-dependent unit numbers, file encodings, buffering, timing, interprocess visibility, IOMSG text, and specific numeric status values are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint, or otherwise requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle; unnumbered program restrictions are not promoted to required diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, labels, names, expressions, variables, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: earlier and later clause 12 connection, file-existence, access-mode, asynchronous-transfer, wait, status, and file-position rules; clause 13 formatting and value-separator rules; clause 15 defined I/O; clause 16 inquiry and ISO_FORTRAN_ENV status constants where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "C1239",
+      "title": "A WAIT spec list specifies a unit and positional units are first",
+      "source": "S12.7.2, J3/24-007, 18 December 2023, physical PDF276.",
+      "source_units": [
+        "C1239"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "A file-unit-number shall be specified in a wait-spec-list; if UNIT= is omitted, the file-unit-number shall be the first item.",
+      "facets": [
+        "wait-file-unit-present",
+        "wait-positional-unit-first"
+      ],
+      "pending": {
+        "wait-file-unit-present": "Diagnostic/control pair compares `WAIT (IOSTAT=ios)` with `WAIT (UNIT=u, IOSTAT=ios)`; the only repair supplies the missing unit.",
+        "wait-positional-unit-first": "Diagnostic/control pair compares `WAIT (IOSTAT=ios, u)` with `WAIT (IOSTAT=ios, UNIT=u)`; the invalid form has a unit but omits UNIT= outside first position."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by creating a named external file with known records, initializing variables to nonzero/nonblank sentinels, or using a conforming labelled control path) and then observe only portable properties: exact record values, successful IOSTAT zero, nonzero IOSTAT or named status values where the standard names them, required diagnosis of a numbered syntax rule or constraint, or file existence/position effects fixed by the source. Processor-dependent unit numbers, file encodings, buffering, timing, interprocess visibility, IOMSG text, and specific numeric status values are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint, or otherwise requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle; unnumbered program restrictions are not promoted to required diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, labels, names, expressions, variables, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: earlier and later clause 12 connection, file-existence, access-mode, asynchronous-transfer, wait, status, and file-position rules; clause 13 formatting and value-separator rules; clause 15 defined I/O; clause 16 inquiry and ISO_FORTRAN_ENV status constants where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "C1240",
+      "title": "WAIT ERR, EOR, and END labels are same-scope branch targets",
+      "source": "S12.7.2, J3/24-007, 18 December 2023, physical PDF276.",
+      "source_units": [
+        "C1240"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "The label in an ERR=, EOR=, or END= specifier shall be the statement label of a branch target statement in the same inclusive scope as the WAIT statement.",
+      "facets": [
+        "wait-err-label-branch-target",
+        "wait-eor-label-branch-target",
+        "wait-end-label-branch-target",
+        "wait-label-same-inclusive-scope"
+      ],
+      "pending": {
+        "wait-err-label-branch-target": "Diagnostic/control pair changes only the ERR= label from a same-scope executable branch target to a non-branch FORMAT or declaration label, leaving the WAIT otherwise conforming.",
+        "wait-eor-label-branch-target": "Diagnostic/control pair changes only the EOR= label from a same-scope branch target to a non-branch label in a nonadvancing control.",
+        "wait-end-label-branch-target": "Diagnostic/control pair changes only the END= label from a same-scope branch target to a non-branch label in an end-condition control.",
+        "wait-label-same-inclusive-scope": "Diagnostic/control pair changes only the labelled branch target from the same inclusive scope to an inaccessible nested or host scope label; other WAIT specifiers are unchanged."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by creating a named external file with known records, initializing variables to nonzero/nonblank sentinels, or using a conforming labelled control path) and then observe only portable properties: exact record values, successful IOSTAT zero, nonzero IOSTAT or named status values where the standard names them, required diagnosis of a numbered syntax rule or constraint, or file existence/position effects fixed by the source. Processor-dependent unit numbers, file encodings, buffering, timing, interprocess visibility, IOMSG text, and specific numeric status values are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint, or otherwise requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle; unnumbered program restrictions are not promoted to required diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, labels, names, expressions, variables, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: earlier and later clause 12 connection, file-existence, access-mode, asynchronous-transfer, wait, status, and file-position rules; clause 13 formatting and value-separator rules; clause 15 defined I/O; clause 16 inquiry and ISO_FORTRAN_ENV status constants where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.7.2-002",
+      "title": "A WAIT ID value is zero or a pending-transfer identifier for the specified unit",
+      "source": "S12.7.2, J3/24-007, 18 December 2023, physical PDF276.",
+      "source_units": [
+        "p3.id-value-restriction"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "The expression specified by ID= in a WAIT statement shall have value zero or the identifier of a pending data transfer operation for the specified unit.",
+      "facets": [
+        "wait-id-zero-or-pending-identifier"
+      ],
+      "pending": {
+        "wait-id-zero-or-pending-identifier": "Positive controls use ID=0 and a captured pending-transfer ID. For ID=0, open a named external sequential file for asynchronous input/output (ASYNCHRONOUS='YES') but initiate no asynchronous transfer, prefill IOSTAT with a nonzero sentinel and distinct END/ERR branch flags, execute `WAIT (UNIT=u, ID=0, IOSTAT=ios, END=end_label, ERR=err_label)`, and assert ios==0 with neither END nor ERR taken; the asynchronous connection is used because 12.7.2 p4 only permits non-asynchronous or unavailable units when ID= is absent. Negative source-control with a different integer is nonconforming but has no portable diagnostic or runtime oracle because this unnumbered restriction does not require rejection."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by creating a named external file with known records, initializing variables to nonzero/nonblank sentinels, or using a conforming labelled control path) and then observe only portable properties: exact record values, successful IOSTAT zero, nonzero IOSTAT or named status values where the standard names them, required diagnosis of a numbered syntax rule or constraint, or file existence/position effects fixed by the source. Processor-dependent unit numbers, file encodings, buffering, timing, interprocess visibility, IOMSG text, and specific numeric status values are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint, or otherwise requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle; unnumbered program restrictions are not promoted to required diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, labels, names, expressions, variables, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: earlier and later clause 12 connection, file-existence, access-mode, asynchronous-transfer, wait, status, and file-position rules; clause 13 formatting and value-separator rules; clause 15 defined I/O; clause 16 inquiry and ISO_FORTRAN_ENV status constants where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.7.2-003",
+      "title": "WAIT ID selection controls whether one or all pending transfers are waited for",
+      "source": "S12.7.2, J3/24-007, 18 December 2023, physical PDF276.",
+      "source_units": [
+        "p3.id-wait-selection"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "If ID= appears, a wait operation for the specified data transfer operation, if any, is performed; if ID= is omitted, wait operations for all pending data transfers for the specified unit are performed.",
+      "facets": [
+        "wait-id-selects-specified-operation",
+        "wait-omitted-id-waits-all-unit-transfers"
+      ],
+      "pending": {
+        "wait-id-selects-specified-operation": "Start two asynchronous transfers with distinct IDs and sentinel targets, WAIT for one captured ID, then separately WAIT for all and assert final values without claiming timing. Also cover the no-operation ID=0 case on an open named external sequential file connected for asynchronous input/output with no pending transfer: prefill IOSTAT with a nonzero sentinel and END/ERR branch flags, execute `WAIT (UNIT=u, ID=0, IOSTAT=ios, END=end_label, ERR=err_label)`, and assert ios==0 with neither branch taken.",
+        "wait-omitted-id-waits-all-unit-transfers": "Start multiple asynchronous transfers on the same named unit and execute `WAIT (UNIT=u)`; assert each target changed from its sentinel to the known value. Also cover the no-pending-operation case on an open named external sequential file connected for asynchronous input/output with no pending transfer: prefill IOSTAT with a nonzero sentinel and END/ERR branch flags, execute `WAIT (UNIT=u, IOSTAT=ios, END=end_label, ERR=err_label)`, and assert ios==0 with neither branch taken."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by creating a named external file with known records, initializing variables to nonzero/nonblank sentinels, or using a conforming labelled control path) and then observe only portable properties: exact record values, successful IOSTAT zero, nonzero IOSTAT or named status values where the standard names them, required diagnosis of a numbered syntax rule or constraint, or file existence/position effects fixed by the source. Processor-dependent unit numbers, file encodings, buffering, timing, interprocess visibility, IOMSG text, and specific numeric status values are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint, or otherwise requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle; unnumbered program restrictions are not promoted to required diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, labels, names, expressions, variables, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: earlier and later clause 12 connection, file-existence, access-mode, asynchronous-transfer, wait, status, and file-position rules; clause 13 formatting and value-separator rules; clause 15 defined I/O; clause 16 inquiry and ISO_FORTRAN_ENV status constants where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.7.2-004",
+      "title": "WAIT without ID is permitted for unavailable or non-asynchronous units",
+      "source": "S12.7.2, J3/24-007, 18 December 2023, physical PDF276.",
+      "source_units": [
+        "p4.unavailable-no-id-permission"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Execution of a WAIT statement specifying a unit that does not exist, has no file connected, or is not open for asynchronous input/output is permitted when the WAIT statement has no ID= specifier.",
+      "facets": [
+        "wait-no-id-nonexistent-unit-permitted",
+        "wait-no-id-unconnected-unit-permitted",
+        "wait-no-id-nonasynchronous-unit-permitted"
+      ],
+      "pending": {
+        "wait-no-id-nonexistent-unit-permitted": "Guarded plan: search a small set of unit numbers with INQUIRE(EXIST=) for EXIST=.false.; only if found, execute `WAIT (UNIT=u, IOSTAT=ios)` without ID and assert no error/end condition.",
+        "wait-no-id-unconnected-unit-permitted": "Use a unit known by INQUIRE(OPENED=) to be closed, execute WAIT without ID, and assert only that no error/end condition occurs.",
+        "wait-no-id-nonasynchronous-unit-permitted": "Open a named file without asynchronous input/output, execute WAIT without ID, and assert only no error/end condition."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by creating a named external file with known records, initializing variables to nonzero/nonblank sentinels, or using a conforming labelled control path) and then observe only portable properties: exact record values, successful IOSTAT zero, nonzero IOSTAT or named status values where the standard names them, required diagnosis of a numbered syntax rule or constraint, or file existence/position effects fixed by the source. Processor-dependent unit numbers, file encodings, buffering, timing, interprocess visibility, IOMSG text, and specific numeric status values are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint, or otherwise requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle; unnumbered program restrictions are not promoted to required diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, labels, names, expressions, variables, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: earlier and later clause 12 connection, file-existence, access-mode, asynchronous-transfer, wait, status, and file-position rules; clause 13 formatting and value-separator rules; clause 15 defined I/O; clause 16 inquiry and ISO_FORTRAN_ENV status constants where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.7.2-005",
+      "title": "Unavailable-unit WAIT without ID causes no error or end-of-file condition",
+      "source": "S12.7.2, J3/24-007, 18 December 2023, physical PDF276.",
+      "source_units": [
+        "p4.unavailable-no-id-no-error"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A permitted WAIT statement for a nonexistent, unconnected, or non-asynchronous unit with no ID= specifier does not cause an error or end-of-file condition.",
+      "facets": [
+        "wait-no-id-unavailable-unit-no-error",
+        "wait-no-id-unavailable-unit-no-end"
+      ],
+      "pending": {
+        "wait-no-id-unavailable-unit-no-error": "Initialize IOSTAT to a nonzero sentinel and ERR branch flag to a distinct value before the guarded unavailable-unit WAIT; assert IOSTAT zero and no ERR branch.",
+        "wait-no-id-unavailable-unit-no-end": "Use an END branch flag initialized to a distinct value in the same guarded WAIT; assert the END branch is not taken."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by creating a named external file with known records, initializing variables to nonzero/nonblank sentinels, or using a conforming labelled control path) and then observe only portable properties: exact record values, successful IOSTAT zero, nonzero IOSTAT or named status values where the standard names them, required diagnosis of a numbered syntax rule or constraint, or file existence/position effects fixed by the source. Processor-dependent unit numbers, file encodings, buffering, timing, interprocess visibility, IOMSG text, and specific numeric status values are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint, or otherwise requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle; unnumbered program restrictions are not promoted to required diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, labels, names, expressions, variables, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: earlier and later clause 12 connection, file-existence, access-mode, asynchronous-transfer, wait, status, and file-position rules; clause 13 formatting and value-separator rules; clause 15 defined I/O; clause 16 inquiry and ISO_FORTRAN_ENV status constants where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.7.2-006",
+      "title": "The unavailable-unit WAIT permission does not cover an ID specifier",
+      "source": "S12.7.2, J3/24-007, 18 December 2023, physical PDF276.",
+      "source_units": [
+        "p4.unavailable-id-restriction"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "The permission for a WAIT statement specifying a nonexistent, unconnected, or non-asynchronous unit is provided only when the WAIT statement has no ID= specifier.",
+      "facets": [
+        "wait-unavailable-unit-id-not-permitted-by-this-rule"
+      ],
+      "pending": {
+        "wait-unavailable-unit-id-not-permitted-by-this-rule": "No portable oracle: adding ID=0 to the unavailable-unit WAIT leaves the no-ID permission, but this unnumbered restriction does not require a diagnostic and any runtime status would be processor/error-rule dependent."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by creating a named external file with known records, initializing variables to nonzero/nonblank sentinels, or using a conforming labelled control path) and then observe only portable properties: exact record values, successful IOSTAT zero, nonzero IOSTAT or named status values where the standard names them, required diagnosis of a numbered syntax rule or constraint, or file existence/position effects fixed by the source. Processor-dependent unit numbers, file encodings, buffering, timing, interprocess visibility, IOMSG text, and specific numeric status values are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint, or otherwise requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle; unnumbered program restrictions are not promoted to required diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, labels, names, expressions, variables, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: earlier and later clause 12 connection, file-existence, access-mode, asynchronous-transfer, wait, status, and file-position rules; clause 13 formatting and value-separator rules; clause 15 defined I/O; clause 16 inquiry and ISO_FORTRAN_ENV status constants where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.7.2-001"
+      ],
+      "rationale": "Defines the WAIT statement effect."
+    },
+    {
+      "unit": "R1222",
+      "disposition": "requirements",
+      "requirements": [
+        "R1222"
+      ]
+    },
+    {
+      "unit": "R1223",
+      "disposition": "requirements",
+      "requirements": [
+        "R1223"
+      ]
+    },
+    {
+      "unit": "C1238",
+      "disposition": "requirements",
+      "requirements": [
+        "C1238"
+      ]
+    },
+    {
+      "unit": "C1239",
+      "disposition": "requirements",
+      "requirements": [
+        "C1239"
+      ]
+    },
+    {
+      "unit": "C1240",
+      "disposition": "requirements",
+      "requirements": [
+        "C1240"
+      ]
+    },
+    {
+      "unit": "p2",
+      "disposition": "informative",
+      "rationale": "Cross-reference to status specifier descriptions in 12.11."
+    },
+    {
+      "unit": "p3",
+      "disposition": "structural",
+      "rationale": "ID value restriction and ID wait-selection effects are split."
+    },
+    {
+      "unit": "p3.id-value-restriction",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.7.2-002"
+      ],
+      "rationale": "Restricts ID= values."
+    },
+    {
+      "unit": "p3.id-wait-selection",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.7.2-003"
+      ],
+      "rationale": "Defines ID-present and ID-omitted wait selection."
+    },
+    {
+      "unit": "p4",
+      "disposition": "structural",
+      "rationale": "Unavailable-unit permission, no-status effect, and ID limitation are split."
+    },
+    {
+      "unit": "p4.unavailable-no-id-permission",
+      "disposition": "permission",
+      "requirements": [
+        "S12.7.2-004"
+      ],
+      "rationale": "Permits no-ID WAIT for unavailable/non-asynchronous units."
+    },
+    {
+      "unit": "p4.unavailable-no-id-no-error",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.7.2-005"
+      ],
+      "rationale": "States no error or end-of-file condition for the permitted WAIT."
+    },
+    {
+      "unit": "p4.unavailable-id-restriction",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.7.2-006"
+      ],
+      "rationale": "Records the no-ID condition on the permission."
+    },
+    {
+      "unit": "note-unnumbered",
+      "disposition": "informative",
+      "rationale": "NOTE explains when EOR= and END= have no effect; not normative."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_12_7_2.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "0bb3838ee929a180fb719d321836128224016fd78f1e91ef224d11336987ee87",
+  "review_rationale": "Source registration for 12.6.5-12.9: termination of data transfer, WAIT, BACKSPACE, ENDFILE, REWIND and FLUSH (batch164). Every unit hash-verified by an independent reviewer across two rounds. Round 1 found the portable WAIT no-operation cases missing - WAIT with ID=0 (explicitly permitted by 12.7.2 p3) and with ID= omitted on an asynchronous connection with nothing pending must succeed with IOSTAT zero - and an ENDFILE position plan that used REWIND, destroying the state under test; ENDFILE is now observed by the BACKSPACE that 12.8.3 p2 requires before the next transfer, after which a READ must report IOSTAT_END. Seventeen numbered rules were pre-accounted. Source accounting only."
+}

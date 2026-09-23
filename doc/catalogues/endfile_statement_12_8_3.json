@@ -1,0 +1,239 @@
+{
+  "schema_version": 1,
+  "section": "12.8.3",
+  "subunits": {
+    "p1": [
+      "p1.sequential-endfile-record",
+      "p1.direct-access-after-endfile"
+    ],
+    "p3": [
+      "p3.stream-terminal-point",
+      "p3.subsequent-stream-output-permitted"
+    ],
+    "p4": [
+      "p4.connected-nonexistent-creates",
+      "p4.sequential-created-before-endfile"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S12.8.3-001",
+      "title": "Sequential ENDFILE writes a last endfile record and positions after it",
+      "source": "S12.8.3, J3/24-007, 18 December 2023, physical PDF277.",
+      "source_units": [
+        "p1.sequential-endfile-record"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Execution of ENDFILE for a sequential-access file writes an endfile record as the next record; the file is positioned after that endfile record, which becomes the last record.",
+      "facets": [
+        "sequential-endfile-writes-endfile-record",
+        "sequential-endfile-positions-after-endfile",
+        "sequential-endfile-record-becomes-last"
+      ],
+      "pending": {
+        "sequential-endfile-writes-endfile-record": "Write known records to a named sequential file, execute ENDFILE, REWIND, read the data records into sentinels, then observe the portable end condition after them without inspecting marker bytes.",
+        "sequential-endfile-positions-after-endfile": "Write known records to a named sequential file, execute ENDFILE, then use BACKSPACE (not REWIND) before the next data transfer as required by 12.8.3 p2. Because 12.3.4.1 p4 makes the preceding record at the terminal point the last record, and the ENDFILE record is the last record, BACKSPACE from the post-ENDFILE position must position before the endfile record; a following READ with IOSTAT initialized to a nonzero non-END sentinel shall report IOSTAT_END and no data-record value. An immediate READ after ENDFILE is not used because 12.8.3 p2 requires BACKSPACE or REWIND first.",
+        "sequential-endfile-record-becomes-last": "Write a known trailing record before repositioning, then ENDFILE earlier in the file and REWIND/read to verify only records before the endfile are available before the end condition."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by creating a named external file with known records, initializing variables to nonzero/nonblank sentinels, or using a conforming labelled control path) and then observe only portable properties: exact record values, successful IOSTAT zero, nonzero IOSTAT or named status values where the standard names them, required diagnosis of a numbered syntax rule or constraint, or file existence/position effects fixed by the source. Processor-dependent unit numbers, file encodings, buffering, timing, interprocess visibility, IOMSG text, and specific numeric status values are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint, or otherwise requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle; unnumbered program restrictions are not promoted to required diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, labels, names, expressions, variables, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: earlier and later clause 12 connection, file-existence, access-mode, asynchronous-transfer, wait, status, and file-position rules; clause 13 formatting and value-separator rules; clause 15 defined I/O; clause 16 inquiry and ISO_FORTRAN_ENV status constants where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.8.3-002",
+      "title": "Direct-access reconnection after sequential ENDFILE reads only records before the endfile record",
+      "source": "S12.8.3, J3/24-007, 18 December 2023, physical PDF277.",
+      "source_units": [
+        "p1.direct-access-after-endfile"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "If a sequential file can also be connected for direct access, only records before the endfile record are considered written and only those records shall be read during subsequent direct access connections.",
+      "facets": [
+        "direct-access-after-endfile-only-before-records-written",
+        "direct-access-after-endfile-only-before-records-read"
+      ],
+      "pending": {
+        "direct-access-after-endfile-only-before-records-written": "No portable oracle for the conditional premise that the same external file can also be connected for direct access with matching representation; future tests may guard on a successful direct connection and assert only records before the endfile.",
+        "direct-access-after-endfile-only-before-records-read": "No portable negative oracle requires a processor to diagnose or produce a particular status when attempting to read beyond the endfile-created written set under direct access."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by creating a named external file with known records, initializing variables to nonzero/nonblank sentinels, or using a conforming labelled control path) and then observe only portable properties: exact record values, successful IOSTAT zero, nonzero IOSTAT or named status values where the standard names them, required diagnosis of a numbered syntax rule or constraint, or file existence/position effects fixed by the source. Processor-dependent unit numbers, file encodings, buffering, timing, interprocess visibility, IOMSG text, and specific numeric status values are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint, or otherwise requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle; unnumbered program restrictions are not promoted to required diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, labels, names, expressions, variables, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: earlier and later clause 12 connection, file-existence, access-mode, asynchronous-transfer, wait, status, and file-position rules; clause 13 formatting and value-separator rules; clause 15 defined I/O; clause 16 inquiry and ISO_FORTRAN_ENV status constants where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.8.3-003",
+      "title": "Sequential ENDFILE requires BACKSPACE or REWIND before later transfer or ENDFILE",
+      "source": "S12.8.3, J3/24-007, 18 December 2023, physical PDF277.",
+      "source_units": [
+        "p2"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "After ENDFILE for a sequential-access file, BACKSPACE or REWIND shall be used to reposition before any data transfer input/output statement or ENDFILE statement.",
+      "facets": [
+        "sequential-endfile-reposition-before-data-transfer",
+        "sequential-endfile-reposition-before-another-endfile"
+      ],
+      "pending": {
+        "sequential-endfile-reposition-before-data-transfer": "Positive plan writes known records, executes ENDFILE, then REWINDs before reading them back into sentinels. Immediate data transfer without repositioning is a nonconforming source-control with no required diagnostic.",
+        "sequential-endfile-reposition-before-another-endfile": "Positive plan executes ENDFILE, then BACKSPACE or REWIND before any second ENDFILE. A second ENDFILE without repositioning is an unnumbered restriction with no required diagnostic."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by creating a named external file with known records, initializing variables to nonzero/nonblank sentinels, or using a conforming labelled control path) and then observe only portable properties: exact record values, successful IOSTAT zero, nonzero IOSTAT or named status values where the standard names them, required diagnosis of a numbered syntax rule or constraint, or file existence/position effects fixed by the source. Processor-dependent unit numbers, file encodings, buffering, timing, interprocess visibility, IOMSG text, and specific numeric status values are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint, or otherwise requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle; unnumbered program restrictions are not promoted to required diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, labels, names, expressions, variables, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: earlier and later clause 12 connection, file-existence, access-mode, asynchronous-transfer, wait, status, and file-position rules; clause 13 formatting and value-separator rules; clause 15 defined I/O; clause 16 inquiry and ISO_FORTRAN_ENV status constants where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.8.3-004",
+      "title": "Stream ENDFILE sets the terminal point to the current position and only prior storage units remain written/readable",
+      "source": "S12.8.3, J3/24-007, 18 December 2023, physical PDF277.",
+      "source_units": [
+        "p3.stream-terminal-point"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Execution of ENDFILE for a stream-access file makes the terminal point equal to the current file position; only file storage units before the current position are considered written and subsequently readable.",
+      "facets": [
+        "stream-endfile-terminal-point-current-position",
+        "stream-endfile-only-before-current-written",
+        "stream-endfile-only-before-current-read"
+      ],
+      "pending": {
+        "stream-endfile-terminal-point-current-position": "Open a named stream file, write distinctive data, reposition with POS= to an earlier established position, execute ENDFILE, and read back only data before that position.",
+        "stream-endfile-only-before-current-written": "After the guarded stream truncation, use INQUIRE or readback to avoid asserting gap bytes and assert only that data before the current position remains.",
+        "stream-endfile-only-before-current-read": "Attempting to read beyond the new terminal point may be observed only through portable end/status behavior; no specific numeric status or storage-unit contents are asserted."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by creating a named external file with known records, initializing variables to nonzero/nonblank sentinels, or using a conforming labelled control path) and then observe only portable properties: exact record values, successful IOSTAT zero, nonzero IOSTAT or named status values where the standard names them, required diagnosis of a numbered syntax rule or constraint, or file existence/position effects fixed by the source. Processor-dependent unit numbers, file encodings, buffering, timing, interprocess visibility, IOMSG text, and specific numeric status values are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint, or otherwise requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle; unnumbered program restrictions are not promoted to required diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, labels, names, expressions, variables, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: earlier and later clause 12 connection, file-existence, access-mode, asynchronous-transfer, wait, status, and file-position rules; clause 13 formatting and value-separator rules; clause 15 defined I/O; clause 16 inquiry and ISO_FORTRAN_ENV status constants where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.8.3-005",
+      "title": "Subsequent stream output may write further data after stream ENDFILE",
+      "source": "S12.8.3, J3/24-007, 18 December 2023, physical PDF277.",
+      "source_units": [
+        "p3.subsequent-stream-output-permitted"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "After ENDFILE for a stream-access file, subsequent stream output statements may be used to write further data to the file.",
+      "facets": [
+        "stream-output-after-endfile-permitted"
+      ],
+      "pending": {
+        "stream-output-after-endfile-permitted": "Open a named stream file, execute ENDFILE at a known position, then write distinctive subsequent stream data and read it back from its established POS= location."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by creating a named external file with known records, initializing variables to nonzero/nonblank sentinels, or using a conforming labelled control path) and then observe only portable properties: exact record values, successful IOSTAT zero, nonzero IOSTAT or named status values where the standard names them, required diagnosis of a numbered syntax rule or constraint, or file existence/position effects fixed by the source. Processor-dependent unit numbers, file encodings, buffering, timing, interprocess visibility, IOMSG text, and specific numeric status values are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint, or otherwise requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle; unnumbered program restrictions are not promoted to required diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, labels, names, expressions, variables, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: earlier and later clause 12 connection, file-existence, access-mode, asynchronous-transfer, wait, status, and file-position rules; clause 13 formatting and value-separator rules; clause 15 defined I/O; clause 16 inquiry and ISO_FORTRAN_ENV status constants where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.8.3-006",
+      "title": "ENDFILE on a connected nonexistent file creates the file and sequential creation precedes the endfile record",
+      "source": "S12.8.3, J3/24-007, 18 December 2023, physical PDF277.",
+      "source_units": [
+        "p4.connected-nonexistent-creates",
+        "p4.sequential-created-before-endfile"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Execution of ENDFILE for a file that is connected but does not exist creates the file; if sequential, creation occurs prior to writing the endfile record.",
+      "facets": [
+        "endfile-connected-nonexistent-creates-file",
+        "sequential-endfile-creates-before-endfile-record"
+      ],
+      "pending": {
+        "endfile-connected-nonexistent-creates-file": "Guarded plan: open a named file in a way that leaves INQUIRE(FILE=, EXIST=) false while connected; only in that case execute ENDFILE and assert EXIST becomes true.",
+        "sequential-endfile-creates-before-endfile-record": "Under the same guard for a sequential connection, after ENDFILE then REWIND, observe the immediate portable end condition, showing the file exists before the endfile record is encountered."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by creating a named external file with known records, initializing variables to nonzero/nonblank sentinels, or using a conforming labelled control path) and then observe only portable properties: exact record values, successful IOSTAT zero, nonzero IOSTAT or named status values where the standard names them, required diagnosis of a numbered syntax rule or constraint, or file existence/position effects fixed by the source. Processor-dependent unit numbers, file encodings, buffering, timing, interprocess visibility, IOMSG text, and specific numeric status values are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint, or otherwise requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle; unnumbered program restrictions are not promoted to required diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, labels, names, expressions, variables, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: earlier and later clause 12 connection, file-existence, access-mode, asynchronous-transfer, wait, status, and file-position rules; clause 13 formatting and value-separator rules; clause 15 defined I/O; clause 16 inquiry and ISO_FORTRAN_ENV status constants where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "structural",
+      "rationale": "Sequential endfile effects and conditional later direct-access consequences are split."
+    },
+    {
+      "unit": "p1.sequential-endfile-record",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.8.3-001"
+      ],
+      "rationale": "Sequential ENDFILE writes/positions after a last endfile record."
+    },
+    {
+      "unit": "p1.direct-access-after-endfile",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.8.3-002"
+      ],
+      "rationale": "Conditional direct-access written/readable-record consequences."
+    },
+    {
+      "unit": "p2",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.8.3-003"
+      ],
+      "rationale": "Requires BACKSPACE or REWIND after sequential ENDFILE before later transfer or ENDFILE."
+    },
+    {
+      "unit": "p3",
+      "disposition": "structural",
+      "rationale": "Stream terminal-point effects and subsequent stream-output permission are split."
+    },
+    {
+      "unit": "p3.stream-terminal-point",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.8.3-004"
+      ],
+      "rationale": "Stream ENDFILE terminal point and readable/written storage-unit effects."
+    },
+    {
+      "unit": "p3.subsequent-stream-output-permitted",
+      "disposition": "permission",
+      "requirements": [
+        "S12.8.3-005"
+      ],
+      "rationale": "Permits subsequent stream output after stream ENDFILE."
+    },
+    {
+      "unit": "p4",
+      "disposition": "structural",
+      "rationale": "Connected-nonexistent creation and sequential creation-before-marker effects are split."
+    },
+    {
+      "unit": "p4.connected-nonexistent-creates",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.8.3-006"
+      ],
+      "rationale": "ENDFILE creates a connected nonexistent file."
+    },
+    {
+      "unit": "p4.sequential-created-before-endfile",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.8.3-006"
+      ],
+      "rationale": "Sequential creation occurs before writing the endfile record."
+    },
+    {
+      "unit": "note-unnumbered",
+      "disposition": "informative",
+      "rationale": "NOTE gives an ENDFILE example; not normative."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_12_8_3.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "0cdf135468a53e2f34ffa07c4a1269acdb4bfc060b4f9a39e45cfca96c226c09",
+  "review_rationale": "Source registration for 12.6.5-12.9: termination of data transfer, WAIT, BACKSPACE, ENDFILE, REWIND and FLUSH (batch164). Every unit hash-verified by an independent reviewer across two rounds. Round 1 found the portable WAIT no-operation cases missing - WAIT with ID=0 (explicitly permitted by 12.7.2 p3) and with ID= omitted on an asynchronous connection with nothing pending must succeed with IOSTAT zero - and an ENDFILE position plan that used REWIND, destroying the state under test; ENDFILE is now observed by the BACKSPACE that 12.8.3 p2 requires before the next transfer, after which a READ must report IOSTAT_END. Seventeen numbered rules were pre-accounted. Source accounting only."
+}

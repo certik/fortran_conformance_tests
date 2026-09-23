@@ -1,0 +1,367 @@
+{
+  "schema_version": 1,
+  "section": "12.9",
+  "subunits": {
+    "p2": [
+      "p2.availability-actions",
+      "p2.processor-dependent-availability"
+    ],
+    "p3": [
+      "p3.connected-nonexistent-permitted",
+      "p3.connected-nonexistent-no-effect",
+      "p3.file-position-unchanged"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "R1228",
+      "title": "A FLUSH statement has a unit-number form or flush-spec-list form",
+      "source": "S12.9, J3/24-007, 18 December 2023, physical PDF278.",
+      "source_units": [
+        "R1228"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "A flush-stmt is FLUSH file-unit-number or FLUSH with a parenthesized flush-spec-list.",
+      "facets": [
+        "flush-unit-number-form",
+        "flush-spec-list-form"
+      ],
+      "pending": {
+        "flush-unit-number-form": "Compile/run `FLUSH u` on a named external file after writing a known record; assert only successful status and later Fortran readback where separately positioned.",
+        "flush-spec-list-form": "Compile/run `FLUSH (UNIT=u, IOSTAT=ios)` in the same control; the syntax negative removes only the parentheses or list."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by creating a named external file with known records, initializing variables to nonzero/nonblank sentinels, or using a conforming labelled control path) and then observe only portable properties: exact record values, successful IOSTAT zero, nonzero IOSTAT or named status values where the standard names them, required diagnosis of a numbered syntax rule or constraint, or file existence/position effects fixed by the source. Processor-dependent unit numbers, file encodings, buffering, timing, interprocess visibility, IOMSG text, and specific numeric status values are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint, or otherwise requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle; unnumbered program restrictions are not promoted to required diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, labels, names, expressions, variables, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: earlier and later clause 12 connection, file-existence, access-mode, asynchronous-transfer, wait, status, and file-position rules; clause 13 formatting and value-separator rules; clause 15 defined I/O; clause 16 inquiry and ISO_FORTRAN_ENV status constants where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "R1229",
+      "title": "FLUSH specifiers include optional UNIT, IOSTAT, IOMSG, and ERR",
+      "source": "S12.9, J3/24-007, 18 December 2023, physical PDF278.",
+      "source_units": [
+        "R1229"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "A flush-spec is optionally keyworded UNIT=file-unit-number, IOSTAT=stat-variable, IOMSG=iomsg-variable, or ERR=label.",
+      "facets": [
+        "flush-unit-specifier-form",
+        "flush-iostat-specifier-form",
+        "flush-iomsg-specifier-form",
+        "flush-err-label-specifier-form"
+      ],
+      "pending": {
+        "flush-unit-specifier-form": "Compile conforming FLUSH controls using both `UNIT=u` and positional `u`; placement restrictions remain owned by C1245.",
+        "flush-iostat-specifier-form": "Compile/run FLUSH with IOSTAT initialized to a nonzero sentinel and assert only zero/nonzero status.",
+        "flush-iomsg-specifier-form": "Compile FLUSH with a character IOMSG variable prefilled with nonblank sentinels; no future fixture compares the text.",
+        "flush-err-label-specifier-form": "Compile FLUSH with ERR= to a same-scope branch target; the syntax negative deletes only the label operand."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by creating a named external file with known records, initializing variables to nonzero/nonblank sentinels, or using a conforming labelled control path) and then observe only portable properties: exact record values, successful IOSTAT zero, nonzero IOSTAT or named status values where the standard names them, required diagnosis of a numbered syntax rule or constraint, or file existence/position effects fixed by the source. Processor-dependent unit numbers, file encodings, buffering, timing, interprocess visibility, IOMSG text, and specific numeric status values are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint, or otherwise requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle; unnumbered program restrictions are not promoted to required diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, labels, names, expressions, variables, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: earlier and later clause 12 connection, file-existence, access-mode, asynchronous-transfer, wait, status, and file-position rules; clause 13 formatting and value-separator rules; clause 15 defined I/O; clause 16 inquiry and ISO_FORTRAN_ENV status constants where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "C1244",
+      "title": "No FLUSH specifier appears more than once",
+      "source": "S12.9, J3/24-007, 18 December 2023, physical PDF278.",
+      "source_units": [
+        "C1244"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "No specifier shall appear more than once in a given flush-spec-list.",
+      "facets": [
+        "flush-duplicate-specifier-rejected"
+      ],
+      "pending": {
+        "flush-duplicate-specifier-rejected": "Diagnostic/control pair duplicates IOSTAT= in `FLUSH (UNIT=u, IOSTAT=ios, IOSTAT=ios2)`; the repair removes only the second IOSTAT=."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by creating a named external file with known records, initializing variables to nonzero/nonblank sentinels, or using a conforming labelled control path) and then observe only portable properties: exact record values, successful IOSTAT zero, nonzero IOSTAT or named status values where the standard names them, required diagnosis of a numbered syntax rule or constraint, or file existence/position effects fixed by the source. Processor-dependent unit numbers, file encodings, buffering, timing, interprocess visibility, IOMSG text, and specific numeric status values are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint, or otherwise requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle; unnumbered program restrictions are not promoted to required diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, labels, names, expressions, variables, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: earlier and later clause 12 connection, file-existence, access-mode, asynchronous-transfer, wait, status, and file-position rules; clause 13 formatting and value-separator rules; clause 15 defined I/O; clause 16 inquiry and ISO_FORTRAN_ENV status constants where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "C1245",
+      "title": "A FLUSH spec list specifies a unit and positional units are first",
+      "source": "S12.9, J3/24-007, 18 December 2023, physical PDF278.",
+      "source_units": [
+        "C1245"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "A file-unit-number shall be specified in a flush-spec-list; if UNIT= is omitted from the unit specifier, the file-unit-number shall be the first item.",
+      "facets": [
+        "flush-file-unit-present",
+        "flush-positional-unit-first"
+      ],
+      "pending": {
+        "flush-file-unit-present": "Diagnostic/control pair compares `FLUSH (IOSTAT=ios)` with `FLUSH (UNIT=u, IOSTAT=ios)`; the only repair supplies the missing unit.",
+        "flush-positional-unit-first": "Diagnostic/control pair compares `FLUSH (IOSTAT=ios, u)` with `FLUSH (IOSTAT=ios, UNIT=u)`; the invalid form has a unit but omits UNIT= outside first position."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by creating a named external file with known records, initializing variables to nonzero/nonblank sentinels, or using a conforming labelled control path) and then observe only portable properties: exact record values, successful IOSTAT zero, nonzero IOSTAT or named status values where the standard names them, required diagnosis of a numbered syntax rule or constraint, or file existence/position effects fixed by the source. Processor-dependent unit numbers, file encodings, buffering, timing, interprocess visibility, IOMSG text, and specific numeric status values are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint, or otherwise requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle; unnumbered program restrictions are not promoted to required diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, labels, names, expressions, variables, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: earlier and later clause 12 connection, file-existence, access-mode, asynchronous-transfer, wait, status, and file-position rules; clause 13 formatting and value-separator rules; clause 15 defined I/O; clause 16 inquiry and ISO_FORTRAN_ENV status constants where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "C1246",
+      "title": "ERR labels in FLUSH statements are same-scope branch targets",
+      "source": "S12.9, J3/24-007, 18 December 2023, physical PDF278.",
+      "source_units": [
+        "C1246"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "The label in an ERR= specifier shall be the statement label of a branch target statement in the same inclusive scope as the FLUSH statement.",
+      "facets": [
+        "flush-err-label-branch-target",
+        "flush-err-label-same-inclusive-scope"
+      ],
+      "pending": {
+        "flush-err-label-branch-target": "Diagnostic/control pair changes only the ERR= label from a same-scope executable branch target to a non-branch FORMAT/declaration label.",
+        "flush-err-label-same-inclusive-scope": "Diagnostic/control pair changes only the labelled branch target from the same inclusive scope to an inaccessible nested or host scope label."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by creating a named external file with known records, initializing variables to nonzero/nonblank sentinels, or using a conforming labelled control path) and then observe only portable properties: exact record values, successful IOSTAT zero, nonzero IOSTAT or named status values where the standard names them, required diagnosis of a numbered syntax rule or constraint, or file existence/position effects fixed by the source. Processor-dependent unit numbers, file encodings, buffering, timing, interprocess visibility, IOMSG text, and specific numeric status values are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint, or otherwise requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle; unnumbered program restrictions are not promoted to required diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, labels, names, expressions, variables, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: earlier and later clause 12 connection, file-existence, access-mode, asynchronous-transfer, wait, status, and file-position rules; clause 13 formatting and value-separator rules; clause 15 defined I/O; clause 16 inquiry and ISO_FORTRAN_ENV status constants where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.9-001",
+      "title": "FLUSH performs external-file availability actions for Fortran and non-Fortran data",
+      "source": "S12.9, J3/24-007, 18 December 2023, physical PDF278.",
+      "source_units": [
+        "p2.availability-actions"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Execution of FLUSH causes data written to an external file to be available to other processes, or data placed in an external file by means other than Fortran to be available to a READ statement.",
+      "facets": [
+        "flush-written-data-available-to-other-processes",
+        "flush-nonfortran-data-available-to-read"
+      ],
+      "pending": {
+        "flush-written-data-available-to-other-processes": "No portable oracle: the availability of Fortran-written data to other processes is explicitly processor dependent, so future tests must not require interprocess visibility or timing.",
+        "flush-nonfortran-data-available-to-read": "No portable oracle: availability to READ of data placed by non-Fortran means is explicitly processor dependent and depends on external mechanisms outside the Fortran program."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by creating a named external file with known records, initializing variables to nonzero/nonblank sentinels, or using a conforming labelled control path) and then observe only portable properties: exact record values, successful IOSTAT zero, nonzero IOSTAT or named status values where the standard names them, required diagnosis of a numbered syntax rule or constraint, or file existence/position effects fixed by the source. Processor-dependent unit numbers, file encodings, buffering, timing, interprocess visibility, IOMSG text, and specific numeric status values are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint, or otherwise requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle; unnumbered program restrictions are not promoted to required diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, labels, names, expressions, variables, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: earlier and later clause 12 connection, file-existence, access-mode, asynchronous-transfer, wait, status, and file-position rules; clause 13 formatting and value-separator rules; clause 15 defined I/O; clause 16 inquiry and ISO_FORTRAN_ENV status constants where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.9-002",
+      "title": "The external availability actions of FLUSH are processor dependent",
+      "source": "S12.9, J3/24-007, 18 December 2023, physical PDF278.",
+      "source_units": [
+        "p2.processor-dependent-availability"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The FLUSH actions that make Fortran-written data available to other processes or non-Fortran-written data available to READ are processor dependent.",
+      "facets": [
+        "flush-availability-actions-processor-dependent"
+      ],
+      "pending": {
+        "flush-availability-actions-processor-dependent": "No portable oracle may require a specific buffer mechanism, synchronization timing, device behavior, or visibility contract for those availability actions; fixtures may only avoid making such assertions."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by creating a named external file with known records, initializing variables to nonzero/nonblank sentinels, or using a conforming labelled control path) and then observe only portable properties: exact record values, successful IOSTAT zero, nonzero IOSTAT or named status values where the standard names them, required diagnosis of a numbered syntax rule or constraint, or file existence/position effects fixed by the source. Processor-dependent unit numbers, file encodings, buffering, timing, interprocess visibility, IOMSG text, and specific numeric status values are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint, or otherwise requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle; unnumbered program restrictions are not promoted to required diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, labels, names, expressions, variables, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: earlier and later clause 12 connection, file-existence, access-mode, asynchronous-transfer, wait, status, and file-position rules; clause 13 formatting and value-separator rules; clause 15 defined I/O; clause 16 inquiry and ISO_FORTRAN_ENV status constants where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.9-003",
+      "title": "FLUSH on a connected nonexistent file is permitted",
+      "source": "S12.9, J3/24-007, 18 December 2023, physical PDF278.",
+      "source_units": [
+        "p3.connected-nonexistent-permitted"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Execution of FLUSH for a file that is connected but does not exist is permitted.",
+      "facets": [
+        "flush-connected-nonexistent-permitted"
+      ],
+      "pending": {
+        "flush-connected-nonexistent-permitted": "Guarded plan: only if a named connected file can be observed by INQUIRE(FILE=, EXIST=) to not exist, execute FLUSH with IOSTAT initialized to a nonzero sentinel and assert no error status."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by creating a named external file with known records, initializing variables to nonzero/nonblank sentinels, or using a conforming labelled control path) and then observe only portable properties: exact record values, successful IOSTAT zero, nonzero IOSTAT or named status values where the standard names them, required diagnosis of a numbered syntax rule or constraint, or file existence/position effects fixed by the source. Processor-dependent unit numbers, file encodings, buffering, timing, interprocess visibility, IOMSG text, and specific numeric status values are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint, or otherwise requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle; unnumbered program restrictions are not promoted to required diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, labels, names, expressions, variables, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: earlier and later clause 12 connection, file-existence, access-mode, asynchronous-transfer, wait, status, and file-position rules; clause 13 formatting and value-separator rules; clause 15 defined I/O; clause 16 inquiry and ISO_FORTRAN_ENV status constants where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.9-004",
+      "title": "FLUSH on a connected nonexistent file has no effect on any file",
+      "source": "S12.9, J3/24-007, 18 December 2023, physical PDF278.",
+      "source_units": [
+        "p3.connected-nonexistent-no-effect"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Execution of FLUSH for a file that is connected but does not exist has no effect on any file.",
+      "facets": [
+        "flush-connected-nonexistent-no-file-effect"
+      ],
+      "pending": {
+        "flush-connected-nonexistent-no-file-effect": "Under the same guarded nonexistent-file premise, INQUIRE(FILE=, EXIST=) before and after FLUSH and assert it remains false; if the premise cannot be established, the facet remains unclaimed."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by creating a named external file with known records, initializing variables to nonzero/nonblank sentinels, or using a conforming labelled control path) and then observe only portable properties: exact record values, successful IOSTAT zero, nonzero IOSTAT or named status values where the standard names them, required diagnosis of a numbered syntax rule or constraint, or file existence/position effects fixed by the source. Processor-dependent unit numbers, file encodings, buffering, timing, interprocess visibility, IOMSG text, and specific numeric status values are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint, or otherwise requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle; unnumbered program restrictions are not promoted to required diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, labels, names, expressions, variables, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: earlier and later clause 12 connection, file-existence, access-mode, asynchronous-transfer, wait, status, and file-position rules; clause 13 formatting and value-separator rules; clause 15 defined I/O; clause 16 inquiry and ISO_FORTRAN_ENV status constants where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.9-005",
+      "title": "FLUSH has no effect on file position",
+      "source": "S12.9, J3/24-007, 18 December 2023, physical PDF278.",
+      "source_units": [
+        "p3.file-position-unchanged"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A FLUSH statement has no effect on file position.",
+      "facets": [
+        "flush-file-position-unchanged"
+      ],
+      "pending": {
+        "flush-file-position-unchanged": "Create a named sequential file with records A and B, read A into a sentinel so the position is before B, execute FLUSH, then read again and expect B; a wrong repositioning would read A or hit end."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by creating a named external file with known records, initializing variables to nonzero/nonblank sentinels, or using a conforming labelled control path) and then observe only portable properties: exact record values, successful IOSTAT zero, nonzero IOSTAT or named status values where the standard names them, required diagnosis of a numbered syntax rule or constraint, or file existence/position effects fixed by the source. Processor-dependent unit numbers, file encodings, buffering, timing, interprocess visibility, IOMSG text, and specific numeric status values are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint, or otherwise requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle; unnumbered program restrictions are not promoted to required diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, labels, names, expressions, variables, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: earlier and later clause 12 connection, file-existence, access-mode, asynchronous-transfer, wait, status, and file-position rules; clause 13 formatting and value-separator rules; clause 15 defined I/O; clause 16 inquiry and ISO_FORTRAN_ENV status constants where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.9-006",
+      "title": "FLUSH waits for all pending asynchronous transfers on its unit",
+      "source": "S12.9, J3/24-007, 18 December 2023, physical PDF278.",
+      "source_units": [
+        "p4"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Execution of FLUSH performs a wait operation for all pending asynchronous data transfer operations for the specified unit.",
+      "facets": [
+        "flush-waits-all-pending-for-unit"
+      ],
+      "pending": {
+        "flush-waits-all-pending-for-unit": "Initiate asynchronous transfer(s) on a named external unit with sentinel targets, execute FLUSH, then assert the transfer values or portable statuses are complete without timing assertions."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by creating a named external file with known records, initializing variables to nonzero/nonblank sentinels, or using a conforming labelled control path) and then observe only portable properties: exact record values, successful IOSTAT zero, nonzero IOSTAT or named status values where the standard names them, required diagnosis of a numbered syntax rule or constraint, or file existence/position effects fixed by the source. Processor-dependent unit numbers, file encodings, buffering, timing, interprocess visibility, IOMSG text, and specific numeric status values are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint, or otherwise requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle; unnumbered program restrictions are not promoted to required diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, labels, names, expressions, variables, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: earlier and later clause 12 connection, file-existence, access-mode, asynchronous-transfer, wait, status, and file-position rules; clause 13 formatting and value-separator rules; clause 15 defined I/O; clause 16 inquiry and ISO_FORTRAN_ENV status constants where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "R1228",
+      "disposition": "requirements",
+      "requirements": [
+        "R1228"
+      ]
+    },
+    {
+      "unit": "R1229",
+      "disposition": "requirements",
+      "requirements": [
+        "R1229"
+      ]
+    },
+    {
+      "unit": "C1244",
+      "disposition": "requirements",
+      "requirements": [
+        "C1244"
+      ]
+    },
+    {
+      "unit": "C1245",
+      "disposition": "requirements",
+      "requirements": [
+        "C1245"
+      ]
+    },
+    {
+      "unit": "C1246",
+      "disposition": "requirements",
+      "requirements": [
+        "C1246"
+      ]
+    },
+    {
+      "unit": "p1",
+      "disposition": "informative",
+      "rationale": "Cross-reference to status specifier descriptions in 12.11."
+    },
+    {
+      "unit": "p2",
+      "disposition": "structural",
+      "rationale": "Flush availability effects and the processor-dependent latitude for those actions are split."
+    },
+    {
+      "unit": "p2.availability-actions",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.9-001"
+      ],
+      "rationale": "States the availability actions performed by FLUSH."
+    },
+    {
+      "unit": "p2.processor-dependent-availability",
+      "disposition": "permission",
+      "requirements": [
+        "S12.9-002"
+      ],
+      "rationale": "Makes the availability actions processor dependent."
+    },
+    {
+      "unit": "p3",
+      "disposition": "structural",
+      "rationale": "Connected-nonexistent permission, no-file-effect result, and file-position effect are split."
+    },
+    {
+      "unit": "p3.connected-nonexistent-permitted",
+      "disposition": "permission",
+      "requirements": [
+        "S12.9-003"
+      ],
+      "rationale": "Permits FLUSH on a connected nonexistent file."
+    },
+    {
+      "unit": "p3.connected-nonexistent-no-effect",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.9-004"
+      ],
+      "rationale": "States no effect on any file for that case."
+    },
+    {
+      "unit": "p3.file-position-unchanged",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.9-005"
+      ],
+      "rationale": "States FLUSH has no effect on file position."
+    },
+    {
+      "unit": "p4",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.9-006"
+      ],
+      "rationale": "FLUSH waits for all pending asynchronous transfers on the unit."
+    },
+    {
+      "unit": "note1",
+      "disposition": "informative",
+      "rationale": "NOTE explains the imprecise mechanism and common buffering terminology; not normative."
+    },
+    {
+      "unit": "note2",
+      "disposition": "informative",
+      "rationale": "NOTE gives a FLUSH example; not normative."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_12_9.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "d40a491e23384428ed4d450dae97b66a4221600ab0a65de87b3cdb7e77367cf0",
+  "review_rationale": "Source registration for 12.6.5-12.9: termination of data transfer, WAIT, BACKSPACE, ENDFILE, REWIND and FLUSH (batch164). Every unit hash-verified by an independent reviewer across two rounds. Round 1 found the portable WAIT no-operation cases missing - WAIT with ID=0 (explicitly permitted by 12.7.2 p3) and with ID= omitted on an asynchronous connection with nothing pending must succeed with IOSTAT zero - and an ENDFILE position plan that used REWIND, destroying the state under test; ENDFILE is now observed by the BACKSPACE that 12.8.3 p2 requires before the next transfer, after which a READ must report IOSTAT_END. Seventeen numbered rules were pre-accounted. Source accounting only."
+}

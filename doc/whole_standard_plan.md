@@ -5545,6 +5545,18 @@ watching both generators catch it. The enumerator kind is correctly not asserted
 it is processor dependent.
 See `doc/source_audits/batch_176.json`.
 
+## Batch 164 — WAIT, file positioning and FLUSH
+
+Fifty-four units of 12.6.5 through 12.9, after two rounds. Both findings were
+about observing the right thing. WAIT had no plan for its simplest portable case —
+nothing pending — even though 12.7.2 p3 explicitly allows `ID=0`; that is now
+planned. And the ENDFILE plan checked "positioned after the endfile record" by
+REWINDing, which destroys the very position being tested. Since 12.8.3 forbids an
+immediate transfer after ENDFILE anyway, the plan now uses the BACKSPACE the
+standard requires: from after the endfile record it lands before it, so the next
+READ must report `IOSTAT_END`.
+See `doc/source_audits/batch_164.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
