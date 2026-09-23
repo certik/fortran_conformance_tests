@@ -4475,6 +4475,57 @@ bound, no compiler invoked, `tests/` diff empty. 13.5–13.11 remain unregistere
 as does **Clause 12**, the immediate I/O-statement neighbour.
 See `doc/source_audits/batch_136.json`.
 
+## Batch 134 — logical interpretation, on the material that blocked batch127
+
+Establishes **21 facets** of **10.1.5.4.1 Logical intrinsic operation
+interpretation** across 6 cases, accepted with **no findings**.
+
+This packet sat on exactly the material that produced the worst defect of the
+session. Batch127 tested 10.1.5.1's logical operators and shipped **vacuous
+truth tables**: `.AND.` was asserted only on rows where `.EQV.` behaves
+identically, so substituting the wrong operator into the source left the tests
+**passing under both compilers**. It had survived a **114-mutation** campaign,
+because when the operator under test is wrong, the oracle is wrong *with* it,
+consistently — oracle and input mutations cannot see it.
+
+So confirming non-recurrence was the review's first job. Here the full
+`TT/TF/FT/FF` set is asserted **directly in the emitted sources** for every
+binary operator, matching Table 10.6, and each table is therefore inconsistent
+with all three alternatives. The separating rows are precisely the ones batch127
+omitted: **`.AND.` and `.EQV.` differ only at `FF`; `.OR.` and `.NEQV.` only at
+`TT`.** The reviewer re-ran **all twelve** operator substitutions on both
+toolchains — 24 of 24 compiled and then failed, zero unexpected passes —
+including the three that previously survived. Those substitutions are now
+**permanent generator data**, which is what stops the class returning rather
+than fixing one instance of it.
+
+The second thing worth flagging is the **binding density**: 21 facets from only
+6 cases, or 3.5 per case, against 15/15 in batch131 and 12/12 in batch133. Dense
+binding is not wrong — one program can legitimately establish several related
+facts — but it is exactly how a weak facet hides behind a strong one. The
+reviewer audited it facet by facet and found no over-binding: each facet is
+separately observable in the case it is bound to.
+
+One oracle detail was checked specifically against a past failure. The
+result-type checks observe the **expression** directly, passing `.eqv.` and
+`.not.` expressions to `logical` dummy arguments with no intermediate variable.
+That matters because batch125 shipped `KIND(observed) - KIND(.FALSE.) == 0`
+where `observed` was declared default-kind — measuring the *declaration* rather
+than the expression — and that facet had to be withdrawn. No result-kind claim
+is made here at all, which respects 10.1.9.3 p4: for different-kind logical
+operands only "one of the operand kinds" is required, so a specific result kind
+is generally not assertable.
+
+The disclaimers were checked in **both** directions. The packet establishes
+nothing about short-circuiting or evaluation order — a processor need not
+evaluate all of an expression if the value can be determined otherwise — and the
+reviewer confirmed both that no such claim sneaks in and that the disclaimer is
+not **too broad**, since an over-broad unobservability claim is itself a defect.
+
+Only `operand-type-delegation` remains pending, correctly: p1 delegates operand
+admissibility to 10.1.5.1.
+See `doc/source_audits/batch_134.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must

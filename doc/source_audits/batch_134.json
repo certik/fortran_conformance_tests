@@ -1,0 +1,115 @@
+{
+ "schema_version": 1,
+ "review_type": "independent-logical-intrinsic-operation-interpretation-fixture-review",
+ "review_date": "2026-09-22",
+ "baseline_commit": "85abdd2",
+ "packet_base_commit": "eb8eccb",
+ "state": "reference-validated-runtime-effects",
+ "packet_kind": "FIXTURE",
+ "scope": {
+  "sections": ["10.1.5.4.1"],
+  "section_title_verified_from_source": "Logical intrinsic operation interpretation",
+  "facets_established": 21,
+  "new_cases": 6,
+  "left_pending": "operand-type-delegation only, because 10.1.5.4.1 p1 delegates operand admissibility to 10.1.5.1"
+ },
+ "independent_review": {
+  "reviewer_distinct_from_author": true,
+  "decision": "accept_no_blocking_findings",
+  "blocking_findings": 0,
+  "non_blocking_findings": 0,
+  "reviewer_read_original_source": "10.1.5.4.1 p1-p3 with Tables 10.5 and 10.6; PDF checksum verified independently"
+ },
+ "why_this_packet_was_scrutinised_hardest": {
+  "precedent": "Batch127 tested 10.1.5.1 logical operators and shipped VACUOUS truth tables: .AND. was asserted only on rows where .EQV. behaves identically, so substituting the wrong operator into the source left the tests PASSING under both compilers.",
+  "why_the_campaign_missed_it": "That defect survived a 114-mutation oracle/input/omission campaign, because when the operator under test is wrong the oracle is wrong with it, consistently. Only mutating the operator itself exposes it.",
+  "this_packet": "10.1.5.4.1 is the INTERPRETATION of logical operations - the same trap - so confirming non-recurrence was the reviewer's primary task."
+ },
+ "truth_tables_asserted": {
+  ".NOT.": "T->F, F->T",
+  ".AND.": "TT/TF/FT/FF = T/F/F/F",
+  ".OR.": "TT/TF/FT/FF = T/T/T/F",
+  ".EQV.": "TT/TF/FT/FF = T/F/F/T",
+  ".NEQV.": "TT/TF/FT/FF = F/T/T/F",
+  "reviewer_verification": "Tables match Table 10.6. All four binary row sets are present DIRECTLY in the committed source.f90 files, not merely described in the report."
+ },
+ "discrimination": {
+  "requirement": "For each operator, the asserted row set must be inconsistent with every one of the other three.",
+  "critical_separating_rows": ".AND. and .EQV. differ ONLY at FF; .OR. and .NEQV. differ ONLY at TT. Those are precisely the rows batch127 omitted.",
+  "matrix": [
+   "AND->OR at TF", "AND->EQV at FF", "AND->NEQV at TT",
+   "OR->AND at TF", "OR->EQV at TF", "OR->NEQV at TT",
+   "EQV->AND at FF", "EQV->OR at TF", "EQV->NEQV at TT",
+   "NEQV->AND at TT", "NEQV->OR at TT", "NEQV->EQV at TT"
+  ],
+  "reviewer_reran": "ALL TWELVE substitutions on BOTH toolchains: 24/24 compiled then failed at runtime, 0 unexpected passes. The three prior batch127 survivors - AND->EQV at FF, EQV->AND at FF, OR->NEQV at TT - all failed on both compilers.",
+  "permanence": "The substitutions are permanent generator data via BINARY_TRUTH_TABLES, DISCRIMINATION_ROWS and add_operator_mutations - not a one-off manual check. This is what prevents the defect class returning."
+ },
+ "binding_density_audited": {
+  "concern": "21 facets from only 6 cases is 3.5 facets per case, far denser than recent packets (batch131: 15/15; batch133: 12/12). Dense binding is not wrong in itself, but it is how a weak facet hides behind a strong one.",
+  "reviewer_verdict": "NO over-bound facets found. Each facet is separately observable in the case it is bound to.",
+  "spot_checks": [
+   "logical-computation-context: direct .false. .or. .true. in an IF",
+   "logical-result-type: direct .eqv. and .not. expressions passed to logical dummy arguments, with NO variable laundering",
+   ".NOT. facets: both rows directly asserted",
+   "all four binary operators: every TT/TF/FT/FF facet directly asserted with distinct failure tokens and nonzero check sentinels"
+  ]
+ },
+ "oracle_discipline_verified": {
+  "expression_not_variable": "Result-type checks observe the EXPRESSION directly. This was checked specifically because batch125 shipped KIND(observed) - KIND(.FALSE.) == 0 where observed was declared default-kind - measuring the DECLARATION rather than the expression - and that facet had to be withdrawn.",
+  "no_kind_claim": "No result-kind claim appears anywhere, and no KIND, mixed-kind or processor-dependent kind assertion is made. This respects the 10.1.9.3 p4 precedent that for different-kind logical operands only one of the operand kinds is required, so a specific result kind is often not assertable.",
+  "sentinels": "No observed sentinel is 0, blank or .FALSE. - a zero-filled logical reads false, so such an assertion could pass on a processor ignoring the feature.",
+  "disclaimers_checked_both_ways": "The author disclaims short-circuiting, evaluation order, arrays, nondefault kinds, defined operators and nonlogical-operand diagnostics. The reviewer confirmed none of those is in fact claimed anywhere, AND that the disclaimers are not too broad - an over-broad unobservability claim is itself a defect."
+ },
+ "non_vacuity_by_mutation": {
+  "campaign": "6 parents pass per compiler; 105/105 mutations fail = 33 wrong-oracle, 21 input, 12 OPERATOR, 6 reverse-sentinel (checks 17->18), 33 omissions.",
+  "principle": "Non-vacuity must be proved by MUTATION targeting the FEATURE UNDER TEST. For an operator packet that means operator substitution; an oracle/input/omission sweep is provably insufficient."
+ },
+ "infrastructure_verified": {
+  "generator": "tools/generate_logical_intrinsic_operation_interpretation_fixtures.py with --check; regeneration byte-identical",
+  "test_module": "discovered by the unittest gate, 6 tests",
+  "suite_count": "1032 -> 1038, confirming the cases are genuinely executed rather than inert - the defect that blocked batch132",
+  "no_global_totals_asserted": "Checked explicitly: the module does not pin authored_facets, the case count, or declared_facets, which drift when sibling fixture or source packets integrate.",
+  "no_review_state_asserted": "Checked explicitly: the module does not assert the catalogue review state, which flips from stale to reviewed at integration."
+ },
+ "compiler_observations": {
+  "frozen_target": "lfortran 0.65.0-411-ga0afaa840b-dirty (accepts f23; --std=f2023 is not supported)",
+  "frozen_target_result": "6/6 pass",
+  "qualifying_reference": "gfortran 16.1.0 with -std=f2023",
+  "reference_result": "6/6 pass",
+  "reproduced_by_integrator": true,
+  "lfortran_defects_found": 0
+ },
+ "explicit_limitations": [
+  "Twenty-one facets of 10.1.5.4.1 only; operand-type-delegation remains pending and belongs to 10.1.5.1.",
+  "Establishes NOTHING about short-circuiting or evaluation order - a processor need not evaluate all of an expression if the value can be determined otherwise.",
+  "No array, nondefault-kind, defined-operator or nonlogical-operand diagnostic claim.",
+  "No result-KIND claim; only result type and value.",
+  "Passing under two compilers is corroboration, not proof of universal conformance.",
+  "Source accounting is unchanged."
+ ],
+ "preservation": {
+  "cases_before": 2234,
+  "cases_after": 2240,
+  "authored_facets_before": 1946,
+  "authored_facets_after": 1967,
+  "reference_validated_before": 1921,
+  "reference_validated_after": 1927,
+  "fixture_review_states_after": "1927 reference-validated / 274 source-reviewed / 1 needs-oracle",
+  "expected_failures_lines": 819,
+  "baseline_lines_changed_by_this_packet": 0,
+  "existing_case_ids_modified": 0
+ },
+ "validation_snapshot": {
+  "detailed_catalogues": 287,
+  "requirements": 1742,
+  "declared_facets": 7356,
+  "authored_facets": 1967,
+  "catalogue_reviews_draft": 1,
+  "catalogue_reviews_draft_note": "Only 18.3.7, pre-existing and untouched.",
+  "normal_audit_exit": 1,
+  "normal_audit_block": "the single retained needs-oracle real-BOZ case, which is the intended state and not a regression",
+  "python_suite_tests": 1038,
+  "python_suite_result": "pending integrator gate"
+ }
+}
