@@ -1,0 +1,461 @@
+{
+  "schema_version": 1,
+  "section": "12.5.6.1",
+  "subunits": {
+    "p5": [
+      "p5.connected-open-permission",
+      "p5.omitted-file-same-file"
+    ],
+    "p6": [
+      "p6.same-file-no-new-connection",
+      "p6.changeable-modes-take-effect",
+      "p6.file-position-unaffected",
+      "p6.pending-async-wait",
+      "p6.position-must-agree",
+      "p6.status-must-be-old",
+      "p6.other-specifiers-must-not-differ"
+    ],
+    "p7": [
+      "p7.status-old-permission",
+      "p7.scratch-status-preserved"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S12.5.6.1-001",
+      "title": "OPEN initiates or modifies a unit-file connection",
+      "source": "S12.5.6.1, J3/24-007, 18 December 2023, physical PDF251.",
+      "source_units": [
+        "p1"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "An OPEN statement initiates or modifies the connection between an external file and a specified unit; it can connect an existing file, create a preconnected file, create and connect a file, or change certain connection modes.",
+      "facets": [
+        "open-initiates-connection",
+        "open-modifies-connection",
+        "open-connects-or-creates-file"
+      ],
+      "pending": {
+        "open-initiates-connection": "Create a named file with known content, open it on a chosen unit, and separately reopen the same unit with a changeable mode; assert portable success and that later registered operations use the connection established by OPEN.",
+        "open-modifies-connection": "Create a named file with known content, open it on a chosen unit, and separately reopen the same unit with a changeable mode; assert portable success and that later registered operations use the connection established by OPEN.",
+        "open-connects-or-creates-file": "Create a named file with known content, open it on a chosen unit, and separately reopen the same unit with a changeable mode; assert portable success and that later registered operations use the connection established by OPEN."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by creating or opening a known external file, writing known nonblank records, initializing variables to nonzero/nonblank sentinels, or setting an opposite inquiry value) and then observe only portable properties: successful IOSTAT zero, nonzero IOSTAT for a specified required error condition, named intrinsic status values where the standard names them, exact internal character records where formatting rules fix them, or INQUIRE results for properties established by the program. IOMSG text, processor-dependent filenames, unit numbers, case interpretation, encodings, record-marker representations, file-storage-unit sizes, specific IOSTAT numbers, and processor-dependent defaults are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered constraint or syntax rule that requires rejection and a future fixture can observe the rejection portably. Program restrictions expressed only as prose shall-statements are not diagnostic facets here. IOMSG wording and processor-dependent numeric status values are never an oracle.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: earlier clause 12 file, unit, connection, mode, and access-method concepts; later clause 12 CLOSE, data-transfer, positioning, INQUIRE, IOSTAT/ERR/IOMSG, and asynchronous rules; clause 13 formatting and mode effects; clause 15 defined I/O; clause 16 ISO_FORTRAN_ENV named constants and inquiry support; clauses 3, 5, 14, 17, 18, and 19 where terminology, normal termination, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.5.6.1-002",
+      "title": "OPEN may connect units from the main program or a subprogram",
+      "source": "S12.5.6.1, J3/24-007, 18 December 2023, physical PDF251.",
+      "source_units": [
+        "p2"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "An external unit may be connected by an OPEN statement in the main program or any subprogram.",
+      "facets": [
+        "open-in-main-program-permitted",
+        "open-in-subprogram-permitted"
+      ],
+      "pending": {
+        "open-in-main-program-permitted": "Use one control OPEN in the main program and one in a contained procedure on distinct units/files, then perform a registered portable write/read through each connection.",
+        "open-in-subprogram-permitted": "Use one control OPEN in the main program and one in a contained procedure on distinct units/files, then perform a registered portable write/read through each connection."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by creating or opening a known external file, writing known nonblank records, initializing variables to nonzero/nonblank sentinels, or setting an opposite inquiry value) and then observe only portable properties: successful IOSTAT zero, nonzero IOSTAT for a specified required error condition, named intrinsic status values where the standard names them, exact internal character records where formatting rules fix them, or INQUIRE results for properties established by the program. IOMSG text, processor-dependent filenames, unit numbers, case interpretation, encodings, record-marker representations, file-storage-unit sizes, specific IOSTAT numbers, and processor-dependent defaults are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered constraint or syntax rule that requires rejection and a future fixture can observe the rejection portably. Program restrictions expressed only as prose shall-statements are not diagnostic facets here. IOMSG wording and processor-dependent numeric status values are never an oracle.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: earlier clause 12 file, unit, connection, mode, and access-method concepts; later clause 12 CLOSE, data-transfer, positioning, INQUIRE, IOSTAT/ERR/IOMSG, and asynchronous rules; clause 13 formatting and mode effects; clause 15 defined I/O; clause 16 ISO_FORTRAN_ENV named constants and inquiry support; clauses 3, 5, 14, 17, 18, and 19 where terminology, normal termination, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.5.6.1-003",
+      "title": "OPEN modes attach to a matching preconnected file that does not exist",
+      "source": "S12.5.6.1, J3/24-007, 18 December 2023, physical PDF251.",
+      "source_units": [
+        "p3"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "If the file to be connected does not exist but is the same as the file to which the unit is preconnected, modes specified by OPEN become part of the connection.",
+      "facets": [
+        "preconnected-nonexistent-same-file-modes-attach"
+      ],
+      "pending": {
+        "preconnected-nonexistent-same-file-modes-attach": "Under a processor profile that exposes a suitable preconnected file, specify a changeable mode and observe only the later mode behavior; without such a profile this remains pending rather than assuming a preconnection."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by creating or opening a known external file, writing known nonblank records, initializing variables to nonzero/nonblank sentinels, or setting an opposite inquiry value) and then observe only portable properties: successful IOSTAT zero, nonzero IOSTAT for a specified required error condition, named intrinsic status values where the standard names them, exact internal character records where formatting rules fix them, or INQUIRE results for properties established by the program. IOMSG text, processor-dependent filenames, unit numbers, case interpretation, encodings, record-marker representations, file-storage-unit sizes, specific IOSTAT numbers, and processor-dependent defaults are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered constraint or syntax rule that requires rejection and a future fixture can observe the rejection portably. Program restrictions expressed only as prose shall-statements are not diagnostic facets here. IOMSG wording and processor-dependent numeric status values are never an oracle.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: earlier clause 12 file, unit, connection, mode, and access-method concepts; later clause 12 CLOSE, data-transfer, positioning, INQUIRE, IOSTAT/ERR/IOMSG, and asynchronous rules; clause 13 formatting and mode effects; clause 15 defined I/O; clause 16 ISO_FORTRAN_ENV named constants and inquiry support; clauses 3, 5, 14, 17, 18, and 19 where terminology, normal termination, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.5.6.1-004",
+      "title": "OPEN to a different file closes the previous connection as if CLOSE had no STATUS",
+      "source": "S12.5.6.1, J3/24-007, 18 December 2023, physical PDF251.",
+      "source_units": [
+        "p4"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "If the target file is not the same as the file currently connected to the unit, the effect is as if CLOSE without STATUS= had executed immediately before the OPEN.",
+      "facets": [
+        "open-different-file-implies-close-without-status"
+      ],
+      "pending": {
+        "open-different-file-implies-close-without-status": "Connect a unit to file A containing nonblank data, then OPEN the same unit to file B and verify subsequent operations reach B; any KEEP/DELETE outcome for A is tested only where CLOSE status rules make it portable."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by creating or opening a known external file, writing known nonblank records, initializing variables to nonzero/nonblank sentinels, or setting an opposite inquiry value) and then observe only portable properties: successful IOSTAT zero, nonzero IOSTAT for a specified required error condition, named intrinsic status values where the standard names them, exact internal character records where formatting rules fix them, or INQUIRE results for properties established by the program. IOMSG text, processor-dependent filenames, unit numbers, case interpretation, encodings, record-marker representations, file-storage-unit sizes, specific IOSTAT numbers, and processor-dependent defaults are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered constraint or syntax rule that requires rejection and a future fixture can observe the rejection portably. Program restrictions expressed only as prose shall-statements are not diagnostic facets here. IOMSG wording and processor-dependent numeric status values are never an oracle.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: earlier clause 12 file, unit, connection, mode, and access-method concepts; later clause 12 CLOSE, data-transfer, positioning, INQUIRE, IOSTAT/ERR/IOMSG, and asynchronous rules; clause 13 formatting and mode effects; clause 15 defined I/O; clause 16 ISO_FORTRAN_ENV named constants and inquiry support; clauses 3, 5, 14, 17, 18, and 19 where terminology, normal termination, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.5.6.1-005",
+      "title": "OPEN is permitted for a unit connected to an existing file",
+      "source": "S12.5.6.1, J3/24-007, 18 December 2023, physical PDF251.",
+      "source_units": [
+        "p5.connected-open-permission"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "If a unit is connected to a file that exists, execution of an OPEN statement for that unit is permitted.",
+      "facets": [
+        "open-connected-existing-file-permitted"
+      ],
+      "pending": {
+        "open-connected-existing-file-permitted": "Open an existing named file, then execute a same-unit OPEN that changes only a changeable mode; assert portable success and preserve a known nondefault file position where applicable."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by creating or opening a known external file, writing known nonblank records, initializing variables to nonzero/nonblank sentinels, or setting an opposite inquiry value) and then observe only portable properties: successful IOSTAT zero, nonzero IOSTAT for a specified required error condition, named intrinsic status values where the standard names them, exact internal character records where formatting rules fix them, or INQUIRE results for properties established by the program. IOMSG text, processor-dependent filenames, unit numbers, case interpretation, encodings, record-marker representations, file-storage-unit sizes, specific IOSTAT numbers, and processor-dependent defaults are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered constraint or syntax rule that requires rejection and a future fixture can observe the rejection portably. Program restrictions expressed only as prose shall-statements are not diagnostic facets here. IOMSG wording and processor-dependent numeric status values are never an oracle.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: earlier clause 12 file, unit, connection, mode, and access-method concepts; later clause 12 CLOSE, data-transfer, positioning, INQUIRE, IOSTAT/ERR/IOMSG, and asynchronous rules; clause 13 formatting and mode effects; clause 15 defined I/O; clause 16 ISO_FORTRAN_ENV named constants and inquiry support; clauses 3, 5, 14, 17, 18, and 19 where terminology, normal termination, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.5.6.1-006",
+      "title": "Omitting FILE= on a connected-unit OPEN keeps the same file",
+      "source": "S12.5.6.1, J3/24-007, 18 December 2023, physical PDF251.",
+      "source_units": [
+        "p5.omitted-file-same-file"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "If FILE= is omitted in an OPEN statement for a unit connected to an existing file, the file to be connected is the same file already connected to the unit.",
+      "facets": [
+        "connected-open-omitted-file-same-file"
+      ],
+      "pending": {
+        "connected-open-omitted-file-same-file": "Open a named file, write a distinct record, reopen the unit without FILE=, then read/write through the same connection using registered positioning so the record identity is nonvacuous."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by creating or opening a known external file, writing known nonblank records, initializing variables to nonzero/nonblank sentinels, or setting an opposite inquiry value) and then observe only portable properties: successful IOSTAT zero, nonzero IOSTAT for a specified required error condition, named intrinsic status values where the standard names them, exact internal character records where formatting rules fix them, or INQUIRE results for properties established by the program. IOMSG text, processor-dependent filenames, unit numbers, case interpretation, encodings, record-marker representations, file-storage-unit sizes, specific IOSTAT numbers, and processor-dependent defaults are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered constraint or syntax rule that requires rejection and a future fixture can observe the rejection portably. Program restrictions expressed only as prose shall-statements are not diagnostic facets here. IOMSG wording and processor-dependent numeric status values are never an oracle.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: earlier clause 12 file, unit, connection, mode, and access-method concepts; later clause 12 CLOSE, data-transfer, positioning, INQUIRE, IOSTAT/ERR/IOMSG, and asynchronous rules; clause 13 formatting and mode effects; clause 15 defined I/O; clause 16 ISO_FORTRAN_ENV named constants and inquiry support; clauses 3, 5, 14, 17, 18, and 19 where terminology, normal termination, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.5.6.1-007",
+      "title": "Same-file OPEN does not establish a new connection",
+      "source": "S12.5.6.1, J3/24-007, 18 December 2023, physical PDF251.",
+      "source_units": [
+        "p6.same-file-no-new-connection"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "When the target file is the same as the file already connected to the unit, a new connection is not established.",
+      "facets": [
+        "same-file-open-no-new-connection"
+      ],
+      "pending": {
+        "same-file-open-no-new-connection": "Establish a known connection and file position, perform a same-file OPEN, and assert via later registered I/O that the connection identity and data remain those of the original file."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by creating or opening a known external file, writing known nonblank records, initializing variables to nonzero/nonblank sentinels, or setting an opposite inquiry value) and then observe only portable properties: successful IOSTAT zero, nonzero IOSTAT for a specified required error condition, named intrinsic status values where the standard names them, exact internal character records where formatting rules fix them, or INQUIRE results for properties established by the program. IOMSG text, processor-dependent filenames, unit numbers, case interpretation, encodings, record-marker representations, file-storage-unit sizes, specific IOSTAT numbers, and processor-dependent defaults are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered constraint or syntax rule that requires rejection and a future fixture can observe the rejection portably. Program restrictions expressed only as prose shall-statements are not diagnostic facets here. IOMSG wording and processor-dependent numeric status values are never an oracle.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: earlier clause 12 file, unit, connection, mode, and access-method concepts; later clause 12 CLOSE, data-transfer, positioning, INQUIRE, IOSTAT/ERR/IOMSG, and asynchronous rules; clause 13 formatting and mode effects; clause 15 defined I/O; clause 16 ISO_FORTRAN_ENV named constants and inquiry support; clauses 3, 5, 14, 17, 18, and 19 where terminology, normal termination, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.5.6.1-008",
+      "title": "Same-file OPEN applies specified changeable modes",
+      "source": "S12.5.6.1, J3/24-007, 18 December 2023, physical PDF251.",
+      "source_units": [
+        "p6.changeable-modes-take-effect"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For a same-file OPEN, values for specified changeable modes come into effect for the established connection.",
+      "facets": [
+        "same-file-open-changeable-modes-take-effect"
+      ],
+      "pending": {
+        "same-file-open-changeable-modes-take-effect": "After opening a formatted file with one portable mode value, reopen the same file with a different changeable mode and observe only behavior fixed by the later mode rule with nonblank/nonzero sentinels."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by creating or opening a known external file, writing known nonblank records, initializing variables to nonzero/nonblank sentinels, or setting an opposite inquiry value) and then observe only portable properties: successful IOSTAT zero, nonzero IOSTAT for a specified required error condition, named intrinsic status values where the standard names them, exact internal character records where formatting rules fix them, or INQUIRE results for properties established by the program. IOMSG text, processor-dependent filenames, unit numbers, case interpretation, encodings, record-marker representations, file-storage-unit sizes, specific IOSTAT numbers, and processor-dependent defaults are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered constraint or syntax rule that requires rejection and a future fixture can observe the rejection portably. Program restrictions expressed only as prose shall-statements are not diagnostic facets here. IOMSG wording and processor-dependent numeric status values are never an oracle.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: earlier clause 12 file, unit, connection, mode, and access-method concepts; later clause 12 CLOSE, data-transfer, positioning, INQUIRE, IOSTAT/ERR/IOMSG, and asynchronous rules; clause 13 formatting and mode effects; clause 15 defined I/O; clause 16 ISO_FORTRAN_ENV named constants and inquiry support; clauses 3, 5, 14, 17, 18, and 19 where terminology, normal termination, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.5.6.1-009",
+      "title": "Same-file OPEN leaves current file position unaffected",
+      "source": "S12.5.6.1, J3/24-007, 18 December 2023, physical PDF251.",
+      "source_units": [
+        "p6.file-position-unaffected"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For a same-file OPEN, the current file position is unaffected.",
+      "facets": [
+        "same-file-open-position-unaffected"
+      ],
+      "pending": {
+        "same-file-open-position-unaffected": "Write two distinct records, position between them with registered positioning, perform a same-file OPEN, then read the next record into a sentinel to prove the position was not reset."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by creating or opening a known external file, writing known nonblank records, initializing variables to nonzero/nonblank sentinels, or setting an opposite inquiry value) and then observe only portable properties: successful IOSTAT zero, nonzero IOSTAT for a specified required error condition, named intrinsic status values where the standard names them, exact internal character records where formatting rules fix them, or INQUIRE results for properties established by the program. IOMSG text, processor-dependent filenames, unit numbers, case interpretation, encodings, record-marker representations, file-storage-unit sizes, specific IOSTAT numbers, and processor-dependent defaults are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered constraint or syntax rule that requires rejection and a future fixture can observe the rejection portably. Program restrictions expressed only as prose shall-statements are not diagnostic facets here. IOMSG wording and processor-dependent numeric status values are never an oracle.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: earlier clause 12 file, unit, connection, mode, and access-method concepts; later clause 12 CLOSE, data-transfer, positioning, INQUIRE, IOSTAT/ERR/IOMSG, and asynchronous rules; clause 13 formatting and mode effects; clause 15 defined I/O; clause 16 ISO_FORTRAN_ENV named constants and inquiry support; clauses 3, 5, 14, 17, 18, and 19 where terminology, normal termination, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.5.6.1-010",
+      "title": "Same-file OPEN waits for pending asynchronous transfers before mode effects",
+      "source": "S12.5.6.1, J3/24-007, 18 December 2023, physical PDF251.",
+      "source_units": [
+        "p6.pending-async-wait"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Before any effect on changeable modes in a same-file OPEN, a wait operation is performed for pending asynchronous data transfer operations for the specified unit.",
+      "facets": [
+        "same-file-open-waits-for-pending-async"
+      ],
+      "pending": {
+        "same-file-open-waits-for-pending-async": "After asynchronous I/O rules are registered, start a pending transfer that writes known data, execute same-file OPEN, and observe only completion effects and IOSTAT properties that WAIT/asynchronous rules define."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by creating or opening a known external file, writing known nonblank records, initializing variables to nonzero/nonblank sentinels, or setting an opposite inquiry value) and then observe only portable properties: successful IOSTAT zero, nonzero IOSTAT for a specified required error condition, named intrinsic status values where the standard names them, exact internal character records where formatting rules fix them, or INQUIRE results for properties established by the program. IOMSG text, processor-dependent filenames, unit numbers, case interpretation, encodings, record-marker representations, file-storage-unit sizes, specific IOSTAT numbers, and processor-dependent defaults are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered constraint or syntax rule that requires rejection and a future fixture can observe the rejection portably. Program restrictions expressed only as prose shall-statements are not diagnostic facets here. IOMSG wording and processor-dependent numeric status values are never an oracle.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: earlier clause 12 file, unit, connection, mode, and access-method concepts; later clause 12 CLOSE, data-transfer, positioning, INQUIRE, IOSTAT/ERR/IOMSG, and asynchronous rules; clause 13 formatting and mode effects; clause 15 defined I/O; clause 16 ISO_FORTRAN_ENV named constants and inquiry support; clauses 3, 5, 14, 17, 18, and 19 where terminology, normal termination, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.5.6.1-011",
+      "title": "POSITION= on same-file OPEN shall agree with current position",
+      "source": "S12.5.6.1, J3/24-007, 18 December 2023, physical PDF251.",
+      "source_units": [
+        "p6.position-must-agree"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "If POSITION= appears in a same-file OPEN, the specified value shall not disagree with the current file position.",
+      "facets": [
+        "same-file-open-position-must-agree"
+      ],
+      "pending": {
+        "same-file-open-position-must-agree": "Source-control plan isolates the POSITION= agreement restriction with an otherwise valid OPEN statement and a repaired control differing only in that rule; because this prose rule is not a numbered constraint, no portable diagnostic is required."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by creating or opening a known external file, writing known nonblank records, initializing variables to nonzero/nonblank sentinels, or setting an opposite inquiry value) and then observe only portable properties: successful IOSTAT zero, nonzero IOSTAT for a specified required error condition, named intrinsic status values where the standard names them, exact internal character records where formatting rules fix them, or INQUIRE results for properties established by the program. IOMSG text, processor-dependent filenames, unit numbers, case interpretation, encodings, record-marker representations, file-storage-unit sizes, specific IOSTAT numbers, and processor-dependent defaults are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered constraint or syntax rule that requires rejection and a future fixture can observe the rejection portably. Program restrictions expressed only as prose shall-statements are not diagnostic facets here. IOMSG wording and processor-dependent numeric status values are never an oracle.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: earlier clause 12 file, unit, connection, mode, and access-method concepts; later clause 12 CLOSE, data-transfer, positioning, INQUIRE, IOSTAT/ERR/IOMSG, and asynchronous rules; clause 13 formatting and mode effects; clause 15 defined I/O; clause 16 ISO_FORTRAN_ENV named constants and inquiry support; clauses 3, 5, 14, 17, 18, and 19 where terminology, normal termination, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.5.6.1-012",
+      "title": "STATUS= on same-file OPEN shall be OLD",
+      "source": "S12.5.6.1, J3/24-007, 18 December 2023, physical PDF251.",
+      "source_units": [
+        "p6.status-must-be-old"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "If STATUS= appears in a same-file OPEN, it shall have the value OLD.",
+      "facets": [
+        "same-file-open-status-must-be-old"
+      ],
+      "pending": {
+        "same-file-open-status-must-be-old": "Source-control plan isolates the same-file STATUS=OLD restriction with an otherwise valid OPEN statement and a repaired control differing only in that rule; because this prose rule is not a numbered constraint, no portable diagnostic is required."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by creating or opening a known external file, writing known nonblank records, initializing variables to nonzero/nonblank sentinels, or setting an opposite inquiry value) and then observe only portable properties: successful IOSTAT zero, nonzero IOSTAT for a specified required error condition, named intrinsic status values where the standard names them, exact internal character records where formatting rules fix them, or INQUIRE results for properties established by the program. IOMSG text, processor-dependent filenames, unit numbers, case interpretation, encodings, record-marker representations, file-storage-unit sizes, specific IOSTAT numbers, and processor-dependent defaults are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered constraint or syntax rule that requires rejection and a future fixture can observe the rejection portably. Program restrictions expressed only as prose shall-statements are not diagnostic facets here. IOMSG wording and processor-dependent numeric status values are never an oracle.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: earlier clause 12 file, unit, connection, mode, and access-method concepts; later clause 12 CLOSE, data-transfer, positioning, INQUIRE, IOSTAT/ERR/IOMSG, and asynchronous rules; clause 13 formatting and mode effects; clause 15 defined I/O; clause 16 ISO_FORTRAN_ENV named constants and inquiry support; clauses 3, 5, 14, 17, 18, and 19 where terminology, normal termination, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.5.6.1-013",
+      "title": "Non-changeable same-file OPEN specifiers shall match the established connection",
+      "source": "S12.5.6.1, J3/24-007, 18 December 2023, physical PDF251.",
+      "source_units": [
+        "p6.other-specifiers-must-not-differ"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "Other than ERR=, IOSTAT=, IOMSG=, and changeable modes, specifier values in a same-file OPEN shall not differ from those in effect for the established connection.",
+      "facets": [
+        "same-file-open-nonchangeable-specifiers-match"
+      ],
+      "pending": {
+        "same-file-open-nonchangeable-specifiers-match": "Source-control plan isolates the same-file non-changeable-specifier consistency restriction with an otherwise valid OPEN statement and a repaired control differing only in that rule; because this prose rule is not a numbered constraint, no portable diagnostic is required."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by creating or opening a known external file, writing known nonblank records, initializing variables to nonzero/nonblank sentinels, or setting an opposite inquiry value) and then observe only portable properties: successful IOSTAT zero, nonzero IOSTAT for a specified required error condition, named intrinsic status values where the standard names them, exact internal character records where formatting rules fix them, or INQUIRE results for properties established by the program. IOMSG text, processor-dependent filenames, unit numbers, case interpretation, encodings, record-marker representations, file-storage-unit sizes, specific IOSTAT numbers, and processor-dependent defaults are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered constraint or syntax rule that requires rejection and a future fixture can observe the rejection portably. Program restrictions expressed only as prose shall-statements are not diagnostic facets here. IOMSG wording and processor-dependent numeric status values are never an oracle.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: earlier clause 12 file, unit, connection, mode, and access-method concepts; later clause 12 CLOSE, data-transfer, positioning, INQUIRE, IOSTAT/ERR/IOMSG, and asynchronous rules; clause 13 formatting and mode effects; clause 15 defined I/O; clause 16 ISO_FORTRAN_ENV named constants and inquiry support; clauses 3, 5, 14, 17, 18, and 19 where terminology, normal termination, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.5.6.1-014",
+      "title": "STATUS=OLD is always allowed for same-file OPEN",
+      "source": "S12.5.6.1, J3/24-007, 18 December 2023, physical PDF251.",
+      "source_units": [
+        "p7.status-old-permission"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A STATUS= specifier with value OLD is always allowed when the target file is the same file already connected to the unit.",
+      "facets": [
+        "same-file-open-status-old-always-allowed"
+      ],
+      "pending": {
+        "same-file-open-status-old-always-allowed": "Open a named existing file and a scratch file separately, then perform same-file OPEN with STATUS=OLD; assert portable success, not processor-specific unit numbers."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by creating or opening a known external file, writing known nonblank records, initializing variables to nonzero/nonblank sentinels, or setting an opposite inquiry value) and then observe only portable properties: successful IOSTAT zero, nonzero IOSTAT for a specified required error condition, named intrinsic status values where the standard names them, exact internal character records where formatting rules fix them, or INQUIRE results for properties established by the program. IOMSG text, processor-dependent filenames, unit numbers, case interpretation, encodings, record-marker representations, file-storage-unit sizes, specific IOSTAT numbers, and processor-dependent defaults are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered constraint or syntax rule that requires rejection and a future fixture can observe the rejection portably. Program restrictions expressed only as prose shall-statements are not diagnostic facets here. IOMSG wording and processor-dependent numeric status values are never an oracle.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: earlier clause 12 file, unit, connection, mode, and access-method concepts; later clause 12 CLOSE, data-transfer, positioning, INQUIRE, IOSTAT/ERR/IOMSG, and asynchronous rules; clause 13 formatting and mode effects; clause 15 defined I/O; clause 16 ISO_FORTRAN_ENV named constants and inquiry support; clauses 3, 5, 14, 17, 18, and 19 where terminology, normal termination, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.5.6.1-015",
+      "title": "Same-file STATUS=OLD preserves SCRATCH deletion status",
+      "source": "S12.5.6.1, J3/24-007, 18 December 2023, physical PDF251.",
+      "source_units": [
+        "p7.scratch-status-preserved"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For a scratch file reopened with STATUS=OLD as the same file, the file remains considered SCRATCH and is still deleted when the unit is closed.",
+      "facets": [
+        "same-file-open-scratch-status-preserved"
+      ],
+      "pending": {
+        "same-file-open-scratch-status-preserved": "Open a scratch file, same-file OPEN with STATUS=OLD, close it, and assert only portable absence of a named file if a name was never exposed; deletion behavior remains tied to scratch/CLOSE rules."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by creating or opening a known external file, writing known nonblank records, initializing variables to nonzero/nonblank sentinels, or setting an opposite inquiry value) and then observe only portable properties: successful IOSTAT zero, nonzero IOSTAT for a specified required error condition, named intrinsic status values where the standard names them, exact internal character records where formatting rules fix them, or INQUIRE results for properties established by the program. IOMSG text, processor-dependent filenames, unit numbers, case interpretation, encodings, record-marker representations, file-storage-unit sizes, specific IOSTAT numbers, and processor-dependent defaults are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered constraint or syntax rule that requires rejection and a future fixture can observe the rejection portably. Program restrictions expressed only as prose shall-statements are not diagnostic facets here. IOMSG wording and processor-dependent numeric status values are never an oracle.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: earlier clause 12 file, unit, connection, mode, and access-method concepts; later clause 12 CLOSE, data-transfer, positioning, INQUIRE, IOSTAT/ERR/IOMSG, and asynchronous rules; clause 13 formatting and mode effects; clause 15 defined I/O; clause 16 ISO_FORTRAN_ENV named constants and inquiry support; clauses 3, 5, 14, 17, 18, and 19 where terminology, normal termination, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p5",
+      "disposition": "structural",
+      "rationale": "Connected-unit OPEN mixes permission and omitted-FILE effect."
+    },
+    {
+      "unit": "p6",
+      "disposition": "structural",
+      "rationale": "Same-file OPEN combines effects, wait behavior, and prose shall restrictions."
+    },
+    {
+      "unit": "p7",
+      "disposition": "structural",
+      "rationale": "STATUS=OLD on same-file OPEN mixes permission with scratch-status effect."
+    },
+    {
+      "unit": "p1",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.5.6.1-001"
+      ]
+    },
+    {
+      "unit": "p2",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.5.6.1-002"
+      ]
+    },
+    {
+      "unit": "p3",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.5.6.1-003"
+      ]
+    },
+    {
+      "unit": "p4",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.5.6.1-004"
+      ]
+    },
+    {
+      "unit": "p5.connected-open-permission",
+      "disposition": "permission",
+      "requirements": [
+        "S12.5.6.1-005"
+      ],
+      "rationale": "Permission to execute OPEN on a unit connected to an existing file."
+    },
+    {
+      "unit": "p5.omitted-file-same-file",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.5.6.1-006"
+      ]
+    },
+    {
+      "unit": "p6.same-file-no-new-connection",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.5.6.1-007"
+      ]
+    },
+    {
+      "unit": "p6.changeable-modes-take-effect",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.5.6.1-008"
+      ]
+    },
+    {
+      "unit": "p6.file-position-unaffected",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.5.6.1-009"
+      ]
+    },
+    {
+      "unit": "p6.pending-async-wait",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.5.6.1-010"
+      ]
+    },
+    {
+      "unit": "p6.position-must-agree",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.5.6.1-011"
+      ]
+    },
+    {
+      "unit": "p6.status-must-be-old",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.5.6.1-012"
+      ]
+    },
+    {
+      "unit": "p6.other-specifiers-must-not-differ",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.5.6.1-013"
+      ]
+    },
+    {
+      "unit": "p7.status-old-permission",
+      "disposition": "permission",
+      "requirements": [
+        "S12.5.6.1-014"
+      ],
+      "rationale": "Permission for STATUS=OLD in same-file OPEN."
+    },
+    {
+      "unit": "p7.scratch-status-preserved",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.5.6.1-015"
+      ]
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_12_5_6_1.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "eb2e5f0fc07371faeed45ad890d47b6b432ff5585b6850c590ab5aa54c6049f1",
+  "review_rationale": "Source registration for the OPEN statement and its specifiers, 12.5.6.1-12.5.6.19 (batch151). Every unit hash-verified by an independent reviewer across four rounds. Round 1 found required OPEN defaults with only generic plans and required default tokens over-suppressed as unobservable; both are now concrete sentinel-prefilled INQUIRE plans (ACCESS, ASYNCHRONOUS, BLANK, DECIMAL, DELIM, FORM, PAD, LEADING_ZERO, SIGN, and ROUND as set membership). Rounds 2 and 3 found that INQUIRE(POSITION=) reports connection STATE, not the omitted OPEN token, and that a re-OPEN plan observes 12.5.6.1 p6 rather than the POSITION default; the omitted POSITION= token is now recorded as not portably observable, as are the STATUS and ENCODING default tokens. The eight numbered rules R1204-R1207 and C1203-C1206 were pre-accounted. Source accounting only."
+}

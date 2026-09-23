@@ -5468,6 +5468,29 @@ to 0 (16.9.119, 16.9.215), so the oracle is `[1]`/`[0]`, not `[5]`/`[3]`. The
 existing bound-capture fixtures in the same catalogue are untouched.
 See `doc/source_audits/batch_175.json`.
 
+## Batch 151 — the OPEN statement, and state versus token
+
+The OPEN statement and all nineteen of its specifier sections: forty-three units,
+after four rounds. Round 1 established two rules now in the authoring checklist:
+**required defaults need concrete plans** — prefill an INQUIRE variable with a
+sentinel, OPEN without the specifier, INQUIRE, assert the token — and **a
+required default token is not latitude merely because the processor's choice
+behind it is**. `SIGN=` omitted must default to `PROCESSOR_DEFINED`; what
+`PROCESSOR_DEFINED` then does is the processor's business.
+
+Rounds 2 and 3 were both about `POSITION=`, and they produced the lesson worth
+keeping: **INQUIRE reports the state of a connection, not the token an OPEN
+defaulted.** `INQUIRE(POSITION=)` returns `REWIND` for a connection opened at its
+initial point, which is where a new file is; it is not guaranteed to say `ASIS`.
+The replacement plan — re-OPEN a connected file and check the position survives —
+observed 12.5.6.1 p6 instead, which holds whatever POSITION's default is. The
+omitted `POSITION=` token is now recorded as not portably observable, alongside
+the `STATUS` and `ENCODING` tokens.
+
+With this packet, Clause 12 is registered through 12.6.2.1 and 12.10.3–12.12; the
+remaining middle sections are in review.
+See `doc/source_audits/batch_151.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
