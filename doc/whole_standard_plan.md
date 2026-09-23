@@ -5341,6 +5341,19 @@ Frozen LFortran rejects the conforming entity-decl form `deferred*(:)` as a
 syntax error.
 See `doc/source_audits/batch_156.json`.
 
+## Batch 150 — units and connections
+
+Thirty-one units of 12.5 through 12.5.5, after two rounds. The blocking finding
+was **over-suppression** of a claim that sounds unobservable: that "a connection
+for unformatted input/output has no changeable modes". Proving an absence sounds
+impossible, but the standard makes it observable — for any connection not for
+formatted I/O, INQUIRE must return `UNDEFINED` for `BLANK=`, `DECIMAL=`,
+`DELIM=`, `LEADING_ZERO=`, `PAD=`, `ROUND=` and `SIGN=`. The other finding went
+the opposite way: a C1202 negative depended on a processor happening to offer an
+unsupported character kind, and since none is guaranteed it is now honestly
+source-only.
+See `doc/source_audits/batch_150.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must

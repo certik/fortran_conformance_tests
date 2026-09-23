@@ -1,0 +1,489 @@
+{
+  "schema_version": 1,
+  "section": "12.5.4",
+  "subunits": {
+    "p1": [
+      "p1.connection-property",
+      "p1.connected-refers-file",
+      "p1.preconnection-or-open-permission",
+      "p1.symmetric-connection"
+    ],
+    "p4": [
+      "p4.unit-single-file-obligation",
+      "p4.change-status-means",
+      "p4.file-multiple-unit-latitude"
+    ],
+    "p5": [
+      "p5.c-interop-context",
+      "p5.c-stream-shared-connection-latitude",
+      "p5.c-stream-shared-io-results-latitude",
+      "p5.iso-units-c-stream-correspondence-latitude",
+      "p5.mixed-language-same-file-results-latitude",
+      "p5.mixed-language-different-files-no-interference"
+    ],
+    "p7": [
+      "p7.unit-reconnect-after-close",
+      "p7.file-reconnect-after-close"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S12.5.4-001",
+      "title": "External-unit connection is a symmetric unit-file property",
+      "source": "S12.5.4, J3/24-007, 18 December 2023, physical PDF250.",
+      "source_units": [
+        "p1.connection-property",
+        "p1.connected-refers-file",
+        "p1.symmetric-connection"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "An external unit is either connected or not connected; if connected, it refers to an external file. Connection is symmetric: the unit is connected to a file if and only if the file is connected to the unit.",
+      "facets": [
+        "external-unit-connected-or-not",
+        "connected-unit-refers-external-file",
+        "unit-file-connection-symmetric"
+      ],
+      "pending": {
+        "external-unit-connected-or-not": "Use INQUIRE(UNIT=...,OPENED=...) only after INQUIRE rules are registered; initialize the logical to the opposite value before observing a known open and closed state.",
+        "connected-unit-refers-external-file": "Open a scratch or named external file and write/read a distinctive record through the unit; assert data effects, not path or descriptor internals.",
+        "unit-file-connection-symmetric": "Use INQUIRE by UNIT and by FILE on a known named file after OPEN; initialize all inquiry variables to opposite sentinels and assert only properties fixed by INQUIRE rules."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or creating a known file) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT for a specified error condition, or named intrinsic status values where the standard names them. Processor-dependent unit numbers, file names, record lengths, storage-unit encodings, buffering, timing, IOMSG text, and specific error numbers are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: later clause 12 connection, specifier, file-position, data-transfer, internal-file, and input/output-item rules; clause 13 formatting; clause 15 defined I/O; clause 16 inquiry intrinsics where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.5.4-002",
+      "title": "An external unit may become connected by preconnection or OPEN",
+      "source": "S12.5.4, J3/24-007, 18 December 2023, physical PDF250.",
+      "source_units": [
+        "p1.preconnection-or-open-permission"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "An external unit may become connected by preconnection or by execution of an OPEN statement.",
+      "facets": [
+        "external-unit-connection-by-preconnection",
+        "external-unit-connection-by-open"
+      ],
+      "pending": {
+        "external-unit-connection-by-preconnection": "Use named preconnected units only for their specified formatted input/output roles; do not require particular physical files.",
+        "external-unit-connection-by-open": "Use OPEN(NEWUNIT=...,STATUS='SCRATCH') and then perform a known I/O operation with sentinels to establish the connection effect."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or creating a known file) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT for a specified error condition, or named intrinsic status values where the standard names them. Processor-dependent unit numbers, file names, record lengths, storage-unit encodings, buffering, timing, IOMSG text, and specific error numbers are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: later clause 12 connection, specifier, file-position, data-transfer, internal-file, and input/output-item rules; clause 13 formatting; clause 15 defined I/O; clause 16 inquiry intrinsics where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.5.4-003",
+      "title": "Most input/output statements shall refer to a connected unit and use or affect its file",
+      "source": "S12.5.4, J3/24-007, 18 December 2023, physical PDF250.",
+      "source_units": [
+        "p2"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "Every input/output statement except OPEN, CLOSE, INQUIRE, or WAIT shall refer to a unit connected to a file and thereby make use of or affect that file.",
+      "facets": [
+        "io-statements-require-connected-unit",
+        "io-statements-use-or-affect-connected-file"
+      ],
+      "pending": {
+        "io-statements-require-connected-unit": "Positive plans first establish a connection by OPEN(NEWUNIT=...) or a named preconnected unit. Negative diagnostics are deferred because nonexistent/disconnected unit status and runtime reporting are context dependent.",
+        "io-statements-use-or-affect-connected-file": "Write a distinctive nonblank record then read it back through the same established connection into sentinel variables; avoid relying on empty/default file state."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or creating a known file) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT for a specified error condition, or named intrinsic status values where the standard names them. Processor-dependent unit numbers, file names, record lengths, storage-unit encodings, buffering, timing, IOMSG text, and specific error numbers are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: later clause 12 connection, specifier, file-position, data-transfer, internal-file, and input/output-item rules; clause 13 formatting; clause 15 defined I/O; clause 16 inquiry intrinsics where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.5.4-004",
+      "title": "A file may be connected and not exist",
+      "source": "S12.5.4, J3/24-007, 18 December 2023, physical PDF250.",
+      "source_units": [
+        "p3"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A file may be connected and not exist.",
+      "facets": [
+        "connected-file-may-not-exist"
+      ],
+      "pending": {
+        "connected-file-may-not-exist": "No portable oracle should require existence merely from connection. Future tests may use a preconnected output unit before any write and must avoid asserting file existence unless 12.3.2/INQUIRE rules establish it."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or creating a known file) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT for a specified error condition, or named intrinsic status values where the standard names them. Processor-dependent unit numbers, file names, record lengths, storage-unit encodings, buffering, timing, IOMSG text, and specific error numbers are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: later clause 12 connection, specifier, file-position, data-transfer, internal-file, and input/output-item rules; clause 13 formatting; clause 15 defined I/O; clause 16 inquiry intrinsics where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.5.4-005",
+      "title": "A unit shall not be connected to more than one file at the same time",
+      "source": "S12.5.4, J3/24-007, 18 December 2023, physical PDF250.",
+      "source_units": [
+        "p4.unit-single-file-obligation"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "A unit shall not be connected to more than one file at the same time.",
+      "facets": [
+        "unit-not-connected-to-multiple-files"
+      ],
+      "pending": {
+        "unit-not-connected-to-multiple-files": "Positive plan opens a unit to one named file and then reopens it to a different named file only through the OPEN/CLOSE rules that change the connection; do not attempt to observe an impossible simultaneous double connection."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or creating a known file) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT for a specified error condition, or named intrinsic status values where the standard names them. Processor-dependent unit numbers, file names, record lengths, storage-unit encodings, buffering, timing, IOMSG text, and specific error numbers are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: later clause 12 connection, specifier, file-position, data-transfer, internal-file, and input/output-item rules; clause 13 formatting; clause 15 defined I/O; clause 16 inquiry intrinsics where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.5.4-006",
+      "title": "Means exist to change unit status and connect a unit to a different file",
+      "source": "S12.5.4, J3/24-007, 18 December 2023, physical PDF250.",
+      "source_units": [
+        "p4.change-status-means"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The standard provides means to change the status of an external unit and connect a unit to a different file.",
+      "facets": [
+        "means-change-external-unit-status",
+        "means-connect-unit-different-file"
+      ],
+      "pending": {
+        "means-change-external-unit-status": "Use CLOSE followed by INQUIRE(OPENED=) after those rules are registered, initializing the logical to the opposite value.",
+        "means-connect-unit-different-file": "Open a unit to one named file, close or reopen according to 12.5.6.1, then connect to a second named file and verify distinctive records in each."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or creating a known file) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT for a specified error condition, or named intrinsic status values where the standard names them. Processor-dependent unit numbers, file names, record lengths, storage-unit encodings, buffering, timing, IOMSG text, and specific error numbers are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: later clause 12 connection, specifier, file-position, data-transfer, internal-file, and input/output-item rules; clause 13 formatting; clause 15 defined I/O; clause 16 inquiry intrinsics where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.5.4-007",
+      "title": "Whether one file can be connected to multiple units is processor dependent",
+      "source": "S12.5.4, J3/24-007, 18 December 2023, physical PDF250.",
+      "source_units": [
+        "p4.file-multiple-unit-latitude"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "It is processor dependent whether a file can be connected to more than one unit at the same time.",
+      "facets": [
+        "file-multiple-unit-connection-processor-dependent"
+      ],
+      "pending": {
+        "file-multiple-unit-connection-processor-dependent": "No portable oracle may require success or failure when connecting the same external file to multiple units simultaneously; future tests use one unit per file unless guarded by processor-specific profiles."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or creating a known file) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT for a specified error condition, or named intrinsic status values where the standard names them. Processor-dependent unit numbers, file names, record lengths, storage-unit encodings, buffering, timing, IOMSG text, and specific error numbers are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: later clause 12 connection, specifier, file-position, data-transfer, internal-file, and input/output-item rules; clause 13 formatting; clause 15 defined I/O; clause 16 inquiry intrinsics where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.5.4-008",
+      "title": "C-stream and mixed-language same-file interoperation properties are processor dependent",
+      "source": "S12.5.4, J3/24-007, 18 December 2023, physical PDF250.",
+      "source_units": [
+        "p5.c-interop-context",
+        "p5.c-stream-shared-connection-latitude",
+        "p5.c-stream-shared-io-results-latitude",
+        "p5.iso-units-c-stream-correspondence-latitude",
+        "p5.mixed-language-same-file-results-latitude"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For C stream interoperation, whether a Fortran unit can be connected to a file also connected to a C stream is processor dependent; if so, I/O results on that file are processor dependent. Correspondence between INPUT_UNIT, OUTPUT_UNIT, ERROR_UNIT and the predefined C text streams is processor dependent, as are results when Fortran-defined and non-Fortran-defined procedures perform I/O on the same external file.",
+      "facets": [
+        "unit-and-c-stream-shared-connection-processor-dependent",
+        "shared-c-stream-io-results-processor-dependent",
+        "iso-units-c-predefined-stream-correspondence-processor-dependent",
+        "mixed-language-same-file-io-results-processor-dependent"
+      ],
+      "pending": {
+        "unit-and-c-stream-shared-connection-processor-dependent": "No portable oracle may require a Fortran unit to connect, or fail to connect, to a file already connected to a C stream.",
+        "shared-c-stream-io-results-processor-dependent": "No portable oracle may assert ordering, buffering, or contents after both Fortran I/O and C stream I/O target the same external file.",
+        "iso-units-c-predefined-stream-correspondence-processor-dependent": "No portable oracle may equate INPUT_UNIT, OUTPUT_UNIT, or ERROR_UNIT with stdin, stdout, or stderr beyond the Fortran preconnection properties.",
+        "mixed-language-same-file-io-results-processor-dependent": "No portable oracle may assert results when Fortran and non-Fortran procedures perform I/O on the same external file; future mixed-language tests keep files distinct."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or creating a known file) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT for a specified error condition, or named intrinsic status values where the standard names them. Processor-dependent unit numbers, file names, record lengths, storage-unit encodings, buffering, timing, IOMSG text, and specific error numbers are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: later clause 12 connection, specifier, file-position, data-transfer, internal-file, and input/output-item rules; clause 13 formatting; clause 15 defined I/O; clause 16 inquiry intrinsics where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.5.4-009",
+      "title": "Fortran and non-Fortran procedures can perform I/O on different external files without interference",
+      "source": "S12.5.4, J3/24-007, 18 December 2023, physical PDF250.",
+      "source_units": [
+        "p5.mixed-language-different-files-no-interference"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A main program or procedure defined by Fortran and one defined by means other than Fortran can perform input/output operations on different external files without interference.",
+      "facets": [
+        "mixed-language-different-files-no-interference"
+      ],
+      "pending": {
+        "mixed-language-different-files-no-interference": "A future mixed-language fixture may write distinctive records to separate files from Fortran and C, then verify each record independently; no scheduling, buffering, or same-file ordering property is asserted."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or creating a known file) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT for a specified error condition, or named intrinsic status values where the standard names them. Processor-dependent unit numbers, file names, record lengths, storage-unit encodings, buffering, timing, IOMSG text, and specific error numbers are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: later clause 12 connection, specifier, file-position, data-transfer, internal-file, and input/output-item rules; clause 13 formatting; clause 15 defined I/O; clause 16 inquiry intrinsics where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.5.4-010",
+      "title": "I/O through multiple units connected to the same external file has processor-dependent results",
+      "source": "S12.5.4, J3/24-007, 18 December 2023, physical PDF250.",
+      "source_units": [
+        "p6"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "If input/output operations are performed on more than one unit while they are connected to the same external file, the results are processor dependent.",
+      "facets": [
+        "multiple-units-same-file-io-results-processor-dependent"
+      ],
+      "pending": {
+        "multiple-units-same-file-io-results-processor-dependent": "No portable oracle may assert record ordering, visibility, buffering, or final contents when multiple units perform I/O while connected to the same external file."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or creating a known file) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT for a specified error condition, or named intrinsic status values where the standard names them. Processor-dependent unit numbers, file names, record lengths, storage-unit encodings, buffering, timing, IOMSG text, and specific error numbers are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: later clause 12 connection, specifier, file-position, data-transfer, internal-file, and input/output-item rules; clause 13 formatting; clause 15 defined I/O; clause 16 inquiry intrinsics where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.5.4-011",
+      "title": "Disconnected units and files may be reconnected after CLOSE",
+      "source": "S12.5.4, J3/24-007, 18 December 2023, physical PDF250.",
+      "source_units": [
+        "p7.unit-reconnect-after-close",
+        "p7.file-reconnect-after-close"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "After CLOSE disconnects an external unit, it may be connected again within the same program to the same or a different file. After CLOSE disconnects an external file, it may be connected again within the same program to the same or a different unit.",
+      "facets": [
+        "unit-reconnect-same-or-different-file-after-close",
+        "file-reconnect-same-or-different-unit-after-close"
+      ],
+      "pending": {
+        "unit-reconnect-same-or-different-file-after-close": "Open a unit to file A, close it, then reopen the unit to file A or B and write a distinctive record; assert successful data effect, not unit-number reuse.",
+        "file-reconnect-same-or-different-unit-after-close": "Open a named file, close it, then reopen by name on the same or another NEWUNIT and read a distinctive record initialized into sentinels."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or creating a known file) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT for a specified error condition, or named intrinsic status values where the standard names them. Processor-dependent unit numbers, file names, record lengths, storage-unit encodings, buffering, timing, IOMSG text, and specific error numbers are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: later clause 12 connection, specifier, file-position, data-transfer, internal-file, and input/output-item rules; clause 13 formatting; clause 15 defined I/O; clause 16 inquiry intrinsics where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.5.4-012",
+      "title": "An internal unit is always connected to its designating internal file",
+      "source": "S12.5.4, J3/24-007, 18 December 2023, physical PDF251.",
+      "source_units": [
+        "p8"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "An internal unit is always connected to the internal file designated by the variable that identifies the unit.",
+      "facets": [
+        "internal-unit-always-connected-to-designated-internal-file"
+      ],
+      "pending": {
+        "internal-unit-always-connected-to-designated-internal-file": "Use a CHARACTER variable initialized with nonblank content as an internal file; internal READ/WRITE changes or observes that variable without OPEN, with sentinels proving the designated variable is the file."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or creating a known file) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT for a specified error condition, or named intrinsic status values where the standard names them. Processor-dependent unit numbers, file names, record lengths, storage-unit encodings, buffering, timing, IOMSG text, and specific error numbers are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: later clause 12 connection, specifier, file-position, data-transfer, internal-file, and input/output-item rules; clause 13 formatting; clause 15 defined I/O; clause 16 inquiry intrinsics where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "structural",
+      "rationale": "Connection property, permission, and symmetry are split."
+    },
+    {
+      "unit": "p1.connection-property",
+      "disposition": "definition",
+      "requirements": [
+        "S12.5.4-001"
+      ],
+      "rationale": "Defines connected/not-connected property."
+    },
+    {
+      "unit": "p1.connected-refers-file",
+      "disposition": "definition",
+      "requirements": [
+        "S12.5.4-001"
+      ],
+      "rationale": "Connected external unit refers to an external file."
+    },
+    {
+      "unit": "p1.preconnection-or-open-permission",
+      "disposition": "permission",
+      "requirements": [
+        "S12.5.4-002"
+      ],
+      "rationale": "Connection may arise by preconnection or OPEN."
+    },
+    {
+      "unit": "p1.symmetric-connection",
+      "disposition": "definition",
+      "requirements": [
+        "S12.5.4-001"
+      ],
+      "rationale": "Defines symmetry of unit-file connection."
+    },
+    {
+      "unit": "p2",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.5.4-003"
+      ]
+    },
+    {
+      "unit": "p3",
+      "disposition": "permission",
+      "requirements": [
+        "S12.5.4-004"
+      ],
+      "rationale": "Permits connected file nonexistence."
+    },
+    {
+      "unit": "note1",
+      "disposition": "informative",
+      "rationale": "Example of connected-but-nonexistent preconnected external file."
+    },
+    {
+      "unit": "p4",
+      "disposition": "structural",
+      "rationale": "Mixed single-file obligation, change means, and processor latitude are split."
+    },
+    {
+      "unit": "p4.unit-single-file-obligation",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.5.4-005"
+      ],
+      "rationale": "Obligation that one unit not be connected to more than one file."
+    },
+    {
+      "unit": "p4.change-status-means",
+      "disposition": "definition",
+      "requirements": [
+        "S12.5.4-006"
+      ],
+      "rationale": "Defines existence of means to change status or connect a different file."
+    },
+    {
+      "unit": "p4.file-multiple-unit-latitude",
+      "disposition": "permission",
+      "requirements": [
+        "S12.5.4-007"
+      ],
+      "rationale": "Processor-dependent latitude for one file connected to multiple units."
+    },
+    {
+      "unit": "p5",
+      "disposition": "structural",
+      "rationale": "C-stream context, processor-dependent properties, and different-file permission are split."
+    },
+    {
+      "unit": "p5.c-interop-context",
+      "disposition": "definition",
+      "requirements": [
+        "S12.5.4-008"
+      ],
+      "rationale": "Context for C stream interoperation."
+    },
+    {
+      "unit": "p5.c-stream-shared-connection-latitude",
+      "disposition": "permission",
+      "requirements": [
+        "S12.5.4-008"
+      ],
+      "rationale": "Processor-dependent shared C stream connection."
+    },
+    {
+      "unit": "p5.c-stream-shared-io-results-latitude",
+      "disposition": "permission",
+      "requirements": [
+        "S12.5.4-008"
+      ],
+      "rationale": "Processor-dependent I/O results on a C-shared file."
+    },
+    {
+      "unit": "p5.iso-units-c-stream-correspondence-latitude",
+      "disposition": "permission",
+      "requirements": [
+        "S12.5.4-008"
+      ],
+      "rationale": "Processor-dependent correspondence with predefined C streams."
+    },
+    {
+      "unit": "p5.mixed-language-same-file-results-latitude",
+      "disposition": "permission",
+      "requirements": [
+        "S12.5.4-008"
+      ],
+      "rationale": "Processor-dependent same-file mixed-language results."
+    },
+    {
+      "unit": "p5.mixed-language-different-files-no-interference",
+      "disposition": "permission",
+      "requirements": [
+        "S12.5.4-009"
+      ],
+      "rationale": "Permission/effect for different external files without interference."
+    },
+    {
+      "unit": "p6",
+      "disposition": "permission",
+      "requirements": [
+        "S12.5.4-010"
+      ],
+      "rationale": "Processor-dependent results for multiple units connected to one file."
+    },
+    {
+      "unit": "p7",
+      "disposition": "structural",
+      "rationale": "Reconnect permissions after unit and file disconnection are split."
+    },
+    {
+      "unit": "p7.unit-reconnect-after-close",
+      "disposition": "permission",
+      "requirements": [
+        "S12.5.4-011"
+      ],
+      "rationale": "Unit reconnect permission after CLOSE."
+    },
+    {
+      "unit": "p7.file-reconnect-after-close",
+      "disposition": "permission",
+      "requirements": [
+        "S12.5.4-011"
+      ],
+      "rationale": "File reconnect permission after CLOSE."
+    },
+    {
+      "unit": "note2",
+      "disposition": "informative",
+      "rationale": "Explanatory note on referencing disconnected files by name."
+    },
+    {
+      "unit": "p8",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.5.4-012"
+      ]
+    },
+    {
+      "unit": "note3",
+      "disposition": "informative",
+      "rationale": "Cross-reference to explanatory annex material."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_12_5_4.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "384826d396fa422e00019075c2e6039aac23cc9d1956acf15ed964628e4a503d",
+  "review_rationale": "Source registration for 12.5-12.5.5, units and their connection to files (batch150). Every unit hash-verified against the pinned census by an independent reviewer across two rounds. Round 1 found an over-suppressed facet - that an unformatted connection has no changeable modes IS portably observable through INQUIRE returning UNDEFINED for BLANK=, DECIMAL=, DELIM=, LEADING_ZERO=, PAD=, ROUND= and SIGN= - and a conditional C1202 negative, now recorded as source-only because no character kind beyond default, ASCII and ISO 10646 is guaranteed. The five numbered rules R1201-R1203, C1201 and C1202 were pre-accounted. Source accounting only."
+}

@@ -1,0 +1,81 @@
+{
+  "schema_version": 1,
+  "section": "12.5.5",
+  "subunits": {
+    "p1": [
+      "p1.beginning-connection-definition",
+      "p1.io-without-open-permission"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S12.5.5-001",
+      "title": "Preconnection connects a unit to a file at program start",
+      "source": "S12.5.5, J3/24-007, 18 December 2023, physical PDF251.",
+      "source_units": [
+        "p1.beginning-connection-definition"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Preconnection means that the unit is connected to a file at the beginning of execution of the program.",
+      "facets": [
+        "preconnection-at-program-beginning"
+      ],
+      "pending": {
+        "preconnection-at-program-beginning": "Use INPUT_UNIT, OUTPUT_UNIT, or ERROR_UNIT at program start without an OPEN and observe a statement-owned data effect; no physical device, file name, or merge behavior is asserted."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or creating a known file) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT for a specified error condition, or named intrinsic status values where the standard names them. Processor-dependent unit numbers, file names, record lengths, storage-unit encodings, buffering, timing, IOMSG text, and specific error numbers are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: later clause 12 connection, specifier, file-position, data-transfer, internal-file, and input/output-item rules; clause 13 formatting; clause 15 defined I/O; clause 16 inquiry intrinsics where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.5.5-002",
+      "title": "A preconnected unit may be used in I/O statements without a prior OPEN",
+      "source": "S12.5.5, J3/24-007, 18 December 2023, physical PDF251.",
+      "source_units": [
+        "p1.io-without-open-permission"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A preconnected unit may be specified in input/output statements without prior execution of an OPEN statement.",
+      "facets": [
+        "preconnected-unit-io-without-open"
+      ],
+      "pending": {
+        "preconnected-unit-io-without-open": "Execute formatted I/O on a named preconnected unit before any OPEN in the program, with controlled input or captured output and nondefault sentinels; assert only successful data transfer."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or creating a known file) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT for a specified error condition, or named intrinsic status values where the standard names them. Processor-dependent unit numbers, file names, record lengths, storage-unit encodings, buffering, timing, IOMSG text, and specific error numbers are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: later clause 12 connection, specifier, file-position, data-transfer, internal-file, and input/output-item rules; clause 13 formatting; clause 15 defined I/O; clause 16 inquiry intrinsics where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "structural",
+      "rationale": "Preconnection definition and without-OPEN permission are split."
+    },
+    {
+      "unit": "p1.beginning-connection-definition",
+      "disposition": "definition",
+      "requirements": [
+        "S12.5.5-001"
+      ],
+      "rationale": "Defines preconnection timing."
+    },
+    {
+      "unit": "p1.io-without-open-permission",
+      "disposition": "permission",
+      "requirements": [
+        "S12.5.5-002"
+      ],
+      "rationale": "Permission to use preconnected units without prior OPEN."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_12_5_5.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "3be7e35a9d55fa7f6edbc52fba5521c064177117f72c0840bf2284ab37936030",
+  "review_rationale": "Source registration for 12.5-12.5.5, units and their connection to files (batch150). Every unit hash-verified against the pinned census by an independent reviewer across two rounds. Round 1 found an over-suppressed facet - that an unformatted connection has no changeable modes IS portably observable through INQUIRE returning UNDEFINED for BLANK=, DECIMAL=, DELIM=, LEADING_ZERO=, PAD=, ROUND= and SIGN= - and a conditional C1202 negative, now recorded as source-only because no character kind beyond default, ASCII and ISO 10646 is guaranteed. The five numbered rules R1201-R1203, C1201 and C1202 were pre-accounted. Source accounting only."
+}
