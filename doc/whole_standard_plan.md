@@ -5664,6 +5664,11 @@ See `doc/source_audits/batch_182.json`.
 Forty units covering all ten atomic subroutines, after three rounds. Everything they do needs a coarray, so every runtime facet is out of scope under the user's rule; the registration still splits their STAT semantics precisely.
 See `doc/source_audits/batch_183.json`.
 
+## Batch 184 — the Bessel functions
+
+Forty-two units, accepted with no findings. The standard fixes no Bessel value — not even J0(0) — so every value is latitude; what is portable is the result kind and the size of the transformational forms.
+See `doc/source_audits/batch_184.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
