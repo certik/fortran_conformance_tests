@@ -1,0 +1,127 @@
+{
+  "schema_version": 1,
+  "section": "16.9.12",
+  "requirements": [
+    {
+      "id": "S16.9.12-003",
+      "title": "ALL arguments have logical MASK and valid DIM",
+      "source": "S16.9.12, J3/24-007, 18 December 2023, physical PDF379.",
+      "source_units": [
+        "p3"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "MASK shall be a logical array, and DIM shall be an integer scalar with value in the range 1 <= DIM <= n where n is the rank of MASK.",
+      "facets": [
+        "mask-logical-array",
+        "dim-integer-scalar",
+        "dim-value-in-range"
+      ],
+      "pending": {
+        "mask-logical-array": "Future source-control plan only: compile conforming calls ALL([.true., .false.]) and ALL(RESHAPE([.true.,.false.,.true.,.true.],[2,2]), DIM=1) as positive controls; do not require a diagnostic for nonlogical MASK because this is an unnumbered Clause 16 program restriction.",
+        "dim-integer-scalar": "Future source-control plan only: compile a conforming call with scalar DIM=1 as the positive control; do not require a diagnostic for nonscalar or noninteger DIM because this is an unnumbered Clause 16 program restriction.",
+        "dim-value-in-range": "Use only DIM values probed from RANK(MASK) in future positive fixtures; out-of-range DIM rejection is not recorded as a diagnostic facet because this is an unnumbered Clause 16 program restriction."
+      },
+      "oracle": "Plans are pending and source-derived for intrinsic-procedure source registration only. Positive plans establish a non-default state first with explicit nonblank, nonzero, or opposite-logical sentinels, then observe only portable properties fixed by the Result Characteristics or Result Value text. Exact character, integer, logical, kind, length, rank, and shape results may be asserted; real-valued checks use exact input values and exact expected whole-number or component results. No fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim is created by this packet.",
+      "oracle_limitation": "Source accounting only. Argument-type and KIND restrictions in Clause 16 intrinsic descriptions are unnumbered program restrictions, not numbered constraints, so this packet records no diagnostic facet for them. A future diagnostic facet is allowed only if a later owner identifies a numbered syntax rule or constraint, a required rejection, and a single-image portable observation. Approximate floating-point behaviour, processor-dependent real precision/range, and diagnostic wording or specific error numbers are not asserted. The reader hash mismatch for 16.9.12#p6 (ALL Examples) is the known census-hash-drift-math-glyphs tooling issue; the census hash remains the binding and no source inventory edit is made.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, and 11 for source form, intrinsic types, kind type parameters, arrays, expressions, allocation state, and execution constructs. Unregistered dependencies explicitly retained: later clause 16 intrinsic framework and sibling intrinsic descriptions; clause 5 processor characteristics where real kinds or default logical representation are reached; clauses 14, 17, and 19 where modules, images, or scope/lifetime terminology become relevant to future fixtures."
+    },
+    {
+      "id": "S16.9.12-004",
+      "title": "ALL result has logical kind, rank, and shape fixed by DIM",
+      "source": "S16.9.12, J3/24-007, 18 December 2023, physical PDF379.",
+      "source_units": [
+        "p4"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "ALL returns logical with the same kind type parameter as MASK; it is scalar if DIM is absent or rank is one, otherwise rank n-1 with the DIM extent removed from MASK shape.",
+      "facets": [
+        "result-logical-same-kind",
+        "dim-absent-scalar",
+        "rank-one-dim-scalar",
+        "dim-present-rank-and-shape"
+      ],
+      "pending": {
+        "result-logical-same-kind": "Use a default logical array [.true., .true.] and assert KIND(ALL(mask))==KIND(mask) together with a scalar .true. value initialized from .false.; this default-kind equality is a portable oracle for the required same-kind property.",
+        "dim-absent-scalar": "Initialize a scalar logical result to .true., evaluate ALL(RESHAPE([.true.,.false.,.true.,.true.],[2,2])) without DIM, and assert the scalar result is .false.; the companion DIM=1 expression over the same rank-2 MASK has rank one with exact expected values [.false., .true.], so DIM=1 genuinely exercises the rank-reduction case rather than the n=1 scalar rule.",
+        "rank-one-dim-scalar": "Evaluate ALL([.true.,.true.], DIM=1) into a scalar initialized to .false. and assert .true.; this distinguishes the rank-one DIM case from higher-rank DIM reductions.",
+        "dim-present-rank-and-shape": "For a 2x3 logical array with DIM=1, assert SHAPE(result)==[3] and exact values from column reductions; mutate DIM to 2 to prove the removed extent and values are load-bearing."
+      },
+      "oracle": "Plans are pending and source-derived for intrinsic-procedure source registration only. Positive plans establish a non-default state first with explicit nonblank, nonzero, or opposite-logical sentinels, then observe only portable properties fixed by the Result Characteristics or Result Value text. Exact character, integer, logical, kind, length, rank, and shape results may be asserted; real-valued checks use exact input values and exact expected whole-number or component results. No fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim is created by this packet.",
+      "oracle_limitation": "Source accounting only. Argument-type and KIND restrictions in Clause 16 intrinsic descriptions are unnumbered program restrictions, not numbered constraints, so this packet records no diagnostic facet for them. A future diagnostic facet is allowed only if a later owner identifies a numbered syntax rule or constraint, a required rejection, and a single-image portable observation. Approximate floating-point behaviour, processor-dependent real precision/range, and diagnostic wording or specific error numbers are not asserted. The reader hash mismatch for 16.9.12#p6 (ALL Examples) is the known census-hash-drift-math-glyphs tooling issue; the census hash remains the binding and no source inventory edit is made.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, and 11 for source form, intrinsic types, kind type parameters, arrays, expressions, allocation state, and execution constructs. Unregistered dependencies explicitly retained: later clause 16 intrinsic framework and sibling intrinsic descriptions; clause 5 processor characteristics where real kinds or default logical representation are reached; clauses 14, 17, and 19 where modules, images, or scope/lifetime terminology become relevant to future fixtures."
+    },
+    {
+      "id": "S16.9.12-005",
+      "title": "ALL computes conjunction reductions including zero-size true",
+      "source": "S16.9.12, J3/24-007, 18 December 2023, physical PDF379.",
+      "source_units": [
+        "p5"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "ALL without DIM is true when all MASK elements are true or MASK has size zero, and false when any element is false; with DIM it applies the same reduction to the selected sections.",
+      "facets": [
+        "all-elements-true",
+        "zero-size-true",
+        "any-false-gives-false",
+        "dim-section-reductions"
+      ],
+      "pending": {
+        "all-elements-true": "Evaluate ALL([.true.,.true.]) into a logical initialized to .false. and assert .true.; mutate one element to .false. to make the all-true case load-bearing.",
+        "zero-size-true": "Use a zero-size logical array produced by a zero upper bound and initialize the scalar result to .false.; assert ALL(mask) is .true. without relying on a default .true. initialization. Pair it with a nonempty one-false companion mask, initialized from .true. and expected to yield .false., to prove the zero-size true result is non-vacuous.",
+        "any-false-gives-false": "Initialize result to .true., evaluate ALL([.true.,.false.,.true.]), and assert .false.; mutate the false element to true to prove the negative observation is load-bearing.",
+        "dim-section-reductions": "Use a 2x3 mask with mixed columns and evaluate DIM=1; initialize the rank-one result to the opposite logical vector and assert exact column-wise conjunction values."
+      },
+      "oracle": "Plans are pending and source-derived for intrinsic-procedure source registration only. Positive plans establish a non-default state first with explicit nonblank, nonzero, or opposite-logical sentinels, then observe only portable properties fixed by the Result Characteristics or Result Value text. Exact character, integer, logical, kind, length, rank, and shape results may be asserted; real-valued checks use exact input values and exact expected whole-number or component results. No fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim is created by this packet.",
+      "oracle_limitation": "Source accounting only. Argument-type and KIND restrictions in Clause 16 intrinsic descriptions are unnumbered program restrictions, not numbered constraints, so this packet records no diagnostic facet for them. A future diagnostic facet is allowed only if a later owner identifies a numbered syntax rule or constraint, a required rejection, and a single-image portable observation. Approximate floating-point behaviour, processor-dependent real precision/range, and diagnostic wording or specific error numbers are not asserted. The reader hash mismatch for 16.9.12#p6 (ALL Examples) is the known census-hash-drift-math-glyphs tooling issue; the census hash remains the binding and no source inventory edit is made.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, and 11 for source form, intrinsic types, kind type parameters, arrays, expressions, allocation state, and execution constructs. Unregistered dependencies explicitly retained: later clause 16 intrinsic framework and sibling intrinsic descriptions; clause 5 processor characteristics where real kinds or default logical representation are reached; clauses 14, 17, and 19 where modules, images, or scope/lifetime terminology become relevant to future fixtures."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "definition",
+      "rationale": "Description defines the intrinsic result concept: Array reduced by .AND. operator."
+    },
+    {
+      "unit": "p2",
+      "disposition": "definition",
+      "rationale": "Classifies ALL as transformational function; executable obligations for elemental/transformational/inquiry classes are owned by the intrinsic framework, not this descriptive unit."
+    },
+    {
+      "unit": "p3",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.12-003"
+      ],
+      "rationale": "Argument restrictions are recorded as unnumbered program requirements with no diagnostic facet."
+    },
+    {
+      "unit": "p4",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.12-004"
+      ]
+    },
+    {
+      "unit": "p5",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.12-005"
+      ]
+    },
+    {
+      "unit": "p6",
+      "disposition": "informative",
+      "rationale": "Example paragraph is illustrative under the Clause 16 addendum; its exact values are cited only as supporting examples for pending plans where Result Value already fixes the result."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_16_9_12.md"
+  },
+  "review_state": "reviewed",
+  "review_rationale": "Source registration for 16.9.8-16.9.14: ADJUSTL, ADJUSTR, AIMAG, AINT, ALL, ALLOCATED and ANINT (batch180). Every unit verified by an independent reviewer across two rounds; the ALL plans now use a rank-2 mask so DIM genuinely changes the result rank, the zero-size .TRUE. result has a non-vacuous companion, and the new catalogues assert no review state. Source accounting only.",
+  "review_fingerprint": "7784aa7dccbd74437047a7f773de76c98626539a0900ac3a81886587436b88f8"
+}

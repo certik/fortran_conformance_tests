@@ -5644,6 +5644,11 @@ See `doc/source_audits/batch_178.json`.
 Forty-one units, accepted with no findings: the first intrinsic procedure descriptions. The pattern every 16.9 section follows is set here — the result characteristics and the parts of the result value the text fixes exactly (ABS of an integer; ACHAR for ASCII codes 0-127; the result RANGE of ACOS and its F2023 degree and pi variants) are requirements with exact plans, while the processor-dependent approximation of a transcendental function is latitude, and Examples are informative.
 See `doc/source_audits/batch_179.json`.
 
+## Batch 180 — ADJUSTL through ANINT
+
+Forty-one units of exact intrinsics, after two rounds. Two findings are worth keeping: a plan claimed DIM=1 turns ALL of a rank-one mask into a rank-one result, when 16.9.12 makes it scalar — the mutation proved nothing until the mask became rank 2 — and a new catalogue asserted a *reviewed* state, which a source packet must never do.
+See `doc/source_audits/batch_180.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
