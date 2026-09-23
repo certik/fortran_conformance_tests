@@ -392,11 +392,19 @@ class C801DeclarationFixturesTests(unittest.TestCase):
         self.assertEqual(sum(map(len, self.catalogue["subunits"].values())), 102)
         self.assertEqual(len(self.catalogue["accounting"]), 127)
         self.assertEqual(sum(len(r["facets"]) for r in self.catalogue["requirements"]), 124)
-        self.assertEqual(sum(len(r["pending"]) for r in self.catalogue["requirements"]), 118)
+        # Facets discharged by later packets that share this catalogue (e.g. batch156's
+        # type_declaration_ fixtures) are excluded, so this legacy invariant only covers C801's own work.
+        external = set()
+        for manifest in (ROOT / "tests" / "fixtures").glob("type_declaration_*/fixture.json"):
+            data = json.loads(manifest.read_text())
+            external |= {(data["rule"], facet) for facet in data["facets"]}
+        self.assertEqual(sum(len(r["pending"]) for r in self.catalogue["requirements"]) + len(external), 118)
         selected = set(FACETS.values()) | {"distinct-attributes-admission"}
         for requirement in self.catalogue["requirements"]:
+            bound_elsewhere = {facet for rule, facet in external if rule == requirement["id"]}
             self.assertEqual(set(requirement["pending"]),
-                             set(requirement["facets"]) - (selected if requirement["id"] == "C801" else set()))
+                             set(requirement["facets"]) - (selected if requirement["id"] == "C801" else set())
+                             - bound_elsewhere)
         c801 = next(r for r in self.catalogue["requirements"] if r["id"] == "C801")
         self.assertEqual(len(c801["pending"]), 17)
         self.assertIn("duplicate-private", c801["pending"])

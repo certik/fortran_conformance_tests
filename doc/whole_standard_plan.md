@@ -5318,6 +5318,29 @@ value — a new defect, distinct from batch128's shaped `SOURCE=`/`MOLD=` one �
 it accepts a type-spec together with `SOURCE=`, which C949 requires it to reject.
 See `doc/source_audits/batch_155.json`.
 
+## Batch 156 — type declarations, four rounds on mutations
+
+Eighteen facets of 8.2 across seventeen fixtures, after **four** rounds, none of
+them about whether an expected value was right. Two findings were
+mis-attributions: `character(:)` is a char-selector in the *type-spec*
+(7.4.4.2), not the entity-decl char-length that C805 governs; and
+`integer :: x = n` fails because `n` is not a constant expression, which is C1012,
+not R805.
+
+The rest were successive mutation defects, and they make a clean checklist. There
+was no permanent mutation runner. Then several mutants were non-conforming — they
+failed to compile, or removed an initializer and so read an **undefined**
+variable, which is not evidence of anything. Then the fix for
+"declared type across the list" changed a *value*, so it failed for the value.
+The final fixture calls a generic interface with INTEGER and REAL specifics on
+**both** list entities, so changing the statement to `real` fails at run time for
+the type reason, and the reviewer confirmed the second entity is exercised
+independently.
+
+Frozen LFortran rejects the conforming entity-decl form `deferred*(:)` as a
+syntax error.
+See `doc/source_audits/batch_156.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must

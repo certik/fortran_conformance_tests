@@ -254,8 +254,18 @@ or legacy storage-width declaration.
 **Oracle:** Noncharacter suffix reports and focused controls distinguish this property from
 length-expression type, kind support and missing separators.
 
+Batch156 type-declaration fixtures for C804: one compile/diagnose case declares a
+non-CHARACTER INTEGER entity with an individual *3 suffix, and the one-property control
+changes only the declaration type to CHARACTER and observes LEN=3 at run time.
+
 **Oracle limitation:** No processor-extension byte-width syntax is treated as standard. No unsupported-kind
 report, numeric storage-size observation or runtime no-op is an oracle.
+
+Batch156 type-declaration fixture boundaries for C804: Only the listed facets are
+represented. Attribute compatibility constraints governed by 8.5, coarrays, procedure
+declarations, COMMON/BLOCK DATA, C812 data-target compatibility, C813 non-bare NULL
+forms, processor-dependent diagnostic wording and review approval remain outside this
+packet.
 
 **Dependencies:** 7.4.4.2 R723/C725/C726; 8.2 R803/C805/C809. The CHARACTER length grammar and allowed
 contexts retain their defining owners.
@@ -278,12 +288,23 @@ special form.
 **Oracle:** A finite form/context matrix and a nonrestricted-local-value reporting/control pair,
 with canonical scalar/type and context relations explicitly separated.
 
+Batch156 type-declaration fixtures for C805: one run-time positive program observes
+literal and named-constant individual CHARACTER lengths, a dummy
+specification-expression length supplied by an INTEGER INTENT(IN) argument, and an
+allocatable deferred length established by allocation before LEN and value checks.
+
 **Oracle limitation:** A local initialized variable is not a named constant. Do not demand a negative-length
 trap, use optional/INTENT(OUT) values in the valid specification-expression control, or
 inquire about an unavailable deferred length. LEN of a nondeferred CHARACTER length has
 different permitted inquiry premises and need not read payload. R723/C725 own
 char-length syntax; R724 is CHARACTER literal syntax, not that length grammar.
 Special-form eligibility and permission to read an effective argument remain separate.
+
+Batch156 type-declaration fixture boundaries for C805: Only the listed facets are
+represented. Attribute compatibility constraints governed by 8.5, coarrays, procedure
+declarations, COMMON/BLOCK DATA, C812 data-target compatibility, C813 non-bare NULL
+forms, processor-dependent diagnostic wording and review approval remain outside this
+packet.
 
 **Dependencies:** 7.2 C702; 7.4.4.2 R723/C725-C731; 10.1.11 R1029/C1011, p1/p2/p6/p7; 8.3/8.4; 15.5.2.13;
 15.6.2.2 and 15.6.4.
@@ -303,8 +324,18 @@ has attributes, R801 independently requires that separator.
 **Oracle:** One otherwise-valid initializer-triggered separator contrast with a one-token repair,
 and a bounded source-use connection for the three initializer alternatives.
 
+Batch156 type-declaration fixtures for C806: one compile/diagnose case uses INTEGER x=1
+with no attributes and no double-colon separator; the control inserts only :: and
+observes the nonzero initializer value.
+
 **Oracle limitation:** No broad punctuation or bare 'expected' diagnostic matcher. The source relation and
 complete repaired declaration must be independently clear.
+
+Batch156 type-declaration fixture boundaries for C806: Only the listed facets are
+represented. Attribute compatibility constraints governed by 8.5, coarrays, procedure
+declarations, COMMON/BLOCK DATA, C812 data-target compatibility, C813 non-bare NULL
+forms, processor-dependent diagnostic wording and review approval remain outside this
+packet.
 
 **Dependencies:** R801/R805 and C811-C813; 4.2 reporting capability.
 
@@ -323,9 +354,19 @@ canonical route, not an exception permitting a missing initializer in this form.
 **Oracle:** Located missing-per-entity initialization reports with constant-expression controls, not
 mandatory nonzero exit.
 
+Batch156 type-declaration fixtures for C807: one compile/diagnose case omits only the
+second initializer in INTEGER, PARAMETER :: a=1, b. The control adds only =a+1 and
+observes b=2.
+
 **Oracle limitation:** No existing C801 PARAMETER-duplication case is re-owned or credited here.
 Constant-expression ordering and intrinsic initialization compatibility must
 independently hold.
+
+Batch156 type-declaration fixture boundaries for C807: Only the listed facets are
+represented. Attribute compatibility constraints governed by 8.5, coarrays, procedure
+declarations, COMMON/BLOCK DATA, C812 data-target compatibility, C813 non-bare NULL
+forms, processor-dependent diagnostic wording and review approval remain outside this
+packet.
 
 **Dependencies:** 8.5.13, 8.6.11; 10.1.12; R805/C806; S8.2-004.
 
@@ -349,10 +390,20 @@ CHARACTER-parameter automatic cases, each repaired by removing only declaration
 initialization. Positive admissions distinguish the named-COMMON exception and the
 entity-versus-component boundary.
 
+Batch156 type-declaration fixtures for C808: one compile/diagnose case initializes an
+otherwise ordinary scalar ALLOCATABLE INTEGER. The control removes only the initializer
+and observes that the allocatable starts unallocated without reading a value.
+
 **Oracle limitation:** An otherwise invalid BLOCK DATA unit, undefined repaired function result, illegal dummy
 initializer type or unsatisfied constructor constant-expression requirement is not a
 control. No runtime initialization or implied-SAVE effect is authored under this
 restriction.
+
+Batch156 type-declaration fixture boundaries for C808: Only the listed facets are
+represented. Attribute compatibility constraints governed by 8.5, coarrays, procedure
+declarations, COMMON/BLOCK DATA, C812 data-target compatibility, C813 non-bare NULL
+forms, processor-dependent diagnostic wording and review approval remain outside this
+packet.
 
 **Dependencies:** 8.1/8.3 C814/8.4; 8.5.13/8.5.16 C862; 8.10.2 COMMON; 14.3 C1415/C1416; 15.6.2.2; 7.5.10
 and 10.1.12.
@@ -438,9 +489,20 @@ arbitrary R805 data-object slot.
 contrast, plus explicitly pending canonical source-use. Actual initial
 values/association are governed by 8.4 and are not new local syntax effects.
 
+Batch156 type-declaration fixtures for R805: runtime positives observe nondefault
+constant-expression values and pointer initialization by NULL(). The
+nonconstant-initializer diagnostic plan is deliberately left pending because the known
+rejection is governed by C1012, not R805.
+
 **Oracle limitation:** No declaration-time procedure call, invalid lifetime target or compiler-accepted BOZ
 representation supplies an oracle. The source-only packet contains no executable cases
 or newly authorized policy.
+
+Batch156 type-declaration fixture boundaries for R805: Only the listed facets are
+represented. Attribute compatibility constraints governed by 8.5, coarrays, procedure
+declarations, COMMON/BLOCK DATA, C812 data-target compatibility, C813 non-bare NULL
+forms, processor-dependent diagnostic wording and review approval remain outside this
+packet.
 
 **Dependencies:** 10.1.12; 7.7 C7119; 7.8 C7126/C7127; 16.3.3 C1601; 7.5.4.6 R744/C770; C811-C813; 8.4;
 15.4.3.6 R1517.
@@ -460,11 +522,21 @@ thereby become uses of R806 null-init.
 **Oracle:** Function-reference structure and source-use roles, with identity/argument negatives
 retained by C813.
 
+Batch156 type-declaration fixtures for R806: the pointer NULL() runtime case uses the
+bare intrinsic function reference with no arguments and observes the resulting
+disassociated pointer.
+
 **Oracle limitation:** A missing-parentheses identifier might be parsed as a target designator, so do not
 manufacture a supposedly isolated R806 syntax negative from that ambiguity. Bare-NULL
 admissions also satisfy16.9.155 Table16.5: no assumed contextual type parameter
 requiring MOLD, or generic/assumed-rank actual-argument context requiring MOLD, is
 smuggled into the plan.
+
+Batch156 type-declaration fixture boundaries for R806: Only the listed facets are
+represented. Attribute compatibility constraints governed by 8.5, coarrays, procedure
+declarations, COMMON/BLOCK DATA, C812 data-target compatibility, C813 non-bare NULL
+forms, processor-dependent diagnostic wording and review approval remain outside this
+packet.
 
 **Dependencies:** 15.5.1 function-reference; C813; 7.5.4.6 R743, 15.4.3.6 R1517, and 16.9.155 NULL.
 
@@ -558,9 +630,20 @@ retain their special interpretations.
 CHARACTER/PDT parameter inquiries. Each list member is checked against source-derived
 constants, not only against another member that could share the same error.
 
+Batch156 type-declaration fixtures for S8.2-001: runtime cases observe the declared
+INTEGER type across a two-entity list through an INTEGER dummy observer, and observe a
+statement CHARACTER length overridden by per-entity * lengths using LEN before value
+equality.
+
 **Oracle limitation:** No compiler probing or effect fixture is included. KIND identifiers need not be1/4/8 or
 fit another selected kind. Unsupported features must not later downgrade a planned run
 to a compile-only control.
+
+Batch156 type-declaration fixture boundaries for S8.2-001: Only the listed facets are
+represented. Attribute compatibility constraints governed by 8.5, coarrays, procedure
+declarations, COMMON/BLOCK DATA, C812 data-target compatibility, C813 non-bare NULL
+forms, processor-dependent diagnostic wording and review approval remain outside this
+packet.
 
 **Dependencies:** 7.2; 7.3.2.1 R703 and assumed/unlimited qualifications; 7.4.4.2 length interpretation;
 7.5.3 type parameters; 16.9.118 KIND/16.9.122 LEN; 19.6 definition.
@@ -583,9 +666,19 @@ array-spec is not resolved by treating RANK as just another freely overridden ke
 ordinary forms, plus an explicitly unresolved source-use interaction rather than a
 guessed result.
 
+Batch156 type-declaration fixtures for S8.2-002: one runtime case declares a
+DIMENSION(2) list where the second entity has an entity array-spec (3), then checks
+extents and independent nondefault values. Coarray coverage is intentionally absent.
+
 **Oracle limitation:** An entity coarray declaration is not proof of multi-image behavior. No new coarray
 profile/companion or reduced compile-only replacement is supplied. RANK's additional
 eligibility and shape semantics remain canonical.
+
+Batch156 type-declaration fixture boundaries for S8.2-002: Only the listed facets are
+represented. Attribute compatibility constraints governed by 8.5, coarrays, procedure
+declarations, COMMON/BLOCK DATA, C812 data-target compatibility, C813 non-bare NULL
+forms, processor-dependent diagnostic wording and review approval remain outside this
+packet.
 
 **Dependencies:** 8.5.1 C815; 8.5.6 C822-C829; 8.5.8 including R814 and rank-clause references; 8.5.17
 R829/C863/C864; 16.9.194 SIZE/16.9.120 LCOBOUND; 19.5.2.
@@ -635,10 +728,20 @@ original-source contrasts for their failures. Any future executed initialization
 require independent small literal/string/shape oracles under8.4 and the actual
 conversion owner, not compiler consensus or another copy of the operation.
 
+Batch156 type-declaration fixtures for S8.2-004: one runtime positive program observes
+nonpointer declaration initialization for INTEGER, REAL, LOGICAL, fixed-length CHARACTER
+and same-shape rank-one INTEGER array entities with nondefault values.
+
 **Oracle limitation:** No negative execution is authorized under this unnumbered restriction without an
 explicit independently reviewed diagnostic basis. Source-only contrasts are plans, not
 fixtures. No undefined/absent/unallocated payload, pointer broadcasting, implicit
 kind-code conversion or REAL representation guess is used.
+
+Batch156 type-declaration fixture boundaries for S8.2-004: Only the listed facets are
+represented. Attribute compatibility constraints governed by 8.5, coarrays, procedure
+declarations, COMMON/BLOCK DATA, C812 data-target compatibility, C813 non-bare NULL
+forms, processor-dependent diagnostic wording and review approval remain outside this
+packet.
 
 **Dependencies:** 8.4; 8.5.8 implied shape and R814; 10.1.12; 10.2.1.2 Table10.8 and CHARACTER/derived
 parameter premises; 10.2.1.3 Tables10.9; 7.5.10; 7.6; 7.7 C7119; 7.8 C7126/C7127; 16.3.3

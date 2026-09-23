@@ -1,0 +1,17 @@
+{"schema_version": 1, "review_type": "independent-type-declaration-fixture-review", "review_date": "2026-09-23", "baseline_commit": "ff29924",
+ "state": "reference-validated-runtime-effects-and-diagnostics", "packet_kind": "FIXTURE",
+ "scope": {"sections": ["8.2"], "facets_established": 18, "new_cases": 17},
+ "review_rounds": [
+  {"round": 1, "commit": "4f8bdbf", "decision": "BLOCKED", "findings": [
+   {"id": "TDFR-001", "issue": "character(:), allocatable was filed under C805, but that is a char-selector in the TYPE-SPEC (7.4.4.2), not a char-length in an entity-decl.", "resolution": "Uses the entity-decl form deferred*(:), allocated with a length and checked by LEN and value."},
+   {"id": "TDFR-002", "issue": "integer :: x = n was filed as an R805 negative, but it is diagnosed because n is not a constant expression, governed by C1012.", "resolution": "Withdrawn; R805's facet returns to pending with a C1012 note."},
+   {"id": "TDFR-003", "issue": "No permanent mutation runner; the unittest merely counted mutation definitions.", "resolution": "--mutation-check added."}]},
+  {"round": 2, "commit": "8cc59be", "decision": "BLOCKED", "findings": [
+   {"id": "TDFR-004", "issue": "Four runtime mutants became non-conforming (type mismatch at a call, a declared length contradicting an ALLOCATE type-spec, a shape mismatch, an executable statement before declarations) and were counted as killed.", "resolution": "Replaced with conforming mutants; the runner now rejects any compile-fail runtime mutant."},
+   {"id": "TDFR-005", "issue": "Remove-initializer mutants read undefined variables (9.2 p2, 19.6.3, 19.6.4), which is non-conforming evidence.", "resolution": "Replaced with changed-initializer or later-assignment mutants that keep every variable defined."}]},
+  {"round": 3, "commit": "d56ebb7", "decision": "BLOCKED", "findings": [
+   {"id": "TDFR-006", "issue": "The replacement for declared-type-across-list split the list and changed a VALUE, so it failed for the value, not the type.", "resolution": "A generic interface with INTEGER and REAL specifics is called on BOTH list entities; the mutant real :: first = 11, second = 13 compiles and fails at run time for the type reason, and the reviewer confirmed the second entity is independently exercised."}]},
+  {"round": 4, "commit": "2626bf3", "decision": "VERIFIED", "findings": []}],
+ "lesson": "Four rounds, every one about mutation or attribution rather than the oracles. A mutant must be CONFORMING (compile on the reference, read no undefined value) and must fail for the reason the facet names; removing an initializer is not a conforming mutation.",
+ "lfortran_defects_recorded": {"count": 1, "case": "C805 entity-decl deferred length deferred*(:)", "observation": "syntax error: Token ':' is unexpected here", "expected_failures": "843 -> 844"},
+ "non_vacuity": {"runtime_mutations": 28, "compile_fail_runtime_mutants": 0}}
