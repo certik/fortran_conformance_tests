@@ -1,0 +1,202 @@
+{
+  "schema_version": 1,
+  "section": "12.3.4.1",
+  "requirements": [
+    {
+      "id": "S12.3.4.1-001",
+      "title": "Execution of input/output statements can affect external file position",
+      "source": "S12.3.4.1, J3/24-007, 18 December 2023, physical PDF246.",
+      "source_units": [
+        "p1"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Execution of certain input/output statements affects the position of an external file, and certain circumstances can cause the position to become indeterminate.",
+      "facets": [
+        "io-execution-affects-external-file-position",
+        "file-position-can-become-indeterminate"
+      ],
+      "pending": {
+        "io-execution-affects-external-file-position": "Create a known external file with two distinct records, execute future registered positioning/data-transfer statements, and observe subsequent reads with nonblank sentinels; assert only positions that those later rules define.",
+        "file-position-can-become-indeterminate": "No portable oracle exists for an exact position after an indeterminate-position condition; future negative tests may only avoid assuming any subsequent record without first repositioning or checking a portable status."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or creating a known file) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT for a specified error condition, or named intrinsic status values where the standard names them. Processor-dependent unit numbers, file names, record lengths, storage-unit encodings, buffering, timing, IOMSG text, and specific error numbers are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: later clause 12 connection modes, connection/specifier, data-transfer, file-position, internal-file, and input/output-item rules; clause 13 formatting; clause 15 defined I/O; clause 16 inquiry intrinsics and ISO_FORTRAN_ENV constants where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.3.4.1-002",
+      "title": "Initial and terminal file points bracket records or file storage units",
+      "source": "S12.3.4.1, J3/24-007, 18 December 2023, physical PDF246.",
+      "source_units": [
+        "p2"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The initial point is just before the first record or file storage unit; the terminal point is just after the last record or file storage unit; for an empty file they are the same position.",
+      "facets": [
+        "initial-point-before-first-unit",
+        "terminal-point-after-last-unit",
+        "empty-file-initial-terminal-same"
+      ],
+      "pending": {
+        "initial-point-before-first-unit": "Open a fresh file, write a first distinct record or stream value, REWIND or otherwise establish the initial point under registered rules, then read into nondefault sentinels and expect the first value.",
+        "terminal-point-after-last-unit": "Write a known final record or stream value and use a registered end/position inquiry rule to observe the terminal relation without asserting byte encodings.",
+        "empty-file-initial-terminal-same": "Use a freshly created empty file and a registered positioning/inquiry rule to observe that no data can be read before writing; assert portable status, not a processor-specific position number."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or creating a known file) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT for a specified error condition, or named intrinsic status values where the standard names them. Processor-dependent unit numbers, file names, record lengths, storage-unit encodings, buffering, timing, IOMSG text, and specific error numbers are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: later clause 12 connection modes, connection/specifier, data-transfer, file-position, internal-file, and input/output-item rules; clause 13 formatting; clause 15 defined I/O; clause 16 inquiry intrinsics and ISO_FORTRAN_ENV constants where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.3.4.1-003",
+      "title": "A current record exists only when positioned within a record file record",
+      "source": "S12.3.4.1, J3/24-007, 18 December 2023, physical PDF246.",
+      "source_units": [
+        "p3"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For a record file positioned within a record, that record is the current record; otherwise there is no current record.",
+      "facets": [
+        "current-record-when-positioned-within-record",
+        "no-current-record-otherwise"
+      ],
+      "pending": {
+        "current-record-when-positioned-within-record": "Use nonadvancing input or output to leave a record file within a record, then continue transfer into a nondefault sentinel and expect continuation of that record.",
+        "no-current-record-otherwise": "After a registered advancing transfer or positioning statement that places the file between records, start the next transfer and observe it selects the next record rather than continuing old data."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or creating a known file) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT for a specified error condition, or named intrinsic status values where the standard names them. Processor-dependent unit numbers, file names, record lengths, storage-unit encodings, buffering, timing, IOMSG text, and specific error numbers are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: later clause 12 connection modes, connection/specifier, data-transfer, file-position, internal-file, and input/output-item rules; clause 13 formatting; clause 15 defined I/O; clause 16 inquiry intrinsics and ISO_FORTRAN_ENV constants where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.3.4.1-004",
+      "title": "The preceding record is determined by file position in a record file",
+      "source": "S12.3.4.1, J3/24-007, 18 December 2023, physical PDF246.",
+      "source_units": [
+        "p4"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For a record file, the preceding record is the record before an in-record or between-record position, is the last record at the terminal point when records exist, and does not exist for an empty file, the initial point, or within the first record.",
+      "facets": [
+        "preceding-record-before-current-or-between",
+        "terminal-point-preceding-is-last-record",
+        "no-preceding-record-at-initial-empty-or-first"
+      ],
+      "pending": {
+        "preceding-record-before-current-or-between": "Write at least three distinct records, establish a middle in-record or between-record position with registered nonadvancing/positioning rules, then BACKSPACE/read or otherwise observe the preceding record as the earlier known record.",
+        "terminal-point-preceding-is-last-record": "Write a nonempty final record, position at terminal point under a registered rule, and use BACKSPACE/read into sentinels to observe the final record.",
+        "no-preceding-record-at-initial-empty-or-first": "Use an empty file and a single-record file at initial/first-record positions; future tests assert only portable status such as nonzero IOSTAT/end condition when a prior record is requested."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or creating a known file) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT for a specified error condition, or named intrinsic status values where the standard names them. Processor-dependent unit numbers, file names, record lengths, storage-unit encodings, buffering, timing, IOMSG text, and specific error numbers are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: later clause 12 connection modes, connection/specifier, data-transfer, file-position, internal-file, and input/output-item rules; clause 13 formatting; clause 15 defined I/O; clause 16 inquiry intrinsics and ISO_FORTRAN_ENV constants where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.3.4.1-005",
+      "title": "The next record is determined by file position in a record file",
+      "source": "S12.3.4.1, J3/24-007, 18 December 2023, physical PDF246.",
+      "source_units": [
+        "p5"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For a record file, the next record is the following record from an in-record or between-record position, is the first record at the initial point when records exist, and does not exist for an empty file, the terminal point, or within the last record.",
+      "facets": [
+        "next-record-after-current-or-between",
+        "initial-point-next-is-first-record",
+        "no-next-record-at-terminal-empty-or-last"
+      ],
+      "pending": {
+        "next-record-after-current-or-between": "Write at least three distinct records, establish a middle in-record or between-record position, and read into nondefault sentinels to observe the following known record.",
+        "initial-point-next-is-first-record": "Write a first record with distinctive contents, establish the initial point, and read into nondefault sentinels to observe that first record.",
+        "no-next-record-at-terminal-empty-or-last": "For an empty file and for a file positioned at terminal/within-last-record under registered rules, attempt a read with IOSTAT into nondefault sentinels and assert only the portable end/nonzero status named by the data-transfer rules."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or creating a known file) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT for a specified error condition, or named intrinsic status values where the standard names them. Processor-dependent unit numbers, file names, record lengths, storage-unit encodings, buffering, timing, IOMSG text, and specific error numbers are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: later clause 12 connection modes, connection/specifier, data-transfer, file-position, internal-file, and input/output-item rules; clause 13 formatting; clause 15 defined I/O; clause 16 inquiry intrinsics and ISO_FORTRAN_ENV constants where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.3.4.1-006",
+      "title": "Stream file position is between storage units, at endpoints, or undefined",
+      "source": "S12.3.4.1, J3/24-007, 18 December 2023, physical PDF246.",
+      "source_units": [
+        "p6"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For stream access, the file position is between two file storage units, at the initial point, at the terminal point, or undefined.",
+      "facets": [
+        "stream-position-between-storage-units",
+        "stream-position-at-initial-or-terminal",
+        "stream-position-can-be-undefined"
+      ],
+      "pending": {
+        "stream-position-between-storage-units": "Write distinct stream values and use registered POS= or INQUIRE(POS=) rules to reposition/read between known storage units without asserting storage-unit byte size.",
+        "stream-position-at-initial-or-terminal": "Use a fresh stream file and a stream file after known writes; observe initial and terminal positions only through registered stream positioning/inquiry rules.",
+        "stream-position-can-be-undefined": "No portable oracle exists for the exact value of an undefined stream position; future tests must first establish a defined position before asserting subsequent data."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or creating a known file) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT for a specified error condition, or named intrinsic status values where the standard names them. Processor-dependent unit numbers, file names, record lengths, storage-unit encodings, buffering, timing, IOMSG text, and specific error numbers are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: later clause 12 connection modes, connection/specifier, data-transfer, file-position, internal-file, and input/output-item rules; clause 13 formatting; clause 15 defined I/O; clause 16 inquiry intrinsics and ISO_FORTRAN_ENV constants where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "definition",
+      "requirements": [
+        "S12.3.4.1-001"
+      ],
+      "rationale": "General file-position effects and indeterminate-position possibility."
+    },
+    {
+      "unit": "p2",
+      "disposition": "definition",
+      "requirements": [
+        "S12.3.4.1-002"
+      ],
+      "rationale": "Defines initial and terminal points."
+    },
+    {
+      "unit": "p3",
+      "disposition": "definition",
+      "requirements": [
+        "S12.3.4.1-003"
+      ],
+      "rationale": "Defines current record."
+    },
+    {
+      "unit": "p4",
+      "disposition": "definition",
+      "requirements": [
+        "S12.3.4.1-004"
+      ],
+      "rationale": "Defines preceding record cases."
+    },
+    {
+      "unit": "p5",
+      "disposition": "definition",
+      "requirements": [
+        "S12.3.4.1-005"
+      ],
+      "rationale": "Defines next record cases."
+    },
+    {
+      "unit": "p6",
+      "disposition": "definition",
+      "requirements": [
+        "S12.3.4.1-006"
+      ],
+      "rationale": "Defines possible stream positions."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_12_3_4_1.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "663288f6cca0fe09b16aae984e85ea750fbc3f4640644cd480c7e44330cbbf6a",
+  "review_rationale": "Source registration for Clause 12 file position, file storage units and internal files (batch146). Every unit hash-verified against the pinned census and read through page 249 by an independent reviewer, accepted with no findings. Mixed obligation/latitude splits at 12.3.4.2 p2, 12.3.4.3 p2 and p3, 12.3.4.4 p1, 12.3.5 p2 and p4 and across the fifteen fine units of 12.4 p2 were verified and none was missed; 12.3.4.1's all-definition classification loses no obligation; the octet recommendation is a recommendation. Source accounting only."
+}

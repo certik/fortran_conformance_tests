@@ -1,0 +1,127 @@
+{
+  "schema_version": 1,
+  "section": "12.3.4.2",
+  "subunits": {
+    "p2": [
+      "p2.position-latitude",
+      "p2.partial-record-transfer",
+      "p2.pending-advancing-effect"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S12.3.4.2-001",
+      "title": "Advancing input/output positions after the last record read or written absent error",
+      "source": "S12.3.4.2, J3/24-007, 18 December 2023, physical PDF246.",
+      "source_units": [
+        "p1"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "An advancing input/output statement always positions a record file after the last record read or written unless an error condition occurs.",
+      "facets": [
+        "advancing-io-positions-after-last-record",
+        "advancing-io-error-exception"
+      ],
+      "pending": {
+        "advancing-io-positions-after-last-record": "Write or read two distinct records with advancing formatted sequential I/O, then perform the next read into a nonblank/nonzero sentinel and expect the following record, proving the file advanced past the last transferred record.",
+        "advancing-io-error-exception": "No portable oracle asserts a post-error position; future tests inducing errors must not depend on a subsequent position without first repositioning."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or creating a known file) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT for a specified error condition, or named intrinsic status values where the standard names them. Processor-dependent unit numbers, file names, record lengths, storage-unit encodings, buffering, timing, IOMSG text, and specific error numbers are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: later clause 12 connection modes, connection/specifier, data-transfer, file-position, internal-file, and input/output-item rules; clause 13 formatting; clause 15 defined I/O; clause 16 inquiry intrinsics and ISO_FORTRAN_ENV constants where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.3.4.2-002",
+      "title": "Nonadvancing input/output may leave a record file within the current or a subsequent record",
+      "source": "S12.3.4.2, J3/24-007, 18 December 2023, physical PDF246.",
+      "source_units": [
+        "p2.position-latitude",
+        "p2.partial-record-transfer"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A nonadvancing input/output statement may position a record file at a character position within the current record or a subsequent record, and nonadvancing input/output can read or write a record by a sequence of data transfer statements each accessing part of the record.",
+      "facets": [
+        "nonadvancing-may-position-within-current-record",
+        "nonadvancing-may-position-subsequent-record",
+        "nonadvancing-partial-record-sequence"
+      ],
+      "pending": {
+        "nonadvancing-may-position-within-current-record": "Use nonadvancing formatted input on a record with distinctive adjacent fields, then continue reading into sentinels and expect continuation within the same record where 13.8.2 semantics fix the position.",
+        "nonadvancing-may-position-subsequent-record": "Use nonadvancing I/O with a case that reaches a subsequent record under the registered 13.8.2 rules; assert only the subsequent record's distinctive data, not an implementation-specific column.",
+        "nonadvancing-partial-record-sequence": "Write or read a record in two nonadvancing transfers using distinctive first and second portions, with nonblank sentinels proving both portions were transferred."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or creating a known file) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT for a specified error condition, or named intrinsic status values where the standard names them. Processor-dependent unit numbers, file names, record lengths, storage-unit encodings, buffering, timing, IOMSG text, and specific error numbers are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: later clause 12 connection modes, connection/specifier, data-transfer, file-position, internal-file, and input/output-item rules; clause 13 formatting; clause 15 defined I/O; clause 16 inquiry intrinsics and ISO_FORTRAN_ENV constants where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.3.4.2-003",
+      "title": "Incomplete nonadvancing output is completed as corresponding advancing output before close or repositioning",
+      "source": "S12.3.4.2, J3/24-007, 18 December 2023, physical PDF246.",
+      "source_units": [
+        "p2.pending-advancing-effect"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "If a nonadvancing output statement leaves a file positioned within a current record and no further output statement for that file precedes close, BACKSPACE, ENDFILE, or REWIND, the effect is as if it were the corresponding advancing output statement.",
+      "facets": [
+        "nonadvancing-output-completed-before-close",
+        "nonadvancing-output-completed-before-backspace-endfile-rewind"
+      ],
+      "pending": {
+        "nonadvancing-output-completed-before-close": "Write distinctive partial-record text with nonadvancing output, close without further output, reopen and read the record with sentinels; expect the advancing-output record effect.",
+        "nonadvancing-output-completed-before-backspace-endfile-rewind": "After distinctive nonadvancing output, execute one of BACKSPACE, ENDFILE, or REWIND before any further output and then read under registered rules; expect the same record data as the corresponding advancing output."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or creating a known file) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT for a specified error condition, or named intrinsic status values where the standard names them. Processor-dependent unit numbers, file names, record lengths, storage-unit encodings, buffering, timing, IOMSG text, and specific error numbers are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: later clause 12 connection modes, connection/specifier, data-transfer, file-position, internal-file, and input/output-item rules; clause 13 formatting; clause 15 defined I/O; clause 16 inquiry intrinsics and ISO_FORTRAN_ENV constants where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.3.4.2-001"
+      ],
+      "rationale": "Advancing post-transfer positioning rule."
+    },
+    {
+      "unit": "p2",
+      "disposition": "structural",
+      "rationale": "Nonadvancing positioning permissions and the pending advancing-output effect are split."
+    },
+    {
+      "unit": "p2.position-latitude",
+      "disposition": "permission",
+      "requirements": [
+        "S12.3.4.2-002"
+      ],
+      "rationale": "Latitude for where nonadvancing I/O may leave a record file."
+    },
+    {
+      "unit": "p2.partial-record-transfer",
+      "disposition": "permission",
+      "requirements": [
+        "S12.3.4.2-002"
+      ],
+      "rationale": "Permission/capability to transfer one record by multiple partial transfers."
+    },
+    {
+      "unit": "p2.pending-advancing-effect",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.3.4.2-003"
+      ],
+      "rationale": "Defined effect when an incomplete nonadvancing output is followed by close or repositioning before further output."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_12_3_4_2.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "264e1784c67a1e14ef6d14eacaaa37459a11bc5e43ab48bc0dc49ee5c6a046d3",
+  "review_rationale": "Source registration for Clause 12 file position, file storage units and internal files (batch146). Every unit hash-verified against the pinned census and read through page 249 by an independent reviewer, accepted with no findings. Mixed obligation/latitude splits at 12.3.4.2 p2, 12.3.4.3 p2 and p3, 12.3.4.4 p1, 12.3.5 p2 and p4 and across the fifteen fine units of 12.4 p2 were verified and none was missed; 12.3.4.1's all-definition classification loses no obligation; the octet recommendation is a recommendation. Source accounting only."
+}

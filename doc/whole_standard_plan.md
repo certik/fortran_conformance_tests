@@ -5283,6 +5283,20 @@ nesting, reversed or dropped values with the size adjusted, a changed type-spec
 length — run by a permanent mutation check.
 See `doc/source_audits/batch_159.json`.
 
+## Batch 146 — file position and internal files
+
+Thirty-one units across 12.3.4 through 12.4, accepted with no findings. The most
+useful part is 12.4, internal files: the mechanism every Clause 13 fixture already
+relies on to observe formatted output byte-exactly is now registered with its own
+obligations — a record is the variable, the remainder of a record written is blank
+filled — so those tests' foundations are themselves accounted for. The splits at
+12.3.4.2, 12.3.4.3, 12.3.4.4, 12.3.5 and across the fifteen fine units of 12.4
+were verified, and the octet storage-unit statement is correctly a
+recommendation. This was also the first packet of the parallel wave whose
+`index.json` insert conflicted with a sibling on cherry-pick; resolving it by
+section order is routine.
+See `doc/source_audits/batch_146.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
