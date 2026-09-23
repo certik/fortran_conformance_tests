@@ -8,6 +8,7 @@ from pathlib import Path
 import sys
 
 from generate_derived_parameter_fixtures import Corpus as ParameterCorpus
+from generate_assumed_rank_effect_fixtures import owned_paragraph
 from generate_type_inheritance_fixtures import evidence_for_category
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -178,25 +179,31 @@ def catalogue_review_status(catalogue):
 
 
 def synced_catalogue(catalogue, specs):
+    import generate_enum_type_fixtures as enum_type
     result = copy.deepcopy(catalogue)
+    shared_coverage = {rule: set(facets) for rule, facets in enum_type.SELECTED.items()}
+    for rule, facets in ELIGIBLE.items():
+        shared_coverage.setdefault(rule, set()).update(facets)
     for requirement in result["requirements"]:
         rows = [s for s in specs.values() if s["rule"] == requirement["id"]]
         coverage = {f for row in rows for f in row["facets"]}
         for facet in coverage:
             requirement["pending"].pop(facet, None)
-        if set(requirement["pending"]) != set(requirement["facets"]) - coverage:
-            raise ValueError("enum pending partition mismatch")
+        expected_pending = set(requirement["facets"]) - shared_coverage.get(requirement["id"], set())
+        if set(requirement["pending"]) != expected_pending:
+            raise ValueError("enum shared pending partition mismatch for " + requirement["id"])
         if not rows:
             continue
-        old = requirement["oracle"].split("\n\nFinite unnamed-enum implementation:", 1)[0]
-        requirement["oracle"] = old + (
-            f"\n\nFinite unnamed-enum implementation: {len(rows)} shared runtime program represents "
+        paragraph = (
+            f"Finite unnamed-enum implementation: {len(rows)} shared runtime program represents "
             f"{len(coverage)} selected facets. Independent literal vectors are checked separately for "
             "each definition, including flat/split forms, negative/repeated values and fresh-definition "
             "reset where applicable. Every definition compares each INTEGER enumerator's KIND to its "
             "own first member; no cross-definition or numeric KIND-code equality is imposed. Small "
             "value-only INT conversions use the required default INTEGER representation. All other "
             "original plans remain pending; observations do not confer source/case approval.")
+        requirement["oracle"] = owned_paragraph(
+            requirement["oracle"], "Finite unnamed-enum implementation: ", paragraph)
         requirement["oracle_limitation"] = requirement["oracle_limitation"].replace(
             "No executable evidence is authored. ", "", 1).replace(
             "Future runtime effects must remain runtime on implementation failure.",
@@ -274,6 +281,10 @@ is relabelled as f2023 and no compiler consensus supplies an expected value.
 
 
 def render_view(catalogue, specs):
+    enum_type_generator = ROOT / "tools" / "generate_enum_type_fixtures.py"
+    if enum_type_generator.is_file():
+        import generate_enum_type_fixtures as enum_type
+        return enum_type.render_view(catalogue)
     sys.path.insert(0, str(ROOT / "tests"))
     from suite_data import render_requirement
     pending = sum(len(r["pending"]) for r in catalogue["requirements"])

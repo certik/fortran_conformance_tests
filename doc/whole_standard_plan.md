@@ -5530,6 +5530,21 @@ shipped that last case rather than withholding it, which is exactly what the
 checklist now asks for.
 See `doc/source_audits/batch_174.json`.
 
+## Batch 176 — interoperable enumerations, and three ways to game a packet
+
+Twelve facets of 7.6.1 across nine fixtures, after two rounds. The oracles were
+sound; the findings were about how a packet can look better than it is, and all
+three are now checklist items. A non-constant enumerator initializer violates
+R762, gfortran diagnoses it and LFortran crashes — so it had to **ship**, not
+stay pending. Seven manifests ran **the same program with the same mutants**,
+counting 27 mutations as 189; each case now has distinct assertions and an honest
+total of 64. And the older enum_value generator's invariant had been **relaxed**
+to let the new bindings into the shared catalogue; it is now a union invariant
+that still rejects anything unowned, proven by deleting an unowned facet and
+watching both generators catch it. The enumerator kind is correctly not asserted:
+it is processor dependent.
+See `doc/source_audits/batch_176.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must

@@ -8,12 +8,15 @@ import re
 import sys
 import unittest
 
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "tests"))
+sys.path.insert(0, str(ROOT / "tools"))
+
 import run_tests as runner
 from suite_data import Registry
 
-ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / "tools"))
 import generate_enum_value_fixtures as generated
+import generate_enum_type_fixtures as enum_type
 
 
 EXPECTED = {
@@ -241,25 +244,28 @@ class EnumValueFixturesTests(unittest.TestCase):
                          "ebb266eaf26ade827daa2b6f494e39249b9129ebbfea81d8e3f4762d14f42449")
         pending = {r["id"]: r["pending"] for r in self.catalogue["requirements"]}
         self.assertEqual(hashlib.sha256(json.dumps(pending, sort_keys=True).encode()).hexdigest(),
-                         "3a1d2ab1e80d21e0b8921f7a1375b5d4b40b3bc59e3bfdd9b9a70d00c9345e3b")
+                         "3de579d672a6b4a55405b4d4726563fa44fd962e33940928a4e8dd5df3f079d9")
         self.assertEqual(len(self.catalogue["requirements"]), 15)
         self.assertEqual(len(self.catalogue["accounting"]), 116)
         self.assertEqual(sum(map(len, self.catalogue["subunits"].values())), 93)
         self.assertEqual(sum(len(r["facets"]) for r in self.catalogue["requirements"]), 64)
-        self.assertEqual(sum(len(r["pending"]) for r in self.catalogue["requirements"]), 57)
+        self.assertEqual(sum(len(r["pending"]) for r in self.catalogue["requirements"]), 45)
         coverage = {}
         for case in self.cases.values():
             coverage.setdefault(case.rule, set()).update(case.meta.facets)
         self.assertEqual(coverage, {r: set(f) for r, f in generated.ELIGIBLE.items()})
+        shared = {r: set(f) for r, f in enum_type.SELECTED.items()}
+        for rule, facets in generated.ELIGIBLE.items():
+            shared.setdefault(rule, set()).update(facets)
         for r in self.catalogue["requirements"]:
-            self.assertEqual(set(r["pending"]), set(r["facets"]) - coverage.get(r["id"], set()))
+            self.assertEqual(set(r["pending"]), set(r["facets"]) - shared.get(r["id"], set()))
 
     def test_full_view_pending_appendix_and_admin_preserving_states(self):
         view = (ROOT / generated.VIEW).read_text()
         self.assertEqual(view, generated.render_view(self.catalogue, self.specs))
         appendix = view.split("## Complete finite pending plans\n", 1)[1].split(
             "## Reproduction and separate gates", 1)[0]
-        self.assertEqual(appendix.count("* **`"), 57)
+        self.assertEqual(appendix.count("* **`"), 45)
         for r in self.catalogue["requirements"]:
             for facet, plan in r["pending"].items():
                 self.assertIn(f"* **`{facet}`** - {plan}", appendix)
