@@ -1,0 +1,30 @@
+{
+ "schema_version": 1,
+ "review_type": "independent-rounding-mode-fixture-review",
+ "review_date": "2026-09-23",
+ "baseline_commit": "b2569f2",
+ "state": "reference-validated-runtime-effects",
+ "packet_kind": "FIXTURE",
+ "milestone": "FIRST PACKET OF CHECKPOINT P, the first eight-packet parallel wave. Accepted with zero findings on the first round.",
+ "scope": {"sections": ["13.7.2.3.8", "13.8.8"], "facets_established": 17, "new_cases": 6},
+ "independent_review": {"reviewer_distinct_from_author": true, "decision": "accept_no_blocking_findings", "blocking_findings": 0},
+ "adjudications": [
+  "13.7.2.3.8 gives NO latitude for a processor to substitute an unsupported mode. The explicit UP, DOWN, ZERO, NEAREST and COMPATIBLE results are required by p3; only NEAREST ties and PROCESSOR_DEFINED are processor dependent, and neither is asserted.",
+  "UP on -1.25 at d=1 gives -1.2: p3 requires the smallest representable value greater than or equal to the original.",
+  "The COMPATIBLE tie uses exact binary -1.25, genuinely halfway between -1.2 and -1.3; away-from-zero gives -1.3. RN is only ever used on the NON-tie 1.125, so RN<->RC is never used as a substitution on a value where RN is processor dependent.",
+  "The duplicate required-mode tables are legitimate rather than double counting: 13.7.2.3.8 owns the mode semantics and 13.8.8 owns the descriptor-to-mode mapping, and each section states its own obligation.",
+  "The decimal/internal-direction fixture claims conversion-direction and definition facets of p2, not rounding behaviour; exact cases are acceptable for that claim.",
+  "ROUND= on the data-transfer statement writing to an internal file is conforming: R1213 permits ROUND=, C1229 only requires a format or namelist, and 12.6.2.14 defines its temporary effect."
+ ],
+ "discrimination": {"UP_vs_DOWN": "1.25", "ZERO_vs_DOWN": "-1.25", "RN_vs_RU": "1.125", "RC_vs_RU": "-1.25", "RP": "no portable separator, left pending", "RN_vs_RC": "only on a tie where RN is processor dependent, left pending"},
+ "non_vacuity": {"total_mutations": 61, "descriptor": 13, "round_mode": 2, "input": 11, "sentinel_init": 6, "all_detected": "61/61 on gfortran; 56/56 on the LFortran-passing cases"},
+ "lfortran_defects_recorded": {
+  "count": 1,
+  "case": "S13_7_2_3_8_001_valid__rounding_mode_data_transfer_specifier_down",
+  "observation": "WRITE(buf,'(SS,F5.1)',ROUND='DOWN') 1.25 gives '  1.3' on frozen LFortran; gfortran gives the required '  1.2'. The ROUND= specifier on the data-transfer statement is ignored while the same mode through OPEN and through the RD descriptor is honoured.",
+  "basis": "13.7.2.3.8 p3 (DOWN), R1213 and 12.6.2.14 (temporary change of mode by the data-transfer specifier)",
+  "expected_failures": "828 -> 829"
+ },
+ "facets_left_pending": ["round-nearest-tie-processor-dependent", "round-processor-defined-latitude", "nearest-ieee-round-to-nearest (conditional on IEEE support)", "RP-sets-processor-defined", "rounding-affects-real-complex-only-selected-descriptors"],
+ "limitations": ["Reference validation is gfortran 16.1.0 in f2023 mode on one platform.", "Input rounding is exercised only on an exact value."]
+}

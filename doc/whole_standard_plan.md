@@ -5099,6 +5099,33 @@ The source/fixture separation held as it must: `authored_facets` **unchanged**,
 source packet binds no fixtures and earns no execution credit.
 See `doc/source_audits/batch_145.json`.
 
+## Batch 149 — rounding modes, and the first parallel wave
+
+This is the first integration of **Checkpoint P**, which ran **eight packets at
+once** — five Clause 12 source packets and three Clause 13 fixture packets —
+instead of three. Authoring and review parallelise cleanly because packets on
+disjoint sections touch disjoint catalogues; the bottleneck had been the serial
+~20-minute full-suite gate, now replaced by a per-module parallel run that is
+verified equivalent (all 1069 tests, all 70 modules) in about 6–7 minutes.
+
+The packet itself covers 13.7.2.3.8 and 13.8.8: seventeen facets across six
+fixtures, **accepted with zero findings**. This is the section that *defines*
+rounding latitude, so the question was precisely what each mode requires. The
+reviewer confirmed there is **no** latitude to substitute an unsupported mode —
+UP, DOWN, ZERO, NEAREST and COMPATIBLE results are all required — and only
+NEAREST ties and PROCESSOR_DEFINED are processor dependent. Neither is asserted.
+
+Each mode pair is discriminated on an exactly representable value where the pair
+genuinely differs: UP/DOWN on `1.25`, ZERO/DOWN on `-1.25`, RN/RU on the non-tie
+`1.125`, and RC/RU on the exact tie `-1.25`. RN is never used on a tie, so the
+tempting RN↔RC substitution — vacuous exactly where RN is processor dependent —
+never appears.
+
+One LFortran defect: `ROUND='DOWN'` on the **data-transfer statement** is ignored
+(`1.25` prints `1.3`), while the same mode set through `OPEN` or through the `RD`
+descriptor is honoured.
+See `doc/source_audits/batch_149.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
