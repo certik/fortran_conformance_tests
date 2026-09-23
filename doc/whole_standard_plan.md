@@ -5241,6 +5241,32 @@ headers still named the control's rule and facet. The unit test merely counted
 headers. It now compares every header against the manifest.
 See `doc/source_audits/batch_157.json`.
 
+## Batch 154 — DATA statements, and the cases that were withheld
+
+Twenty-four facets of 8.6.7 across thirteen fixtures, after two rounds, drawn
+from the largest backlog in the suite (182 pending facets).
+
+The most important finding was about **what was not shipped**. The author had
+probed DATA on a triplet section, a vector-subscript section, a component
+section and a negative-step implied-DO, found that frozen LFortran failed all four
+while gfortran passed, and quietly left the facets pending. That is exactly
+backwards: when the text backs the reference, an LFortran-only failure is a
+**defect to record**, not a reason to leave a facet untested. All four now ship
+with order-discriminating values, and all four are recorded as LFortran failures
+— a crash, two wrong-order results and an LLVM verification error.
+
+The other two findings were about mutation quality. Twelve repeat-factor mutants
+broke the value-count equality of 8.6.7 p8 and so failed at compile time, proving
+nothing about repeats; they were replaced by balanced substitutions. And every
+fixture now has a conforming "replace the DATA" probe — the pointer probe
+retargets to another initialized target rather than leaving the association
+undefined.
+
+Integration also had to renew three pre-existing DATA position reviews, at their
+own original state, because binding new facets into the shared catalogue
+re-fingerprinted them.
+See `doc/source_audits/batch_154.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must

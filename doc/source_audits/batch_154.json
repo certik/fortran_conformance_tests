@@ -1,0 +1,13 @@
+{"schema_version": 1, "review_type": "independent-data-statement-fixture-review", "review_date": "2026-09-23", "baseline_commit": "ff29924",
+ "state": "reference-validated-runtime-effects", "packet_kind": "FIXTURE",
+ "scope": {"sections": ["8.6.7"], "facets_established": 24, "new_cases": 13},
+ "review_rounds": [
+  {"round": 1, "commit": "6d05472", "decision": "BLOCKED", "findings": [
+   {"id": "DSFR-001", "issue": "The author WITHHELD portable cases because frozen LFortran failed them: array-section, vector-subscript-section, component-section and negative-step implied-DO DATA objects. gfortran passes all four and 8.6.7 p5/p8 back the expected order. Withholding hides defects and leaves portably testable facets pending under a false reason.", "resolution": "Four fixtures shipped with order-discriminating values; recorded as LFortran expected failures."},
+   {"id": "DSFR-002", "issue": "Twelve compile-fail mutants (six mutants on two compilers) broke the 8.6.7 p8 count equality, i.e. became NON-CONFORMING, and so proved nothing about repeat semantics.", "resolution": "Replaced by balanced substitutions that keep the lists equal in length but change the per-object values, so each mutant compiles and fails at run time."},
+   {"id": "DSFR-003", "issue": "Only four of nine fixtures had a remove-DATA probe.", "resolution": "Every fixture now has a conforming replacement probe; the pointer probe retargets to another initialized target instead of leaving the association undefined."}]},
+  {"round": 2, "commit": "b734f2f", "decision": "VERIFIED", "findings": []}],
+ "adjudications": ["A vector-subscripted section is a permitted DATA object: C879 requires section subscripts to be constant expressions, [4,1,3] is a constant rank-one integer array constructor per 10.1.12, and it is duplicate-free, so the section is definable.", "Z'35' in DATA for a default integer is 53 per 7.7 and 8.6.7 p11."],
+ "lfortran_defects_recorded": {"count": 4, "cases": {"triplet section a(2:6:2)": "compiler crash", "vector section a([4,1,3])": "ERROR STOP 1 (wrong values)", "component section cells(:)%value": "LLVM verification failure", "negative-step implied-DO": "ERROR STOP 1 (wrong order)"}, "expected_failures": "836 -> 840"},
+ "pre_existing_reviews_renewed": {"cases": ["S8_6_7_004_valid__data_position_effect_array", "S8_6_7_004_valid__data_position_effect_nonexecution", "S8_6_7_004_valid__data_position_effect_scalar"], "state": "reference-validated, each at its OWN original state", "reason": "binding new facets into the shared 8.6.7 catalogue re-fingerprinted them; fixtures and bindings are byte-identical and a fresh gfortran run agrees"},
+ "non_vacuity": {"feature_mutations": 40, "compile_fail_on_portable_parents": 0}}
