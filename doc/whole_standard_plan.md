@@ -4858,6 +4858,66 @@ including on the subset that *passes* under frozen LFortran, which is exactly
 where a vacuous test could have hidden.
 See `doc/source_audits/batch_142.json`.
 
+## Batch 141 — three rounds, and a finding against my own instruction
+
+This packet proposed **18** facets across ten sections of 13.8 control edit
+descriptors and shipped **16**. It is the second packet in the project's history
+to need a **third review round**, after batch136 — and it failed in the same way,
+which is the point worth recording.
+
+### Round 1: two cases that failed on *both* toolchains
+
+`LZS` and `LZP` were counted among the discharged facets, but both fail on
+gfortran (compile-time "Missing comma in FORMAT string") *and* on frozen LFortran
+(runtime "Missing comma between descriptors in format string").
+
+The reviewer established from R1319, R1313, R1304 and R1303/C1302 that the
+fixture format strings **are conforming and do contain the comma**, so this is an
+implementation gap in *both* compilers rather than malformed test source. But
+gfortran is this project's **f2023 reference**, so no reference validation
+exists, and the batch130 precedent forbids a one-sided LFortran XFAIL in that
+situation. Both facets went back to pending.
+
+The `LZS`↔`LZP` **substitution** went with them: a substitution whose parent
+fixture cannot run proves nothing, however good it looks in a mutation matrix.
+
+### Round 2: the correction introduced a new defect — and it was mine
+
+The corrected pending text said `LZS`/`LZP` affect **"F/E/EN/ES/EX"** output.
+13.8.5 p3 says, verbatim:
+
+> The LZS, LZP, and LZ edit descriptors affect only **F, E, D, and G** editing
+> during the execution of an output statement.
+
+`EN`, `ES` and `EX` are not in the list; `D` and `G` were missing from the
+author's. I read 13.8.5 p3 from the pinned PDF myself before ruling.
+
+**That wrong list came from my own correction instruction**, not from the
+author's independent work. It is the second time this session a finding has been
+upheld against my own guidance, and it is exactly why the standing rule exists:
+**the pinned source outranks the coordinator's prompt**, and an instruction that
+conflicts with the source must be *refused*, not followed. I restated that to the
+author rather than quietly fixing it.
+
+Two side questions came out of the same round. The author's own substitution
+count was wrong — **8 reported, 9 actual**, with `TL2`→`TR2` omitted — so the
+packet now states 9 substitutions and 7 descriptor omissions, each verified
+load-bearing. And an unrequested "root import-path fix" was *investigated* rather
+than reflexively rejected: it turns out `tests/test_contiguous_property_fixtures.py`
+already does the same thing, it cannot mask a missing import, and discovery still
+collects the module exactly once. Retained on precedent.
+
+### What three rounds actually teaches
+
+In both observed cases the new defect was in material the correction **newly
+wrote**, not in what it removed. Removing a bad test is safe; the prose written to
+replace it is not. That is the argument for re-verifying corrections rather than
+trusting them, and it is why the withdrawn facets' *pending examples* were
+themselves checked here: with `F3.1` on `0.5` the fractional digit means the zero
+left of the decimal is the **optional** one per 13.7.2.3.2 p11, so `LZS`/`LZP`
+genuinely determine it and the worked examples stand.
+See `doc/source_audits/batch_141.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must

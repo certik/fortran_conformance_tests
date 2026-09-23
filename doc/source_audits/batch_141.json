@@ -1,0 +1,130 @@
+{
+ "schema_version": 1,
+ "review_type": "independent-control-edit-descriptor-fixture-review",
+ "review_date": "2026-09-23",
+ "baseline_commit": "8f843cd",
+ "integrated_on": "4dfd0d0",
+ "state": "reference-validated-runtime-effects",
+ "packet_kind": "FIXTURE",
+ "milestone": "THREE REVIEW ROUNDS. The only packet this session to need a third round, and the second in the project's history after batch136.",
+ "scope": {
+  "sections": [
+   "13.8.1.1",
+   "13.8.1.2",
+   "13.8.1.3",
+   "13.8.2",
+   "13.8.3",
+   "13.8.4",
+   "13.8.5",
+   "13.8.7",
+   "13.8.9",
+   "13.9"
+  ],
+  "facets_established": 16,
+  "new_cases": 16,
+  "facets_proposed_but_withdrawn": 2
+ },
+ "review_rounds": [
+  {
+   "round": 1,
+   "commit": "bf600f4",
+   "decision": "BLOCKED",
+   "findings": [
+    {
+     "id": "C138FR-001",
+     "issue": "The packet claimed 18 discharged facets, but the LZS and LZP cases FAIL ON BOTH TOOLCHAINS. gfortran 16.1.0 -std=f2023 rejects at compile time with 'Missing comma in FORMAT string'; frozen LFortran builds with warnings and then fails at runtime with 'Missing comma between descriptors in format string'.",
+     "adjudication": "ACCEPTED. The reviewer established from R1319, R1313, R1304 and R1303/C1302 that the fixture format strings ARE conforming and DO include the comma, so the shared diagnostic is an implementation gap in both compilers rather than malformed test source. But gfortran is this project's f2023 REFERENCE, so no reference validation exists. Standing precedent from batch130 applies: withdraw to pending, do NOT record a one-sided LFortran XFAIL. A packet must never ship cases that fail on both toolchains.",
+     "resolution": "LZS-sets-suppress and LZP-sets-print returned to pending; packet reduced from 18 facets to 16."
+    },
+    {
+     "id": "C138FR-002",
+     "issue": "The LZS<->LZP descriptor substitution pair was claimed as mutation evidence, but both parent fixtures fail, so the pair provides no working discrimination.",
+     "adjudication": "ACCEPTED. A substitution whose parent cannot run proves nothing.",
+     "resolution": "Pair removed from the qualified discrimination table."
+    }
+   ]
+  },
+  {
+   "round": 2,
+   "commit": "a1968a8",
+   "decision": "BLOCKED",
+   "findings": [
+    {
+     "id": "C138FR-003",
+     "issue": "The corrected pending text said LZS/LZP affect 'F/E/EN/ES/EX' output. 13.8.5 p3 says verbatim: 'The LZS, LZP, and LZ edit descriptors affect only F, E, D, and G editing during the execution of an output statement.' EN, ES and EX are NOT in the list; D and G are missing from the author's.",
+     "adjudication": "ACCEPTED, and the coordinator read 13.8.5 p3 from the pinned PDF personally to confirm before ruling. IMPORTANT: the wrong list originated in the COORDINATOR'S OWN correction instruction, not in the author's independent work. This is the second time this session a finding has been upheld against the coordinator's own guidance. The standing rule was restated to the author: THE PINNED SOURCE OUTRANKS THE COORDINATOR'S PROMPT, and an instruction that conflicts with the source must be refused, not followed.",
+     "resolution": "Family list corrected to 'F, E, D, and G'; pending text also extended with 13.8.5 p2's 'shall'/'shall not' obligation and p3's no-effect-on-input bound."
+    },
+    {
+     "id": "C138FR-003b",
+     "issue": "Side questions raised with the correction: the author reported 8 substitutions where the reviewer's own run of the generator reported 9; and the author had added an unrequested 'root import-path fix' to the test module.",
+     "adjudication": "Both resolved rather than blocked. The correct count is 9 - the author had omitted TL2->TR2 - and the packet now states 9 substitutions and 7 descriptor omissions. The import-path change was verified as PRECEDENTED: tests/test_contiguous_property_fixtures.py does the same thing, it cannot mask a missing import, and discovery still collects the module exactly once.",
+     "resolution": "Counts made accurate; import-path change retained on precedent."
+    }
+   ]
+  },
+  {
+   "round": 3,
+   "commit": "15019fe",
+   "decision": "VERIFIED",
+   "findings": []
+  }
+ ],
+ "why_three_rounds_matters": "Corrections are RE-VERIFIED, never trusted. Batch136 round 2 introduced two new defects that only round 3 caught; this packet's round 2 introduced C138FR-003 the same way. A correction commit is exactly as likely to carry a defect as an original proposal, and in both observed cases the defect was in material the correction newly WROTE rather than in what it removed.",
+ "source_rules_independently_confirmed": [
+  "13.8.5 p1: LZS, LZP and LZ set the leading zero mode corresponding to LEADING_ZERO= values SUPPRESS, PRINT and PROCESSOR_DEFINED respectively",
+  "13.8.5 p2: under PRINT the processor shall produce a leading zero in any position that normally contains an optional leading zero; under SUPPRESS it shall not; under PROCESSOR_DEFINED it has the option",
+  "13.8.5 p3: the descriptors affect only F, E, D and G editing on output, and have no effect on input",
+  "13.8.1.1 p4: skipped output positions not previously filled are blank-filled",
+  "13.8.4: SS suppresses the optional plus, SP produces it"
+ ],
+ "oracles_hand_derived_and_confirmed": [
+  "(T3,\"Z\") -> '  Z' - the # sentinel is overwritten by blanks per 13.8.1.1 p4",
+  "(\"AB\",T1,\"C\") -> 'CB' - C rewrites position 1",
+  "(\"A\",T3,\"B\") -> 'A B'",
+  "(\"ABC\",TL2,\"Z\") -> 'AZC'",
+  "(\"A\",TR2,\"B\") and (\"A\",2X,\"B\") -> 'A  B'",
+  "(\"A\",2/,\"B\") across internal records -> 'A B'",
+  "colon editing -> '4' and '4,5'",
+  "SS -> ' 7'; SP -> '+7'",
+  "BN and BZ on input '1 2' with I3 -> 12 and 102",
+  "DC -> '1,5'; DP -> '1.5'",
+  "character string descriptor -> 'A B'"
+ ],
+ "non_vacuity": {
+  "descriptor_substitutions": 9,
+  "descriptor_omissions": 7,
+  "oracle_mutations": 61,
+  "input_mutations": 16,
+  "reverse_controls": 1,
+  "omission_mutations": 45,
+  "all_detected_on_both_toolchains": true,
+  "load_bearing_verified": "Every substitution was checked to differ on the value actually chosen. The LZS<->LZP pair was the one that did NOT qualify, and it was removed."
+ },
+ "facets_left_pending": {
+  "LZS-sets-suppress": "13.8.5 makes LZS set LEADING_ZERO=SUPPRESS, and the expected output is derivable - WRITE(buf,'(LZS,F3.1)') 0.5 would give ' .5' - but neither available toolchain implements the descriptor on conforming source, so no reference-validated oracle exists.",
+  "LZP-sets-print": "Same, with PRINT and '0.5'.",
+  "note": "The worked examples were separately checked for consistency with 13.7.2.3.2 p11: with F3.1 on 0.5 the fractional digit 5 means the zero left of the decimal is the OPTIONAL one, so LZS/LZP genuinely determine it. Had the zero been mandatory or forbidden regardless of mode, the examples would have been wrong."
+ },
+ "integration": {
+  "fixture_reviews_recorded": 16,
+  "catalogue_source_reviews_renewed": [
+   "13.8.1.1",
+   "13.8.1.2",
+   "13.8.1.3",
+   "13.8.2",
+   "13.8.3",
+   "13.8.4",
+   "13.8.5",
+   "13.8.7",
+   "13.8.9",
+   "13.9"
+  ],
+  "audit_non_reviewed_after": "18.3.7 draft only",
+  "expected_failures_unchanged_at": 828
+ },
+ "limitations": [
+  "Reference validation is gfortran 16.1.0 in f2023 mode on one platform. No universal-processor claim is made.",
+  "LZS, LZP and LZ remain entirely untested; no conclusion is drawn about them beyond the reproduced observation that neither toolchain accepts them."
+ ]
+}
