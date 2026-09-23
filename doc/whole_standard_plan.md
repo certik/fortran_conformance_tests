@@ -5207,6 +5207,25 @@ And a C1224 negative (`EOR=` without `ADVANCE=`) unavoidably also violates the
 unnumbered p2; C1224 is recorded as the only diagnosable rule in that overlap.
 See `doc/source_audits/batch_153.json`.
 
+## Batch 158 — pointer assignment syntax, and five missing diagnostics
+
+Twenty facets of 10.2.2.2 across twenty-three fixtures, after two rounds. The
+admission cases observe **non-default** bounds — `p(-4:,6:)` and
+`p(-1:0,4:6)` — because a default lower bound of 1 would satisfy an LBOUND
+oracle vacuously, and they check aliasing in both directions from distinguished
+non-zero values.
+
+The one blocking finding was a mutant that proved nothing: removing the remap
+list turned a rank-2 pointer assignment to a rank-1 target into a C1022
+violation, so its "failure" was a compile error rather than evidence about
+remapping. It was replaced by a conforming lower-bound shift.
+
+Frozen LFortran fails five of the negatives, each confirmed independently: it
+**accepts** a type mismatch, a kind-parameter mismatch, a rank mismatch and a
+non-TARGET target — all constraints it is required to diagnose — and it crashes
+on a vector-subscripted target, which is not a diagnosis.
+See `doc/source_audits/batch_158.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must

@@ -1,0 +1,19 @@
+{
+ "schema_version": 1, "review_type": "independent-pointer-assignment-syntax-fixture-review", "review_date": "2026-09-23",
+ "baseline_commit": "ff29924", "state": "reference-validated-runtime-effects-and-diagnostics", "packet_kind": "FIXTURE",
+ "scope": {"sections": ["10.2.2.2"], "facets_established": 20, "new_cases": 23},
+ "review_rounds": [
+  {"round": 1, "commit": "16212ae", "decision": "BLOCKED", "findings": [{"id": "PAFR-001", "issue": "The remove-remap-list mutant turned p(-1:0,4:6) => v into p => v for a rank-2 pointer and rank-1 target, violating C1022 ('If neither bounds-remapping-list nor upper-bounds-expr appears ..., the ranks ... shall be the same'). The mutant was NON-CONFORMING (gfortran compile-fails it), so it proved nothing about the remap feature.", "resolution": "Replaced by the conforming shift p(0:1,4:6) => v: same six elements, LBOUND [0,4] instead of the asserted [-1,4], failing at run time on both toolchains."}]},
+  {"round": 2, "commit": "8d20dc9", "decision": "VERIFIED", "findings": []}
+ ],
+ "oracles_confirmed": ["p(-4:,6:) => t(2:4,10:11) gives LBOUND [-4,6], UBOUND [-2,7], SHAPE [3,2]", "p(-1:0,4:6) => v(-3:2) gives LBOUND [-1,4], UBOUND [0,6], SHAPE [2,3]", "two-way aliasing from distinguished non-zero values with correct element-order mapping", "procedure-pointer call through pp; swapping the target fails"],
+ "lfortran_defects_recorded": {"count": 5, "independently_confirmed_by_reviewer": true, "cases": {
+   "C1016 incompatible type": "accepted; gfortran diagnoses the anchored line",
+   "C1016 kind parameter mismatch (same PDT)": "accepted",
+   "C1022 rank mismatch": "accepted",
+   "C1028 non-TARGET designator": "accepted",
+   "C1028 vector-subscripted target": "compiler crash (exit -6); an ICE is not a diagnosis and excludes_any rejects it"},
+   "expected_failures": "831 -> 836"},
+ "non_vacuity": {"runtime_mutations": 32, "compile_fail_mutants": 0, "all_detected_on_both_toolchains": true},
+ "limitations": ["10.2.2.3 semantic facets are not discharged here.", "Reference validation is gfortran 16.1.0 in f2023 mode."]
+}
