@@ -1,8 +1,8 @@
 # Fortran 2023: 7.8 Array constructors - ordinary value implementation
 
-**Catalogue source review: reviewed.** Source and case/evidence adjudications remain separate content-bound records.
+**Catalogue source review: stale.** Source and case/evidence adjudications remain separate content-bound records.
 
-The corpus has **9 shared valid run/effect programs**, **129 primitive value/shape/length guards** and one completion guard per program. **17 of 107 facets are represented; 90 remain PENDING.** No source/case/link/inventory approval is implied.
+The value corpus has **9 shared valid run/effect programs**, **129 primitive value/shape/length guards** and one completion guard per program. The shared catalogue now has **37 of 107 facets represented; 70 remain PENDING.** No source/case/link/inventory approval is implied.
 
 ## Source and oracle qualifications
 
@@ -127,11 +127,36 @@ mandatory fatal rejection, a fixed severity or printed rule codes. Actual contra
 identify the intended source role/property, file, statement and causal relation after
 source review.
 
+Array constructor form packet implementation: 15 generated fixtures represent 20
+selected 7.8 facets. Thirteen valid run/positive-control fixtures use six distinct
+source bodies with ASSOCIATE names or direct SIZE/LEN/SUM inquiries to observe the
+actual constructor form, finite sequence, type parameter, derived-component and
+zero-size effects. Two compile-time negatives are limited to numbered syntax/constraint
+obligations and each has a one-property conforming control in the same packet: [] is
+repaired only to [INTEGER ::], and [1,vec,2.0] is repaired only to [1,vec,2]. The slash
+and square delimiter forms are both exercised and compared on non-palindromic values;
+typed nonempty INTEGER and derived constructors are distinct from untyped homogeneous
+constructors; implied-DO body order, multiple body values, distinct nested variables and
+runtime scalar bounds are checked with literal element guards. CHARACTER witnesses check
+LEN before value equality, and zero-size constructors also use type-specific operations
+(SUM for INTEGER, LEN for CHARACTER).
+
 **Oracle limitation:** No diagnostic contract or test is authored. Wrong type/kind/rank/length/name properties,
 source echo, generic EOF/missing-END recovery, unsupported facilities, compiler
 internal/verifier/resource failures, crashes and timeouts cannot corroborate another
 condition. Scope-name reporting remains4.2p2(6); intrinsic-procedure misuse
 retains4.2p2(7).
+
+Array constructor form packet boundaries: only the 20 named facets are discharged. No
+inline integer-type-spec facet is claimed because both qualifying compilers reject that
+valid syntax in this frozen toolchain window. No mismatched-delimiter, missing-body,
+missing-bound or nested-same-name diagnostic is shipped; LFortran currently accepts some
+invalid delimiter/nested-control sources or reports only earlier syntax failures for
+inline forms. No enum, enumeration, BOZ, REAL/COMPLEX numeric conversion, polymorphic
+dynamic-type, abstract, PDT kind/LEN, character-kind, processor-representation,
+optional-evaluation or side-effect order claim is added. The batch130
+array_constructor_value fixtures and their catalogue paragraphs remain unmodified. The
+rendered 7.8 markdown is intentionally not generator-owned by this packet.
 
 **Dependencies:** R778-R780;4.1.3;R702;7.8p1/p6/p8;4.2p2(3).
 
@@ -154,11 +179,36 @@ mandatory fatal rejection, a fixed severity or printed rule codes. Actual contra
 identify the intended source role/property, file, statement and causal relation after
 source review.
 
+Array constructor form packet implementation: 15 generated fixtures represent 20
+selected 7.8 facets. Thirteen valid run/positive-control fixtures use six distinct
+source bodies with ASSOCIATE names or direct SIZE/LEN/SUM inquiries to observe the
+actual constructor form, finite sequence, type parameter, derived-component and
+zero-size effects. Two compile-time negatives are limited to numbered syntax/constraint
+obligations and each has a one-property conforming control in the same packet: [] is
+repaired only to [INTEGER ::], and [1,vec,2.0] is repaired only to [1,vec,2]. The slash
+and square delimiter forms are both exercised and compared on non-palindromic values;
+typed nonempty INTEGER and derived constructors are distinct from untyped homogeneous
+constructors; implied-DO body order, multiple body values, distinct nested variables and
+runtime scalar bounds are checked with literal element guards. CHARACTER witnesses check
+LEN before value equality, and zero-size constructors also use type-specific operations
+(SUM for INTEGER, LEN for CHARACTER).
+
 **Oracle limitation:** No diagnostic contract or test is authored. Wrong type/kind/rank/length/name properties,
 source echo, generic EOF/missing-END recovery, unsupported facilities, compiler
 internal/verifier/resource failures, crashes and timeouts cannot corroborate another
 condition. Scope-name reporting remains4.2p2(6); intrinsic-procedure misuse
 retains4.2p2(7).
+
+Array constructor form packet boundaries: only the 20 named facets are discharged. No
+inline integer-type-spec facet is claimed because both qualifying compilers reject that
+valid syntax in this frozen toolchain window. No mismatched-delimiter, missing-body,
+missing-bound or nested-same-name diagnostic is shipped; LFortran currently accepts some
+invalid delimiter/nested-control sources or reports only earlier syntax failures for
+inline forms. No enum, enumeration, BOZ, REAL/COMPLEX numeric conversion, polymorphic
+dynamic-type, abstract, PDT kind/LEN, character-kind, processor-representation,
+optional-evaluation or side-effect order claim is added. The batch130
+array_constructor_value fixtures and their catalogue paragraphs remain unmodified. The
+rendered 7.8 markdown is intentionally not generator-owned by this packet.
 
 **Dependencies:** R702/R703;R781/R401;7.2/C701/C702;7.4.4.2/C726;7.5.9/C795-C7100;C7120-C7127;7.8p2-p5/p8.
 
@@ -228,11 +278,36 @@ mandatory fatal rejection, a fixed severity or printed rule codes. Actual contra
 identify the intended source role/property, file, statement and causal relation after
 source review.
 
+Array constructor form packet implementation: 15 generated fixtures represent 20
+selected 7.8 facets. Thirteen valid run/positive-control fixtures use six distinct
+source bodies with ASSOCIATE names or direct SIZE/LEN/SUM inquiries to observe the
+actual constructor form, finite sequence, type parameter, derived-component and
+zero-size effects. Two compile-time negatives are limited to numbered syntax/constraint
+obligations and each has a one-property conforming control in the same packet: [] is
+repaired only to [INTEGER ::], and [1,vec,2.0] is repaired only to [1,vec,2]. The slash
+and square delimiter forms are both exercised and compared on non-palindromic values;
+typed nonempty INTEGER and derived constructors are distinct from untyped homogeneous
+constructors; implied-DO body order, multiple body values, distinct nested variables and
+runtime scalar bounds are checked with literal element guards. CHARACTER witnesses check
+LEN before value equality, and zero-size constructors also use type-specific operations
+(SUM for INTEGER, LEN for CHARACTER).
+
 **Oracle limitation:** No diagnostic contract or test is authored. Wrong type/kind/rank/length/name properties,
 source echo, generic EOF/missing-END recovery, unsupported facilities, compiler
 internal/verifier/resource failures, crashes and timeouts cannot corroborate another
 condition. Scope-name reporting remains4.2p2(6); intrinsic-procedure misuse
 retains4.2p2(7).
+
+Array constructor form packet boundaries: only the 20 named facets are discharged. No
+inline integer-type-spec facet is claimed because both qualifying compilers reject that
+valid syntax in this frozen toolchain window. No mismatched-delimiter, missing-body,
+missing-bound or nested-same-name diagnostic is shipped; LFortran currently accepts some
+invalid delimiter/nested-control sources or reports only earlier syntax failures for
+inline forms. No enum, enumeration, BOZ, REAL/COMPLEX numeric conversion, polymorphic
+dynamic-type, abstract, PDT kind/LEN, character-kind, processor-representation,
+optional-evaluation or side-effect order claim is added. The batch130
+array_constructor_value fixtures and their catalogue paragraphs remain unmodified. The
+rendered 7.8 markdown is intentionally not generator-owned by this packet.
 
 **Dependencies:** R782-R784;C7120-C7127;7.8p6;9.7.1;10.1.9/10.1.12;19.6.
 
@@ -253,11 +328,36 @@ mandatory fatal rejection, a fixed severity or printed rule codes. Actual contra
 identify the intended source role/property, file, statement and causal relation after
 source review.
 
+Array constructor form packet implementation: 15 generated fixtures represent 20
+selected 7.8 facets. Thirteen valid run/positive-control fixtures use six distinct
+source bodies with ASSOCIATE names or direct SIZE/LEN/SUM inquiries to observe the
+actual constructor form, finite sequence, type parameter, derived-component and
+zero-size effects. Two compile-time negatives are limited to numbered syntax/constraint
+obligations and each has a one-property conforming control in the same packet: [] is
+repaired only to [INTEGER ::], and [1,vec,2.0] is repaired only to [1,vec,2]. The slash
+and square delimiter forms are both exercised and compared on non-palindromic values;
+typed nonempty INTEGER and derived constructors are distinct from untyped homogeneous
+constructors; implied-DO body order, multiple body values, distinct nested variables and
+runtime scalar bounds are checked with literal element guards. CHARACTER witnesses check
+LEN before value equality, and zero-size constructors also use type-specific operations
+(SUM for INTEGER, LEN for CHARACTER).
+
 **Oracle limitation:** No diagnostic contract or test is authored. Wrong type/kind/rank/length/name properties,
 source echo, generic EOF/missing-END recovery, unsupported facilities, compiler
 internal/verifier/resource failures, crashes and timeouts cannot corroborate another
 condition. Scope-name reporting remains4.2p2(6); intrinsic-procedure misuse
 retains4.2p2(7).
+
+Array constructor form packet boundaries: only the 20 named facets are discharged. No
+inline integer-type-spec facet is claimed because both qualifying compilers reject that
+valid syntax in this frozen toolchain window. No mismatched-delimiter, missing-body,
+missing-bound or nested-same-name diagnostic is shipped; LFortran currently accepts some
+invalid delimiter/nested-control sources or reports only earlier syntax failures for
+inline forms. No enum, enumeration, BOZ, REAL/COMPLEX numeric conversion, polymorphic
+dynamic-type, abstract, PDT kind/LEN, character-kind, processor-representation,
+optional-evaluation or side-effect order claim is added. The batch130
+array_constructor_value fixtures and their catalogue paragraphs remain unmodified. The
+rendered 7.8 markdown is intentionally not generator-owned by this packet.
 
 **Dependencies:** R781/R783/R784;R401;C7128;19.4p1-p2/p5;4.2p2(3).
 
@@ -280,11 +380,36 @@ mandatory fatal rejection, a fixed severity or printed rule codes. Actual contra
 identify the intended source role/property, file, statement and causal relation after
 source review.
 
+Array constructor form packet implementation: 15 generated fixtures represent 20
+selected 7.8 facets. Thirteen valid run/positive-control fixtures use six distinct
+source bodies with ASSOCIATE names or direct SIZE/LEN/SUM inquiries to observe the
+actual constructor form, finite sequence, type parameter, derived-component and
+zero-size effects. Two compile-time negatives are limited to numbered syntax/constraint
+obligations and each has a one-property conforming control in the same packet: [] is
+repaired only to [INTEGER ::], and [1,vec,2.0] is repaired only to [1,vec,2]. The slash
+and square delimiter forms are both exercised and compared on non-palindromic values;
+typed nonempty INTEGER and derived constructors are distinct from untyped homogeneous
+constructors; implied-DO body order, multiple body values, distinct nested variables and
+runtime scalar bounds are checked with literal element guards. CHARACTER witnesses check
+LEN before value equality, and zero-size constructors also use type-specific operations
+(SUM for INTEGER, LEN for CHARACTER).
+
 **Oracle limitation:** No diagnostic contract or test is authored. Wrong type/kind/rank/length/name properties,
 source echo, generic EOF/missing-END recovery, unsupported facilities, compiler
 internal/verifier/resource failures, crashes and timeouts cannot corroborate another
 condition. Scope-name reporting remains4.2p2(6); intrinsic-procedure misuse
 retains4.2p2(7).
+
+Array constructor form packet boundaries: only the 20 named facets are discharged. No
+inline integer-type-spec facet is claimed because both qualifying compilers reject that
+valid syntax in this frozen toolchain window. No mismatched-delimiter, missing-body,
+missing-bound or nested-same-name diagnostic is shipped; LFortran currently accepts some
+invalid delimiter/nested-control sources or reports only earlier syntax failures for
+inline forms. No enum, enumeration, BOZ, REAL/COMPLEX numeric conversion, polymorphic
+dynamic-type, abstract, PDT kind/LEN, character-kind, processor-representation,
+optional-evaluation or side-effect order claim is added. The batch130
+array_constructor_value fixtures and their catalogue paragraphs remain unmodified. The
+rendered 7.8 markdown is intentionally not generator-owned by this packet.
 
 **Dependencies:** R784/R1124/C1121;4.1.3/C401;10.1.9.1/R1027/C1009;10.1.12;11.1.7.4.1/.3;19.4p5.
 
@@ -333,11 +458,36 @@ mandatory fatal rejection, a fixed severity or printed rule codes. Actual contra
 identify the intended source role/property, file, statement and causal relation after
 source review.
 
+Array constructor form packet implementation: 15 generated fixtures represent 20
+selected 7.8 facets. Thirteen valid run/positive-control fixtures use six distinct
+source bodies with ASSOCIATE names or direct SIZE/LEN/SUM inquiries to observe the
+actual constructor form, finite sequence, type parameter, derived-component and
+zero-size effects. Two compile-time negatives are limited to numbered syntax/constraint
+obligations and each has a one-property conforming control in the same packet: [] is
+repaired only to [INTEGER ::], and [1,vec,2.0] is repaired only to [1,vec,2]. The slash
+and square delimiter forms are both exercised and compared on non-palindromic values;
+typed nonempty INTEGER and derived constructors are distinct from untyped homogeneous
+constructors; implied-DO body order, multiple body values, distinct nested variables and
+runtime scalar bounds are checked with literal element guards. CHARACTER witnesses check
+LEN before value equality, and zero-size constructors also use type-specific operations
+(SUM for INTEGER, LEN for CHARACTER).
+
 **Oracle limitation:** No diagnostic contract or test is authored. Wrong type/kind/rank/length/name properties,
 source echo, generic EOF/missing-END recovery, unsupported facilities, compiler
 internal/verifier/resource failures, crashes and timeouts cannot corroborate another
 condition. Scope-name reporting remains4.2p2(6); intrinsic-procedure misuse
 retains4.2p2(7).
+
+Array constructor form packet boundaries: only the 20 named facets are discharged. No
+inline integer-type-spec facet is claimed because both qualifying compilers reject that
+valid syntax in this frozen toolchain window. No mismatched-delimiter, missing-body,
+missing-bound or nested-same-name diagnostic is shipped; LFortran currently accepts some
+invalid delimiter/nested-control sources or reports only earlier syntax failures for
+inline forms. No enum, enumeration, BOZ, REAL/COMPLEX numeric conversion, polymorphic
+dynamic-type, abstract, PDT kind/LEN, character-kind, processor-representation,
+optional-evaluation or side-effect order claim is added. The batch130
+array_constructor_value fixtures and their catalogue paragraphs remain unmodified. The
+rendered 7.8 markdown is intentionally not generator-owned by this packet.
 
 **Dependencies:** 7.3.2.3/7.3.3;7.5.3;7.6;7.8p2/p4/p6;C7124/C7125;4.2p2(3).
 
@@ -387,11 +537,36 @@ mandatory fatal rejection, a fixed severity or printed rule codes. Actual contra
 identify the intended source role/property, file, statement and causal relation after
 source review.
 
+Array constructor form packet implementation: 15 generated fixtures represent 20
+selected 7.8 facets. Thirteen valid run/positive-control fixtures use six distinct
+source bodies with ASSOCIATE names or direct SIZE/LEN/SUM inquiries to observe the
+actual constructor form, finite sequence, type parameter, derived-component and
+zero-size effects. Two compile-time negatives are limited to numbered syntax/constraint
+obligations and each has a one-property conforming control in the same packet: [] is
+repaired only to [INTEGER ::], and [1,vec,2.0] is repaired only to [1,vec,2]. The slash
+and square delimiter forms are both exercised and compared on non-palindromic values;
+typed nonempty INTEGER and derived constructors are distinct from untyped homogeneous
+constructors; implied-DO body order, multiple body values, distinct nested variables and
+runtime scalar bounds are checked with literal element guards. CHARACTER witnesses check
+LEN before value equality, and zero-size constructors also use type-specific operations
+(SUM for INTEGER, LEN for CHARACTER).
+
 **Oracle limitation:** No diagnostic contract or test is authored. Wrong type/kind/rank/length/name properties,
 source echo, generic EOF/missing-END recovery, unsupported facilities, compiler
 internal/verifier/resource failures, crashes and timeouts cannot corroborate another
 condition. Scope-name reporting remains4.2p2(6); intrinsic-procedure misuse
 retains4.2p2(7).
+
+Array constructor form packet boundaries: only the 20 named facets are discharged. No
+inline integer-type-spec facet is claimed because both qualifying compilers reject that
+valid syntax in this frozen toolchain window. No mismatched-delimiter, missing-body,
+missing-bound or nested-same-name diagnostic is shipped; LFortran currently accepts some
+invalid delimiter/nested-control sources or reports only earlier syntax failures for
+inline forms. No enum, enumeration, BOZ, REAL/COMPLEX numeric conversion, polymorphic
+dynamic-type, abstract, PDT kind/LEN, character-kind, processor-representation,
+optional-evaluation or side-effect order claim is added. The batch130
+array_constructor_value fixtures and their catalogue paragraphs remain unmodified. The
+rendered 7.8 markdown is intentionally not generator-owned by this packet.
 
 **Dependencies:** 7.3.2.3;7.5.3;7.8p3/p4;C703/C7125;10.2.1.2p1(9)-(10);7.5.10.
 
@@ -546,11 +721,36 @@ mandatory fatal rejection, a fixed severity or printed rule codes. Actual contra
 identify the intended source role/property, file, statement and causal relation after
 source review.
 
+Array constructor form packet implementation: 15 generated fixtures represent 20
+selected 7.8 facets. Thirteen valid run/positive-control fixtures use six distinct
+source bodies with ASSOCIATE names or direct SIZE/LEN/SUM inquiries to observe the
+actual constructor form, finite sequence, type parameter, derived-component and
+zero-size effects. Two compile-time negatives are limited to numbered syntax/constraint
+obligations and each has a one-property conforming control in the same packet: [] is
+repaired only to [INTEGER ::], and [1,vec,2.0] is repaired only to [1,vec,2]. The slash
+and square delimiter forms are both exercised and compared on non-palindromic values;
+typed nonempty INTEGER and derived constructors are distinct from untyped homogeneous
+constructors; implied-DO body order, multiple body values, distinct nested variables and
+runtime scalar bounds are checked with literal element guards. CHARACTER witnesses check
+LEN before value equality, and zero-size constructors also use type-specific operations
+(SUM for INTEGER, LEN for CHARACTER).
+
 **Oracle limitation:** No diagnostic contract or test is authored. Wrong type/kind/rank/length/name properties,
 source echo, generic EOF/missing-END recovery, unsupported facilities, compiler
 internal/verifier/resource failures, crashes and timeouts cannot corroborate another
 condition. Scope-name reporting remains4.2p2(6); intrinsic-procedure misuse
 retains4.2p2(7).
+
+Array constructor form packet boundaries: only the 20 named facets are discharged. No
+inline integer-type-spec facet is claimed because both qualifying compilers reject that
+valid syntax in this frozen toolchain window. No mismatched-delimiter, missing-body,
+missing-bound or nested-same-name diagnostic is shipped; LFortran currently accepts some
+invalid delimiter/nested-control sources or reports only earlier syntax failures for
+inline forms. No enum, enumeration, BOZ, REAL/COMPLEX numeric conversion, polymorphic
+dynamic-type, abstract, PDT kind/LEN, character-kind, processor-representation,
+optional-evaluation or side-effect order claim is added. The batch130
+array_constructor_value fixtures and their catalogue paragraphs remain unmodified. The
+rendered 7.8 markdown is intentionally not generator-owned by this packet.
 
 **Dependencies:** R782-R784;19.4p1-p2/p5, PDF551;4.2p2(3)/(6).
 
@@ -615,12 +815,37 @@ not a new automatic diagnostic or longest-length rule.
 lengths needs a separately approved policy and an otherwise valid source-minimal repair;
 no such policy is created here.
 
+Array constructor form packet implementation: 15 generated fixtures represent 20
+selected 7.8 facets. Thirteen valid run/positive-control fixtures use six distinct
+source bodies with ASSOCIATE names or direct SIZE/LEN/SUM inquiries to observe the
+actual constructor form, finite sequence, type parameter, derived-component and
+zero-size effects. Two compile-time negatives are limited to numbered syntax/constraint
+obligations and each has a one-property conforming control in the same packet: [] is
+repaired only to [INTEGER ::], and [1,vec,2.0] is repaired only to [1,vec,2]. The slash
+and square delimiter forms are both exercised and compared on non-palindromic values;
+typed nonempty INTEGER and derived constructors are distinct from untyped homogeneous
+constructors; implied-DO body order, multiple body values, distinct nested variables and
+runtime scalar bounds are checked with literal element guards. CHARACTER witnesses check
+LEN before value equality, and zero-size constructors also use type-specific operations
+(SUM for INTEGER, LEN for CHARACTER).
+
 **Oracle limitation:** No runtime witness is implemented. Use independently fixed small values, named element
 setup and direct constructor observations; a destination declaration or a second use of
 the same operation is not an independent oracle. Source sequence order is not an
 unspecified function-evaluation order. Read only defined values with established
 allocation/association and valid parameter state. No C_INT, KIND-number, extra-kind,
 byte-width, IEEE-layout, arbitrary-bit or processor-choice premise is assumed.
+
+Array constructor form packet boundaries: only the 20 named facets are discharged. No
+inline integer-type-spec facet is claimed because both qualifying compilers reject that
+valid syntax in this frozen toolchain window. No mismatched-delimiter, missing-body,
+missing-bound or nested-same-name diagnostic is shipped; LFortran currently accepts some
+invalid delimiter/nested-control sources or reports only earlier syntax failures for
+inline forms. No enum, enumeration, BOZ, REAL/COMPLEX numeric conversion, polymorphic
+dynamic-type, abstract, PDT kind/LEN, character-kind, processor-representation,
+optional-evaluation or side-effect order claim is added. The batch130
+array_constructor_value fixtures and their catalogue paragraphs remain unmodified. The
+rendered 7.8 markdown is intentionally not generator-owned by this packet.
 
 **Dependencies:** C7120;7.8p2/p3/p5;7.2;7.4.4.2;7.5.3;9.7.1;16.9.122 LEN;4.1.2p3/4.2.
 
@@ -783,6 +1008,20 @@ type-spec is supplied.
 conditions and use only valid zero/nonzero controls until an independent optional
 policy/source gate exists.
 
+Array constructor form packet implementation: 15 generated fixtures represent 20
+selected 7.8 facets. Thirteen valid run/positive-control fixtures use six distinct
+source bodies with ASSOCIATE names or direct SIZE/LEN/SUM inquiries to observe the
+actual constructor form, finite sequence, type parameter, derived-component and
+zero-size effects. Two compile-time negatives are limited to numbered syntax/constraint
+obligations and each has a one-property conforming control in the same packet: [] is
+repaired only to [INTEGER ::], and [1,vec,2.0] is repaired only to [1,vec,2]. The slash
+and square delimiter forms are both exercised and compared on non-palindromic values;
+typed nonempty INTEGER and derived constructors are distinct from untyped homogeneous
+constructors; implied-DO body order, multiple body values, distinct nested variables and
+runtime scalar bounds are checked with literal element guards. CHARACTER witnesses check
+LEN before value equality, and zero-size constructors also use type-specific operations
+(SUM for INTEGER, LEN for CHARACTER).
+
 **Oracle limitation:** No runtime witness is implemented. Use independently fixed small values, named element
 setup and direct constructor observations; a destination declaration or a second use of
 the same operation is not an independent oracle. Source sequence order is not an
@@ -790,6 +1029,17 @@ unspecified function-evaluation order. Read only defined values with established
 allocation/association and valid parameter state. No C_INT, KIND-number, extra-kind,
 byte-width, IEEE-layout, arbitrary-bit or processor-choice premise is assumed. Do not
 infer that a zero trip count makes arbitrary undefined character lengths safe.
+
+Array constructor form packet boundaries: only the 20 named facets are discharged. No
+inline integer-type-spec facet is claimed because both qualifying compilers reject that
+valid syntax in this frozen toolchain window. No mismatched-delimiter, missing-body,
+missing-bound or nested-same-name diagnostic is shipped; LFortran currently accepts some
+invalid delimiter/nested-control sources or reports only earlier syntax failures for
+inline forms. No enum, enumeration, BOZ, REAL/COMPLEX numeric conversion, polymorphic
+dynamic-type, abstract, PDT kind/LEN, character-kind, processor-representation,
+optional-evaluation or side-effect order claim is added. The batch130
+array_constructor_value fixtures and their catalogue paragraphs remain unmodified. The
+rendered 7.8 markdown is intentionally not generator-owned by this packet.
 
 **Dependencies:** 7.8p5;10.1.12p1(2)/(14);R783;11.1.7.4.1;19.4p5;7.4.4.2;16.9.122;4.1.2p3/4.2.
 
@@ -1009,18 +1259,12 @@ Every unselected map below is retained exactly from the canonical source; incide
 
 ### Pending R777
 
-* **`slash-parenthesis-admission`** - PENDING - Compile admission: a complete ordinary program uses (/ 11,13 /) in a valid INTEGER array context. Values and delimiters are known; no unrelated procedure-argument error is introduced.
-* **`square-bracket-admission`** - PENDING - Compile admission: the analogous [11,13] form. A later source-use connection to an existing bracket-form witness is preferable to a renamed duplicate.
 * **`mismatched-closing-delimiter`** - PENDING - Diagnostic/control: in an otherwise complete assignment to a rank-one INTEGER destination, use [11,13/) or (/11,13]; replace only the closing delimiter by its matching form. Require an array-constructor delimiter cause, not generic EOF or an outer CALL-list error.
 * **`type-and-value-consumer-source-use`** - PENDING - Source-use graph: R778/R779/R780, existing R702 consumers and the separate value/flattening plans retain their owners. Delimiter admission does not prove value order or an empty-array effect.
 
 ### Pending R778
 
-* **`typed-empty-integer`** - PENDING - Compile admission: [INTEGER ::] and (/ INTEGER :: /) in complete INTEGER array contexts. These are typed empty ac-specs, not empty expressions or scalar constructors.
 * **`typed-empty-other-categories`** - PENDING - Compile admissions after their canonical context checks: fixed default CHARACTER(LEN=3), an accessible prior nonabstract derived type, a prior enum type and a prior enumeration type with no ac-values. An ordinary derived type's unsupplied components do not require scalar structure-constructor arguments when there are zero array elements.
-* **`typed-nonempty`** - PENDING - Compile admission: [INTEGER :: 11,13], retaining the :: separator and C7121/p3 conditions; existing R702_valid__intrinsic remains canonical where its type-spec use suffices.
-* **`untyped-nonempty`** - PENDING - Compile admission: [11,13] or a nonempty ac-value list whose expansion is empty. Inference uses the ac-value expressions' declared characteristics, not a requirement that an element be produced.
-* **`untyped-empty-list`** - PENDING - Diagnostic/control: [] or (/ /) appears in a complete otherwise-valid INTEGER array assignment; insert only INTEGER ::. Do not blame this ac-spec deficiency on a different delimiter or missing procedure argument.
 * **`type-spec-parameter-context-graph`** - PENDING - Source-use graph: R702, C701/C702, C726 and C795-C7100 govern allowed type parameters. A destination ALLOCATABLE attribute does not license CHARACTER(:) or a deferred PDT parameter inside this type-spec. Assumed * is not a general array-constructor length placeholder.
 
 ### Pending R779
@@ -1033,27 +1277,19 @@ Every unselected map below is retained exactly from the canonical source; incide
 
 ### Pending R781
 
-* **`scalar-expression-admission`** - PENDING - Compile admissions: a defined scalar INTEGER variable and a small INTEGER literal are ac-values in one homogeneous constructor. A separate [(1.0,2.0)] has one scalar COMPLEX expression, not two REAL elements or an implied DO. An ordinary runtime constructor is not required to be a constant expression.
-* **`array-expression-admission`** - PENDING - Compile admission: a defined rank-two INTEGER array and a differently shaped rank-one array are ac-values of one constructor. C7120 is not a same-rank or same-shape rule for these sources.
-* **`implied-do-admission`** - PENDING - Compile admission: a complete integer implied DO with a nonempty body list, scalar INTEGER controls and an established variable type.
 * **`expression-category-and-state-graph`** - PENDING - Source-use graph: C7124/C7125 exclude the ac-value itself, not every component recursively. Pointer and allocatable expressions require live associated/allocated defined data when their values are used; they are not status-only or pointer-broadcast constructors.
 
 ### Pending R782
 
-* **`single-body-value`** - PENDING - Compile admission: [(i, INTEGER :: i=1,3)] uses a single scalar body value and a complete locally typed control.
-* **`multiple-body-values`** - PENDING - Compile admission: [(i,10*i, INTEGER :: i=1,2)] has two body ac-values per iteration. Their later sequence oracle is [1,10,2,20], not an elementwise sum or a rank-two result.
-* **`nested-form`** - PENDING - Compile admission: [((7, INTEGER :: j=1,2), INTEGER :: i=1,2)] uses distinct nested statement entities; integer controls are not extra ac-values.
 * **`missing-control-separator`** - PENDING - Diagnostic/control: omit only the comma between literal body value7 and a complete INTEGER :: i=1,2 control; restore that comma. Keep the enclosing constructor/program closed and require the implied-DO body/control separator cause.
 * **`missing-body-list`** - PENDING - Diagnostic/control: keep the complete parenthesized comma/control form but omit its ac-value-list; insert literal7 before the separating comma. Zero trip count would not waive the syntactic nonempty-list requirement.
 
 ### Pending R783
 
-* **`inferred-integer-variable`** - PENDING - Compile admission: under IMPLICIT NONE, a scalar INTEGER i is declared in the containing scope before [(i,i=1,3)]. The ac-do i is a separate statement entity; this is not an implicit host declaration.
 * **`inline-default-integer`** - PENDING - Compile admission: [(i,INTEGER :: i=1,3)] needs no containing-scope declaration of i. Outside its ac-implied-do that spelling does not create a host variable.
 * **`inline-supported-kind`** - PENDING - Compile admission/source-use: a named supported kind, such as KIND(0), appears in INTEGER(KIND=k) :: i. Any differentiated-kind runtime witness must independently establish supported distinct kinds; SELECTED_INT_KIND(18) need not differ from default.
 * **`required-two-bounds`** - PENDING - Diagnostic/control: a complete typed control supplies initial1 but omits the terminal bound; add only ,3 before the matching implied-DO parenthesis. Do not leave an unclosed outer constructor.
 * **`integer-and-scalar-bound-conditions`** - PENDING - Six diagnostic/control designs independently cover initial, terminal and explicit-increment positions: replace REAL1.0/3.0/2.0 by INTEGER1/3/2 respectively, or rank-one INTEGER [1]/[3]/[2] by the corresponding scalar. Each complete typed control has only that one type or rank fault; all other controls are defined and the repaired increment is nonzero. Require the specific control-position/type-or-rank cause, not generic kind or lookup recovery.
-* **`runtime-bound-and-step-expressions`** - PENDING - Compile admission: separately defined scalar INTEGER lower=1, upper=5, stride=2 are used without PARAMETER. Constancy is needed only in a surrounding constant-expression context.
 * **`loop-execution-and-zero-step-source-use`** - PENDING - Source-use graph: DO conversion, default increment1, nonzero-step restriction, count and variable definition remain11.1.7.4/p7. A scalar INTEGER zero step meets this grammar but is not a legal loop execution; do not invent a new R783 fatal diagnostic for that prose restriction.
 
 ### Pending R784
@@ -1064,8 +1300,6 @@ Every unselected map below is retained exactly from the canonical source; incide
 
 ### Pending C7120
 
-* **`same-type-kind-different-ranks`** - PENDING - Compile admission: [11,vec,matrix] uses defined default INTEGER scalar/rank-one/rank-two sources with different shapes. A later literal sequence oracle belongs to the flattening effect, not a same-shape restriction.
-* **`different-intrinsic-type`** - PENDING - Diagnostic/control: [1,2.0] has INTEGER and REAL ac-values with type-spec omitted; replace only2.0 by2. Avoid simultaneous character-length, kind-support or undefined-value defects.
 * **`different-supported-intrinsic-kinds`** - PENDING - Processor-qualified diagnostic/control plan: only after two distinct supported INTEGER kinds are established, use equal small representable values of those kinds in an untyped constructor. Repair one element's kind to the other. An unavailable selector or assumed codes1/4/8 is not kind-mismatch evidence.
 * **`different-derived-kind-tags`** - PENDING - Diagnostic/control matrix: one PDT has two abstract user KIND parameters a/b, fixed LEN n=1 and a scalar INTEGER payload. left has tuple(2,3); right has either(2,4) or(3,3). In [left,right], repair only the differing right declaration coordinate to(2,3); primitive payloads11/13 and LEN remain unchanged. Both KIND positions matter, and neither parameter selects an intrinsic representation.
 * **`declared-dynamic-length-and-identity-source-use`** - PENDING - Source-use graph: same declared nonabstract CLASS(base) values may have different dynamic extension types; p4 still fixes the result dynamic type. Character/PDT LEN mismatch is p2, and equal values or enum ordinals do not establish same type.
@@ -1080,7 +1314,6 @@ Every unselected map below is retained exactly from the canonical source; incide
 
 ### Pending C7122
 
-* **`same-derived-type-admission`** - PENDING - Compile admission/source-use: a prior ordinary nonabstract record with defined scalar payloads11/13 supplies [record :: left,right]. Preserve R702_valid__derived and its actual role instead of copying its program.
 * **`different-declared-type`** - PENDING - Diagnostic/control: a typed [base :: other_value] uses a distinct ordinary nonabstract declared type whose primitive fields are defined; replace only other_value by a separately defined base_value. Do not rely on matching layout or a derived assignment conversion.
 * **`different-user-kind-parameter`** - PENDING - Diagnostic/control matrix: one PDT has user KIND parameters a/b, LEN n and scalar INTEGER payload. A type-spec t(a=2,b=3,n=1) and left with that tuple are paired with right(a=2,b=4,n=1) or right(a=3,b=3,n=1). Repair only the differing right declaration coordinate; keep payload11/13 and LEN fixed. No INTEGER(a) or other intrinsic representation selector is used.
 * **`declared-not-dynamic-and-len-graph`** - PENDING - Source-use graph: a defined CLASS(base) expression with child dynamic type has declared base type and can meet this constraint when base is concrete; TYPE(child) is not the same declared type. Equal KIND with different fixed LEN meets this constraint but still needs p3 compatibility; do not credit a LEN complaint as C7122.
@@ -1121,7 +1354,6 @@ Every unselected map below is retained exactly from the canonical source; incide
 ### Pending C7128
 
 * **`nested-same-name`** - PENDING - Diagnostic/control: [((7,INTEGER :: i=1,2),INTEGER :: i=1,2)] has a constant body and repeated nested control name. Change only the inner control-left-side i to j; no body reference needs repair and both loops remain otherwise valid. Require nested ac-do-variable reuse, with19.4's statement-entity scope also preserved.
-* **`distinct-nested-variables`** - PENDING - Compile admission: the repaired inner j/outer i form. Inline types establish both INTEGER statement entities and do not declare containing-scope variables.
 * **`disjoint-reuse-admission`** - PENDING - Compile admission/source-use: two nonnested implied DOs use i in their separate scopes with bounds1:2 and3:4. A future value witness independently expects[1,2,3,4]; the nested prohibition must not reject this disjoint reuse.
 
 ### Pending S7.8-001
@@ -1132,7 +1364,6 @@ Every unselected map below is retained exactly from the canonical source; incide
 
 * **`character-length-source-contrast`** - PENDING - Optional-policy/source-contrast plan: in a complete untyped ['A','BC'] context, repair only 'A' to 'A ' so lengths agree while type/kind remain default CHARACTER. No diagnostic is newly mandated; no invalid result length or trap is observed.
 * **`derived-len-source-contrast`** - PENDING - Optional-policy/source-contrast matrix: one PDT has fixed common user KIND2, two LEN parameters n/m and a scalar INTEGER payload independent of n/m. left has LEN tuple(1,2); right differs in only n or only m. Repair only that declaration coordinate to(1,2). Both payloads are initialized by names; no kind, declared-type, component-shape or representation mismatch supplies the cause.
-* **`runtime-equal-length-controls`** - PENDING - Runtime positive controls: two separately defined default CHARACTER values of equal length2 form ['AB','CD']-valued results observed with assumed-length character arguments. A deferred-length allocated variant needs successful allocation, defined payloads and equal established lengths before construction.
 * **`zero-size-and-explicit-spec-boundaries`** - PENDING - Source-use graph: zero produced elements do not turn syntactically present ac-values into no type/length constraints. Explicit CHARACTER length changes the p2 antecedent and permits qualified conversion, while p5 independently restricts character lengths in zero-trip implied DOs.
 
 ### Pending S7.8-003
@@ -1162,7 +1393,6 @@ Every unselected map below is retained exactly from the canonical source; incide
 
 ### Pending S7.8-007
 
-* **`constant-length-zero-trip-control`** - PENDING - Runtime positive-control plan: a constant CHARACTER value 'AB' in a literal1:0 implied DO has empty contribution with known length2. A typed CHARACTER(LEN=3) form may convert the result type but still uses a constant-length source; directly check size0 and its constructor LEN.
 * **`index-dependent-length-contrast`** - PENDING - Optional-policy/source contrast only: with CHARACTER(2) PARAMETER text='AB', the zero-trip [CHARACTER(LEN=2) :: (text(1:i),INTEGER :: i=1,0)] has index-dependent ac-value length. Repair only the substring upper bound to1. Do not execute the invalid case or count generic undefined/inference recovery as this cause.
 * **`nonconstant-length-contrast`** - PENDING - Optional-policy/source contrast only: a separately declared, defined INTEGER variable n=1 controls text(1:n) inside an unrelated zero-trip j loop. Repair by making n a PARAMETER, without changing its value, source kind or loop. Constancy is a source property, not a compiler-folded-value observation.
 * **`constant-expression-and-no-ac-value-boundaries`** - PENDING - Source-use qualification: an ac-do-variable can be a constant-expression primary under10.1.12 while the separate p5 index-dependence prohibition still applies. A nonzero typed loop permits qualified varying source lengths. [CHARACTER(LEN=n) ::] with defined n=3 has no ac-value, so p5's ac-value antecedent is absent; do not ban that typed-empty runtime LEN by analogy.

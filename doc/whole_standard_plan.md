@@ -5267,6 +5267,22 @@ own original state, because binding new facets into the shared catalogue
 re-fingerprinted them.
 See `doc/source_audits/batch_154.json`.
 
+## Batch 159 — array constructor forms, on a shared catalogue
+
+Twenty facets of 7.8 across fifteen fixtures, after two rounds. The complication
+was ownership: batch130's value generator already binds facets in the same
+catalogue and renders the same view, and this packet's first attempt broke that
+generator's `--check`. The fix composes the view deterministically through the
+older renderer, changed only enough to recognise the new packet's validated
+bindings; its own fixtures, partition and unknown-facet validation are untouched,
+and both generators now check clean in either order.
+
+The second finding was that six runtime fixtures shipped with **no mutations at
+all**. Every one now carries a conforming feature mutation — swapped implied-DO
+nesting, reversed or dropped values with the size adjusted, a changed type-spec
+length — run by a permanent mutation check.
+See `doc/source_audits/batch_159.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must

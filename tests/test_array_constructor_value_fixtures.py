@@ -512,13 +512,18 @@ class ArrayConstructorValueFixturesTests(unittest.TestCase):
             with self.assertRaises(AssertionError):
                 self.verify_source("character_empty", altered)
 
-    def test_source_admin_is_preserved_and_all_90_unselected_plans_stay_pending(self):
+    def test_source_admin_is_preserved_and_unselected_plans_stay_pending(self):
         self.assertEqual(len(self.catalogue["requirements"]), 26)
         self.assertEqual(sum(len(r["facets"]) for r in self.catalogue["requirements"]), 107)
-        self.assertEqual(sum(len(r["pending"]) for r in self.catalogue["requirements"]), 90)
+        external = generated.externally_bound_facets()
+        externally_bound = sum(len(facets) for facets in external.values())
+        self.assertEqual(externally_bound, 20)
+        pending_count = sum(len(r["pending"]) for r in self.catalogue["requirements"])
+        self.assertEqual(pending_count, 70)
         for requirement in self.catalogue["requirements"]:
             covered = set(generated.ELIGIBLE.get(requirement["id"], []))
-            self.assertEqual(set(requirement["pending"]), set(requirement["facets"])-covered)
+            self.assertEqual(set(requirement["pending"]),
+                             set(requirement["facets"]) - covered - external.get(requirement["id"], set()))
         r = next(r for r in self.catalogue["requirements"] if r["id"]=="S7.8-001")
         self.assertIn("evaluation-order-and-shared-consumer-graph", r["pending"])
         admin = {k:v for k,v in self.catalogue.items() if k.startswith("review_")}
@@ -531,7 +536,7 @@ class ArrayConstructorValueFixturesTests(unittest.TestCase):
         native.catalogues = {"7.8":self.catalogue}
         native.render()
         appendix = view.split("## Complete finite pending plans\n",1)[1].split("## Reproduction and remaining gates",1)[0]
-        self.assertEqual(appendix.count("* **`"),90)
+        self.assertEqual(appendix.count("* **`"),pending_count)
         for r in self.catalogue["requirements"]:
             for facet,plan in r["pending"].items():
                 self.assertIn(f"* **`{facet}`** - {plan}",appendix)

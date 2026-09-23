@@ -461,8 +461,28 @@ def build_corpus(root=ROOT):
     return c.files, c.cases
 
 
-def synced_catalogue(catalogue, specs):
+def externally_bound_facets(root=ROOT):
+    result = {}
+    for path in (Path(root) / "tests/fixtures").glob("array_constructor_form_*/fixture.json"):
+        data = json.loads(path.read_text())
+        result.setdefault(data["rule"], set()).update(data["facets"])
+    return result
+
+
+def owned_paragraph(text, prefix, replacement):
+    paragraphs = text.split("\n\n") if text else []
+    matches = [index for index, paragraph in enumerate(paragraphs) if paragraph.startswith(prefix)]
+    if len(matches) > 1:
+        raise ValueError("duplicate owned array-constructor value paragraph")
+    if matches:
+        paragraphs[matches[0]] = replacement
+        return "\n\n".join(paragraphs)
+    return text + ("\n\n" if text else "") + replacement
+
+
+def synced_catalogue(catalogue, specs, root=ROOT):
     result = copy.deepcopy(catalogue)
+    external = externally_bound_facets(root)
     for requirement in result["requirements"]:
         cases = [s for s in specs.values() if s["rule"] == requirement["id"]]
         covered = {facet for case in cases for facet in case["facets"]}
@@ -470,11 +490,13 @@ def synced_catalogue(catalogue, specs):
             if facet not in requirement["facets"]:
                 raise ValueError("unknown represented facet")
             requirement["pending"].pop(facet, None)
-        if set(requirement["pending"]) != set(requirement["facets"]) - covered:
+        externally_covered = external.get(requirement["id"], set())
+        if not externally_covered <= set(requirement["facets"]):
+            raise ValueError("unknown externally represented facet")
+        if set(requirement["pending"]) != set(requirement["facets"]) - covered - externally_covered:
             raise ValueError("missing unselected source plan")
         if cases:
-            old = requirement["oracle"].split("\n\nFinite value implementation:", 1)[0]
-            requirement["oracle"] = old + (
+            value_text = (
                 f"\n\nFinite value implementation: {len(cases)} shared valid run-phase programs represent "
                 f"{len(covered)} selected facets using independent default-INTEGER/default-CHARACTER literal guards. "
                 "Direct constructor SIZE/LEN retain their own argument rules where they are used. RANK requires a "
@@ -487,7 +509,8 @@ def synced_catalogue(catalogue, specs):
                 "types only; no host value or inherited attributes are used and R783 remains pending. "
                 "Source setup never uses another constructor, RESHAPE or PACK. Empty contexts retain nonempty controls. "
                 "Every other plan stays pending and all administrative review fields are preserved; changed source "
-                "material may make the existing source review stale, never silently renewed.")
+                "material may make the existing source review stale, never silently renewed.").lstrip()
+            requirement["oracle"] = owned_paragraph(requirement["oracle"], "Finite value implementation:", value_text)
             prefix = "No runtime witness is implemented. "
             if requirement["oracle_limitation"].startswith(prefix):
                 requirement["oracle_limitation"] = (
@@ -618,8 +641,8 @@ def render_view(catalogue, specs):
         "# Fortran 2023: 7.8 Array constructors - ordinary value implementation\n\n"
         f"**Catalogue source review: {catalogue_review_status(catalogue)}.** "
         "Source and case/evidence adjudications remain separate content-bound records.\n\n"
-        f"The corpus has **{len(specs)} shared valid run/effect programs**, **{checks} primitive value/shape/length guards** "
-        f"and one completion guard per program. **{total-pending} of {total} facets are represented; "
+        f"The value corpus has **{len(specs)} shared valid run/effect programs**, **{checks} primitive value/shape/length guards** "
+        f"and one completion guard per program. The shared catalogue now has **{total-pending} of {total} facets represented; "
         f"{pending} remain PENDING.** No source/case/link/inventory approval is implied.\n\n"
         + CONDITIONS + "\n## Definitions\n\n<!-- BEGIN GENERATED 7.8 -->\n\n")
     text += "\n".join(render_requirement(r) for r in catalogue["requirements"]) + "\n"
@@ -663,7 +686,7 @@ def main():
         parser.error("--check and --sync-catalogue are separate operations")
     files, specs = build_corpus()
     catalogue = json.loads((ROOT / CATALOGUE).read_text())
-    updated = synced_catalogue(catalogue, specs)
+    updated = synced_catalogue(catalogue, specs, ROOT)
     view = render_view(updated, specs)
     if args.check:
         stale = [str(p.relative_to(ROOT)) for p,b in files.items() if not p.is_file() or p.read_bytes() != b]
