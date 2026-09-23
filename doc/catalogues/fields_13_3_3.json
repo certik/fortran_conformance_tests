@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "section": "13.3.3",
+  "review_state": "reviewed",
+  "requirements": [
+    {
+      "id": "S13.3.3-001",
+      "title": "A field is the record part processed for a data or character string edit descriptor",
+      "source": "S13.3.3, J3/24-007, 18 December 2023, physical PDF292.",
+      "source_units": [
+        "p1"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A field is the part of a record read or written when format control encounters a data edit descriptor or character string edit descriptor; field width is its size in characters.",
+      "facets": [
+        "data-edit-field-width",
+        "character-string-field-width"
+      ],
+      "pending": {
+        "data-edit-field-width": "WRITE(buf,'(I3)') 7; expect '  7' and identify a three-character field.",
+        "character-string-field-width": "WRITE(buf,'(\"AB\")'); expect 'AB' and identify a two-character field."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use independent literal expected strings or scalar sentinels. Negative plans change one property from a conforming control and attribute the violation to this unit only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Pending output plans prefer internal WRITE to a CHARACTER variable and name exact expected characters including blanks. Numbered syntax/constraint diagnostics are subject to 4.2 but need not assert a fixed diagnostic message, severity, status, or printed rule number. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 where cited for source form, labels, names, character values, expressions, arrays, and existing execution constructs. Unregistered dependencies explicitly retained: clause 12 formatted data transfer and effective-item rules; later clause 13 editing subclauses 13.7-13.11; clause 15 for defined I/O and procedures; clause 16 if future fixtures use intrinsic inquiries; clause 19 for scoping/lifetime controls."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "definition",
+      "requirements": [
+        "S13.3.3-001"
+      ],
+      "rationale": "Defines field terminology."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_13_3_3.md"
+  },
+  "review_fingerprint": "af01aa4ec8fd4f34f7f366034609c04cbcaa60fabb6cf9718aed4155cfc91f21",
+  "review_rationale": "Independent fresh-context source review against the pinned J3/24-007 PDF, THREE ROUNDS: doc/source_audits/batch_136.json. This OPENS CLAUSE 13, previously unregistered. The reviewer re-read PDF p289-294, re-derived unit hashes rather than accepting the author receipt, and independently reconciled the accounting: the true movement is 2363 -> 2392, net +29, being 31 non-numbered units newly classified offset by two numbered deferrals. R1303 and C1302 were correctly left UNRESOLVED BUT ACCOUNTED because legacy fixtures already exist for them and registering a numbered rule with pre-existing cases structurally forces binding them, which a source packet must never do; a migration followup is recorded. Seven blocking findings were raised across three rounds and all closed: 13.4 p9 reversion was under-specified (nested-group target, no-preceding-parenthesis fallback, DT-parenthesis exclusion and the changeable-modes obligation were all missing); pending plans were placeholders rather than byte-exact specifications; 13.2.2 p2 was dispositioned permission despite carrying mandatory shall restrictions; C1309 omitted m, d and e. Two further defects were introduced BY the first correction and caught on re-verification: a plan that wrongly assumed record advancement for unlimited-item reversion, which Note 4 explicitly denies, and a negative that violated both p2 and p9 so could not isolate the rule it was filed under. The reviewer hand-verified all four exact record specifications against the source. Source accounting only: authored_facets unchanged at 1946, no fixture bound, no compiler invoked."
+}

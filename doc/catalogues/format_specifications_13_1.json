@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "section": "13.1",
+  "review_state": "reviewed",
+  "requirements": [
+    {
+      "id": "S13.1-001",
+      "title": "A format directs editing between internal data and formatted-record characters",
+      "source": "S13.1, J3/24-007, 18 December 2023, physical PDF289.",
+      "source_units": [
+        "p1"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A format used with a data transfer statement supplies editing information mapping internal data representations to and from formatted-record characters.",
+      "facets": [
+        "integer-output-field",
+        "integer-input-field"
+      ],
+      "pending": {
+        "integer-output-field": "Internal WRITE to character(len=3) buf using format '(I3)' and integer 7; expect exactly '  7'. Control changes only width to '(I2)' and expects ' 7'.",
+        "integer-input-field": "Internal READ from record ' 42' using '(I3)' into an integer initialized to -9; expect 42 and an independent sentinel unchanged."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use independent literal expected strings or scalar sentinels. Negative plans change one property from a conforming control and attribute the violation to this unit only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Pending output plans prefer internal WRITE to a CHARACTER variable and name exact expected characters including blanks. Numbered syntax/constraint diagnostics are subject to 4.2 but need not assert a fixed diagnostic message, severity, status, or printed rule number. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 where cited for source form, labels, names, character values, expressions, arrays, and existing execution constructs. Unregistered dependencies explicitly retained: clause 12 formatted data transfer and effective-item rules; later clause 13 editing subclauses 13.7-13.11; clause 15 for defined I/O and procedures; clause 16 if future fixtures use intrinsic inquiries; clause 19 for scoping/lifetime controls."
+    },
+    {
+      "id": "S13.1-002",
+      "title": "Formats may be FORMAT statements, character expressions, list-directed asterisks, or namelist group names",
+      "source": "S13.1, J3/24-007, 18 December 2023, physical PDF289.",
+      "source_units": [
+        "p2"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A data transfer format can refer to a FORMAT statement or character expression containing a format specification; an asterisk selects list-directed formatting and a namelist-group-name selects namelist formatting.",
+      "facets": [
+        "format-statement-reference",
+        "character-expression-format",
+        "list-directed-reference",
+        "namelist-reference"
+      ],
+      "pending": {
+        "format-statement-reference": "Label 100 FORMAT(I3), then WRITE(buf,100) 7; expect exactly '  7'.",
+        "character-expression-format": "character(len=4) fmt='(I3)'; WRITE(buf,fmt) 7; expect exactly '  7'.",
+        "list-directed-reference": "Source-control for the later 13.10 packet: internal WRITE(buf,*) 7 to an explicitly sized CHARACTER variable demonstrates selection of list-directed formatting, but this 13.1 facet must not assert spaces, separators, or field width until 13.10 supplies the exact byte oracle or marks it processor dependent.",
+        "namelist-reference": "Source-control for the later 13.11 packet: a namelist group containing integer n=7 demonstrates selection by namelist-group-name, but this 13.1 facet must not assert record spelling, ordering, or spacing until 13.11 supplies the exact byte oracle or marks it processor dependent."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use independent literal expected strings or scalar sentinels. Negative plans change one property from a conforming control and attribute the violation to this unit only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Pending output plans prefer internal WRITE to a CHARACTER variable and name exact expected characters including blanks. Numbered syntax/constraint diagnostics are subject to 4.2 but need not assert a fixed diagnostic message, severity, status, or printed rule number. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 where cited for source form, labels, names, character values, expressions, arrays, and existing execution constructs. Unregistered dependencies explicitly retained: clause 12 formatted data transfer and effective-item rules; later clause 13 editing subclauses 13.7-13.11; clause 15 for defined I/O and procedures; clause 16 if future fixtures use intrinsic inquiries; clause 19 for scoping/lifetime controls."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "definition",
+      "requirements": [
+        "S13.1-001"
+      ],
+      "rationale": "Defines the role of a format."
+    },
+    {
+      "unit": "p2",
+      "disposition": "definition",
+      "requirements": [
+        "S13.1-002"
+      ],
+      "rationale": "Classifies format sources; list-directed and namelist details are deferred to 13.10 and 13.11."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_13_1.md"
+  },
+  "review_fingerprint": "63fa6ce3fe1cc1abdca97bc28a3ae531c841e99dbe78bdae4c388e37e361130c",
+  "review_rationale": "Independent fresh-context source review against the pinned J3/24-007 PDF, THREE ROUNDS: doc/source_audits/batch_136.json. This OPENS CLAUSE 13, previously unregistered. The reviewer re-read PDF p289-294, re-derived unit hashes rather than accepting the author receipt, and independently reconciled the accounting: the true movement is 2363 -> 2392, net +29, being 31 non-numbered units newly classified offset by two numbered deferrals. R1303 and C1302 were correctly left UNRESOLVED BUT ACCOUNTED because legacy fixtures already exist for them and registering a numbered rule with pre-existing cases structurally forces binding them, which a source packet must never do; a migration followup is recorded. Seven blocking findings were raised across three rounds and all closed: 13.4 p9 reversion was under-specified (nested-group target, no-preceding-parenthesis fallback, DT-parenthesis exclusion and the changeable-modes obligation were all missing); pending plans were placeholders rather than byte-exact specifications; 13.2.2 p2 was dispositioned permission despite carrying mandatory shall restrictions; C1309 omitted m, d and e. Two further defects were introduced BY the first correction and caught on re-verification: a plan that wrongly assumed record advancement for unlimited-item reversion, which Note 4 explicitly denies, and a negative that violated both p2 and p9 so could not isolate the rule it was filed under. The reviewer hand-verified all four exact record specifications against the source. Source accounting only: authored_facets unchanged at 1946, no fixture bound, no compiler invoked."
+}

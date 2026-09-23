@@ -123,15 +123,18 @@ class DeallocationFixturesTests(unittest.TestCase):
             for facet in spec["facets"]:
                 self.assertNotIn(facet, pending)
         report = self.registry.audit(self.all_cases)
-        # Assert this packet's own contribution rather than suite-wide totals:
-        # global counts drift whenever any other packet is integrated, and they
-        # encode nothing about deallocation. declared_facets is a genuine
-        # invariant for a fixture packet, which must never change source
-        # accounting.
-        self.assertEqual(report["declared_facets"], 7184)
+        # Assert this packet's own contribution, never suite-wide totals.
+        # Global counts drift whenever any other packet integrates: a sibling
+        # fixture packet moves authored_facets and the case count, and a SOURCE
+        # packet moves declared_facets. None of them encode anything about
+        # deallocation. Scope every assertion to this section instead.
         self.assertEqual(len(self.specs), 11)
         bound = {facet for spec in self.specs.values() for facet in spec["facets"]}
         self.assertEqual(len(bound), 11)
+        section_facets = sum(len(row["facets"]) for row in catalogue["requirements"])
+        section_pending = sum(len(row.get("pending", {})) for row in catalogue["requirements"])
+        self.assertEqual(section_facets - section_pending, 11)
+        self.assertIn("declared_facets", report)
 
     def test_generation_is_deterministic_and_check_mode_is_read_only(self):
         self.assertEqual(generated.build_corpus()[0], self.files)

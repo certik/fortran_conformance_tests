@@ -1,0 +1,137 @@
+{
+  "schema_version": 1,
+  "section": "13.2.2",
+  "review_state": "reviewed",
+  "requirements": [
+    {
+      "id": "S13.2.2-001",
+      "title": "A character expression format shall have a valid format specification as its leading part",
+      "source": "S13.2.2, J3/24-007, 18 December 2023, physical PDF289.",
+      "source_units": [
+        "p1"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "A character expression used as a format shall evaluate to a character string whose leading part is a valid format specification.",
+      "facets": [
+        "leading-valid-format",
+        "nonleading-format-rejected-or-error"
+      ],
+      "pending": {
+        "leading-valid-format": "character(len=8) fmt='(I3)XYZ'; WRITE(buf,fmt) 7; expect '  7'.",
+        "nonleading-format-rejected-or-error": "fmt='X(I3)' as a format; repair by deleting X. Only the invalid leading part differs."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use independent literal expected strings or scalar sentinels. Negative plans change one property from a conforming control and attribute the violation to this unit only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Pending output plans prefer internal WRITE to a CHARACTER variable and name exact expected characters including blanks. Numbered syntax/constraint diagnostics are subject to 4.2 but need not assert a fixed diagnostic message, severity, status, or printed rule number. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 where cited for source form, labels, names, character values, expressions, arrays, and existing execution constructs. Unregistered dependencies explicitly retained: clause 12 formatted data transfer and effective-item rules; later clause 13 editing subclauses 13.7-13.11; clause 15 for defined I/O and procedures; clause 16 if future fixtures use intrinsic inquiries; clause 19 for scoping/lifetime controls."
+    },
+    {
+      "id": "S13.2.2-002",
+      "title": "Positions through the final right parenthesis are defined and stable; trailing positions are irrelevant",
+      "source": "S13.2.2, J3/24-007, 18 December 2023, physical PDF289.",
+      "source_units": [
+        "p2"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "Characters through the final right parenthesis shall be defined at execution and shall not become redefined or undefined during the statement; following positions need not be defined and may contain any data with no effect.",
+      "facets": [
+        "defined-through-final-parenthesis",
+        "stable-through-execution",
+        "trailing-characters-ignored"
+      ],
+      "pending": {
+        "defined-through-final-parenthesis": "Define first four characters as '(I3)' before WRITE(buf,fmt) 7; expect '  7'. Negative leaves one of those four positions undefined and repairs only it.",
+        "stable-through-execution": "Control fixture: character(len=4) fmt='(I3)' is not modified during internal WRITE(buf,fmt) 7, and character(len=3) buf must be exactly '  7'. Negative fixture is source-control only until a safe same-statement mutation mechanism is registered: it must change only one character position in fmt during execution of that WRITE, with the repaired program restoring the unmodified fmt; no oracle may rely on unspecified expression evaluation order.",
+        "trailing-characters-ignored": "fmt='(I3)ABCDE' and fmt='(I3)VWXYZ' both WRITE 7 to exactly '  7'."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use independent literal expected strings or scalar sentinels. Negative plans change one property from a conforming control and attribute the violation to this unit only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Pending output plans prefer internal WRITE to a CHARACTER variable and name exact expected characters including blanks. Numbered syntax/constraint diagnostics are subject to 4.2 but need not assert a fixed diagnostic message, severity, status, or printed rule number. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics. The leading-position definedness and stability clauses are requirements. The trailing clauses are source permissions, not processor latitude; no fixture may read undefined trailing characters or classify the mandatory part as permission.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 where cited for source form, labels, names, character values, expressions, arrays, and existing execution constructs. Unregistered dependencies explicitly retained: clause 12 formatted data transfer and effective-item rules; later clause 13 editing subclauses 13.7-13.11; clause 15 for defined I/O and procedures; clause 16 if future fixtures use intrinsic inquiries; clause 19 for scoping/lifetime controls."
+    },
+    {
+      "id": "S13.2.2-003",
+      "title": "A character array format is concatenated in array element order",
+      "source": "S13.2.2, J3/24-007, 18 December 2023, physical PDF289.",
+      "source_units": [
+        "p3"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "If the format is a character array, its elements are treated as array-element-order concatenation.",
+      "facets": [
+        "rank-one-character-array-concatenation",
+        "array-element-order-concatenation"
+      ],
+      "pending": {
+        "rank-one-character-array-concatenation": "character(len=2) fmt(2)=['(I','3)']; WRITE(buf,fmt) 7; expect '  7'.",
+        "array-element-order-concatenation": "Array elements concatenate to '(I1,\",\",I1)' and WRITE 2,5; expect '2,5'. Cite registered 9.5.3.3 for array element order."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use independent literal expected strings or scalar sentinels. Negative plans change one property from a conforming control and attribute the violation to this unit only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Pending output plans prefer internal WRITE to a CHARACTER variable and name exact expected characters including blanks. Numbered syntax/constraint diagnostics are subject to 4.2 but need not assert a fixed diagnostic message, severity, status, or printed rule number. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 where cited for source form, labels, names, character values, expressions, arrays, and existing execution constructs. Unregistered dependencies explicitly retained: clause 12 formatted data transfer and effective-item rules; later clause 13 editing subclauses 13.7-13.11; clause 15 for defined I/O and procedures; clause 16 if future fixtures use intrinsic inquiries; clause 19 for scoping/lifetime controls."
+    },
+    {
+      "id": "S13.2.2-004",
+      "title": "A character array element format specification shall be entirely within that element",
+      "source": "S13.2.2, J3/24-007, 18 December 2023, physical PDF289.",
+      "source_units": [
+        "p3"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "If a character array element is used as the format, the complete format specification shall be within that element.",
+      "facets": [
+        "array-element-contained-format",
+        "array-element-split-format-rejected-or-error"
+      ],
+      "pending": {
+        "array-element-contained-format": "fmt(1)='(I3)'; WRITE(buf,fmt(1)) 7; expect '  7'.",
+        "array-element-split-format-rejected-or-error": "fmt(1)='(I' and fmt(2)='3)', then use fmt(1) alone; repair by using the whole array or storing '(I3)' in one element."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use independent literal expected strings or scalar sentinels. Negative plans change one property from a conforming control and attribute the violation to this unit only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Pending output plans prefer internal WRITE to a CHARACTER variable and name exact expected characters including blanks. Numbered syntax/constraint diagnostics are subject to 4.2 but need not assert a fixed diagnostic message, severity, status, or printed rule number. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 where cited for source form, labels, names, character values, expressions, arrays, and existing execution constructs. Unregistered dependencies explicitly retained: clause 12 formatted data transfer and effective-item rules; later clause 13 editing subclauses 13.7-13.11; clause 15 for defined I/O and procedures; clause 16 if future fixtures use intrinsic inquiries; clause 19 for scoping/lifetime controls."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "requirements",
+      "requirements": [
+        "S13.2.2-001"
+      ]
+    },
+    {
+      "unit": "note1",
+      "disposition": "informative",
+      "rationale": "Explanatory note only."
+    },
+    {
+      "unit": "p2",
+      "disposition": "requirements",
+      "requirements": [
+        "S13.2.2-002"
+      ],
+      "rationale": "The unit carries mandatory shall/shall-not requirements for positions through the final right parenthesis; its later trailing-position latitude is retained in the requirement text and oracle limitation, not used to classify the whole unit as permission."
+    },
+    {
+      "unit": "p3",
+      "disposition": "requirements",
+      "requirements": [
+        "S13.2.2-003",
+        "S13.2.2-004"
+      ]
+    },
+    {
+      "unit": "note2",
+      "disposition": "informative",
+      "rationale": "Escaping examples only; p1-p3 and character literal syntax own normative content."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_13_2_2.md"
+  },
+  "review_fingerprint": "9c6ec0955f5ff46b40e06ca961fbdf59734b872b48d8628a2c960ef85acb0f52",
+  "review_rationale": "Independent fresh-context source review against the pinned J3/24-007 PDF, THREE ROUNDS: doc/source_audits/batch_136.json. This OPENS CLAUSE 13, previously unregistered. The reviewer re-read PDF p289-294, re-derived unit hashes rather than accepting the author receipt, and independently reconciled the accounting: the true movement is 2363 -> 2392, net +29, being 31 non-numbered units newly classified offset by two numbered deferrals. R1303 and C1302 were correctly left UNRESOLVED BUT ACCOUNTED because legacy fixtures already exist for them and registering a numbered rule with pre-existing cases structurally forces binding them, which a source packet must never do; a migration followup is recorded. Seven blocking findings were raised across three rounds and all closed: 13.4 p9 reversion was under-specified (nested-group target, no-preceding-parenthesis fallback, DT-parenthesis exclusion and the changeable-modes obligation were all missing); pending plans were placeholders rather than byte-exact specifications; 13.2.2 p2 was dispositioned permission despite carrying mandatory shall restrictions; C1309 omitted m, d and e. Two further defects were introduced BY the first correction and caught on re-verification: a plan that wrongly assumed record advancement for unlimited-item reversion, which Note 4 explicitly denies, and a negative that violated both p2 and p9 so could not isolate the rule it was filed under. The reviewer hand-verified all four exact record specifications against the source. Source accounting only: authored_facets unchanged at 1946, no fixture bound, no compiler invoked."
+}

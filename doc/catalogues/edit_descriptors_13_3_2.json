@@ -1,0 +1,993 @@
+{
+  "schema_version": 1,
+  "section": "13.3.2",
+  "review_state": "reviewed",
+  "requirements": [
+    {
+      "id": "S13.3.2-001",
+      "title": "Edit descriptors are data, control, or character string descriptors",
+      "source": "S13.3.2, J3/24-007, 18 December 2023, physical PDF290.",
+      "source_units": [
+        "p1"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "An edit descriptor is a data-edit-desc, control-edit-desc, or char-string-edit-desc.",
+      "facets": [
+        "data-edit-descriptor-class",
+        "control-edit-descriptor-class",
+        "character-string-edit-descriptor-class"
+      ],
+      "pending": {
+        "data-edit-descriptor-class": "WRITE(buf,'(I3)') 7; expect '  7'.",
+        "control-edit-descriptor-class": "WRITE(buf,'(1X,I1)') 7; expect ' 7'.",
+        "character-string-edit-descriptor-class": "WRITE(buf,'(\"Q\")'); expect 'Q'."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use independent literal expected strings or scalar sentinels. Negative plans change one property from a conforming control and attribute the violation to this unit only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Pending output plans prefer internal WRITE to a CHARACTER variable and name exact expected characters including blanks. Numbered syntax/constraint diagnostics are subject to 4.2 but need not assert a fixed diagnostic message, severity, status, or printed rule number. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 where cited for source form, labels, names, character values, expressions, arrays, and existing execution constructs. Unregistered dependencies explicitly retained: clause 12 formatted data transfer and effective-item rules; later clause 13 editing subclauses 13.7-13.11; clause 15 for defined I/O and procedures; clause 16 if future fixtures use intrinsic inquiries; clause 19 for scoping/lifetime controls."
+    },
+    {
+      "id": "R1307",
+      "title": "Data edit descriptors include I, B, O, Z, F, E, EN, ES, EX, G, L, A, AT, D, and DT forms",
+      "source": "R1307, J3/24-007, 18 December 2023, physical PDF290.",
+      "source_units": [
+        "R1307"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "The data-edit-desc grammar enumerates integer, binary/octal/hex, real, logical, character, AT, D, and defined-type forms.",
+      "facets": [
+        "I-form",
+        "B-form",
+        "O-form",
+        "Z-form",
+        "F-form",
+        "E-form",
+        "EN-form",
+        "ES-form",
+        "EX-form",
+        "G-form",
+        "L-form",
+        "A-form",
+        "AT-form",
+        "D-form",
+        "DT-form",
+        "invalid-data-descriptor-rejected"
+      ],
+      "pending": {
+        "I-form": "WRITE(buf,'(I3)') 7; expect '  7'.",
+        "B-form": "WRITE(buf,'(B4.4)') 5; expect '0101'.",
+        "O-form": "WRITE(buf,'(O3.3)') 8; expect '010'.",
+        "Z-form": "Use value 9 with WRITE(buf,'(Z2.2)') to avoid alphabetic digit case; expect '09'.",
+        "F-form": "WRITE(buf,'(F5.1)') 3.0 using an exactly representable value; expect '  3.0'.",
+        "E-form": "Deferred to the E-editing owner for value semantics, but the planned shape is exact: internal WRITE to character(len=10) with format '(E10.2)' and real value 1.0; future owner must state the exact ten output characters or mark exponent spelling processor-dependent before execution.",
+        "EN-form": "Deferred to the EN-editing owner for value semantics, but the planned shape is exact: internal WRITE to character(len=10) with format '(EN10.2)' and real value 1000.0; future owner must state the exact ten output characters or mark the form processor-dependent before execution.",
+        "ES-form": "Deferred to the ES-editing owner for value semantics, but the planned shape is exact: internal WRITE to character(len=10) with format '(ES10.2)' and real value 1.0; future owner must state the exact ten output characters or mark the form processor-dependent before execution.",
+        "EX-form": "Deferred to the EX-editing owner for value semantics, but the planned shape is exact: internal WRITE to character(len=16) with format '(EX16.4)' and real value 1.0; future owner must state the exact sixteen output characters or mark hexadecimal real spelling processor-dependent before execution.",
+        "G-form": "Deferred to the G-editing owner for descriptor selection, but the planned shape is exact: internal WRITE to a fixed-length character variable with format '(G0)' for integer value 7 and with '(G10.3)' for real value 1.0; future owner must state exact characters before execution.",
+        "L-form": "WRITE(buf,'(L1)') .true.; expect 'T'.",
+        "A-form": "Internal WRITE(buf,'(A3)') 'XY' to character(len=3); future A-editing owner must decide from 13.7 whether exact output is ' XY' or another specified padding form before execution, and this R1307 facet only records the A[w] grammar.",
+        "AT-form": "Deferred to AT semantics and stream-output ownership, but the planned source shape is exact: formatted stream output with an AT descriptor between two A descriptors must specify byte positions and exact resulting record before execution.",
+        "D-form": "Deferred to D-editing owner for value semantics, but the planned shape is exact: internal WRITE to character(len=10) with format '(D10.2)' and real value 1.0; future owner must state exact exponent characters before execution.",
+        "DT-form": "Deferred to clause 15 defined-I/O and DT semantics, but the planned shape is exact: define a type whose formatted DT output writes the single default character 'D'; internal WRITE(buf,'(DT)') value must then expect exactly 'D'.",
+        "invalid-data-descriptor-rejected": "Diagnostic nonlisted token such as Q3; repair to I3. Only R1307 membership differs."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use independent literal expected strings or scalar sentinels. Negative plans change one property from a conforming control and attribute the violation to this unit only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Pending output plans prefer internal WRITE to a CHARACTER variable and name exact expected characters including blanks. Numbered syntax/constraint diagnostics are subject to 4.2 but need not assert a fixed diagnostic message, severity, status, or printed rule number. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 where cited for source form, labels, names, character values, expressions, arrays, and existing execution constructs. Unregistered dependencies explicitly retained: clause 12 formatted data transfer and effective-item rules; later clause 13 editing subclauses 13.7-13.11; clause 15 for defined I/O and procedures; clause 16 if future fixtures use intrinsic inquiries; clause 19 for scoping/lifetime controls."
+    },
+    {
+      "id": "R1308",
+      "title": "w is an integer literal constant",
+      "source": "R1308, J3/24-007, 18 December 2023, physical PDF291.",
+      "source_units": [
+        "R1308"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "w is an integer literal constant.",
+      "facets": [
+        "r1308-valid",
+        "r1308-invalid"
+      ],
+      "pending": {
+        "r1308-valid": "Plan WRITE(buf,'(I3)') 7 into character(len=3); expect exactly '  7', with w=3 as the integer literal constant.",
+        "r1308-invalid": "Plan diagnostic format '(Iw)' where w is intended as a variable width; repair to '(I3)'. The only invalid property is that w is not an int-literal-constant."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use independent literal expected strings or scalar sentinels. Negative plans change one property from a conforming control and attribute the violation to this unit only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Pending output plans prefer internal WRITE to a CHARACTER variable and name exact expected characters including blanks. Numbered syntax/constraint diagnostics are subject to 4.2 but need not assert a fixed diagnostic message, severity, status, or printed rule number. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 where cited for source form, labels, names, character values, expressions, arrays, and existing execution constructs. Unregistered dependencies explicitly retained: clause 12 formatted data transfer and effective-item rules; later clause 13 editing subclauses 13.7-13.11; clause 15 for defined I/O and procedures; clause 16 if future fixtures use intrinsic inquiries; clause 19 for scoping/lifetime controls."
+    },
+    {
+      "id": "R1309",
+      "title": "m is an integer literal constant",
+      "source": "R1309, J3/24-007, 18 December 2023, physical PDF291.",
+      "source_units": [
+        "R1309"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "m is an integer literal constant.",
+      "facets": [
+        "r1309-valid",
+        "r1309-invalid"
+      ],
+      "pending": {
+        "r1309-valid": "Plan WRITE(buf,'(I3.2)') 7 into character(len=3); expect exactly ' 07', with m=2 as the integer literal constant.",
+        "r1309-invalid": "Plan diagnostic format '(I3.m)' with m nonliteral; repair to '(I3.2)'. The only invalid property is that m is not an int-literal-constant."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use independent literal expected strings or scalar sentinels. Negative plans change one property from a conforming control and attribute the violation to this unit only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Pending output plans prefer internal WRITE to a CHARACTER variable and name exact expected characters including blanks. Numbered syntax/constraint diagnostics are subject to 4.2 but need not assert a fixed diagnostic message, severity, status, or printed rule number. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 where cited for source form, labels, names, character values, expressions, arrays, and existing execution constructs. Unregistered dependencies explicitly retained: clause 12 formatted data transfer and effective-item rules; later clause 13 editing subclauses 13.7-13.11; clause 15 for defined I/O and procedures; clause 16 if future fixtures use intrinsic inquiries; clause 19 for scoping/lifetime controls."
+    },
+    {
+      "id": "R1310",
+      "title": "d is an integer literal constant",
+      "source": "R1310, J3/24-007, 18 December 2023, physical PDF291.",
+      "source_units": [
+        "R1310"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "d is an integer literal constant.",
+      "facets": [
+        "r1310-valid",
+        "r1310-invalid"
+      ],
+      "pending": {
+        "r1310-valid": "Plan WRITE(buf,'(F5.1)') 3.0 using an exactly representable value; expect exactly '  3.0', with d=1 as the integer literal constant.",
+        "r1310-invalid": "Plan diagnostic format '(F5.d)' with d nonliteral; repair to '(F5.1)'. The only invalid property is that d is not an int-literal-constant."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use independent literal expected strings or scalar sentinels. Negative plans change one property from a conforming control and attribute the violation to this unit only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Pending output plans prefer internal WRITE to a CHARACTER variable and name exact expected characters including blanks. Numbered syntax/constraint diagnostics are subject to 4.2 but need not assert a fixed diagnostic message, severity, status, or printed rule number. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 where cited for source form, labels, names, character values, expressions, arrays, and existing execution constructs. Unregistered dependencies explicitly retained: clause 12 formatted data transfer and effective-item rules; later clause 13 editing subclauses 13.7-13.11; clause 15 for defined I/O and procedures; clause 16 if future fixtures use intrinsic inquiries; clause 19 for scoping/lifetime controls."
+    },
+    {
+      "id": "R1311",
+      "title": "e is an integer literal constant",
+      "source": "R1311, J3/24-007, 18 December 2023, physical PDF291.",
+      "source_units": [
+        "R1311"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "e is an integer literal constant.",
+      "facets": [
+        "r1311-valid",
+        "r1311-invalid"
+      ],
+      "pending": {
+        "r1311-valid": "Plan format '(E10.2E2)' with e=2. Exact E output is deferred to the E-editing owner, which must use a fixed character(len=10) internal WRITE and state all ten expected characters before execution.",
+        "r1311-invalid": "Plan diagnostic format '(E10.2Ee)' with e nonliteral; repair to '(E10.2E2)'. The only invalid property is that e is not an int-literal-constant."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use independent literal expected strings or scalar sentinels. Negative plans change one property from a conforming control and attribute the violation to this unit only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Pending output plans prefer internal WRITE to a CHARACTER variable and name exact expected characters including blanks. Numbered syntax/constraint diagnostics are subject to 4.2 but need not assert a fixed diagnostic message, severity, status, or printed rule number. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 where cited for source form, labels, names, character values, expressions, arrays, and existing execution constructs. Unregistered dependencies explicitly retained: clause 12 formatted data transfer and effective-item rules; later clause 13 editing subclauses 13.7-13.11; clause 15 for defined I/O and procedures; clause 16 if future fixtures use intrinsic inquiries; clause 19 for scoping/lifetime controls."
+    },
+    {
+      "id": "R1312",
+      "title": "v is a signed integer literal constant",
+      "source": "R1312, J3/24-007, 18 December 2023, physical PDF291.",
+      "source_units": [
+        "R1312"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "v is a signed integer literal constant.",
+      "facets": [
+        "r1312-valid",
+        "r1312-invalid"
+      ],
+      "pending": {
+        "r1312-valid": "Plan DT source-use with format 'DT(1,-2)', identifying v values 1 and -2 as signed integer literal constants. Executable DT behavior is deferred to DT/defined-I/O owners, which must use a defined-I/O procedure with exact character output before execution.",
+        "r1312-invalid": "Plan diagnostic DT(v) with v a variable token; repair to DT(1). The only invalid property is that v is not a signed-int-literal-constant."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use independent literal expected strings or scalar sentinels. Negative plans change one property from a conforming control and attribute the violation to this unit only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Pending output plans prefer internal WRITE to a CHARACTER variable and name exact expected characters including blanks. Numbered syntax/constraint diagnostics are subject to 4.2 but need not assert a fixed diagnostic message, severity, status, or printed rule number. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 where cited for source form, labels, names, character values, expressions, arrays, and existing execution constructs. Unregistered dependencies explicitly retained: clause 12 formatted data transfer and effective-item rules; later clause 13 editing subclauses 13.7-13.11; clause 15 for defined I/O and procedures; clause 16 if future fixtures use intrinsic inquiries; clause 19 for scoping/lifetime controls."
+    },
+    {
+      "id": "R1314",
+      "title": "k is a signed integer literal constant",
+      "source": "R1314, J3/24-007, 18 December 2023, physical PDF291.",
+      "source_units": [
+        "R1314"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "k is a signed integer literal constant.",
+      "facets": [
+        "r1314-valid",
+        "r1314-invalid"
+      ],
+      "pending": {
+        "r1314-valid": "Plan formats '(-1P,E10.2)' and '(+1P,E10.2)', identifying k as signed integer literal constants. Exact scaled real output is deferred to scale-factor/E-editing owners, which must state fixed-length internal WRITE results before execution.",
+        "r1314-invalid": "Plan diagnostic '(kP,E10.2)' with k nonliteral; repair to '(1P,E10.2)'. The only invalid property is that k is not a signed-int-literal-constant."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use independent literal expected strings or scalar sentinels. Negative plans change one property from a conforming control and attribute the violation to this unit only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Pending output plans prefer internal WRITE to a CHARACTER variable and name exact expected characters including blanks. Numbered syntax/constraint diagnostics are subject to 4.2 but need not assert a fixed diagnostic message, severity, status, or printed rule number. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 where cited for source form, labels, names, character values, expressions, arrays, and existing execution constructs. Unregistered dependencies explicitly retained: clause 12 formatted data transfer and effective-item rules; later clause 13 editing subclauses 13.7-13.11; clause 15 for defined I/O and procedures; clause 16 if future fixtures use intrinsic inquiries; clause 19 for scoping/lifetime controls."
+    },
+    {
+      "id": "R1316",
+      "title": "n is an integer literal constant",
+      "source": "R1316, J3/24-007, 18 December 2023, physical PDF291.",
+      "source_units": [
+        "R1316"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "n is an integer literal constant.",
+      "facets": [
+        "r1316-valid",
+        "r1316-invalid"
+      ],
+      "pending": {
+        "r1316-valid": "Plan WRITE(buf,'(2X,I1)') 7 into character(len=3); expect exactly '  7', with n=2 as the integer literal constant.",
+        "r1316-invalid": "Plan diagnostic '(nX,I1)' with n nonliteral; repair to '(2X,I1)'. The only invalid property is that n is not an int-literal-constant."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use independent literal expected strings or scalar sentinels. Negative plans change one property from a conforming control and attribute the violation to this unit only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Pending output plans prefer internal WRITE to a CHARACTER variable and name exact expected characters including blanks. Numbered syntax/constraint diagnostics are subject to 4.2 but need not assert a fixed diagnostic message, severity, status, or printed rule number. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 where cited for source form, labels, names, character values, expressions, arrays, and existing execution constructs. Unregistered dependencies explicitly retained: clause 12 formatted data transfer and effective-item rules; later clause 13 editing subclauses 13.7-13.11; clause 15 for defined I/O and procedures; clause 16 if future fixtures use intrinsic inquiries; clause 19 for scoping/lifetime controls."
+    },
+    {
+      "id": "C1306",
+      "title": "Field width w is nonnegative for selected numeric descriptors and positive for others",
+      "source": "C1306, J3/24-007, 18 December 2023, physical PDF291.",
+      "source_units": [
+        "C1306"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "For I, B, O, Z, D, E, EN, ES, EX, F, and G descriptors, w shall be zero or positive; for all other descriptors, w shall be positive.",
+      "facets": [
+        "zero-width-numeric-allowed",
+        "positive-width-other",
+        "negative-width-rejected",
+        "zero-width-other-rejected"
+      ],
+      "pending": {
+        "zero-width-numeric-allowed": "WRITE(buf,'(I0)') 7; expect '7'.",
+        "positive-width-other": "WRITE(buf,'(L1)') .true.; expect 'T'.",
+        "negative-width-rejected": "Diagnostic negative width; repair to positive width.",
+        "zero-width-other-rejected": "Diagnostic L0 or A0; repair to L1 or A1."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use independent literal expected strings or scalar sentinels. Negative plans change one property from a conforming control and attribute the violation to this unit only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Pending output plans prefer internal WRITE to a CHARACTER variable and name exact expected characters including blanks. Numbered syntax/constraint diagnostics are subject to 4.2 but need not assert a fixed diagnostic message, severity, status, or printed rule number. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 where cited for source form, labels, names, character values, expressions, arrays, and existing execution constructs. Unregistered dependencies explicitly retained: clause 12 formatted data transfer and effective-item rules; later clause 13 editing subclauses 13.7-13.11; clause 15 for defined I/O and procedures; clause 16 if future fixtures use intrinsic inquiries; clause 19 for scoping/lifetime controls."
+    },
+    {
+      "id": "C1307",
+      "title": "A G edit descriptor with nonzero w shall specify d",
+      "source": "C1307, J3/24-007, 18 December 2023, physical PDF291.",
+      "source_units": [
+        "C1307"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "For G, d shall be specified if w is not zero.",
+      "facets": [
+        "G-nonzero-width-with-d",
+        "G-nonzero-width-without-d-rejected",
+        "G-zero-width-without-d"
+      ],
+      "pending": {
+        "G-nonzero-width-with-d": "Use format '(G6.2)' as a valid source-control case; exact six-character output is deferred to the G-editing owner and must be stated before execution.",
+        "G-nonzero-width-without-d-rejected": "Diagnostic `(G6)`; repair to `(G6.2)`.",
+        "G-zero-width-without-d": "Use format '(G0)' as a valid source-control case; exact output is deferred to the G-editing owner and must be stated before execution."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use independent literal expected strings or scalar sentinels. Negative plans change one property from a conforming control and attribute the violation to this unit only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Pending output plans prefer internal WRITE to a CHARACTER variable and name exact expected characters including blanks. Numbered syntax/constraint diagnostics are subject to 4.2 but need not assert a fixed diagnostic message, severity, status, or printed rule number. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 where cited for source form, labels, names, character values, expressions, arrays, and existing execution constructs. Unregistered dependencies explicitly retained: clause 12 formatted data transfer and effective-item rules; later clause 13 editing subclauses 13.7-13.11; clause 15 for defined I/O and procedures; clause 16 if future fixtures use intrinsic inquiries; clause 19 for scoping/lifetime controls."
+    },
+    {
+      "id": "C1308",
+      "title": "A G edit descriptor with zero w shall not specify e",
+      "source": "C1308, J3/24-007, 18 December 2023, physical PDF291.",
+      "source_units": [
+        "C1308"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "For G, e shall not be specified if w is zero.",
+      "facets": [
+        "G-zero-width-without-e",
+        "G-zero-width-with-e-rejected",
+        "G-nonzero-width-with-e"
+      ],
+      "pending": {
+        "G-zero-width-without-e": "Use format '(G0)' as a valid source-control case; exact output is deferred to the G-editing owner and must be stated before execution.",
+        "G-zero-width-with-e-rejected": "Diagnostic `(G0.3E2)`; repair by removing E2 or using nonzero width.",
+        "G-nonzero-width-with-e": "Use format '(G10.3E2)' as a valid source-control case; exact ten-character output is deferred to the G-editing owner and must be stated before execution."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use independent literal expected strings or scalar sentinels. Negative plans change one property from a conforming control and attribute the violation to this unit only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Pending output plans prefer internal WRITE to a CHARACTER variable and name exact expected characters including blanks. Numbered syntax/constraint diagnostics are subject to 4.2 but need not assert a fixed diagnostic message, severity, status, or printed rule number. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 where cited for source form, labels, names, character values, expressions, arrays, and existing execution constructs. Unregistered dependencies explicitly retained: clause 12 formatted data transfer and effective-item rules; later clause 13 editing subclauses 13.7-13.11; clause 15 for defined I/O and procedures; clause 16 if future fixtures use intrinsic inquiries; clause 19 for scoping/lifetime controls."
+    },
+    {
+      "id": "C1309",
+      "title": "Kind parameters are prohibited for DT character literals and descriptor fields w, m, d, e, and v",
+      "source": "C1309, J3/24-007, 18 December 2023, physical PDF291.",
+      "source_units": [
+        "C1309"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "A kind parameter shall not be specified for the DT char-literal-constant or for w, m, d, e, and v.",
+      "facets": [
+        "default-kind-DT-literal-and-fields",
+        "kind-param-DT-literal-rejected",
+        "kind-param-w-rejected",
+        "kind-param-m-rejected",
+        "kind-param-d-rejected",
+        "kind-param-e-rejected",
+        "kind-param-v-rejected"
+      ],
+      "pending": {
+        "default-kind-DT-literal-and-fields": "Use default-kind examples covering every listed field: DT'X'(1), I3 for w, I3.2 for m, F5.1 for d, E10.2E2 for e, and DT(1,-2) for v. Exact output for DT/E/F forms remains with their semantic owners; this facet requires all listed tokens to appear without kind parameters.",
+        "kind-param-DT-literal-rejected": "Diagnostic kind-qualified DT char-literal-constant, for example a DT descriptor whose char-literal-constant has an explicit kind; repair by removing only that kind parameter.",
+        "kind-param-w-rejected": "Diagnostic kind-qualified width w, for example '(I3_4)' if lexically accepted; repair to '(I3)'. The sole property is a kind parameter on w.",
+        "kind-param-m-rejected": "Diagnostic kind-qualified minimum digits m, for example '(I3.2_4)' if lexically accepted; repair to '(I3.2)'. The sole property is a kind parameter on m.",
+        "kind-param-d-rejected": "Diagnostic kind-qualified digits d, for example '(F5.1_4)' if lexically accepted; repair to '(F5.1)'. The sole property is a kind parameter on d.",
+        "kind-param-e-rejected": "Diagnostic kind-qualified exponent width e, for example '(E10.2E2_4)' if lexically accepted; repair to '(E10.2E2)'. The sole property is a kind parameter on e.",
+        "kind-param-v-rejected": "Diagnostic kind-qualified v in a DT v-list, for example 'DT(1_4)' if lexically accepted; repair to 'DT(1)'. The sole property is a kind parameter on v."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use independent literal expected strings or scalar sentinels. Negative plans change one property from a conforming control and attribute the violation to this unit only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Pending output plans prefer internal WRITE to a CHARACTER variable and name exact expected characters including blanks. Numbered syntax/constraint diagnostics are subject to 4.2 but need not assert a fixed diagnostic message, severity, status, or printed rule number. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 where cited for source form, labels, names, character values, expressions, arrays, and existing execution constructs. Unregistered dependencies explicitly retained: clause 12 formatted data transfer and effective-item rules; later clause 13 editing subclauses 13.7-13.11; clause 15 for defined I/O and procedures; clause 16 if future fixtures use intrinsic inquiries; clause 19 for scoping/lifetime controls."
+    },
+    {
+      "id": "S13.3.2-002",
+      "title": "Data edit descriptors indicate the manner of editing",
+      "source": "S13.3.2, J3/24-007, 18 December 2023, physical PDF291.",
+      "source_units": [
+        "p2"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The listed data edit descriptors indicate the manner of editing; detailed conversions are owned later.",
+      "facets": [
+        "integer-manner",
+        "logical-manner",
+        "character-manner",
+        "derived-type-manner"
+      ],
+      "pending": {
+        "integer-manner": "Classification plan with exact future integer-editing fixture: internal WRITE(buf,'(I3)') 7 to character(len=3) must expect exactly '  7' once 13.7 integer editing is registered.",
+        "logical-manner": "Classification plan with exact future logical-editing fixture: internal WRITE(buf,'(L1)') .true. to character(len=1) must expect exactly 'T' once logical editing is registered.",
+        "character-manner": "Classification plan with fixed future character-editing fixture: internal WRITE(buf,'(A3)') 'XY' to character(len=3); the A-editing owner must state the exact three characters before execution.",
+        "derived-type-manner": "Classification plan with fixed future DT fixture: a defined-I/O procedure writes exactly 'D' for a scalar derived value, so internal WRITE(buf,'(DT)') value to character(len=1) must expect 'D' after clause 15/DT ownership is registered."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use independent literal expected strings or scalar sentinels. Negative plans change one property from a conforming control and attribute the violation to this unit only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Pending output plans prefer internal WRITE to a CHARACTER variable and name exact expected characters including blanks. Numbered syntax/constraint diagnostics are subject to 4.2 but need not assert a fixed diagnostic message, severity, status, or printed rule number. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 where cited for source form, labels, names, character values, expressions, arrays, and existing execution constructs. Unregistered dependencies explicitly retained: clause 12 formatted data transfer and effective-item rules; later clause 13 editing subclauses 13.7-13.11; clause 15 for defined I/O and procedures; clause 16 if future fixtures use intrinsic inquiries; clause 19 for scoping/lifetime controls."
+    },
+    {
+      "id": "R1313",
+      "title": "Control edit descriptors include blank, decimal, leading-zero, position, round, sign, scale, colon, and slash forms",
+      "source": "R1313, J3/24-007, 18 December 2023, physical PDF291.",
+      "source_units": [
+        "R1313"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "The control-edit-desc grammar enumerates blank interpretation, decimal, leading-zero, position, round, sign, scale-factor P, colon, and slash forms.",
+      "facets": [
+        "blank-control",
+        "decimal-control",
+        "leading-zero-control",
+        "position-control",
+        "round-control",
+        "sign-control",
+        "scale-factor-control",
+        "colon-control",
+        "slash-control",
+        "invalid-control-rejected"
+      ],
+      "pending": {
+        "blank-control": "Grammar/source-control fixture: internal READ(' 7','(BN,I2)') into an integer must expect 7 after blank-interpretation semantics are registered; paired BZ fixture must name its exact input and expected integer before execution.",
+        "decimal-control": "Grammar/source-control fixture with exact unaffected output: internal WRITE(buf,'(DC,I1)') 7 to character(len=1) expects exactly '7'; decimal-character effects remain for the decimal-editing owner.",
+        "leading-zero-control": "Grammar/source-control fixture with exact unaffected output: internal WRITE(buf,'(LZ,I1)') 7 to character(len=1) expects exactly '7'; leading-zero effects remain for the leading-zero owner.",
+        "position-control": "WRITE(buf,'(2X,I1)') 7; expect '  7'.",
+        "round-control": "Grammar/source-control fixture with exact unaffected output: internal WRITE(buf,'(RN,I1)') 7 to character(len=1) expects exactly '7'; real rounding effects remain for the rounding owner.",
+        "sign-control": "After sign editing registration, WRITE(buf,'(SP,I2)') 7 expects '+7'.",
+        "scale-factor-control": "Grammar/source-control fixture with exact unaffected output: internal WRITE(buf,'(1P,I1)') 7 to character(len=1) expects exactly '7'; scaled real effects remain for the scale-factor owner.",
+        "colon-control": "WRITE(buf,'(I1,:,\",\",I1)') 4 into character(len=1); expect '4'.",
+        "slash-control": "Record-positioning fixture for the slash form: internal WRITE to character(len=1) rec(2) with format '(I1/I1)' and values 1,2 must expect rec(1)='1' and rec(2)='2'.",
+        "invalid-control-rejected": "Diagnostic nonlisted control token; repair to a listed control form."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use independent literal expected strings or scalar sentinels. Negative plans change one property from a conforming control and attribute the violation to this unit only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Pending output plans prefer internal WRITE to a CHARACTER variable and name exact expected characters including blanks. Numbered syntax/constraint diagnostics are subject to 4.2 but need not assert a fixed diagnostic message, severity, status, or printed rule number. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 where cited for source form, labels, names, character values, expressions, arrays, and existing execution constructs. Unregistered dependencies explicitly retained: clause 12 formatted data transfer and effective-item rules; later clause 13 editing subclauses 13.7-13.11; clause 15 for defined I/O and procedures; clause 16 if future fixtures use intrinsic inquiries; clause 19 for scoping/lifetime controls."
+    },
+    {
+      "id": "C1310",
+      "title": "A kind parameter shall not be specified for k",
+      "source": "C1310, J3/24-007, 18 December 2023, physical PDF291.",
+      "source_units": [
+        "C1310"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "The scale factor k shall not have a kind parameter.",
+      "facets": [
+        "default-kind-scale-factor",
+        "kind-param-scale-factor-rejected"
+      ],
+      "pending": {
+        "default-kind-scale-factor": "Use default-kind scale factor in internal WRITE(buf,'(1P,I1)') 7 to character(len=1); expect exactly '7', with P parsed but having no integer-output effect.",
+        "kind-param-scale-factor-rejected": "Diagnostic `(1_4P,E10.2)` if lexed; repair to `(1P,E10.2)`."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use independent literal expected strings or scalar sentinels. Negative plans change one property from a conforming control and attribute the violation to this unit only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Pending output plans prefer internal WRITE to a CHARACTER variable and name exact expected characters including blanks. Numbered syntax/constraint diagnostics are subject to 4.2 but need not assert a fixed diagnostic message, severity, status, or printed rule number. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 where cited for source form, labels, names, character values, expressions, arrays, and existing execution constructs. Unregistered dependencies explicitly retained: clause 12 formatted data transfer and effective-item rules; later clause 13 editing subclauses 13.7-13.11; clause 15 for defined I/O and procedures; clause 16 if future fixtures use intrinsic inquiries; clause 19 for scoping/lifetime controls."
+    },
+    {
+      "id": "S13.3.2-003",
+      "title": "The k in kP is the scale factor",
+      "source": "S13.3.2, J3/24-007, 18 December 2023, physical PDF291.",
+      "source_units": [
+        "p3"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "In kP, k is called the scale factor.",
+      "facets": [
+        "scale-factor-term"
+      ],
+      "pending": {
+        "scale-factor-term": "Source-use fixture around internal WRITE(buf,'(1P,I1)') 7 to character(len=1), expecting exactly '7', identifies k=1 as the scale factor while leaving scaled real output to 13.8.6/13.7."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use independent literal expected strings or scalar sentinels. Negative plans change one property from a conforming control and attribute the violation to this unit only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Pending output plans prefer internal WRITE to a CHARACTER variable and name exact expected characters including blanks. Numbered syntax/constraint diagnostics are subject to 4.2 but need not assert a fixed diagnostic message, severity, status, or printed rule number. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 where cited for source form, labels, names, character values, expressions, arrays, and existing execution constructs. Unregistered dependencies explicitly retained: clause 12 formatted data transfer and effective-item rules; later clause 13 editing subclauses 13.7-13.11; clause 15 for defined I/O and procedures; clause 16 if future fixtures use intrinsic inquiries; clause 19 for scoping/lifetime controls."
+    },
+    {
+      "id": "R1315",
+      "title": "Position edit descriptors are Tn, TLn, TRn, or nX",
+      "source": "R1315, J3/24-007, 18 December 2023, physical PDF291.",
+      "source_units": [
+        "R1315"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "The position-edit-desc grammar permits T n, TL n, TR n, and n X.",
+      "facets": [
+        "T-position",
+        "TL-position",
+        "TR-position",
+        "X-position",
+        "invalid-position-rejected"
+      ],
+      "pending": {
+        "T-position": "WRITE(buf,'(T3,I1)') 7; expect '  7'.",
+        "TL-position": "Source-use with TL1; exact bytes depend on prior position and 13.8.1.",
+        "TR-position": "Source-use with TR1; exact bytes depend on prior position and 13.8.1.",
+        "X-position": "WRITE(buf,'(2X,I1)') 7; expect '  7'.",
+        "invalid-position-rejected": "Diagnostic nonlisted TX form; repair to T or X form."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use independent literal expected strings or scalar sentinels. Negative plans change one property from a conforming control and attribute the violation to this unit only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Pending output plans prefer internal WRITE to a CHARACTER variable and name exact expected characters including blanks. Numbered syntax/constraint diagnostics are subject to 4.2 but need not assert a fixed diagnostic message, severity, status, or printed rule number. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 where cited for source form, labels, names, character values, expressions, arrays, and existing execution constructs. Unregistered dependencies explicitly retained: clause 12 formatted data transfer and effective-item rules; later clause 13 editing subclauses 13.7-13.11; clause 15 for defined I/O and procedures; clause 16 if future fixtures use intrinsic inquiries; clause 19 for scoping/lifetime controls."
+    },
+    {
+      "id": "C1311",
+      "title": "The position count n shall be positive",
+      "source": "C1311, J3/24-007, 18 December 2023, physical PDF291.",
+      "source_units": [
+        "C1311"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "The position count n shall be positive.",
+      "facets": [
+        "positive-position-count",
+        "zero-position-count-rejected",
+        "negative-position-count-rejected"
+      ],
+      "pending": {
+        "positive-position-count": "WRITE(buf,'(1X,I1)') 7; expect ' 7'.",
+        "zero-position-count-rejected": "Diagnostic `(0X,I1)`; repair to `(1X,I1)`.",
+        "negative-position-count-rejected": "Diagnostic negative n if parsed; repair to positive n."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use independent literal expected strings or scalar sentinels. Negative plans change one property from a conforming control and attribute the violation to this unit only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Pending output plans prefer internal WRITE to a CHARACTER variable and name exact expected characters including blanks. Numbered syntax/constraint diagnostics are subject to 4.2 but need not assert a fixed diagnostic message, severity, status, or printed rule number. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 where cited for source form, labels, names, character values, expressions, arrays, and existing execution constructs. Unregistered dependencies explicitly retained: clause 12 formatted data transfer and effective-item rules; later clause 13 editing subclauses 13.7-13.11; clause 15 for defined I/O and procedures; clause 16 if future fixtures use intrinsic inquiries; clause 19 for scoping/lifetime controls."
+    },
+    {
+      "id": "C1312",
+      "title": "A kind parameter shall not be specified for n",
+      "source": "C1312, J3/24-007, 18 December 2023, physical PDF292.",
+      "source_units": [
+        "C1312"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "The position count n shall not have a kind parameter.",
+      "facets": [
+        "default-kind-position-count",
+        "kind-param-position-count-rejected"
+      ],
+      "pending": {
+        "default-kind-position-count": "WRITE(buf,'(2X,I1)') 7; expect '  7'.",
+        "kind-param-position-count-rejected": "Diagnostic `(2_4X,I1)` if lexed; repair to `(2X,I1)`."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use independent literal expected strings or scalar sentinels. Negative plans change one property from a conforming control and attribute the violation to this unit only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Pending output plans prefer internal WRITE to a CHARACTER variable and name exact expected characters including blanks. Numbered syntax/constraint diagnostics are subject to 4.2 but need not assert a fixed diagnostic message, severity, status, or printed rule number. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 where cited for source form, labels, names, character values, expressions, arrays, and existing execution constructs. Unregistered dependencies explicitly retained: clause 12 formatted data transfer and effective-item rules; later clause 13 editing subclauses 13.7-13.11; clause 15 for defined I/O and procedures; clause 16 if future fixtures use intrinsic inquiries; clause 19 for scoping/lifetime controls."
+    },
+    {
+      "id": "R1317",
+      "title": "Blank interpretation edit descriptors are BN or BZ",
+      "source": "R1317, J3/24-007, 18 December 2023, physical PDF292.",
+      "source_units": [
+        "R1317"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "Blank interpretation edit descriptors are BN or BZ.",
+      "facets": [
+        "r1317-valid",
+        "r1317-invalid"
+      ],
+      "pending": {
+        "r1317-valid": "Plan input source-use controls for '(BN,I2)' and '(BZ,I2)' after blank-interpretation semantics are registered; no byte oracle is asserted here.",
+        "r1317-invalid": "Plan diagnostic '(BX,I2)' repaired to '(BN,I2)' or '(BZ,I2)'. The only invalid property is absence from R1317's BN/BZ alternatives."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use independent literal expected strings or scalar sentinels. Negative plans change one property from a conforming control and attribute the violation to this unit only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Pending output plans prefer internal WRITE to a CHARACTER variable and name exact expected characters including blanks. Numbered syntax/constraint diagnostics are subject to 4.2 but need not assert a fixed diagnostic message, severity, status, or printed rule number. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 where cited for source form, labels, names, character values, expressions, arrays, and existing execution constructs. Unregistered dependencies explicitly retained: clause 12 formatted data transfer and effective-item rules; later clause 13 editing subclauses 13.7-13.11; clause 15 for defined I/O and procedures; clause 16 if future fixtures use intrinsic inquiries; clause 19 for scoping/lifetime controls."
+    },
+    {
+      "id": "R1318",
+      "title": "Decimal edit descriptors are DC or DP",
+      "source": "R1318, J3/24-007, 18 December 2023, physical PDF292.",
+      "source_units": [
+        "R1318"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "Decimal edit descriptors are DC or DP.",
+      "facets": [
+        "r1318-valid",
+        "r1318-invalid"
+      ],
+      "pending": {
+        "r1318-valid": "Plan source-use controls for '(DC,F5.1)' and '(DP,F5.1)' after decimal-editing semantics are registered; no decimal-character oracle is asserted here.",
+        "r1318-invalid": "Plan diagnostic '(DX,F5.1)' repaired to '(DC,F5.1)' or '(DP,F5.1)'. The only invalid property is absence from R1318's DC/DP alternatives."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use independent literal expected strings or scalar sentinels. Negative plans change one property from a conforming control and attribute the violation to this unit only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Pending output plans prefer internal WRITE to a CHARACTER variable and name exact expected characters including blanks. Numbered syntax/constraint diagnostics are subject to 4.2 but need not assert a fixed diagnostic message, severity, status, or printed rule number. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 where cited for source form, labels, names, character values, expressions, arrays, and existing execution constructs. Unregistered dependencies explicitly retained: clause 12 formatted data transfer and effective-item rules; later clause 13 editing subclauses 13.7-13.11; clause 15 for defined I/O and procedures; clause 16 if future fixtures use intrinsic inquiries; clause 19 for scoping/lifetime controls."
+    },
+    {
+      "id": "R1319",
+      "title": "Leading-zero edit descriptors are LZS, LZP, or LZ",
+      "source": "R1319, J3/24-007, 18 December 2023, physical PDF292.",
+      "source_units": [
+        "R1319"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "Leading-zero edit descriptors are LZS, LZP, or LZ.",
+      "facets": [
+        "r1319-valid",
+        "r1319-invalid"
+      ],
+      "pending": {
+        "r1319-valid": "Grammar/source-control fixtures for '(LZS,I1)', '(LZP,I1)', and '(LZ,I1)' writing integer 7 to character(len=1); each expects exactly '7'. Leading-zero semantic differences require separate owner fixtures.",
+        "r1319-invalid": "Plan diagnostic '(LZX,I2)' repaired to '(LZ,I2)'. The only invalid property is absence from R1319's LZS/LZP/LZ alternatives."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use independent literal expected strings or scalar sentinels. Negative plans change one property from a conforming control and attribute the violation to this unit only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Pending output plans prefer internal WRITE to a CHARACTER variable and name exact expected characters including blanks. Numbered syntax/constraint diagnostics are subject to 4.2 but need not assert a fixed diagnostic message, severity, status, or printed rule number. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 where cited for source form, labels, names, character values, expressions, arrays, and existing execution constructs. Unregistered dependencies explicitly retained: clause 12 formatted data transfer and effective-item rules; later clause 13 editing subclauses 13.7-13.11; clause 15 for defined I/O and procedures; clause 16 if future fixtures use intrinsic inquiries; clause 19 for scoping/lifetime controls."
+    },
+    {
+      "id": "R1320",
+      "title": "Round edit descriptors are RU, RD, RZ, RN, RC, or RP",
+      "source": "R1320, J3/24-007, 18 December 2023, physical PDF292.",
+      "source_units": [
+        "R1320"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "Round edit descriptors are RU, RD, RZ, RN, RC, or RP.",
+      "facets": [
+        "r1320-valid",
+        "r1320-invalid"
+      ],
+      "pending": {
+        "r1320-valid": "Plan source-use controls for RU, RD, RZ, RN, RC, and RP with an F descriptor after rounding semantics and real approximation controls are registered.",
+        "r1320-invalid": "Plan diagnostic '(RX,F5.1)' repaired to a listed round descriptor such as '(RN,F5.1)'. The only invalid property is absence from R1320's alternatives."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use independent literal expected strings or scalar sentinels. Negative plans change one property from a conforming control and attribute the violation to this unit only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Pending output plans prefer internal WRITE to a CHARACTER variable and name exact expected characters including blanks. Numbered syntax/constraint diagnostics are subject to 4.2 but need not assert a fixed diagnostic message, severity, status, or printed rule number. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 where cited for source form, labels, names, character values, expressions, arrays, and existing execution constructs. Unregistered dependencies explicitly retained: clause 12 formatted data transfer and effective-item rules; later clause 13 editing subclauses 13.7-13.11; clause 15 for defined I/O and procedures; clause 16 if future fixtures use intrinsic inquiries; clause 19 for scoping/lifetime controls."
+    },
+    {
+      "id": "R1321",
+      "title": "Sign edit descriptors are SS, SP, or S",
+      "source": "R1321, J3/24-007, 18 December 2023, physical PDF292.",
+      "source_units": [
+        "R1321"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "Sign edit descriptors are SS, SP, or S.",
+      "facets": [
+        "r1321-valid",
+        "r1321-invalid"
+      ],
+      "pending": {
+        "r1321-valid": "Plan sign-control source-use for '(SS,I2)', '(SP,I2)', and '(S,I2)'; after sign semantics are registered, '(SP,I2)' with 7 should expect '+7'.",
+        "r1321-invalid": "Plan diagnostic '(SX,I2)' repaired to '(S,I2)' or another listed sign descriptor. The only invalid property is absence from R1321's SS/SP/S alternatives."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use independent literal expected strings or scalar sentinels. Negative plans change one property from a conforming control and attribute the violation to this unit only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Pending output plans prefer internal WRITE to a CHARACTER variable and name exact expected characters including blanks. Numbered syntax/constraint diagnostics are subject to 4.2 but need not assert a fixed diagnostic message, severity, status, or printed rule number. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 where cited for source form, labels, names, character values, expressions, arrays, and existing execution constructs. Unregistered dependencies explicitly retained: clause 12 formatted data transfer and effective-item rules; later clause 13 editing subclauses 13.7-13.11; clause 15 for defined I/O and procedures; clause 16 if future fixtures use intrinsic inquiries; clause 19 for scoping/lifetime controls."
+    },
+    {
+      "id": "S13.3.2-004",
+      "title": "Control edit descriptors indicate the manner of editing",
+      "source": "S13.3.2, J3/24-007, 18 December 2023, physical PDF292.",
+      "source_units": [
+        "p4"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The listed control edit descriptors indicate control-editing behavior; detailed effects are owned by 13.8.",
+      "facets": [
+        "position-manner",
+        "slash-colon-manner",
+        "mode-control-manner"
+      ],
+      "pending": {
+        "position-manner": "Exact X/T/TL/TR fixtures belong in 13.8.1.",
+        "slash-colon-manner": "Record positioning and termination fixtures belong in 13.8.2/13.8.3 with 13.4 interaction cited.",
+        "mode-control-manner": "Blank, decimal, leading-zero, sign, scale, and rounding modes belong in their 13.8 owner packets."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use independent literal expected strings or scalar sentinels. Negative plans change one property from a conforming control and attribute the violation to this unit only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Pending output plans prefer internal WRITE to a CHARACTER variable and name exact expected characters including blanks. Numbered syntax/constraint diagnostics are subject to 4.2 but need not assert a fixed diagnostic message, severity, status, or printed rule number. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 where cited for source form, labels, names, character values, expressions, arrays, and existing execution constructs. Unregistered dependencies explicitly retained: clause 12 formatted data transfer and effective-item rules; later clause 13 editing subclauses 13.7-13.11; clause 15 for defined I/O and procedures; clause 16 if future fixtures use intrinsic inquiries; clause 19 for scoping/lifetime controls."
+    },
+    {
+      "id": "R1322",
+      "title": "A character string edit descriptor is a character literal constant",
+      "source": "R1322, J3/24-007, 18 December 2023, physical PDF292.",
+      "source_units": [
+        "R1322"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "A char-string-edit-desc is a char-literal-constant.",
+      "facets": [
+        "char-literal-descriptor",
+        "nonliteral-char-string-descriptor-rejected"
+      ],
+      "pending": {
+        "char-literal-descriptor": "WRITE(buf,'(\"AB\")'); expect 'AB'.",
+        "nonliteral-char-string-descriptor-rejected": "Diagnostic variable name used as a character string edit descriptor; repair to literal \"AB\"."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use independent literal expected strings or scalar sentinels. Negative plans change one property from a conforming control and attribute the violation to this unit only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Pending output plans prefer internal WRITE to a CHARACTER variable and name exact expected characters including blanks. Numbered syntax/constraint diagnostics are subject to 4.2 but need not assert a fixed diagnostic message, severity, status, or printed rule number. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 where cited for source form, labels, names, character values, expressions, arrays, and existing execution constructs. Unregistered dependencies explicitly retained: clause 12 formatted data transfer and effective-item rules; later clause 13 editing subclauses 13.7-13.11; clause 15 for defined I/O and procedures; clause 16 if future fixtures use intrinsic inquiries; clause 19 for scoping/lifetime controls."
+    },
+    {
+      "id": "C1313",
+      "title": "A kind parameter shall not be specified for a character string edit descriptor literal",
+      "source": "C1313, J3/24-007, 18 December 2023, physical PDF292.",
+      "source_units": [
+        "C1313"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "The char-literal-constant in a character string edit descriptor shall not have a kind parameter.",
+      "facets": [
+        "default-kind-char-string-descriptor",
+        "kind-param-char-string-descriptor-rejected"
+      ],
+      "pending": {
+        "default-kind-char-string-descriptor": "WRITE(buf,'(\"A\")'); expect 'A'.",
+        "kind-param-char-string-descriptor-rejected": "Diagnostic kind-qualified character literal; repair to default-kind literal."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use independent literal expected strings or scalar sentinels. Negative plans change one property from a conforming control and attribute the violation to this unit only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Pending output plans prefer internal WRITE to a CHARACTER variable and name exact expected characters including blanks. Numbered syntax/constraint diagnostics are subject to 4.2 but need not assert a fixed diagnostic message, severity, status, or printed rule number. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 where cited for source form, labels, names, character values, expressions, arrays, and existing execution constructs. Unregistered dependencies explicitly retained: clause 12 formatted data transfer and effective-item rules; later clause 13 editing subclauses 13.7-13.11; clause 15 for defined I/O and procedures; clause 16 if future fixtures use intrinsic inquiries; clause 19 for scoping/lifetime controls."
+    },
+    {
+      "id": "S13.3.2-005",
+      "title": "Each character in a character string edit descriptor shall be representable by the processor",
+      "source": "S13.3.2, J3/24-007, 18 December 2023, physical PDF292.",
+      "source_units": [
+        "p5"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "Each rep-char in a character string edit descriptor shall be capable of representation by the processor.",
+      "facets": [
+        "default-character-representable",
+        "nonrepresentable-character-unassertable"
+      ],
+      "pending": {
+        "default-character-representable": "WRITE(buf,'(\"ABC\")'); expect 'ABC'.",
+        "nonrepresentable-character-unassertable": "No portable negative fixture: representability is processor dependent and a source file containing a nonrepresentable character may fail before this rule."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use independent literal expected strings or scalar sentinels. Negative plans change one property from a conforming control and attribute the violation to this unit only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Pending output plans prefer internal WRITE to a CHARACTER variable and name exact expected characters including blanks. Numbered syntax/constraint diagnostics are subject to 4.2 but need not assert a fixed diagnostic message, severity, status, or printed rule number. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics. The nonrepresentable-character negative boundary is processor-dependent and unassertable portably.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 where cited for source form, labels, names, character values, expressions, arrays, and existing execution constructs. Unregistered dependencies explicitly retained: clause 12 formatted data transfer and effective-item rules; later clause 13 editing subclauses 13.7-13.11; clause 15 for defined I/O and procedures; clause 16 if future fixtures use intrinsic inquiries; clause 19 for scoping/lifetime controls."
+    },
+    {
+      "id": "S13.3.2-006",
+      "title": "A character string edit descriptor outputs constant data and is not valid for input",
+      "source": "S13.3.2, J3/24-007, 18 December 2023, physical PDF292.",
+      "source_units": [
+        "p6"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "A character string edit descriptor provides constant data to be output and is not valid for input.",
+      "facets": [
+        "constant-output-data",
+        "input-use-rejected-or-error"
+      ],
+      "pending": {
+        "constant-output-data": "WRITE(buf,'(\"AB\",I1)') 7; expect 'AB7'.",
+        "input-use-rejected-or-error": "Negative internal READ using a character string edit descriptor; repair by removing the string descriptor. Only input use differs."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use independent literal expected strings or scalar sentinels. Negative plans change one property from a conforming control and attribute the violation to this unit only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Pending output plans prefer internal WRITE to a CHARACTER variable and name exact expected characters including blanks. Numbered syntax/constraint diagnostics are subject to 4.2 but need not assert a fixed diagnostic message, severity, status, or printed rule number. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 where cited for source form, labels, names, character values, expressions, arrays, and existing execution constructs. Unregistered dependencies explicitly retained: clause 12 formatted data transfer and effective-item rules; later clause 13 editing subclauses 13.7-13.11; clause 15 for defined I/O and procedures; clause 16 if future fixtures use intrinsic inquiries; clause 19 for scoping/lifetime controls."
+    },
+    {
+      "id": "S13.3.2-007",
+      "title": "Edit descriptors ignore case except inside character string edit descriptors",
+      "source": "S13.3.2, J3/24-007, 18 December 2023, physical PDF292.",
+      "source_units": [
+        "p7"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Edit descriptors are case-insensitive except within a character string edit descriptor.",
+      "facets": [
+        "descriptor-case-insensitive",
+        "string-descriptor-case-preserved"
+      ],
+      "pending": {
+        "descriptor-case-insensitive": "WRITE(buf,'(i3)') 7; expect '  7'.",
+        "string-descriptor-case-preserved": "WRITE(buf,'(\"Ab\")'); expect 'Ab'."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use independent literal expected strings or scalar sentinels. Negative plans change one property from a conforming control and attribute the violation to this unit only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Pending output plans prefer internal WRITE to a CHARACTER variable and name exact expected characters including blanks. Numbered syntax/constraint diagnostics are subject to 4.2 but need not assert a fixed diagnostic message, severity, status, or printed rule number. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 where cited for source form, labels, names, character values, expressions, arrays, and existing execution constructs. Unregistered dependencies explicitly retained: clause 12 formatted data transfer and effective-item rules; later clause 13 editing subclauses 13.7-13.11; clause 15 for defined I/O and procedures; clause 16 if future fixtures use intrinsic inquiries; clause 19 for scoping/lifetime controls."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "definition",
+      "requirements": [
+        "S13.3.2-001"
+      ],
+      "rationale": "Classifies descriptor kinds."
+    },
+    {
+      "unit": "R1307",
+      "disposition": "requirements",
+      "requirements": [
+        "R1307"
+      ]
+    },
+    {
+      "unit": "R1308",
+      "disposition": "requirements",
+      "requirements": [
+        "R1308"
+      ]
+    },
+    {
+      "unit": "R1309",
+      "disposition": "requirements",
+      "requirements": [
+        "R1309"
+      ]
+    },
+    {
+      "unit": "R1310",
+      "disposition": "requirements",
+      "requirements": [
+        "R1310"
+      ]
+    },
+    {
+      "unit": "R1311",
+      "disposition": "requirements",
+      "requirements": [
+        "R1311"
+      ]
+    },
+    {
+      "unit": "R1312",
+      "disposition": "requirements",
+      "requirements": [
+        "R1312"
+      ]
+    },
+    {
+      "unit": "C1306",
+      "disposition": "requirements",
+      "requirements": [
+        "C1306"
+      ]
+    },
+    {
+      "unit": "C1307",
+      "disposition": "requirements",
+      "requirements": [
+        "C1307"
+      ]
+    },
+    {
+      "unit": "C1308",
+      "disposition": "requirements",
+      "requirements": [
+        "C1308"
+      ]
+    },
+    {
+      "unit": "C1309",
+      "disposition": "requirements",
+      "requirements": [
+        "C1309"
+      ]
+    },
+    {
+      "unit": "p2",
+      "disposition": "definition",
+      "requirements": [
+        "S13.3.2-002"
+      ],
+      "rationale": "Classification; detailed semantics deferred."
+    },
+    {
+      "unit": "R1313",
+      "disposition": "requirements",
+      "requirements": [
+        "R1313"
+      ]
+    },
+    {
+      "unit": "R1314",
+      "disposition": "requirements",
+      "requirements": [
+        "R1314"
+      ]
+    },
+    {
+      "unit": "C1310",
+      "disposition": "requirements",
+      "requirements": [
+        "C1310"
+      ]
+    },
+    {
+      "unit": "p3",
+      "disposition": "definition",
+      "requirements": [
+        "S13.3.2-003"
+      ],
+      "rationale": "Defines scale-factor terminology."
+    },
+    {
+      "unit": "R1315",
+      "disposition": "requirements",
+      "requirements": [
+        "R1315"
+      ]
+    },
+    {
+      "unit": "R1316",
+      "disposition": "requirements",
+      "requirements": [
+        "R1316"
+      ]
+    },
+    {
+      "unit": "C1311",
+      "disposition": "requirements",
+      "requirements": [
+        "C1311"
+      ]
+    },
+    {
+      "unit": "C1312",
+      "disposition": "requirements",
+      "requirements": [
+        "C1312"
+      ]
+    },
+    {
+      "unit": "R1317",
+      "disposition": "requirements",
+      "requirements": [
+        "R1317"
+      ]
+    },
+    {
+      "unit": "R1318",
+      "disposition": "requirements",
+      "requirements": [
+        "R1318"
+      ]
+    },
+    {
+      "unit": "R1319",
+      "disposition": "requirements",
+      "requirements": [
+        "R1319"
+      ]
+    },
+    {
+      "unit": "R1320",
+      "disposition": "requirements",
+      "requirements": [
+        "R1320"
+      ]
+    },
+    {
+      "unit": "R1321",
+      "disposition": "requirements",
+      "requirements": [
+        "R1321"
+      ]
+    },
+    {
+      "unit": "p4",
+      "disposition": "definition",
+      "requirements": [
+        "S13.3.2-004"
+      ],
+      "rationale": "Classification; detailed semantics deferred."
+    },
+    {
+      "unit": "R1322",
+      "disposition": "requirements",
+      "requirements": [
+        "R1322"
+      ]
+    },
+    {
+      "unit": "C1313",
+      "disposition": "requirements",
+      "requirements": [
+        "C1313"
+      ]
+    },
+    {
+      "unit": "p5",
+      "disposition": "requirements",
+      "requirements": [
+        "S13.3.2-005"
+      ]
+    },
+    {
+      "unit": "p6",
+      "disposition": "requirements",
+      "requirements": [
+        "S13.3.2-006"
+      ]
+    },
+    {
+      "unit": "p7",
+      "disposition": "requirements",
+      "requirements": [
+        "S13.3.2-007"
+      ]
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_13_3_2.md"
+  },
+  "review_fingerprint": "d8194044ac069c420ac5a35b17029ac746d0f318fafb4af34fad816476a2a536",
+  "review_rationale": "Independent fresh-context source review against the pinned J3/24-007 PDF, THREE ROUNDS: doc/source_audits/batch_136.json. This OPENS CLAUSE 13, previously unregistered. The reviewer re-read PDF p289-294, re-derived unit hashes rather than accepting the author receipt, and independently reconciled the accounting: the true movement is 2363 -> 2392, net +29, being 31 non-numbered units newly classified offset by two numbered deferrals. R1303 and C1302 were correctly left UNRESOLVED BUT ACCOUNTED because legacy fixtures already exist for them and registering a numbered rule with pre-existing cases structurally forces binding them, which a source packet must never do; a migration followup is recorded. Seven blocking findings were raised across three rounds and all closed: 13.4 p9 reversion was under-specified (nested-group target, no-preceding-parenthesis fallback, DT-parenthesis exclusion and the changeable-modes obligation were all missing); pending plans were placeholders rather than byte-exact specifications; 13.2.2 p2 was dispositioned permission despite carrying mandatory shall restrictions; C1309 omitted m, d and e. Two further defects were introduced BY the first correction and caught on re-verification: a plan that wrongly assumed record advancement for unlimited-item reversion, which Note 4 explicitly denies, and a negative that violated both p2 and p9 so could not isolate the rule it was filed under. The reviewer hand-verified all four exact record specifications against the source. Source accounting only: authored_facets unchanged at 1946, no fixture bound, no compiler invoked."
+}

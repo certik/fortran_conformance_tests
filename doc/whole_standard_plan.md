@@ -4403,6 +4403,78 @@ count genuinely rose.
 Baseline **816 → 819**, three additions, no modifications.
 See `doc/source_audits/batch_131.json`.
 
+## Batch 136 — opening Clause 13, and why corrections get re-verified
+
+This is the first source packet since Clause 11 closed at batch124, and it
+**opens Clause 13**, previously entirely unregistered. It registers **13.1,
+13.2.1, 13.2.2, 13.3.1, 13.3.2, 13.3.3 and 13.4** — 66 base units over PDF
+pages 289–294, in seven catalogues with 58 requirements and 172 pending facets.
+
+The stakes are higher than the unit count suggests: **these registrations are
+the specification every future format and edit-descriptor fixture will execute
+from**. An error here does not stay local; it propagates into downstream tests
+that look authoritative.
+
+It took **three rounds and seven blocking findings**.
+
+The count report was **internally inconsistent** — a claimed delta of 66, equal
+to *all* base units in scope, alongside a separate claim of 35 already-counted
+and only 31 newly-accounted. Measuring `main` directly before dispatching the
+review showed 2363, not the reported 2326. The true movement is **2363 → 2392,
+net +29**: 31 non-numbered units newly classified, offset by two numbered
+deferrals. The catalogue content was right throughout; only the arithmetic in
+the report was wrong.
+
+Those two deferrals were the packet's best instinct. `R1303` and `C1302` already
+have legacy fixtures, and registering a numbered rule that has pre-existing
+cases **structurally forces binding them** — the trap that blocked batch113.
+Both were left `unresolved` but **fully accounted**, with a migration followup.
+
+The anticipated **table hazard did not materialise**: PyMuPDF detection found
+**zero tables** on pages 289–294 — Clause 13's tables live in later sections. So
+the real risk was the dense **grammar alternative lists** in `R1307`, `R1313`,
+`R1315` and `R1317`–`R1322`, which were checked alternative-by-alternative by
+both author and reviewer, since every future format fixture derives from them.
+
+Four findings concerned the substance. 13.4 p9 was under-specified, missing the
+nested-group reversion target, the no-preceding-parenthesis fallback, the
+DT-parenthesis exclusion, and the changeable-modes obligation. **13.2.2 p2 was
+dispositioned `permission` despite carrying mandatory `shall` text** — the third
+occurrence of that defect class, after 11.7.2 and 11.7.5 in batch123; latitude is
+a permission, never a requirement, and the check runs in both directions.
+`C1309` omitted `m`, `d` and `e`, three fields that could have gone untested
+indefinitely. And the **pending plans were placeholders** — "expected records
+must be fixed before execution" — rather than byte-exact specifications, which
+matters because format output is byte-exactly testable through an internal
+`WRITE` to a character variable with **no file I/O at all**.
+
+### The part worth remembering
+
+**Two of the seven findings were defects the first correction itself
+introduced**, and were caught only on re-verification.
+
+One new plan expected `'(SP,*(I2))'` with values 7 and 8 to produce two
+records — **assuming record advancement that Note 4 explicitly denies**: "There
+is no file positioning implied by unlimited-format-item reversion." That
+contrast with p9's slash-like positioning is the entire reason p8 and p9 carry
+separate facets, so inverting it would have produced a confidently wrong fixture.
+
+The other used `("X")` with an I/O item as a negative — which violates **both**
+p2 and p9, so a processor rejecting it might be enforcing p2 and say nothing
+about the reused-portion rule. Every negative must be attributable to the
+**single** rule it is filed under. The replacement, `'(I1,("X"))'`, satisfies p2
+via the leading `I1` while the reversion target `("X")` lacks a data descriptor,
+violating p9 alone.
+
+The reviewer hand-verified all four exact record specifications against the
+source, including that `("H",2(I1))` genuinely reuses the repeat count and that
+`("H",I1)` falls back to the first left parenthesis without re-emitting `H`.
+
+Source accounting only: `authored_facets` unchanged at **1,946**, no fixture
+bound, no compiler invoked, `tests/` diff empty. 13.5–13.11 remain unregistered,
+as does **Clause 12**, the immediate I/O-statement neighbour.
+See `doc/source_audits/batch_136.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must

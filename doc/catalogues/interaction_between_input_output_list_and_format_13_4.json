@@ -1,0 +1,334 @@
+{
+  "schema_version": 1,
+  "section": "13.4",
+  "review_state": "reviewed",
+  "requirements": [
+    {
+      "id": "S13.4-001",
+      "title": "Format control actions depend on the next edit descriptor and next effective item",
+      "source": "S13.4, J3/24-007, 18 December 2023, physical PDF292.",
+      "source_units": [
+        "p1"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Formatted data transfer initiates format control; each action depends on the next edit descriptor and next effective item if one exists.",
+      "facets": [
+        "descriptor-and-item-drive-output",
+        "descriptor-without-item-control"
+      ],
+      "pending": {
+        "descriptor-and-item-drive-output": "WRITE(buf,'(I3)') 7; expect '  7'.",
+        "descriptor-without-item-control": "WRITE(buf,'(\"A\")') with no item; expect 'A'."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use independent literal expected strings or scalar sentinels. Negative plans change one property from a conforming control and attribute the violation to this unit only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Pending output plans prefer internal WRITE to a CHARACTER variable and name exact expected characters including blanks. Numbered syntax/constraint diagnostics are subject to 4.2 but need not assert a fixed diagnostic message, severity, status, or printed rule number. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 where cited for source form, labels, names, character values, expressions, arrays, and existing execution constructs. Unregistered dependencies explicitly retained: clause 12 formatted data transfer and effective-item rules; later clause 13 editing subclauses 13.7-13.11; clause 15 for defined I/O and procedures; clause 16 if future fixtures use intrinsic inquiries; clause 19 for scoping/lifetime controls."
+    },
+    {
+      "id": "S13.4-002",
+      "title": "A nonempty input/output list requires at least one data edit descriptor",
+      "source": "S13.4, J3/24-007, 18 December 2023, physical PDF292.",
+      "source_units": [
+        "p2"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "If an input/output list has at least one effective item, at least one data edit descriptor shall exist in the format specification.",
+      "facets": [
+        "item-list-with-data-descriptor",
+        "item-list-without-data-descriptor-rejected-or-error"
+      ],
+      "pending": {
+        "item-list-with-data-descriptor": "WRITE(buf,'(\"A\",I1)') 7; expect 'A7'.",
+        "item-list-without-data-descriptor-rejected-or-error": "Negative WRITE with format `(\"A\")` and item 7; repair by adding I1. Only absence of a data edit descriptor differs."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use independent literal expected strings or scalar sentinels. Negative plans change one property from a conforming control and attribute the violation to this unit only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Pending output plans prefer internal WRITE to a CHARACTER variable and name exact expected characters including blanks. Numbered syntax/constraint diagnostics are subject to 4.2 but need not assert a fixed diagnostic message, severity, status, or printed rule number. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 where cited for source form, labels, names, character values, expressions, arrays, and existing execution constructs. Unregistered dependencies explicitly retained: clause 12 formatted data transfer and effective-item rules; later clause 13 editing subclauses 13.7-13.11; clause 15 for defined I/O and procedures; clause 16 if future fixtures use intrinsic inquiries; clause 19 for scoping/lifetime controls."
+    },
+    {
+      "id": "S13.4-003",
+      "title": "Format specifications are interpreted left to right except repeat and reversion",
+      "source": "S13.4, J3/24-007, 18 December 2023, physical PDF292.",
+      "source_units": [
+        "p3"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A format specification is interpreted left to right except for repeated items and format reversion.",
+      "facets": [
+        "left-to-right-order",
+        "repeat-exception",
+        "reversion-exception"
+      ],
+      "pending": {
+        "left-to-right-order": "WRITE(buf,'(\"A\",I1,\"B\")') 7; expect 'A7B'.",
+        "repeat-exception": "WRITE(buf,'(3I1)') 1,2,3; expect '123'.",
+        "reversion-exception": "Internal WRITE to character(len=1) rec(2) with format '(I1)' and values 1,2; expect rec(1)='1', rec(2)='2'."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use independent literal expected strings or scalar sentinels. Negative plans change one property from a conforming control and attribute the violation to this unit only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Pending output plans prefer internal WRITE to a CHARACTER variable and name exact expected characters including blanks. Numbered syntax/constraint diagnostics are subject to 4.2 but need not assert a fixed diagnostic message, severity, status, or printed rule number. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 where cited for source form, labels, names, character values, expressions, arrays, and existing execution constructs. Unregistered dependencies explicitly retained: clause 12 formatted data transfer and effective-item rules; later clause 13 editing subclauses 13.7-13.11; clause 15 for defined I/O and procedures; clause 16 if future fixtures use intrinsic inquiries; clause 19 for scoping/lifetime controls."
+    },
+    {
+      "id": "S13.4-004",
+      "title": "A repeated format item is processed as r comma-separated copies without the repeat",
+      "source": "S13.4, J3/24-007, 18 December 2023, physical PDF293.",
+      "source_units": [
+        "p4"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A format item preceded by repeat r is processed as r identical items, each without the repeat and separated by commas.",
+      "facets": [
+        "repeated-data-descriptor",
+        "repeated-parenthesized-group"
+      ],
+      "pending": {
+        "repeated-data-descriptor": "WRITE(buf,'(3I2)') 1,2,3; expect ' 1 2 3'.",
+        "repeated-parenthesized-group": "WRITE(buf,'(2(I1,\",\"))') 3,4; expect '3,4,'."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use independent literal expected strings or scalar sentinels. Negative plans change one property from a conforming control and attribute the violation to this unit only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Pending output plans prefer internal WRITE to a CHARACTER variable and name exact expected characters including blanks. Numbered syntax/constraint diagnostics are subject to 4.2 but need not assert a fixed diagnostic message, severity, status, or printed rule number. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 where cited for source form, labels, names, character values, expressions, arrays, and existing execution constructs. Unregistered dependencies explicitly retained: clause 12 formatted data transfer and effective-item rules; later clause 13 editing subclauses 13.7-13.11; clause 15 for defined I/O and procedures; clause 16 if future fixtures use intrinsic inquiries; clause 19 for scoping/lifetime controls."
+    },
+    {
+      "id": "S13.4-005",
+      "title": "Data edit descriptors correspond to effective items; complex items require two real-family descriptors",
+      "source": "S13.4, J3/24-007, 18 December 2023, physical PDF293.",
+      "source_units": [
+        "p5"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Each data edit descriptor corresponds to one effective item, except a complex item requires two F/E/EN/ES/EX/D/G descriptors; control and character descriptors have no list item.",
+      "facets": [
+        "one-data-descriptor-per-item",
+        "complex-item-two-real-descriptors",
+        "control-and-character-no-item"
+      ],
+      "pending": {
+        "one-data-descriptor-per-item": "WRITE(buf,'(I1,I1)') 4,5; expect '45'.",
+        "complex-item-two-real-descriptors": "After real editing is registered, internal WRITE(buf,'(F3.1,F3.1)') cmplx(1.0,2.0) to character(len=6) must state exact six characters before execution; the plan's required structural property is that one complex effective item consumes two real-family descriptors.",
+        "control-and-character-no-item": "WRITE(buf,'(\"A\",1X,\"B\")') with no items; expect 'A B'."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use independent literal expected strings or scalar sentinels. Negative plans change one property from a conforming control and attribute the violation to this unit only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Pending output plans prefer internal WRITE to a CHARACTER variable and name exact expected characters including blanks. Numbered syntax/constraint diagnostics are subject to 4.2 but need not assert a fixed diagnostic message, severity, status, or printed rule number. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 where cited for source form, labels, names, character values, expressions, arrays, and existing execution constructs. Unregistered dependencies explicitly retained: clause 12 formatted data transfer and effective-item rules; later clause 13 editing subclauses 13.7-13.11; clause 15 for defined I/O and procedures; clause 16 if future fixtures use intrinsic inquiries; clause 19 for scoping/lifetime controls."
+    },
+    {
+      "id": "S13.4-006",
+      "title": "A data edit descriptor transfers when an item exists and terminates when none exists",
+      "source": "S13.4, J3/24-007, 18 December 2023, physical PDF293.",
+      "source_units": [
+        "p6"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "On a data edit descriptor, format control transmits edited information if a corresponding item exists and terminates if none exists.",
+      "facets": [
+        "data-descriptor-transfers-and-proceeds",
+        "data-descriptor-without-item-terminates"
+      ],
+      "pending": {
+        "data-descriptor-transfers-and-proceeds": "WRITE(buf,'(I1,I1)') 4,5; expect '45'.",
+        "data-descriptor-without-item-terminates": "WRITE(buf,'(I1,I1)') 4 into character(len=1); expect '4'."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use independent literal expected strings or scalar sentinels. Negative plans change one property from a conforming control and attribute the violation to this unit only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Pending output plans prefer internal WRITE to a CHARACTER variable and name exact expected characters including blanks. Numbered syntax/constraint diagnostics are subject to 4.2 but need not assert a fixed diagnostic message, severity, status, or printed rule number. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 where cited for source form, labels, names, character values, expressions, arrays, and existing execution constructs. Unregistered dependencies explicitly retained: clause 12 formatted data transfer and effective-item rules; later clause 13 editing subclauses 13.7-13.11; clause 15 for defined I/O and procedures; clause 16 if future fixtures use intrinsic inquiries; clause 19 for scoping/lifetime controls."
+    },
+    {
+      "id": "S13.4-007",
+      "title": "A colon descriptor terminates when no further effective item exists",
+      "source": "S13.4, J3/24-007, 18 December 2023, physical PDF293.",
+      "source_units": [
+        "p7"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "If a colon edit descriptor is encountered and another effective item is not specified, format control terminates.",
+      "facets": [
+        "colon-with-following-item-continues",
+        "colon-without-following-item-terminates"
+      ],
+      "pending": {
+        "colon-with-following-item-continues": "WRITE(buf,'(I1,:,\",\",I1)') 4,5; expect '4,5'.",
+        "colon-without-following-item-terminates": "WRITE(buf,'(I1,:,\",\",I1)') 4 into character(len=1); expect '4'."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use independent literal expected strings or scalar sentinels. Negative plans change one property from a conforming control and attribute the violation to this unit only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Pending output plans prefer internal WRITE to a CHARACTER variable and name exact expected characters including blanks. Numbered syntax/constraint diagnostics are subject to 4.2 but need not assert a fixed diagnostic message, severity, status, or printed rule number. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 where cited for source form, labels, names, character values, expressions, arrays, and existing execution constructs. Unregistered dependencies explicitly retained: clause 12 formatted data transfer and effective-item rules; later clause 13 editing subclauses 13.7-13.11; clause 15 for defined I/O and procedures; clause 16 if future fixtures use intrinsic inquiries; clause 19 for scoping/lifetime controls."
+    },
+    {
+      "id": "S13.4-008",
+      "title": "Unlimited-format-item reversion returns to that item and does not change modes",
+      "source": "S13.4, J3/24-007, 18 December 2023, physical PDF293.",
+      "source_units": [
+        "p8"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "At the rightmost parenthesis of an unlimited format item, format control reverts to its leftmost parenthesis; this does not affect changeable modes.",
+      "facets": [
+        "unlimited-item-reuses-list",
+        "unlimited-reversion-no-record-positioning",
+        "unlimited-reversion-modes-unchanged"
+      ],
+      "pending": {
+        "unlimited-item-reuses-list": "WRITE(buf,'(*(I1,:,\",\"))') [1,2,3]; expect '1,2,3'.",
+        "unlimited-reversion-no-record-positioning": "Same scalar internal file expects one record `1,2,3`, not multiple records.",
+        "unlimited-reversion-modes-unchanged": "Deferred until 13.8 sign/mode descriptors are registered, with exact planned oracle that does not imply file positioning: internal WRITE to character(len=4) buf using format '(SP,*(I2))' and integer values 7,8 must expect exactly buf='+7+8' if unlimited-item reversion leaves sign mode unchanged. This deliberately uses one sufficiently long internal-file record: unlike complete-format reversion in p9, unlimited-format-item reversion has no slash-like record advancement and must not produce rec(1)='+7', rec(2)='+8'."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use independent literal expected strings or scalar sentinels. Negative plans change one property from a conforming control and attribute the violation to this unit only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Pending output plans prefer internal WRITE to a CHARACTER variable and name exact expected characters including blanks. Numbered syntax/constraint diagnostics are subject to 4.2 but need not assert a fixed diagnostic message, severity, status, or printed rule number. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 where cited for source form, labels, names, character values, expressions, arrays, and existing execution constructs. Unregistered dependencies explicitly retained: clause 12 formatted data transfer and effective-item rules; later clause 13 editing subclauses 13.7-13.11; clause 15 for defined I/O and procedures; clause 16 if future fixtures use intrinsic inquiries; clause 19 for scoping/lifetime controls."
+    },
+    {
+      "id": "S13.4-009",
+      "title": "Complete format reversion target, repeat reuse, mode preservation, and slash-like positioning",
+      "source": "S13.4, J3/24-007, 18 December 2023, physical PDF293.",
+      "source_units": [
+        "p9"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "At the complete format right parenthesis, format control terminates if no further item exists. If another item exists, it reverts to the beginning of the format item terminated by the last preceding right parenthesis that is not part of a DT edit descriptor, or to the first left parenthesis if there is no such preceding parenthesis. A repeat before the reversion parenthesis is reused, reversion itself does not change changeable modes, and file positioning is as for a slash edit descriptor.",
+      "facets": [
+        "complete-format-terminates-without-item",
+        "nested-group-reversion-target",
+        "no-preceding-parenthesis-fallback",
+        "dt-parenthesis-excluded-from-target",
+        "repeat-reused-on-reversion",
+        "complete-reversion-modes-unchanged",
+        "reversion-positions-like-slash"
+      ],
+      "pending": {
+        "complete-format-terminates-without-item": "Internal WRITE(buf,'(I1)') 7 to character(len=1); expect exactly buf='7' and no further record.",
+        "nested-group-reversion-target": "Internal WRITE to character(len=3) rec(3) with format '(\"H\",(I1,\",\"))' and integer values 1,2,3. Expect exactly rec(1)='H1,', rec(2)='2, ', rec(3)='3, '. Records 2 and 3 prove reversion targets the nested group terminated by the last preceding non-DT right parenthesis, not the first left parenthesis that would re-emit H.",
+        "no-preceding-parenthesis-fallback": "Internal WRITE to character(len=2) rec(3) with format '(\"H\",I1)' and integer values 1,2,3. Expect exactly rec(1)='H1', rec(2)='H2', rec(3)='H3', proving fallback to the first left parenthesis when no earlier parenthesized format item exists.",
+        "dt-parenthesis-excluded-from-target": "Deferred until DT defined-I/O is registered, with exact planned oracle: define a scalar derived type whose formatted DT output writes exactly 'D'; internal WRITE to character(len=2) rec(2) with format '(DT(9),I1)' and items dt_value,1,dt_value,2 must expect rec(1)='D1' and rec(2)='D2'. The right parenthesis in DT(9) is excluded, so complete-format reversion falls back to the first left parenthesis and repeats the DT output on rec(2).",
+        "repeat-reused-on-reversion": "Internal WRITE to character(len=3) rec(3) with format '(\"H\",2(I1))' and integer values 1,2,3,4,5,6. Expect exactly rec(1)='H12', rec(2)='34 ', rec(3)='56 '. The second and third records prove that reversion to the parenthesis preceded by repeat 2 reuses that repeat specification.",
+        "complete-reversion-modes-unchanged": "Deferred until 13.8 sign modes are registered, with exact planned oracle: internal WRITE to character(len=2) rec(2) using format '(SP,(I2))' and integer values 7,8 must expect rec(1)='+7' and rec(2)='+8'. Reversion targets the nested (I2), so SP is not reprocessed on rec(2); the plus sign proves reversion itself did not reset the changeable sign mode.",
+        "reversion-positions-like-slash": "Internal WRITE to character(len=1) rec(3) with format '(I1)' and integer values 1,2,3. Expect exactly rec(1)='1', rec(2)='2', rec(3)='3', proving complete-format reversion positions the internal file as slash processing would."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use independent literal expected strings or scalar sentinels. Negative plans change one property from a conforming control and attribute the violation to this unit only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Pending output plans prefer internal WRITE to a CHARACTER variable and name exact expected characters including blanks. Numbered syntax/constraint diagnostics are subject to 4.2 but need not assert a fixed diagnostic message, severity, status, or printed rule number. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 where cited for source form, labels, names, character values, expressions, arrays, and existing execution constructs. Unregistered dependencies explicitly retained: clause 12 formatted data transfer and effective-item rules; later clause 13 editing subclauses 13.7-13.11; clause 15 for defined I/O and procedures; clause 16 if future fixtures use intrinsic inquiries; clause 19 for scoping/lifetime controls."
+    },
+    {
+      "id": "S13.4-010",
+      "title": "A reused portion on complete format reversion shall contain a data edit descriptor",
+      "source": "S13.4, J3/24-007, 18 December 2023, physical PDF293.",
+      "source_units": [
+        "p9"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "If complete-format reversion occurs, the reused portion shall contain at least one data edit descriptor.",
+      "facets": [
+        "reused-portion-with-data-descriptor",
+        "reused-portion-without-data-descriptor-rejected-or-error"
+      ],
+      "pending": {
+        "reused-portion-with-data-descriptor": "Internal WRITE to character(len=1) rec(2) with format '(I1)' and integer values 1,2; expect exactly rec(1)='1' and rec(2)='2'.",
+        "reused-portion-without-data-descriptor-rejected-or-error": "Negative WRITE with a nonempty I/O list and format '(I1,(\"X\"))' using two integer items. The whole format contains data edit descriptor I1, so 13.4 p2 is satisfied for the nonempty list; after the first item is consumed, complete-format reversion for the second item targets the last preceding parenthesized format item '(\"X\")', whose reused portion has no data edit descriptor and therefore violates p9 only. Control changes the single property by adding a data edit descriptor to that reused portion, e.g. format '(I1,(\"X\",I1))' with the same two integer items; no other rule is intentionally varied."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use independent literal expected strings or scalar sentinels. Negative plans change one property from a conforming control and attribute the violation to this unit only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Pending output plans prefer internal WRITE to a CHARACTER variable and name exact expected characters including blanks. Numbered syntax/constraint diagnostics are subject to 4.2 but need not assert a fixed diagnostic message, severity, status, or printed rule number. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 where cited for source form, labels, names, character values, expressions, arrays, and existing execution constructs. Unregistered dependencies explicitly retained: clause 12 formatted data transfer and effective-item rules; later clause 13 editing subclauses 13.7-13.11; clause 15 for defined I/O and procedures; clause 16 if future fixtures use intrinsic inquiries; clause 19 for scoping/lifetime controls."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "requirements",
+      "requirements": [
+        "S13.4-001"
+      ]
+    },
+    {
+      "unit": "p2",
+      "disposition": "requirements",
+      "requirements": [
+        "S13.4-002"
+      ]
+    },
+    {
+      "unit": "note1",
+      "disposition": "informative",
+      "rationale": "Explanatory effective-item examples; p2 and clause 12 own normative rules."
+    },
+    {
+      "unit": "p3",
+      "disposition": "requirements",
+      "requirements": [
+        "S13.4-003"
+      ]
+    },
+    {
+      "unit": "p4",
+      "disposition": "requirements",
+      "requirements": [
+        "S13.4-004"
+      ]
+    },
+    {
+      "unit": "note2",
+      "disposition": "informative",
+      "rationale": "Explains omitted repeat count; p4 owns explicit repeat processing."
+    },
+    {
+      "unit": "p5",
+      "disposition": "requirements",
+      "requirements": [
+        "S13.4-005"
+      ]
+    },
+    {
+      "unit": "p6",
+      "disposition": "requirements",
+      "requirements": [
+        "S13.4-006"
+      ]
+    },
+    {
+      "unit": "p7",
+      "disposition": "requirements",
+      "requirements": [
+        "S13.4-007"
+      ]
+    },
+    {
+      "unit": "p8",
+      "disposition": "requirements",
+      "requirements": [
+        "S13.4-008"
+      ]
+    },
+    {
+      "unit": "p9",
+      "disposition": "requirements",
+      "requirements": [
+        "S13.4-009",
+        "S13.4-010"
+      ]
+    },
+    {
+      "unit": "note3",
+      "disposition": "informative",
+      "rationale": "Illustrative reversion example; p9 owns normative rule."
+    },
+    {
+      "unit": "note4",
+      "disposition": "informative",
+      "rationale": "Illustrative unlimited-format/CSV example; p8 owns normative rule."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_13_4.md"
+  },
+  "review_fingerprint": "f2ccc8db17255a81d13701bb06c7abd8300139421e420425f99aec8d18ded917",
+  "review_rationale": "Independent fresh-context source review against the pinned J3/24-007 PDF, THREE ROUNDS: doc/source_audits/batch_136.json. This OPENS CLAUSE 13, previously unregistered. The reviewer re-read PDF p289-294, re-derived unit hashes rather than accepting the author receipt, and independently reconciled the accounting: the true movement is 2363 -> 2392, net +29, being 31 non-numbered units newly classified offset by two numbered deferrals. R1303 and C1302 were correctly left UNRESOLVED BUT ACCOUNTED because legacy fixtures already exist for them and registering a numbered rule with pre-existing cases structurally forces binding them, which a source packet must never do; a migration followup is recorded. Seven blocking findings were raised across three rounds and all closed: 13.4 p9 reversion was under-specified (nested-group target, no-preceding-parenthesis fallback, DT-parenthesis exclusion and the changeable-modes obligation were all missing); pending plans were placeholders rather than byte-exact specifications; 13.2.2 p2 was dispositioned permission despite carrying mandatory shall restrictions; C1309 omitted m, d and e. Two further defects were introduced BY the first correction and caught on re-verification: a plan that wrongly assumed record advancement for unlimited-item reversion, which Note 4 explicitly denies, and a negative that violated both p2 and p9 so could not isolate the rule it was filed under. The reviewer hand-verified all four exact record specifications against the source. Source accounting only: authored_facets unchanged at 1946, no fixture bound, no compiler invoked."
+}

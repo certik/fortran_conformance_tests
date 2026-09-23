@@ -1,0 +1,199 @@
+{
+ "schema_version": 1,
+ "review_type": "independent-format-specification-and-edit-descriptor-source-review",
+ "review_date": "2026-09-22",
+ "baseline_commit": "eb8eccb",
+ "state": "reviewed-source-only",
+ "packet_kind": "SOURCE",
+ "milestone": "OPENS CLAUSE 13, previously entirely unregistered. First source packet since Clause 11 completed at batch124.",
+ "scope": {
+  "sections": [
+   "13.1",
+   "13.2.1",
+   "13.2.2",
+   "13.3.1",
+   "13.3.2",
+   "13.3.3",
+   "13.4"
+  ],
+  "section_titles_verified_from_source": {
+   "13.1": "Format specifications",
+   "13.2.1": "FORMAT statement",
+   "13.2.2": "Character format specification",
+   "13.3.1": "Syntax",
+   "13.3.2": "Edit descriptors",
+   "13.3.3": "Fields",
+   "13.4": "Interaction between input/output list and format"
+  },
+  "pdf_pages": "289-294",
+  "base_units": 66,
+  "fine_units": 0,
+  "already_counted_numbered_units": 35,
+  "newly_classified_units": 31,
+  "deferred_numbered_units": 2,
+  "net_accounted_delta": 29,
+  "new_catalogues": 7,
+  "new_requirements": 58,
+  "new_pending_facets": 172,
+  "new_cases": 0,
+  "why_this_matters": "These registrations are the specification every future format and edit-descriptor fixture will execute from, so an error here propagates into downstream tests that would look authoritative."
+ },
+ "authoring": {
+  "author_context": "fresh subagent context in an isolated worktree based on eb8eccb",
+  "author_packet": "cb0ce33",
+  "correction_commits": [
+   "7262fc7",
+   "bbd527d"
+  ],
+  "source_read_receipt": "receipts-batch136-source.json"
+ },
+ "independent_review": {
+  "reviewer_distinct_from_author": true,
+  "decision": "accept_after_corrections",
+  "review_rounds": 3,
+  "blocking_findings": 7,
+  "reviewer_re_derived_unit_hashes": true,
+  "note": "Two of the seven findings were defects introduced BY the first correction and caught only on re-verification. That is the case for re-verifying corrections rather than trusting them."
+ },
+ "count_reconciliation": {
+  "issue": "The author reported accounted base 2326 -> 2392, a delta of 66 equal to ALL base units in scope, while separately claiming 35 already-counted and only 31 newly-accounted. Those two statements were mutually inconsistent.",
+  "how_it_surfaced": "The integrator measured main directly before dispatching the review and found 2363, not 2326.",
+  "true_figures": "eb8eccb: 2363 accounted / 4110 unresolved. Head: 2392 / 4081. Net +29 = 31 non-numbered units newly classified, offset by the two numbered deferrals.",
+  "verdict": "A wrong REPORT, not wrong accounting. The catalogue content was correct throughout; only the reported baseline and delta were wrong. Corrected in the record."
+ },
+ "pre_existing_fixture_deferrals": {
+  "why": "Registering a numbered rule that already has legacy cases STRUCTURALLY FORCES binding them, because validate_case_requirement runs once a rule is catalogued and rejects an empty facet list. A source packet must never bind fixtures. Batch113 was blocked for exactly this.",
+  "hits_found": {
+   "R1303": "tests/clause13/C1302_valid.f90, tests/clause13/C1302_invalid.f90",
+   "C1302": "tests/reviews.json, both source files, tests/README.md, tests/expected_failures.txt"
+  },
+  "action": "Both dispositioned unresolved but FULLY ACCOUNTED, with a migration followup recorded.",
+  "reviewer_verification": "Re-grepped every identifier - R1301, R1302, C1301, R1303, R1304, R1305, R1306, C1302, C1303, C1304, C1305, R1307-R1322, C1306-C1313 - and confirmed these two are the only hits and that nothing else needed deferring."
+ },
+ "table_risk_assessed": {
+  "concern": "Clause 13 is full of edit-descriptor material and PDF extraction interleaves table columns, so a scrambled read was the anticipated hazard. Any table in scope is a base unit in its own right.",
+  "finding": "There are NO table-formatted base units in 13.1-13.4; the tables live in later sections. The reviewer confirmed this with PyMuPDF table detection over pages 289-294, which found zero tables.",
+  "what_was_checked_instead": "The dense grammar and list material - R1307, R1313, R1315, R1317-R1322 - was checked alternative-by-alternative against the PDF by both author and reviewer, since those lists carry the table-like risk and every future format fixture derives from those alternatives."
+ },
+ "findings": [
+  {
+   "id": "C13SR-001",
+   "severity": "blocking",
+   "location": "S13.4-009",
+   "source_text": "'format control then reverts to the beginning of the format item terminated by the last preceding right parenthesis that is not part of a DT edit descriptor. If there is no such preceding right parenthesis, format control reverts to the first left parenthesis...'",
+   "issue": "Only whole-format reversion via (I1) was planned, dropping the actual rule.",
+   "closure": "Closed in 7262fc7. 13.4 p9 now decomposes into seven facets: termination, nested-group target, no-preceding-parenthesis fallback, DT-parenthesis exclusion, repeat reuse, mode preservation and slash-like positioning."
+  },
+  {
+   "id": "C13SR-002",
+   "severity": "blocking",
+   "location": "S13.4-009",
+   "source_text": "'Reversion of format control, of itself, has no effect on the changeable modes.'",
+   "issue": "This obligation was absent from the p9 facets. A single paragraph can carry more than one obligation.",
+   "closure": "Closed in 7262fc7 with complete-reversion-modes-unchanged."
+  },
+  {
+   "id": "C13SR-003",
+   "severity": "blocking",
+   "location": "S13.4-009 pending plans",
+   "issue": "Plans read 'expected records must be fixed before execution' and 'expects the next reverted item in the next record' - placeholders, not executable specifications. Format output is byte-exactly testable through an internal WRITE to a character variable with no file I/O, so vagueness had no excuse.",
+   "closure": "Closed in 7262fc7 with exact internal-file records, and a sweep upgrading 17 further plans across S13.1-002, S13.2.2-002, R1307, R1311/R1312/R1314, C1307/C1308/C1309, S13.3.2-002/-003, R1313, C1310, R1319, S13.4-005/-008/-009/-010.",
+   "reviewer_hand_verification": [
+    "('H',2(I1)) values 1-6 len 3 -> 'H12','34 ','56 ' - reverts to the repeated nested group and reuses the repeat count",
+    "(I1) values 1-3 len 1 -> '1','2','3' - slash-like complete-format reversion",
+    "('H',(I1,',')) values 1-3 len 3 -> 'H1,','2, ','3, ' - nested group target avoids re-emitting H",
+    "('H',I1) values 1-3 len 2 -> 'H1','H2','H3' - fallback to first left parenthesis"
+   ]
+  },
+  {
+   "id": "C13SR-004",
+   "severity": "blocking",
+   "location": "13.2.2 p2 accounting",
+   "source_text": "'All character positions up to and including the final right parenthesis ... shall be defined ... and shall not become redefined or undefined...' followed by trailing positions that 'need not be defined and may contain any character data'.",
+   "issue": "Dispositioned permission although it carries mandatory shall restrictions. Only the trailing-character sentence is latitude.",
+   "closure": "Closed in 7262fc7; reclassified to requirements with the trailing latitude retained in rationale and oracle text.",
+   "recurring_defect_class": "Third occurrence of this shape - a unit containing BOTH obligation and latitude dispositioned wholly as permission. Batch123 hit it in 11.7.2 and 11.7.5. Latitude is a permission, never a requirement, and the check runs in BOTH directions."
+  },
+  {
+   "id": "C13SR-005",
+   "severity": "blocking",
+   "location": "C1309",
+   "source_text": "'A kind parameter shall not be specified for the char-literal-constant in the DT edit descriptor, or for w, m, d, e, and v.'",
+   "issue": "The plan covered the DT literal, w and v but not m, d or e - three fields could have gone untested forever.",
+   "closure": "Closed in 7262fc7; C1309 now separately covers the DT literal plus w, m, d, e and v."
+  },
+  {
+   "id": "C13SR-006",
+   "severity": "blocking",
+   "location": "S13.4-008 unlimited-reversion-modes-unchanged",
+   "introduced_by": "the first correction",
+   "source_text": "13.4 p8 reverts 'to the leftmost parenthesis of that unlimited format item'. NOTE 4: 'There is no file positioning implied by unlimited-format-item reversion.'",
+   "issue": "The new plan expected '(SP,*(I2))' with values 7,8 to produce rec(1)='+7' and rec(2)='+8', ASSUMING RECORD ADVANCEMENT that Note 4 explicitly denies. Unlimited-item reversion is precisely the case that does NOT position the file, unlike p9 complete-format reversion which behaves like a slash. That distinction is the entire reason p8 and p9 have separate facets.",
+   "closure": "Closed in bbd527d: internal WRITE to character(len=4) buf expecting exactly '+7+8' in a SINGLE record, with the plan text explicitly contrasting it against p9 positioning.",
+   "reviewer_verification": "SP preserves plus-sign mode, each I2 emits +7 and +8, and no record advancement occurs. The plan can no longer be read as implying file positioning."
+  },
+  {
+   "id": "C13SR-007",
+   "severity": "blocking",
+   "location": "S13.4-010 reused-portion-without-data-descriptor-rejected-or-error",
+   "introduced_by": "the first correction",
+   "issue": "The negative used ('X') with an I/O item, which violates BOTH 13.4 p2 (a nonempty I/O list requires at least one data edit descriptor in the format) AND p9 (the reused portion after reversion must contain one). It therefore could not isolate S13.4-010: a processor rejecting it might be enforcing p2 and say nothing about the reused-portion rule.",
+   "principle": "Every negative must be attributable to the SINGLE rule it is filed under, with exactly one property differing from its control.",
+   "closure": "Closed in bbd527d. The negative is now '(I1,(\"X\"))' with two items: the leading I1 satisfies p2 and consumes the first item; at reversion for the second item, p9 targets the format item closed by the last preceding non-DT right parenthesis, which is ('X'), whose reused portion has no data edit descriptor - violating p9 ONLY. The control '(I1,(\"X\",I1))' changes exactly that one property.",
+   "reviewer_verification": "Derived the reversion target independently and confirmed only p9 is violated."
+  }
+ ],
+ "permissions_recorded": [
+  "13.2.1 p1: source blanks may appear outside character string edit descriptors - source latitude, not processor latitude.",
+  "13.2.2 p2 trailing characters: retained as latitude in rationale and oracle text after the unit itself was reclassified to requirements."
+ ],
+ "processor_dependent_and_unassertable": "List-directed and namelist output, the E/EN/ES/EX/G/D real spellings, AT/DT behaviour, nonrepresentable character negatives, changeable-mode persistence, and some complete-format reversion padding are explicitly deferred or marked unassertable until their owning sections are registered. 13.3.2 p5 representability is marked unassertable.",
+ "explicit_limitations": [
+  "Source accounting only: no fixture bound, no case added, no compiler invoked. authored_facets is unchanged at 1946.",
+  "All 172 facets remain PENDING. Registering a requirement is not evidence that any processor implements it.",
+  "R1303 and C1302 are accounted but UNRESOLVED pending a migration batch for their legacy fixtures.",
+  "13.5 through 13.11 remain unregistered, and Clause 12 - the immediate I/O-statement neighbour and a likely dependency - is entirely unregistered.",
+  "Many edit-descriptor exact-output plans defer to later 13.x owners for their semantics."
+ ],
+ "preservation": {
+  "cases_before": 2234,
+  "cases_after": 2234,
+  "authored_facets_before": 1946,
+  "authored_facets_after": 1946,
+  "accounted_base_before": 2363,
+  "accounted_base_after": 2392,
+  "unresolved_base_before": 4110,
+  "unresolved_base_after": 4081,
+  "declared_facets_before": 7184,
+  "declared_facets_after": 7356,
+  "pending_facets_after": 5388,
+  "requirements_before": 1684,
+  "requirements_after": 1742,
+  "detailed_catalogues_before": 280,
+  "detailed_catalogues_after": 287,
+  "expected_failures_lines": 819,
+  "baseline_lines_changed_by_this_packet": 0,
+  "tests_directory_diff": "empty"
+ },
+ "validation_snapshot": {
+  "detailed_catalogues": 287,
+  "requirements": 1742,
+  "declared_facets": 7356,
+  "pending_facets": 5388,
+  "authored_facets": 1946,
+  "catalogue_reviews_draft": 1,
+  "catalogue_reviews_draft_note": "Only 18.3.7, pre-existing in doc/catalogues/c_interop.json and untouched.",
+  "normal_audit_exit": 1,
+  "normal_audit_block": "the single retained needs-oracle real-BOZ case, which is the intended state and not a regression",
+  "python_suite_tests": 1032,
+  "python_suite_result": "pending integrator gate"
+ },
+ "integrator_corrective_action": {
+  "issue": "The full gate failed with 'AssertionError: 7356 != 7184'. tests/test_deallocation_fixtures.py (from batch132) asserted the SUITE-WIDE declared_facets total, which this SOURCE packet legitimately raised from 7184 to 7356.",
+  "root_cause_including_integrator_error": "The integrator's own guidance to fixture authors said 'declared_facets == 7184 is the one legitimate invariant'. That reasoning was WRONG. declared_facets is invariant for a FIXTURE packet's own delta - a fixture packet must not change source accounting - but its ABSOLUTE value moves whenever a SOURCE packet registers new units. Encoding the absolute value made the assertion correct only until the next source packet, which arrived one checkpoint later.",
+  "remedy": "Replaced the global assertion with SECTION-SCOPED invariants that are genuinely stable: the packet has exactly 11 specs, binds exactly 11 distinct facets, and the 9.7.3.2 catalogue shows exactly 11 facets bound (total section facets minus section pending). declared_facets is now only checked for presence in the report, not for a value.",
+  "corrected_rule": "A packet must assert NOTHING suite-wide. authored_facets and the case count drift when any sibling FIXTURE packet integrates; declared_facets drifts when any SOURCE packet integrates. Scope every count assertion to the packet's own section.",
+  "history": "Third occurrence of hardcoded-global-total drift: batch132 pinned authored_facets and the case count (caught at batch133 integration), and this is the declared_facets variant. The guidance has been corrected in plan.md.",
+  "verification": "tests/test_deallocation_fixtures.py runs 5 tests OK and the full gate was re-run."
+ }
+}
