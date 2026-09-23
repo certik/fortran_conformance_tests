@@ -1,0 +1,137 @@
+{
+  "schema_version": 1,
+  "section": "12.6.4.8.4",
+  "requirements": [
+    {
+      "id": "S12.6.4.8.4-001",
+      "title": "Suitable generic interfaces match direction/form and dtv argument compatibility",
+      "source": "S12.6.4.8.4, J3/24-007, 18 December 2023, physical PDF274.",
+      "source_units": [
+        "p1"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A suitable generic interface for defined input/output has a defined-io-generic-spec appropriate to the read/write direction and formatted/unformatted form of the data transfer, and has a specific interface whose dtv argument is compatible with the effective item according to argument association rules.",
+      "facets": [
+        "suitable-interface-matches-direction-and-form",
+        "suitable-interface-dtv-compatible-with-effective-item"
+      ],
+      "pending": {
+        "suitable-interface-matches-direction-and-form": "Provide separate READ(FORMATTED) and WRITE(FORMATTED) specifics with distinctive sentinels and assert the parent transfer direction/form selects only the matching generic spec.",
+        "suitable-interface-dtv-compatible-with-effective-item": "Use effective items whose dynamic or declared type compatibility differs by one property and assert only compatible dtv specifics are callable, with incompatible controls reserved for clause 15 diagnostics."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or using a compile-only conforming control) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT or named status values where the standard names them, required dummy characteristics through a conforming interface, or required diagnosis of a numbered syntax rule or constraint. Negative plans change one source property from a conforming control and do not require a particular diagnostic message, severity, exit status, printed rule number, IOMSG wording, or processor-dependent numeric status value.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. IOMSG wording and processor-dependent numeric status values are never an oracle. A diagnostic facet is only a future source-control plan when the cited numbered rule alone is violated and the invalid program reaches that rule; unnumbered program restrictions are not assumed to be diagnosed.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, and existing clause 12/13 catalogues for source form, derived types, generic bindings, expressions, variables, execution constructs, data-transfer statement forms, control information, file positioning, and edit descriptors. Unregistered dependencies explicitly retained: later 12.6 effective-item and data-transfer termination rules; 12.7-12.11 connection, transfer, status, and error semantics; clause 15 interface, generic, type-bound, and argument association rules; clause 16 ISO_FORTRAN_ENV named constants; clause 19 scope and lifetime controls where active parent data transfer statements are reached."
+    },
+    {
+      "id": "S12.6.4.8.4-002",
+      "title": "Defined I/O occurs when permitted circumstances and a suitable procedure are both present",
+      "source": "S12.6.4.8.4, J3/24-007, 18 December 2023, physical PDF274.",
+      "source_units": [
+        "p2"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "When a derived-type effective item is encountered during data transfer, defined input/output occurs if the circumstances permit defined input/output and a suitable defined input/output procedure is available.",
+      "facets": [
+        "defined-io-occurs-with-permitted-circumstance",
+        "defined-io-occurs-with-suitable-procedure",
+        "list-directed-namelist-unformatted-circumstances-permit-defined-io",
+        "dt-edit-descriptor-circumstance-permits-defined-io",
+        "type-bound-procedure-can-be-suitable",
+        "accessible-interface-can-be-suitable"
+      ],
+      "pending": {
+        "defined-io-occurs-with-permitted-circumstance": "Use a suitable WRITE(FORMATTED) DTIO procedure that assigns module integer `selected=10`. Initialize `selected=-9`, execute a parent internal WRITE whose edit descriptor for the derived effective item is DT, and assert `selected` is 10 after the transfer.",
+        "defined-io-occurs-with-suitable-procedure": "Use a permitted DT parent transfer and a suitable DTIO procedure that assigns module integer `selected=20`. Initialize `selected=-9`, execute the transfer, and assert `selected` is 20, showing the available suitable procedure is used.",
+        "list-directed-namelist-unformatted-circumstances-permit-defined-io": "Provide suitable list-directed, namelist, and unformatted DTIO specifics that assign distinct module values such as 31, 32, and 33 before child transfer; execute each parent form with `selected=-9` and assert the matching value.",
+        "dt-edit-descriptor-circumstance-permits-defined-io": "Provide a suitable formatted DTIO specific that assigns `selected=40`; execute an internal WRITE with a DT edit descriptor for the effective item and assert `selected` changed from -9 to 40.",
+        "type-bound-procedure-can-be-suitable": "Define a suitable generic type-bound DTIO procedure that assigns `selected=50`; execute a matching parent transfer with `selected=-9` and assert 50.",
+        "accessible-interface-can-be-suitable": "Define a suitable generic interface-block DTIO procedure that assigns `selected=60`; execute a matching parent transfer for a type with no suitable type-bound binding and assert 60."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or using a compile-only conforming control) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT or named status values where the standard names them, required dummy characteristics through a conforming interface, or required diagnosis of a numbered syntax rule or constraint. Negative plans change one source property from a conforming control and do not require a particular diagnostic message, severity, exit status, printed rule number, IOMSG wording, or processor-dependent numeric status value.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. IOMSG wording and processor-dependent numeric status values are never an oracle. A diagnostic facet is only a future source-control plan when the cited numbered rule alone is violated and the invalid program reaches that rule; unnumbered program restrictions are not assumed to be diagnosed.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, and existing clause 12/13 catalogues for source form, derived types, generic bindings, expressions, variables, execution constructs, data-transfer statement forms, control information, file positioning, and edit descriptors. Unregistered dependencies explicitly retained: later 12.6 effective-item and data-transfer termination rules; 12.7-12.11 connection, transfer, status, and error semantics; clause 15 interface, generic, type-bound, and argument association rules; clause 16 ISO_FORTRAN_ENV named constants; clause 19 scope and lifetime controls where active parent data transfer statements are reached."
+    },
+    {
+      "id": "S12.6.4.8.4-003",
+      "title": "Type-bound defined I/O resolution selects the dynamic-type corresponding binding",
+      "source": "S12.6.4.8.4, J3/24-007, 18 December 2023, physical PDF274.",
+      "source_units": [
+        "p3"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "If a suitable generic type-bound procedure is available from the declared type, the procedure reference is determined as for explicit type-bound procedure references: the binding with the appropriate specific interface is located in the declared type and the corresponding binding in the dynamic type is selected.",
+      "facets": [
+        "type-bound-defined-io-locates-declared-type-binding",
+        "type-bound-defined-io-selects-dynamic-type-binding"
+      ],
+      "pending": {
+        "type-bound-defined-io-locates-declared-type-binding": "Make both a suitable type-bound DTIO binding and a suitable accessible generic interface-block DTIO for the same declared type. Initialize module `selected=-9`; have the type-bound specific assign 51 and the interface specific assign 61. A matching parent transfer must leave `selected=51`, showing that the declared-type binding is the one located when 2a is true.",
+        "type-bound-defined-io-selects-dynamic-type-binding": "Use a polymorphic effective item declared as a parent type whose dynamic extension overrides the defined I/O binding. Parent and extension specifics assign distinct sentinels such as 71 and 72; after a matching parent transfer assert the dynamic extension sentinel 72."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or using a compile-only conforming control) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT or named status values where the standard names them, required dummy characteristics through a conforming interface, or required diagnosis of a numbered syntax rule or constraint. Negative plans change one source property from a conforming control and do not require a particular diagnostic message, severity, exit status, printed rule number, IOMSG wording, or processor-dependent numeric status value.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. IOMSG wording and processor-dependent numeric status values are never an oracle. A diagnostic facet is only a future source-control plan when the cited numbered rule alone is violated and the invalid program reaches that rule; unnumbered program restrictions are not assumed to be diagnosed.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, and existing clause 12/13 catalogues for source form, derived types, generic bindings, expressions, variables, execution constructs, data-transfer statement forms, control information, file positioning, and edit descriptors. Unregistered dependencies explicitly retained: later 12.6 effective-item and data-transfer termination rules; 12.7-12.11 connection, transfer, status, and error semantics; clause 15 interface, generic, type-bound, and argument association rules; clause 16 ISO_FORTRAN_ENV named constants; clause 19 scope and lifetime controls where active parent data transfer statements are reached."
+    },
+    {
+      "id": "S12.6.4.8.4-004",
+      "title": "Accessible interface-block defined I/O resolves to the identified specific procedure",
+      "source": "S12.6.4.8.4, J3/24-007, 18 December 2023, physical PDF274.",
+      "source_units": [
+        "p4"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "If no suitable generic type-bound procedure is available and a suitable generic interface is accessible, the reference is to the procedure identified by the appropriate specific interface in the interface block.",
+      "facets": [
+        "interface-block-defined-io-selects-appropriate-specific"
+      ],
+      "pending": {
+        "interface-block-defined-io-selects-appropriate-specific": "Use a type with no suitable type-bound DTIO binding and an accessible generic interface block containing formatted and unformatted specifics that assign distinct module values such as 81 and 82. Execute matching parent transfers from `selected=-9` and assert the appropriate interface-block specific value is recorded."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or using a compile-only conforming control) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT or named status values where the standard names them, required dummy characteristics through a conforming interface, or required diagnosis of a numbered syntax rule or constraint. Negative plans change one source property from a conforming control and do not require a particular diagnostic message, severity, exit status, printed rule number, IOMSG wording, or processor-dependent numeric status value.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. IOMSG wording and processor-dependent numeric status values are never an oracle. A diagnostic facet is only a future source-control plan when the cited numbered rule alone is violated and the invalid program reaches that rule; unnumbered program restrictions are not assumed to be diagnosed.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, and existing clause 12/13 catalogues for source form, derived types, generic bindings, expressions, variables, execution constructs, data-transfer statement forms, control information, file positioning, and edit descriptors. Unregistered dependencies explicitly retained: later 12.6 effective-item and data-transfer termination rules; 12.7-12.11 connection, transfer, status, and error semantics; clause 15 interface, generic, type-bound, and argument association rules; clause 16 ISO_FORTRAN_ENV named constants; clause 19 scope and lifetime controls where active parent data transfer statements are reached."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "definition",
+      "requirements": [
+        "S12.6.4.8.4-001"
+      ],
+      "rationale": "Defines suitability of a generic interface."
+    },
+    {
+      "unit": "p2",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.6.4.8.4-002"
+      ]
+    },
+    {
+      "unit": "p3",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.6.4.8.4-003"
+      ]
+    },
+    {
+      "unit": "p4",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.6.4.8.4-004"
+      ]
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_12_6_4_8_4.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "1e09901d6a5a80598ad88a3c9eb219676086b42edb3a3377b8209a8b498a63a7",
+  "review_rationale": "Source registration for 12.6.4.8, defined input/output (batch163). Every unit hash-verified by independent reviewers across two rounds. Round 1 found obligations filed as definitions - the 12.6.4.8.4 resolution rules, and the 12.6.4.8.3 effects that a child data transfer inherits the parent's connection modes, does not position the file, ignores ADVANCE=, associates dtv with the effective item and starts where the file was positioned; all are now requirements with plans in which a DTIO procedure records its observations in module variables with distinguished values. R1221, C1236 and C1237 were pre-accounted. Source accounting only."
+}

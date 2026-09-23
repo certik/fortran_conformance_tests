@@ -5599,6 +5599,20 @@ type-bound fixture reviews at their original state, since the shared catalogue
 was re-fingerprinted.
 See `doc/source_audits/batch_177.json`.
 
+## Batch 163 — defined input/output
+
+Forty-seven units of 12.6.4.8 through 12.6.4.8.4, after two rounds — the second
+verified by a fresh reviewer, since a session reset cleared the original review
+threads (the committed work survived in its worktree). The finding was the mirror
+of this project's dominant defect: **obligations filed as definitions.** The
+resolution rules of 12.6.4.8.4, and the effects of a child data transfer — it
+inherits the parent's connection modes, does not position the file, ignores
+`ADVANCE=`, associates `dtv` with the effective item and starts where the file
+was positioned — are things a processor must make true, so they are requirements.
+Each now has a plan in which the DTIO procedure records what it observes in module
+variables with distinguished values.
+See `doc/source_audits/batch_163.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
