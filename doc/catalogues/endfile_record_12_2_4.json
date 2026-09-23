@@ -1,0 +1,168 @@
+{
+  "schema_version": 1,
+  "section": "12.2.4",
+  "subunits": {
+    "p1": [
+      "p1.explicit-endfile",
+      "p1.explicit-sequential-connection",
+      "p1.implicit-endfile"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S12.2.4-001",
+      "title": "ENDFILE explicitly writes an endfile record",
+      "source": "S12.2.4, J3/24-007, 18 December 2023, physical PDF243.",
+      "source_units": [
+        "p1.explicit-endfile"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "An endfile record is written explicitly by an ENDFILE statement.",
+      "facets": [
+        "explicit-endfile-statement-writes-endfile-record"
+      ],
+      "pending": {
+        "explicit-endfile-statement-writes-endfile-record": "Write a known sequential file, execute ENDFILE, then READ with IOSTAT initialized to a nonzero sentinel until the named endfile condition is observed; do not assert a numeric status value."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or creating a known file) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT for a specified error condition, or named intrinsic status values where the standard names them. Processor-dependent unit numbers, file names, record lengths, storage-unit encodings, buffering, timing, IOMSG text, and specific error numbers are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: later clause 12 connection, specifier, file-position, data-transfer, internal-file, and input/output-item rules; clause 13 formatting; clause 15 defined I/O; clause 16 inquiry intrinsics where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.2.4-002",
+      "title": "Explicit ENDFILE requires sequential access connection",
+      "source": "S12.2.4, J3/24-007, 18 December 2023, physical PDF243.",
+      "source_units": [
+        "p1.explicit-sequential-connection"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "For explicit endfile record writing, the file shall be connected for sequential access.",
+      "facets": [
+        "explicit-endfile-requires-sequential-access"
+      ],
+      "pending": {
+        "explicit-endfile-requires-sequential-access": "Positive plan uses a sequential connection. A source-control negative differs only by direct or stream connection, but no diagnostic facet is filed unless later ENDFILE execution rules make a portable rejection observable."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or creating a known file) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT for a specified error condition, or named intrinsic status values where the standard names them. Processor-dependent unit numbers, file names, record lengths, storage-unit encodings, buffering, timing, IOMSG text, and specific error numbers are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: later clause 12 connection, specifier, file-position, data-transfer, internal-file, and input/output-item rules; clause 13 formatting; clause 15 defined I/O; clause 16 inquiry intrinsics where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.2.4-003",
+      "title": "Certain positioning or close/open actions implicitly write an endfile record after output",
+      "source": "S12.2.4, J3/24-007, 18 December 2023, physical PDF243.",
+      "source_units": [
+        "p1.implicit-endfile"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "An endfile record is written implicitly to a sequential file when the most recent data transfer for the file is output, no intervening file-positioning statement for the file has executed, and either REWIND or BACKSPACE references the connected unit or the unit is closed explicitly, by normal termination, or by another OPEN for the same unit.",
+      "facets": [
+        "implicit-endfile-after-output-before-rewind-or-backspace",
+        "implicit-endfile-on-close-after-output",
+        "implicit-endfile-on-open-same-unit-after-output"
+      ],
+      "pending": {
+        "implicit-endfile-after-output-before-rewind-or-backspace": "Write a known sequential record, execute REWIND or BACKSPACE without intervening positioning, then read records until named endfile; anti-vacuity requires the known data record to be read first.",
+        "implicit-endfile-on-close-after-output": "Write and close a sequential file, reopen for reading, and observe known record then named endfile condition; do not compare IOMSG or numeric status.",
+        "implicit-endfile-on-open-same-unit-after-output": "After OPEN semantics are registered, open another file on the same unit following output and verify the first file retains the known record followed by endfile."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or creating a known file) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT for a specified error condition, or named intrinsic status values where the standard names them. Processor-dependent unit numbers, file names, record lengths, storage-unit encodings, buffering, timing, IOMSG text, and specific error numbers are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: later clause 12 connection, specifier, file-position, data-transfer, internal-file, and input/output-item rules; clause 13 formatting; clause 15 defined I/O; clause 16 inquiry intrinsics where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.2.4-004",
+      "title": "An endfile record occurs only as the last record of a file",
+      "source": "S12.2.4, J3/24-007, 18 December 2023, physical PDF243.",
+      "source_units": [
+        "p2"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "An endfile record shall occur only as the last record of a file.",
+      "facets": [
+        "endfile-record-last-record-only"
+      ],
+      "pending": {
+        "endfile-record-last-record-only": "Positive plan writes data followed by ENDFILE and observes named endfile after the last data record. A negative plan attempting data after an endfile must be attributed to later positioning/data-transfer rules, not this catalogue alone."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or creating a known file) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT for a specified error condition, or named intrinsic status values where the standard names them. Processor-dependent unit numbers, file names, record lengths, storage-unit encodings, buffering, timing, IOMSG text, and specific error numbers are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: later clause 12 connection, specifier, file-position, data-transfer, internal-file, and input/output-item rules; clause 13 formatting; clause 15 defined I/O; clause 16 inquiry intrinsics where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.2.4-005",
+      "title": "Endfile records have no length property",
+      "source": "S12.2.4, J3/24-007, 18 December 2023, physical PDF243.",
+      "source_units": [
+        "p2"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "An endfile record does not have a length property.",
+      "facets": [
+        "endfile-record-no-length-property"
+      ],
+      "pending": {
+        "endfile-record-no-length-property": "No portable oracle exists for measuring an absent length property; future tests must observe endfile position/status behavior rather than comparing a length."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or creating a known file) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT for a specified error condition, or named intrinsic status values where the standard names them. Processor-dependent unit numbers, file names, record lengths, storage-unit encodings, buffering, timing, IOMSG text, and specific error numbers are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: later clause 12 connection, specifier, file-position, data-transfer, internal-file, and input/output-item rules; clause 13 formatting; clause 15 defined I/O; clause 16 inquiry intrinsics where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "structural",
+      "rationale": "Mixed explicit effect, sequential-access obligation, and implicit endfile conditions are split into fine units."
+    },
+    {
+      "unit": "p1.explicit-endfile",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.2.4-001"
+      ],
+      "rationale": "Explicit ENDFILE effect."
+    },
+    {
+      "unit": "p1.explicit-sequential-connection",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.2.4-002"
+      ],
+      "rationale": "Sequential connection obligation for explicit endfile."
+    },
+    {
+      "unit": "p1.implicit-endfile",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.2.4-003"
+      ],
+      "rationale": "Implicit endfile creation conditions."
+    },
+    {
+      "unit": "p2",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.2.4-004",
+        "S12.2.4-005"
+      ],
+      "rationale": "Contains both last-record restriction and no-length definition."
+    },
+    {
+      "unit": "note-unnumbered",
+      "disposition": "informative",
+      "rationale": "NOTE describes possible implementation strategies and BACKSPACE relevance; it is not used as a requirement basis."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_12_2_4.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "919034089a9f7d24e4f0da2cfc09055aeee1728ddbef4f24a49a6d0005a8de6e",
+  "review_rationale": "Source registration for Clause 12 (batch145), the clause's first packet. Every base and fine unit classified and hash-verified against the pinned J3/24-007 census by an independent fresh-context reviewer who read the original pages 242-246 and confirmed 12.3.3.4 ends before 12.3.4.1. Mixed obligation/latitude units were swept in both directions and all splits recorded; no unit left unresolved; no numbered R/C rule in scope; no requirement based on a NOTE; no no-portable-oracle claim found to be over-suppression and no pending plan found vacuous. Source accounting only: no fixture, compiler invocation or execution credit."
+}

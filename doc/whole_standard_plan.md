@@ -5045,6 +5045,60 @@ in material the correction **newly wrote**, not in what it removed. Removing a b
 test is safe; its replacement is not.
 See `doc/source_audits/batch_143.json`.
 
+## Batch 145 — opening Clause 12
+
+Clause 12 was entirely untouched: **0 of 485 base units**. It is also the
+declared I/O-statement dependency of Clause 13, which has been source-complete
+since batch139 — so everything registered here propagates. This packet accounts
+the first **36 base and 51 fine units** across 12.1 through 12.3.3.4, in eleven
+catalogues with 65 requirement IDs and **zero unresolved units**.
+
+### The priority was the mixed obligation/latitude sweep
+
+That is the **dominant defect class** in this project, with five prior
+occurrences: a single unit contains *both* an obligation *and* a grant of
+processor latitude, and gets classified by whichever half is more memorable. The
+rule is **symmetric** — latitude-plus-obligation must still yield a
+`requirements` entry, and obligation-plus-latitude must still yield a
+`permission` entry.
+
+Clause 12 is unusually dense with "processor dependent" sitting in the same
+paragraph as "shall", which makes a *missed* split the most likely defect here.
+So the author was told outright that **an empty split list across 36 units of I/O
+text would itself be suspicious**.
+
+Ten splits came back: mixed obligation/latitude at 12.2.2#p1, 12.2.3#p1,
+12.3.2#p3, 12.3.3.2#p2, 12.3.3.3#p2, 12.3.3.4#p3 and 12.3.3.4#p4; split
+definition/latitude at 12.1#p4, 12.3.1#p3 and 12.3.3.1#p1. The reviewer verified
+all ten are genuinely in the source *and* swept every other unit for a split
+missed in the opposite direction, finding none.
+
+### The boundary trap, avoided
+
+A page range that stops exactly at a section boundary has produced mis-accounting
+here before, so the reviewer read through physical page **246** and confirmed
+12.3.3.4 ends before 12.3.4.1 begins. All 36 base and 51 fine unit hashes
+verified against the census with no mismatches.
+
+**Zero unresolved units** was treated as a strong claim and verified rather than
+accepted — every unit is genuinely classifiable, none forced into a category to
+avoid an `unresolved` entry.
+
+### No over-suppression
+
+Every "no portable oracle" claim — processor-dependent mappings, names, actions,
+lengths and control characters, nonphysical records, the absent length of an
+endfile record, preconnected `PRINT` and file identity, optional stream end
+markers, unbounded stream length, cross-image identity — was audited for whether
+a single-image program could observe *some* portable property even if not the
+full behaviour. This mattered acutely: the sibling packet batch143 was blocked
+**twice** for exactly that defect in the same checkpoint.
+
+The source/fixture separation held as it must: `authored_facets` **unchanged**,
+`tests/` untouched, and the unittest count identical to its own baseline. A
+source packet binds no fixtures and earns no execution credit.
+See `doc/source_audits/batch_145.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must

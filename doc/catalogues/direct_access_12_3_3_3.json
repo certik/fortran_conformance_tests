@@ -1,0 +1,248 @@
+{
+  "schema_version": 1,
+  "section": "12.3.3.3",
+  "subunits": {
+    "p2": [
+      "p2.record-numbering",
+      "p2.record-form-and-endfile",
+      "p2.direct-data-transfer-only",
+      "p2.same-record-length",
+      "p2.out-of-order-permissions",
+      "p2.list-namelist-nonadvancing-prohibition"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S12.3.3.3-001",
+      "title": "Direct access accesses external record-file records in arbitrary order",
+      "source": "S12.3.3.3, J3/24-007, 18 December 2023, physical PDF244.",
+      "source_units": [
+        "p1"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Direct access is a method of accessing records of an external record file in arbitrary order.",
+      "facets": [
+        "direct-access-arbitrary-record-order"
+      ],
+      "pending": {
+        "direct-access-arbitrary-record-order": "Write direct records with REC=2 and REC=1 containing distinct values, then read REC=1 and REC=2; expected values prove arbitrary access independent of write order."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or creating a known file) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT for a specified error condition, or named intrinsic status values where the standard names them. Processor-dependent unit numbers, file names, record lengths, storage-unit encodings, buffering, timing, IOMSG text, and specific error numbers are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: later clause 12 connection, specifier, file-position, data-transfer, internal-file, and input/output-item rules; clause 13 formatting; clause 15 defined I/O; clause 16 inquiry intrinsics where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.3.3.3-002",
+      "title": "Direct records are identified by immutable positive record numbers and ordered by those numbers",
+      "source": "S12.3.3.3, J3/24-007, 18 December 2023, physical PDF244.",
+      "source_units": [
+        "p2.record-numbering"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Each direct-access record is uniquely identified by a positive integer record number specified when written; once established, the record number cannot be changed, and record order is record-number order.",
+      "facets": [
+        "direct-record-positive-number",
+        "direct-record-number-specified-on-write",
+        "direct-record-number-immutable",
+        "direct-record-order-number-order"
+      ],
+      "pending": {
+        "direct-record-positive-number": "Use REC=1 and REC=2 positive controls with distinct nondefault data; invalid REC=0 belongs to REC= specifier constraints, not this source packet.",
+        "direct-record-number-specified-on-write": "Write REC=2 then read REC=2 into sentinel-initialized variable and expect the written value.",
+        "direct-record-number-immutable": "Rewrite REC=2 with a different value and read REC=2; assert value changes at the same record number, not renumbering.",
+        "direct-record-order-number-order": "If later sequential view is supported, verify sequential order follows record numbers; otherwise retain as source-use property without physical-order oracle."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or creating a known file) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT for a specified error condition, or named intrinsic status values where the standard names them. Processor-dependent unit numbers, file names, record lengths, storage-unit encodings, buffering, timing, IOMSG text, and specific error numbers are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: later clause 12 connection, specifier, file-position, data-transfer, internal-file, and input/output-item rules; clause 13 formatting; clause 15 defined I/O; clause 16 inquiry intrinsics where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.3.3.3-003",
+      "title": "Direct files have uniform record form and constrained endfile treatment",
+      "source": "S12.3.3.3, J3/24-007, 18 December 2023, physical PDF244.",
+      "source_units": [
+        "p2.record-form-and-endfile"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "Direct-file records are either all formatted or all unformatted; if sequential access is also allowed, any endfile record is not part of the file while connected for direct access; if sequential access is not allowed, the file shall not contain an endfile record.",
+      "facets": [
+        "direct-records-all-formatted-or-all-unformatted",
+        "direct-endfile-ignored-when-sequential-also-allowed",
+        "direct-endfile-prohibited-without-sequential-access"
+      ],
+      "pending": {
+        "direct-records-all-formatted-or-all-unformatted": "Positive controls use separate formatted and unformatted direct files; no mixed-form diagnostic is claimed here.",
+        "direct-endfile-ignored-when-sequential-also-allowed": "No portable oracle exists without a processor profile supporting both access methods and an observable endfile transition; future tests must not inspect hidden endfile representation.",
+        "direct-endfile-prohibited-without-sequential-access": "Negative source-control only; setup must first establish no sequential access for that file, which is processor dependent."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or creating a known file) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT for a specified error condition, or named intrinsic status values where the standard names them. Processor-dependent unit numbers, file names, record lengths, storage-unit encodings, buffering, timing, IOMSG text, and specific error numbers are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: later clause 12 connection, specifier, file-position, data-transfer, internal-file, and input/output-item rules; clause 13 formatting; clause 15 defined I/O; clause 16 inquiry intrinsics where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.3.3.3-004",
+      "title": "Direct-file records are read or written only by direct access data transfer statements",
+      "source": "S12.3.3.3, J3/24-007, 18 December 2023, physical PDF244.",
+      "source_units": [
+        "p2.direct-data-transfer-only"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "The records of a direct file shall be read or written only by direct access data transfer statements.",
+      "facets": [
+        "direct-records-direct-transfer-only"
+      ],
+      "pending": {
+        "direct-records-direct-transfer-only": "Positive plan uses direct READ/WRITE with REC=. A negative source-control attempts sequential transfer on the same direct connection, but diagnostic observation belongs to data-transfer rules."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or creating a known file) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT for a specified error condition, or named intrinsic status values where the standard names them. Processor-dependent unit numbers, file names, record lengths, storage-unit encodings, buffering, timing, IOMSG text, and specific error numbers are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: later clause 12 connection, specifier, file-position, data-transfer, internal-file, and input/output-item rules; clause 13 formatting; clause 15 defined I/O; clause 16 inquiry intrinsics where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.3.3.3-005",
+      "title": "Direct-file records all have the same length",
+      "source": "S12.3.3.3, J3/24-007, 18 December 2023, physical PDF244.",
+      "source_units": [
+        "p2.same-record-length"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "All records of a direct-access file have the same length.",
+      "facets": [
+        "direct-records-same-length"
+      ],
+      "pending": {
+        "direct-records-same-length": "Open a formatted direct file with fixed RECL after RECL rules are registered; write shorter content to two records and read back with padding semantics owned by formatted/direct rules. Do not assert external byte length."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or creating a known file) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT for a specified error condition, or named intrinsic status values where the standard names them. Processor-dependent unit numbers, file names, record lengths, storage-unit encodings, buffering, timing, IOMSG text, and specific error numbers are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: later clause 12 connection, specifier, file-position, data-transfer, internal-file, and input/output-item rules; clause 13 formatting; clause 15 defined I/O; clause 16 inquiry intrinsics where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.3.3.3-006",
+      "title": "Direct records may be read or written out of record-number order subject to write/read permission conditions",
+      "source": "S12.3.3.3, J3/24-007, 18 December 2023, physical PDF244.",
+      "source_units": [
+        "p2.out-of-order-permissions"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Direct records need not be read or written in record-number order; any record may be written while connected; any written record may be read while connected if READ is permitted for the connection.",
+      "facets": [
+        "direct-out-of-order-write-permitted",
+        "direct-gap-write-permitted",
+        "direct-written-record-read-permitted"
+      ],
+      "pending": {
+        "direct-out-of-order-write-permitted": "Write REC=3 before REC=1, then read both by REC number into sentinel values; expect written values.",
+        "direct-gap-write-permitted": "Write REC=3 without writing REC=1 or REC=2, then read REC=3 successfully; do not attempt to read unwritten gaps as a positive oracle.",
+        "direct-written-record-read-permitted": "After ACTION permits READ, read a previously written record into a nondefault sentinel; expect the written value."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or creating a known file) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT for a specified error condition, or named intrinsic status values where the standard names them. Processor-dependent unit numbers, file names, record lengths, storage-unit encodings, buffering, timing, IOMSG text, and specific error numbers are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: later clause 12 connection, specifier, file-position, data-transfer, internal-file, and input/output-item rules; clause 13 formatting; clause 15 defined I/O; clause 16 inquiry intrinsics where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.3.3.3-007",
+      "title": "Direct files shall not use list-directed, namelist, or nonadvancing data transfer",
+      "source": "S12.3.3.3, J3/24-007, 18 December 2023, physical PDF244.",
+      "source_units": [
+        "p2.list-namelist-nonadvancing-prohibition"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "Direct-file records shall not be read or written using list-directed formatting, namelist formatting, or a nonadvancing data transfer statement.",
+      "facets": [
+        "direct-list-directed-prohibited",
+        "direct-namelist-prohibited",
+        "direct-nonadvancing-prohibited"
+      ],
+      "pending": {
+        "direct-list-directed-prohibited": "Negative source-control uses a direct connection and list-directed transfer, with a formatted-direct control differing only by explicit format; portable diagnostic attribution is deferred to data-transfer rules.",
+        "direct-namelist-prohibited": "Negative source-control uses direct connection and NML=, with a sequential namelist control; no IOMSG wording or status number asserted.",
+        "direct-nonadvancing-prohibited": "Negative source-control uses ADVANCE= on direct connection, with sequential nonadvancing control after 12.3.4.2; attribution must reach this prohibition."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or creating a known file) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT for a specified error condition, or named intrinsic status values where the standard names them. Processor-dependent unit numbers, file names, record lengths, storage-unit encodings, buffering, timing, IOMSG text, and specific error numbers are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: later clause 12 connection, specifier, file-position, data-transfer, internal-file, and input/output-item rules; clause 13 formatting; clause 15 defined I/O; clause 16 inquiry intrinsics where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "definition",
+      "requirements": [
+        "S12.3.3.3-001"
+      ],
+      "rationale": "Defines direct access."
+    },
+    {
+      "unit": "p2",
+      "disposition": "structural",
+      "rationale": "Direct-access properties mix definitions, permissions, and several distinct prohibitions."
+    },
+    {
+      "unit": "p2.record-numbering",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.3.3.3-002"
+      ],
+      "rationale": "Record-number identity and order effects."
+    },
+    {
+      "unit": "p2.record-form-and-endfile",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.3.3.3-003"
+      ],
+      "rationale": "Uniform form and endfile restrictions/latitude."
+    },
+    {
+      "unit": "p2.direct-data-transfer-only",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.3.3.3-004"
+      ],
+      "rationale": "Direct-transfer-only obligation."
+    },
+    {
+      "unit": "p2.same-record-length",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.3.3.3-005"
+      ],
+      "rationale": "Same-length property."
+    },
+    {
+      "unit": "p2.out-of-order-permissions",
+      "disposition": "permission",
+      "requirements": [
+        "S12.3.3.3-006"
+      ],
+      "rationale": "Permits out-of-order/gap writes and reads of written records."
+    },
+    {
+      "unit": "p2.list-namelist-nonadvancing-prohibition",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.3.3.3-007"
+      ],
+      "rationale": "Three distinct prohibitions for direct files."
+    },
+    {
+      "unit": "note-unnumbered",
+      "disposition": "informative",
+      "rationale": "NOTE explains that records cannot be deleted but can be rewritten; it is not a normative basis here."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_12_3_3_3.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "870a2a90c17c01e213dec4d33144469a055e7744a47cffa9bbc5f87b6ae86345",
+  "review_rationale": "Source registration for Clause 12 (batch145), the clause's first packet. Every base and fine unit classified and hash-verified against the pinned J3/24-007 census by an independent fresh-context reviewer who read the original pages 242-246 and confirmed 12.3.3.4 ends before 12.3.4.1. Mixed obligation/latitude units were swept in both directions and all splits recorded; no unit left unresolved; no numbered R/C rule in scope; no requirement based on a NOTE; no no-portable-oracle claim found to be over-suppression and no pending plan found vacuous. Source accounting only: no fixture, compiler invocation or execution credit."
+}
