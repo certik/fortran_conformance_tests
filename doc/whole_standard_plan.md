@@ -4647,6 +4647,105 @@ bound, no compiler invoked. Clause 12 remains unregistered, and namelist leans
 on it for internal-file, `NML`, `DELIM` and `DECIMAL` mechanics.
 See `doc/source_audits/batch_139.json`.
 
+## Batches 137 and 138 — Clause 13 complete at 283/283
+
+These two packets, with batch139, **complete Clause 13** — 283 of 283 base units
+across 58 sections. It is the **sixth source-complete clause**, after 6, 8, 9,
+10 and 11.
+
+### Batch 137 — data edit descriptors, and where the tables live
+
+Registers **13.5 through 13.7.2.4** — 76 base units over PDF pages 294–303,
+covering integer, F, E/D, EN, ES, EX, complex, rounding and BOZ editing. Only
+one numbered item appears in the whole scope, `R1323`.
+
+batch136 found **no** tables in 13.1–13.4 and inferred they lived in the later
+sections. That inference is now confirmed: **Tables 13.1, 13.2 and 13.3 are
+here**, and PDF extraction **interleaved their columns**, so the author had to
+reconstruct the rows. The reviewer read all three **row by row** against the PDF
+independently. That matters more than it sounds — every future E/EN/ES fixture
+derives from those rows, so a scrambled row becomes a confidently wrong test.
+
+I found the first blocking defect myself, before the review completed. Two
+sample plans gave a **negative** result for the **positive** input `0.5`:
+`'-500.000E-03'` and `'  -5.000E-01'`. But `SS` suppresses the optional plus
+sign, so for a positive value the sign position must be **blank** — the correct
+values are `' 500.000E-03'` and `'   5.000E-01'`.
+
+The principle is worth stating, because it inverts the earlier lesson: batch136
+was blocked for plans that were too **vague**, and the natural overcorrection is
+to write something precise. But **a precise-but-wrong plan is worse than a vague
+one.** A vague plan stalls a future fixture author; a wrong one gets faithfully
+implemented as a test asserting the wrong bytes, and then looks authoritative.
+
+Two further findings followed. **Eleven units** mixing an obligation with a
+grant of latitude were dispositioned wholly as `permission` — the **fourth**
+occurrence of that class — and were re-dispositioned with the latitude confined
+to rationale text; only 13.5 p3 remains a permission. And placeholder plans
+still remained, so 48 entries were changed: 21 upgraded to exact executable
+strings, 27 marked explicitly unassertable. There is no third state.
+
+The reviewer independently derived the scale-factor pair, which is the nicest
+check in the packet: `-1P,E10.3E2` gives `' 0.010E+02'` and `1P,E10.3E2` gives
+`' 1.000E+00'` — both representing `1.0`, both fitting the same width and digit
+count. It also confirmed the 27 unassertable markings are **genuine latitude**
+rather than merely hard to compute, which is exactly the direction the sibling
+13.10–13.11 packet got wrong.
+
+`R1323` carries no diagnostic facet, correctly: its text is only
+`hex-digit-string is hex-digit [ hex-digit ] ...`, which **defines a form and
+prohibits nothing**.
+
+### Batch 138 — control editing, and a defect class in mirror image
+
+Registers **13.7.3 through 13.9** — 64 base units across **21 sections** over
+eight pages, many crowded onto a shared page. That made **mis-partitioning** the
+dominant risk: a paragraph attributed to a neighbouring subsection would be
+completely invisible in the totals, since 64 would still be 64. The reviewer
+re-partitioned p303, p304, p306 and p307 independently and confirmed the split,
+including that **13.8.8 genuinely owns only p1** despite covering six
+rounding-mode descriptors.
+
+Four findings, each a distinct shape of error.
+
+A negative was filed against **13.7.5.2.2**, which merely **cross-refers**:
+*"Note that w cannot be zero for input editing"* is a reminder, and **"cannot"
+is not "shall not"**. The real prohibition lives in 13.7.5.1 p1. Every negative
+must be attributable to the single rule it is filed under.
+
+Four units filed **latitude as requirements** — the **fifth** occurrence of the
+mixed obligation/latitude class, and the exact **mirror** of its sibling
+batch137, which filed **obligations as permission**. That symmetry is precisely
+why the rule is bidirectional: a requirement misfiled as a permission is as
+damaging as a permission inflated into a requirement. All four were split into
+requirement and permission subunits.
+
+An output-control facet sat under **13.9 p1**, which owns only the input
+prohibition. And a negative named a descriptor but **no datum**, so nothing
+demonstrated its branch was even reached. The fix, and the reviewer's
+independent re-derivation, is the most intricate thing in the checkpoint: for
+`(G4.1E3)` with datum **zero**, p5 gives `s=1` so the F branch is reached since
+`0 ≤ s ≤ d=1`; `e=3` so `n = e+2 = 5`; therefore `w−n = 4−5 = −1`, violating p6.
+The repair `(G7.1E3)` gives `w−n=2` and `d−s=0`, so `F2.0` emits `0.` with the
+optional plus omitted under 13.7.2.1(5), followed by five blanks — exactly
+`'0.     '`.
+
+The **positioning trap** was specifically avoided. batch136's correction had
+wrongly assumed record advancement where Note 4 denies it, and this scope *is*
+position editing — `T`, `TL`, `TR`, `X`, slash — so every positioning plan was
+checked against what the source actually requires, including that **skipped
+positions are not necessarily blanked**.
+
+### What completing Clause 13 does and does not mean
+
+All 283 base units now carry a disposition and, where applicable, a requirement
+with an explicit pending plan. **It is not test-complete**: Clause 13 has **zero
+executable fixtures**. What it does unlock is the fixture seam — format output
+is byte-exactly testable through an internal `WRITE` to a character variable,
+with no files and no I/O units, and the plans now name exact expected characters
+including blanks.
+See `doc/source_audits/batch_137.json` and `doc/source_audits/batch_138.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must

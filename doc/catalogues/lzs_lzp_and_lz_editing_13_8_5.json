@@ -1,0 +1,129 @@
+{
+  "schema_version": 1,
+  "section": "13.8.5",
+  "review_state": "reviewed",
+  "requirements": [
+    {
+      "id": "S13.8.5-001",
+      "title": "LZS, LZP, and LZ temporarily set the leading zero mode",
+      "source": "S13.8.5, J3/24-007, 18 December 2023, physical PDF306.",
+      "source_units": [
+        "p1"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "LZS, LZP, and LZ temporarily change leading zero mode to SUPPRESS, PRINT, and PROCESSOR_DEFINED respectively.",
+      "facets": [
+        "LZS-sets-suppress",
+        "LZP-sets-print",
+        "LZ-sets-processor-defined",
+        "leading-zero-mode-persists-within-statement"
+      ],
+      "pending": {
+        "LZS-sets-suppress": "WRITE(buf,'(LZS,F3.1)') 0.5; expect exactly ' .5'.",
+        "LZP-sets-print": "WRITE(buf,'(LZP,F3.1)') 0.5; expect exactly '0.5'.",
+        "LZ-sets-processor-defined": "Source-control: LZ sets the leading zero mode to PROCESSOR_DEFINED. The optional-leading-zero output latitude of that mode is not asserted here; S13.8.5-002 owns the processor option.",
+        "leading-zero-mode-persists-within-statement": "WRITE(buf,'(LZP,F3.1,F3.1)') 0.5,0.5; expect exactly '0.50.5'."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use independent literal expected strings or scalar sentinels. Negative plans change one property from a conforming control and attribute the violation to this unit only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Pending output plans use internal WRITE to a CHARACTER variable and name exact expected characters including blanks when the unit is internally testable. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics. Where the source makes a behavior processor dependent, or where a rule requires external stream/direct/sequential files or unregistered defined I/O, the pending plan is explicitly source-control or unassertable rather than a fixture oracle. PROCESSOR_DEFINED leading-zero mode is processor latitude; print and suppress choices are both permitted. The LZ descriptor facet records only the mandatory mode-setting effect; output latitude is accounted under p2.processor-defined-option.",
+      "dependencies": "Registered dependencies cited, not restated: clauses 6, 8, 9, 10, 11, and registered 13.1-13.4 for source form, expressions, intrinsic and character values, execution constructs, FORMAT syntax, edit-descriptor syntax, and format-control interaction. Unregistered dependencies explicitly retained: clause 12 data transfer, connection modes, effective items, and defined I/O; 13.5-13.7.2.4 for format item details and numeric editing; 13.10-13.11 for neighbouring formatting modes; clause 15 for user-defined procedures and defined I/O; clause 16 for NEW_LINE and IEEE inquiries if future fixtures use them; clauses 3, 5, 14, 17, and 19 where future fixture authors need terminology, lexical representation, IEEE arithmetic, interoperability, or scoping/lifetime controls."
+    },
+    {
+      "id": "S13.8.5-002",
+      "title": "Leading zero mode controls optional leading zeroes for PRINT, SUPPRESS, and PROCESSOR_DEFINED",
+      "source": "S13.8.5, J3/24-007, 18 December 2023, physical PDF306.",
+      "source_units": [
+        "p2.print-suppress-obligations",
+        "p2.processor-defined-option"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "PRINT requires optional leading zeroes and SUPPRESS prohibits them; PROCESSOR_DEFINED permits the processor either to produce or omit a leading zero subject to numeric editing rules.",
+      "facets": [
+        "print-mode-produces-leading-zero",
+        "suppress-mode-omits-leading-zero",
+        "processor-defined-leading-zero-latitude"
+      ],
+      "pending": {
+        "print-mode-produces-leading-zero": "WRITE(buf,'(LZP,F3.1)') 0.5; expect exactly '0.5'.",
+        "suppress-mode-omits-leading-zero": "WRITE(buf,'(LZS,F3.1)') 0.5; expect exactly ' .5'.",
+        "processor-defined-leading-zero-latitude": "Permission/source-control: WRITE(buf,'(LZ,F3.1)') 0.5 may produce either '0.5' or ' .5' subject to 13.7.2(5); both choices are permitted and a fixture must not require one spelling."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use independent literal expected strings or scalar sentinels. Negative plans change one property from a conforming control and attribute the violation to this unit only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Pending output plans use internal WRITE to a CHARACTER variable and name exact expected characters including blanks when the unit is internally testable. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics. Where the source makes a behavior processor dependent, or where a rule requires external stream/direct/sequential files or unregistered defined I/O, the pending plan is explicitly source-control or unassertable rather than a fixture oracle. The processor-defined branch is permission/latitude, not a requirement for either spelling. This mixed unit is split: p2.print-suppress-obligations carries the two mandatory shall/shall-not effects, and p2.processor-defined-option carries the processor option as permission.",
+      "dependencies": "Registered dependencies cited, not restated: clauses 6, 8, 9, 10, 11, and registered 13.1-13.4 for source form, expressions, intrinsic and character values, execution constructs, FORMAT syntax, edit-descriptor syntax, and format-control interaction. Unregistered dependencies explicitly retained: clause 12 data transfer, connection modes, effective items, and defined I/O; 13.5-13.7.2.4 for format item details and numeric editing; 13.10-13.11 for neighbouring formatting modes; clause 15 for user-defined procedures and defined I/O; clause 16 for NEW_LINE and IEEE inquiries if future fixtures use them; clauses 3, 5, 14, 17, and 19 where future fixture authors need terminology, lexical representation, IEEE arithmetic, interoperability, or scoping/lifetime controls."
+    },
+    {
+      "id": "S13.8.5-003",
+      "title": "Leading zero edit descriptors affect only selected numeric output editing and no input editing",
+      "source": "S13.8.5, J3/24-007, 18 December 2023, physical PDF306.",
+      "source_units": [
+        "p3"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "LZS, LZP, and LZ affect only F, E, D, and G output editing and have no effect during input.",
+      "facets": [
+        "leading-zero-affects-F-output",
+        "leading-zero-does-not-affect-I-output",
+        "leading-zero-no-effect-input"
+      ],
+      "pending": {
+        "leading-zero-affects-F-output": "WRITE(buf,'(LZP,F3.1)') 0.5; expect exactly '0.5'.",
+        "leading-zero-does-not-affect-I-output": "WRITE(buf,'(LZP,I2)') 7; expect exactly ' 7'.",
+        "leading-zero-no-effect-input": "READ('0.5','(LZS,F3.1)') into a real variable; expected mathematical value is 0.5 because LZS has no input effect."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use independent literal expected strings or scalar sentinels. Negative plans change one property from a conforming control and attribute the violation to this unit only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Pending output plans use internal WRITE to a CHARACTER variable and name exact expected characters including blanks when the unit is internally testable. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics. Where the source makes a behavior processor dependent, or where a rule requires external stream/direct/sequential files or unregistered defined I/O, the pending plan is explicitly source-control or unassertable rather than a fixture oracle.",
+      "dependencies": "Registered dependencies cited, not restated: clauses 6, 8, 9, 10, 11, and registered 13.1-13.4 for source form, expressions, intrinsic and character values, execution constructs, FORMAT syntax, edit-descriptor syntax, and format-control interaction. Unregistered dependencies explicitly retained: clause 12 data transfer, connection modes, effective items, and defined I/O; 13.5-13.7.2.4 for format item details and numeric editing; 13.10-13.11 for neighbouring formatting modes; clause 15 for user-defined procedures and defined I/O; clause 16 for NEW_LINE and IEEE inquiries if future fixtures use them; clauses 3, 5, 14, 17, and 19 where future fixture authors need terminology, lexical representation, IEEE arithmetic, interoperability, or scoping/lifetime controls."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "requirements",
+      "requirements": [
+        "S13.8.5-001"
+      ]
+    },
+    {
+      "unit": "p2",
+      "disposition": "structural",
+      "rationale": "Split into PRINT/SUPPRESS obligations and PROCESSOR_DEFINED latitude."
+    },
+    {
+      "unit": "p2.print-suppress-obligations",
+      "disposition": "requirements",
+      "requirements": [
+        "S13.8.5-002"
+      ]
+    },
+    {
+      "unit": "p2.processor-defined-option",
+      "disposition": "permission",
+      "requirements": [
+        "S13.8.5-002"
+      ],
+      "rationale": "The processor has the option of producing a leading zero or not in PROCESSOR_DEFINED mode."
+    },
+    {
+      "unit": "p3",
+      "disposition": "requirements",
+      "requirements": [
+        "S13.8.5-003"
+      ]
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_13_8_5.md"
+  },
+  "subunits": {
+    "p2": [
+      "p2.print-suppress-obligations",
+      "p2.processor-defined-option"
+    ]
+  },
+  "review_fingerprint": "75f72267d503c7c781548de200b98cc9ccfe9e192d9ff52e7e43ba319050f843",
+  "review_rationale": "Independent fresh-context source review, two rounds: doc/source_audits/batch_138.json. The reviewer re-derived the receipt (21 sections, 64 units, 0 hash mismatches) and INDEPENDENTLY RE-PARTITIONED the four crowded pages - p303, p304, p306 and p307 - unit by unit, confirming among other things that 13.8.8 genuinely owns only p1 despite covering six rounding-mode descriptors. A mis-attributed paragraph would have been invisible in the totals, since 64 would still be 64. The zero-numbered-R/C claim was verified: R1323 appears on p302 but belongs to the sibling 13.7.2.4 packet. FOUR blocking findings, all closed. C138SR-001: a negative was filed against 13.7.5.2.2, which only CROSS-REFERS to the rule - the actual prohibition is 13.7.5.1 p1 'On input, w shall not be zero' - and 'Note that w cannot be zero' is a reminder, not a prohibition; the facet is now an explicit dependency. C138SR-002: four units filed LATITUDE AS REQUIREMENTS - the fifth occurrence of the mixed obligation/latitude class, and notably the MIRROR of the sibling packet, which filed obligations as permission; all four were split into requirement and permission subunits. C138SR-003: an output-control facet sat under 13.9 p1, which owns only the input prohibition; output moved to p2. C138SR-004: a negative named a descriptor but NO DATUM, so nothing showed the p6 branch was reached; it now uses datum zero with (G4.1E3), where s=1 reaches the F branch, n=e+2=5 and w-n=-1, with repair (G7.1E3) expecting exactly '0.     ' - the reviewer derived all of that independently. Source accounting only: authored_facets unchanged at 1977."
+}

@@ -1,0 +1,141 @@
+{
+  "schema_version": 1,
+  "section": "13.7.3",
+  "review_state": "reviewed",
+  "requirements": [
+    {
+      "id": "S13.7.3-001",
+      "title": "L editing uses a logical effective item and G editing may edit logical data",
+      "source": "S13.7.3, J3/24-007, 18 December 2023, physical PDF302.",
+      "source_units": [
+        "p1"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "The Lw edit descriptor occupies w positions and its corresponding effective item shall be logical; G editing is also permitted for logical data.",
+      "facets": [
+        "L-logical-output",
+        "G-logical-editing-permitted",
+        "nonlogical-L-item-invalid"
+      ],
+      "pending": {
+        "L-logical-output": "WRITE(buf,'(L3)') .true.; expect exactly '  T'.",
+        "G-logical-editing-permitted": "WRITE(buf,'(G0)') .false.; expect exactly 'F' by 13.7.5.3's G0-as-L1 rule.",
+        "nonlogical-L-item-invalid": "Negative source shape: WRITE(buf,'(L1)') 1; repair to a logical item .true. Only the effective-item type differs, and no fixed diagnostic text or phase is asserted."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use independent literal expected strings or scalar sentinels. Negative plans change one property from a conforming control and attribute the violation to this unit only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Pending output plans use internal WRITE to a CHARACTER variable and name exact expected characters including blanks when the unit is internally testable. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics. Where the source makes a behavior processor dependent, or where a rule requires external stream/direct/sequential files or unregistered defined I/O, the pending plan is explicitly source-control or unassertable rather than a fixture oracle.",
+      "dependencies": "Registered dependencies cited, not restated: clauses 6, 8, 9, 10, 11, and registered 13.1-13.4 for source form, expressions, intrinsic and character values, execution constructs, FORMAT syntax, edit-descriptor syntax, and format-control interaction. Unregistered dependencies explicitly retained: clause 12 data transfer, connection modes, effective items, and defined I/O; 13.5-13.7.2.4 for format item details and numeric editing; 13.10-13.11 for neighbouring formatting modes; clause 15 for user-defined procedures and defined I/O; clause 16 for NEW_LINE and IEEE inquiries if future fixtures use them; clauses 3, 5, 14, 17, and 19 where future fixture authors need terminology, lexical representation, IEEE arithmetic, interoperability, or scoping/lifetime controls."
+    },
+    {
+      "id": "S13.7.3-002",
+      "title": "Logical input standard forms and processor latitude for nonstandard forms",
+      "source": "S13.7.3, J3/24-007, 18 December 2023, physical PDF302.",
+      "source_units": [
+        "p2"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A logical input field has optional blanks, optional period, T or F, and ignored following characters; a nonstandard form causes an error only if it is not acceptable to the processor.",
+      "facets": [
+        "true-standard-input",
+        "false-standard-input",
+        "trailing-characters-ignored",
+        "nonstandard-acceptable-or-error-unassertable"
+      ],
+      "pending": {
+        "true-standard-input": "READ(' .Txx','(L5)') into a logical scalar; expect .true. because blanks, period, T, and trailing characters are standard/ignored.",
+        "false-standard-input": "READ('f---','(L4)') into a logical scalar; expect .false.; p3 owns lowercase equivalence and p2 owns ignored following characters.",
+        "trailing-characters-ignored": "READ('T123','(L4)') into a logical scalar; expect .true.; only the T determines the value.",
+        "nonstandard-acceptable-or-error-unassertable": "Do not file a portable negative for input such as 'YES': the source permits a processor either to accept a nonstandard form or to signal an error if it is not acceptable."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use independent literal expected strings or scalar sentinels. Negative plans change one property from a conforming control and attribute the violation to this unit only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Pending output plans use internal WRITE to a CHARACTER variable and name exact expected characters including blanks when the unit is internally testable. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics. Where the source makes a behavior processor dependent, or where a rule requires external stream/direct/sequential files or unregistered defined I/O, the pending plan is explicitly source-control or unassertable rather than a fixture oracle. The nonstandard-form latitude is checked in both directions: acceptance is permitted and rejection is permitted, so no portable rejection facet is authored.",
+      "dependencies": "Registered dependencies cited, not restated: clauses 6, 8, 9, 10, 11, and registered 13.1-13.4 for source form, expressions, intrinsic and character values, execution constructs, FORMAT syntax, edit-descriptor syntax, and format-control interaction. Unregistered dependencies explicitly retained: clause 12 data transfer, connection modes, effective items, and defined I/O; 13.5-13.7.2.4 for format item details and numeric editing; 13.10-13.11 for neighbouring formatting modes; clause 15 for user-defined procedures and defined I/O; clause 16 for NEW_LINE and IEEE inquiries if future fixtures use them; clauses 3, 5, 14, 17, and 19 where future fixture authors need terminology, lexical representation, IEEE arithmetic, interoperability, or scoping/lifetime controls."
+    },
+    {
+      "id": "S13.7.3-003",
+      "title": "Lowercase logical input letters are equivalent to uppercase",
+      "source": "S13.7.3, J3/24-007, 18 December 2023, physical PDF302.",
+      "source_units": [
+        "p3"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A lowercase logical input letter is equivalent to the corresponding uppercase letter.",
+      "facets": [
+        "lowercase-t-true",
+        "lowercase-f-false"
+      ],
+      "pending": {
+        "lowercase-t-true": "READ('t','(L1)') into a logical scalar; expect .true.",
+        "lowercase-f-false": "READ('.f','(L2)') into a logical scalar; expect .false."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use independent literal expected strings or scalar sentinels. Negative plans change one property from a conforming control and attribute the violation to this unit only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Pending output plans use internal WRITE to a CHARACTER variable and name exact expected characters including blanks when the unit is internally testable. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics. Where the source makes a behavior processor dependent, or where a rule requires external stream/direct/sequential files or unregistered defined I/O, the pending plan is explicitly source-control or unassertable rather than a fixture oracle.",
+      "dependencies": "Registered dependencies cited, not restated: clauses 6, 8, 9, 10, 11, and registered 13.1-13.4 for source form, expressions, intrinsic and character values, execution constructs, FORMAT syntax, edit-descriptor syntax, and format-control interaction. Unregistered dependencies explicitly retained: clause 12 data transfer, connection modes, effective items, and defined I/O; 13.5-13.7.2.4 for format item details and numeric editing; 13.10-13.11 for neighbouring formatting modes; clause 15 for user-defined procedures and defined I/O; clause 16 for NEW_LINE and IEEE inquiries if future fixtures use them; clauses 3, 5, 14, 17, and 19 where future fixture authors need terminology, lexical representation, IEEE arithmetic, interoperability, or scoping/lifetime controls."
+    },
+    {
+      "id": "S13.7.3-004",
+      "title": "Logical output is w minus one blanks followed by T or F",
+      "source": "S13.7.3, J3/24-007, 18 December 2023, physical PDF302.",
+      "source_units": [
+        "p4"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Logical output consists of w-1 blanks followed by T for true or F for false.",
+      "facets": [
+        "true-output-field",
+        "false-output-field"
+      ],
+      "pending": {
+        "true-output-field": "WRITE(buf,'(L3)') .true.; expect exactly '  T'.",
+        "false-output-field": "WRITE(buf,'(L2)') .false.; expect exactly ' F'."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use independent literal expected strings or scalar sentinels. Negative plans change one property from a conforming control and attribute the violation to this unit only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Pending output plans use internal WRITE to a CHARACTER variable and name exact expected characters including blanks when the unit is internally testable. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics. Where the source makes a behavior processor dependent, or where a rule requires external stream/direct/sequential files or unregistered defined I/O, the pending plan is explicitly source-control or unassertable rather than a fixture oracle.",
+      "dependencies": "Registered dependencies cited, not restated: clauses 6, 8, 9, 10, 11, and registered 13.1-13.4 for source form, expressions, intrinsic and character values, execution constructs, FORMAT syntax, edit-descriptor syntax, and format-control interaction. Unregistered dependencies explicitly retained: clause 12 data transfer, connection modes, effective items, and defined I/O; 13.5-13.7.2.4 for format item details and numeric editing; 13.10-13.11 for neighbouring formatting modes; clause 15 for user-defined procedures and defined I/O; clause 16 for NEW_LINE and IEEE inquiries if future fixtures use them; clauses 3, 5, 14, 17, and 19 where future fixture authors need terminology, lexical representation, IEEE arithmetic, interoperability, or scoping/lifetime controls."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "requirements",
+      "requirements": [
+        "S13.7.3-001"
+      ]
+    },
+    {
+      "unit": "p2",
+      "disposition": "requirements",
+      "requirements": [
+        "S13.7.3-002"
+      ]
+    },
+    {
+      "unit": "p3",
+      "disposition": "requirements",
+      "requirements": [
+        "S13.7.3-003"
+      ]
+    },
+    {
+      "unit": "note-unnumbered",
+      "disposition": "informative",
+      "rationale": "Illustrative acceptable logical constants; p2 owns input forms."
+    },
+    {
+      "unit": "p4",
+      "disposition": "requirements",
+      "requirements": [
+        "S13.7.3-004"
+      ]
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_13_7_3.md"
+  },
+  "review_fingerprint": "ccc0ad2179ed87e5958d4efef0b70bebfbc1f41901d71e32d1c82586802aa680",
+  "review_rationale": "Independent fresh-context source review, two rounds: doc/source_audits/batch_138.json. The reviewer re-derived the receipt (21 sections, 64 units, 0 hash mismatches) and INDEPENDENTLY RE-PARTITIONED the four crowded pages - p303, p304, p306 and p307 - unit by unit, confirming among other things that 13.8.8 genuinely owns only p1 despite covering six rounding-mode descriptors. A mis-attributed paragraph would have been invisible in the totals, since 64 would still be 64. The zero-numbered-R/C claim was verified: R1323 appears on p302 but belongs to the sibling 13.7.2.4 packet. FOUR blocking findings, all closed. C138SR-001: a negative was filed against 13.7.5.2.2, which only CROSS-REFERS to the rule - the actual prohibition is 13.7.5.1 p1 'On input, w shall not be zero' - and 'Note that w cannot be zero' is a reminder, not a prohibition; the facet is now an explicit dependency. C138SR-002: four units filed LATITUDE AS REQUIREMENTS - the fifth occurrence of the mixed obligation/latitude class, and notably the MIRROR of the sibling packet, which filed obligations as permission; all four were split into requirement and permission subunits. C138SR-003: an output-control facet sat under 13.9 p1, which owns only the input prohibition; output moved to p2. C138SR-004: a negative named a descriptor but NO DATUM, so nothing showed the p6 branch was reached; it now uses datum zero with (G4.1E3), where s=1 reaches the F branch, n=e+2=5 and w-n=-1, with repair (G7.1E3) expecting exactly '0.     ' - the reviewer derived all of that independently. Source accounting only: authored_facets unchanged at 1977."
+}

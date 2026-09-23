@@ -1,0 +1,113 @@
+{
+ "schema_version": 1,
+ "review_type": "independent-data-edit-descriptor-source-review",
+ "review_date": "2026-09-23",
+ "baseline_commit": "ad08066",
+ "state": "reviewed-source-only",
+ "packet_kind": "SOURCE",
+ "scope": {
+  "sections": ["13.5", "13.6", "13.7.1", "13.7.2.1", "13.7.2.2", "13.7.2.3.1", "13.7.2.3.2", "13.7.2.3.3", "13.7.2.3.4", "13.7.2.3.5", "13.7.2.3.6", "13.7.2.3.7", "13.7.2.3.8", "13.7.2.4"],
+  "section_titles_verified_from_source": {
+   "13.5": "Positioning by format control",
+   "13.6": "Decimal symbol",
+   "13.7.1": "Purpose of data edit descriptors",
+   "13.7.2.1": "General rules",
+   "13.7.2.2": "Integer editing",
+   "13.7.2.3.1": "General",
+   "13.7.2.3.2": "F editing",
+   "13.7.2.3.3": "E and D editing",
+   "13.7.2.3.4": "EN editing",
+   "13.7.2.3.5": "ES editing",
+   "13.7.2.3.6": "EX editing",
+   "13.7.2.3.7": "Complex editing",
+   "13.7.2.3.8": "Input/output rounding mode",
+   "13.7.2.4": "B, O, and Z editing"
+  },
+  "pdf_pages": "294-303",
+  "base_units": 76,
+  "already_counted_numbered_units": 1,
+  "newly_accounted_base_units": 75,
+  "numbered_items_in_scope": "R1323 only",
+  "new_cases": 0
+ },
+ "authoring": {
+  "author_packet": "2ee26bd",
+  "correction_commits": ["18d60e4", "79caa9f"],
+  "source_read_receipt": "receipts-batch137-source.json"
+ },
+ "independent_review": {
+  "reviewer_distinct_from_author": true,
+  "decision": "accept_after_corrections",
+  "review_rounds": 3,
+  "blocking_findings": 3,
+  "reviewer_re_derived_unit_hashes": true
+ },
+ "tables": {
+  "found": ["Table 13.1 (E and D exponent forms)", "Table 13.2 (EN exponent forms)", "Table 13.3 (ES exponent forms)"],
+  "hazard": "PDF extraction INTERLEAVED the columns, so the author had to reconstruct the rows. Every future E/EN/ES fixture derives from these rows, so a scrambled row becomes a confidently wrong test.",
+  "verification": "The reviewer read all three tables ROW BY ROW against the PDF independently of the author's reconstruction, and confirmed they match, including the footnote convention that z denotes digits, s the minimum digit count, and that a zero exponent takes a plus sign.",
+  "note": "batch136 found NO tables in 13.1-13.4 and inferred they lived in the later sections. That inference is confirmed: the tables are here."
+ },
+ "findings": [
+  {
+   "id": "C137SR-INT-001",
+   "severity": "blocking",
+   "found_by": "the integrator, before the review completed",
+   "issue": "Two sample pending plans gave a NEGATIVE result for the POSITIVE input 0.5: (SS,EN12.3E2) -> '-500.000E-03' and (SS,ES12.3E2) -> '  -5.000E-01'. SS suppresses the optional plus sign, so for a positive value the sign position must be BLANK.",
+   "correct_values": "(SS,EN12.3E2) 0.5 -> ' 500.000E-03' - EN uses a multiple-of-three exponent giving 500.000E-03, 11 characters, one leading blank. (SS,ES12.3E2) 0.5 -> '   5.000E-01' - ES uses exactly one leading digit giving 5.000E-01, 9 characters, three leading blanks.",
+   "why_blocking": "These plans are the specification every future numeric-format fixture executes from. A wrong expected string does not stay in the catalogue - it is faithfully implemented as a test asserting the wrong bytes, and then looks authoritative. A PRECISE BUT WRONG plan is worse than a vague one, which is why batch136 was blocked for vagueness in the first place.",
+   "closure": "Closed in 18d60e4, with a sweep of 66 numeric-output entries finding these two across four catalogue occurrences.",
+   "verification": "Hand-derived by the integrator, corroborated with gfortran 16.1.0 -std=f2023, then independently re-derived by the reviewer from the source."
+  },
+  {
+   "id": "C137SR-001",
+   "severity": "blocking",
+   "issue": "ELEVEN units mixing an obligation with a grant of latitude were dispositioned wholly as permission. Examples: 13.7.1 p4 says Unicode output characters ARE of ISO 10646 kind and then separately grants latitude for unrepresentable characters; 13.7.2.4 p4 says input editing PRODUCES INT(X), REAL(X) or ET(INT(X)).",
+   "recurring_class": "FOURTH occurrence this session - batch123 in 11.7.2 and 11.7.5, batch136 in 13.2.2 p2, and here. The pattern is always identical: a unit contains both an obligation and latitude, and is classified by its more memorable half, leaving the obligation with no facet and nothing downstream to test it.",
+   "closure": "Closed in 79caa9f. All eleven re-dispositioned to requirements with the latitude confined to rationale and oracle text: 13.7.1 p4; F p3/p6/p10; Tables 13.1/13.2/13.3; EX p2/p5; rounding p3; BOZ p4. Only 13.5 p3 remains permission, for its 'can cause' stream positioning.",
+   "mirror_risk_checked": "The reviewer specifically verified that reclassifying to requirements does not now assert the LATITUDE half as an obligation - the mirror defect that the sibling 13.10-13.11 packet had to be checked for."
+  },
+  {
+   "id": "C137SR-002",
+   "severity": "blocking",
+   "issue": "Placeholder pending plans remained, e.g. 'future plan must include exact output', exact full field deferred, and EN/ES/EX scale-factor entries comparing generally without naming descriptor, value and output.",
+   "why_blocking": "batch136 was blocked for precisely this and had to upgrade 17 plans. A plan that says a future plan must include the exact output is a note to oneself, not a specification.",
+   "closure": "Closed in 79caa9f: 48 entries changed - 21 upgraded to exact executable strings, 27 marked explicitly unassertable. There is no third state.",
+   "reviewer_independent_derivations": [
+    "E9.2E2 with 0.0 -> ' 0.00E+00'",
+    "-1P,E10.3E2 with 1.0 -> ' 0.010E+02' - k=-1 gives one leading zero after the decimal and two significant fractional digits",
+    "1P,E10.3E2 with 1.0 -> ' 1.000E+00' - one significant digit left of the decimal, three fractional digits",
+    "EN0.3E0 and ES0.3E0 with 8.0 -> '8.000E+0' - zero exponent, minimum exponent digits, no plus on the significand under SS"
+   ],
+   "unassertable_markings_checked": "The reviewer confirmed the 27 cover genuine latitude - explicit alternatives, D/E letter choice, EX exponent choice, NaN payload and sign, NEAREST ties, PROCESSOR_DEFINED, external-file or list-directed ownership, and nonportable range cases - rather than merely hard-to-compute fixed sub-cases. That is the direction the sibling packet got wrong."
+  }
+ ],
+ "zero_diagnostic_facets": {
+  "claim": "No diagnostic facets filed across 76 units.",
+  "reasoning_per_prohibition": "w=0 on input, the effective-item type shall, m>w, enumeration ordinal bounds, IEEE support absence, hex embedded blanks, the E/D scale range and the EX radix condition are all unnumbered, context-dependent, runtime or source-control restrictions rather than portable required-rejection constraints.",
+  "R1323": "The only numbered item in scope. Its text is only 'hex-digit-string is hex-digit [ hex-digit ] ...' - it DEFINES a form and prohibits nothing, so it cannot support a portable negative. grep -rl R1323 tests/ found no pre-existing cases.",
+  "calibration_note": "Across three parallel Clause 13 packets this one filed 0 diagnostic facets over 76 units, the 13.7.3-13.9 sibling filed 7 over 64, and the 13.10-13.11 sibling filed 0 over 77. The reviewer judged 0 correct here because this scope's prohibitions are unnumbered prose, runtime or source-control, unlike the sibling scope which contains actual constraints."
+ },
+ "permissions_recorded": "Optional plus signs; excess input digits; Unicode unrepresentable output; NaN payload and sign; D/E exponent-letter alternatives; the E/EN/ES table alternative exponent forms; EX binary exponent choice; NEAREST ties and PROCESSOR_DEFINED rounding; BOZ real and complex bit-sequence representation. After correction, only 13.5 p3 is dispositioned permission at unit level.",
+ "explicit_limitations": [
+  "Source accounting only: no fixture bound, no case added, no compiler invoked. authored_facets unchanged at 1977.",
+  "All facets remain PENDING. Registering a requirement is not evidence any processor implements it.",
+  "27 pending entries are explicitly unassertable latitude and can never carry an exact oracle.",
+  "Clause 12 is unregistered, as are Clauses 15-17; exact real formatting for some cases depends on material owned elsewhere.",
+  "Real values are approximations (7.4.3) and kind support is processor dependent."
+ ],
+ "preservation": {
+  "authored_facets_before": 1977,
+  "authored_facets_after": 1977,
+  "accounted_base_before": 2392,
+  "accounted_base_after": 2467,
+  "expected_failures_lines": 819,
+  "tests_directory_diff": "empty"
+ },
+ "validation_snapshot": {
+  "normal_audit_exit": 1,
+  "normal_audit_block": "the single retained needs-oracle real-BOZ case, which is the intended state and not a regression",
+  "python_suite_tests": 1045,
+  "python_suite_result": "OK"
+ }
+}

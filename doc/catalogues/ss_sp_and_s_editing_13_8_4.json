@@ -1,0 +1,129 @@
+{
+  "schema_version": 1,
+  "section": "13.8.4",
+  "review_state": "reviewed",
+  "requirements": [
+    {
+      "id": "S13.8.4-001",
+      "title": "SS, SP, and S temporarily set the connection sign mode",
+      "source": "S13.8.4, J3/24-007, 18 December 2023, physical PDF306.",
+      "source_units": [
+        "p1"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "SS, SP, and S temporarily change the connection sign mode to SUPPRESS, PLUS, and PROCESSOR_DEFINED respectively.",
+      "facets": [
+        "SS-sets-suppress",
+        "SP-sets-plus",
+        "S-sets-processor-defined",
+        "sign-mode-persists-within-statement"
+      ],
+      "pending": {
+        "SS-sets-suppress": "WRITE(buf,'(SS,I2)') 7; expect exactly ' 7'.",
+        "SP-sets-plus": "WRITE(buf,'(SP,I2)') 7; expect exactly '+7'.",
+        "S-sets-processor-defined": "Source-control: S sets the sign mode to PROCESSOR_DEFINED. The optional-plus output latitude of that mode is not asserted here; S13.8.4-002 owns the processor option.",
+        "sign-mode-persists-within-statement": "WRITE(buf,'(SP,I2,I2)') 7,8; expect exactly '+7+8', showing the changed mode persists for later eligible descriptors in the statement."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use independent literal expected strings or scalar sentinels. Negative plans change one property from a conforming control and attribute the violation to this unit only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Pending output plans use internal WRITE to a CHARACTER variable and name exact expected characters including blanks when the unit is internally testable. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics. Where the source makes a behavior processor dependent, or where a rule requires external stream/direct/sequential files or unregistered defined I/O, the pending plan is explicitly source-control or unassertable rather than a fixture oracle. PROCESSOR_DEFINED sign mode is processor latitude; plus and blank choices are both permitted. The S descriptor facet records only the mandatory mode-setting effect; output latitude is accounted under p2.processor-defined-option.",
+      "dependencies": "Registered dependencies cited, not restated: clauses 6, 8, 9, 10, 11, and registered 13.1-13.4 for source form, expressions, intrinsic and character values, execution constructs, FORMAT syntax, edit-descriptor syntax, and format-control interaction. Unregistered dependencies explicitly retained: clause 12 data transfer, connection modes, effective items, and defined I/O; 13.5-13.7.2.4 for format item details and numeric editing; 13.10-13.11 for neighbouring formatting modes; clause 15 for user-defined procedures and defined I/O; clause 16 for NEW_LINE and IEEE inquiries if future fixtures use them; clauses 3, 5, 14, 17, and 19 where future fixture authors need terminology, lexical representation, IEEE arithmetic, interoperability, or scoping/lifetime controls."
+    },
+    {
+      "id": "S13.8.4-002",
+      "title": "Sign mode controls optional plus characters for PLUS, SUPPRESS, and PROCESSOR_DEFINED",
+      "source": "S13.8.4, J3/24-007, 18 December 2023, physical PDF306.",
+      "source_units": [
+        "p2.plus-suppress-obligations",
+        "p2.processor-defined-option"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "PLUS requires plus signs in optional plus positions and SUPPRESS prohibits them; PROCESSOR_DEFINED permits the processor either to produce or omit a plus sign subject to numeric editing rules.",
+      "facets": [
+        "plus-mode-produces-plus",
+        "suppress-mode-omits-plus",
+        "processor-defined-plus-latitude"
+      ],
+      "pending": {
+        "plus-mode-produces-plus": "WRITE(buf,'(SP,I2)') 7; expect exactly '+7'.",
+        "suppress-mode-omits-plus": "WRITE(buf,'(SS,I2)') 7; expect exactly ' 7'.",
+        "processor-defined-plus-latitude": "Permission/source-control: WRITE(buf,'(S,I2)') 7 may produce either '+7' or ' 7' subject to 13.7.2(5); both choices are permitted and a fixture must not require one spelling."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use independent literal expected strings or scalar sentinels. Negative plans change one property from a conforming control and attribute the violation to this unit only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Pending output plans use internal WRITE to a CHARACTER variable and name exact expected characters including blanks when the unit is internally testable. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics. Where the source makes a behavior processor dependent, or where a rule requires external stream/direct/sequential files or unregistered defined I/O, the pending plan is explicitly source-control or unassertable rather than a fixture oracle. The processor-defined branch is a permission, not a requirement for either spelling; future tests must check both directions by accepting both. This mixed unit is split: p2.plus-suppress-obligations carries the two mandatory shall/shall-not effects, and p2.processor-defined-option carries the processor option as permission.",
+      "dependencies": "Registered dependencies cited, not restated: clauses 6, 8, 9, 10, 11, and registered 13.1-13.4 for source form, expressions, intrinsic and character values, execution constructs, FORMAT syntax, edit-descriptor syntax, and format-control interaction. Unregistered dependencies explicitly retained: clause 12 data transfer, connection modes, effective items, and defined I/O; 13.5-13.7.2.4 for format item details and numeric editing; 13.10-13.11 for neighbouring formatting modes; clause 15 for user-defined procedures and defined I/O; clause 16 for NEW_LINE and IEEE inquiries if future fixtures use them; clauses 3, 5, 14, 17, and 19 where future fixture authors need terminology, lexical representation, IEEE arithmetic, interoperability, or scoping/lifetime controls."
+    },
+    {
+      "id": "S13.8.4-003",
+      "title": "Sign edit descriptors affect only selected numeric output editing and no input editing",
+      "source": "S13.8.4, J3/24-007, 18 December 2023, physical PDF306.",
+      "source_units": [
+        "p3"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "SS, SP, and S affect only I, F, E, EN, ES, EX, D, and G editing during output and have no effect during input.",
+      "facets": [
+        "sign-affects-I-output",
+        "sign-does-not-affect-character-output",
+        "sign-no-effect-input"
+      ],
+      "pending": {
+        "sign-affects-I-output": "WRITE(buf,'(SP,I2)') 7; expect exactly '+7'.",
+        "sign-does-not-affect-character-output": "WRITE(buf,'(SP,A1,I2)') 'x',7; expect exactly 'x+7', with A output unchanged by sign mode.",
+        "sign-no-effect-input": "READ('+7','(SS,I2)') into an integer should produce 7 if the plus sign is otherwise valid; sign descriptors do not change input semantics."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use independent literal expected strings or scalar sentinels. Negative plans change one property from a conforming control and attribute the violation to this unit only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Pending output plans use internal WRITE to a CHARACTER variable and name exact expected characters including blanks when the unit is internally testable. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics. Where the source makes a behavior processor dependent, or where a rule requires external stream/direct/sequential files or unregistered defined I/O, the pending plan is explicitly source-control or unassertable rather than a fixture oracle.",
+      "dependencies": "Registered dependencies cited, not restated: clauses 6, 8, 9, 10, 11, and registered 13.1-13.4 for source form, expressions, intrinsic and character values, execution constructs, FORMAT syntax, edit-descriptor syntax, and format-control interaction. Unregistered dependencies explicitly retained: clause 12 data transfer, connection modes, effective items, and defined I/O; 13.5-13.7.2.4 for format item details and numeric editing; 13.10-13.11 for neighbouring formatting modes; clause 15 for user-defined procedures and defined I/O; clause 16 for NEW_LINE and IEEE inquiries if future fixtures use them; clauses 3, 5, 14, 17, and 19 where future fixture authors need terminology, lexical representation, IEEE arithmetic, interoperability, or scoping/lifetime controls."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "requirements",
+      "requirements": [
+        "S13.8.4-001"
+      ]
+    },
+    {
+      "unit": "p2",
+      "disposition": "structural",
+      "rationale": "Split into PLUS/SUPPRESS obligations and PROCESSOR_DEFINED latitude."
+    },
+    {
+      "unit": "p2.plus-suppress-obligations",
+      "disposition": "requirements",
+      "requirements": [
+        "S13.8.4-002"
+      ]
+    },
+    {
+      "unit": "p2.processor-defined-option",
+      "disposition": "permission",
+      "requirements": [
+        "S13.8.4-002"
+      ],
+      "rationale": "The processor has the option of producing a plus sign or not in PROCESSOR_DEFINED mode."
+    },
+    {
+      "unit": "p3",
+      "disposition": "requirements",
+      "requirements": [
+        "S13.8.4-003"
+      ]
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_13_8_4.md"
+  },
+  "subunits": {
+    "p2": [
+      "p2.plus-suppress-obligations",
+      "p2.processor-defined-option"
+    ]
+  },
+  "review_fingerprint": "0a6d665e90ae45a466632fc55b8612eb7990c80cd742fa38fe724f8cd4c15840",
+  "review_rationale": "Independent fresh-context source review, two rounds: doc/source_audits/batch_138.json. The reviewer re-derived the receipt (21 sections, 64 units, 0 hash mismatches) and INDEPENDENTLY RE-PARTITIONED the four crowded pages - p303, p304, p306 and p307 - unit by unit, confirming among other things that 13.8.8 genuinely owns only p1 despite covering six rounding-mode descriptors. A mis-attributed paragraph would have been invisible in the totals, since 64 would still be 64. The zero-numbered-R/C claim was verified: R1323 appears on p302 but belongs to the sibling 13.7.2.4 packet. FOUR blocking findings, all closed. C138SR-001: a negative was filed against 13.7.5.2.2, which only CROSS-REFERS to the rule - the actual prohibition is 13.7.5.1 p1 'On input, w shall not be zero' - and 'Note that w cannot be zero' is a reminder, not a prohibition; the facet is now an explicit dependency. C138SR-002: four units filed LATITUDE AS REQUIREMENTS - the fifth occurrence of the mixed obligation/latitude class, and notably the MIRROR of the sibling packet, which filed obligations as permission; all four were split into requirement and permission subunits. C138SR-003: an output-control facet sat under 13.9 p1, which owns only the input prohibition; output moved to p2. C138SR-004: a negative named a descriptor but NO DATUM, so nothing showed the p6 branch was reached; it now uses datum zero with (G4.1E3), where s=1 reaches the F branch, n=e+2=5 and w-n=-1, with repair (G7.1E3) expecting exactly '0.     ' - the reviewer derived all of that independently. Source accounting only: authored_facets unchanged at 1977."
+}

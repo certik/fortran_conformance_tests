@@ -1,0 +1,242 @@
+{
+  "schema_version": 1,
+  "section": "13.7.2.4",
+  "requirements": [
+    {
+      "id": "S13.7.2.4-001",
+      "title": "B/O/Z descriptors edit listed types and prohibit zero input width",
+      "source": "S13.7.2.4, J3/24-007, 18 December 2023, physical PDF301.",
+      "source_units": [
+        "p1"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "B w, B w.m, O w, O w.m, Z w, and Z w.m occupy w positions except w=0 selects output width; w shall not be zero on input; effective item shall be integer, real, complex, enum type, or enumeration type.",
+      "facets": [
+        "BOZ-field-width",
+        "BOZ-input-width-zero-prohibited",
+        "BOZ-effective-item-types"
+      ],
+      "pending": {
+        "BOZ-field-width": "Internal WRITE(buf,'(B5)') 5 expects exactly buf='  101'; WRITE(buf,'(B0)') 5 to character(len=3) expects '101'.",
+        "BOZ-input-width-zero-prohibited": "Source-control only: input descriptor B0 differs from conforming B1 only by w=0 on input; no required diagnostic facet is filed.",
+        "BOZ-effective-item-types": "Use integer exact plans here; real/complex bit-sequence results depend on processor representation and require separate guarded plans."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use independent literal expected strings, integer sentinels, or scalar state checks. Negative/source-control plans change one property from a conforming control and are not treated as diagnostic facets unless this unit itself requires rejection.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Pending output plans use internal WRITE to a CHARACTER variable where possible and name exact expected characters including blanks. Plans that rely on real approximation, optional signs, D/E exponent-letter alternatives, EX binary-exponent selection, IEEE NaN payloads, Unicode/non-Unicode files, list-directed input/output, stream positioning, or unregistered 13.8 mode descriptors are marked deferred or processor-dependent rather than asserted. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics.",
+      "dependencies": "Registered dependencies: 13.1-13.4 for format specifications, edit descriptors, fields, and format-control interaction; clauses 6, 8, 9, 10, and 11 for source form, labels, names, character values, expressions, arrays, and executable constructs; registered clause 7 catalogues where already present for signed-digit strings, significands, BOZ literal digits, and type concepts. Unregistered dependencies explicitly retained: clause 12 I/O statements, file connection, internal/external files, list-directed I/O, and ROUND=/DECIMAL= controls; sibling 13.7.3-13.9 for character/logical/G editing and control/mode descriptors; sibling 13.10-13.11 for remaining format features; clause 15 for defined I/O; clause 16 for IEEE and inquiry intrinsics in future fixtures; clause 17 for IEEE rounding/exceptional values; and clauses 3, 5, 14, and 19 where future fixtures need terms, constants, programs, or scope rules."
+    },
+    {
+      "id": "S13.7.2.4-002",
+      "title": "The m component has no effect on B/O/Z input",
+      "source": "S13.7.2.4, J3/24-007, 18 December 2023, physical PDF301.",
+      "source_units": [
+        "p2"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "On input using B, O, or Z editing, m has no effect.",
+      "facets": [
+        "BOZ-input-m-ignored"
+      ],
+      "pending": {
+        "BOZ-input-m-ignored": "Internal READ('101','(B3.3)') and READ('101','(B3)') into integers both expect 5; only m differs."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use independent literal expected strings, integer sentinels, or scalar state checks. Negative/source-control plans change one property from a conforming control and are not treated as diagnostic facets unless this unit itself requires rejection.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Pending output plans use internal WRITE to a CHARACTER variable where possible and name exact expected characters including blanks. Plans that rely on real approximation, optional signs, D/E exponent-letter alternatives, EX binary-exponent selection, IEEE NaN payloads, Unicode/non-Unicode files, list-directed input/output, stream positioning, or unregistered 13.8 mode descriptors are marked deferred or processor-dependent rather than asserted. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics.",
+      "dependencies": "Registered dependencies: 13.1-13.4 for format specifications, edit descriptors, fields, and format-control interaction; clauses 6, 8, 9, 10, and 11 for source form, labels, names, character values, expressions, arrays, and executable constructs; registered clause 7 catalogues where already present for signed-digit strings, significands, BOZ literal digits, and type concepts. Unregistered dependencies explicitly retained: clause 12 I/O statements, file connection, internal/external files, list-directed I/O, and ROUND=/DECIMAL= controls; sibling 13.7.3-13.9 for character/logical/G editing and control/mode descriptors; sibling 13.10-13.11 for remaining format features; clause 15 for defined I/O; clause 16 for IEEE and inquiry intrinsics in future fixtures; clause 17 for IEEE rounding/exceptional values; and clauses 3, 5, 14, and 19 where future fixtures need terms, constants, programs, or scope rules."
+    },
+    {
+      "id": "S13.7.2.4-003",
+      "title": "B/O/Z input standard digits, lowercase hex equivalence, and unacceptable-field error",
+      "source": "S13.7.2.4, J3/24-007, 18 December 2023, physical PDF301.",
+      "source_units": [
+        "p3"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Standard B/O/Z input consists of binary, octal, or hexadecimal digits respectively; lowercase a through f equal uppercase in hexadecimal fields; unacceptable nonstandard fields cause an error condition.",
+      "facets": [
+        "B-input-binary-digits",
+        "O-input-octal-digits",
+        "Z-input-hex-digits",
+        "Z-input-lowercase-equivalence",
+        "BOZ-input-nonstandard-error-condition"
+      ],
+      "pending": {
+        "B-input-binary-digits": "Internal READ('101','(B3)') into integer expects 5.",
+        "O-input-octal-digits": "Internal READ('10','(O2)') into integer expects 8.",
+        "Z-input-hex-digits": "Internal READ('0A','(Z2)') into integer expects 10.",
+        "Z-input-lowercase-equivalence": "Internal READ('0a','(Z2)') into integer expects 10, equal to '0A'.",
+        "BOZ-input-nonstandard-error-condition": "Runtime/source-control plan: READ of Z field G differs from conforming F only in the hex digit; observe IOSTAT error condition only if portable."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use independent literal expected strings, integer sentinels, or scalar state checks. Negative/source-control plans change one property from a conforming control and are not treated as diagnostic facets unless this unit itself requires rejection.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Pending output plans use internal WRITE to a CHARACTER variable where possible and name exact expected characters including blanks. Plans that rely on real approximation, optional signs, D/E exponent-letter alternatives, EX binary-exponent selection, IEEE NaN payloads, Unicode/non-Unicode files, list-directed input/output, stream positioning, or unregistered 13.8 mode descriptors are marked deferred or processor-dependent rather than asserted. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics.",
+      "dependencies": "Registered dependencies: 13.1-13.4 for format specifications, edit descriptors, fields, and format-control interaction; clauses 6, 8, 9, 10, and 11 for source form, labels, names, character values, expressions, arrays, and executable constructs; registered clause 7 catalogues where already present for signed-digit strings, significands, BOZ literal digits, and type concepts. Unregistered dependencies explicitly retained: clause 12 I/O statements, file connection, internal/external files, list-directed I/O, and ROUND=/DECIMAL= controls; sibling 13.7.3-13.9 for character/logical/G editing and control/mode descriptors; sibling 13.10-13.11 for remaining format features; clause 15 for defined I/O; clause 16 for IEEE and inquiry intrinsics in future fixtures; clause 17 for IEEE rounding/exceptional values; and clauses 3, 5, 14, and 19 where future fixtures need terms, constants, programs, or scope rules."
+    },
+    {
+      "id": "S13.7.2.4-004",
+      "title": "B/O/Z input converts a matching bit sequence to the effective-item type",
+      "source": "S13.7.2.4, J3/24-007, 18 December 2023, physical PDF301.",
+      "source_units": [
+        "p4"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "B/O/Z input produces INT(X) for integer, REAL(X) for real or complex, and ET(INT(X)) for enum or enumeration type ET, where X is a BOZ literal constant specifying the same bit sequence as the input digits.",
+      "facets": [
+        "BOZ-input-integer-INT",
+        "BOZ-input-real-REAL",
+        "BOZ-input-complex-REAL",
+        "BOZ-input-enum-enumeration-constructor"
+      ],
+      "pending": {
+        "BOZ-input-integer-INT": "Internal READ('101','(B3)') into default integer expects 5.",
+        "BOZ-input-real-REAL": "Processor-representation-sensitive: future real input plan must not assume a portable bit sequence maps to a portable real value unless representation is guarded.",
+        "BOZ-input-complex-REAL": "Processor-representation-sensitive and complex-pair behavior must be isolated; no exact oracle in this packet.",
+        "BOZ-input-enum-enumeration-constructor": "Deferred until enum/enumeration type fixture ownership; input digits must map through ET(INT(X)) with an exact enumerator set."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use independent literal expected strings, integer sentinels, or scalar state checks. Negative/source-control plans change one property from a conforming control and are not treated as diagnostic facets unless this unit itself requires rejection.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Pending output plans use internal WRITE to a CHARACTER variable where possible and name exact expected characters including blanks. Plans that rely on real approximation, optional signs, D/E exponent-letter alternatives, EX binary-exponent selection, IEEE NaN payloads, Unicode/non-Unicode files, list-directed input/output, stream positioning, or unregistered 13.8 mode descriptors are marked deferred or processor-dependent rather than asserted. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics.",
+      "dependencies": "Registered dependencies: 13.1-13.4 for format specifications, edit descriptors, fields, and format-control interaction; clauses 6, 8, 9, 10, and 11 for source form, labels, names, character values, expressions, arrays, and executable constructs; registered clause 7 catalogues where already present for signed-digit strings, significands, BOZ literal digits, and type concepts. Unregistered dependencies explicitly retained: clause 12 I/O statements, file connection, internal/external files, list-directed I/O, and ROUND=/DECIMAL= controls; sibling 13.7.3-13.9 for character/logical/G editing and control/mode descriptors; sibling 13.10-13.11 for remaining format features; clause 15 for defined I/O; clause 16 for IEEE and inquiry intrinsics in future fixtures; clause 17 for IEEE rounding/exceptional values; and clauses 3, 5, 14, and 19 where future fixtures need terms, constants, programs, or scope rules."
+    },
+    {
+      "id": "S13.7.2.4-005",
+      "title": "Bw/Ow/Zw output emits binary, octal, or hexadecimal digits for the internal bit sequence without leading zero bits",
+      "source": "S13.7.2.4, J3/24-007, 18 December 2023, physical PDF301.",
+      "source_units": [
+        "p5"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "B w, O w, and Z w output fields contain leading blanks followed by the internal value in binary, octal, or hexadecimal constant digit form for the same bit sequence, without leading zero bits.",
+      "facets": [
+        "B-output-digits-no-leading-zero-bits",
+        "O-output-digits-no-leading-zero-bits",
+        "Z-output-digits-no-leading-zero-bits"
+      ],
+      "pending": {
+        "B-output-digits-no-leading-zero-bits": "Internal WRITE(buf,'(B5)') 5 expects exactly buf='  101'.",
+        "O-output-digits-no-leading-zero-bits": "Internal WRITE(buf,'(O4)') 8 expects exactly buf='  10'.",
+        "Z-output-digits-no-leading-zero-bits": "Internal WRITE(buf,'(Z3)') 10 expects exactly buf='  A'."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use independent literal expected strings, integer sentinels, or scalar state checks. Negative/source-control plans change one property from a conforming control and are not treated as diagnostic facets unless this unit itself requires rejection.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Pending output plans use internal WRITE to a CHARACTER variable where possible and name exact expected characters including blanks. Plans that rely on real approximation, optional signs, D/E exponent-letter alternatives, EX binary-exponent selection, IEEE NaN payloads, Unicode/non-Unicode files, list-directed input/output, stream positioning, or unregistered 13.8 mode descriptors are marked deferred or processor-dependent rather than asserted. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics.",
+      "dependencies": "Registered dependencies: 13.1-13.4 for format specifications, edit descriptors, fields, and format-control interaction; clauses 6, 8, 9, 10, and 11 for source form, labels, names, character values, expressions, arrays, and executable constructs; registered clause 7 catalogues where already present for signed-digit strings, significands, BOZ literal digits, and type concepts. Unregistered dependencies explicitly retained: clause 12 I/O statements, file connection, internal/external files, list-directed I/O, and ROUND=/DECIMAL= controls; sibling 13.7.3-13.9 for character/logical/G editing and control/mode descriptors; sibling 13.10-13.11 for remaining format features; clause 15 for defined I/O; clause 16 for IEEE and inquiry intrinsics in future fixtures; clause 17 for IEEE rounding/exceptional values; and clauses 3, 5, 14, and 19 where future fixtures need terms, constants, programs, or scope rules."
+    },
+    {
+      "id": "R1323",
+      "title": "Hex digit strings are nonempty sequences of hex digits",
+      "source": "R1323, J3/24-007, 18 December 2023, physical PDF302.",
+      "source_units": [
+        "R1323"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "not-required",
+      "definition": "A hex-digit-string is a nonempty sequence of one or more hex digits.",
+      "facets": [
+        "single-hex-digit-string",
+        "multiple-hex-digit-string"
+      ],
+      "pending": {
+        "single-hex-digit-string": "Z output for integer 10 with WRITE(buf,'(Z1)') expects exactly buf='A', a one-character hex-digit-string.",
+        "multiple-hex-digit-string": "Z output for integer 26 with WRITE(buf,'(Z2)') expects exactly buf='1A', a two-character hex-digit-string."
+      },
+      "oracle": "R1323 defines the output string form used by Z editing; it is not a source-program syntax diagnostic in this packet. Pre-existing fixture search for R1323 returned no matches.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Pending output plans use internal WRITE to a CHARACTER variable where possible and name exact expected characters including blanks. Plans that rely on real approximation, optional signs, D/E exponent-letter alternatives, EX binary-exponent selection, IEEE NaN payloads, Unicode/non-Unicode files, list-directed input/output, stream positioning, or unregistered 13.8 mode descriptors are marked deferred or processor-dependent rather than asserted. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics.",
+      "dependencies": "Registered dependencies: 13.1-13.4 for format specifications, edit descriptors, fields, and format-control interaction; clauses 6, 8, 9, 10, and 11 for source form, labels, names, character values, expressions, arrays, and executable constructs; registered clause 7 catalogues where already present for signed-digit strings, significands, BOZ literal digits, and type concepts. Unregistered dependencies explicitly retained: clause 12 I/O statements, file connection, internal/external files, list-directed I/O, and ROUND=/DECIMAL= controls; sibling 13.7.3-13.9 for character/logical/G editing and control/mode descriptors; sibling 13.10-13.11 for remaining format features; clause 15 for defined I/O; clause 16 for IEEE and inquiry intrinsics in future fixtures; clause 17 for IEEE rounding/exceptional values; and clauses 3, 5, 14, and 19 where future fixtures need terms, constants, programs, or scope rules."
+    },
+    {
+      "id": "S13.7.2.4-007",
+      "title": "Bw.m/Ow.m/Zw.m output minimum digits, m<=w restriction, and all-zero special cases",
+      "source": "S13.7.2.4, J3/24-007, 18 December 2023, physical PDF301.",
+      "source_units": [
+        "p6"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "B w.m, O w.m, and Z w.m output are like B/O/Z w but with at least m digits; leading zeros are included as needed; m shall not exceed w except when w=0; if m=0 and the internal value has all zero bits the field is all blanks, and when m=w=0 one blank is produced.",
+      "facets": [
+        "BOZ-output-minimum-m-digits",
+        "BOZ-output-leading-zeros-to-m",
+        "BOZ-output-m-not-greater-than-w",
+        "BOZ-output-m0-zero-all-blanks",
+        "BOZ-output-m0-w0-zero-one-blank"
+      ],
+      "pending": {
+        "BOZ-output-minimum-m-digits": "Internal WRITE(buf,'(B4.4)') 5 expects exactly buf='0101'.",
+        "BOZ-output-leading-zeros-to-m": "Internal WRITE(buf,'(Z3.2)') 10 expects exactly buf=' 0A'.",
+        "BOZ-output-m-not-greater-than-w": "Source-control only: output descriptor B2.3 differs from conforming B3.3 only by m>w; no diagnostic facet is filed for this unnumbered prose restriction.",
+        "BOZ-output-m0-zero-all-blanks": "Internal WRITE(buf,'(B5.0)') 0 expects exactly five blanks: buf='     '.",
+        "BOZ-output-m0-w0-zero-one-blank": "Internal WRITE(buf,'(B0.0)') 0 to character(len=1) expects exactly buf=' '."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use independent literal expected strings, integer sentinels, or scalar state checks. Negative/source-control plans change one property from a conforming control and are not treated as diagnostic facets unless this unit itself requires rejection.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Pending output plans use internal WRITE to a CHARACTER variable where possible and name exact expected characters including blanks. Plans that rely on real approximation, optional signs, D/E exponent-letter alternatives, EX binary-exponent selection, IEEE NaN payloads, Unicode/non-Unicode files, list-directed input/output, stream positioning, or unregistered 13.8 mode descriptors are marked deferred or processor-dependent rather than asserted. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics.",
+      "dependencies": "Registered dependencies: 13.1-13.4 for format specifications, edit descriptors, fields, and format-control interaction; clauses 6, 8, 9, 10, and 11 for source form, labels, names, character values, expressions, arrays, and executable constructs; registered clause 7 catalogues where already present for signed-digit strings, significands, BOZ literal digits, and type concepts. Unregistered dependencies explicitly retained: clause 12 I/O statements, file connection, internal/external files, list-directed I/O, and ROUND=/DECIMAL= controls; sibling 13.7.3-13.9 for character/logical/G editing and control/mode descriptors; sibling 13.10-13.11 for remaining format features; clause 15 for defined I/O; clause 16 for IEEE and inquiry intrinsics in future fixtures; clause 17 for IEEE rounding/exceptional values; and clauses 3, 5, 14, and 19 where future fixtures need terms, constants, programs, or scope rules."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "requirements",
+      "requirements": [
+        "S13.7.2.4-001"
+      ]
+    },
+    {
+      "unit": "p2",
+      "disposition": "requirements",
+      "requirements": [
+        "S13.7.2.4-002"
+      ]
+    },
+    {
+      "unit": "p3",
+      "disposition": "requirements",
+      "requirements": [
+        "S13.7.2.4-003"
+      ]
+    },
+    {
+      "unit": "p4",
+      "disposition": "requirements",
+      "requirements": [
+        "S13.7.2.4-004"
+      ],
+      "rationale": "Integer conversion is exact; real/complex bit-sequence interpretation is representation-sensitive and therefore processor dependent."
+    },
+    {
+      "unit": "p5",
+      "disposition": "requirements",
+      "requirements": [
+        "S13.7.2.4-005"
+      ]
+    },
+    {
+      "unit": "note-unnumbered",
+      "disposition": "informative",
+      "rationale": "Informative nonempty-constant note; related output grammar is accounted separately."
+    },
+    {
+      "unit": "R1323",
+      "disposition": "definition",
+      "requirements": [
+        "R1323"
+      ],
+      "rationale": "Defines the output hex-digit-string form; no source diagnostic facet is filed."
+    },
+    {
+      "unit": "p6",
+      "disposition": "requirements",
+      "requirements": [
+        "S13.7.2.4-007"
+      ]
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_13_7_2_4.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "1410c6985d36efea8b418d1983af419033aa29733d2a0149fe3b9ce290b49c70",
+  "review_rationale": "Independent fresh-context source review, three rounds: doc/source_audits/batch_137.json. The reviewer re-derived unit hashes and read Tables 13.1, 13.2 and 13.3 ROW BY ROW against the PDF, independently of the author's reconstruction - necessary because extraction interleaved the columns and every future E/EN/ES fixture derives from those rows. THREE blocking findings. The integrator found the first directly: two sample plans gave a NEGATIVE result for the POSITIVE input 0.5, but SS suppresses the optional plus so the sign position must be BLANK - corrected to ' 500.000E-03' and '   5.000E-01', hand-derived and corroborated with gfortran. C137SR-001: ELEVEN units mixing an obligation with a grant of latitude were dispositioned wholly as permission - the fourth occurrence of that class this session - and were re-dispositioned to requirements with the latitude confined to rationale and oracle text; the reviewer confirmed no latitude is now wrongly asserted as an obligation. C137SR-002: placeholder plans remained, saying things like 'future plan must include exact output'; 48 entries were changed, 21 upgraded to exact executable strings and 27 marked explicitly unassertable, and the reviewer independently derived the scale-factor cases -1P,E10.3E2 giving ' 0.010E+02' and 1P,E10.3E2 giving ' 1.000E+00'. R1323 carries no diagnostic facet because it defines a hex-digit-string form and prohibits nothing. Source accounting only: authored_facets unchanged at 1977."
+}

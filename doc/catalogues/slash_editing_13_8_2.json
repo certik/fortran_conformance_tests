@@ -1,0 +1,133 @@
+{
+  "schema_version": 1,
+  "section": "13.8.2",
+  "review_state": "reviewed",
+  "requirements": [
+    {
+      "id": "S13.8.2-001",
+      "title": "Slash editing ends data transfer for the current record",
+      "source": "S13.8.2, J3/24-007, 18 December 2023, physical PDF305.",
+      "source_units": [
+        "p1"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A slash edit descriptor indicates the end of data transfer to or from the current record.",
+      "facets": [
+        "slash-ends-current-output-record",
+        "slash-ends-current-input-record"
+      ],
+      "pending": {
+        "slash-ends-current-output-record": "WRITE(rec,'(\"A\"/\"B\")') to character(len=1) rec(2); expect rec(1)='A' and rec(2)='B'.",
+        "slash-ends-current-input-record": "READ(['1','2'],'(I1/I1)') into two integers from an internal file array; expect first=1 and second=2."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use independent literal expected strings or scalar sentinels. Negative plans change one property from a conforming control and attribute the violation to this unit only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Pending output plans use internal WRITE to a CHARACTER variable and name exact expected characters including blanks when the unit is internally testable. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics. Where the source makes a behavior processor dependent, or where a rule requires external stream/direct/sequential files or unregistered defined I/O, the pending plan is explicitly source-control or unassertable rather than a fixture oracle.",
+      "dependencies": "Registered dependencies cited, not restated: clauses 6, 8, 9, 10, 11, and registered 13.1-13.4 for source form, expressions, intrinsic and character values, execution constructs, FORMAT syntax, edit-descriptor syntax, and format-control interaction. Unregistered dependencies explicitly retained: clause 12 data transfer, connection modes, effective items, and defined I/O; 13.5-13.7.2.4 for format item details and numeric editing; 13.10-13.11 for neighbouring formatting modes; clause 15 for user-defined procedures and defined I/O; clause 16 for NEW_LINE and IEEE inquiries if future fixtures use them; clauses 3, 5, 14, 17, and 19 where future fixture authors need terminology, lexical representation, IEEE arithmetic, interoperability, or scoping/lifetime controls."
+    },
+    {
+      "id": "S13.8.2-002",
+      "title": "Slash positioning for sequential or stream access skips or creates records",
+      "source": "S13.8.2, J3/24-007, 18 December 2023, physical PDF305.",
+      "source_units": [
+        "p2"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For sequential or stream files, slash skips the rest of the current input record and positions at the next record; on output it creates a new empty following record and positions at its beginning.",
+      "facets": [
+        "sequential-stream-input-skip",
+        "sequential-stream-output-new-record-unassertable"
+      ],
+      "pending": {
+        "sequential-stream-input-skip": "Source-control only: exact external sequential/stream file positioning requires file fixtures, not internal WRITE.",
+        "sequential-stream-output-new-record-unassertable": "Unassertable in this packet because it requires a connected sequential or stream file; do not infer extra positioning for unlimited-item reversion from this slash rule."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use independent literal expected strings or scalar sentinels. Negative plans change one property from a conforming control and attribute the violation to this unit only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Pending output plans use internal WRITE to a CHARACTER variable and name exact expected characters including blanks when the unit is internally testable. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics. Where the source makes a behavior processor dependent, or where a rule requires external stream/direct/sequential files or unregistered defined I/O, the pending plan is explicitly source-control or unassertable rather than a fixture oracle. External file positioning is normative but left to a future file fixture owner; this source packet creates no files.",
+      "dependencies": "Registered dependencies cited, not restated: clauses 6, 8, 9, 10, 11, and registered 13.1-13.4 for source form, expressions, intrinsic and character values, execution constructs, FORMAT syntax, edit-descriptor syntax, and format-control interaction. Unregistered dependencies explicitly retained: clause 12 data transfer, connection modes, effective items, and defined I/O; 13.5-13.7.2.4 for format item details and numeric editing; 13.10-13.11 for neighbouring formatting modes; clause 15 for user-defined procedures and defined I/O; clause 16 for NEW_LINE and IEEE inquiries if future fixtures use them; clauses 3, 5, 14, 17, and 19 where future fixture authors need terminology, lexical representation, IEEE arithmetic, interoperability, or scoping/lifetime controls."
+    },
+    {
+      "id": "S13.8.2-003",
+      "title": "Slash positioning for direct access advances to the next existing record",
+      "source": "S13.8.2, J3/24-007, 18 December 2023, physical PDF305.",
+      "source_units": [
+        "p3"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For direct access, slash increases the record number by one and positions at the beginning of that record if it exists, making it current.",
+      "facets": [
+        "direct-access-next-record-unassertable"
+      ],
+      "pending": {
+        "direct-access-next-record-unassertable": "Unassertable in this source packet because direct-access connected files and record numbers require external file fixtures."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use independent literal expected strings or scalar sentinels. Negative plans change one property from a conforming control and attribute the violation to this unit only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Pending output plans use internal WRITE to a CHARACTER variable and name exact expected characters including blanks when the unit is internally testable. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics. Where the source makes a behavior processor dependent, or where a rule requires external stream/direct/sequential files or unregistered defined I/O, the pending plan is explicitly source-control or unassertable rather than a fixture oracle. Direct-access behavior is retained as a source-control obligation only.",
+      "dependencies": "Registered dependencies cited, not restated: clauses 6, 8, 9, 10, 11, and registered 13.1-13.4 for source form, expressions, intrinsic and character values, execution constructs, FORMAT syntax, edit-descriptor syntax, and format-control interaction. Unregistered dependencies explicitly retained: clause 12 data transfer, connection modes, effective items, and defined I/O; 13.5-13.7.2.4 for format item details and numeric editing; 13.10-13.11 for neighbouring formatting modes; clause 15 for user-defined procedures and defined I/O; clause 16 for NEW_LINE and IEEE inquiries if future fixtures use them; clauses 3, 5, 14, 17, and 19 where future fixture authors need terminology, lexical representation, IEEE arithmetic, interoperability, or scoping/lifetime controls."
+    },
+    {
+      "id": "S13.8.2-004",
+      "title": "Slash repeat is optional and defaults to one",
+      "source": "S13.8.2, J3/24-007, 18 December 2023, physical PDF306.",
+      "source_units": [
+        "p4"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The slash edit descriptor repeat specification is optional; if omitted, the default repeat value is one.",
+      "facets": [
+        "slash-default-repeat-one",
+        "slash-explicit-repeat"
+      ],
+      "pending": {
+        "slash-default-repeat-one": "WRITE(rec,'(\"A\"/\"B\")') to character(len=1) rec(2); expect rec(1)='A' and rec(2)='B'.",
+        "slash-explicit-repeat": "WRITE(rec,'(\"A\",2/,\"B\")') to character(len=1) rec(3); expect rec(1)='A', rec(2)=' ', and rec(3)='B'."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use independent literal expected strings or scalar sentinels. Negative plans change one property from a conforming control and attribute the violation to this unit only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Pending output plans use internal WRITE to a CHARACTER variable and name exact expected characters including blanks when the unit is internally testable. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics. Where the source makes a behavior processor dependent, or where a rule requires external stream/direct/sequential files or unregistered defined I/O, the pending plan is explicitly source-control or unassertable rather than a fixture oracle.",
+      "dependencies": "Registered dependencies cited, not restated: clauses 6, 8, 9, 10, 11, and registered 13.1-13.4 for source form, expressions, intrinsic and character values, execution constructs, FORMAT syntax, edit-descriptor syntax, and format-control interaction. Unregistered dependencies explicitly retained: clause 12 data transfer, connection modes, effective items, and defined I/O; 13.5-13.7.2.4 for format item details and numeric editing; 13.10-13.11 for neighbouring formatting modes; clause 15 for user-defined procedures and defined I/O; clause 16 for NEW_LINE and IEEE inquiries if future fixtures use them; clauses 3, 5, 14, 17, and 19 where future fixture authors need terminology, lexical representation, IEEE arithmetic, interoperability, or scoping/lifetime controls."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "requirements",
+      "requirements": [
+        "S13.8.2-001"
+      ]
+    },
+    {
+      "unit": "p2",
+      "disposition": "requirements",
+      "requirements": [
+        "S13.8.2-002"
+      ]
+    },
+    {
+      "unit": "p3",
+      "disposition": "requirements",
+      "requirements": [
+        "S13.8.2-003"
+      ]
+    },
+    {
+      "unit": "note-unnumbered",
+      "disposition": "informative",
+      "rationale": "Examples of empty records and skipped input records; p1-p3 own slash effects."
+    },
+    {
+      "unit": "p4",
+      "disposition": "requirements",
+      "requirements": [
+        "S13.8.2-004"
+      ]
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_13_8_2.md"
+  },
+  "review_fingerprint": "4ff05b5202f00c47490ba2681aa3907aecff27fc8cbed35989d4d41575e33b5e",
+  "review_rationale": "Independent fresh-context source review, two rounds: doc/source_audits/batch_138.json. The reviewer re-derived the receipt (21 sections, 64 units, 0 hash mismatches) and INDEPENDENTLY RE-PARTITIONED the four crowded pages - p303, p304, p306 and p307 - unit by unit, confirming among other things that 13.8.8 genuinely owns only p1 despite covering six rounding-mode descriptors. A mis-attributed paragraph would have been invisible in the totals, since 64 would still be 64. The zero-numbered-R/C claim was verified: R1323 appears on p302 but belongs to the sibling 13.7.2.4 packet. FOUR blocking findings, all closed. C138SR-001: a negative was filed against 13.7.5.2.2, which only CROSS-REFERS to the rule - the actual prohibition is 13.7.5.1 p1 'On input, w shall not be zero' - and 'Note that w cannot be zero' is a reminder, not a prohibition; the facet is now an explicit dependency. C138SR-002: four units filed LATITUDE AS REQUIREMENTS - the fifth occurrence of the mixed obligation/latitude class, and notably the MIRROR of the sibling packet, which filed obligations as permission; all four were split into requirement and permission subunits. C138SR-003: an output-control facet sat under 13.9 p1, which owns only the input prohibition; output moved to p2. C138SR-004: a negative named a descriptor but NO DATUM, so nothing showed the p6 branch was reached; it now uses datum zero with (G4.1E3), where s=1 reaches the F branch, n=e+2=5 and w-n=-1, with repair (G7.1E3) expecting exactly '0.     ' - the reviewer derived all of that independently. Source accounting only: authored_facets unchanged at 1977."
+}

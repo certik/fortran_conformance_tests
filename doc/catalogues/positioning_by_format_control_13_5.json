@@ -1,0 +1,156 @@
+{
+  "schema_version": 1,
+  "section": "13.5",
+  "requirements": [
+    {
+      "id": "S13.5-001",
+      "title": "Data and character edit descriptors leave the file after the processed field",
+      "source": "S13.5, J3/24-007, 18 December 2023, physical PDF294.",
+      "source_units": [
+        "p1"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "After a data edit descriptor or character string edit descriptor is processed, the file is positioned after the last character read or written in the current record.",
+      "facets": [
+        "data-field-position-advances",
+        "character-string-position-advances"
+      ],
+      "pending": {
+        "data-field-position-advances": "Internal WRITE(buf,'(I2,A1)') 7,'X' to character(len=3) expects exactly buf=' 7X'; the A descriptor starts after the I2 field.",
+        "character-string-position-advances": "Internal WRITE(buf,'(\"AB\",I1)') 3 to character(len=3) expects exactly buf='AB3'."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use independent literal expected strings, integer sentinels, or scalar state checks. Negative/source-control plans change one property from a conforming control and are not treated as diagnostic facets unless this unit itself requires rejection.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Pending output plans use internal WRITE to a CHARACTER variable where possible and name exact expected characters including blanks. Plans that rely on real approximation, optional signs, D/E exponent-letter alternatives, EX binary-exponent selection, IEEE NaN payloads, Unicode/non-Unicode files, list-directed input/output, stream positioning, or unregistered 13.8 mode descriptors are marked deferred or processor-dependent rather than asserted. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics.",
+      "dependencies": "Registered dependencies: 13.1-13.4 for format specifications, edit descriptors, fields, and format-control interaction; clauses 6, 8, 9, 10, and 11 for source form, labels, names, character values, expressions, arrays, and executable constructs; registered clause 7 catalogues where already present for signed-digit strings, significands, BOZ literal digits, and type concepts. Unregistered dependencies explicitly retained: clause 12 I/O statements, file connection, internal/external files, list-directed I/O, and ROUND=/DECIMAL= controls; sibling 13.7.3-13.9 for character/logical/G editing and control/mode descriptors; sibling 13.10-13.11 for remaining format features; clause 15 for defined I/O; clause 16 for IEEE and inquiry intrinsics in future fixtures; clause 17 for IEEE rounding/exceptional values; and clauses 3, 5, 14, and 19 where future fixtures need terms, constants, programs, or scope rules."
+    },
+    {
+      "id": "S13.5-002",
+      "title": "Position and slash descriptors position as their descriptor-specific subclauses state",
+      "source": "S13.5, J3/24-007, 18 December 2023, physical PDF294.",
+      "source_units": [
+        "p2"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "T, TL, TR, and X positioning is as described in 13.8.1.1; slash positioning is as described in 13.8.2.",
+      "facets": [
+        "position-edit-descriptor-reach",
+        "slash-edit-descriptor-reach"
+      ],
+      "pending": {
+        "position-edit-descriptor-reach": "Internal WRITE(buf,'(I1,T3,I1)') 1,2 to character(len=3) expects exactly buf='1 2'; T3 positions the second I1 field at character position 3.",
+        "slash-edit-descriptor-reach": "Deferred to 13.8.2: future internal WRITE to character(len=1) rec(2) using '(I1,/,I1)' with values 1,2 should expect rec(1)='1' and rec(2)='2' only after slash positioning is registered."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use independent literal expected strings, integer sentinels, or scalar state checks. Negative/source-control plans change one property from a conforming control and are not treated as diagnostic facets unless this unit itself requires rejection.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Pending output plans use internal WRITE to a CHARACTER variable where possible and name exact expected characters including blanks. Plans that rely on real approximation, optional signs, D/E exponent-letter alternatives, EX binary-exponent selection, IEEE NaN payloads, Unicode/non-Unicode files, list-directed input/output, stream positioning, or unregistered 13.8 mode descriptors are marked deferred or processor-dependent rather than asserted. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics.",
+      "dependencies": "Registered dependencies: 13.1-13.4 for format specifications, edit descriptors, fields, and format-control interaction; clauses 6, 8, 9, 10, and 11 for source form, labels, names, character values, expressions, arrays, and executable constructs; registered clause 7 catalogues where already present for signed-digit strings, significands, BOZ literal digits, and type concepts. Unregistered dependencies explicitly retained: clause 12 I/O statements, file connection, internal/external files, list-directed I/O, and ROUND=/DECIMAL= controls; sibling 13.7.3-13.9 for character/logical/G editing and control/mode descriptors; sibling 13.10-13.11 for remaining format features; clause 15 for defined I/O; clause 16 for IEEE and inquiry intrinsics in future fixtures; clause 17 for IEEE rounding/exceptional values; and clauses 3, 5, 14, and 19 where future fixtures need terms, constants, programs, or scope rules."
+    },
+    {
+      "id": "S13.5-003",
+      "title": "A and AT descriptors can position formatted stream output",
+      "source": "S13.5, J3/24-007, 18 December 2023, physical PDF294.",
+      "source_units": [
+        "p3"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "During formatted stream output, A or AT editing can cause file positioning as specified in 13.7.4.",
+      "facets": [
+        "a-stream-positioning-possible",
+        "at-stream-positioning-possible"
+      ],
+      "pending": {
+        "a-stream-positioning-possible": "Unassertable as an internal-file byte oracle in this packet: the source grants possible formatted stream-output positioning for A editing, but the required positioning mechanics belong to sibling 13.7.4 and clause 12 stream files.",
+        "at-stream-positioning-possible": "Unassertable as an internal-file byte oracle in this packet: the source grants possible formatted stream-output positioning for AT editing, but the required positioning mechanics belong to sibling 13.7.4 and clause 12 stream files."
+      },
+      "oracle": "This unit grants/records possible positioning during stream output and delegates its mechanics to 13.7.4; no byte-exact internal-file oracle is asserted here.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Pending output plans use internal WRITE to a CHARACTER variable where possible and name exact expected characters including blanks. Plans that rely on real approximation, optional signs, D/E exponent-letter alternatives, EX binary-exponent selection, IEEE NaN payloads, Unicode/non-Unicode files, list-directed input/output, stream positioning, or unregistered 13.8 mode descriptors are marked deferred or processor-dependent rather than asserted. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics.",
+      "dependencies": "Registered dependencies: 13.1-13.4 for format specifications, edit descriptors, fields, and format-control interaction; clauses 6, 8, 9, 10, and 11 for source form, labels, names, character values, expressions, arrays, and executable constructs; registered clause 7 catalogues where already present for signed-digit strings, significands, BOZ literal digits, and type concepts. Unregistered dependencies explicitly retained: clause 12 I/O statements, file connection, internal/external files, list-directed I/O, and ROUND=/DECIMAL= controls; sibling 13.7.3-13.9 for character/logical/G editing and control/mode descriptors; sibling 13.10-13.11 for remaining format features; clause 15 for defined I/O; clause 16 for IEEE and inquiry intrinsics in future fixtures; clause 17 for IEEE rounding/exceptional values; and clauses 3, 5, 14, and 19 where future fixtures need terms, constants, programs, or scope rules."
+    },
+    {
+      "id": "S13.5-004",
+      "title": "Complete-format reversion positions like slash editing",
+      "source": "S13.5, J3/24-007, 18 December 2023, physical PDF294.",
+      "source_units": [
+        "p4"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "When format control reverts as described in 13.4, file positioning is identical to slash edit descriptor positioning.",
+      "facets": [
+        "reversion-positions-like-slash"
+      ],
+      "pending": {
+        "reversion-positions-like-slash": "After 13.8.2 ownership is registered, internal WRITE to character(len=2) rec(2) with format '(I1)' and values 1,2 expects rec(1)='1 ' and rec(2)='2 ', matching slash-like record advancement; do not infer more than slash positioning requires."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use independent literal expected strings, integer sentinels, or scalar state checks. Negative/source-control plans change one property from a conforming control and are not treated as diagnostic facets unless this unit itself requires rejection.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Pending output plans use internal WRITE to a CHARACTER variable where possible and name exact expected characters including blanks. Plans that rely on real approximation, optional signs, D/E exponent-letter alternatives, EX binary-exponent selection, IEEE NaN payloads, Unicode/non-Unicode files, list-directed input/output, stream positioning, or unregistered 13.8 mode descriptors are marked deferred or processor-dependent rather than asserted. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics.",
+      "dependencies": "Registered dependencies: 13.1-13.4 for format specifications, edit descriptors, fields, and format-control interaction; clauses 6, 8, 9, 10, and 11 for source form, labels, names, character values, expressions, arrays, and executable constructs; registered clause 7 catalogues where already present for signed-digit strings, significands, BOZ literal digits, and type concepts. Unregistered dependencies explicitly retained: clause 12 I/O statements, file connection, internal/external files, list-directed I/O, and ROUND=/DECIMAL= controls; sibling 13.7.3-13.9 for character/logical/G editing and control/mode descriptors; sibling 13.10-13.11 for remaining format features; clause 15 for defined I/O; clause 16 for IEEE and inquiry intrinsics in future fixtures; clause 17 for IEEE rounding/exceptional values; and clauses 3, 5, 14, and 19 where future fixtures need terms, constants, programs, or scope rules."
+    },
+    {
+      "id": "S13.5-005",
+      "title": "Reading the next record skips unprocessed characters in the current record",
+      "source": "S13.5, J3/24-007, 18 December 2023, physical PDF294.",
+      "source_units": [
+        "p5"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "During a read operation, unprocessed characters of the current record are skipped whenever the next record is read.",
+      "facets": [
+        "unprocessed-read-characters-skipped"
+      ],
+      "pending": {
+        "unprocessed-read-characters-skipped": "Internal READ from character(len=3) rec(2) = ['123','456'] with format '(I1)' into two integers, relying on 13.4 reversion to read the next record, should assign 1 then 4; characters '23' are skipped, not later consumed."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use independent literal expected strings, integer sentinels, or scalar state checks. Negative/source-control plans change one property from a conforming control and are not treated as diagnostic facets unless this unit itself requires rejection.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Pending output plans use internal WRITE to a CHARACTER variable where possible and name exact expected characters including blanks. Plans that rely on real approximation, optional signs, D/E exponent-letter alternatives, EX binary-exponent selection, IEEE NaN payloads, Unicode/non-Unicode files, list-directed input/output, stream positioning, or unregistered 13.8 mode descriptors are marked deferred or processor-dependent rather than asserted. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics.",
+      "dependencies": "Registered dependencies: 13.1-13.4 for format specifications, edit descriptors, fields, and format-control interaction; clauses 6, 8, 9, 10, and 11 for source form, labels, names, character values, expressions, arrays, and executable constructs; registered clause 7 catalogues where already present for signed-digit strings, significands, BOZ literal digits, and type concepts. Unregistered dependencies explicitly retained: clause 12 I/O statements, file connection, internal/external files, list-directed I/O, and ROUND=/DECIMAL= controls; sibling 13.7.3-13.9 for character/logical/G editing and control/mode descriptors; sibling 13.10-13.11 for remaining format features; clause 15 for defined I/O; clause 16 for IEEE and inquiry intrinsics in future fixtures; clause 17 for IEEE rounding/exceptional values; and clauses 3, 5, 14, and 19 where future fixtures need terms, constants, programs, or scope rules."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "requirements",
+      "requirements": [
+        "S13.5-001"
+      ]
+    },
+    {
+      "unit": "p2",
+      "disposition": "requirements",
+      "requirements": [
+        "S13.5-002"
+      ]
+    },
+    {
+      "unit": "p3",
+      "disposition": "permission",
+      "requirements": [
+        "S13.5-003"
+      ],
+      "rationale": "Records a permitted positioning effect for stream A/AT editing but leaves mechanics to 13.7.4."
+    },
+    {
+      "unit": "p4",
+      "disposition": "requirements",
+      "requirements": [
+        "S13.5-004"
+      ]
+    },
+    {
+      "unit": "p5",
+      "disposition": "requirements",
+      "requirements": [
+        "S13.5-005"
+      ]
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_13_5.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "29c01cbfafb5c12d364a13aa62445b8c4714b2b6665164907e0850a0e4ad529e",
+  "review_rationale": "Independent fresh-context source review, three rounds: doc/source_audits/batch_137.json. The reviewer re-derived unit hashes and read Tables 13.1, 13.2 and 13.3 ROW BY ROW against the PDF, independently of the author's reconstruction - necessary because extraction interleaved the columns and every future E/EN/ES fixture derives from those rows. THREE blocking findings. The integrator found the first directly: two sample plans gave a NEGATIVE result for the POSITIVE input 0.5, but SS suppresses the optional plus so the sign position must be BLANK - corrected to ' 500.000E-03' and '   5.000E-01', hand-derived and corroborated with gfortran. C137SR-001: ELEVEN units mixing an obligation with a grant of latitude were dispositioned wholly as permission - the fourth occurrence of that class this session - and were re-dispositioned to requirements with the latitude confined to rationale and oracle text; the reviewer confirmed no latitude is now wrongly asserted as an obligation. C137SR-002: placeholder plans remained, saying things like 'future plan must include exact output'; 48 entries were changed, 21 upgraded to exact executable strings and 27 marked explicitly unassertable, and the reviewer independently derived the scale-factor cases -1P,E10.3E2 giving ' 0.010E+02' and 1P,E10.3E2 giving ' 1.000E+00'. R1323 carries no diagnostic facet because it defines a hex-digit-string form and prohibits nothing. Source accounting only: authored_facets unchanged at 1977."
+}

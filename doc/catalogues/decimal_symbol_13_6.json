@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "section": "13.6",
+  "requirements": [
+    {
+      "id": "S13.6-001",
+      "title": "Decimal edit mode selects point or comma as the decimal symbol",
+      "source": "S13.6, J3/24-007, 18 December 2023, physical PDF294.",
+      "source_units": [
+        "p1"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The decimal symbol separates whole and fractional parts in real-number decimal representation; POINT uses a decimal point and COMMA uses a comma.",
+      "facets": [
+        "point-mode-decimal-symbol",
+        "comma-mode-decimal-symbol"
+      ],
+      "pending": {
+        "point-mode-decimal-symbol": "Internal WRITE(buf,'(DP,F4.1)') -1.5 to character(len=4) expects exactly buf='-1.5' after 13.8.5 DP is registered.",
+        "comma-mode-decimal-symbol": "Internal WRITE(buf,'(DC,F4.1)') -1.5 to character(len=4) expects exactly buf='-1,5' after 13.8.5 DC is registered."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use independent literal expected strings, integer sentinels, or scalar state checks. Negative/source-control plans change one property from a conforming control and are not treated as diagnostic facets unless this unit itself requires rejection.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Pending output plans use internal WRITE to a CHARACTER variable where possible and name exact expected characters including blanks. Plans that rely on real approximation, optional signs, D/E exponent-letter alternatives, EX binary-exponent selection, IEEE NaN payloads, Unicode/non-Unicode files, list-directed input/output, stream positioning, or unregistered 13.8 mode descriptors are marked deferred or processor-dependent rather than asserted. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics.",
+      "dependencies": "Registered dependencies: 13.1-13.4 for format specifications, edit descriptors, fields, and format-control interaction; clauses 6, 8, 9, 10, and 11 for source form, labels, names, character values, expressions, arrays, and executable constructs; registered clause 7 catalogues where already present for signed-digit strings, significands, BOZ literal digits, and type concepts. Unregistered dependencies explicitly retained: clause 12 I/O statements, file connection, internal/external files, list-directed I/O, and ROUND=/DECIMAL= controls; sibling 13.7.3-13.9 for character/logical/G editing and control/mode descriptors; sibling 13.10-13.11 for remaining format features; clause 15 for defined I/O; clause 16 for IEEE and inquiry intrinsics in future fixtures; clause 17 for IEEE rounding/exceptional values; and clauses 3, 5, 14, and 19 where future fixtures need terms, constants, programs, or scope rules."
+    },
+    {
+      "id": "S13.6-002",
+      "title": "COMMA decimal edit mode changes list-directed value separators to semicolons",
+      "source": "S13.6, J3/24-007, 18 December 2023, physical PDF294.",
+      "source_units": [
+        "p2"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "During list-directed input/output in COMMA decimal edit mode, semicolon replaces comma as the value separator.",
+      "facets": [
+        "list-directed-comma-mode-semicolon-separator"
+      ],
+      "pending": {
+        "list-directed-comma-mode-semicolon-separator": "Unassertable as a byte-exact plan in this source packet because list-directed output field spelling and DECIMAL= connection/data-transfer details belong to unregistered clause 12; the required property is semicolon, not comma, as the value separator when decimal edit mode is COMMA."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use independent literal expected strings, integer sentinels, or scalar state checks. Negative/source-control plans change one property from a conforming control and are not treated as diagnostic facets unless this unit itself requires rejection.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Pending output plans use internal WRITE to a CHARACTER variable where possible and name exact expected characters including blanks. Plans that rely on real approximation, optional signs, D/E exponent-letter alternatives, EX binary-exponent selection, IEEE NaN payloads, Unicode/non-Unicode files, list-directed input/output, stream positioning, or unregistered 13.8 mode descriptors are marked deferred or processor-dependent rather than asserted. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics.",
+      "dependencies": "Registered dependencies: 13.1-13.4 for format specifications, edit descriptors, fields, and format-control interaction; clauses 6, 8, 9, 10, and 11 for source form, labels, names, character values, expressions, arrays, and executable constructs; registered clause 7 catalogues where already present for signed-digit strings, significands, BOZ literal digits, and type concepts. Unregistered dependencies explicitly retained: clause 12 I/O statements, file connection, internal/external files, list-directed I/O, and ROUND=/DECIMAL= controls; sibling 13.7.3-13.9 for character/logical/G editing and control/mode descriptors; sibling 13.10-13.11 for remaining format features; clause 15 for defined I/O; clause 16 for IEEE and inquiry intrinsics in future fixtures; clause 17 for IEEE rounding/exceptional values; and clauses 3, 5, 14, and 19 where future fixtures need terms, constants, programs, or scope rules."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "definition",
+      "requirements": [
+        "S13.6-001"
+      ],
+      "rationale": "Defines decimal symbol and the POINT/COMMA mapping."
+    },
+    {
+      "unit": "p2",
+      "disposition": "requirements",
+      "requirements": [
+        "S13.6-002"
+      ]
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_13_6.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "ef59fe0c81506d916506777a89e3ed664929a00298a8f41c950ec55a7866a8c3",
+  "review_rationale": "Independent fresh-context source review, three rounds: doc/source_audits/batch_137.json. The reviewer re-derived unit hashes and read Tables 13.1, 13.2 and 13.3 ROW BY ROW against the PDF, independently of the author's reconstruction - necessary because extraction interleaved the columns and every future E/EN/ES fixture derives from those rows. THREE blocking findings. The integrator found the first directly: two sample plans gave a NEGATIVE result for the POSITIVE input 0.5, but SS suppresses the optional plus so the sign position must be BLANK - corrected to ' 500.000E-03' and '   5.000E-01', hand-derived and corroborated with gfortran. C137SR-001: ELEVEN units mixing an obligation with a grant of latitude were dispositioned wholly as permission - the fourth occurrence of that class this session - and were re-dispositioned to requirements with the latitude confined to rationale and oracle text; the reviewer confirmed no latitude is now wrongly asserted as an obligation. C137SR-002: placeholder plans remained, saying things like 'future plan must include exact output'; 48 entries were changed, 21 upgraded to exact executable strings and 27 marked explicitly unassertable, and the reviewer independently derived the scale-factor cases -1P,E10.3E2 giving ' 0.010E+02' and 1P,E10.3E2 giving ' 1.000E+00'. R1323 carries no diagnostic facet because it defines a hex-digit-string form and prohibits nothing. Source accounting only: authored_facets unchanged at 1977."
+}

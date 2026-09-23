@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "section": "13.7.2.3.7",
+  "requirements": [
+    {
+      "id": "S13.7.2.3.7-001",
+      "title": "Complex scalar editing uses two real edit descriptors in real-then-imaginary order",
+      "source": "S13.7.2.3.7, J3/24-007, 18 December 2023, physical PDF300.",
+      "source_units": [
+        "p1"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A complex scalar datum is a pair of separate real data; two real-data edit descriptors specify real part then imaginary part, may differ, and may have control/character descriptors between them.",
+      "facets": [
+        "complex-two-real-descriptors",
+        "complex-real-part-first",
+        "complex-imaginary-part-second",
+        "complex-descriptors-may-differ",
+        "complex-control-character-between-parts"
+      ],
+      "pending": {
+        "complex-two-real-descriptors": "Internal WRITE(buf,'(SS,F4.1,F4.1)') cmplx(1.0,-2.0) to character(len=8) expects exactly buf=' 1.0-2.0'.",
+        "complex-real-part-first": "The same plan expects the leading field ' 1.0' for the real part.",
+        "complex-imaginary-part-second": "The same plan expects the trailing field '-2.0' for the imaginary part.",
+        "complex-descriptors-may-differ": "Internal WRITE(buf,'(SS,F4.1,E9.2E2)') cmplx(1.0,-2.0) should expect first field ' 1.0' and a second E field for -2.0 after E exact ownership.",
+        "complex-control-character-between-parts": "Internal WRITE(buf,'(SS,F4.1,\",\",F4.1)') cmplx(1.0,-2.0) to character(len=9) expects exactly buf=' 1.0,-2.0'."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use independent literal expected strings, integer sentinels, or scalar state checks. Negative/source-control plans change one property from a conforming control and are not treated as diagnostic facets unless this unit itself requires rejection.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Pending output plans use internal WRITE to a CHARACTER variable where possible and name exact expected characters including blanks. Plans that rely on real approximation, optional signs, D/E exponent-letter alternatives, EX binary-exponent selection, IEEE NaN payloads, Unicode/non-Unicode files, list-directed input/output, stream positioning, or unregistered 13.8 mode descriptors are marked deferred or processor-dependent rather than asserted. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics.",
+      "dependencies": "Registered dependencies: 13.1-13.4 for format specifications, edit descriptors, fields, and format-control interaction; clauses 6, 8, 9, 10, and 11 for source form, labels, names, character values, expressions, arrays, and executable constructs; registered clause 7 catalogues where already present for signed-digit strings, significands, BOZ literal digits, and type concepts. Unregistered dependencies explicitly retained: clause 12 I/O statements, file connection, internal/external files, list-directed I/O, and ROUND=/DECIMAL= controls; sibling 13.7.3-13.9 for character/logical/G editing and control/mode descriptors; sibling 13.10-13.11 for remaining format features; clause 15 for defined I/O; clause 16 for IEEE and inquiry intrinsics in future fixtures; clause 17 for IEEE rounding/exceptional values; and clauses 3, 5, 14, and 19 where future fixtures need terms, constants, programs, or scope rules."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "requirements",
+      "requirements": [
+        "S13.7.2.3.7-001"
+      ]
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_13_7_2_3_7.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "ad52ce3a4b9b0dee9f6ab9a0e76e350cef9aee0da2b86c394070523f53fb1266",
+  "review_rationale": "Independent fresh-context source review, three rounds: doc/source_audits/batch_137.json. The reviewer re-derived unit hashes and read Tables 13.1, 13.2 and 13.3 ROW BY ROW against the PDF, independently of the author's reconstruction - necessary because extraction interleaved the columns and every future E/EN/ES fixture derives from those rows. THREE blocking findings. The integrator found the first directly: two sample plans gave a NEGATIVE result for the POSITIVE input 0.5, but SS suppresses the optional plus so the sign position must be BLANK - corrected to ' 500.000E-03' and '   5.000E-01', hand-derived and corroborated with gfortran. C137SR-001: ELEVEN units mixing an obligation with a grant of latitude were dispositioned wholly as permission - the fourth occurrence of that class this session - and were re-dispositioned to requirements with the latitude confined to rationale and oracle text; the reviewer confirmed no latitude is now wrongly asserted as an obligation. C137SR-002: placeholder plans remained, saying things like 'future plan must include exact output'; 48 entries were changed, 21 upgraded to exact executable strings and 27 marked explicitly unassertable, and the reviewer independently derived the scale-factor cases -1P,E10.3E2 giving ' 0.010E+02' and 1P,E10.3E2 giving ' 1.000E+00'. R1323 carries no diagnostic facet because it defines a hex-digit-string form and prohibits nothing. Source accounting only: authored_facets unchanged at 1977."
+}

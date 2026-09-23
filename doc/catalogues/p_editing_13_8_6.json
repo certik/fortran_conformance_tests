@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "section": "13.8.6",
+  "review_state": "reviewed",
+  "requirements": [
+    {
+      "id": "S13.8.6-001",
+      "title": "kP temporarily sets the scale factor for real and complex numeric editing",
+      "source": "S13.8.6, J3/24-007, 18 December 2023, physical PDF306.",
+      "source_units": [
+        "p1"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "kP temporarily changes the connection scale factor to k, affecting F, E, EN, ES, EX, D, and G editing for real and complex quantities.",
+      "facets": [
+        "scale-factor-set-to-k",
+        "scale-factor-affects-real-complex",
+        "scale-factor-persists-within-statement"
+      ],
+      "pending": {
+        "scale-factor-set-to-k": "WRITE(buf,'(1P,F5.1)') 1.0; expect exactly ' 10.0'.",
+        "scale-factor-affects-real-complex": "WRITE(buf,'(1P,F5.1)') 1.0; expect exactly ' 10.0' for the real scalar case; complex pair coverage is deferred until complex numeric editing ownership.",
+        "scale-factor-persists-within-statement": "WRITE(buf,'(1P,F5.1,F5.1)') 1.0,2.0; expect exactly ' 10.0 20.0'."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use independent literal expected strings or scalar sentinels. Negative plans change one property from a conforming control and attribute the violation to this unit only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Pending output plans use internal WRITE to a CHARACTER variable and name exact expected characters including blanks when the unit is internally testable. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics. Where the source makes a behavior processor dependent, or where a rule requires external stream/direct/sequential files or unregistered defined I/O, the pending plan is explicitly source-control or unassertable rather than a fixture oracle. Exact real output uses 1.0 and 2.0, which are exactly representable; non-exact real cases remain subject to 7.4.3.",
+      "dependencies": "Registered dependencies cited, not restated: clauses 6, 8, 9, 10, 11, and registered 13.1-13.4 for source form, expressions, intrinsic and character values, execution constructs, FORMAT syntax, edit-descriptor syntax, and format-control interaction. Unregistered dependencies explicitly retained: clause 12 data transfer, connection modes, effective items, and defined I/O; 13.5-13.7.2.4 for format item details and numeric editing; 13.10-13.11 for neighbouring formatting modes; clause 15 for user-defined procedures and defined I/O; clause 16 for NEW_LINE and IEEE inquiries if future fixtures use them; clauses 3, 5, 14, 17, and 19 where future fixture authors need terminology, lexical representation, IEEE arithmetic, interoperability, or scoping/lifetime controls."
+    },
+    {
+      "id": "S13.8.6-002",
+      "title": "The scale factor has distinct input and output effects for F/E/D/G/EN/ES/EX editing",
+      "source": "S13.8.6, J3/24-007, 18 December 2023, physical PDF306.",
+      "source_units": [
+        "p2"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Scale factor multiplies/divides external decimal values for eligible input without exponents, has no input effect when an exponent exists, scales F output, adjusts E/D significand and exponent, is suspended for G unless E editing is required, and has no output effect for EN/ES/EX.",
+      "facets": [
+        "input-no-exponent-external-equals-internal-times-10k",
+        "input-exponent-no-scale-effect",
+        "F-output-external-equals-internal-times-10k",
+        "E-D-output-significand-and-exponent-adjusted",
+        "G-output-scale-suspended-unless-E-required",
+        "EN-ES-EX-output-no-scale-effect"
+      ],
+      "pending": {
+        "input-no-exponent-external-equals-internal-times-10k": "READ('10.0','(1P,F4.1)') into a real variable; expected mathematical value is 1.0.",
+        "input-exponent-no-scale-effect": "READ('1.0E+1','(1P,E6.1)') into a real variable; expected mathematical value is 10.0 because the exponent suspends input scale effect.",
+        "F-output-external-equals-internal-times-10k": "WRITE(buf,'(1P,F5.1)') 1.0; expect exactly ' 10.0'.",
+        "E-D-output-significand-and-exponent-adjusted": "Deferred exact output to E/D editing owners; future fixture must state exact significand and exponent characters after applying k.",
+        "G-output-scale-suspended-unless-E-required": "WRITE(buf,'(3P,G9.2)') 0.0; expect exactly '  0.0    ', the same as unscaled G9.2 zero because G uses F editing for this magnitude.",
+        "EN-ES-EX-output-no-scale-effect": "Deferred exact output to EN/ES/EX owners; future paired controls with and without kP must state exact identical fields before execution."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans use independent literal expected strings or scalar sentinels. Negative plans change one property from a conforming control and attribute the violation to this unit only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Pending output plans use internal WRITE to a CHARACTER variable and name exact expected characters including blanks when the unit is internally testable. Unnumbered prose restrictions are not promoted to numbered-constraint diagnostics. Where the source makes a behavior processor dependent, or where a rule requires external stream/direct/sequential files or unregistered defined I/O, the pending plan is explicitly source-control or unassertable rather than a fixture oracle. Bullets involving E/D/EN/ES/EX exact spelling depend on unregistered numeric editing; zero is used for the exact G/F pending plan.",
+      "dependencies": "Registered dependencies cited, not restated: clauses 6, 8, 9, 10, 11, and registered 13.1-13.4 for source form, expressions, intrinsic and character values, execution constructs, FORMAT syntax, edit-descriptor syntax, and format-control interaction. Unregistered dependencies explicitly retained: clause 12 data transfer, connection modes, effective items, and defined I/O; 13.5-13.7.2.4 for format item details and numeric editing; 13.10-13.11 for neighbouring formatting modes; clause 15 for user-defined procedures and defined I/O; clause 16 for NEW_LINE and IEEE inquiries if future fixtures use them; clauses 3, 5, 14, 17, and 19 where future fixture authors need terminology, lexical representation, IEEE arithmetic, interoperability, or scoping/lifetime controls."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "requirements",
+      "requirements": [
+        "S13.8.6-001"
+      ]
+    },
+    {
+      "unit": "p2",
+      "disposition": "requirements",
+      "requirements": [
+        "S13.8.6-002"
+      ]
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_13_8_6.md"
+  },
+  "review_fingerprint": "ac432e2a6eeaaf4ed5e6a02405f50491740a56857c930bfb422dfcd3fbffc828",
+  "review_rationale": "Independent fresh-context source review, two rounds: doc/source_audits/batch_138.json. The reviewer re-derived the receipt (21 sections, 64 units, 0 hash mismatches) and INDEPENDENTLY RE-PARTITIONED the four crowded pages - p303, p304, p306 and p307 - unit by unit, confirming among other things that 13.8.8 genuinely owns only p1 despite covering six rounding-mode descriptors. A mis-attributed paragraph would have been invisible in the totals, since 64 would still be 64. The zero-numbered-R/C claim was verified: R1323 appears on p302 but belongs to the sibling 13.7.2.4 packet. FOUR blocking findings, all closed. C138SR-001: a negative was filed against 13.7.5.2.2, which only CROSS-REFERS to the rule - the actual prohibition is 13.7.5.1 p1 'On input, w shall not be zero' - and 'Note that w cannot be zero' is a reminder, not a prohibition; the facet is now an explicit dependency. C138SR-002: four units filed LATITUDE AS REQUIREMENTS - the fifth occurrence of the mixed obligation/latitude class, and notably the MIRROR of the sibling packet, which filed obligations as permission; all four were split into requirement and permission subunits. C138SR-003: an output-control facet sat under 13.9 p1, which owns only the input prohibition; output moved to p2. C138SR-004: a negative named a descriptor but NO DATUM, so nothing showed the p6 branch was reached; it now uses datum zero with (G4.1E3), where s=1 reaches the F branch, n=e+2=5 and w-n=-1, with repair (G7.1E3) expecting exactly '0.     ' - the reviewer derived all of that independently. Source accounting only: authored_facets unchanged at 1977."
+}
