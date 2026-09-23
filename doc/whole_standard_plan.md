@@ -4352,6 +4352,57 @@ difference between reporting a real bug and manufacturing one.
 Baseline **813 → 816**, three additions, no modifications.
 See `doc/source_audits/batch_132.json`.
 
+## Batch 131 — structure constructors, and proving a crash is a defect
+
+Establishes **15 facets** of **7.5.10 Structure constructors**, and adds three
+more verified frozen-LFortran defects — one SIGSEGV and two compile-time ICEs.
+
+The interesting part of this packet was not writing it but **adjudicating the
+crashes**. Two of the three suspected defects depended entirely on one question:
+**is intrinsic `NULL()` valid for an *allocatable* component?**
+
+The question matters because the rules differ by component kind — for a
+**pointer** component `NULL()` plainly gives disassociated status — and it is
+easy to assume the allocatable case by analogy. If `NULL()` were *not* permitted
+there, the fixtures would have been **invalid**, LFortran's rejection would have
+been **correct**, and this would have been a blocking test defect rather than two
+compiler defects. An ICE and a SIGSEGV are **crashes, not diagnoses**; a compiler
+falling over tells you nothing about whether the program conforms. So the source
+had to be proven conforming first.
+
+It is: **7.5.10 p6 explicitly permits** intrinsic `NULL` for allocatable
+constructor expressions and states the component "has a status of unallocated",
+and `NULL(MOLD=...)` is valid via 16.9.155 p3/p4/p7. The fixtures are conforming
+and all three crashes are genuine defects.
+
+Two derivations were checked independently and both were right. The
+**conforming-array bound mapping** — `source(1:3)` maps to component
+`values(-1:1)`, so the component keeps its **declared** bounds rather than
+inheriting the source's — is exactly the detail that gets got backwards. And the
+numeric conversion uses `4.0`, which is **exactly representable**, so no rounding
+ambiguity arises under 7.4.3's approximation rule.
+
+The decisive non-vacuity check for this section is that **removing the omitted
+defaults makes the test fail**. A default-initialization fixture whose default is
+a zero-equivalent value would pass on a processor that ignores default
+initialization entirely; defaults `(11,13)` with override `(11,29)` are
+non-default-equivalent, so the check bites.
+
+Related care was taken with the **status-only oracles**. `omitted-allocatable-status`,
+`known-disassociated-pointer` and the two `NULL()` cases all assert *unallocated*
+or *disassociated* — both **default-equivalent** states that a processor which
+never allocated would also report. Each was confirmed to read **no bounds or
+values**, so no undefined state is observed, and to establish a real contrast
+rather than resting on the default state alone.
+
+Infrastructure was checked explicitly this time, because a sibling packet in the
+same checkpoint was blocked for shipping fixtures with neither a generator nor a
+test module: this packet has both, regeneration is byte-identical, and the suite
+count genuinely rose.
+
+Baseline **816 → 819**, three additions, no modifications.
+See `doc/source_audits/batch_131.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must

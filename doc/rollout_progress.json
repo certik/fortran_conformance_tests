@@ -5962,6 +5962,35 @@
         "16effect facets remain pending, including coarray/multi-image paths, the processor-dependent error path and a finalization-order case.",
         "NEW STANDING CHECK: a fixture packet must ship a GENERATOR with --check AND a test module; verify the full-suite count RISES, since an unchanged count means the cases are inert."
       ]
+    },
+    {
+      "id": "clause7-structure-constructor-effect-fixtures-131",
+      "state": "reference-validated-runtime-effects",
+      "packet_kind": "FIXTURE",
+      "baseline_commit": "a1b52fd",
+      "packet_base_commit": "1dc7b14",
+      "sections": ["7.5.10"],
+      "author_handoffs": {
+        "proposal": "deb9829"
+      },
+      "source_reviews": ["doc/source_audits/batch_131.json"],
+      "new_executions": 15,
+      "fixture_accounting": {
+        "facets_established": 15,
+        "new_cases": 15,
+        "authored_facets": "1931 -> 1946",
+        "cases": "2219 -> 2234",
+        "reference_validated": "1906 -> 1921",
+        "expected_failures": "816 -> 819"
+      },
+      "coordination": "THE CRUX WAS WHETHER INTRINSIC NULL IS VALID FOR AN ALLOCATABLE COMPONENT. Two of the three suspected compiler defects depended ENTIRELY on it: if NULL were not permitted there, the fixtures would be INVALID, LFortran's rejection CORRECT, and this a blocking TEST defect rather than two compiler defects. The rules differ by component kind - for a POINTER component NULL gives disassociated status - so the allocatable case is easy to assume by analogy. And an ICE and a SIGSEGV are CRASHES, NOT DIAGNOSES, so the source had to be proven conforming first. The reviewer settled it:7.5.10p6 EXPLICITLY permits intrinsic NULL for allocatable constructor expressions and states the component 'has a status of unallocated', and NULL(MOLD=...) is valid via16.9.155p3/p4/p7. All three are therefore GENUINE LFORTRAN DEFECTS - one SIGSEGV and two compile ICEs - and are XFAILed. The reviewer also derived the CONFORMING-ARRAY BOUND MAPPING independently: source(1:3) maps to values(-1:1), so the component keeps its DECLARED bounds rather than inheriting the source's - the detail most easily got backwards. Numeric conversion uses4.0, EXACTLY REPRESENTABLE, so no rounding ambiguity arises under7.4.3. THE DECISIVE NON-VACUITY CHECK for this section is that REMOVING THE OMITTED DEFAULTS FAILS - a default-initialization fixture whose default is zero-equivalent would pass on a processor ignoring defaults entirely; defaults(11,13) and override(11,29) are non-default-equivalent.",
+      "remaining_observations": [
+        "STATUS-ONLY ORACLES (unallocated, disassociated) assert DEFAULT-EQUIVALENT states, so each was checked to read NO bounds or values and to establish a real contrast rather than resting on the default state.",
+        "The live-data-target fixture keeps its target ALIVE; a dangling target would be undefined behaviour.",
+        "Infrastructure checked explicitly because a sibling packet was blocked for shipping fixtures with no generator and no test module: this packet has both, regeneration is byte-identical, and the suite count rose.",
+        "33effect plans remain pending - PDT/type-parameter, procedure-pointer, polymorphic, expression-bound, zero-extent and assignment-boundary work. None judged unimplementable.",
+        "Rendered view was emitted 'stale' and corrected after recording the catalogue review, per the render-after-record rule."
+      ]
     }
   ],
   "cross_batch_followups": [

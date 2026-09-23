@@ -1,0 +1,137 @@
+{
+ "schema_version": 1,
+ "review_type": "independent-structure-constructor-effect-fixture-review",
+ "review_date": "2026-09-22",
+ "baseline_commit": "a1b52fd",
+ "packet_base_commit": "1dc7b14",
+ "state": "reference-validated-runtime-effects",
+ "packet_kind": "FIXTURE",
+ "scope": {
+  "sections": [
+   "7.5.10"
+  ],
+  "section_title_verified_from_source": "Structure constructors",
+  "facets_established": 15,
+  "new_cases": 15,
+  "requirements_touched": [
+   "S7.5.10-001",
+   "S7.5.10-002",
+   "S7.5.10-003",
+   "S7.5.10-004",
+   "S7.5.10-005",
+   "S7.5.10-007",
+   "S7.5.10-008",
+   "S7.5.10-009"
+  ],
+  "left_pending": "33 effect plans: source-use, contrast, PDT and type-parameter, procedure-pointer, polymorphic, expression-bound, zero-extent and assignment-boundary work. None newly judged unimplementable."
+ },
+ "independent_review": {
+  "reviewer_distinct_from_author": true,
+  "decision": "accept_no_blocking_findings",
+  "blocking_findings": 0,
+  "reviewer_read_original_source": "7.5.10 and 16.9.155; PDF checksum verified independently"
+ },
+ "the_crux_question": {
+  "question": "Is intrinsic NULL valid for an ALLOCATABLE component? Two of the three suspected compiler defects depended entirely on this. If NULL were not permitted for an allocatable component, the fixtures would have been INVALID, LFortran's rejection CORRECT, and this a blocking test defect rather than two compiler defects.",
+  "why_it_needed_asking": "The rules differ by component kind - for a POINTER component NULL gives disassociated status - and it is easy to assume the allocatable case by analogy. An ICE and a SIGSEGV are crashes, not diagnoses, so the source had to be proven conforming before attributing either to a defect.",
+  "resolution": "7.5.10 p6 EXPLICITLY permits intrinsic NULL for allocatable constructor expressions and states the component 'has a status of unallocated'. NULL(MOLD=...) is valid via 16.9.155 p3/p4/p7.",
+  "outcome": "The fixtures are conforming; both ICEs are genuine LFortran defects."
+ },
+ "lfortran_defects_verified": [
+  {
+   "id": "C7510FR-001",
+   "defect": "Run-time crash on a contextual/MOLD NULL pointer component",
+   "standard_basis": "7.5.10 p5: 'If the component data source is a pointer, the association of the component is that of the pointer.' 16.9.155 p7: 'The result is a disassociated pointer or an unallocated allocatable entity.'",
+   "frozen_lfortran": "run crash, exit -11 (SIGSEGV)",
+   "gfortran": "passes",
+   "verdict": "GENUINE LFORTRAN DEFECT",
+   "case_xfailed": "S7_5_10_007_valid__structure_constructor_contextual_mold_null"
+  },
+  {
+   "id": "C7510FR-002",
+   "defect": "Compile-time ICE on NULL() for an allocatable component",
+   "standard_basis": "7.5.10 p6 explicitly permits intrinsic NULL for allocatable constructor expressions; the component has a status of unallocated.",
+   "frozen_lfortran": "compile ICE: AssertFailed: current_variable_type_ != nullptr",
+   "gfortran": "passes",
+   "verdict": "GENUINE LFORTRAN DEFECT",
+   "case_xfailed": "S7_5_10_008_valid__structure_constructor_no_mold_null_allocatable"
+  },
+  {
+   "id": "C7510FR-003",
+   "defect": "Compile-time ICE on NULL(MOLD=...) for an allocatable component",
+   "standard_basis": "7.5.10 p6 with 16.9.155 p3/p4/p7.",
+   "frozen_lfortran": "compile ICE: AssertFailed: ASR::is_a<ASR::Pointer_t>(*v->m_type)",
+   "gfortran": "passes",
+   "verdict": "GENUINE LFORTRAN DEFECT",
+   "case_xfailed": "S7_5_10_008_valid__structure_constructor_typed_mold_null_allocatable"
+  }
+ ],
+ "source_derivations_independently_confirmed": {
+  "conforming_array_bound_mapping": "source(1:3) maps to component values(-1:1) as 11, 13, 17 - the component keeps its DECLARED bounds rather than inheriting the source's. This was flagged as the detail most easily got backwards and is correct.",
+  "numeric_conversion": "Real 4.0 to an integer component gives 4. The value is EXACTLY REPRESENTABLE in binary floating point, so no rounding ambiguity arises - important because reals are approximations under 7.4.3.",
+  "character_deferred_length": "A CHARACTER(3) source gives an allocated component with LEN 3 and values QRS / LMN. LEN is asserted explicitly and both values are nonblank, guarding the blank-padding trap.",
+  "keyword_order": "right=13, left=11 yields left 11 and right 13; the components hold DISTINCT values, without which the order-independence claim would be untestable."
+ },
+ "non_vacuity_by_mutation": {
+  "principle": "Non-vacuity must be proved by MUTATION targeting the FEATURE UNDER TEST.",
+  "campaign": "15/15 parents pass; 117/117 oracle, 18/18 input and 45/45 feature mutations fail; 15/15 reverse default mutations pass.",
+  "feature_level_classes": "default change, component definition reorder, and positional value swap, applied to every fixture.",
+  "reviewer_reran": "45/45 feature mutations and 18/18 input mutations fail; 15/15 reverse mutations pass.",
+  "decisive_check_for_defaults": "REMOVING THE OMITTED DEFAULTS FAILS. This is the critical test for a default-initialization fixture: if the default were a zero-equivalent value, the test would pass on a processor that ignores default initialization entirely. Defaults (11,13) and override (11,29) are non-default-equivalent.",
+  "status_only_oracles": "omitted-allocatable-status, known-disassociated-pointer, no-mold-null-unallocated and typed-mold-null-unallocated assert unallocated or disassociated - both DEFAULT-EQUIVALENT states. The reviewer confirmed these read NO bounds or values, so no undefined state is observed, and that each establishes a meaningful contrast rather than resting on the default state alone."
+ },
+ "oracle_discipline_verified": {
+  "sentinels": "No observed component sentinel is 0, 0.0, .FALSE. or blank. Allocation and association false states are standard status inquiries, not memory sentinels.",
+  "live_target": "The live-data-target-alias fixture keeps its target alive; a dangling target would be undefined behaviour.",
+  "no_self_referential_intrinsic": "No TRANSFER, LOC or address-based oracle appears.",
+  "infrastructure": "The packet ships tools/generate_structure_constructor_effect_fixtures.py with a --check mode and a test module; regeneration is byte-identical and the suite count rose to 1022. This was checked explicitly because a sibling packet in the same checkpoint was blocked for shipping fixtures with neither."
+ },
+ "explicit_limitations": [
+  "Fifteen facets of 7.5.10 only; 33 effect plans remain pending.",
+  "Not established: storage layout, addresses, diagnostics, PDT parameter syntax, procedure-pointer calls, polymorphic allocation or value transfer, zero extent, expression bounds, or assignment callback boundaries.",
+  "Three cases FAIL under the frozen LFortran and are XFAILed; that is evidence of defects in that toolchain, not of conformance.",
+  "Passing under gfortran is corroboration, not proof of universal conformance.",
+  "Source accounting is unchanged: declared_facets remains 7184."
+ ],
+ "preservation": {
+  "cases_before": 2219,
+  "cases_after": 2234,
+  "authored_facets_before": 1931,
+  "authored_facets_after": 1946,
+  "declared_facets_before": 7184,
+  "declared_facets_after": 7184,
+  "reference_validated_before": 1906,
+  "reference_validated_after": 1921,
+  "fixture_review_states_after": "1921 reference-validated / 274 source-reviewed / 1 needs-oracle",
+  "expected_failures_lines_before": 816,
+  "expected_failures_lines_after": 819,
+  "baseline_lines_added": 3,
+  "baseline_lines_modified": 0,
+  "existing_case_ids_modified": 0
+ },
+ "integrator_note": {
+  "rendered_view": "doc/fortran_2023_7_5_10.md was emitted with 'Catalogue source review: stale' because the generator rewrites the catalogue and re-stales it at render time. Corrected to 'reviewed' after recording the catalogue review, per the standing rule to render the view AFTER recording."
+ },
+ "validation_snapshot": {
+  "detailed_catalogues": 280,
+  "requirements": 1684,
+  "declared_facets": 7184,
+  "authored_facets": 1946,
+  "catalogue_reviews_draft": 1,
+  "catalogue_reviews_draft_note": "Only 18.3.7, pre-existing and untouched.",
+  "frozen_lfortran_result": "13 PASS / 3 FAIL, all three XFAILed",
+  "gfortran_result": "16/16 pass",
+  "normal_audit_exit": 1,
+  "normal_audit_block": "the single retained needs-oracle real-BOZ case, which is the intended state and not a regression",
+  "python_suite_tests": 1032,
+  "python_suite_result": "pending integrator gate"
+ },
+ "integrator_corrective_action": {
+  "issue": "The packet added a new assertion to the PRE-EXISTING sibling module tests/test_constructor_declaration_fixtures.py requiring the rendered 7.5.10 view to say 'Catalogue source review: stale.', and emitted the view itself with 'stale'. Both are only true BEFORE integration. After the integrator renewed the catalogue review, the view correctly reads 'reviewed' and the gate failed.",
+  "root_cause": "AUTHORS CANNOT RECORD REVIEWS - --record-* is integrator-only - so a fixture author only ever observes the stale state. Encoding that state in a test assertion or a rendered artefact bakes in a value that FLIPS at integration by design.",
+  "why_it_matters": "7.5.10 is rendered by TWO generators (generate_constructor_declaration_fixtures.py and this packet's generate_structure_constructor_effect_fixtures.py), so the assertion lived in a module the packet did not own. The packet legitimately updated that module's pending count from 76 to 61, but also added the review-state assertion, which was not legitimate.",
+  "remedy": "Corrected the rendered view to 'reviewed' and the sibling assertion to expect 'reviewed', matching the post-integration truth. The pending-count update to 61 was correct and retained.",
+  "generalised_rule": "A fixture packet must NOT assert the catalogue review state, in a test or in a rendered artefact. That state is stale during authoring and reviewed after integration, so any hardcoded expectation is wrong in one of the two phases. Render the view AFTER recording the review, and assert only content the packet actually owns.",
+  "verification": "tests/test_constructor_declaration_fixtures.py and tests/test_structure_constructor_effect_fixtures.py run 21 tests OK together, and the full gate was re-run."
+ }
+}

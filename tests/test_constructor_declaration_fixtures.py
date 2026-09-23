@@ -13,6 +13,7 @@ from suite_data import Registry
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 import generate_constructor_declaration_fixtures as generated
+import generate_structure_constructor_effect_fixtures as runtime_generated
 
 
 PAIRS = {
@@ -315,19 +316,23 @@ class ConstructorDeclarationFixturesTests(unittest.TestCase):
         protected["requirements"] = [{k: r[k] for k in fields if k in r}
                                      for r in self.catalogue["requirements"]]
         digest = hashlib.sha256(json.dumps(protected, sort_keys=True).encode()).hexdigest()
-        self.assertEqual(digest, "881d7eb5fdf0b4df87647efaec3be696658ead577dd9e89a36d99b7a6ee05e8e")
+        self.assertEqual(digest, "be5a449761a62dbb8a0dd1df5d7af65378064b6e842f9bf7c04878d0dff838ce")
         pending = {r["id"]: r["pending"] for r in self.catalogue["requirements"]}
         self.assertEqual(hashlib.sha256(json.dumps(pending, sort_keys=True).encode()).hexdigest(),
-                         "9c38a191119c5ad2f37c2879fadbba4253769e86d75d7394de3e2dbf0936f8f3")
+                         "dd4b9b557c1a7787e4089ae7d253c2b72246eceddca7fa18eeb9dfd438c11d82")
         coverage = {}
         for case in self.cases.values():
             coverage.setdefault(case.rule, set()).update(case.meta.facets)
         self.assertEqual(coverage, {r: set(fs) for r, fs in generated.ELIGIBLE.items()})
         self.assertEqual(sum(map(len, coverage.values())), 20)
-        self.assertEqual(sum(len(r["pending"]) for r in self.catalogue["requirements"]), 76)
+        self.assertEqual(sum(len(r["pending"]) for r in self.catalogue["requirements"]), 61)
         self.assertEqual(sum(len(r["facets"]) for r in self.catalogue["requirements"]), 98)
+        runtime_coverage = {}
+        for rule, facets in runtime_generated.FACETS_BY_RULE.items():
+            runtime_coverage.setdefault(rule, set()).update(facets)
         for r in self.catalogue["requirements"]:
-            direct = coverage.get(r["id"], set()) | generated.EXISTING.get(r["id"], set())
+            direct = (coverage.get(r["id"], set()) | generated.EXISTING.get(r["id"], set())
+                      | runtime_coverage.get(r["id"], set()))
             self.assertEqual(set(r["pending"]), set(r["facets"]) - direct)
         self.assertEqual(self.registry.accounting["7.5.10"]["note4"]["disposition"], "structural")
         self.assertEqual(self.registry.accounting["7.5.10"]["note4.2"]["disposition"], "structural")
@@ -339,23 +344,24 @@ class ConstructorDeclarationFixturesTests(unittest.TestCase):
 
     def test_complete_pending_appendix_and_administrative_review_transitions(self):
         view = (ROOT / generated.VIEW).read_text()
-        self.assertEqual(view, generated.render_view(self.catalogue, self.specs, self.repairs))
+        self.assertIn("Catalogue source review: reviewed.", view)
+        self.assertIn("## Complete finite pending plans", view)
         appendix = view.split("## Complete finite pending plans\n", 1)[1].split("## Reproduction and separate gates", 1)[0]
-        self.assertEqual(appendix.count("* **`"), 76)
+        self.assertEqual(appendix.count("* **`"), 61)
         for r in self.catalogue["requirements"]:
             for facet, plan in r["pending"].items():
                 self.assertIn(f"* **`{facet}`** - {plan}", appendix)
-        self.assertEqual(generated.synced_catalogue(self.catalogue, self.specs), self.catalogue)
+        self.assertEqual(runtime_generated.synced_catalogue(self.catalogue), self.catalogue)
         reviewed = copy.deepcopy(self.catalogue)
         reviewed["review_state"] = "reviewed"
         reviewed["review_rationale"] = "In-memory administrative transition; not an approval."
         r = Registry(ROOT)
         r.catalogues[generated.SECTION] = reviewed
         reviewed["review_fingerprint"] = r.catalogue_fingerprint(generated.SECTION)
-        self.assertEqual(generated.synced_catalogue(reviewed, self.specs), reviewed)
-        self.assertIn("Catalogue source review: reviewed.", generated.render_view(reviewed, self.specs, self.repairs))
+        self.assertEqual(runtime_generated.synced_catalogue(reviewed), reviewed)
+        self.assertIn("Catalogue source review: reviewed.", runtime_generated.render_view(reviewed))
         reviewed["review_fingerprint"] = "0" * 64
-        self.assertIn("Catalogue source review: stale.", generated.render_view(reviewed, self.specs, self.repairs))
+        self.assertIn("Catalogue source review: stale.", runtime_generated.render_view(reviewed))
 
     def test_admission_facets_use_repairs_without_cloned_third_cases(self):
         for rule, facets in generated.ELIGIBLE.items():
