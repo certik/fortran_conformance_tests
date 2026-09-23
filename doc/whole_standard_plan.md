@@ -5659,6 +5659,11 @@ See `doc/source_audits/batch_181.json`.
 Forty units, after two rounds. The reviewer found ATOMIC_ADD planned with an ordinary variable although its argument must be a coarray; the remedy offered was to test with coarrays, which I overruled in favour of the user's rule that coarrays are out of scope. The runtime facets now say so plainly.
 See `doc/source_audits/batch_182.json`.
 
+## Batch 183 — the atomic subroutines
+
+Forty units covering all ten atomic subroutines, after three rounds. Everything they do needs a coarray, so every runtime facet is out of scope under the user's rule; the registration still splits their STAT semantics precisely.
+See `doc/source_audits/batch_183.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
