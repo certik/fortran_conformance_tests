@@ -1,0 +1,138 @@
+{
+  "schema_version": 1,
+  "section": "16.9.1",
+  "requirements": [
+    {
+      "id": "S16.9.1-001",
+      "title": "Intrinsic procedure invocations require representable assigned and returned values",
+      "source": "16.9.1 p2 third sentence; J3/24-007, 18 December 2023, physical PDF376.",
+      "source_units": [
+        "p2.representable-assigned-or-returned-values"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "A program shall not invoke an intrinsic procedure when a value to be assigned to a subroutine argument or returned as a function result is not representable by objects of the specified type and type parameters.",
+      "facets": [
+        "subroutine-argument-assigned-value-representable",
+        "function-result-value-representable"
+      ],
+      "pending": {
+        "subroutine-argument-assigned-value-representable": "Future source-control plan uses an intrinsic subroutine that assigns to an INTENT(OUT) argument with a representable value, then a one-property negative shape whose assigned value is outside the argument type parameters. No local diagnostic is expected because this is an unnumbered program restriction.",
+        "function-result-value-representable": "Future source-control plan uses exact representable intrinsic function results as positive controls and records out-of-range function-result invocations as invalid source shapes without expecting a required diagnostic unless a numbered rule elsewhere applies."
+      },
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Argument restrictions in 16.9 intrinsic procedure descriptions are program restrictions but are not numbered constraints and therefore carry no local diagnostic facet. Floating-point approximation results are not compared for exact value unless the source fixes an exact integer, logical, or character result; future fixtures must establish non-default sentinels before observing effects.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, and 13 for source form, type/kind concepts, declarations, expressions, execution, I/O harnesses, and exact character/numeric observation where used. Unregistered dependencies explicitly retained: later 16.9 intrinsic procedure specifications, 16.8 generic resolution, clause 17 IEEE support where flags are tested, and clause 19 scoping/association terminology where reached.",
+      "oracle": "Positive plans observe exact values only after choosing argument/result type parameters that can represent them. Negative plans are source-control only; this unit itself does not require detection."
+    },
+    {
+      "id": "S16.9.1-002",
+      "title": "Deferred-length character intrinsic arguments are assigned as by intrinsic assignment",
+      "source": "16.9.1 p3; J3/24-007, 18 December 2023, physical PDF376.",
+      "source_units": [
+        "p3"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "When an allocatable deferred-length character scalar corresponding to an INTENT(INOUT) or INTENT(OUT) intrinsic-procedure argument is assigned a value, the value is assigned as if by intrinsic assignment.",
+      "facets": [
+        "deferred-length-character-argument-reallocation",
+        "deferred-length-character-argument-value"
+      ],
+      "pending": {
+        "deferred-length-character-argument-reallocation": "Future guarded fixture supplies a known command argument to an intrinsic such as GET_COMMAND_ARGUMENT with VALUE as an allocatable deferred-length character scalar initialized to a different allocated length; after the call, assert LEN equals the assigned value length rather than the sentinel length.",
+        "deferred-length-character-argument-value": "In the same future fixture, prefill the allocatable character scalar with a nonmatching sentinel value, invoke the intrinsic with a known argument value, and assert exact character content and LEN so blank padding cannot satisfy the oracle."
+      },
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Argument restrictions in 16.9 intrinsic procedure descriptions are program restrictions but are not numbered constraints and therefore carry no local diagnostic facet. Floating-point approximation results are not compared for exact value unless the source fixes an exact integer, logical, or character result; future fixtures must establish non-default sentinels before observing effects.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, and 13 for source form, type/kind concepts, declarations, expressions, execution, I/O harnesses, and exact character/numeric observation where used. Unregistered dependencies explicitly retained: later 16.9 intrinsic procedure specifications, 16.8 generic resolution, clause 17 IEEE support where flags are tested, and clause 19 scoping/association terminology where reached.",
+      "oracle": "The plan observes intrinsic-assignment character allocation semantics through length and value, with the assigned string established by the program invocation rather than by processor-dependent environment text."
+    },
+    {
+      "id": "S16.9.1-003",
+      "title": "IEEE exception flags reflect intrinsic infinity and NaN results for finite arguments",
+      "source": "16.9.1 p4; J3/24-007, 18 December 2023, physical PDF376.",
+      "source_units": [
+        "p4"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "If finite actual arguments to an intrinsic procedure assign or return an IEEE infinity while IEEE_ARITHMETIC is accessible, IEEE_OVERFLOW or IEEE_DIVIDE_BY_ZERO shall signal; if they assign or return an IEEE NaN and IEEE_INVALID is supported, IEEE_INVALID shall signal; if no IEEE infinity or NaN is assigned or returned, these flags shall retain their invocation status.",
+      "facets": [
+        "ieee-infinity-result-signals-overflow-or-divide-by-zero",
+        "ieee-nan-result-signals-invalid-when-supported",
+        "ieee-flags-unchanged-without-infinity-or-nan"
+      ],
+      "pending": {
+        "ieee-infinity-result-signals-overflow-or-divide-by-zero": "Future guarded IEEE fixture imports IEEE_ARITHMETIC, verifies IEEE support for the real kind, clears the relevant flags, invokes an intrinsic with finite actual arguments that returns infinity on that processor, and asserts at least IEEE_OVERFLOW or IEEE_DIVIDE_BY_ZERO is set.",
+        "ieee-nan-result-signals-invalid-when-supported": "Future guarded IEEE fixture first checks IEEE_INVALID support, clears the flag, invokes an intrinsic with finite actual arguments that returns NaN, and asserts IEEE_INVALID is set; if support is absent, the facet is not claimed.",
+        "ieee-flags-unchanged-without-infinity-or-nan": "Future IEEE control sets a known flag status, calls exact finite intrinsics such as ABS on small representable values that produce neither infinity nor NaN, and asserts the named flag statuses are unchanged from the pre-call state."
+      },
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Argument restrictions in 16.9 intrinsic procedure descriptions are program restrictions but are not numbered constraints and therefore carry no local diagnostic facet. Floating-point approximation results are not compared for exact value unless the source fixes an exact integer, logical, or character result; future fixtures must establish non-default sentinels before observing effects.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, and 13 for source form, type/kind concepts, declarations, expressions, execution, I/O harnesses, and exact character/numeric observation where used. Unregistered dependencies explicitly retained: later 16.9 intrinsic procedure specifications, 16.8 generic resolution, clause 17 IEEE support where flags are tested, and clause 19 scoping/association terminology where reached.",
+      "oracle": "All IEEE facets are guarded by the intrinsic module's support inquiries and compare only named flag status, not processor-specific exception encodings."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "structural",
+      "rationale": "Introduces 16.9 as the alphabetical detailed-specification list for standard generic intrinsic procedures."
+    },
+    {
+      "unit": "p2",
+      "disposition": "structural",
+      "rationale": "Mixed introductory definitions and a representability restriction are split into fine units."
+    },
+    {
+      "unit": "p2.specifications-determine-types",
+      "disposition": "definition",
+      "rationale": "Defines where intrinsic argument and result types and type parameters are determined."
+    },
+    {
+      "unit": "p2.argument-paragraph-requirements",
+      "disposition": "definition",
+      "rationale": "Defines the role of Argument(s) paragraphs as requirements on actual arguments; individual restrictions are accounted in their intrinsic sections."
+    },
+    {
+      "unit": "p2.representable-assigned-or-returned-values",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.1-001"
+      ],
+      "rationale": "Program restriction on invoking intrinsics with unrepresentable assigned or returned values."
+    },
+    {
+      "unit": "p3",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.1-002"
+      ],
+      "rationale": "Processor effect for allocatable deferred-length character scalar arguments assigned by intrinsics."
+    },
+    {
+      "unit": "p4",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.1-003"
+      ],
+      "rationale": "Processor requirements for IEEE flags around intrinsic infinity, NaN, and nonexceptional results."
+    },
+    {
+      "unit": "p5",
+      "disposition": "recommendation",
+      "rationale": "Recommends the interpretation of pseudo-subscripts in later result-value descriptions; it constrains future source reading but creates no local executable facet."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_16_9_1.md"
+  },
+  "review_state": "reviewed",
+  "review_rationale": "Source registration for 16.9 and 16.9.1-16.9.7: ABS, ACHAR, ACOS, ACOSD, ACOSH and ACOSPI (batch179). Every unit hash-verified by an independent reviewer, accepted with no findings. ACHAR's required results for codes 0-127 are split from the processor-dependent cases, and the exact result ranges of the inverse cosine family are split from their processor-dependent approximations; Examples are informative. Source accounting only.",
+  "subunits": {
+    "p2": [
+      "p2.specifications-determine-types",
+      "p2.argument-paragraph-requirements",
+      "p2.representable-assigned-or-returned-values"
+    ]
+  },
+  "review_fingerprint": "ceef18799f87ef763a2a73a59c1bb314ad2889f9306bf5e8cdcc04a0a723b731"
+}

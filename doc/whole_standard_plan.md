@@ -5639,6 +5639,11 @@ value has **no portable oracle** because no such error can be induced portably. 
 two labels mean different things and are used for different reasons.
 See `doc/source_audits/batch_178.json`.
 
+## Batch 179 — ABS through ACOSPI
+
+Forty-one units, accepted with no findings: the first intrinsic procedure descriptions. The pattern every 16.9 section follows is set here — the result characteristics and the parts of the result value the text fixes exactly (ABS of an integer; ACHAR for ASCII codes 0-127; the result RANGE of ACOS and its F2023 degree and pi variants) are requirements with exact plans, while the processor-dependent approximation of a transcendental function is latitude, and Examples are informative.
+See `doc/source_audits/batch_179.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must

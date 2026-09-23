@@ -1,0 +1,189 @@
+{
+  "schema_version": 1,
+  "section": "16.9.3",
+  "requirements": [
+    {
+      "id": "S16.9.3-001",
+      "title": "ACHAR arguments have integer I and optional scalar integer constant KIND",
+      "source": "16.9.3 p3; J3/24-007, 18 December 2023, physical PDF377.",
+      "source_units": [
+        "p3"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "The I argument to ACHAR shall be of type integer, and the optional KIND argument shall be a scalar integer constant expression.",
+      "facets": [
+        "achar-i-argument-integer",
+        "achar-kind-argument-scalar-integer-constant"
+      ],
+      "pending": {
+        "achar-i-argument-integer": "Future positive controls call ACHAR with integer I values; noninteger I source shapes remain source-control only with no local diagnostic claim.",
+        "achar-kind-argument-scalar-integer-constant": "Future positive controls use an integer constant KIND such as KIND('a') or selected_char_kind result where available; nonconstant or nonscalar KIND shapes are not local diagnostic facets."
+      },
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Argument restrictions in 16.9 intrinsic procedure descriptions are program restrictions but are not numbered constraints and therefore carry no local diagnostic facet. Floating-point approximation results are not compared for exact value unless the source fixes an exact integer, logical, or character result; future fixtures must establish non-default sentinels before observing effects.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, and 13 for source form, type/kind concepts, declarations, expressions, execution, I/O harnesses, and exact character/numeric observation where used. Unregistered dependencies explicitly retained: later 16.9 intrinsic procedure specifications, 16.8 generic resolution, clause 17 IEEE support where flags are tested, and clause 19 scoping/association terminology where reached.",
+      "oracle": "Argument restrictions are unnumbered source restrictions; future valid controls may prove accepted forms, but this unit does not require rejection diagnostics."
+    },
+    {
+      "id": "S16.9.3-002",
+      "title": "ACHAR result has length one and selected character kind",
+      "source": "16.9.3 p4; J3/24-007, 18 December 2023, physical PDF377.",
+      "source_units": [
+        "p4"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "ACHAR returns a character result of length one; if KIND is present the result kind is the specified kind value, otherwise it is default character kind.",
+      "facets": [
+        "achar-result-length-one",
+        "achar-result-kind-from-kind-argument",
+        "achar-result-default-character-kind-when-kind-absent"
+      ],
+      "pending": {
+        "achar-result-length-one": "Future fixture initializes a nondefault integer code such as 88 and asserts LEN(ACHAR(88)) == 1.",
+        "achar-result-kind-from-kind-argument": "Future guarded fixture chooses a supported character kind, calls ACHAR with KIND=that constant, and asserts KIND(result) equals the specified value.",
+        "achar-result-default-character-kind-when-kind-absent": "Future fixture asserts KIND(ACHAR(88)) equals KIND('X') when KIND is omitted."
+      },
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Argument restrictions in 16.9 intrinsic procedure descriptions are program restrictions but are not numbered constraints and therefore carry no local diagnostic facet. Floating-point approximation results are not compared for exact value unless the source fixes an exact integer, logical, or character result; future fixtures must establish non-default sentinels before observing effects.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, and 13 for source form, type/kind concepts, declarations, expressions, execution, I/O harnesses, and exact character/numeric observation where used. Unregistered dependencies explicitly retained: later 16.9 intrinsic procedure specifications, 16.8 generic resolution, clause 17 IEEE support where flags are tested, and clause 19 scoping/association terminology where reached.",
+      "oracle": "Length and kind are exact inquiry properties and do not depend on collating representation beyond choosing a representable character."
+    },
+    {
+      "id": "S16.9.3-003",
+      "title": "ACHAR maps representable ASCII code values to ASCII collating positions",
+      "source": "16.9.3 p5 first sentence representable case; J3/24-007, 18 December 2023, physical PDF377.",
+      "source_units": [
+        "p5.ascii-representable-result"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "If I is in the range 0 through 127 and the processor can represent that character in the result character kind, ACHAR(I) is the character in position I of the ASCII collating sequence.",
+      "facets": [
+        "achar-ascii-code-88-is-x",
+        "achar-ascii-digit-and-letter-codes"
+      ],
+      "pending": {
+        "achar-ascii-code-88-is-x": "Future exact fixture asserts ACHAR(88) has LEN 1 and value 'X', using the source example only as illustration of the p5 mapping.",
+        "achar-ascii-digit-and-letter-codes": "Future exact fixture checks a small table of representable default characters such as ACHAR(48) == '0', ACHAR(65) == 'A', and ACHAR(122) == 'z', with LEN checks before equality."
+      },
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Argument restrictions in 16.9 intrinsic procedure descriptions are program restrictions but are not numbered constraints and therefore carry no local diagnostic facet. Floating-point approximation results are not compared for exact value unless the source fixes an exact integer, logical, or character result; future fixtures must establish non-default sentinels before observing effects.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, and 13 for source form, type/kind concepts, declarations, expressions, execution, I/O harnesses, and exact character/numeric observation where used. Unregistered dependencies explicitly retained: later 16.9 intrinsic procedure specifications, 16.8 generic resolution, clause 17 IEEE support where flags are tested, and clause 19 scoping/association terminology where reached.",
+      "oracle": "The selected default characters are representable Fortran characters and exact character equality is portable when LEN is also asserted."
+    },
+    {
+      "id": "S16.9.3-004",
+      "title": "ACHAR results are processor dependent outside representable ASCII mapping",
+      "source": "16.9.3 p5 otherwise clause; J3/24-007, 18 December 2023, physical PDF377.",
+      "source_units": [
+        "p5.processor-dependent-otherwise"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "When I is outside the representable ASCII mapping case, the ACHAR result is processor dependent.",
+      "facets": [
+        "achar-outside-representable-range-processor-dependent"
+      ],
+      "pending": {
+        "achar-outside-representable-range-processor-dependent": "No portable oracle may require a particular character for an out-of-range code or for an unrepresentable result kind. Future tests must avoid exact expectations in this domain."
+      },
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Argument restrictions in 16.9 intrinsic procedure descriptions are program restrictions but are not numbered constraints and therefore carry no local diagnostic facet. Floating-point approximation results are not compared for exact value unless the source fixes an exact integer, logical, or character result; future fixtures must establish non-default sentinels before observing effects.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, and 13 for source form, type/kind concepts, declarations, expressions, execution, I/O harnesses, and exact character/numeric observation where used. Unregistered dependencies explicitly retained: later 16.9 intrinsic procedure specifications, 16.8 generic resolution, clause 17 IEEE support where flags are tested, and clause 19 scoping/association terminology where reached.",
+      "oracle": "The source grants processor latitude for these cases, so exact character comparison would be over-specified."
+    },
+    {
+      "id": "S16.9.3-005",
+      "title": "ACHAR and IACHAR round-trip default representable characters",
+      "source": "16.9.3 p5 final sentence; J3/24-007, 18 December 2023, physical PDF377.",
+      "source_units": [
+        "p5.iachar-roundtrip"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "ACHAR(IACHAR(C)) shall have the value C for any character C capable of representation as a default character.",
+      "facets": [
+        "achar-iachar-default-character-roundtrip"
+      ],
+      "pending": {
+        "achar-iachar-default-character-roundtrip": "Future exact fixture iterates over a nonblank default-character sample such as 'Az0_', initializes the observed character to a different sentinel, and asserts ACHAR(IACHAR(C)) has LEN 1 and equals C for each element."
+      },
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Argument restrictions in 16.9 intrinsic procedure descriptions are program restrictions but are not numbered constraints and therefore carry no local diagnostic facet. Floating-point approximation results are not compared for exact value unless the source fixes an exact integer, logical, or character result; future fixtures must establish non-default sentinels before observing effects.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, and 13 for source form, type/kind concepts, declarations, expressions, execution, I/O harnesses, and exact character/numeric observation where used. Unregistered dependencies explicitly retained: later 16.9 intrinsic procedure specifications, 16.8 generic resolution, clause 17 IEEE support where flags are tested, and clause 19 scoping/association terminology where reached.",
+      "oracle": "The round trip uses default characters known to be representable and checks length before equality to avoid blank-padding vacuity."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "definition",
+      "rationale": "Description identifies ACHAR as character-from-ASCII-code."
+    },
+    {
+      "unit": "p2",
+      "disposition": "definition",
+      "rationale": "Classifies ACHAR as elemental; elemental obligations are owned elsewhere."
+    },
+    {
+      "unit": "p3",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.3-001"
+      ],
+      "rationale": "Unnumbered argument restrictions."
+    },
+    {
+      "unit": "p4",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.3-002"
+      ],
+      "rationale": "Exact result-characteristics requirements."
+    },
+    {
+      "unit": "p5",
+      "disposition": "structural",
+      "rationale": "Mixed exact ASCII mapping, processor-dependent latitude, and IACHAR round-trip are split."
+    },
+    {
+      "unit": "p5.ascii-representable-result",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.3-003"
+      ],
+      "rationale": "Exact result mapping for representable ASCII characters."
+    },
+    {
+      "unit": "p5.processor-dependent-otherwise",
+      "disposition": "permission",
+      "requirements": [
+        "S16.9.3-004"
+      ],
+      "rationale": "Processor latitude outside the representable ASCII case."
+    },
+    {
+      "unit": "p5.iachar-roundtrip",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.3-005"
+      ],
+      "rationale": "Exact ACHAR/IACHAR round-trip requirement."
+    },
+    {
+      "unit": "p6",
+      "disposition": "informative",
+      "rationale": "Example is illustrative; exact X expectation is grounded in p5, not in the example alone."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_16_9_3.md"
+  },
+  "review_state": "reviewed",
+  "review_rationale": "Source registration for 16.9 and 16.9.1-16.9.7: ABS, ACHAR, ACOS, ACOSD, ACOSH and ACOSPI (batch179). Every unit hash-verified by an independent reviewer, accepted with no findings. ACHAR's required results for codes 0-127 are split from the processor-dependent cases, and the exact result ranges of the inverse cosine family are split from their processor-dependent approximations; Examples are informative. Source accounting only.",
+  "subunits": {
+    "p5": [
+      "p5.ascii-representable-result",
+      "p5.processor-dependent-otherwise",
+      "p5.iachar-roundtrip"
+    ]
+  },
+  "review_fingerprint": "65ca20e043c52539a9260a4cdaabb97863c1d901d73942e0d0d8120bab07d936"
+}
