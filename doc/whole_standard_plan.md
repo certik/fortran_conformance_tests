@@ -5126,6 +5126,31 @@ One LFortran defect: `ROUND='DOWN'` on the **data-transfer statement** is ignore
 descriptor is honoured.
 See `doc/source_audits/batch_149.json`.
 
+## Batch 147 — E and D editing, and reaching exponent −100 portably
+
+Nineteen facets of 13.7.2.3.3 across nineteen fixtures, after two rounds.
+
+E and D differ from EN and ES in one decisive way: 13.8.5 p3 puts them in the
+**LZ family**, so under scale factor 0 the zero before the decimal symbol is
+*optional* — the same hazard that blocked batch143 four times. The packet handled
+it by asserting only the forced slice of the field when `k <= 0`, and by using
+`k > 0` layouts, which place a significant digit before the decimal symbol and
+leave no optional position. Where Table 13.1 lets D choose its exponent spelling,
+the oracle accepts exactly the permitted set `{D+00, E+00, +000}`.
+
+The blocking finding was **over-suppression**. The table rows for
+`99 < |exp| <= 999` had been left pending as needing a large real kind. The
+reviewer showed they do not: the scale factor reduces the exponent by `k`, so
+`(SS,101P,E110.101)` on the exact value `1.0` gives 101 digits, `.0`, and an
+exponent of `-100` in the letterless `±z1z2z3` form — reachable on any
+processor. Because `1.0` is exact, every extended digit is zero and neither
+precision nor rounding has any latitude.
+
+Frozen LFortran rejects that conforming format at runtime ("Got argument of type
+(REAL), while the format specifier is (P)"), so both rows are recorded as
+expected failures.
+See `doc/source_audits/batch_147.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
