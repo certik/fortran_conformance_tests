@@ -1,0 +1,126 @@
+{
+ "schema_version": 1,
+ "review_type": "independent-structure-component-fixture-review",
+ "review_date": "2026-09-22",
+ "baseline_commit": "1dc7b14",
+ "state": "reference-validated-runtime-effects",
+ "packet_kind": "FIXTURE",
+ "scope": {
+  "sections": ["9.4.2"],
+  "section_title_verified_from_source": "Structure components",
+  "facets_established": 12,
+  "new_cases": 12,
+  "requirements_touched": ["S9.4.2-001", "S9.4.2-002", "S9.4.2-003"],
+  "breakdown": {
+   "S9.4.2-001": "all 4 facets",
+   "S9.4.2-002": "3 of 4; multiple-section-subscript deferred",
+   "S9.4.2-003": "all 5 facets"
+  },
+  "left_pending": "multiple-section-subscript-rank-contribution, plus 7 pointer and subobject facets in S9.4.2-004 and S9.4.2-006"
+ },
+ "independent_review": {
+  "reviewer_distinct_from_author": true,
+  "decision": "accept_no_blocking_findings",
+  "blocking_findings": 0,
+  "non_blocking_findings": 1,
+  "observations": 1,
+  "reviewer_read_original_source": "9.4.2, 9.5.3.4.1, 9.5.3.4.2, C919 and 16.9.119; PDF checksum verified independently"
+ },
+ "rank_and_shape_derivation_independently_confirmed": {
+  "why_it_matters": "This is the rule that makes structure components subtle, and a plausible-but-wrong shape expectation was the most likely defect in the packet. The reviewer was required to derive it from source rather than check the author's chain.",
+  "p2": "'The rank of a part-ref of the form part-name is the rank of part-name. The rank of a part-ref that has a section subscript list is the sum of the number of subscript triplets, the number of vector subscripts, and the sizes of one of the arrays in each multiple section subscript.'",
+  "C919": "'There shall not be more than one part-ref with nonzero rank.'",
+  "p3": "'The rank of a data-ref is the rank of the part-ref with nonzero rank, if any; otherwise, the rank is zero.'",
+  "consequence": "array_parent%array_component is invalid when both part-refs have nonzero rank.",
+  "worked_case": "For x(2:6:2)%alpha the triplet selects 2, 4 and 6 by 9.5.3.4.2 p3, so the extent is 3; 9.5.3.4.1 p2 gives the shape from the nonzero-rank part-ref; and 16.9.119 p5 fixes LBOUND at 1 - 'otherwise than the whole-array or nonzero whole-array DIM case, the result value is 1' - rather than inheriting the parent's lower bound. Required result: SHAPE=[3], LBOUND=[1], UBOUND=[3].",
+  "note": "The LBOUND=1 detail is exactly the kind of thing that is easy to get backwards, and it was verified against 16.9.119 rather than assumed."
+ },
+ "lfortran_defect_verified": {
+  "id": "C942FR-001",
+  "defect": "Wrong shape for a structure component reference through a strided parent section",
+  "case": "S9_4_2_003_valid__structure_component_rank_from_nonzero_part_ref",
+  "standard_basis": "9.4.2 p2 and p3 with C919 for the rank; 9.5.3.4.2 p3 for the triplet extent; 9.5.3.4.1 p2 for the shape; 16.9.119 p5 for LBOUND = 1. Required: SHAPE=[3], LBOUND=[1], UBOUND=[3].",
+  "gfortran_16_1_0_f2023": "12/12 pass; the direct probe prints OK and exits 0",
+  "frozen_lfortran_0_65_0_411": "11/12 pass; this case emits SC:rank_from_nonzero_part_ref:shape then ERROR STOP, exit 1",
+  "verdict": "GENUINE LFORTRAN DEFECT",
+  "action": "Recorded as an XFAIL. The test was NOT weakened, and the required result was hand-derived from the standard rather than inferred from gfortran agreement."
+ },
+ "non_vacuity_by_mutation": {
+  "principle": "Non-vacuity must be proved by MUTATION targeting the FEATURE UNDER TEST. Oracle and input mutation alone is provably insufficient - a sibling packet's vacuity survived a 114-mutation campaign and was exposed only by mutating the feature.",
+  "feature_level_classes": {
+   "component-reference": "24/24 fail - changing x%a to x%b is detected",
+   "parent-subscript": "13/13 fail - changing x(2)%c to x(3)%c is detected",
+   "component-value-swap": "12/12 fail"
+  },
+  "total": "371/371 failing mutations fail; 12/12 reverse mutations pass; the reviewer independently re-ran 52/52 feature mutations and confirmed all sensitive.",
+  "why_distinct_values_matter": "Every component AND every array element carries a distinct nonzero, nonblank value. Without that, the component-reference and parent-subscript mutations would be INVISIBLE - identical values make a mix-up undetectable. This was verified, not assumed."
+ },
+ "findings": [
+  {
+   "id": "C942FR-001",
+   "severity": "observation",
+   "location": "tests/fixtures/structure_component_rank_from_nonzero_part_ref/source.f90",
+   "issue": "Genuine frozen-LFortran shape defect (see lfortran_defect_verified).",
+   "resolution": "Integrator recorded an XFAIL. The author correctly did not modify tests/expected_failures.txt."
+  },
+  {
+   "id": "C942FR-002",
+   "severity": "non-blocking",
+   "location": "tools/generate_structure_component_fixtures.py",
+   "issue": "The advertised component-value-swap mutations mostly swap the common x(2)%alpha / x(2)%beta control values rather than each fixture's primary feature values, so the reported category counts overstate what those particular swaps exercise.",
+   "why_not_blocking": "The reviewer ran additional feature-local swaps of its own (obj%alpha/beta, obj%avec/bvec, obj%text/other_text) and all failed as required, so the fixtures are genuinely sensitive; only the labelling of the counts is imprecise.",
+   "correction": "Relabel or add feature-local swap metadata if those exact counts are to be relied upon. Recorded rather than blocked."
+  }
+ ],
+ "deferral_assessed": {
+  "facet": "multiple-section-subscript-rank-contribution",
+  "reason": "Both toolchains reject the F2023 multiple-section-subscript @ syntax - gfortran with 'Expected array subscript', the frozen LFortran with a tokenizer error that @ is not recognized.",
+  "reviewer_verdict": "Deferral is CORRECT. No non-@ alternative demonstrates this facet, so there is no way to establish it without the syntax. A toolchain limitation is not grounds to fabricate or weaken a test.",
+  "pending_facets": "The 7 remaining pointer and subobject facets are implementable future work and were NOT claimed impossible - an unobservability claim that is too broad would itself be a defect."
+ },
+ "oracle_discipline_verified": {
+  "bounds": "Array-valued component references assert SHAPE, LBOUND and UBOUND, not merely values, with non-unit and negative lower bounds such as [-5:-3] and distinct extents, so a defaulted, transposed or off-by-one bound is detectable.",
+  "sentinels": "No observed sentinel is 0, blank or .FALSE.; every observed component value is distinct.",
+  "character": "LEN is asserted for the credited rightmost-LEN cases. One same-length neighbour control lacks a separate LEN assertion but is not credited for any LEN claim.",
+  "no_self_referential_intrinsic": "No TRANSFER, LOC, address-based oracle or undefined read appears."
+ },
+ "explicit_limitations": [
+  "Twelve facets of 9.4.2 only; 8 remain pending.",
+  "The multiple-section-subscript (@) facet cannot be demonstrated with either available toolchain.",
+  "Pointer and subobject facets in S9.4.2-004 and -006 are untested.",
+  "Storage layout, component offsets and addresses are not observable and are not claimed.",
+  "One case FAILS under the frozen LFortran and is XFAILed; that is evidence of a defect in that toolchain, not of conformance.",
+  "Passing under gfortran is corroboration, not proof of universal conformance.",
+  "Source accounting is unchanged: declared_facets remains 7184."
+ ],
+ "preservation": {
+  "cases_before": 2196,
+  "cases_after": 2208,
+  "authored_facets_before": 1908,
+  "authored_facets_after": 1920,
+  "declared_facets_before": 7184,
+  "declared_facets_after": 7184,
+  "reference_validated_before": 1883,
+  "reference_validated_after": 1895,
+  "fixture_review_states_after": "1895 reference-validated / 274 source-reviewed / 1 needs-oracle",
+  "expected_failures_lines_before": 812,
+  "expected_failures_lines_after": 813,
+  "baseline_lines_added": 1,
+  "baseline_lines_modified": 0,
+  "existing_case_ids_modified": 0
+ },
+ "validation_snapshot": {
+  "detailed_catalogues": 280,
+  "requirements": 1684,
+  "declared_facets": 7184,
+  "authored_facets": 1920,
+  "catalogue_reviews_draft": 1,
+  "catalogue_reviews_draft_note": "Only 18.3.7, pre-existing and untouched.",
+  "frozen_lfortran_result": "11 PASS / 1 FAIL, XFAILed",
+  "gfortran_result": "12/12 pass",
+  "normal_audit_exit": 1,
+  "normal_audit_block": "the single retained needs-oracle real-BOZ case, which is the intended state and not a regression",
+  "python_suite_tests": 1021,
+  "python_suite_result": "pending integrator gate"
+ }
+}

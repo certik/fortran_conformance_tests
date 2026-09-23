@@ -5905,6 +5905,33 @@
         "These two cases are evidence of DEFECTS in the frozen toolchain, not of conformance.",
         "Enum, pointer variants, allocatable components and COMMON facets remain pending."
       ]
+    },
+    {
+      "id": "clause9-structure-component-fixtures-133",
+      "state": "reference-validated-runtime-effects",
+      "packet_kind": "FIXTURE",
+      "baseline_commit": "1dc7b14",
+      "sections": ["9.4.2"],
+      "author_handoffs": {
+        "proposal": "8c58121"
+      },
+      "source_reviews": ["doc/source_audits/batch_133.json"],
+      "new_executions": 12,
+      "fixture_accounting": {
+        "facets_established": 12,
+        "new_cases": 12,
+        "authored_facets": "1908 -> 1920",
+        "cases": "2196 -> 2208",
+        "reference_validated": "1883 -> 1895",
+        "expected_failures": "812 -> 813"
+      },
+      "coordination": "THE RANK/SHAPE DERIVATION is what this packet turns on, and the reviewer derived it INDEPENDENTLY rather than checking the author's chain:9.4.2p2 gives part-ref rank as the sum of subscript triplets, vector subscripts and multiple-section-subscript array sizes; C919 forbids more than ONE part-ref with nonzero rank; p3 takes the data-ref rank from that single nonzero-rank part-ref - hence array_parent%array_component is INVALID. For x(2:6:2)%alpha it worked the case end to end: the triplet selects2,4,6by9.5.3.4.2p3 so the extent is3;9.5.3.4.1p2 gives the shape; and16.9.119p5 fixes LBOUND at1RATHER THAN INHERITING THE PARENT'S LOWER BOUND - the detail most easily got backwards. Required SHAPE=[3], LBOUND=[1], UBOUND=[3]. The frozen LFortran gets this WRONG and the case is XFAILed. NON-VACUITY rests on feature-level mutation: component-reference24/24, parent-subscript13/13, component-value-swap12/12, and371/371overall; the reviewer re-ran52of its own. CRITICALLY, every component AND every array element carries a DISTINCT value - without that the component-reference and parent-subscript mutations would be INVISIBLE, since identical values make a mix-up undetectable.",
+      "remaining_observations": [
+        "C942FR-002(non-blocking): the advertised component-value-swap mutations mostly swap COMMON CONTROL values rather than each fixture's primary feature values, so those category counts overstate what they exercise. The reviewer ran feature-local swaps of its own and all failed, so the fixtures ARE sensitive - only the labelling is imprecise.",
+        "The multiple-section-subscript(@) facet is DEFERRED because BOTH toolchains reject the F2023 syntax - gfortran 'Expected array subscript', LFortran tokenizer does not recognise @. No non-@ alternative demonstrates it.",
+        "7pointer/subobject facets remain pending and were NOT claimed impossible - an over-broad unobservability claim would itself be a defect.",
+        "Array-valued references assert SHAPE, LBOUND and UBOUND with non-unit/negative lower bounds and distinct extents, so defaulted or transposed bounds are detectable."
+      ]
     }
   ],
   "cross_batch_followups": [

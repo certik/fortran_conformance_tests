@@ -4241,6 +4241,57 @@ The XFAIL sequence was again run as separate operations, moving the baseline
 frozen-target result independently: 2 FAIL, 8 PASS.
 See `doc/source_audits/batch_129.json`.
 
+## Batch 133 — structure components, and a shape rule worth getting right
+
+Establishes **12 facets** of **9.4.2 Structure components** across 12 fixtures,
+and adds one more verified frozen-LFortran defect.
+
+Everything here turns on the **rank and shape derivation**, and the reviewer
+derived it from source rather than checking the author's chain:
+
+- **9.4.2 p2** — a part-ref's rank is the rank of the part name, or, with a
+  section subscript list, "the sum of the number of subscript triplets, the
+  number of vector subscripts, and the sizes of one of the arrays in each
+  multiple section subscript".
+- **C919** — "There shall not be more than one part-ref with nonzero rank."
+- **9.4.2 p3** — the data-ref's rank is that of the single nonzero-rank part-ref.
+
+Together these make `array_parent%array_component` invalid, which is the rule
+that makes this section subtle.
+
+The worked case is `x(2:6:2)%alpha`. The triplet selects 2, 4 and 6 by
+9.5.3.4.2 p3, giving extent 3; 9.5.3.4.1 p2 takes the shape from the
+nonzero-rank part-ref; and **16.9.119 p5 fixes `LBOUND` at 1** rather than
+inheriting the parent's lower bound. Required: `SHAPE=[3]`, `LBOUND=[1]`,
+`UBOUND=[3]`. That last detail is precisely the sort of thing a plausible
+implementation gets backwards — and the **frozen LFortran does get it wrong**,
+failing with `SC:rank_from_nonzero_part_ref:shape`. gfortran passes 12/12. The
+case is XFAILed with the required result hand-derived from the standard, not
+inferred from gfortran's agreement.
+
+On non-vacuity, the decisive mutations for this section are **changing which
+component is referenced** and **changing the parent subscript**: 24/24 and 13/13
+respectively, within 371/371 overall, and the reviewer re-ran 52 of its own.
+The enabling design choice deserves recording, because it is easy to omit:
+**every component and every array element carries a distinct value.** Without
+that, both mutation classes would be **invisible** — swapping `x%a` for `x%b`
+changes nothing observable if both hold the same number.
+
+Two items were recorded rather than blocked. The `component-value-swap`
+mutations mostly swap **common control values** rather than each fixture's
+primary feature values, so those category counts overstate what they exercise;
+the reviewer ran feature-local swaps of its own and all failed, so the fixtures
+are genuinely sensitive and only the labelling is imprecise. And the
+multiple-section-subscript facet is deferred because **both** toolchains reject
+the F2023 `@` syntax — gfortran with "Expected array subscript", LFortran's
+tokenizer not recognising `@` at all. No non-`@` alternative demonstrates it,
+and a toolchain limitation is not grounds to fabricate a test.
+
+The seven remaining pointer and subobject facets were explicitly left as
+implementable future work rather than claimed impossible — an over-broad
+unobservability claim would itself be a defect.
+See `doc/source_audits/batch_133.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
