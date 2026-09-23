@@ -1,0 +1,423 @@
+{
+  "schema_version": 1,
+  "section": "12.6.4.1",
+  "subunits": {
+    "p3": [
+      "p3.ordered-async-operations",
+      "p3.optional-waits",
+      "p3.input-list-storage-identification",
+      "p3.async-initiation-and-completion",
+      "p3.condition-timing-exclusivity",
+      "p3.async-post-transfer-effects"
+    ],
+    "p4": [
+      "p4.async-timing-latitude",
+      "p4.pending-until-wait"
+    ],
+    "p7": [
+      "p7.condition-timing-latitude",
+      "p7.no-id-subsequent-reporting-latitude",
+      "p7.prior-condition-waits-all",
+      "p7.subsequent-condition-actions"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S12.6.4.1-001",
+      "title": "Output to a connected nonexistent file creates the file unless an error occurs",
+      "source": "S12.6.4.1, J3/24-007, 18 December 2023, physical PDF264.",
+      "source_units": [
+        "p1"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Executing a WRITE or PRINT statement for a unit connected to a file that does not exist creates the file unless an error condition occurs.",
+      "facets": [
+        "output-to-nonexistent-connected-file-creates-file"
+      ],
+      "pending": {
+        "output-to-nonexistent-connected-file-creates-file": "Guarded plan: use connection rules to obtain a connected external unit whose named file is probed by INQUIRE(FILE=...,EXIST=) as not existing after connection; only in that established state perform WRITE with a nonblank record and IOSTAT sentinel, then INQUIRE EXIST=.true. If no such connected-nonexistent state is available, make no conformance claim for this facet."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by opening or creating a known file, writing known records, initializing variables to nonzero/nonblank sentinels, or using a distinct labelled control path) and then observe only portable properties: successful IOSTAT zero, nonzero IOSTAT for a specified error condition, exact internal records or values where the source fixes them, named ISO_FORTRAN_ENV status values where the standard names them, or INQUIRE properties fixed by the relevant rule. Processor-dependent unit numbers, filenames except names created by the fixture, storage-unit encodings, buffering, asynchronous timing, IOMSG text, and specific numeric status values are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe that rejection portably; unnumbered program restrictions are not promoted to required diagnostics. IOMSG wording, processor-dependent numeric status values, asynchronous completion timing, and multiple-image or coarray-dependent behavior are never single-image oracles; coarray facets remain out of scope for this suite's fixtures.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations; registered earlier clause 12 catalogues for file existence, access, file position, internal files, connection, data-transfer statements, and control-list forms where present. Unregistered dependencies explicitly retained: 12.6.2.2/12.6.3 sibling source packets, later 12.6.4.8 defined I/O, clause 13 formatting, clause 15 defined I/O procedure accessibility, clause 16 inquiry and ISO_FORTRAN_ENV intrinsics where future fixtures need them, clause 14 image semantics only as out-of-scope context, and clauses 3, 5, 17, 18, and 19 where terminology, IEEE support, deleted features, or program execution controls are reached."
+    },
+    {
+      "id": "S12.6.4.1-002",
+      "title": "Synchronous data transfer performs the specified operations in order",
+      "source": "S12.6.4.1, J3/24-007, 18 December 2023, physical PDF264.",
+      "source_units": [
+        "p2"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A synchronous data transfer statement has the effect of determining direction, identifying the unit, waiting for all pending operations for that unit, establishing any format, positioning and setting the left tab limit for parent formatted transfers, transferring data, determining conditions, positioning after transfer, defining SIZE=, and assigning IOSTAT= zero when no condition occurs, in the specified order and with steps skipped after a wait condition.",
+      "facets": [
+        "sync-operation-order",
+        "sync-waits-all-pending-unit-operations",
+        "sync-wait-condition-skips-transfer-steps",
+        "sync-parent-position-and-left-tab-before-transfer",
+        "sync-data-transfer-step",
+        "sync-condition-determination",
+        "sync-post-transfer-positioning",
+        "sync-size-defined",
+        "sync-iostat-zero-without-condition"
+      ],
+      "pending": {
+        "sync-operation-order": "Use a synchronous READ whose unit expression, input-item bounds, SIZE= variable, and IOSTAT= sentinel have distinguishable side effects/initial values; assert only the ordering properties fixed by the subfacet after the relevant control-list and item rules are registered.",
+        "sync-waits-all-pending-unit-operations": "Start an asynchronous transfer with ID= on a known unit, then execute a later synchronous transfer on that unit and use WAIT/IOSTAT sentinels to show the pending transfer has completed before the synchronous transfer's data are used; do not assert timing before the statement.",
+        "sync-wait-condition-skips-transfer-steps": "Create a pending asynchronous input that reaches a portable end/error status at WAIT; initialize transfer targets and SIZE= to sentinels and assert the later synchronous statement takes the 12.11 status path without changing the skipped-step sentinels.",
+        "sync-parent-position-and-left-tab-before-transfer": "For a parent formatted sequential transfer, prewrite distinct records, REWIND, use a format with tabbing whose result distinguishes the left-tab limit, and assert exact internal/external record data after successful IOSTAT zero.",
+        "sync-data-transfer-step": "Read or write a value different from the initialized sentinel through a known internal or external file and assert the value/record changes only after the transfer statement succeeds.",
+        "sync-condition-determination": "Use a short internal formatted input that produces a named end/error condition and a control case that succeeds; compare only zero versus nonzero/named status, never IOMSG text.",
+        "sync-post-transfer-positioning": "Write two known records, perform one synchronous READ, then read again and assert the second value comes from the succeeding record as fixed by 12.3.4.4, with all targets initialized to distinct sentinels.",
+        "sync-size-defined": "For nonadvancing input after ADVANCE= registration, initialize SIZE= to -777 and assert it becomes defined to the portable character count for a record with nonzero length.",
+        "sync-iostat-zero-without-condition": "Initialize IOSTAT= to a nonzero sentinel, perform a successful internal WRITE or READ with no error/end/eor condition, and assert IOSTAT becomes exactly zero."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by opening or creating a known file, writing known records, initializing variables to nonzero/nonblank sentinels, or using a distinct labelled control path) and then observe only portable properties: successful IOSTAT zero, nonzero IOSTAT for a specified error condition, exact internal records or values where the source fixes them, named ISO_FORTRAN_ENV status values where the standard names them, or INQUIRE properties fixed by the relevant rule. Processor-dependent unit numbers, filenames except names created by the fixture, storage-unit encodings, buffering, asynchronous timing, IOMSG text, and specific numeric status values are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe that rejection portably; unnumbered program restrictions are not promoted to required diagnostics. IOMSG wording, processor-dependent numeric status values, asynchronous completion timing, and multiple-image or coarray-dependent behavior are never single-image oracles; coarray facets remain out of scope for this suite's fixtures.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations; registered earlier clause 12 catalogues for file existence, access, file position, internal files, connection, data-transfer statements, and control-list forms where present. Unregistered dependencies explicitly retained: 12.6.2.2/12.6.3 sibling source packets, later 12.6.4.8 defined I/O, clause 13 formatting, clause 15 defined I/O procedure accessibility, clause 16 inquiry and ISO_FORTRAN_ENV intrinsics where future fixtures need them, clause 14 image semantics only as out-of-scope context, and clauses 3, 5, 17, 18, and 19 where terminology, IEEE support, deleted features, or program execution controls are reached."
+    },
+    {
+      "id": "S12.6.4.1-003",
+      "title": "Asynchronous data transfer has ordered setup, initiation, and post-initiation effects",
+      "source": "S12.6.4.1, J3/24-007, 18 December 2023, physical PDF264.",
+      "source_units": [
+        "p3.ordered-async-operations",
+        "p3.input-list-storage-identification",
+        "p3.async-initiation-and-completion",
+        "p3.condition-timing-exclusivity",
+        "p3.async-post-transfer-effects"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "An asynchronous data transfer statement performs its non-optional operations in order: direction and unit identification, optional wait handling, format establishment, pre-transfer positioning and left-tab setup, input-list storage identification, asynchronous transfer initiation, condition determination, as-if-finished positioning, SIZE= undefinition, and IOSTAT= zero assignment when no condition has occurred; completion and conditions may occur at the statement or a corresponding wait, but a condition occurs in only one of those places.",
+      "facets": [
+        "async-operation-order",
+        "async-input-list-storage-identified-before-initiation",
+        "async-transfer-initiated-and-completed-by-wait",
+        "async-condition-statement-or-wait-not-both",
+        "async-position-as-if-finished",
+        "async-size-undefined",
+        "async-iostat-zero-without-immediate-condition"
+      ],
+      "pending": {
+        "async-operation-order": "Use ASYNCHRONOUS='YES' with ID= on a file opened for asynchronous access, initialize ID/IOSTAT/SIZE and transfer targets to nondefault sentinels, and assert only post-WAIT observable ordering effects that the statement must have established before initiation.",
+        "async-input-list-storage-identified-before-initiation": "Use an asynchronous input list whose subscript/bound expression depends on a variable initialized away from the file value; after WAIT assert the element selected by the pre-initiation expression changed and neighboring sentinels did not.",
+        "async-transfer-initiated-and-completed-by-wait": "After an asynchronous WRITE of a distinct record, perform WAIT(ID=,IOSTAT=) before closing/reopening and assert IOSTAT zero and the record content; this observes portable completion, not processor timing.",
+        "async-condition-statement-or-wait-not-both": "Use ID= and status sentinels around an asynchronous input that reaches a portable end condition; assert that exactly one of the initiating statement or its WAIT reports the nonzero/named condition, and never require which one.",
+        "async-position-as-if-finished": "After asynchronous output and WAIT, perform the next positioned transfer and assert it sees the post-transfer position; no claim is made about interim position during pending execution.",
+        "async-size-undefined": "No portable single-image oracle can observe undefinedness of a SIZE= variable without invoking undefined behavior; future tests may only avoid reading SIZE= until a later defining statement.",
+        "async-iostat-zero-without-immediate-condition": "Initialize IOSTAT= to a nonzero sentinel on an asynchronous operation that does not report an immediate condition; assert zero only for the statement or WAIT that reports successful completion, not for processor-dependent timing."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by opening or creating a known file, writing known records, initializing variables to nonzero/nonblank sentinels, or using a distinct labelled control path) and then observe only portable properties: successful IOSTAT zero, nonzero IOSTAT for a specified error condition, exact internal records or values where the source fixes them, named ISO_FORTRAN_ENV status values where the standard names them, or INQUIRE properties fixed by the relevant rule. Processor-dependent unit numbers, filenames except names created by the fixture, storage-unit encodings, buffering, asynchronous timing, IOMSG text, and specific numeric status values are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe that rejection portably; unnumbered program restrictions are not promoted to required diagnostics. IOMSG wording, processor-dependent numeric status values, asynchronous completion timing, and multiple-image or coarray-dependent behavior are never single-image oracles; coarray facets remain out of scope for this suite's fixtures.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations; registered earlier clause 12 catalogues for file existence, access, file position, internal files, connection, data-transfer statements, and control-list forms where present. Unregistered dependencies explicitly retained: 12.6.2.2/12.6.3 sibling source packets, later 12.6.4.8 defined I/O, clause 13 formatting, clause 15 defined I/O procedure accessibility, clause 16 inquiry and ISO_FORTRAN_ENV intrinsics where future fixtures need them, clause 14 image semantics only as out-of-scope context, and clauses 3, 5, 17, 18, and 19 where terminology, IEEE support, deleted features, or program execution controls are reached."
+    },
+    {
+      "id": "S12.6.4.1-004",
+      "title": "Asynchronous statements may perform optional waits before setup",
+      "source": "S12.6.4.1, J3/24-007, 18 December 2023, physical PDF264.",
+      "source_units": [
+        "p3.optional-waits"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For an asynchronous data transfer statement, the processor may perform wait operations for one or more pending input/output operations for the unit before later setup steps, and wait conditions skip later steps.",
+      "facets": [
+        "async-optional-pre-waits",
+        "async-pre-wait-condition-skips-later-steps"
+      ],
+      "pending": {
+        "async-optional-pre-waits": "No portable oracle may require the processor either to perform or not perform optional pre-waits; future tests must use explicit WAIT to establish completion before observing data.",
+        "async-pre-wait-condition-skips-later-steps": "Guarded plan: with a pending operation that can portably report a condition, initialize later-step targets to sentinels and accept either no optional wait or a skipped-step condition path; do not require the processor to choose the optional wait."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by opening or creating a known file, writing known records, initializing variables to nonzero/nonblank sentinels, or using a distinct labelled control path) and then observe only portable properties: successful IOSTAT zero, nonzero IOSTAT for a specified error condition, exact internal records or values where the source fixes them, named ISO_FORTRAN_ENV status values where the standard names them, or INQUIRE properties fixed by the relevant rule. Processor-dependent unit numbers, filenames except names created by the fixture, storage-unit encodings, buffering, asynchronous timing, IOMSG text, and specific numeric status values are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe that rejection portably; unnumbered program restrictions are not promoted to required diagnostics. IOMSG wording, processor-dependent numeric status values, asynchronous completion timing, and multiple-image or coarray-dependent behavior are never single-image oracles; coarray facets remain out of scope for this suite's fixtures.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations; registered earlier clause 12 catalogues for file existence, access, file position, internal files, connection, data-transfer statements, and control-list forms where present. Unregistered dependencies explicitly retained: 12.6.2.2/12.6.3 sibling source packets, later 12.6.4.8 defined I/O, clause 13 formatting, clause 15 defined I/O procedure accessibility, clause 16 inquiry and ISO_FORTRAN_ENV intrinsics where future fixtures need them, clause 14 image semantics only as out-of-scope context, and clauses 3, 5, 17, 18, and 19 where terminology, IEEE support, deleted features, or program execution controls are reached."
+    },
+    {
+      "id": "S12.6.4.1-005",
+      "title": "Asynchronous transfer timing is processor latitude but remains pending until WAIT",
+      "source": "S12.6.4.1, J3/24-007, 18 December 2023, physical PDF264.",
+      "source_units": [
+        "p4.async-timing-latitude",
+        "p4.pending-until-wait"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Asynchronous data transfers may occur during the initiating statement, during the corresponding wait, or between them; the transfer operation is considered pending until the corresponding wait operation is performed.",
+      "facets": [
+        "async-transfer-timing-latitude",
+        "async-transfer-pending-until-wait"
+      ],
+      "pending": {
+        "async-transfer-timing-latitude": "No portable oracle may require data movement at a particular time before the corresponding WAIT; tests must not read pending affected storage or file contents to infer timing.",
+        "async-transfer-pending-until-wait": "Start an asynchronous operation with ID= and avoid touching pending affectors; perform WAIT with IOSTAT initialized to a sentinel, then assert successful completion and only afterward observe transferred data."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by opening or creating a known file, writing known records, initializing variables to nonzero/nonblank sentinels, or using a distinct labelled control path) and then observe only portable properties: successful IOSTAT zero, nonzero IOSTAT for a specified error condition, exact internal records or values where the source fixes them, named ISO_FORTRAN_ENV status values where the standard names them, or INQUIRE properties fixed by the relevant rule. Processor-dependent unit numbers, filenames except names created by the fixture, storage-unit encodings, buffering, asynchronous timing, IOMSG text, and specific numeric status values are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe that rejection portably; unnumbered program restrictions are not promoted to required diagnostics. IOMSG wording, processor-dependent numeric status values, asynchronous completion timing, and multiple-image or coarray-dependent behavior are never single-image oracles; coarray facets remain out of scope for this suite's fixtures.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations; registered earlier clause 12 catalogues for file existence, access, file position, internal files, connection, data-transfer statements, and control-list forms where present. Unregistered dependencies explicitly retained: 12.6.2.2/12.6.3 sibling source packets, later 12.6.4.8 defined I/O, clause 13 formatting, clause 15 defined I/O procedure accessibility, clause 16 inquiry and ISO_FORTRAN_ENV intrinsics where future fixtures need them, clause 14 image semantics only as out-of-scope context, and clauses 3, 5, 17, 18, and 19 where terminology, IEEE support, deleted features, or program execution controls are reached."
+    },
+    {
+      "id": "S12.6.4.1-006",
+      "title": "Pending asynchronous output affectors are protected from mutation",
+      "source": "S12.6.4.1, J3/24-007, 18 December 2023, physical PDF264.",
+      "source_units": [
+        "p5"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "For asynchronous output, a pending input/output storage sequence affector shall not be redefined, become undefined, or have its pointer association status changed.",
+      "facets": [
+        "async-output-pending-affector-not-redefined",
+        "async-output-pending-affector-not-undefined",
+        "async-output-pending-pointer-status-not-changed"
+      ],
+      "pending": {
+        "async-output-pending-affector-not-redefined": "Source-control negative mutates an output buffer after initiating asynchronous output and before WAIT; positive control waits first. No required diagnostic or portable runtime result is asserted for the violating program.",
+        "async-output-pending-affector-not-undefined": "Source-control negative deallocates or otherwise undefines a pending output affector before WAIT; positive control performs WAIT before the undefinition. The violating program has no portable oracle.",
+        "async-output-pending-pointer-status-not-changed": "Source-control negative changes pointer association status for a pending output affector before WAIT; positive control waits first. No diagnostic obligation is inferred from this unnumbered restriction."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by opening or creating a known file, writing known records, initializing variables to nonzero/nonblank sentinels, or using a distinct labelled control path) and then observe only portable properties: successful IOSTAT zero, nonzero IOSTAT for a specified error condition, exact internal records or values where the source fixes them, named ISO_FORTRAN_ENV status values where the standard names them, or INQUIRE properties fixed by the relevant rule. Processor-dependent unit numbers, filenames except names created by the fixture, storage-unit encodings, buffering, asynchronous timing, IOMSG text, and specific numeric status values are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe that rejection portably; unnumbered program restrictions are not promoted to required diagnostics. IOMSG wording, processor-dependent numeric status values, asynchronous completion timing, and multiple-image or coarray-dependent behavior are never single-image oracles; coarray facets remain out of scope for this suite's fixtures.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations; registered earlier clause 12 catalogues for file existence, access, file position, internal files, connection, data-transfer statements, and control-list forms where present. Unregistered dependencies explicitly retained: 12.6.2.2/12.6.3 sibling source packets, later 12.6.4.8 defined I/O, clause 13 formatting, clause 15 defined I/O procedure accessibility, clause 16 inquiry and ISO_FORTRAN_ENV intrinsics where future fixtures need them, clause 14 image semantics only as out-of-scope context, and clauses 3, 5, 17, 18, and 19 where terminology, IEEE support, deleted features, or program execution controls are reached."
+    },
+    {
+      "id": "S12.6.4.1-007",
+      "title": "Pending asynchronous input affectors are protected from reference and mutation",
+      "source": "S12.6.4.1, J3/24-007, 18 December 2023, physical PDF264.",
+      "source_units": [
+        "p6"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "For asynchronous input, a pending input/output storage sequence affector shall not be referenced, become defined, become undefined, become associated with a VALUE dummy argument, or have its pointer association status changed.",
+      "facets": [
+        "async-input-pending-affector-not-referenced",
+        "async-input-pending-affector-not-defined",
+        "async-input-pending-affector-not-undefined",
+        "async-input-pending-affector-not-value-dummy",
+        "async-input-pending-pointer-status-not-changed"
+      ],
+      "pending": {
+        "async-input-pending-affector-not-referenced": "Source-control negative reads a pending input target before WAIT; positive control waits first and then checks the changed value. The pre-WAIT reference itself has no portable oracle.",
+        "async-input-pending-affector-not-defined": "Source-control negative assigns to a pending input target before WAIT; positive control waits first. No required diagnostic is claimed.",
+        "async-input-pending-affector-not-undefined": "Source-control negative undefines/deallocates a pending input target before WAIT; positive control waits first. The violating program is not used as a runtime oracle.",
+        "async-input-pending-affector-not-value-dummy": "Source-control negative passes a pending input target to a VALUE dummy before WAIT; positive control passes it only after WAIT and checks the transferred value.",
+        "async-input-pending-pointer-status-not-changed": "Source-control negative changes pointer association status for a pending input affector before WAIT; positive control waits first. No diagnostic obligation is inferred."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by opening or creating a known file, writing known records, initializing variables to nonzero/nonblank sentinels, or using a distinct labelled control path) and then observe only portable properties: successful IOSTAT zero, nonzero IOSTAT for a specified error condition, exact internal records or values where the source fixes them, named ISO_FORTRAN_ENV status values where the standard names them, or INQUIRE properties fixed by the relevant rule. Processor-dependent unit numbers, filenames except names created by the fixture, storage-unit encodings, buffering, asynchronous timing, IOMSG text, and specific numeric status values are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe that rejection portably; unnumbered program restrictions are not promoted to required diagnostics. IOMSG wording, processor-dependent numeric status values, asynchronous completion timing, and multiple-image or coarray-dependent behavior are never single-image oracles; coarray facets remain out of scope for this suite's fixtures.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations; registered earlier clause 12 catalogues for file existence, access, file position, internal files, connection, data-transfer statements, and control-list forms where present. Unregistered dependencies explicitly retained: 12.6.2.2/12.6.3 sibling source packets, later 12.6.4.8 defined I/O, clause 13 formatting, clause 15 defined I/O procedure accessibility, clause 16 inquiry and ISO_FORTRAN_ENV intrinsics where future fixtures need them, clause 14 image semantics only as out-of-scope context, and clauses 3, 5, 17, 18, and 19 where terminology, IEEE support, deleted features, or program execution controls are reached."
+    },
+    {
+      "id": "S12.6.4.1-008",
+      "title": "Asynchronous conditions may be reported at statement or wait and can force waits/actions",
+      "source": "S12.6.4.1, J3/24-007, 18 December 2023, physical PDF264.",
+      "source_units": [
+        "p7.condition-timing-latitude",
+        "p7.no-id-subsequent-reporting-latitude",
+        "p7.prior-condition-waits-all",
+        "p7.subsequent-condition-actions"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Asynchronous error, end-of-file, and end-of-record conditions may occur during the initiating statement or corresponding wait; without ID= they may be reported by later data-transfer or wait operations for the same unit, a condition for a previous asynchronous statement performs waits for all pending transfers on that unit, and the later statement's status/control specifier actions are taken.",
+      "facets": [
+        "async-condition-timing-latitude",
+        "async-no-id-subsequent-reporting-latitude",
+        "async-prior-condition-waits-all-pending",
+        "async-subsequent-statement-status-actions"
+      ],
+      "pending": {
+        "async-condition-timing-latitude": "No portable oracle may require whether an asynchronous condition is reported at initiation or WAIT; tests accept either and assert only that a matching operation reports the condition once.",
+        "async-no-id-subsequent-reporting-latitude": "No portable oracle may force a processor to delay an ID-less condition to a particular later statement; future tests use ID= when attribution matters.",
+        "async-prior-condition-waits-all-pending": "With two pending ID-less operations on one unit, a guarded plan triggers a portable condition and then uses explicit WAIT/IOSTAT sentinels to verify no pending operation remains before observing data; if the processor reports earlier, the plan records that path without claiming later-report behavior.",
+        "async-subsequent-statement-status-actions": "Use IOSTAT=/ERR=/END=/EOR= sentinels on the statement that reports the condition and assert only the named status/control transfer required by 12.11, not IOMSG wording or numeric codes."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by opening or creating a known file, writing known records, initializing variables to nonzero/nonblank sentinels, or using a distinct labelled control path) and then observe only portable properties: successful IOSTAT zero, nonzero IOSTAT for a specified error condition, exact internal records or values where the source fixes them, named ISO_FORTRAN_ENV status values where the standard names them, or INQUIRE properties fixed by the relevant rule. Processor-dependent unit numbers, filenames except names created by the fixture, storage-unit encodings, buffering, asynchronous timing, IOMSG text, and specific numeric status values are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe that rejection portably; unnumbered program restrictions are not promoted to required diagnostics. IOMSG wording, processor-dependent numeric status values, asynchronous completion timing, and multiple-image or coarray-dependent behavior are never single-image oracles; coarray facets remain out of scope for this suite's fixtures.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations; registered earlier clause 12 catalogues for file existence, access, file position, internal files, connection, data-transfer statements, and control-list forms where present. Unregistered dependencies explicitly retained: 12.6.2.2/12.6.3 sibling source packets, later 12.6.4.8 defined I/O, clause 13 formatting, clause 15 defined I/O procedure accessibility, clause 16 inquiry and ISO_FORTRAN_ENV intrinsics where future fixtures need them, clause 14 image semantics only as out-of-scope context, and clauses 3, 5, 17, 18, and 19 where terminology, IEEE support, deleted features, or program execution controls are reached."
+    },
+    {
+      "id": "S12.6.4.1-009",
+      "title": "Program termination during output leaves file contents undefined",
+      "source": "S12.6.4.1, J3/24-007, 18 December 2023, physical PDF264.",
+      "source_units": [
+        "p8"
+      ],
+      "category": "undefined-result",
+      "diagnostic_obligation": "not-required",
+      "definition": "If execution of the program is terminated during execution of an output statement, the contents of the file become undefined.",
+      "facets": [
+        "terminated-output-file-contents-undefined"
+      ],
+      "pending": {
+        "terminated-output-file-contents-undefined": "No portable oracle can inspect undefined file contents after terminating execution during an output statement; future tests must avoid relying on contents in this condition."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by opening or creating a known file, writing known records, initializing variables to nonzero/nonblank sentinels, or using a distinct labelled control path) and then observe only portable properties: successful IOSTAT zero, nonzero IOSTAT for a specified error condition, exact internal records or values where the source fixes them, named ISO_FORTRAN_ENV status values where the standard names them, or INQUIRE properties fixed by the relevant rule. Processor-dependent unit numbers, filenames except names created by the fixture, storage-unit encodings, buffering, asynchronous timing, IOMSG text, and specific numeric status values are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe that rejection portably; unnumbered program restrictions are not promoted to required diagnostics. IOMSG wording, processor-dependent numeric status values, asynchronous completion timing, and multiple-image or coarray-dependent behavior are never single-image oracles; coarray facets remain out of scope for this suite's fixtures.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations; registered earlier clause 12 catalogues for file existence, access, file position, internal files, connection, data-transfer statements, and control-list forms where present. Unregistered dependencies explicitly retained: 12.6.2.2/12.6.3 sibling source packets, later 12.6.4.8 defined I/O, clause 13 formatting, clause 15 defined I/O procedure accessibility, clause 16 inquiry and ISO_FORTRAN_ENV intrinsics where future fixtures need them, clause 14 image semantics only as out-of-scope context, and clauses 3, 5, 17, 18, and 19 where terminology, IEEE support, deleted features, or program execution controls are reached."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.6.4.1-001"
+      ]
+    },
+    {
+      "unit": "p2",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.6.4.1-002"
+      ]
+    },
+    {
+      "unit": "p3",
+      "disposition": "structural",
+      "rationale": "Asynchronous sequence mixes required ordered effects with optional waits, processor-dependent timing, and post-transfer obligations split into fine units."
+    },
+    {
+      "unit": "p3.ordered-async-operations",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.6.4.1-003"
+      ],
+      "rationale": "Required ordered asynchronous setup/effects."
+    },
+    {
+      "unit": "p3.optional-waits",
+      "disposition": "permission",
+      "requirements": [
+        "S12.6.4.1-004"
+      ],
+      "rationale": "Optional pre-wait latitude and conditional skip path."
+    },
+    {
+      "unit": "p3.input-list-storage-identification",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.6.4.1-003"
+      ],
+      "rationale": "Input-list storage identification before initiation."
+    },
+    {
+      "unit": "p3.async-initiation-and-completion",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.6.4.1-003"
+      ],
+      "rationale": "Asynchronous initiation and completion/status obligations."
+    },
+    {
+      "unit": "p3.condition-timing-exclusivity",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.6.4.1-003"
+      ],
+      "rationale": "Condition can occur at statement or wait but not both."
+    },
+    {
+      "unit": "p3.async-post-transfer-effects",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.6.4.1-003"
+      ],
+      "rationale": "Positioning, SIZE= undefinition, and IOSTAT= zero effects."
+    },
+    {
+      "unit": "p4",
+      "disposition": "structural",
+      "rationale": "Timing latitude is split from the pending-until-WAIT obligation."
+    },
+    {
+      "unit": "p4.async-timing-latitude",
+      "disposition": "permission",
+      "requirements": [
+        "S12.6.4.1-005"
+      ],
+      "rationale": "Processor latitude for when transfer occurs."
+    },
+    {
+      "unit": "p4.pending-until-wait",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.6.4.1-005"
+      ],
+      "rationale": "Pending state lasts until corresponding WAIT."
+    },
+    {
+      "unit": "p5",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.6.4.1-006"
+      ]
+    },
+    {
+      "unit": "p6",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.6.4.1-007"
+      ]
+    },
+    {
+      "unit": "p7",
+      "disposition": "structural",
+      "rationale": "Condition-reporting latitude is split from required all-pending wait/status-action effects."
+    },
+    {
+      "unit": "p7.condition-timing-latitude",
+      "disposition": "permission",
+      "requirements": [
+        "S12.6.4.1-008"
+      ],
+      "rationale": "Processor latitude for reporting at initiating statement or WAIT."
+    },
+    {
+      "unit": "p7.no-id-subsequent-reporting-latitude",
+      "disposition": "permission",
+      "requirements": [
+        "S12.6.4.1-008"
+      ],
+      "rationale": "Processor latitude for later reporting when ID= is absent."
+    },
+    {
+      "unit": "p7.prior-condition-waits-all",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.6.4.1-008"
+      ],
+      "rationale": "Required wait for all pending transfers on that unit after prior condition."
+    },
+    {
+      "unit": "p7.subsequent-condition-actions",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.6.4.1-008"
+      ],
+      "rationale": "Required status/control actions on the statement that reports the condition."
+    },
+    {
+      "unit": "p8",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.6.4.1-009"
+      ]
+    },
+    {
+      "unit": "note-unnumbered",
+      "disposition": "informative",
+      "rationale": "NOTE explains attribution difficulty for asynchronous statements without ID=; it is not normative."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_12_6_4_1.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "24c339874d00c27b431ac766301f96964cf440e49e67aaafebe45c3da2da9069",
+  "review_rationale": "Source registration for 12.6.4-12.6.4.7, execution of a data transfer statement (batch162). Every unit hash-verified by an independent reviewer across two rounds. Round 1 found that the '*', INPUT_UNIT and OUTPUT_UNIT equality facets were planned through stdin/stdout capture and separate controls, which cannot observe unit identity; they are now recorded as having no portable oracle because 12.5.4 makes connecting one file to several units, and I/O through them, processor dependent, and neither NAME= nor NUMBER= rescues it. Source accounting only."
+}

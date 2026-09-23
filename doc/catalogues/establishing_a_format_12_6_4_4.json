@@ -1,0 +1,105 @@
+{
+  "schema_version": 1,
+  "section": "12.6.4.4",
+  "requirements": [
+    {
+      "id": "S12.6.4.4-001",
+      "title": "Data transfer establishes list-directed, namelist, unformatted, or explicit formatting",
+      "source": "S12.6.4.4, J3/24-007, 18 December 2023, physical PDF266.",
+      "source_units": [
+        "p1"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The input/output control list establishes list-directed formatting for * format, namelist formatting for a namelist-group-name, unformatted transfer when neither format nor namelist appears, and otherwise the specified format.",
+      "facets": [
+        "asterisk-establishes-list-directed-formatting",
+        "namelist-name-establishes-namelist-formatting",
+        "no-format-or-namelist-establishes-unformatted-transfer",
+        "format-specifier-establishes-explicit-format"
+      ],
+      "pending": {
+        "asterisk-establishes-list-directed-formatting": "Use READ/WRITE with FMT=* on controlled records/values initialized to sentinels and assert only list-directed properties registered in 13.10.",
+        "namelist-name-establishes-namelist-formatting": "Use NML= with a namelist group containing a sentinel-initialized variable and assert the namelist input/output effects registered in 13.11.",
+        "no-format-or-namelist-establishes-unformatted-transfer": "Open a file for unformatted access, write a nondefault scalar with no format/namelist, read it back into a sentinel, and assert the value.",
+        "format-specifier-establishes-explicit-format": "Use an explicit internal WRITE format such as '(I3)' into a '#' filled buffer and assert the exact source-fixed characters."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by opening or creating a known file, writing known records, initializing variables to nonzero/nonblank sentinels, or using a distinct labelled control path) and then observe only portable properties: successful IOSTAT zero, nonzero IOSTAT for a specified error condition, exact internal records or values where the source fixes them, named ISO_FORTRAN_ENV status values where the standard names them, or INQUIRE properties fixed by the relevant rule. Processor-dependent unit numbers, filenames except names created by the fixture, storage-unit encodings, buffering, asynchronous timing, IOMSG text, and specific numeric status values are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe that rejection portably; unnumbered program restrictions are not promoted to required diagnostics. IOMSG wording, processor-dependent numeric status values, asynchronous completion timing, and multiple-image or coarray-dependent behavior are never single-image oracles; coarray facets remain out of scope for this suite's fixtures.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations; registered earlier clause 12 catalogues for file existence, access, file position, internal files, connection, data-transfer statements, and control-list forms where present. Unregistered dependencies explicitly retained: 12.6.2.2/12.6.3 sibling source packets, later 12.6.4.8 defined I/O, clause 13 formatting, clause 15 defined I/O procedure accessibility, clause 16 inquiry and ISO_FORTRAN_ENV intrinsics where future fixtures need them, clause 14 image semantics only as out-of-scope context, and clauses 3, 5, 17, 18, and 19 where terminology, IEEE support, deleted features, or program execution controls are reached."
+    },
+    {
+      "id": "S12.6.4.4-002",
+      "title": "Internal-file output cannot use a format specification in or associated with the file",
+      "source": "S12.6.4.4, J3/24-007, 18 December 2023, physical PDF266.",
+      "source_units": [
+        "p2"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "For output to an internal file, a format specification that is in the file or associated with the file shall not be specified.",
+      "facets": [
+        "internal-output-format-not-in-internal-file",
+        "internal-output-format-not-associated-with-internal-file"
+      ],
+      "pending": {
+        "internal-output-format-not-in-internal-file": "Source-control negative uses an internal file character object as the output target and as the format source; positive control uses an independent format string. No required diagnostic is claimed for the violating program.",
+        "internal-output-format-not-associated-with-internal-file": "Source-control negative uses a pointer/association path tying the format specification storage to the internal file; positive control uses disjoint storage and sentinel-filled output."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by opening or creating a known file, writing known records, initializing variables to nonzero/nonblank sentinels, or using a distinct labelled control path) and then observe only portable properties: successful IOSTAT zero, nonzero IOSTAT for a specified error condition, exact internal records or values where the source fixes them, named ISO_FORTRAN_ENV status values where the standard names them, or INQUIRE properties fixed by the relevant rule. Processor-dependent unit numbers, filenames except names created by the fixture, storage-unit encodings, buffering, asynchronous timing, IOMSG text, and specific numeric status values are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe that rejection portably; unnumbered program restrictions are not promoted to required diagnostics. IOMSG wording, processor-dependent numeric status values, asynchronous completion timing, and multiple-image or coarray-dependent behavior are never single-image oracles; coarray facets remain out of scope for this suite's fixtures.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations; registered earlier clause 12 catalogues for file existence, access, file position, internal files, connection, data-transfer statements, and control-list forms where present. Unregistered dependencies explicitly retained: 12.6.2.2/12.6.3 sibling source packets, later 12.6.4.8 defined I/O, clause 13 formatting, clause 15 defined I/O procedure accessibility, clause 16 inquiry and ISO_FORTRAN_ENV intrinsics where future fixtures need them, clause 14 image semantics only as out-of-scope context, and clauses 3, 5, 17, 18, and 19 where terminology, IEEE support, deleted features, or program execution controls are reached."
+    },
+    {
+      "id": "S12.6.4.4-003",
+      "title": "Input list items cannot contain an established format specification",
+      "source": "S12.6.4.4, J3/24-007, 18 December 2023, physical PDF266.",
+      "source_units": [
+        "p3"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "An input list item, or an entity associated with it, shall not contain any portion of an established format specification.",
+      "facets": [
+        "input-item-not-containing-format-specification",
+        "input-item-associated-entity-not-containing-format-specification"
+      ],
+      "pending": {
+        "input-item-not-containing-format-specification": "Source-control negative reads into a character variable that is also the established format text; positive control reads into disjoint sentinel storage. No required diagnostic is asserted.",
+        "input-item-associated-entity-not-containing-format-specification": "Source-control negative reaches the format storage through association with an input item; positive control keeps associated targets disjoint and checks the transferred value."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by opening or creating a known file, writing known records, initializing variables to nonzero/nonblank sentinels, or using a distinct labelled control path) and then observe only portable properties: successful IOSTAT zero, nonzero IOSTAT for a specified error condition, exact internal records or values where the source fixes them, named ISO_FORTRAN_ENV status values where the standard names them, or INQUIRE properties fixed by the relevant rule. Processor-dependent unit numbers, filenames except names created by the fixture, storage-unit encodings, buffering, asynchronous timing, IOMSG text, and specific numeric status values are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe that rejection portably; unnumbered program restrictions are not promoted to required diagnostics. IOMSG wording, processor-dependent numeric status values, asynchronous completion timing, and multiple-image or coarray-dependent behavior are never single-image oracles; coarray facets remain out of scope for this suite's fixtures.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations; registered earlier clause 12 catalogues for file existence, access, file position, internal files, connection, data-transfer statements, and control-list forms where present. Unregistered dependencies explicitly retained: 12.6.2.2/12.6.3 sibling source packets, later 12.6.4.8 defined I/O, clause 13 formatting, clause 15 defined I/O procedure accessibility, clause 16 inquiry and ISO_FORTRAN_ENV intrinsics where future fixtures need them, clause 14 image semantics only as out-of-scope context, and clauses 3, 5, 17, 18, and 19 where terminology, IEEE support, deleted features, or program execution controls are reached."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.6.4.4-001"
+      ]
+    },
+    {
+      "unit": "p2",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.6.4.4-002"
+      ]
+    },
+    {
+      "unit": "p3",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.6.4.4-003"
+      ]
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_12_6_4_4.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "37ae1334ad83a51c5af444c4c0ed2b7fb99b74f7c282a1585ece6f86456cc975",
+  "review_rationale": "Source registration for 12.6.4-12.6.4.7, execution of a data transfer statement (batch162). Every unit hash-verified by an independent reviewer across two rounds. Round 1 found that the '*', INPUT_UNIT and OUTPUT_UNIT equality facets were planned through stdin/stdout capture and separate controls, which cannot observe unit identity; they are now recorded as having no portable oracle because 12.5.4 makes connecting one file to several units, and I/O through them, processor dependent, and neither NAME= nor NUMBER= rescues it. Source accounting only."
+}

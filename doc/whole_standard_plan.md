@@ -5491,6 +5491,20 @@ With this packet, Clause 12 is registered through 12.6.2.1 and 12.10.3–12.12; 
 remaining middle sections are in review.
 See `doc/source_audits/batch_151.json`.
 
+## Batch 162 — executing a data transfer statement
+
+Forty-eight units of 12.6.4 through 12.6.4.7, after two rounds. The finding was
+about **identity**. The standard says a bare `READ`, `READ(*,...)` and
+`READ(INPUT_UNIT,...)` all use *the same unit*, and likewise for `PRINT`,
+`WRITE(*,...)` and `OUTPUT_UNIT`. The first plans compared effects through
+captured stdin and stdout, which shows the three are *compatible* but not that
+they are the *same*. And identity turns out to be unobservable: 12.5.4 lets a
+processor connect one file to several units and makes I/O through them processor
+dependent, so even perfect record-order continuity could come from two units
+sharing one file. The facets are now recorded as having no portable oracle, with
+that reasoning.
+See `doc/source_audits/batch_162.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must

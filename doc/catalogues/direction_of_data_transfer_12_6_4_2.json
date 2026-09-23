@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "section": "12.6.4.2",
+  "requirements": [
+    {
+      "id": "S12.6.4.2-001",
+      "title": "READ transfers from a file and WRITE/PRINT transfer to a file",
+      "source": "S12.6.4.2, J3/24-007, 18 December 2023, physical PDF266.",
+      "source_units": [
+        "p1"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "READ transfers values from a file to input-list entities or namelist-selected entities; WRITE and PRINT transfer values to a file from output-list entities and format information or from a namelist group.",
+      "facets": [
+        "read-transfers-file-to-input-list",
+        "read-transfers-namelist-file-values",
+        "write-print-transfer-output-list-to-file",
+        "write-print-transfer-namelist-to-file"
+      ],
+      "pending": {
+        "read-transfers-file-to-input-list": "Read a nonblank internal/external record into an integer initialized to -777 and assert IOSTAT zero and the changed value.",
+        "read-transfers-namelist-file-values": "Use a namelist input record assigning a variable initialized to a distinct sentinel and assert the sentinel changes to the record value after successful IOSTAT zero.",
+        "write-print-transfer-output-list-to-file": "Use WRITE to an internal character file prefilled with '#' and an explicit format, then assert exact produced characters; PRINT requires a harness-captured output unit and avoids terminal-dependent formatting.",
+        "write-print-transfer-namelist-to-file": "Use namelist output to an internal or controlled external file and assert only source-fixed namelist tokens after clause 13 namelist formatting is registered, not processor-dependent layout beyond the standard."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by opening or creating a known file, writing known records, initializing variables to nonzero/nonblank sentinels, or using a distinct labelled control path) and then observe only portable properties: successful IOSTAT zero, nonzero IOSTAT for a specified error condition, exact internal records or values where the source fixes them, named ISO_FORTRAN_ENV status values where the standard names them, or INQUIRE properties fixed by the relevant rule. Processor-dependent unit numbers, filenames except names created by the fixture, storage-unit encodings, buffering, asynchronous timing, IOMSG text, and specific numeric status values are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe that rejection portably; unnumbered program restrictions are not promoted to required diagnostics. IOMSG wording, processor-dependent numeric status values, asynchronous completion timing, and multiple-image or coarray-dependent behavior are never single-image oracles; coarray facets remain out of scope for this suite's fixtures.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations; registered earlier clause 12 catalogues for file existence, access, file position, internal files, connection, data-transfer statements, and control-list forms where present. Unregistered dependencies explicitly retained: 12.6.2.2/12.6.3 sibling source packets, later 12.6.4.8 defined I/O, clause 13 formatting, clause 15 defined I/O procedure accessibility, clause 16 inquiry and ISO_FORTRAN_ENV intrinsics where future fixtures need them, clause 14 image semantics only as out-of-scope context, and clauses 3, 5, 17, 18, and 19 where terminology, IEEE support, deleted features, or program execution controls are reached."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.6.4.2-001"
+      ]
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_12_6_4_2.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "688db15831b34b4cfcfa46e0b3c157274bad98aec25131d597b01f1f69840b48",
+  "review_rationale": "Source registration for 12.6.4-12.6.4.7, execution of a data transfer statement (batch162). Every unit hash-verified by an independent reviewer across two rounds. Round 1 found that the '*', INPUT_UNIT and OUTPUT_UNIT equality facets were planned through stdin/stdout capture and separate controls, which cannot observe unit identity; they are now recorded as having no portable oracle because 12.5.4 makes connecting one file to several units, and I/O through them, processor dependent, and neither NAME= nor NUMBER= rescues it. Source accounting only."
+}

@@ -1,0 +1,161 @@
+{
+  "schema_version": 1,
+  "section": "12.6.4.3",
+  "subunits": {
+    "p1": [
+      "p1.control-list-unit-identification",
+      "p1.default-input-unit-latitude",
+      "p1.default-input-unit-equality",
+      "p1.default-output-unit-latitude",
+      "p1.default-output-unit-equality",
+      "p1.every-data-transfer-identifies-unit"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S12.6.4.3-001",
+      "title": "An input/output control list UNIT= identifies an external or internal unit",
+      "source": "S12.6.4.3, J3/24-007, 18 December 2023, physical PDF266.",
+      "source_units": [
+        "p1.control-list-unit-identification",
+        "p1.every-data-transfer-identifies-unit"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A data transfer statement with an input/output control list includes a UNIT= specifier identifying an external or internal unit, and each data transfer statement identifies an external or internal unit.",
+      "facets": [
+        "control-list-unit-identifies-external-or-internal-unit",
+        "each-data-transfer-identifies-a-unit"
+      ],
+      "pending": {
+        "control-list-unit-identifies-external-or-internal-unit": "Use one external unit opened with NEWUNIT= and one internal character variable, both initialized/filled distinctly, and perform READ/WRITE statements whose UNIT= identifies the intended target; assert the transferred data.",
+        "each-data-transfer-identifies-a-unit": "For READ, WRITE, and PRINT forms, use positive controls that transfer distinct data through their identified unit; no exhaustive parser claim is made here."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by opening or creating a known file, writing known records, initializing variables to nonzero/nonblank sentinels, or using a distinct labelled control path) and then observe only portable properties: successful IOSTAT zero, nonzero IOSTAT for a specified error condition, exact internal records or values where the source fixes them, named ISO_FORTRAN_ENV status values where the standard names them, or INQUIRE properties fixed by the relevant rule. Processor-dependent unit numbers, filenames except names created by the fixture, storage-unit encodings, buffering, asynchronous timing, IOMSG text, and specific numeric status values are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe that rejection portably; unnumbered program restrictions are not promoted to required diagnostics. IOMSG wording, processor-dependent numeric status values, asynchronous completion timing, and multiple-image or coarray-dependent behavior are never single-image oracles; coarray facets remain out of scope for this suite's fixtures.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations; registered earlier clause 12 catalogues for file existence, access, file position, internal files, connection, data-transfer statements, and control-list forms where present. Unregistered dependencies explicitly retained: 12.6.2.2/12.6.3 sibling source packets, later 12.6.4.8 defined I/O, clause 13 formatting, clause 15 defined I/O procedure accessibility, clause 16 inquiry and ISO_FORTRAN_ENV intrinsics where future fixtures need them, clause 14 image semantics only as out-of-scope context, and clauses 3, 5, 17, 18, and 19 where terminology, IEEE support, deleted features, or program execution controls are reached."
+    },
+    {
+      "id": "S12.6.4.3-002",
+      "title": "Default input and output data-transfer units are processor dependent but tied to * and ISO_FORTRAN_ENV constants",
+      "source": "S12.6.4.3, J3/24-007, 18 December 2023, physical PDF266.",
+      "source_units": [
+        "p1.default-input-unit-latitude",
+        "p1.default-input-unit-equality",
+        "p1.default-output-unit-latitude",
+        "p1.default-output-unit-equality"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A READ without an input/output control list identifies a processor-dependent unit that is the same as READ(*,...) and INPUT_UNIT; PRINT identifies another processor-dependent unit that is the same as WRITE(*,...) and OUTPUT_UNIT.",
+      "facets": [
+        "default-input-unit-processor-dependent",
+        "read-star-equals-input-unit",
+        "default-output-unit-processor-dependent",
+        "write-star-print-equals-output-unit"
+      ],
+      "pending": {
+        "default-input-unit-processor-dependent": "No portable oracle may require the numeric value of the default input unit; future tests use INPUT_UNIT or harness stdin rather than a literal unit number.",
+        "read-star-equals-input-unit": "No portable oracle proves unit identity for bare READ, READ(*,...), and READ(INPUT_UNIT,...) rather than merely compatible input effects. An interleaved single-program stdin sequence can show record-order continuity, but 12.5.4 permits a file to be connected to more than one unit as a processor-dependent property and makes I/O through multiple units on the same file processor dependent, so continuity would not distinguish true unit identity from multiple units sharing one input file.",
+        "default-output-unit-processor-dependent": "No portable oracle may require the numeric value of the default output unit; future tests capture processor output rather than asserting a unit number.",
+        "write-star-print-equals-output-unit": "No portable oracle proves unit identity for PRINT, WRITE(*,...), and WRITE(OUTPUT_UNIT,...) rather than merely compatible output effects. Interleaving WRITE(OUTPUT_UNIT,'(A)'), WRITE(*,'(A)'), and PRINT '(A)' and asserting captured record order is insufficient: under 12.5.4 a processor may allow one file to be connected to multiple units and the results of I/O through those units are processor dependent, so ordered output could be produced without proving the units are the same."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by opening or creating a known file, writing known records, initializing variables to nonzero/nonblank sentinels, or using a distinct labelled control path) and then observe only portable properties: successful IOSTAT zero, nonzero IOSTAT for a specified error condition, exact internal records or values where the source fixes them, named ISO_FORTRAN_ENV status values where the standard names them, or INQUIRE properties fixed by the relevant rule. Processor-dependent unit numbers, filenames except names created by the fixture, storage-unit encodings, buffering, asynchronous timing, IOMSG text, and specific numeric status values are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe that rejection portably; unnumbered program restrictions are not promoted to required diagnostics. IOMSG wording, processor-dependent numeric status values, asynchronous completion timing, and multiple-image or coarray-dependent behavior are never single-image oracles; coarray facets remain out of scope for this suite's fixtures.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations; registered earlier clause 12 catalogues for file existence, access, file position, internal files, connection, data-transfer statements, and control-list forms where present. Unregistered dependencies explicitly retained: 12.6.2.2/12.6.3 sibling source packets, later 12.6.4.8 defined I/O, clause 13 formatting, clause 15 defined I/O procedure accessibility, clause 16 inquiry and ISO_FORTRAN_ENV intrinsics where future fixtures need them, clause 14 image semantics only as out-of-scope context, and clauses 3, 5, 17, 18, and 19 where terminology, IEEE support, deleted features, or program execution controls are reached."
+    },
+    {
+      "id": "S12.6.4.3-003",
+      "title": "The identified unit is connected when execution begins",
+      "source": "S12.6.4.3, J3/24-007, 18 December 2023, physical PDF266.",
+      "source_units": [
+        "p2"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "The unit identified by a data transfer statement shall be connected to a file when execution of the statement begins.",
+      "facets": [
+        "identified-unit-connected-at-execution-begin"
+      ],
+      "pending": {
+        "identified-unit-connected-at-execution-begin": "Positive plans use an internal file or an OPENed external unit before READ/WRITE. A source-control negative attempts transfer on a probed disconnected existing unit, but no required diagnostic or portable runtime result is asserted for this unnumbered restriction."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by opening or creating a known file, writing known records, initializing variables to nonzero/nonblank sentinels, or using a distinct labelled control path) and then observe only portable properties: successful IOSTAT zero, nonzero IOSTAT for a specified error condition, exact internal records or values where the source fixes them, named ISO_FORTRAN_ENV status values where the standard names them, or INQUIRE properties fixed by the relevant rule. Processor-dependent unit numbers, filenames except names created by the fixture, storage-unit encodings, buffering, asynchronous timing, IOMSG text, and specific numeric status values are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe that rejection portably; unnumbered program restrictions are not promoted to required diagnostics. IOMSG wording, processor-dependent numeric status values, asynchronous completion timing, and multiple-image or coarray-dependent behavior are never single-image oracles; coarray facets remain out of scope for this suite's fixtures.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations; registered earlier clause 12 catalogues for file existence, access, file position, internal files, connection, data-transfer statements, and control-list forms where present. Unregistered dependencies explicitly retained: 12.6.2.2/12.6.3 sibling source packets, later 12.6.4.8 defined I/O, clause 13 formatting, clause 15 defined I/O procedure accessibility, clause 16 inquiry and ISO_FORTRAN_ENV intrinsics where future fixtures need them, clause 14 image semantics only as out-of-scope context, and clauses 3, 5, 17, 18, and 19 where terminology, IEEE support, deleted features, or program execution controls are reached."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "structural",
+      "rationale": "Default-unit processor latitude is split from explicit/equality unit-identification effects."
+    },
+    {
+      "unit": "p1.control-list-unit-identification",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.6.4.3-001"
+      ],
+      "rationale": "Explicit UNIT= identification effect."
+    },
+    {
+      "unit": "p1.default-input-unit-latitude",
+      "disposition": "permission",
+      "requirements": [
+        "S12.6.4.3-002"
+      ],
+      "rationale": "Processor-dependent choice of default input unit."
+    },
+    {
+      "unit": "p1.default-input-unit-equality",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.6.4.3-002"
+      ],
+      "rationale": "READ default unit equality to * and INPUT_UNIT."
+    },
+    {
+      "unit": "p1.default-output-unit-latitude",
+      "disposition": "permission",
+      "requirements": [
+        "S12.6.4.3-002"
+      ],
+      "rationale": "Processor-dependent choice of default output unit."
+    },
+    {
+      "unit": "p1.default-output-unit-equality",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.6.4.3-002"
+      ],
+      "rationale": "PRINT/WRITE default unit equality to * and OUTPUT_UNIT."
+    },
+    {
+      "unit": "p1.every-data-transfer-identifies-unit",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.6.4.3-001"
+      ],
+      "rationale": "Every data transfer statement identifies a unit."
+    },
+    {
+      "unit": "p2",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.6.4.3-003"
+      ]
+    },
+    {
+      "unit": "note-unnumbered",
+      "disposition": "informative",
+      "rationale": "NOTE only observes that a unit could be preconnected; not normative."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_12_6_4_3.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "cf690cfc71b72dd186f82e1eec91d6b08f8dfca567378b3fd724b954c33ebe6a",
+  "review_rationale": "Source registration for 12.6.4-12.6.4.7, execution of a data transfer statement (batch162). Every unit hash-verified by an independent reviewer across two rounds. Round 1 found that the '*', INPUT_UNIT and OUTPUT_UNIT equality facets were planned through stdin/stdout capture and separate controls, which cannot observe unit identity; they are now recorded as having no portable oracle because 12.5.4 makes connecting one file to several units, and I/O through them, processor dependent, and neither NAME= nor NUMBER= rescues it. Source accounting only."
+}
