@@ -1,0 +1,176 @@
+{
+ "schema_version": 1,
+ "review_type": "independent-contiguous-attribute-fixture-review",
+ "review_date": "2026-09-22",
+ "baseline_commit": "5ce7952",
+ "packet_base_commit": "eb8eccb",
+ "state": "reference-validated-runtime-effects",
+ "packet_kind": "FIXTURE",
+ "scope": {
+  "sections": [
+   "8.5.7"
+  ],
+  "section_title_verified_from_source": "CONTIGUOUS attribute",
+  "facets_established": 10,
+  "new_cases": 10,
+  "requirements_touched": [
+   "S8.5.7-003",
+   "S8.5.7-004"
+  ],
+  "left_pending": "11 effect facets and 5 restriction facets in S8.5.7-002"
+ },
+ "independent_review": {
+  "reviewer_distinct_from_author": true,
+  "decision": "accept_no_blocking_findings",
+  "blocking_findings": 0,
+  "observations": 3,
+  "reviewer_read_original_source": "8.5.7, 9.5.4 and 16.9.115; PDF checksum verified independently"
+ },
+ "the_crux_required_versus_permitted": {
+  "problem": "CONTIGUOUS is fundamentally about STORAGE LAYOUT, and this project holds that layout, addresses and allocation mechanism are NOT observable. The only legitimate oracle is IS_CONTIGUOUS, and only where the standard REQUIRES a given result. Where the standard merely PERMITS a processor to lay something out contiguously, asserting either value would be wrong, because a conforming processor could report either.",
+  "oracle_basis": "16.9.115 p5: 'The result has the value true if ARRAY has rank zero or is contiguous, and false otherwise.'",
+  "facet_by_facet_verdict": [
+   {
+    "facet": "attributed-object",
+    "result": "TRUE",
+    "required_by": "8.5.7 p2(1): an object with the CONTIGUOUS attribute"
+   },
+   {
+    "facet": "whole-nonpointer-array",
+    "result": "TRUE",
+    "required_by": "8.5.7 p2(2): a nonpointer whole array that is not assumed-shape"
+   },
+   {
+    "facet": "assumed-shape-contiguous-actual",
+    "result": "TRUE",
+    "required_by": "8.5.7 p2(3): an assumed-shape array that is argument associated with an array that is contiguous"
+   },
+   {
+    "facet": "allocated-array",
+    "result": "TRUE",
+    "required_by": "8.5.7 p2(5): an array allocated by an ALLOCATE statement; the pointer case also follows p2(6)"
+   },
+   {
+    "facet": "associated-pointer",
+    "result": "TRUE",
+    "required_by": "8.5.7 p2(6): a pointer associated with a contiguous target"
+   },
+   {
+    "facet": "gap-free-numeric-section",
+    "result": "TRUE",
+    "required_by": "8.5.7 p2(7): the nonzero-sized array section conjunction - contiguous base, no vector subscript, same element order, excluded elements only precede or follow"
+   },
+   {
+    "facet": "full-leading-dimensions",
+    "result": "TRUE",
+    "required_by": "8.5.7 p2(7); a(:,4:5) satisfies the full section conjunction rather than resting on layout guesswork"
+   },
+   {
+    "facet": "full-character-substring",
+    "result": "TRUE",
+    "required_by": "8.5.7 p2(7) including the condition that if the array is of type character and a substring-range appears, it specifies all of the characters of the parent-string"
+   },
+   {
+    "facet": "ordinary-gapped-section",
+    "result": "FALSE",
+    "required_by": "8.5.7 p3: an array subobject with two or more nonconsecutive elements, with no zero-length or zero-storage exception"
+   },
+   {
+    "facet": "multidimensional-interleaving",
+    "result": "FALSE",
+    "required_by": "8.5.7 p3; a(1:2,5:6) has interleaved excluded base elements"
+   }
+  ],
+  "verdict": "All ten asserted results are SOURCE-REQUIRED, not processor latitude."
+ },
+ "the_false_weakness_addressed": {
+  "problem": ".FALSE. is a DEFAULT-EQUIVALENT value - a zero-filled logical reads false - so a negative facet asserting IS_CONTIGUOUS is .FALSE. is weak on its own, because a program that never established the property would also report false.",
+  "mitigation": "Both negative fixtures carry same-program .TRUE. controls.",
+  "reviewer_verification": "Confirmed the controls exist AND execute before completion, so each program demonstrably distinguishes the two states rather than always reporting false."
+ },
+ "non_vacuity_by_mutation": {
+  "feature_level_mutation": "Changing the designator so it is no longer contiguous, or removing the CONTIGUOUS attribute.",
+  "campaign": "262 runs total: 242 expected-fail mutations failed, 20 reverse mutations passed, 0 unexpected. 10/10 feature designator mutations failed on both compilers.",
+  "reviewer_reran": "Three feature mutations - assumed_shape, full_leading_dimensions, full_character_substring - plus one reverse mutation, all behaving as required on both toolchains.",
+  "sentinels": "No payload sentinel is 0; zero appears only for zero-size shape checks. Non-unit and negative bounds are used throughout: -2:2,4:6 (shape 5x3), -3:1,7:9, and section shapes 5, 5x2, 3, 4, 2x2 with values such as 1493/1614, 178/222 and EFGH.",
+  "character_discipline": "LEN(c(2:4)(1:4)) == 4 is explicitly asserted, guarding the blank-padding trap."
+ },
+ "over_suppression_check": {
+  "principle": "An unobservability claim that is too broad is itself a defect.",
+  "pending": "11 effect facets and 5 restriction facets remain.",
+  "reviewer_verdict": "Deferral is correct. Layout, addresses, padding, copy strategy, timing and the p4 residuals are genuinely unobservable. The S8.5.7-002 restriction facets lack a required portable diagnostic, so they cannot carry a diagnostic expectation - a facet may do so only if the unit actually prohibits something, a processor is required to reject, and a single-image program can portably observe it.",
+  "conclusion": "Nothing IS_CONTIGUOUS could legitimately settle was left pending out of convenience."
+ },
+ "findings": [
+  {
+   "id": "C857FR-001",
+   "severity": "observation",
+   "note": "All ten asserted IS_CONTIGUOUS results are source-required, not processor latitude. No correction required."
+  },
+  {
+   "id": "C857FR-002",
+   "severity": "observation",
+   "note": "Both .FALSE. cases carry same-program .TRUE. controls that execute before completion. No correction required."
+  },
+  {
+   "id": "C857FR-003",
+   "severity": "observation",
+   "note": "Generator --check passes byte-identically; the new test module contributes 7 tests and the suite count reaches 1039. No correction required."
+  }
+ ],
+ "infrastructure_verified": {
+  "generator": "present, with --check; regeneration byte-identical",
+  "test_module": "discovered by the unittest gate, 7 tests",
+  "suite_count": "1032 -> 1039, confirming the cases are genuinely executed rather than inert",
+  "no_global_totals_asserted": "checked explicitly",
+  "no_review_state_asserted": "checked explicitly"
+ },
+ "compiler_observations": {
+  "frozen_target": "lfortran 0.65.0-411-ga0afaa840b-dirty",
+  "frozen_target_result": "10/10 new cases pass",
+  "qualifying_reference": "gfortran 16.1.0 with -std=f2023",
+  "reference_result": "10/10 new cases pass",
+  "reproduced_by_integrator": true,
+  "lfortran_defects_found": 0,
+  "pre_existing_unrelated_failure": "S8_5_7_001_valid__contiguous_dummy_effect_assumed_rank reports gfortran runtime-fail. It is PRE-EXISTING and outside this packet's scope, which covers only S8.5.7-003 and -004. Not introduced here and not addressed here."
+ },
+ "explicit_limitations": [
+  "Ten facets of 8.5.7 only; 16 remain pending.",
+  "These tests establish ONLY the standard-required IS_CONTIGUOUS result, plus bounds, shape and values. They establish NOTHING about actual memory layout, addresses, padding, copy strategy, allocation mechanism or performance.",
+  "The S8.5.7-002 restriction facets are untested and lack a required portable diagnostic.",
+  "Passing under two compilers is corroboration, not proof of universal conformance.",
+  "Source accounting is unchanged."
+ ],
+ "preservation": {
+  "cases_before": 2240,
+  "cases_after": 2250,
+  "authored_facets_before": 1967,
+  "authored_facets_after": 1977,
+  "reference_validated_before": 1927,
+  "reference_validated_after": 1937,
+  "fixture_review_states_after": "1937 reference-validated / 274 source-reviewed / 1 needs-oracle",
+  "expected_failures_lines": 819,
+  "baseline_lines_changed_by_this_packet": 0,
+  "existing_case_ids_modified": 0
+ },
+ "validation_snapshot": {
+  "detailed_catalogues": 287,
+  "requirements": 1742,
+  "declared_facets": 7356,
+  "authored_facets": 1977,
+  "catalogue_reviews_draft": 1,
+  "catalogue_reviews_draft_note": "Only 18.3.7, pre-existing and untouched.",
+  "normal_audit_exit": 1,
+  "normal_audit_block": "the single retained needs-oracle real-BOZ case, which is the intended state and not a regression",
+  "python_suite_tests": 1045,
+  "python_suite_result": "pending integrator gate"
+ },
+ "integrator_corrective_action": {
+  "issue": "The full gate failed with three failures in PRE-EXISTING sibling modules - test_contiguous_property_fixtures, test_contiguous_dummy_effect_fixtures and test_contiguous_eligibility_fixtures - each asserting an exact rendering of doc/fortran_2023_8_5_7.md. The on-disk view said 'Source review: stale' while the catalogue, after the integrator recorded the review, said 'reviewed'.",
+  "root_cause": "THREE generators write the same view file: generate_contiguous_property_fixtures.py, generate_contiguous_dummy_effect_fixtures.py and generate_contiguous_eligibility_fixtures.py. The author emitted the view during authoring, when the catalogue was necessarily stale because authors cannot record reviews. Recording the review at integration flipped the catalogue to reviewed, leaving the rendered artefact inconsistent with it.",
+  "chicken_and_egg": "Re-running a generator to refresh the view REWRITES the catalogue and therefore RE-STALES its content-bound review, so the view renders 'stale' again. The correct order is generator -> record review -> correct the rendered line, which is the render-after-record rule first recorded at batch130.",
+  "remedy": "Regenerated the shared view, re-recorded the 8.5.7 catalogue review after the generator had rewritten the catalogue, then corrected the rendered review line to 'reviewed' to match the catalogue. The three sibling modules then pass, 41 tests OK.",
+  "generalisation": "Shared view files are now known in two places: 7.5.10 has two generators and 8.5.7 has three. A fixture packet touching such a section must expect sibling modules to assert the shared rendering, and the integrator must refresh the view AFTER recording the review.",
+  "verification": "test_contiguous_property_fixtures, test_contiguous_dummy_effect_fixtures and test_contiguous_eligibility_fixtures run 41 tests OK, and the full gate was re-run."
+ }
+}

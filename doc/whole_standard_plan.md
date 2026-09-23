@@ -4526,6 +4526,69 @@ Only `operand-type-delegation` remains pending, correctly: p1 delegates operand
 admissibility to 10.1.5.1.
 See `doc/source_audits/batch_134.json`.
 
+## Batch 135 — CONTIGUOUS, where almost nothing is observable
+
+Establishes **10 facets** of **8.5.7 the CONTIGUOUS attribute**, accepted with
+no blocking findings.
+
+This section is unusual in that its subject matter is largely **outside what the
+suite can observe at all**. `CONTIGUOUS` is about storage layout, and the project
+holds that layout, addresses and allocation mechanism are not observable — no
+`TRANSFER`, no `LOC`, no address or timing oracle. The only legitimate instrument
+is `IS_CONTIGUOUS`.
+
+But `IS_CONTIGUOUS` is a valid oracle **only where the standard requires a
+result**. Where the standard merely *permits* a processor to lay something out
+contiguously, asserting **either** value would be wrong, because a conforming
+processor could report either. That distinction is the whole packet, so the
+reviewer traced every one of the ten facets to a **specific numbered clause**:
+
+- 8.5.7 **p2(1)** an object with the CONTIGUOUS attribute
+- **p2(2)** a nonpointer whole array that is not assumed-shape
+- **p2(3)** an assumed-shape array argument associated with a contiguous array
+- **p2(5)** an array allocated by an `ALLOCATE` statement
+- **p2(6)** a pointer associated with a contiguous target
+- **p2(7)** the nonzero-sized section conjunction — contiguous base, no vector
+  subscript, same element order, excluded elements only preceding or following,
+  and for character arrays a substring-range specifying *all* characters of the
+  parent string
+- **p3** for the two negatives
+
+with 16.9.115 p5 supplying the oracle semantics. None rests on latitude.
+
+The second issue is subtler and easy to miss: **`.FALSE.` is a
+default-equivalent value.** A zero-filled logical reads false, so a negative
+facet asserting `IS_CONTIGUOUS` is `.FALSE.` would also pass on a program that
+never established the property at all. Both negatives therefore carry
+**same-program `.TRUE.` controls**, and the reviewer confirmed those controls
+genuinely execute before completion, so each program demonstrably distinguishes
+the two states.
+
+Non-vacuity rests on **designator mutation** — changing the designator so it is
+no longer contiguous — with 10/10 failing on both compilers inside a 262-run
+matrix, three of which the reviewer re-ran itself along with a reverse mutation.
+`LEN(c(2:4)(1:4)) == 4` is asserted explicitly for the character substring case,
+guarding the blank-padding trap.
+
+Sixteen facets remain pending, and the deferral was checked rather than assumed:
+layout, padding, copy strategy and timing are genuinely unobservable, and the
+`S8.5.7-002` restriction facets lack a **required portable diagnostic**, so they
+cannot carry a diagnostic expectation. Nothing `IS_CONTIGUOUS` could legitimately
+settle was left on the table.
+
+What this does **not** establish deserves stating plainly, because the section
+invites overreading: it establishes only the standard-required `IS_CONTIGUOUS`
+result, plus bounds, shape and values. It says nothing whatever about actual
+memory layout, addresses, padding, copy strategy, allocation mechanism or
+performance.
+
+One unrelated pre-existing failure surfaced during integration —
+`S8_5_7_001_valid__contiguous_dummy_effect_assumed_rank` reports a gfortran
+runtime failure. It lies outside this packet's scope, which covers only
+`S8.5.7-003` and `-004`, was not introduced here, and is recorded rather than
+silently absorbed.
+See `doc/source_audits/batch_135.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
