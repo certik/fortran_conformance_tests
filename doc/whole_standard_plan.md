@@ -4918,6 +4918,59 @@ left of the decimal is the **optional** one per 13.7.2.3.2 p11, so `LZS`/`LZP`
 genuinely determine it and the worked examples stand.
 See `doc/source_audits/batch_141.json`.
 
+## Batch 144 — the clean one, and why it was clean
+
+Eighteen facets across 13.7.2.3.4 (EN) and 13.7.2.3.5 (ES), **accepted with zero
+findings on the first round**. That is worth explaining, because it happened in
+the same checkpoint where the other two fixture packets were blocked once and
+*four* times.
+
+Real-number output editing is the most **latitude-dense** corner of Clause 13.
+The optional plus, the leading zero, the exponent digit count and the rounding
+mode are all processor dependent, and every one of them is a way to write an
+exact-string oracle that a conforming processor can legally fail. This packet
+came back clean because all four were closed off **by construction, before any
+code was written**: `SS` on every positive value, `E2` pinning the exponent
+width, and only exactly-representable values whose discarded decimal digits are
+all zero.
+
+The reason those hazards were visible in advance is that **batch143 was being
+blocked on exactly them at the same time**. Hazard knowledge transferred between
+concurrent packets turns out to be worth considerably more than hazard knowledge
+discovered in review.
+
+### Six concerns posed in advance, all adjudicated against the text
+
+**The leading-zero latitude does not extend to EN/ES.** This was the single
+highest-risk question, since it is precisely what blocked batch143. 13.8.5 p3
+says the LZ descriptors "affect only F, E, D, and G editing", and EN/ES
+significands are fixed by the `yyy` and `y` forms rather than by an optional
+leading zero. It genuinely does not apply.
+
+**The exponent-digit-count facets could have been mis-attributed.** They might
+have been about the *default* (no `Ee`) behaviour, in which case pinning `E2`
+would discharge something the facet does not claim. They are not: "If `e` is
+positive the exponent part contains `e` digits", plus Tables 13.2/13.3, put the
+`E2` fixtures squarely on the rule they are filed under.
+
+**The scale factor is settled by 13.8.6** — "On output, with EN, ES, and EX
+editing, the scale factor has no effect." Here the *anti-vacuity* check matters
+more than the rule: `1P`/`2P` **would** change `E` output, so the chosen scale
+factors are load-bearing rather than no-ops, and `2P` was picked specifically to
+make the `ES`→`E` substitution discriminate.
+
+**EN/ES discrimination was verified by hand, not by compiler.** EN and ES
+coincide for many values, so an `EN`↔`ES` substitution can sit in a mutation
+matrix proving nothing. On the chosen values all three genuinely differ: `0.5`
+gives EN `E-03`, ES `E-01`, E `E+00`; `100.0` gives EN `E+00`, ES `E+02`, E
+`E+03`.
+
+**Rounding was neutralised rather than pinned.** `0.5`, `0.125` and `100.0` are
+exact in binary and every discarded decimal digit is zero — including in the
+`d=2` cases — so the processor-dependent default rounding mode cannot change a
+single asserted byte.
+See `doc/source_audits/batch_144.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must

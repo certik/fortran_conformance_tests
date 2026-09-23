@@ -1,0 +1,90 @@
+{
+ "schema_version": 1,
+ "review_type": "independent-en-es-editing-fixture-review",
+ "review_date": "2026-09-23",
+ "baseline_commit": "6b28162",
+ "integrated_on": "c740079",
+ "state": "reference-validated-runtime-effects",
+ "packet_kind": "FIXTURE",
+ "milestone": "ACCEPTED WITH ZERO FINDINGS on the first round - the first packet this checkpoint to do so, in a checkpoint where the other two fixture packets were blocked once and four times respectively.",
+ "scope": {
+  "sections": [
+   "13.7.2.3.4",
+   "13.7.2.3.5"
+  ],
+  "section_titles_verified_from_source": {
+   "13.7.2.3.4": "EN editing",
+   "13.7.2.3.5": "ES editing"
+  },
+  "facets_established": 18,
+  "new_cases": 18
+ },
+ "why_this_packet_was_clean": "The hazards were identified and neutralised BEFORE any code was written, rather than being discovered in review. Real-number output editing is full of processor latitude - the optional plus, the leading zero, the exponent digit count, the rounding mode - and each was closed off by construction: SS on every positive value, E2 pinning the exponent width, and only exactly-representable values whose discarded decimal digits are all zero. The preceding packet (batch143) was blocked four times on precisely these hazards, which is what made them visible in advance.",
+ "independent_review": {
+  "reviewer_distinct_from_author": true,
+  "decision": "accept_no_blocking_findings",
+  "blocking_findings": 0,
+  "reviewer_derived_every_oracle_from_source": true
+ },
+ "priority_concerns_adjudicated": [
+  {
+   "concern": "Leading-zero latitude. The immediately preceding packet was BLOCKED because 13.7.2.3.2 p11 makes the zero left of the decimal symbol OPTIONAL when the magnitude is under one, and 13.8.5 p2 makes the default leading-zero mode PROCESSOR_DEFINED. Does the same latitude exist for EN and ES?",
+   "verdict": "NO analogous latitude. 13.8.5 p3: 'The LZS, LZP, and LZ edit descriptors affect only F, E, D, and G editing during the execution of an output statement.' EN and ES are not in that list. Their significands are fixed by the yyy and y forms rather than by an optional leading zero."
+  },
+  {
+   "concern": "Exponent form - are the facets named EN-exponent-digit-count and ES-exponent-digit-count genuinely discharged by an E2-pinned case, or are they about the DEFAULT no-Ee behaviour, which would make the binding a mis-attribution?",
+   "verdict": "Correctly attributed. 'If e is positive the exponent part contains e digits', and Table 13.2/13.3 give the form E(+/-)z1z2...ze for EN/ES w.d E e with e > 0. The E2 fixtures reach the positive-e rule, which is what the facets are filed under."
+  },
+  {
+   "concern": "Scale factor - is 'no effect' genuinely required, and is the assertion anti-vacuous?",
+   "verdict": "Required, by 13.8.6: 'On output, with EN, ES, and EX editing, the scale factor has no effect.' Anti-vacuity holds because 1P and 2P WOULD change E output, so the chosen scale factors are load-bearing rather than no-ops. 2P was chosen specifically to make the ES->E substitution discriminate."
+  },
+  {
+   "concern": "EN/ES/E discrimination - EN and ES produce the SAME string for many values, in which case an EN<->ES substitution appears in the matrix while proving nothing.",
+   "verdict": "All three genuinely differ on every value chosen, hand-derived without reference to a compiler: 0.5 gives EN E-03, ES E-01, E E+00; 0.125 the same exponents; 100.0 gives EN E+00, ES E+02, E E+03."
+  },
+  {
+   "concern": "Rounding - the default I/O rounding mode is processor dependent per 13.7.2.3.8, so any value whose printed digits depend on rounding is unusable.",
+   "verdict": "0.5, 0.125 and 100.0 are exact in binary and every discarded decimal digit is zero, including in the d=2 cases. Rounding latitude cannot change a single asserted byte."
+  },
+  {
+   "concern": "Field widths - are the leading blanks forced or incidental?",
+   "verdict": "Forced, by 13.7.2.1: 'If the number of characters produced by the editing is smaller than the field width, leading blanks are inserted in the field.' Every expected string was re-derived character by character."
+  }
+ ],
+ "oracles_hand_derived_and_confirmed": [
+  "(SS,EN12.3E2) 0.5 -> ' 500.000E-03'",
+  "(SS,EN12.3E2) 0.125 -> ' 125.000E-03'",
+  "(SS,1P,EN12.3E2) 0.5 -> ' 500.000E-03' (scale factor ignored)",
+  "(SS,EN12.3E2) 100.0 -> ' 100.000E+00'",
+  "(SS,EN11.2E2) 100.0 -> ' 100.00E+00'",
+  "(SS,ES12.3E2) 0.5 -> '   5.000E-01'",
+  "(SS,ES12.3E2) 0.125 -> '   1.250E-01'",
+  "(SS,2P,ES12.3E2) 0.5 -> '   5.000E-01' (scale factor ignored)",
+  "(SS,ES12.3E2) 100.0 -> '   1.000E+02'",
+  "(SS,ES11.2E2) 100.0 -> '   1.00E+02'"
+ ],
+ "non_vacuity": {
+  "total_mutations": 184,
+  "descriptor_substitutions": 90,
+  "sign_mutations": 20,
+  "input_mutations": 18,
+  "all_detected_on_both_toolchains": true,
+  "load_bearing_verified": "Every EN<->ES, EN<->E and ES<->E substitution was checked to produce a different exponent on the value actually chosen, so none is vacuously detected."
+ },
+ "facets_left_pending": "EN/ES input, IEEE NaN and infinity under EN/ES, alternative table exponent spellings, exponents above 99, E0 and w=0 rows, zero-exponent-plus rows, and EN's duplicate d-fraction facet. Reasons given were non-byte-exact latitude, absence of load-bearing EN/ES discrimination, IEEE dependence, and the 18-facet packet cap. The cap is an acceptable reason; the reviewer separately confirmed none of the others wrongly claims that no portable oracle exists.",
+ "integration": {
+  "fixture_reviews_recorded": 18,
+  "catalogue_source_reviews_renewed": [
+   "13.7.2.3.4",
+   "13.7.2.3.5"
+  ],
+  "audit_non_reviewed_after": "18.3.7 draft only",
+  "expected_failures_unchanged_at": 828
+ },
+ "limitations": [
+  "Reference validation is gfortran 16.1.0 in f2023 mode on one platform. No universal-processor claim is made.",
+  "Only the positive-e exponent form is exercised; the default exponent digit count remains pending because it is not portably forced.",
+  "No EN/ES input, IEEE or scale-factor-on-E behaviour is claimed."
+ ]
+}
