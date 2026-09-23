@@ -5932,6 +5932,36 @@
         "7pointer/subobject facets remain pending and were NOT claimed impossible - an over-broad unobservability claim would itself be a defect.",
         "Array-valued references assert SHAPE, LBOUND and UBOUND with non-unit/negative lower bounds and distinct extents, so defaulted or transposed bounds are detectable."
       ]
+    },
+    {
+      "id": "clause9-deallocation-fixtures-132",
+      "state": "reference-validated-runtime-effects",
+      "packet_kind": "FIXTURE",
+      "baseline_commit": "43d9ff0",
+      "packet_base_commit": "1dc7b14",
+      "sections": ["9.7.3.2"],
+      "author_handoffs": {
+        "proposal": "cdd3bf2",
+        "correction": "e61d4d0"
+      },
+      "source_reviews": ["doc/source_audits/batch_132.json"],
+      "new_executions": 11,
+      "fixture_accounting": {
+        "facets_established": 11,
+        "new_cases": 11,
+        "authored_facets": "1920 -> 1931",
+        "cases": "2208 -> 2219",
+        "reference_validated": "1895 -> 1906",
+        "expected_failures": "813 -> 816"
+      },
+      "coordination": "BLOCKED because THE FIXTURES WERE INVISIBLE TO THE UNITTEST GATE. run_tests.py collected them, but the gate discovered1016tests - IDENTICAL TO THE BASE - with ZERO dealloc methods, and there was no generator, so --check did not exist and the mutation campaign was NOT REPRODUCIBLE from the committed tree. The integrator flagged it BEFORE review: the packet reported a full suite of1016despite adding11cases, while a sibling adding12cases moved1016->1021. A fixture the gate never executes cannot regress and silently contributes nothing. Corrected with a generator and test module; regeneration BYTE-IDENTICAL, suite1016->1021, and the reviewer re-ran the feature mutations THROUGH THE GENERATOR (12/12fail,11/11reverse pass). THE SECTION'S PRIMARY HAZARD is that after deallocation the value is GONE and NOT observable - reading deallocated storage is undefined, and a pointer whose target was deallocated has UNDEFINED association status so ASSOCIATED() is not an oracle; the reviewer checked all11sources line by line and found none. Also ALLOCATED(x)==.false. is a WEAK oracle alone, because a processor that NEVER ALLOCATED also reports false and .false. is default-equivalent - so every fixture proves the POSITIVE state with bounds and values BEFORE deallocating. THREE GENUINE LFORTRAN DEFECTS:9.7.3.2p1 with9.7.4p5 (unallocated-deallocate must give a positive STAT distinct from image codes),8.5.16p1 (SAVE retains allocation status), and9.7.3.2p8 with7.5.6.3p2 (derived-type deallocation deallocates allocatable subobjects and finalizes).",
+      "remaining_observations": [
+        "THE SAVE DEFECT WAS CHALLENGED before acceptance: the author cited 'NOTE1/SAVE control', and NOTES ARE NOT NORMATIVE - had that been the only support, the FIXTURE would have been invalid rather than LFortran defective. The reviewer located the normative sentence in8.5.16p1 ('association status, allocation status, definition status, and value'), so the claim stands.",
+        "STAT discipline: only POSITIVE and distinct-from-image-codes is asserted - no processor-dependent value, no resource-exhaustion path.",
+        "Undefined pointer association after target deallocation is NOT tested and CANNOT be - that status is not observable.",
+        "16effect facets remain pending, including coarray/multi-image paths, the processor-dependent error path and a finalization-order case.",
+        "NEW STANDING CHECK: a fixture packet must ship a GENERATOR with --check AND a test module; verify the full-suite count RISES, since an unchanged count means the cases are inert."
+      ]
     }
   ],
   "cross_batch_followups": [

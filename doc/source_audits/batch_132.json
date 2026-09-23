@@ -1,0 +1,124 @@
+{
+ "schema_version": 1,
+ "review_type": "independent-deallocation-fixture-review",
+ "review_date": "2026-09-22",
+ "baseline_commit": "43d9ff0",
+ "packet_base_commit": "1dc7b14",
+ "state": "reference-validated-runtime-effects",
+ "packet_kind": "FIXTURE",
+ "scope": {
+  "sections": [
+   "9.7.3.2"
+  ],
+  "section_title_verified_from_source": "Deallocation of allocatable variables",
+  "facets_established": 11,
+  "new_cases": 11,
+  "left_pending": "16 effect facets: undefined pointer association, p4/p5 temporary result cases, C descriptor cases, the processor-dependent error path, a finalization-order case, coarray and multi-image cases, and the no-deallocation-optimisation source-only facet"
+ },
+ "independent_review": {
+  "reviewer_distinct_from_author": true,
+  "decision": "accept_after_correction",
+  "review_rounds": 2,
+  "blocking_findings": 1,
+  "reviewer_read_original_source": "9.7.3.2, 9.7.4, 8.5.16, 7.5.6.3; PDF checksum verified independently"
+ },
+ "primary_hazard_of_this_section": {
+  "hazard": "After deallocation an object's value is GONE and its contents are NOT observable. Reading deallocated storage is undefined behaviour. Separately, a pointer whose target has been deallocated has UNDEFINED ASSOCIATION STATUS, so ASSOCIATED() on it is not a legitimate oracle.",
+  "verification": "The reviewer checked all 11 emitted sources line by line and confirmed NO oracle reads deallocated storage, undefined association status, addresses, LOC, TRANSFER or ERRMSG content.",
+  "second_structural_requirement": "ALLOCATED(x) == .false. is a WEAK oracle on its own: a processor that never allocated also reports false, and .false. is default-equivalent, so a zero-filled logical satisfies it. Every fixture therefore establishes the POSITIVE state first - ALLOCATED true, plus bounds, plus values - and only then deallocates.",
+  "pairing_verified": "All 11 fixtures verified, e.g. dealloc_allocated_control proves x(-9:-7)=[67,71,73] allocated with bounds and values, deallocates, observes unallocated, then reallocates x(4:6)=[79,83,89]. Non-unit and negative lower bounds with distinct extents make a wrong-bounds reallocation detectable."
+ },
+ "findings": [
+  {
+   "id": "C9732FR-001",
+   "severity": "blocking",
+   "location": "packet-wide: missing tools/*dealloc* generator and tests/test_deallocation_fixtures.py",
+   "issue": "THE CASES WERE NOT EXECUTED BY THE UNITTEST GATE. tests/run_tests.py collected them (2207 cases), but the gate still discovered 1016 tests - identical to the base - with ZERO dealloc test methods. There was also no generator, so the required --check determinism mode did not exist and the claimed mutation campaign was NOT REPRODUCIBLE from the committed tree.",
+   "how_it_surfaced": "The integrator flagged it BEFORE the review ran: the packet reported a full suite of 1016, identical to the base, despite adding 11 cases, while a sibling packet adding 12 cases moved 1016 -> 1021. That discrepancy was the tell.",
+   "why_it_matters": "A fixture the gate does not execute cannot regress, cannot be trusted, and silently contributes nothing. A mutation campaign that cannot be re-run from the committed tree is an unverifiable claim.",
+   "closure": "Closed in e61d4d0. Added tools/generate_deallocation_fixtures.py with a --check mode and tests/test_deallocation_fixtures.py. Regeneration is BYTE-IDENTICAL to the reviewed fixtures, and the suite rose 1016 -> 1021.",
+   "reviewer_verification": "Confirmed the module contains 5 substantive tests - fixture collection, metadata and expectations, forbidden-oracle and before/after source guards, mutation span and count binding, and generator determinism - not a module that merely imports cleanly. It re-ran the feature-level mutations THROUGH THE GENERATOR: 12/12 failed as required and 11/11 reverse controls passed."
+  }
+ ],
+ "lfortran_defects_verified": [
+  {
+   "defect": "Deallocating an unallocated allocatable does not produce the required error condition",
+   "standard_basis": "9.7.3.2 p1: deallocating an unallocated allocatable variable 'causes an error condition'. 9.7.4 p5 requires a processor-dependent POSITIVE STAT value distinct from the image status codes.",
+   "oracle_discipline": "Only portable properties are asserted - positive, and distinct from STAT_STOPPED_IMAGE and STAT_FAILED_IMAGE. No processor-dependent value is asserted and no resource-exhaustion path is used.",
+   "verdict": "GENUINE LFORTRAN DEFECT",
+   "case_xfailed": "S9_7_3_2_001_valid__dealloc_unallocated_error"
+  },
+  {
+   "defect": "A saved allocatable does not retain its allocation status across calls",
+   "standard_basis": "8.5.16 p1 normatively requires SAVE to retain 'association status, allocation status, definition status, and value' after RETURN or END.",
+   "challenge_and_resolution": "The integrator specifically challenged whether this claim rested only on a NON-NORMATIVE NOTE, since the author had cited 'NOTE 1/SAVE control'. Notes are not normative, and had that been the only support the FIXTURE would have been invalid rather than LFortran defective. The reviewer located the normative sentence in 8.5.16 p1, so the claim stands.",
+   "verdict": "GENUINE LFORTRAN DEFECT",
+   "case_xfailed": "S9_7_3_2_004_valid__dealloc_saved_local_control"
+  },
+  {
+   "defect": "Deallocating a derived-type variable does not deallocate its allocatable subobject",
+   "standard_basis": "9.7.3.2 p8: 'When a variable of derived type is deallocated, any allocated allocatable subobject is deallocated.' 7.5.6.3 p2 requires the corresponding finalization.",
+   "verdict": "GENUINE LFORTRAN DEFECT",
+   "case_xfailed": "S9_7_3_2_010_valid__dealloc_derived_subobject"
+  }
+ ],
+ "non_vacuity_by_mutation": {
+  "principle": "Non-vacuity must be proved by MUTATION targeting the FEATURE UNDER TEST, and the campaign must be reproducible from the committed tree.",
+  "generator_check": "Checked 11 deallocation cases, 11 facets, 45 failing mutations (12 feature-level) and 11 reverse controls.",
+  "feature_level_mutations": [
+   "removed DEALLOCATE",
+   "automatic locals changed to SAVE",
+   "removed intrinsic assignment",
+   "INTENT(OUT) changed to INOUT",
+   "removed SAVE",
+   "premature function-result deallocation"
+  ],
+  "reviewer_reran": "12/12 feature-level mutations failed and 11/11 reverse controls passed, run THROUGH THE GENERATOR rather than by hand - which was the whole point of the correction."
+ },
+ "explicit_limitations": [
+  "Eleven facets of 9.7.3.2 only; 16 effect facets remain pending.",
+  "Undefined pointer association after target deallocation is NOT tested and cannot be - that status is not observable.",
+  "Coarray and multi-image deallocation paths are not exercised.",
+  "The processor-dependent error path and a finalization-order case remain pending.",
+  "Three cases FAIL under the frozen LFortran and are XFAILed; that is evidence of defects in that toolchain, not of conformance.",
+  "Passing under gfortran is corroboration, not proof of universal conformance.",
+  "Source accounting is unchanged: declared_facets remains 7184."
+ ],
+ "preservation": {
+  "cases_before": 2208,
+  "cases_after": 2219,
+  "authored_facets_before": 1920,
+  "authored_facets_after": 1931,
+  "declared_facets_before": 7184,
+  "declared_facets_after": 7184,
+  "reference_validated_before": 1895,
+  "reference_validated_after": 1906,
+  "fixture_review_states_after": "1906 reference-validated / 274 source-reviewed / 1 needs-oracle",
+  "expected_failures_lines_before": 813,
+  "expected_failures_lines_after": 816,
+  "baseline_lines_added": 3,
+  "baseline_lines_modified": 0,
+  "existing_case_ids_modified": 0
+ },
+ "validation_snapshot": {
+  "detailed_catalogues": 280,
+  "requirements": 1684,
+  "declared_facets": 7184,
+  "authored_facets": 1931,
+  "catalogue_reviews_draft": 1,
+  "catalogue_reviews_draft_note": "Only 18.3.7, pre-existing and untouched.",
+  "frozen_lfortran_result": "8 PASS / 3 FAIL, all three XFAILed",
+  "gfortran_result": "11/11 pass",
+  "normal_audit_exit": 1,
+  "normal_audit_block": "the single retained needs-oracle real-BOZ case, which is the intended state and not a regression",
+  "python_suite_tests": 1026,
+  "python_suite_result": "OK"
+ },
+ "integrator_corrective_action": {
+  "issue": "tests/test_deallocation_fixtures.py asserted three SUITE-WIDE totals - authored_facets == 1919, declared_facets == 7184 and len(all_cases) == 2207 - which were correct at the packet's base commit 1dc7b14 but stale by integration time, because batch133 was integrated first and added 12 facets and 12 cases. The full gate failed with 'AssertionError: 1931 != 1919'.",
+  "why_it_is_a_design_flaw": "A per-packet test module that pins GLOBAL totals breaks whenever ANY other packet is integrated, and those totals encode nothing about deallocation. Verified that NO other test module in the suite does this - batch132 was the only one.",
+  "remedy": "Replaced the two drifting global assertions with assertions about THIS packet's own contribution: exactly 11 specs and exactly 11 distinct bound facets. declared_facets == 7184 was RETAINED, because it is a genuine invariant - a fixture packet must never change source accounting.",
+  "why_this_is_stronger_not_weaker": "The replaced assertions were about suite-wide bookkeeping unrelated to the feature under test and would have produced a false failure on every future integration. The replacements bind the module to its own 11 facets and 11 cases, which is what this module is actually responsible for.",
+  "verification": "tests/test_deallocation_fixtures.py runs 5 tests OK, and the full gate was re-run after the change."
+ }
+}

@@ -4292,6 +4292,66 @@ implementable future work rather than claimed impossible — an over-broad
 unobservability claim would itself be a defect.
 See `doc/source_audits/batch_133.json`.
 
+## Batch 132 — deallocation, and fixtures the gate never ran
+
+Establishes **11 facets** of **9.7.3.2 Deallocation of allocatable variables**,
+and adds three more verified frozen-LFortran defects. It was **blocked** on a
+defect that had nothing to do with the tests themselves.
+
+**The fixtures were invisible to the unittest gate.** `run_tests.py` collected
+them, but the gate discovered **1016 tests — identical to the base** — with zero
+deallocation test methods, because the packet shipped **no generator and no test
+module**. That also meant `--check` did not exist and the claimed mutation
+campaign was **not reproducible from the committed tree**.
+
+I caught this before the review ran, from a single number: the packet reported a
+full suite of 1016, exactly the base, despite adding 11 cases — while a sibling
+packet adding 12 cases moved 1016 → **1021**. A fixture the gate never executes
+cannot regress, cannot be trusted, and silently contributes nothing. The
+correction added both files; regeneration is **byte-identical**, the suite rose
+to 1021, and the reviewer re-ran the feature-level mutations **through the
+generator** (12/12 fail, 11/11 reverse controls pass) rather than by hand, which
+was the entire point.
+
+That yields a standing check, now in `plan.md`: **a fixture packet must ship a
+generator with `--check` and a test module, and the full-suite count must rise.**
+An unchanged count means the cases are inert.
+
+On the tests themselves, this section has a hazard that makes it unusually easy
+to write something meaningless. **After deallocation the value is gone and the
+contents are not observable** — reading deallocated storage is undefined
+behaviour — and a pointer whose target was deallocated has **undefined
+association status**, so `ASSOCIATED()` on it is not a legitimate oracle. The
+reviewer checked all 11 sources line by line and found no such read.
+
+The subtler point is that **`ALLOCATED(x) == .false.` is a weak oracle on its
+own**: a processor that never allocated at all also reports false, and `.false.`
+is default-equivalent, so a zero-filled logical satisfies it. Every fixture
+therefore proves the **positive** state — allocated, with bounds and values —
+*before* deallocating, using non-unit and negative lower bounds so a wrong-bounds
+reallocation is detectable.
+
+Three defects were confirmed, all normatively grounded:
+
+- **9.7.3.2 p1 with 9.7.4 p5** — deallocating an unallocated allocatable "causes
+  an error condition", requiring a **positive** `STAT` distinct from the image
+  codes. Only portable properties are asserted; no processor-dependent value and
+  no resource-exhaustion path.
+- **8.5.16 p1** — `SAVE` retains "association status, allocation status,
+  definition status, and value".
+- **9.7.3.2 p8 with 7.5.6.3 p2** — derived-type deallocation deallocates
+  allocated allocatable subobjects and finalizes them.
+
+The `SAVE` one deserved the scrutiny it got. The author cited *"NOTE 1/SAVE
+control"* — and **notes are not normative**. Had a note been the only support,
+the *fixture* would have been unfounded and LFortran's behaviour unremarkable,
+making it a test defect rather than a compiler defect. The reviewer found the
+normative sentence in 8.5.16 p1, so the claim stands. That distinction is the
+difference between reporting a real bug and manufacturing one.
+
+Baseline **813 → 816**, three additions, no modifications.
+See `doc/source_audits/batch_132.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
