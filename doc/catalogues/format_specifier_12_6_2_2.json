@@ -1,0 +1,191 @@
+{
+  "schema_version": 1,
+  "section": "12.6.2.2",
+  "requirements": [
+    {
+      "id": "S12.6.2.2-001",
+      "title": "The format specifier supplies a format specification or list-directed formatting",
+      "source": "S12.6.2.2, J3/24-007, 18 December 2023, physical PDF259.",
+      "source_units": [
+        "p1"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The format specifier supplies a format specification or specifies list-directed formatting for a formatted input/output statement.",
+      "facets": [
+        "format-specifier-supplies-format-specification",
+        "format-specifier-supplies-list-directed-formatting"
+      ],
+      "pending": {
+        "format-specifier-supplies-format-specification": "Use a formatted internal WRITE to a character buffer initialized to # with FMT=\"(SS,I2)\" and value 7; expect exact \" 7\" and IOSTAT zero, proving the specifier supplies explicit formatting.",
+        "format-specifier-supplies-list-directed-formatting": "Use a list-directed internal WRITE with FMT=* to a buffer initialized to # and a nondefault integer value; assert only successful transfer and properties owned by list-directed formatting, not processor-dependent spacing."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or using a compile-only conforming control) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT or named status values where the standard names them, required INQUIRE tokens, or required diagnosis of a numbered syntax rule or constraint. Negative/source-control plans change one property from the conforming control and do not require a particular diagnostic message, severity, exit status, or printed rule number.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. IOMSG wording, processor-dependent numeric status values, external-file byte encodings, buffering, timing, and actual overlap of asynchronous operations are never an oracle. A diagnostic facet is only a future source-control plan when the cited numbered rule alone is violated and the invalid program reaches that rule.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, earlier clause 12 connection/access catalogues, and existing clause 13 format/editing catalogues for source form, names, labels, expressions, variables, units, access methods, internal files, formatting, and existing mode descriptors where used by pending controls. Unregistered dependencies explicitly retained: later 12.6 input/output-item rules; 12.7-12.11 transfer, status, INQUIRE, WAIT, and asynchronous semantics; clause 15 defined I/O; clause 16 named I/O status constants if future fixtures use them; clause 19 scope and lifetime controls."
+    },
+    {
+      "id": "R1215",
+      "title": "Format syntax admits default character expressions, FORMAT labels, and asterisks",
+      "source": "S12.6.2.2, J3/24-007, 18 December 2023, physical PDF259.",
+      "source_units": [
+        "R1215"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "A format is a default character expression, the label of a FORMAT statement, or an asterisk.",
+      "facets": [
+        "default-character-expression-format-form",
+        "format-statement-label-form",
+        "asterisk-format-form"
+      ],
+      "pending": {
+        "default-character-expression-format-form": "Compile/run an internal WRITE using FMT=\"(SS,I1)\" and a sentinel-filled buffer; a syntax negative deletes the expression operand only.",
+        "format-statement-label-form": "Compile/run a WRITE using FMT=100 with a same-scope `100 FORMAT(SS,I1)` and sentinel buffer; the paired syntax negative keeps C1232 premises but removes the label token.",
+        "asterisk-format-form": "Compile/run a list-directed internal WRITE using FMT=* with nondefault input; the paired syntax negative replaces `*` with an otherwise invalid token."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or using a compile-only conforming control) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT or named status values where the standard names them, required INQUIRE tokens, or required diagnosis of a numbered syntax rule or constraint. Negative/source-control plans change one property from the conforming control and do not require a particular diagnostic message, severity, exit status, or printed rule number.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. IOMSG wording, processor-dependent numeric status values, external-file byte encodings, buffering, timing, and actual overlap of asynchronous operations are never an oracle. A diagnostic facet is only a future source-control plan when the cited numbered rule alone is violated and the invalid program reaches that rule.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, earlier clause 12 connection/access catalogues, and existing clause 13 format/editing catalogues for source form, names, labels, expressions, variables, units, access methods, internal files, formatting, and existing mode descriptors where used by pending controls. Unregistered dependencies explicitly retained: later 12.6 input/output-item rules; 12.7-12.11 transfer, status, INQUIRE, WAIT, and asynchronous semantics; clause 15 defined I/O; clause 16 named I/O status constants if future fixtures use them; clause 19 scope and lifetime controls."
+    },
+    {
+      "id": "C1232",
+      "title": "FORMAT labels identify same-inclusive-scope FORMAT statements",
+      "source": "S12.6.2.2, J3/24-007, 18 December 2023, physical PDF259.",
+      "source_units": [
+        "C1232"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "A label used as a format shall be the label of a FORMAT statement, and that FORMAT statement shall appear in the same inclusive scope as the statement containing the FMT= specifier.",
+      "facets": [
+        "format-label-targets-format-statement",
+        "format-label-same-inclusive-scope"
+      ],
+      "pending": {
+        "format-label-targets-format-statement": "Diagnostic/control pair changes only the target of FMT=100 from a same-scope FORMAT statement to a same-scope CONTINUE branch target; the conforming control is otherwise identical.",
+        "format-label-same-inclusive-scope": "Diagnostic/control pair keeps a labelled FORMAT statement but moves it to a different inclusive scope, for example an internal procedure, while the control keeps `100 FORMAT(SS,I1)` in the same inclusive scope."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or using a compile-only conforming control) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT or named status values where the standard names them, required INQUIRE tokens, or required diagnosis of a numbered syntax rule or constraint. Negative/source-control plans change one property from the conforming control and do not require a particular diagnostic message, severity, exit status, or printed rule number.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. IOMSG wording, processor-dependent numeric status values, external-file byte encodings, buffering, timing, and actual overlap of asynchronous operations are never an oracle. A diagnostic facet is only a future source-control plan when the cited numbered rule alone is violated and the invalid program reaches that rule.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, earlier clause 12 connection/access catalogues, and existing clause 13 format/editing catalogues for source form, names, labels, expressions, variables, units, access methods, internal files, formatting, and existing mode descriptors where used by pending controls. Unregistered dependencies explicitly retained: later 12.6 input/output-item rules; 12.7-12.11 transfer, status, INQUIRE, WAIT, and asynchronous semantics; clause 15 defined I/O; clause 16 named I/O status constants if future fixtures use them; clause 19 scope and lifetime controls."
+    },
+    {
+      "id": "S12.6.2.2-002",
+      "title": "Character-expression formats evaluate to valid format specifications",
+      "source": "S12.6.2.2, J3/24-007, 18 December 2023, physical PDF259.",
+      "source_units": [
+        "p2"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "A default character expression used as a format shall evaluate to a valid format specification as described by 13.2.1 and 13.2.2.",
+      "facets": [
+        "character-expression-valid-format-specification"
+      ],
+      "pending": {
+        "character-expression-valid-format-specification": "Positive plan writes through FMT=\"(SS,I1)\"; source-control negative changes only the runtime character value to a malformed format such as \"(Q)\". Because this unnumbered rule has no required diagnostic by itself, a fixture would observe only successful valid transfer or nonzero status where later format rules require it."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or using a compile-only conforming control) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT or named status values where the standard names them, required INQUIRE tokens, or required diagnosis of a numbered syntax rule or constraint. Negative/source-control plans change one property from the conforming control and do not require a particular diagnostic message, severity, exit status, or printed rule number.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. IOMSG wording, processor-dependent numeric status values, external-file byte encodings, buffering, timing, and actual overlap of asynchronous operations are never an oracle. A diagnostic facet is only a future source-control plan when the cited numbered rule alone is violated and the invalid program reaches that rule.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, earlier clause 12 connection/access catalogues, and existing clause 13 format/editing catalogues for source form, names, labels, expressions, variables, units, access methods, internal files, formatting, and existing mode descriptors where used by pending controls. Unregistered dependencies explicitly retained: later 12.6 input/output-item rules; 12.7-12.11 transfer, status, INQUIRE, WAIT, and asynchronous semantics; clause 15 defined I/O; clause 16 named I/O status constants if future fixtures use them; clause 19 scope and lifetime controls."
+    },
+    {
+      "id": "S12.6.2.2-003",
+      "title": "Array character-expression formats concatenate elements in array element order",
+      "source": "S12.6.2.2, J3/24-007, 18 December 2023, physical PDF259.",
+      "source_units": [
+        "p3"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "If a default character expression format is an array, all elements are treated as specified in array element order and concatenated.",
+      "facets": [
+        "format-array-elements-concatenated-in-array-element-order"
+      ],
+      "pending": {
+        "format-array-elements-concatenated-in-array-element-order": "Use a character array such as [\"(\",\"SS\",\",\",\"I1\",\",\",\"I1\",\")\"] as FMT for internal WRITE of 3 and 4 to a sentinel buffer; expect the same exact result as FMT=\"(SS,I1,I1)\", and mutate element order to make the format or result differ."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or using a compile-only conforming control) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT or named status values where the standard names them, required INQUIRE tokens, or required diagnosis of a numbered syntax rule or constraint. Negative/source-control plans change one property from the conforming control and do not require a particular diagnostic message, severity, exit status, or printed rule number.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. IOMSG wording, processor-dependent numeric status values, external-file byte encodings, buffering, timing, and actual overlap of asynchronous operations are never an oracle. A diagnostic facet is only a future source-control plan when the cited numbered rule alone is violated and the invalid program reaches that rule.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, earlier clause 12 connection/access catalogues, and existing clause 13 format/editing catalogues for source form, names, labels, expressions, variables, units, access methods, internal files, formatting, and existing mode descriptors where used by pending controls. Unregistered dependencies explicitly retained: later 12.6 input/output-item rules; 12.7-12.11 transfer, status, INQUIRE, WAIT, and asynchronous semantics; clause 15 defined I/O; clause 16 named I/O status constants if future fixtures use them; clause 19 scope and lifetime controls."
+    },
+    {
+      "id": "S12.6.2.2-004",
+      "title": "Asterisk format makes the statement list-directed",
+      "source": "S12.6.2.2, J3/24-007, 18 December 2023, physical PDF259.",
+      "source_units": [
+        "p4"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "If the format is an asterisk, the statement is a list-directed input/output statement.",
+      "facets": [
+        "asterisk-format-makes-list-directed-statement"
+      ],
+      "pending": {
+        "asterisk-format-makes-list-directed-statement": "Use FMT=* in an internal WRITE of initialized values and assert only behavior fixed by list-directed rules after they are registered; do not assert processor-dependent spaces or widths from this classification facet."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or using a compile-only conforming control) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT or named status values where the standard names them, required INQUIRE tokens, or required diagnosis of a numbered syntax rule or constraint. Negative/source-control plans change one property from the conforming control and do not require a particular diagnostic message, severity, exit status, or printed rule number.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. IOMSG wording, processor-dependent numeric status values, external-file byte encodings, buffering, timing, and actual overlap of asynchronous operations are never an oracle. A diagnostic facet is only a future source-control plan when the cited numbered rule alone is violated and the invalid program reaches that rule.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, earlier clause 12 connection/access catalogues, and existing clause 13 format/editing catalogues for source form, names, labels, expressions, variables, units, access methods, internal files, formatting, and existing mode descriptors where used by pending controls. Unregistered dependencies explicitly retained: later 12.6 input/output-item rules; 12.7-12.11 transfer, status, INQUIRE, WAIT, and asynchronous semantics; clause 15 defined I/O; clause 16 named I/O status constants if future fixtures use them; clause 19 scope and lifetime controls."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "definition",
+      "requirements": [
+        "S12.6.2.2-001"
+      ],
+      "rationale": "Defines the role of the format specifier."
+    },
+    {
+      "unit": "R1215",
+      "disposition": "requirements",
+      "requirements": [
+        "R1215"
+      ]
+    },
+    {
+      "unit": "C1232",
+      "disposition": "requirements",
+      "requirements": [
+        "C1232"
+      ]
+    },
+    {
+      "unit": "p2",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.6.2.2-002"
+      ]
+    },
+    {
+      "unit": "p3",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.6.2.2-003"
+      ]
+    },
+    {
+      "unit": "p4",
+      "disposition": "definition",
+      "requirements": [
+        "S12.6.2.2-004"
+      ],
+      "rationale": "Defines the list-directed classification for asterisk format."
+    },
+    {
+      "unit": "note-unnumbered",
+      "disposition": "informative",
+      "rationale": "Example only; no requirement is based on the NOTE."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_12_6_2_2.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "f0fa28fbc2630c14c9f0c979247ff33fa1ee0317da98ae6c5c9b26197f5297fe",
+  "review_rationale": "Source registration for 12.6.2.2-12.6.2.16, the individual io-control-spec specifiers (batch160). Every unit hash-verified by independent reviewers across two rounds. Each temporary mode specifier is split into its value restriction, its one-statement effect with restoration of the connection mode (observed by INQUIRE after the statement), and the omitted-means-unchanged rule. Round 1 found a pending plan expecting exact output from I2 on a positive value without fixing the sign mode; it now uses SS, and a sweep found no other plus-, leading-zero- or rounding-dependent exact output. R1215 and C1232 were pre-accounted. Source accounting only."
+}

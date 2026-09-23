@@ -5613,6 +5613,19 @@ Each now has a plan in which the DTIO procedure records what it observes in modu
 variables with distinguished values.
 See `doc/source_audits/batch_163.json`.
 
+## Batch 160 — the io-control-spec specifiers
+
+Thirty-five units of 12.6.2.2 through 12.6.2.16, after two rounds. Each temporary
+mode specifier (`BLANK=`, `DECIMAL=`, `DELIM=`, `LEADING_ZERO=`, `PAD=`,
+`ROUND=`, `SIGN=`) is split three ways: the value restriction, the effect for one
+statement with the connection's mode restored afterwards — observable with INQUIRE
+— and the rule that omitting it leaves the connection mode in force. The single
+finding was the formatted-output hazard that Clause 13 taught: a plan expected
+`" 7"` from `(I2)` without fixing the sign mode, and an internal file's default
+sign mode is processor defined. With this packet, **Clause 12 is fully
+registered**.
+See `doc/source_audits/batch_160.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must

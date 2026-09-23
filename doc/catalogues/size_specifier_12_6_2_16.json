@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "section": "12.6.2.16",
+  "requirements": [
+    {
+      "id": "S12.6.2.16-001",
+      "title": "SIZE defines the count of characters transferred by input data edit descriptors",
+      "source": "S12.6.2.16, J3/24-007, 18 December 2023, physical PDF262.",
+      "source_units": [
+        "p1"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "In an input statement, SIZE= causes the specified variable to become defined with the count of characters transferred from the file by data edit descriptors; blanks inserted as padding are not counted.",
+      "facets": [
+        "size-defined-with-data-edit-character-count",
+        "size-excludes-padding-blanks"
+      ],
+      "pending": {
+        "size-defined-with-data-edit-character-count": "Use nonadvancing formatted external input with SIZE initialized to -777, a known record such as \"ABCDEF\", and data edit descriptors that transfer a fixed number of characters; expect SIZE to equal that count after successful input.",
+        "size-excludes-padding-blanks": "Use a short external record with PAD=\"YES\" and a field wider than the physical characters; initialize SIZE and target to nondefault sentinels and expect SIZE to count only real transferred characters, not inserted padding blanks."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or using a compile-only conforming control) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT or named status values where the standard names them, required INQUIRE tokens, or required diagnosis of a numbered syntax rule or constraint. Negative/source-control plans change one property from the conforming control and do not require a particular diagnostic message, severity, exit status, or printed rule number.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. IOMSG wording, processor-dependent numeric status values, external-file byte encodings, buffering, timing, and actual overlap of asynchronous operations are never an oracle. A diagnostic facet is only a future source-control plan when the cited numbered rule alone is violated and the invalid program reaches that rule.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, earlier clause 12 connection/access catalogues, and existing clause 13 format/editing catalogues for source form, names, labels, expressions, variables, units, access methods, internal files, formatting, and existing mode descriptors where used by pending controls. Unregistered dependencies explicitly retained: later 12.6 input/output-item rules; 12.7-12.11 transfer, status, INQUIRE, WAIT, and asynchronous semantics; clause 15 defined I/O; clause 16 named I/O status constants if future fixtures use them; clause 19 scope and lifetime controls."
+    },
+    {
+      "id": "S12.6.2.16-002",
+      "title": "SIZE definition timing depends on synchronous versus asynchronous input",
+      "source": "S12.6.2.16, J3/24-007, 18 December 2023, physical PDF262.",
+      "source_units": [
+        "p2"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For a synchronous input statement, SIZE= definition occurs when execution of the statement completes; for an asynchronous input statement, definition occurs when the corresponding wait operation is performed.",
+      "facets": [
+        "synchronous-size-defined-at-statement-completion",
+        "asynchronous-size-defined-at-wait"
+      ],
+      "pending": {
+        "synchronous-size-defined-at-statement-completion": "After a synchronous nonadvancing READ with SIZE initialized to -777, inspect SIZE immediately after statement completion and expect the character count.",
+        "asynchronous-size-defined-at-wait": "For ASYNCHRONOUS=\"YES\" input with SIZE initialized to -777, do not inspect SIZE until WAIT completes; after WAIT, expect the count. The plan avoids reading SIZE while its definition is pending."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or using a compile-only conforming control) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT or named status values where the standard names them, required INQUIRE tokens, or required diagnosis of a numbered syntax rule or constraint. Negative/source-control plans change one property from the conforming control and do not require a particular diagnostic message, severity, exit status, or printed rule number.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. IOMSG wording, processor-dependent numeric status values, external-file byte encodings, buffering, timing, and actual overlap of asynchronous operations are never an oracle. A diagnostic facet is only a future source-control plan when the cited numbered rule alone is violated and the invalid program reaches that rule.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, earlier clause 12 connection/access catalogues, and existing clause 13 format/editing catalogues for source form, names, labels, expressions, variables, units, access methods, internal files, formatting, and existing mode descriptors where used by pending controls. Unregistered dependencies explicitly retained: later 12.6 input/output-item rules; 12.7-12.11 transfer, status, INQUIRE, WAIT, and asynchronous semantics; clause 15 defined I/O; clause 16 named I/O status constants if future fixtures use them; clause 19 scope and lifetime controls."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.6.2.16-001"
+      ]
+    },
+    {
+      "unit": "p2",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.6.2.16-002"
+      ]
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_12_6_2_16.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "1efd67684fb1364f146a972520f489705deae227769f0cba548a3a532f2f052e",
+  "review_rationale": "Source registration for 12.6.2.2-12.6.2.16, the individual io-control-spec specifiers (batch160). Every unit hash-verified by independent reviewers across two rounds. Each temporary mode specifier is split into its value restriction, its one-statement effect with restoration of the connection mode (observed by INQUIRE after the statement), and the omitted-means-unchanged rule. Round 1 found a pending plan expecting exact output from I2 on a positive value without fixing the sign mode; it now uses SS, and a sweep found no other plus-, leading-zero- or rounding-dependent exact output. R1215 and C1232 were pre-accounted. Source accounting only."
+}

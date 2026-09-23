@@ -1,0 +1,113 @@
+{
+  "schema_version": 1,
+  "section": "12.6.2.7",
+  "subunits": {
+    "p1": [
+      "p1.value-list",
+      "p1.temporary-change",
+      "p1.omitted-unchanged"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S12.6.2.7-001",
+      "title": "DECIMAL values are COMMA, or POINT",
+      "source": "S12.6.2.7, J3/24-007, 18 December 2023, physical PDF260.",
+      "source_units": [
+        "p1.value-list"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "The scalar default character expression in a DECIMAL= specifier shall evaluate to COMMA, or POINT.",
+      "facets": [
+        "decimal-comma-value",
+        "decimal-point-value",
+        "decimal-other-value-source-control"
+      ],
+      "pending": {
+        "decimal-comma-value": "Positive source/control uses DECIMAL=\"COMMA\" in a context admitted by 12.6.2.1; trailing blanks/case-insensitivity remain covered by 12.6.2.1 p4.",
+        "decimal-point-value": "Positive source/control uses DECIMAL=\"POINT\" in a context admitted by 12.6.2.1; trailing blanks/case-insensitivity remain covered by 12.6.2.1 p4.",
+        "decimal-other-value-source-control": "Source-control negative changes only the DECIMAL= value to an unlisted token such as \"MAYBE\"; no numbered diagnostic is claimed for this unnumbered value rule."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or using a compile-only conforming control) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT or named status values where the standard names them, required INQUIRE tokens, or required diagnosis of a numbered syntax rule or constraint. Negative/source-control plans change one property from the conforming control and do not require a particular diagnostic message, severity, exit status, or printed rule number.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. IOMSG wording, processor-dependent numeric status values, external-file byte encodings, buffering, timing, and actual overlap of asynchronous operations are never an oracle. A diagnostic facet is only a future source-control plan when the cited numbered rule alone is violated and the invalid program reaches that rule.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, earlier clause 12 connection/access catalogues, and existing clause 13 format/editing catalogues for source form, names, labels, expressions, variables, units, access methods, internal files, formatting, and existing mode descriptors where used by pending controls. Unregistered dependencies explicitly retained: later 12.6 input/output-item rules; 12.7-12.11 transfer, status, INQUIRE, WAIT, and asynchronous semantics; clause 15 defined I/O; clause 16 named I/O status constants if future fixtures use them; clause 19 scope and lifetime controls."
+    },
+    {
+      "id": "S12.6.2.7-002",
+      "title": "DECIMAL temporarily changes the connection decimal edit mode",
+      "source": "S12.6.2.7, J3/24-007, 18 December 2023, physical PDF260.",
+      "source_units": [
+        "p1.temporary-change"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The DECIMAL= specifier temporarily changes the decimal edit mode for the connection.",
+      "facets": [
+        "decimal-temporary-change",
+        "decimal-mode-restored-after-statement"
+      ],
+      "pending": {
+        "decimal-temporary-change": "Use formatted input, or formatted output with SS sign mode, on a connection opened DECIMAL=\"POINT\" and a statement DECIMAL=\"COMMA\" with a decimal-comma real field chosen to avoid rounding ambiguity; post-statement INQUIRE(DECIMAL=; 12.10.2.7) prefilled with a sentinel must report POINT. Use the dual input control, or output control with SS sign mode, opened DECIMAL=\"COMMA\" and a statement DECIMAL=\"POINT\" with a point decimal real field; post-statement INQUIRE verifies restoration to COMMA.",
+        "decimal-mode-restored-after-statement": "The temporary-change plans explicitly pre-establish a nondefault connection mode with OPEN, perform one data transfer with a different statement specifier, and use post-transfer INQUIRE with a nonmatching sentinel to assert restoration rather than merely successful transfer."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or using a compile-only conforming control) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT or named status values where the standard names them, required INQUIRE tokens, or required diagnosis of a numbered syntax rule or constraint. Negative/source-control plans change one property from the conforming control and do not require a particular diagnostic message, severity, exit status, or printed rule number.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. IOMSG wording, processor-dependent numeric status values, external-file byte encodings, buffering, timing, and actual overlap of asynchronous operations are never an oracle. A diagnostic facet is only a future source-control plan when the cited numbered rule alone is violated and the invalid program reaches that rule.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, earlier clause 12 connection/access catalogues, and existing clause 13 format/editing catalogues for source form, names, labels, expressions, variables, units, access methods, internal files, formatting, and existing mode descriptors where used by pending controls. Unregistered dependencies explicitly retained: later 12.6 input/output-item rules; 12.7-12.11 transfer, status, INQUIRE, WAIT, and asynchronous semantics; clause 15 defined I/O; clause 16 named I/O status constants if future fixtures use them; clause 19 scope and lifetime controls."
+    },
+    {
+      "id": "S12.6.2.7-003",
+      "title": "Omitted DECIMAL leaves the connection decimal edit mode unchanged",
+      "source": "S12.6.2.7, J3/24-007, 18 December 2023, physical PDF260.",
+      "source_units": [
+        "p1.omitted-unchanged"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "If the DECIMAL= specifier is omitted, the decimal edit mode is not changed.",
+      "facets": [
+        "omitted-decimal-does-not-change-mode"
+      ],
+      "pending": {
+        "omitted-decimal-does-not-change-mode": "Open with DECIMAL=\"COMMA\", prefill INQUIRE variable with a sentinel, perform transfer omitting DECIMAL=, then INQUIRE(DECIMAL=; 12.10.2.7) and expect COMMA."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or using a compile-only conforming control) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT or named status values where the standard names them, required INQUIRE tokens, or required diagnosis of a numbered syntax rule or constraint. Negative/source-control plans change one property from the conforming control and do not require a particular diagnostic message, severity, exit status, or printed rule number.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. IOMSG wording, processor-dependent numeric status values, external-file byte encodings, buffering, timing, and actual overlap of asynchronous operations are never an oracle. A diagnostic facet is only a future source-control plan when the cited numbered rule alone is violated and the invalid program reaches that rule.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, earlier clause 12 connection/access catalogues, and existing clause 13 format/editing catalogues for source form, names, labels, expressions, variables, units, access methods, internal files, formatting, and existing mode descriptors where used by pending controls. Unregistered dependencies explicitly retained: later 12.6 input/output-item rules; 12.7-12.11 transfer, status, INQUIRE, WAIT, and asynchronous semantics; clause 15 defined I/O; clause 16 named I/O status constants if future fixtures use them; clause 19 scope and lifetime controls."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "structural",
+      "rationale": "Single paragraph mixes DECIMAL= value restriction, temporary mode effect/restoration, and omitted-specifier no-change rule."
+    },
+    {
+      "unit": "p1.value-list",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.6.2.7-001"
+      ]
+    },
+    {
+      "unit": "p1.temporary-change",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.6.2.7-002"
+      ]
+    },
+    {
+      "unit": "p1.omitted-unchanged",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.6.2.7-003"
+      ]
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_12_6_2_7.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "87e7040df7febc70cc8348591814e14a176eb4c44bbfe74285e42a0ae061cddc",
+  "review_rationale": "Source registration for 12.6.2.2-12.6.2.16, the individual io-control-spec specifiers (batch160). Every unit hash-verified by independent reviewers across two rounds. Each temporary mode specifier is split into its value restriction, its one-statement effect with restoration of the connection mode (observed by INQUIRE after the statement), and the omitted-means-unchanged rule. Round 1 found a pending plan expecting exact output from I2 on a positive value without fixing the sign mode; it now uses SS, and a sweep found no other plus-, leading-zero- or rounding-dependent exact output. R1215 and C1232 were pre-accounted. Source accounting only."
+}

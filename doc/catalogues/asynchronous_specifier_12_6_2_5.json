@@ -1,0 +1,342 @@
+{
+  "schema_version": 1,
+  "section": "12.6.2.5",
+  "subunits": {
+    "p2": [
+      "p2.async-admitted-open-yes",
+      "p2.async-restrictions"
+    ],
+    "p3": [
+      "p3.performance-latitude",
+      "p3.ordering",
+      "p3.documentation-recommendation"
+    ],
+    "p4": [
+      "p4.implicit-attribute",
+      "p4.explicit-confirmation"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S12.6.2.5-001",
+      "title": "ASYNCHRONOUS selects synchronous or asynchronous data transfer",
+      "source": "S12.6.2.5, J3/24-007, 18 December 2023, physical PDF260.",
+      "source_units": [
+        "p1"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "ASYNCHRONOUS= determines whether the data transfer statement and operation are synchronous or asynchronous; YES makes both asynchronous, while NO or omission makes both synchronous.",
+      "facets": [
+        "asynchronous-yes-makes-statement-and-operation-asynchronous",
+        "asynchronous-no-makes-statement-and-operation-synchronous",
+        "omitted-asynchronous-makes-statement-and-operation-synchronous"
+      ],
+      "pending": {
+        "asynchronous-yes-makes-statement-and-operation-asynchronous": "Use an external file opened with ASYNCHRONOUS=\"YES\", issue ASYNCHRONOUS=\"YES\" with ID initialized to -777, then use WAIT/INQUIRE status rules to complete; assert only portable completion/status, not actual overlap.",
+        "asynchronous-no-makes-statement-and-operation-synchronous": "Use the same external file but ASYNCHRONOUS=\"NO\" and initialized targets; assert completion when the statement returns by immediate data availability or IOSTAT zero.",
+        "omitted-asynchronous-makes-statement-and-operation-synchronous": "Repeat the synchronous control omitting ASYNCHRONOUS=, with nondefault targets and no pending operation before subsequent observations."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or using a compile-only conforming control) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT or named status values where the standard names them, required INQUIRE tokens, or required diagnosis of a numbered syntax rule or constraint. Negative/source-control plans change one property from the conforming control and do not require a particular diagnostic message, severity, exit status, or printed rule number.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. IOMSG wording, processor-dependent numeric status values, external-file byte encodings, buffering, timing, and actual overlap of asynchronous operations are never an oracle. A diagnostic facet is only a future source-control plan when the cited numbered rule alone is violated and the invalid program reaches that rule.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, earlier clause 12 connection/access catalogues, and existing clause 13 format/editing catalogues for source form, names, labels, expressions, variables, units, access methods, internal files, formatting, and existing mode descriptors where used by pending controls. Unregistered dependencies explicitly retained: later 12.6 input/output-item rules; 12.7-12.11 transfer, status, INQUIRE, WAIT, and asynchronous semantics; clause 15 defined I/O; clause 16 named I/O status constants if future fixtures use them; clause 19 scope and lifetime controls."
+    },
+    {
+      "id": "S12.6.2.5-002",
+      "title": "Asynchronous input/output is admitted for external files opened ASYNCHRONOUS=YES",
+      "source": "S12.6.2.5, J3/24-007, 18 December 2023, physical PDF260.",
+      "source_units": [
+        "p2.async-admitted-open-yes"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Asynchronous input/output is permitted for external files that were opened with an ASYNCHRONOUS= specifier with value YES.",
+      "facets": [
+        "async-io-admitted-on-external-opened-asynchronous-yes"
+      ],
+      "pending": {
+        "async-io-admitted-on-external-opened-asynchronous-yes": "Positive guarded plan opens a scratch external file with ASYNCHRONOUS=\"YES\", performs ASYNCHRONOUS=\"YES\" transfer with initialized ID/targets, and waits for completion; the oracle is successful conforming use, not actual concurrency."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or using a compile-only conforming control) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT or named status values where the standard names them, required INQUIRE tokens, or required diagnosis of a numbered syntax rule or constraint. Negative/source-control plans change one property from the conforming control and do not require a particular diagnostic message, severity, exit status, or printed rule number.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. IOMSG wording, processor-dependent numeric status values, external-file byte encodings, buffering, timing, and actual overlap of asynchronous operations are never an oracle. A diagnostic facet is only a future source-control plan when the cited numbered rule alone is violated and the invalid program reaches that rule.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, earlier clause 12 connection/access catalogues, and existing clause 13 format/editing catalogues for source form, names, labels, expressions, variables, units, access methods, internal files, formatting, and existing mode descriptors where used by pending controls. Unregistered dependencies explicitly retained: later 12.6 input/output-item rules; 12.7-12.11 transfer, status, INQUIRE, WAIT, and asynchronous semantics; clause 15 defined I/O; clause 16 named I/O status constants if future fixtures use them; clause 19 scope and lifetime controls."
+    },
+    {
+      "id": "S12.6.2.5-003",
+      "title": "Asynchronous input/output is not permitted outside the admitted external ASYNCHRONOUS=YES open context",
+      "source": "S12.6.2.5, J3/24-007, 18 December 2023, physical PDF260.",
+      "source_units": [
+        "p2.async-restrictions"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "Asynchronous input/output is permitted only for external files opened with ASYNCHRONOUS=YES; internal files, files opened ASYNCHRONOUS=NO, files opened without the specifier, and preconnected files are outside that admitted context.",
+      "facets": [
+        "async-io-requires-external-file",
+        "async-io-requires-open-asynchronous-yes"
+      ],
+      "pending": {
+        "async-io-requires-external-file": "Source-control negative changes only the unit from an external file-unit-number opened ASYNCHRONOUS=\"YES\" to an internal file while keeping ASYNCHRONOUS=\"YES\" in the data transfer; no diagnostic is required by this unnumbered rule.",
+        "async-io-requires-open-asynchronous-yes": "Source-control negative opens the same external file without ASYNCHRONOUS=\"YES\" (or with ASYNCHRONOUS=\"NO\") and changes no data-transfer spelling; future fixture may observe processor rejection/status only if later rules provide a portable status oracle."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or using a compile-only conforming control) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT or named status values where the standard names them, required INQUIRE tokens, or required diagnosis of a numbered syntax rule or constraint. Negative/source-control plans change one property from the conforming control and do not require a particular diagnostic message, severity, exit status, or printed rule number.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. IOMSG wording, processor-dependent numeric status values, external-file byte encodings, buffering, timing, and actual overlap of asynchronous operations are never an oracle. A diagnostic facet is only a future source-control plan when the cited numbered rule alone is violated and the invalid program reaches that rule.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, earlier clause 12 connection/access catalogues, and existing clause 13 format/editing catalogues for source form, names, labels, expressions, variables, units, access methods, internal files, formatting, and existing mode descriptors where used by pending controls. Unregistered dependencies explicitly retained: later 12.6 input/output-item rules; 12.7-12.11 transfer, status, INQUIRE, WAIT, and asynchronous semantics; clause 15 defined I/O; clause 16 named I/O status constants if future fixtures use them; clause 19 scope and lifetime controls."
+    },
+    {
+      "id": "S12.6.2.5-004",
+      "title": "Processors may choose whether an asynchronous operation actually overlaps execution",
+      "source": "S12.6.2.5, J3/24-007, 18 December 2023, physical PDF260.",
+      "source_units": [
+        "p3.performance-latitude"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A processor may perform an asynchronous data transfer operation asynchronously, but is not required to do so.",
+      "facets": [
+        "actual-asynchronous-performance-processor-latitude"
+      ],
+      "pending": {
+        "actual-asynchronous-performance-processor-latitude": "No portable single-image oracle can require overlap or background progress; future tests must wait/inquire completion and never time the operation or require concurrency."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or using a compile-only conforming control) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT or named status values where the standard names them, required INQUIRE tokens, or required diagnosis of a numbered syntax rule or constraint. Negative/source-control plans change one property from the conforming control and do not require a particular diagnostic message, severity, exit status, or printed rule number.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. IOMSG wording, processor-dependent numeric status values, external-file byte encodings, buffering, timing, and actual overlap of asynchronous operations are never an oracle. A diagnostic facet is only a future source-control plan when the cited numbered rule alone is violated and the invalid program reaches that rule.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, earlier clause 12 connection/access catalogues, and existing clause 13 format/editing catalogues for source form, names, labels, expressions, variables, units, access methods, internal files, formatting, and existing mode descriptors where used by pending controls. Unregistered dependencies explicitly retained: later 12.6 input/output-item rules; 12.7-12.11 transfer, status, INQUIRE, WAIT, and asynchronous semantics; clause 15 defined I/O; clause 16 named I/O status constants if future fixtures use them; clause 19 scope and lifetime controls."
+    },
+    {
+      "id": "S12.6.2.5-005",
+      "title": "Asynchronous transfers preserve the ordering of equivalent synchronous transfers",
+      "source": "S12.6.2.5, J3/24-007, 18 December 2023, physical PDF260.",
+      "source_units": [
+        "p3.ordering"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For each external file, records and file storage units read or written by asynchronous data transfer statements are read, written, and processed in the same order as they would have been if the statements were synchronous.",
+      "facets": [
+        "async-transfer-record-and-storage-unit-order-preserved"
+      ],
+      "pending": {
+        "async-transfer-record-and-storage-unit-order-preserved": "Issue two asynchronous writes of distinct nonblank records to the same external file opened ASYNCHRONOUS=\"YES\", wait for both, rewind/read synchronously, and expect the records in issue order; no timing assumption is made."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or using a compile-only conforming control) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT or named status values where the standard names them, required INQUIRE tokens, or required diagnosis of a numbered syntax rule or constraint. Negative/source-control plans change one property from the conforming control and do not require a particular diagnostic message, severity, exit status, or printed rule number.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. IOMSG wording, processor-dependent numeric status values, external-file byte encodings, buffering, timing, and actual overlap of asynchronous operations are never an oracle. A diagnostic facet is only a future source-control plan when the cited numbered rule alone is violated and the invalid program reaches that rule.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, earlier clause 12 connection/access catalogues, and existing clause 13 format/editing catalogues for source form, names, labels, expressions, variables, units, access methods, internal files, formatting, and existing mode descriptors where used by pending controls. Unregistered dependencies explicitly retained: later 12.6 input/output-item rules; 12.7-12.11 transfer, status, INQUIRE, WAIT, and asynchronous semantics; clause 15 defined I/O; clause 16 named I/O status constants if future fixtures use them; clause 19 scope and lifetime controls."
+    },
+    {
+      "id": "S12.6.2.5-006",
+      "title": "Processor documentation should describe asynchronous execution circumstances",
+      "source": "S12.6.2.5, J3/24-007, 18 December 2023, physical PDF260.",
+      "source_units": [
+        "p3.documentation-recommendation"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The documentation of the Fortran processor should describe when input/output will be performed asynchronously.",
+      "facets": [
+        "processor-documentation-should-describe-async-performance"
+      ],
+      "pending": {
+        "processor-documentation-should-describe-async-performance": "No portable program oracle exists for processor documentation content; this remains a documentation recommendation and future executable tests must not depend on it."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or using a compile-only conforming control) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT or named status values where the standard names them, required INQUIRE tokens, or required diagnosis of a numbered syntax rule or constraint. Negative/source-control plans change one property from the conforming control and do not require a particular diagnostic message, severity, exit status, or printed rule number.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. IOMSG wording, processor-dependent numeric status values, external-file byte encodings, buffering, timing, and actual overlap of asynchronous operations are never an oracle. A diagnostic facet is only a future source-control plan when the cited numbered rule alone is violated and the invalid program reaches that rule.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, earlier clause 12 connection/access catalogues, and existing clause 13 format/editing catalogues for source form, names, labels, expressions, variables, units, access methods, internal files, formatting, and existing mode descriptors where used by pending controls. Unregistered dependencies explicitly retained: later 12.6 input/output-item rules; 12.7-12.11 transfer, status, INQUIRE, WAIT, and asynchronous semantics; clause 15 defined I/O; clause 16 named I/O status constants if future fixtures use them; clause 19 scope and lifetime controls."
+    },
+    {
+      "id": "S12.6.2.5-007",
+      "title": "Asynchronous transfer variables get implicit ASYNCHRONOUS attributes",
+      "source": "S12.6.2.5, J3/24-007, 18 December 2023, physical PDF260.",
+      "source_units": [
+        "p4.implicit-attribute"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "If a variable is used in an asynchronous transfer as an input/output item, a namelist group object, or a SIZE= specifier, the base object of the data-ref is implicitly given the ASYNCHRONOUS attribute in the scoping unit of the statement.",
+      "facets": [
+        "async-item-base-object-implicit-asynchronous",
+        "async-namelist-base-object-implicit-asynchronous",
+        "async-size-base-object-implicit-asynchronous"
+      ],
+      "pending": {
+        "async-item-base-object-implicit-asynchronous": "Future source-use plan performs ASYNCHRONOUS=\"YES\" transfer of an item and then applies an aliasing/order rule that is valid only because the base object has the ASYNCHRONOUS attribute; all values start from nondefault sentinels.",
+        "async-namelist-base-object-implicit-asynchronous": "Same source-use plan with a namelist group object initialized to a nondefault value; exact namelist bytes remain owned by 13.11.",
+        "async-size-base-object-implicit-asynchronous": "Use nonadvancing asynchronous input with SIZE=size initialized to -777; the SIZE base object is included in the implicit attribute source-use inventory and completion is observed by WAIT."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or using a compile-only conforming control) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT or named status values where the standard names them, required INQUIRE tokens, or required diagnosis of a numbered syntax rule or constraint. Negative/source-control plans change one property from the conforming control and do not require a particular diagnostic message, severity, exit status, or printed rule number.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. IOMSG wording, processor-dependent numeric status values, external-file byte encodings, buffering, timing, and actual overlap of asynchronous operations are never an oracle. A diagnostic facet is only a future source-control plan when the cited numbered rule alone is violated and the invalid program reaches that rule.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, earlier clause 12 connection/access catalogues, and existing clause 13 format/editing catalogues for source form, names, labels, expressions, variables, units, access methods, internal files, formatting, and existing mode descriptors where used by pending controls. Unregistered dependencies explicitly retained: later 12.6 input/output-item rules; 12.7-12.11 transfer, status, INQUIRE, WAIT, and asynchronous semantics; clause 15 defined I/O; clause 16 named I/O status constants if future fixtures use them; clause 19 scope and lifetime controls."
+    },
+    {
+      "id": "S12.6.2.5-008",
+      "title": "The implicit ASYNCHRONOUS attribute may be confirmed explicitly",
+      "source": "S12.6.2.5, J3/24-007, 18 December 2023, physical PDF260.",
+      "source_units": [
+        "p4.explicit-confirmation"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The implicit ASYNCHRONOUS attribute for such a base object may be confirmed by explicit declaration.",
+      "facets": [
+        "explicit-asynchronous-declaration-may-confirm-implicit-attribute"
+      ],
+      "pending": {
+        "explicit-asynchronous-declaration-may-confirm-implicit-attribute": "Compile paired controls with and without an explicit ASYNCHRONOUS declaration on the same base object used in ASYNCHRONOUS=\"YES\" transfer; both are conforming and must have the same portable transfer/status observations."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or using a compile-only conforming control) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT or named status values where the standard names them, required INQUIRE tokens, or required diagnosis of a numbered syntax rule or constraint. Negative/source-control plans change one property from the conforming control and do not require a particular diagnostic message, severity, exit status, or printed rule number.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. IOMSG wording, processor-dependent numeric status values, external-file byte encodings, buffering, timing, and actual overlap of asynchronous operations are never an oracle. A diagnostic facet is only a future source-control plan when the cited numbered rule alone is violated and the invalid program reaches that rule.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, earlier clause 12 connection/access catalogues, and existing clause 13 format/editing catalogues for source form, names, labels, expressions, variables, units, access methods, internal files, formatting, and existing mode descriptors where used by pending controls. Unregistered dependencies explicitly retained: later 12.6 input/output-item rules; 12.7-12.11 transfer, status, INQUIRE, WAIT, and asynchronous semantics; clause 15 defined I/O; clause 16 named I/O status constants if future fixtures use them; clause 19 scope and lifetime controls."
+    },
+    {
+      "id": "S12.6.2.5-009",
+      "title": "Asynchronous execution defines a pending input/output storage sequence",
+      "source": "S12.6.2.5, J3/24-007, 18 December 2023, physical PDF260.",
+      "source_units": [
+        "p5"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "When an asynchronous input/output statement is executed, the storage units specified by the item list or NML= specifier plus the storage units specified by SIZE= are the pending input/output storage sequence for the operation.",
+      "facets": [
+        "pending-io-storage-sequence-includes-item-list-or-namelist",
+        "pending-io-storage-sequence-includes-size-specifier-storage"
+      ],
+      "pending": {
+        "pending-io-storage-sequence-includes-item-list-or-namelist": "After starting an asynchronous transfer of a nondefault item or namelist object, future aliasing/affector tests use WAIT before reading or redefining it; the fixture must first establish the object value so the sequence is not vacuous.",
+        "pending-io-storage-sequence-includes-size-specifier-storage": "Use asynchronous nonadvancing input with SIZE initialized to -777 and include that variable in the pending-sequence source-use inventory until WAIT defines it."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or using a compile-only conforming control) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT or named status values where the standard names them, required INQUIRE tokens, or required diagnosis of a numbered syntax rule or constraint. Negative/source-control plans change one property from the conforming control and do not require a particular diagnostic message, severity, exit status, or printed rule number.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. IOMSG wording, processor-dependent numeric status values, external-file byte encodings, buffering, timing, and actual overlap of asynchronous operations are never an oracle. A diagnostic facet is only a future source-control plan when the cited numbered rule alone is violated and the invalid program reaches that rule.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, earlier clause 12 connection/access catalogues, and existing clause 13 format/editing catalogues for source form, names, labels, expressions, variables, units, access methods, internal files, formatting, and existing mode descriptors where used by pending controls. Unregistered dependencies explicitly retained: later 12.6 input/output-item rules; 12.7-12.11 transfer, status, INQUIRE, WAIT, and asynchronous semantics; clause 15 defined I/O; clause 16 named I/O status constants if future fixtures use them; clause 19 scope and lifetime controls."
+    },
+    {
+      "id": "S12.6.2.5-010",
+      "title": "Pending input/output storage sequence affectors are associated variables",
+      "source": "S12.6.2.5, J3/24-007, 18 December 2023, physical PDF260.",
+      "source_units": [
+        "p6"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A pending input/output storage sequence affector is a variable of which any part is associated with a storage unit in a pending input/output storage sequence.",
+      "facets": [
+        "pending-io-storage-sequence-affector-definition"
+      ],
+      "pending": {
+        "pending-io-storage-sequence-affector-definition": "Future aliasing tests create an associated variable (for example pointer or host-associated alias after those rules are in scope) for a nondefault pending item, then avoid or exercise affector restrictions in later semantic rules; this unit supplies the definition only."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or using a compile-only conforming control) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT or named status values where the standard names them, required INQUIRE tokens, or required diagnosis of a numbered syntax rule or constraint. Negative/source-control plans change one property from the conforming control and do not require a particular diagnostic message, severity, exit status, or printed rule number.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. IOMSG wording, processor-dependent numeric status values, external-file byte encodings, buffering, timing, and actual overlap of asynchronous operations are never an oracle. A diagnostic facet is only a future source-control plan when the cited numbered rule alone is violated and the invalid program reaches that rule.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, earlier clause 12 connection/access catalogues, and existing clause 13 format/editing catalogues for source form, names, labels, expressions, variables, units, access methods, internal files, formatting, and existing mode descriptors where used by pending controls. Unregistered dependencies explicitly retained: later 12.6 input/output-item rules; 12.7-12.11 transfer, status, INQUIRE, WAIT, and asynchronous semantics; clause 15 defined I/O; clause 16 named I/O status constants if future fixtures use them; clause 19 scope and lifetime controls."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.6.2.5-001"
+      ]
+    },
+    {
+      "unit": "p2",
+      "disposition": "structural",
+      "rationale": "Mixed permission/restriction: asynchronous I/O is admitted only in the external ASYNCHRONOUS=YES open context."
+    },
+    {
+      "unit": "p2.async-admitted-open-yes",
+      "disposition": "permission",
+      "requirements": [
+        "S12.6.2.5-002"
+      ],
+      "rationale": "Admission half of \u201cpermitted only\u201d."
+    },
+    {
+      "unit": "p2.async-restrictions",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.6.2.5-003"
+      ]
+    },
+    {
+      "unit": "note1",
+      "disposition": "informative",
+      "rationale": "NOTE explains consequences and rationale; normative admission/restriction is in p1-p2."
+    },
+    {
+      "unit": "p3",
+      "disposition": "structural",
+      "rationale": "Mixes processor latitude, required ordering, and a documentation recommendation."
+    },
+    {
+      "unit": "p3.performance-latitude",
+      "disposition": "permission",
+      "requirements": [
+        "S12.6.2.5-004"
+      ],
+      "rationale": "Permission facet mapped to S12.6.2.5-004."
+    },
+    {
+      "unit": "p3.ordering",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.6.2.5-005"
+      ]
+    },
+    {
+      "unit": "p3.documentation-recommendation",
+      "disposition": "recommendation",
+      "requirements": [
+        "S12.6.2.5-006"
+      ],
+      "rationale": "Documentation recommendation using \u201cshould\u201d."
+    },
+    {
+      "unit": "p4",
+      "disposition": "structural",
+      "rationale": "Implicit attribute effect plus permission to confirm it explicitly."
+    },
+    {
+      "unit": "p4.implicit-attribute",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.6.2.5-007"
+      ]
+    },
+    {
+      "unit": "p4.explicit-confirmation",
+      "disposition": "permission",
+      "requirements": [
+        "S12.6.2.5-008"
+      ],
+      "rationale": "Permission facet mapped to S12.6.2.5-008."
+    },
+    {
+      "unit": "p5",
+      "disposition": "definition",
+      "requirements": [
+        "S12.6.2.5-009"
+      ],
+      "rationale": "Defines pending input/output storage sequence."
+    },
+    {
+      "unit": "note2",
+      "disposition": "informative",
+      "rationale": "NOTE explains non-contiguity; no normative requirement is based on it."
+    },
+    {
+      "unit": "p6",
+      "disposition": "definition",
+      "requirements": [
+        "S12.6.2.5-010"
+      ],
+      "rationale": "Defines affector."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_12_6_2_5.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "400ecbfbdc4f482a0b2ef150534f44320d96527114c2a22a6a771e58214511ab",
+  "review_rationale": "Source registration for 12.6.2.2-12.6.2.16, the individual io-control-spec specifiers (batch160). Every unit hash-verified by independent reviewers across two rounds. Each temporary mode specifier is split into its value restriction, its one-statement effect with restoration of the connection mode (observed by INQUIRE after the statement), and the omitted-means-unchanged rule. Round 1 found a pending plan expecting exact output from I2 on a positive value without fixing the sign mode; it now uses SS, and a sweep found no other plus-, leading-zero- or rounding-dependent exact output. R1215 and C1232 were pre-accounted. Source accounting only."
+}

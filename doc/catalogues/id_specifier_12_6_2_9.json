@@ -1,0 +1,224 @@
+{
+  "schema_version": 1,
+  "section": "12.6.2.9",
+  "subunits": {
+    "p1": [
+      "p1.success-definition",
+      "p1.zero-completed",
+      "p1.nonzero-identifier",
+      "p1.identifier-uniqueness",
+      "p1.wait-inquire-use"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S12.6.2.9-001",
+      "title": "Successful asynchronous ID transfer defines the ID variable with a processor-determined value",
+      "source": "S12.6.2.9, J3/24-007, 18 December 2023, physical PDF261.",
+      "source_units": [
+        "p1.success-definition"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Successful execution of an asynchronous data transfer statement containing ID= causes the ID variable to become defined with a processor-determined value.",
+      "facets": [
+        "successful-id-transfer-defines-id-variable",
+        "id-value-processor-determined"
+      ],
+      "pending": {
+        "successful-id-transfer-defines-id-variable": "Initialize the scalar integer ID variable to -777, execute a conforming ASYNCHRONOUS=\"YES\" external transfer with ID=, and observe after the statement or WAIT that the ID variable is defined enough to pass to WAIT/INQUIRE; no numeric value is required.",
+        "id-value-processor-determined": "No portable oracle may require a particular ID value; future tests assert only zero/nonzero meaning or successful use in WAIT/INQUIRE."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or using a compile-only conforming control) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT or named status values where the standard names them, required INQUIRE tokens, or required diagnosis of a numbered syntax rule or constraint. Negative/source-control plans change one property from the conforming control and do not require a particular diagnostic message, severity, exit status, or printed rule number.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. IOMSG wording, processor-dependent numeric status values, external-file byte encodings, buffering, timing, and actual overlap of asynchronous operations are never an oracle. A diagnostic facet is only a future source-control plan when the cited numbered rule alone is violated and the invalid program reaches that rule.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, earlier clause 12 connection/access catalogues, and existing clause 13 format/editing catalogues for source form, names, labels, expressions, variables, units, access methods, internal files, formatting, and existing mode descriptors where used by pending controls. Unregistered dependencies explicitly retained: later 12.6 input/output-item rules; 12.7-12.11 transfer, status, INQUIRE, WAIT, and asynchronous semantics; clause 15 defined I/O; clause 16 named I/O status constants if future fixtures use them; clause 19 scope and lifetime controls."
+    },
+    {
+      "id": "S12.6.2.9-002",
+      "title": "A zero ID value denotes completed transfer",
+      "source": "S12.6.2.9, J3/24-007, 18 December 2023, physical PDF261.",
+      "source_units": [
+        "p1.zero-completed"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "If the processor-determined ID value is zero, the data transfer operation has been completed.",
+      "facets": [
+        "zero-id-means-transfer-completed"
+      ],
+      "pending": {
+        "zero-id-means-transfer-completed": "Guarded plan: after a conforming asynchronous transfer, if the returned ID is zero, immediately verify the transferred nondefault data/status is complete; if nonzero, use WAIT first and do not claim this facet from the zero branch."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or using a compile-only conforming control) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT or named status values where the standard names them, required INQUIRE tokens, or required diagnosis of a numbered syntax rule or constraint. Negative/source-control plans change one property from the conforming control and do not require a particular diagnostic message, severity, exit status, or printed rule number.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. IOMSG wording, processor-dependent numeric status values, external-file byte encodings, buffering, timing, and actual overlap of asynchronous operations are never an oracle. A diagnostic facet is only a future source-control plan when the cited numbered rule alone is violated and the invalid program reaches that rule.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, earlier clause 12 connection/access catalogues, and existing clause 13 format/editing catalogues for source form, names, labels, expressions, variables, units, access methods, internal files, formatting, and existing mode descriptors where used by pending controls. Unregistered dependencies explicitly retained: later 12.6 input/output-item rules; 12.7-12.11 transfer, status, INQUIRE, WAIT, and asynchronous semantics; clause 15 defined I/O; clause 16 named I/O status constants if future fixtures use them; clause 19 scope and lifetime controls."
+    },
+    {
+      "id": "S12.6.2.9-003",
+      "title": "A nonzero ID value identifies a pending data transfer operation",
+      "source": "S12.6.2.9, J3/24-007, 18 December 2023, physical PDF261.",
+      "source_units": [
+        "p1.nonzero-identifier"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A nonzero ID value is the identifier of the data transfer operation.",
+      "facets": [
+        "nonzero-id-identifies-pending-transfer"
+      ],
+      "pending": {
+        "nonzero-id-identifies-pending-transfer": "Guarded plan: when a conforming asynchronous transfer returns nonzero ID, use that exact nonzero value in WAIT for the unit and assert completion/status; if the processor returns zero, the fixture does not claim this facet."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or using a compile-only conforming control) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT or named status values where the standard names them, required INQUIRE tokens, or required diagnosis of a numbered syntax rule or constraint. Negative/source-control plans change one property from the conforming control and do not require a particular diagnostic message, severity, exit status, or printed rule number.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. IOMSG wording, processor-dependent numeric status values, external-file byte encodings, buffering, timing, and actual overlap of asynchronous operations are never an oracle. A diagnostic facet is only a future source-control plan when the cited numbered rule alone is violated and the invalid program reaches that rule.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, earlier clause 12 connection/access catalogues, and existing clause 13 format/editing catalogues for source form, names, labels, expressions, variables, units, access methods, internal files, formatting, and existing mode descriptors where used by pending controls. Unregistered dependencies explicitly retained: later 12.6 input/output-item rules; 12.7-12.11 transfer, status, INQUIRE, WAIT, and asynchronous semantics; clause 15 defined I/O; clause 16 named I/O status constants if future fixtures use them; clause 19 scope and lifetime controls."
+    },
+    {
+      "id": "S12.6.2.9-004",
+      "title": "Nonzero IDs are unique among pending operations for the unit",
+      "source": "S12.6.2.9, J3/24-007, 18 December 2023, physical PDF261.",
+      "source_units": [
+        "p1.identifier-uniqueness"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A nonzero identifier is different from the identifier of any other pending data transfer operation for the same unit.",
+      "facets": [
+        "pending-id-unique-for-unit"
+      ],
+      "pending": {
+        "pending-id-unique-for-unit": "Start two asynchronous operations on the same unit only where both return nonzero IDs before completion; assert the two nonzero IDs are unequal. If either returns zero or the processor serializes completion, the guarded fixture does not claim this facet."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or using a compile-only conforming control) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT or named status values where the standard names them, required INQUIRE tokens, or required diagnosis of a numbered syntax rule or constraint. Negative/source-control plans change one property from the conforming control and do not require a particular diagnostic message, severity, exit status, or printed rule number.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. IOMSG wording, processor-dependent numeric status values, external-file byte encodings, buffering, timing, and actual overlap of asynchronous operations are never an oracle. A diagnostic facet is only a future source-control plan when the cited numbered rule alone is violated and the invalid program reaches that rule.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, earlier clause 12 connection/access catalogues, and existing clause 13 format/editing catalogues for source form, names, labels, expressions, variables, units, access methods, internal files, formatting, and existing mode descriptors where used by pending controls. Unregistered dependencies explicitly retained: later 12.6 input/output-item rules; 12.7-12.11 transfer, status, INQUIRE, WAIT, and asynchronous semantics; clause 15 defined I/O; clause 16 named I/O status constants if future fixtures use them; clause 19 scope and lifetime controls."
+    },
+    {
+      "id": "S12.6.2.9-005",
+      "title": "ID values can identify operations in subsequent WAIT or INQUIRE statements",
+      "source": "S12.6.2.9, J3/24-007, 18 December 2023, physical PDF261.",
+      "source_units": [
+        "p1.wait-inquire-use"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The ID value can be used in a subsequent WAIT or INQUIRE statement to identify the particular data transfer operation.",
+      "facets": [
+        "id-usable-in-subsequent-wait",
+        "id-usable-in-subsequent-inquire"
+      ],
+      "pending": {
+        "id-usable-in-subsequent-wait": "Use a nonzero returned ID in a subsequent WAIT with status variables initialized to sentinels; assert portable completion/status only.",
+        "id-usable-in-subsequent-inquire": "Use a nonzero returned ID in a subsequent INQUIRE pending-operation query after those rules are registered; assert only named/boolean properties specified by INQUIRE."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or using a compile-only conforming control) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT or named status values where the standard names them, required INQUIRE tokens, or required diagnosis of a numbered syntax rule or constraint. Negative/source-control plans change one property from the conforming control and do not require a particular diagnostic message, severity, exit status, or printed rule number.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. IOMSG wording, processor-dependent numeric status values, external-file byte encodings, buffering, timing, and actual overlap of asynchronous operations are never an oracle. A diagnostic facet is only a future source-control plan when the cited numbered rule alone is violated and the invalid program reaches that rule.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, earlier clause 12 connection/access catalogues, and existing clause 13 format/editing catalogues for source form, names, labels, expressions, variables, units, access methods, internal files, formatting, and existing mode descriptors where used by pending controls. Unregistered dependencies explicitly retained: later 12.6 input/output-item rules; 12.7-12.11 transfer, status, INQUIRE, WAIT, and asynchronous semantics; clause 15 defined I/O; clause 16 named I/O status constants if future fixtures use them; clause 19 scope and lifetime controls."
+    },
+    {
+      "id": "S12.6.2.9-006",
+      "title": "ID variable becomes undefined if an error occurs during the ID transfer",
+      "source": "S12.6.2.9, J3/24-007, 18 December 2023, physical PDF261.",
+      "source_units": [
+        "p2"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "If an error condition occurs during execution of a data transfer statement containing ID=, the ID variable becomes undefined.",
+      "facets": [
+        "id-variable-undefined-on-transfer-error"
+      ],
+      "pending": {
+        "id-variable-undefined-on-transfer-error": "No portable program may read an undefined ID value. Future negative/status tests can establish an error with IOSTAT/IOMSG rules and must then avoid using the ID value; this facet has no direct single-image value oracle."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or using a compile-only conforming control) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT or named status values where the standard names them, required INQUIRE tokens, or required diagnosis of a numbered syntax rule or constraint. Negative/source-control plans change one property from the conforming control and do not require a particular diagnostic message, severity, exit status, or printed rule number.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. IOMSG wording, processor-dependent numeric status values, external-file byte encodings, buffering, timing, and actual overlap of asynchronous operations are never an oracle. A diagnostic facet is only a future source-control plan when the cited numbered rule alone is violated and the invalid program reaches that rule.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, earlier clause 12 connection/access catalogues, and existing clause 13 format/editing catalogues for source form, names, labels, expressions, variables, units, access methods, internal files, formatting, and existing mode descriptors where used by pending controls. Unregistered dependencies explicitly retained: later 12.6 input/output-item rules; 12.7-12.11 transfer, status, INQUIRE, WAIT, and asynchronous semantics; clause 15 defined I/O; clause 16 named I/O status constants if future fixtures use them; clause 19 scope and lifetime controls."
+    },
+    {
+      "id": "S12.6.2.9-007",
+      "title": "Child data transfer statements do not specify ID",
+      "source": "S12.6.2.9, J3/24-007, 18 December 2023, physical PDF261.",
+      "source_units": [
+        "p3"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "A child data transfer statement shall not specify the ID= specifier.",
+      "facets": [
+        "child-data-transfer-id-source-control"
+      ],
+      "pending": {
+        "child-data-transfer-id-source-control": "Future source-control pair uses defined I/O to create a child data transfer; the invalid child statement adds only ID= while otherwise satisfying ASYNCHRONOUS premises. No required diagnostic is claimed because the rule is unnumbered."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or using a compile-only conforming control) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT or named status values where the standard names them, required INQUIRE tokens, or required diagnosis of a numbered syntax rule or constraint. Negative/source-control plans change one property from the conforming control and do not require a particular diagnostic message, severity, exit status, or printed rule number.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. IOMSG wording, processor-dependent numeric status values, external-file byte encodings, buffering, timing, and actual overlap of asynchronous operations are never an oracle. A diagnostic facet is only a future source-control plan when the cited numbered rule alone is violated and the invalid program reaches that rule.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, earlier clause 12 connection/access catalogues, and existing clause 13 format/editing catalogues for source form, names, labels, expressions, variables, units, access methods, internal files, formatting, and existing mode descriptors where used by pending controls. Unregistered dependencies explicitly retained: later 12.6 input/output-item rules; 12.7-12.11 transfer, status, INQUIRE, WAIT, and asynchronous semantics; clause 15 defined I/O; clause 16 named I/O status constants if future fixtures use them; clause 19 scope and lifetime controls."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "structural",
+      "rationale": "ID success paragraph mixes definition, zero/nonzero meanings, uniqueness, and WAIT/INQUIRE use."
+    },
+    {
+      "unit": "p1.success-definition",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.6.2.9-001"
+      ]
+    },
+    {
+      "unit": "p1.zero-completed",
+      "disposition": "definition",
+      "requirements": [
+        "S12.6.2.9-002"
+      ],
+      "rationale": "Defines zero ID meaning."
+    },
+    {
+      "unit": "p1.nonzero-identifier",
+      "disposition": "definition",
+      "requirements": [
+        "S12.6.2.9-003"
+      ],
+      "rationale": "Defines nonzero ID meaning."
+    },
+    {
+      "unit": "p1.identifier-uniqueness",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.6.2.9-004"
+      ]
+    },
+    {
+      "unit": "p1.wait-inquire-use",
+      "disposition": "permission",
+      "requirements": [
+        "S12.6.2.9-005"
+      ],
+      "rationale": "Admits use of the ID in later WAIT or INQUIRE."
+    },
+    {
+      "unit": "p2",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.6.2.9-006"
+      ]
+    },
+    {
+      "unit": "p3",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.6.2.9-007"
+      ]
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_12_6_2_9.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "d3fa29a40c7bc05bbc23b00c444a7e1f8f0e6ef19c608387ee38f2e403ebc28f",
+  "review_rationale": "Source registration for 12.6.2.2-12.6.2.16, the individual io-control-spec specifiers (batch160). Every unit hash-verified by independent reviewers across two rounds. Each temporary mode specifier is split into its value restriction, its one-statement effect with restoration of the connection mode (observed by INQUIRE after the statement), and the omitted-means-unchanged rule. Round 1 found a pending plan expecting exact output from I2 on a positive value without fixing the sign mode; it now uses SS, and a sweep found no other plus-, leading-zero- or rounding-dependent exact output. R1215 and C1232 were pre-accounted. Source accounting only."
+}
