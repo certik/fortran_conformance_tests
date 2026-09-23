@@ -4746,6 +4746,66 @@ with no files and no I/O units, and the plans now name exact expected characters
 including blanks.
 See `doc/source_audits/batch_137.json` and `doc/source_audits/batch_138.json`.
 
+## Batch 140 — Clause 13's first executable tests
+
+Clause 13 became source-complete at batch139 — 283 of 283 base units — with
+**zero executable tests**, exactly the gap Clause 10 had before Checkpoint I.
+This packet closes the first of it: **18 facets** of **13.7.2.2 integer
+editing** and **13.7.2.4 B, O and Z editing**.
+
+The registration work pays off directly here. The pending plans already named
+the descriptor, the input value and the **exact expected characters including
+blanks**, so the author was largely *executing* an independently reviewed
+specification rather than inventing one.
+
+What makes this clause unusually tractable is that **format output is
+byte-exactly testable through an internal `WRITE` to a character variable** — no
+files, no I/O units, no scratch directories. These are the cleanest oracles in
+the suite.
+
+The trap is that it is *so* easy that a vacuous test slips through. **Character
+comparison blank-pads the shorter operand**, so comparing a buffer against a
+shorter literal silently passes — a defect that has bitten this project
+repeatedly. Every output helper therefore asserts `LEN` before equality, and the
+widths vary so that padding is genuinely load-bearing rather than incidental.
+Integer and BOZ editing were chosen first precisely because they involve no
+reals and no processor-dependent kinds, so the arithmetic is exact.
+
+### The substitution check, and a check on the check
+
+For a **descriptor** packet the decisive non-vacuity test is **substituting the
+descriptor** — the direct analogue of the operator-substitution sweep that caught
+batch125 and batch127. Oracle and input mutation simply cannot detect a wrong
+descriptor, because the oracle is wrong with it.
+
+The reviewer re-ran all thirteen substitutions on both toolchains and all
+failed. But the more interesting question is whether a substitution is
+*load-bearing at all*: it only bites if the two descriptors actually **differ on
+the chosen value**. I raised that explicitly, and it checks out —
+`B4.4(5)` gives `'0101'` while `O` and `Z` give `'0005'`; `O4.4(8)` gives
+`'0010'` while `B` gives `'1000'` and `Z` gives `'0008'`; `Z4.4(10)` gives
+`'000A'` while `B` gives `'1010'` and `O` gives `'0012'`. Had any pair
+coincided, that substitution would have appeared in the matrix while proving
+nothing. The matrix is permanent in the generator.
+
+### Source rules confirmed independently
+
+`SS` suppresses the optional plus while a negative value's minus is
+**mandatory**; output is right-justified and `w=0` uses the smallest positive
+field width, but **`w=0` is prohibited on input**; `m` has **no effect** on
+input; and lowercase hex `a`–`f` is equivalent on input.
+
+That first rule drove a specific audit: **every positive-value output case uses
+`SS`**, so none depends on the optional plus, which is processor dependent. The
+single case without `SS` uses `-42`, where the minus is required — legitimate,
+and confirmed rather than assumed.
+
+Both toolchains pass 18/18, so no defect here. One observation was recorded
+rather than blocked: `S13.7.2.4-007` also observes leading-zero padding while
+leaving `BOZ-output-leading-zeros-to-m` pending — **under-claiming, not
+vacuity**.
+See `doc/source_audits/batch_140.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must

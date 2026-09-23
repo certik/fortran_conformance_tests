@@ -1,0 +1,112 @@
+{
+ "schema_version": 1,
+ "review_type": "independent-integer-and-boz-editing-fixture-review",
+ "review_date": "2026-09-23",
+ "baseline_commit": "8f843cd",
+ "state": "reference-validated-runtime-effects",
+ "packet_kind": "FIXTURE",
+ "milestone": "FIRST EXECUTABLE FIXTURES FOR CLAUSE 13. The clause became source-complete at batch139 with 283/283 base units and zero executable tests.",
+ "scope": {
+  "sections": ["13.7.2.2", "13.7.2.4"],
+  "section_titles_verified_from_source": {"13.7.2.2": "Integer editing", "13.7.2.4": "B, O, and Z editing"},
+  "facets_established": 18,
+  "new_cases": 18
+ },
+ "why_this_clause_is_testable": {
+  "mechanism": "Format output is byte-exactly testable through an internal WRITE to a character variable - no files, no I/O units, no scratch directories. That makes these the cleanest oracles in the suite.",
+  "the_trap": "It is so easy that a vacuous test slips through. Character comparison BLANK-PADS THE SHORTER OPERAND, so comparing a buffer against a shorter literal silently passes. Every output helper therefore asserts LEN before equality, and widths vary so that padding is load-bearing rather than incidental.",
+  "why_this_target_first": "Integer and BOZ editing involve no reals and no processor-dependent kinds, so the arithmetic is exact and the oracles are unambiguous."
+ },
+ "independent_review": {
+  "reviewer_distinct_from_author": true,
+  "decision": "accept_no_blocking_findings",
+  "blocking_findings": 0,
+  "observations": 1,
+  "reviewer_derived_every_oracle_from_source": true
+ },
+ "source_rules_independently_confirmed": [
+  "SS suppresses the optional plus sign; a negative value's minus sign is mandatory",
+  "Output is right-justified; w=0 output uses the smallest positive field width",
+  "w=0 is PROHIBITED on input (13.7.5.1 p1)",
+  "m has no effect on input",
+  "Lowercase hex a-f is equivalent to uppercase on input"
+ ],
+ "oracles_hand_derived_and_confirmed": [
+  "(SS,I5) 42 -> '   42'; (SS,I0) 42 -> '42'",
+  "I1.1 and I1 read '7' -> 7",
+  "I3 reads '-42' -> -42 and ' 42' -> 42",
+  "I5 with -42 -> '  -42', safe without SS because the minus is required",
+  "(SS,I5) 7 -> '    7'",
+  "(SS,I5.4) 42 -> ' 0042'; (SS,I3.2) 7 -> ' 07'",
+  "B5/B0 5 -> '  101'/'101'; B3 and B3.3 read '101' -> 5",
+  "O2 reads '10' -> 8; Z2 reads '0A' and '0a' -> 10",
+  "B5 5 -> '  101'; O4 8 -> '  10'; Z3 10 -> '  A'",
+  "B4.4 5 -> '0101'; O4.4 8 -> '0010'; Z4.4 10 -> '000A'"
+ ],
+ "non_vacuity_by_descriptor_substitution": {
+  "principle": "Oracle and input mutation alone is PROVABLY INSUFFICIENT - one packet's vacuity survived a 114-mutation campaign and was exposed only by mutating the feature under test. For a DESCRIPTOR packet the decisive mutation is substituting the descriptor, the direct analogue of the operator-substitution sweep that caught batch125 and batch127.",
+  "campaign": "102 mutations, all failing on BOTH toolchains: 23 input mutations, every text and integer oracle mutation, 5 SS->SP, reverse sentinel mutations, and 13 descriptor substitutions.",
+  "reviewer_reran": "ALL THIRTEEN descriptor substitutions on both toolchains; all failed. Required samples I5.4->I5, B4.4->O4.4 and O4.4->Z4.4 all failed on both.",
+  "vacuity_check_on_the_substitutions_themselves": "A substitution is only load-bearing if the two descriptors DIFFER on the chosen value. The integrator raised this explicitly and the reviewer verified it: B4.4(5)=0101 while O/Z give 0005; O4.4(8)=0010 while B gives 1000 and Z gives 0008; Z4.4(10)=000A while B gives 1010 and O gives 0012. No substitution coincides, so none is vacuous.",
+  "permanence": "The BOZ matrix is permanent in build_boz_output_minimum_m_digits, and the integer descriptor substitutions are generator-owned. A one-off manual check would not have been acceptable."
+ },
+ "audits": {
+  "sign_mode": "Every positive-value output case uses SS, so no case depends on the optional plus, which is processor dependent. The single case without SS uses -42, where the minus is mandatory - confirmed safe.",
+  "zero_width": "No input case uses I0, B0, O0 or Z0, respecting the prohibition on w=0 for input.",
+  "len_assertion": "All output helpers assert LEN before equality; no oracle can pass by blank-padding a shorter literal.",
+  "padding_load_bearing": "Widths vary rather than always equalling the digit count.",
+  "no_zero_reliance": "No observed result relies on the value 0, which would be default-equivalent."
+ },
+ "findings": [
+  {
+   "id": "C1372FR-001",
+   "severity": "observation",
+   "location": "S13.7.2.4-007",
+   "issue": "The case also observes leading-zero padding while BOZ-output-leading-zeros-to-m is left pending - that is UNDER-CLAIMING, not vacuity.",
+   "action": "No correction required for this packet."
+  }
+ ],
+ "compiler_observations": {
+  "frozen_target": "lfortran 0.65.0-411-ga0afaa840b-dirty (accepts f23; --std=f2023 unsupported)",
+  "frozen_target_result": "18/18 pass",
+  "qualifying_reference": "gfortran 16.1.0 with -std=f2023",
+  "reference_result": "18/18 pass",
+  "reproduced_by_integrator": true,
+  "lfortran_defects_found": 0,
+  "integrator_corroboration": "The integrator independently hand-derived and corroborated five oracles - (SS,I5.4) 42, B4.4 5, O4.4 8, Z4.4 10 and O4 8 - against gfortran before dispatching the review. Compiler agreement is corroboration only; every value was derived from the source first."
+ },
+ "explicit_limitations": [
+  "Eighteen facets of 13.7.2.2 and 13.7.2.4 only.",
+  "NOT established: the optional plus under S, zero special cases, m>w, enum and enumeration editing, real and complex BOZ representation, unacceptable-field error conditions, list-directed and external I/O, and R1323 syntax coverage. The reviewer confirmed these exclusions are honest and that none is quietly claimed anyway.",
+  "Passing under two compilers is corroboration, not proof of universal conformance.",
+  "Source accounting is unchanged."
+ ],
+ "preservation": {
+  "cases_before": 2250,
+  "cases_after": 2268,
+  "authored_facets_before": 1977,
+  "authored_facets_after": 1995,
+  "reference_validated_before": 1937,
+  "reference_validated_after": 1955,
+  "fixture_review_states_after": "1955 reference-validated / 274 source-reviewed / 1 needs-oracle",
+  "expected_failures_lines": 819,
+  "baseline_lines_changed_by_this_packet": 0,
+  "existing_case_ids_modified": 0
+ },
+ "infrastructure_verified": {
+  "generator": "tools/generate_integer_boz_editing_fixtures.py with --check reporting 18 cases, 18 facets, 102 mutations; regeneration byte-identical",
+  "test_module": "discovered by the unittest gate",
+  "suite_count": "1045 -> 1049, confirming the cases are genuinely executed rather than inert - the defect that blocked batch132",
+  "no_global_totals_asserted": "checked explicitly, including declared_facets which moved when the Clause 13 source packets landed",
+  "no_review_state_asserted": "checked explicitly"
+ },
+ "validation_snapshot": {
+  "authored_facets": 1995,
+  "catalogue_reviews_draft": 1,
+  "catalogue_reviews_draft_note": "Only 18.3.7, pre-existing and untouched.",
+  "normal_audit_exit": 1,
+  "normal_audit_block": "the single retained needs-oracle real-BOZ case, which is the intended state and not a regression",
+  "python_suite_tests": 1049,
+  "python_suite_result": "pending integrator gate"
+ }
+}
