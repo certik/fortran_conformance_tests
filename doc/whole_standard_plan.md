@@ -5654,6 +5654,11 @@ See `doc/source_audits/batch_180.json`.
 Forty-three units, after two rounds, dominated by ASSOCIATED. Its zero-sized storage-sequence cases had been missed, and its internal-procedure host-instance cases had been written off as unobservable — but a recursive host procedure keeps two live instances, so pointers to its internal procedure can be compared within one instance and across two.
 See `doc/source_audits/batch_181.json`.
 
+## Batch 182 — the ATAN2 family and ATOMIC_ADD
+
+Forty units, after two rounds. The reviewer found ATOMIC_ADD planned with an ordinary variable although its argument must be a coarray; the remedy offered was to test with coarrays, which I overruled in favour of the user's rule that coarrays are out of scope. The runtime facets now say so plainly.
+See `doc/source_audits/batch_182.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
