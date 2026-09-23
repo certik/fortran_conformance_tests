@@ -857,13 +857,9 @@
         "per-dimension-bounds",
         "mixed-omitted-lowers"
       ],
-      "pending": {
-        "upper-only-default": "PENDING a nonempty whole INTEGER a(3): require LBOUND=[1], UBOUND=[3], SHAPE=[3], SIZE=3 and defined independently known elements.",
-        "per-dimension-bounds": "PENDING a(-2:0,4:5): require whole-array lower bounds [-2,4], upper bounds [0,5], shape [3,2], total6 and correctly indexed defined data. Do not infer an address/stride layout.",
-        "mixed-omitted-lowers": "PENDING a(2,-1:1): require lower bounds [1,-1], upper bounds [2,1], shape [2,3]. Each omitted bound is handled in its own dimension; zero-extent normalization belongs to the qualified boundary plan."
-      },
-      "oracle": "Actual whole-array inquiries and defined element checks with literal bounds/extents in dimension order, after every allocation/association or argument premise applicable to the chosen object is satisfied.",
-      "oracle_limitation": "Use small representable INTEGER values, no kind-code folklore or descriptor-derived oracle. No illegal subscript or unallocated/disassociated bound inquiry is a negative twin for this effect.",
+      "pending": {},
+      "oracle": "Actual whole-array inquiries and defined element checks with literal bounds/extents in dimension order, after every allocation/association or argument premise applicable to the chosen object is satisfied.\n\nScalar explicit-shape bounds runtime fixtures: one complete run/effect/f2023 program declares three ordinary local INTEGER arrays with scalar explicit-shape-spec lists. `upper_only(4)` observes omitted lower bound one through LBOUND=[1], UBOUND=[4], SHAPE=[4], SIZE=4 and a nonzero whole-array payload. `explicit2d(-2:0,4:5)` observes dimension-order lower bounds [-2,4], upper bounds [0,5], shape [3,2], total size six and payload 52. `mixed(2,-1:1)` observes an omitted lower bound in only the first dimension, lower [1,-1], upper [2,1], shape [2,3], total size six and payload 63. Feature substitutions replace the upper-only declaration with a same-extent nonunit lower bound and remove explicit lower bounds from the other declarations, so default-lower and per-dimension lower-bound behavior are load-bearing rather than descriptor aliases.",
+      "oracle_limitation": "Use small representable INTEGER values, no kind-code folklore or descriptor-derived oracle. No illegal subscript or unallocated/disassociated bound inquiry is a negative twin for this effect.\n\nScalar explicit-shape bounds fixture boundaries: only scalar explicit-shape-spec-list effects on ordinary local INTEGER arrays are covered. This packet does not claim vector-bound syntax, rank-zero scalar vector-boundary behavior, dummy sequence association, function results, diagnostics, type parameters, storage layout, contiguity, coarrays, COMMON/EQUIVALENCE, allocation, pointer association or named-local nonconstant entry-capture semantics.",
       "dependencies": "R815-R817;8.5.8.2p4;9.5.2;9.5.3.3;16.9.119/16.9.185/16.9.194/16.9.215."
     },
     {
@@ -928,15 +924,10 @@
         "inquiry-normalization-source"
       ],
       "pending": {
-        "bound-signs": "PENDING separate valid small INTEGER bounds spanning positive, zero and negative values, with both scalar-list and selected vector forms. A negative bound is not a negative extent or a diagnostic case.",
-        "inclusive-nonempty-range": "PENDING a(-2:0) with three explicitly defined INTEGER values, checking both legal endpoints and the middle, shape[3] and total3. No one-past-end experiment.",
-        "singleton-zero-bound": "PENDING a(0:0): require rank1, bounds[0]/[0], shape[1], size1 and a defined value at subscript0. Do not collapse this with a(0), whose omitted lower bound produces an empty dimension.",
-        "empty-one-dimensional": "PENDING whole a(5:3): require rank1, shape[0], size0 and the actual inquiry results LBOUND=[1], UBOUND=[0]. The written bounds are not returned verbatim for this empty dimension, and no element exists to inspect.",
-        "mixed-zero-extent": "PENDING whole a(5:3,-2:1): require rank2, shape[0,4], size0, LBOUND=[1,-2], UBOUND=[0,1]. Overall zero size does not normalize the nonzero-extent dimension. Perform no payload access.",
         "inquiry-normalization-source": "PENDING exact whole-array versus array-expression/section and zero-extent LBOUND/UBOUND premises. Preserve their DIM/rank, assumed-size, allocated/associated and optional-argument restrictions; do not turn declaration bounds into a universal inquiry oracle."
       },
-      "oracle": "Finite valid range/extent effects using independently known integer bounds and direct inquiries on eligible objects. Empty arrays have no element-read or invalid-program twin.",
-      "oracle_limitation": "No negative-size allocation surrogate, unsigned arithmetic or guessed byte layout. Pure effects are not mandatory rejection tests, and empty extent does not authorize unallocated or disassociated inquiries.",
+      "oracle": "Finite valid range/extent effects using independently known integer bounds and direct inquiries on eligible objects. Empty arrays have no element-read or invalid-program twin.\n\nScalar explicit-shape range runtime fixtures: two complete run/effect/f2023 programs exercise scalar bound signs, inclusive nonempty ranges, singleton zero bounds and empty ranges. The range program declares positive_range(2:4), negative_range(-2:0) and zero_singleton(0:0), assigns nonzero whole-array payloads, observes bounds/shape/size and reads the actual lower and upper endpoint elements through LBOUND/UBOUND-derived subscripts. The empty program declares empty1(5:3) and empty2(5:3,-2:1), observes rank, normalized whole-array bounds, shapes [0] and [0,4], SIZE=0 for both, and a nonzero scalar path sentinel without reading any nonexistent element. Feature substitutions turn ranges into same-rank nonempty or default-lower declarations, so zero extent, inclusive range and bound-sign effects are distinguished while every mutant remains a conforming program.",
+      "oracle_limitation": "No negative-size allocation surrogate, unsigned arithmetic or guessed byte layout. Pure effects are not mandatory rejection tests, and empty extent does not authorize unallocated or disassociated inquiries.\n\nScalar explicit-shape range fixture boundaries: only valid scalar-list declarations with small default INTEGER bounds are covered. Empty arrays are observed only through permitted whole-array inquiries and a separate path sentinel; no element access, section inquiry boundary, assumed-size, optional dummy, allocation or processor diagnostic behavior is asserted. The separate inquiry-normalization-source facet remains pending.",
       "dependencies": "5.4.6p1;9.5.2;9.5.3.3;16.9.119p3-p5;16.9.215p3-p5;16.9.185;16.9.194."
     },
     {
@@ -978,6 +969,6 @@
   "render": {
     "path": "doc/fortran_2023_8_5_8_2.md"
   },
-  "review_fingerprint": "7140009da07c37bdc6f445bcedd82c0acb44c3eada12e137ac6df771c03f3463",
-  "review_rationale": "Retain independently reviewed explicit-shape source in batch039 with the two-program local-array bound-capture source/oracle/provenance review in doc/source_audits/batch_049.json. Only S8.5.8.2-005's six scalar-bound procedure/BLOCK/redefinition/undefinition/fresh/nested facets are represented. Prior nonoptional typed INOUT n supplies automatic local bounds; scalar literal observer inputs and branch expectations are independent of n and affected descriptors. Payload definition precedes all reads; controlled OUT undefinition is followed only by available array inquiries and restoration before n is read. BLOCK lifetimes and distinct inner/outer arrays are preserved without SAVE, initialization or allocation masks. All477full-program probes are bound to actual inputs/traces:159GNUf2023 qualifications,159Flangf2018 supplementary results, zero qualified target sensitivity because both target parents fail. Vector-bound capture and all other requirements remain pending or preserve their own evidence."
+  "review_fingerprint": "fa08d675aa71772b7032175ac6bd6bb38c9f07afafed1bb8a229fd94941be443",
+  "review_rationale": "Source registration renewed after binding Clause 8 explicit-shape fixtures (batch175). Classification and remaining pending plans re-verified by an independent reviewer; the existing explicit bound-capture fixtures and bindings are untouched and both generators check clean."
 }

@@ -5459,6 +5459,15 @@ host-inherited maps) when resolving the generic. It also rejects the conforming
 undeclared external under `IMPLICIT NONE(EXTERNAL)`.
 See `doc/source_audits/batch_173.json`.
 
+## Batch 175 — explicit-shape bounds
+
+Eight facets of 8.5.8.2 across three fixtures, accepted with no findings. The one
+subtle expectation is for zero-extent ranges: `empty1(5:3)` has zero size, but
+the *whole-array* `LBOUND` of a zero-extent dimension normalizes to 1 and `UBOUND`
+to 0 (16.9.119, 16.9.215), so the oracle is `[1]`/`[0]`, not `[5]`/`[3]`. The
+existing bound-capture fixtures in the same catalogue are untouched.
+See `doc/source_audits/batch_175.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
