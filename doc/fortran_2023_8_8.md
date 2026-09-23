@@ -100,6 +100,16 @@ numbered/name-scope or explicit policy basis before negative fixtures.
 Unsupported features, missing providers, undefined data, source echoes,
 compiler failures and no-op execution are not substitutes for that evidence.
 
+<!-- BEGIN IMPORT STATEMENT FIXTURES -->
+## IMPORT statement executable packet
+
+Fifteen fixtures cover twenty selected facets of 8.8. Runtime fixtures observe ONLY, NONE, ALL, bare, and listed IMPORT effects through nonzero integer values and host-object state, and the R870 form fixture executes every admitted selected form in eligible internal scopes. The interface-body fixture imports a host derived type, kind parameter and shape constant into an ordinary interface body, then calls the declared procedure and checks the returned 42_rk value.
+
+C8100 diagnostics place bare IMPORT in the scoping unit of a main program, external subroutine, module, and block data. Each repair deletes exactly that IMPORT and runs a complete control. Frozen LFortran currently accepts the external-subprogram negative; the case is retained because gfortran diagnoses it and C8100 requires it.
+
+Feature mutations are permanent generator data. The ONLY/NONE/ALL/bare mutations compensate local declarations so the mutants remain conforming and fail at run time by changing whether hz is the host object or a local object. The interface fixture has a conforming alternate-shape-constant mutation that compiles and fails at run time; C8101-C8106, BLOCK, submodule, ordinary-interface defaults, shadowing negatives, empty-list syntax, and source-graph inventory not listed in this summary remain pending.
+<!-- END IMPORT STATEMENT FIXTURES -->
+
 <!-- BEGIN GENERATED 8.8 -->
 
 ### R870: IMPORT has a basic optional-list form and distinct ONLY, NONE and ALL forms
@@ -120,10 +130,21 @@ rename, selector, generic-spec or declaration suffix is part of import-name.
 and modifier alternatives independently derived from the original production. Compile
 admissions, semantic scope effects and diagnostic causes remain separate.
 
+R870 executable syntax-form fixtures: one complete run/positive-control/f2023 program
+contains a bare IMPORT, a basic IMPORT name with no double colon, a basic IMPORT :: list
+containing two names, two IMPORT, ONLY: statements with required nonempty lists, one
+IMPORT, NONE, and one IMPORT, ALL in distinct eligible internal scoping units. Each
+subprogram returns a checked nonzero value or host-state effect before the program emits
+its completion line, so the syntax admissions are not empty compile-only parses.
+
 **Oracle limitation:** Required numbered reporting is not mandatory fatal status, fixed English or printed
 R870. Wrong host role, ordering, C8102/C8104 combinations, C8106 hiding, missing
 providers, unsupported syntax, source echoes and native failures are not a different
 grammar predicate. No fixture or scope-use graph is supplied.
+
+R870 executable syntax-form boundaries: only the seven selected positive form facets are
+covered. Empty lists, malformed punctuation, designators, renames, generic syntax,
+source-order mapping, and numbered syntax diagnostics remain pending.
 
 **Dependencies:** 4.1.3R401/R402/p2;6.2.2R603/C601;5.1R504;5.3.2;7.5.2.1R726;11.1.4R1109;C8100-C8106;19.5.1.4;4.2p2.
 
@@ -143,10 +164,24 @@ syntax and constraints still govern allowed nested and submodule contexts.
 **Oracle:** Complete scope-category controls and one-statement deletion repairs with no name-list,
 provider or ordering defect. Preserve exact inclusive/nested scoping distinctions.
 
+C8100 top-level exclusion diagnostic fixtures: four compile/diagnose negatives place a
+bare IMPORT as the only selected defect in the scoping unit of a main program, external
+subroutine, module, or block data program unit. The paired controls delete exactly that
+IMPORT statement and otherwise keep the same complete source; each control links and
+runs, observing a nonzero value. The diagnostic must be located on the IMPORT line and
+must not be an unsupported-feature, internal-compiler, source-echo, or crash report. The
+external-subprogram case exposes a frozen LFortran acceptance defect; gfortran diagnoses
+it under the pinned text.
+
 **Oracle limitation:** A report claiming IMPORT is universally interface-body-only is not adopted as the
 language definition. The finite malformed scopes and conforming nested controls need
 independent cause/mode evidence; unsupported permitted contexts cannot be recast as this
 constraint.
+
+C8100 top-level exclusion diagnostic boundaries: only bare IMPORT exclusions in four
+top-level scoping-unit categories are covered. Nested eligible scopes, submodule
+contexts, derived-type grammar, and other constraints remain pending. Block data and
+COMMON are used only to make the deletion control run.
 
 **Dependencies:** 3.120;5.1R502-R504;5.2.1;5.3.2;7.5.2.1R726;11.1.4R1109;14.2.3C1412;15.4.3.2R1505;19.1;4.2p2.
 
@@ -232,8 +267,19 @@ collections keep their own conditions.
 **Oracle:** Complete same-scope statement cardinalities and exact one-deletion controls, preserving
 actual mode antecedents and scope boundaries.
 
+C8104 single NONE/ALL positive-control fixture: one complete run/positive-control/f2023
+source contains a single IMPORT, NONE in one internal subroutine and a single IMPORT,
+ALL in a different internal subroutine. No scoping unit contains a second IMPORT
+statement alongside either form. Both scopes are called and checked with nonzero values,
+so the control proves the single-statement premise without relying on a no-op compile
+admission.
+
 **Oracle limitation:** No token count across a file, implicit default treated as an extra statement,
 unsupported-mode report or unqualified English/fatal-exit predicate.
+
+C8104 single NONE/ALL positive-control boundaries: only the positive single-statement
+side of C8104 is covered. Repeated NONE, repeated ALL, mixed NONE/ALL, companions with
+other IMPORT forms, and same-scope diagnostics remain pending.
 
 **Dependencies:** 3.120;R870;C8100-C8103/C8106;8.8p2-p4;19.1;4.2p2.
 
@@ -300,9 +346,22 @@ local declarations, USE association or intrinsic type availability.
 **Oracle:** Finite source/use/interface graphs with named host identities, nonhost-route controls
 and individually justified observables where a real effect program is appropriate.
 
+S8.8-001 ONLY host-access runtime fixture: one internal subroutine has two IMPORT, ONLY:
+statements that import host integers hx and hy. A same-spelled host hz is deliberately
+not in either list; the subroutine declares its own local hz, assigns it the nonzero
+value 7, and returns hx+hy+hz = 18. The host hz starts at 100 and is checked unchanged
+after the call. A conforming feature mutation adds hz to an ONLY list and removes the
+compensating local declaration, which keeps the program valid but changes the host hz to
+7 and fails the host-state check.
+
 **Oracle limitation:** No implemented graph or fixture is supplied. A declaration-only empty run, type keyword
 acceptance or aggregate count cannot prove the complete host-access restriction. Exact
 reporting ownership and named-constant/bound prerequisites remain required.
+
+S8.8-001 ONLY host-access runtime boundaries: only a non-BLOCK internal subprogram with
+two ONLY lists, imported integer objects, and one explicit local same-spelled object is
+covered. BLOCK-only rules, USE routes, intrinsic names, and nested host graphs remain
+pending.
 
 **Dependencies:** C8101/C8102/C8105/C8106;8.8p5;8.7;7.1.2;5.1R504;14.2.2;19.1p2;19.5.1.4;4.2p2.
 
@@ -345,9 +404,20 @@ bodies the same host default. BLOCK has the separately specified identifier rule
 **Oracle:** Exact interface/scope kinds and independent name-path controls, with missing-host
 semantics separated from implicit typing and actual procedure implementation.
 
+S8.8-003 NONE host-access runtime fixture: one internal subroutine begins with IMPORT,
+NONE, declares its own local hz, assigns that local value 7, and returns it while the
+host hz remains the nonzero sentinel 100. The feature mutation replaces NONE by ALL and
+removes the local declaration, so the same assignment reaches the host object and the
+caller's unchanged-host check fails.
+
 **Oracle limitation:** No universal interface-body rule, external/link failure, copying mechanism or compulsory
 runtime trap. The ordinary-interface default is a semantic rule even without an IMPORT
 token; it needs a finite qualified witness, not a keyword census.
+
+S8.8-003 NONE host-access runtime boundaries: only explicit IMPORT, NONE in an internal
+subprogram and a separate explicitly declared local integer are covered.
+Ordinary-interface default NONE, module-procedure interface boundaries, implicit typing,
+and independent USE routes remain pending.
 
 **Dependencies:** C8100/C8103-C8106;8.8p4;8.7p3/p4;15.4.3.2p2/p4/p5;19.5.1.4p1/note2;7.1.2;14.2.2;4.2p2.
 
@@ -389,9 +459,19 @@ or an extension of the host instance's lifetime.
 **Oracle:** Actual host-entity observations where executable, and finite source/interface mappings
 otherwise, with independently established identities and values.
 
+S8.8-005 ALL host-access runtime fixture: one internal subroutine begins with IMPORT,
+ALL and uses two host integers: hx remains 5, hz is updated from 100 to 7, and the
+returned sum hx+hz is 12. The feature mutation narrows the import to ONLY: hx and
+inserts a compensating local hz declaration, so the program remains conforming while the
+required host update disappears.
+
 **Oracle limitation:** No fixtures are implemented. One scalar update cannot prove every host entity/category
 or scope. ALL does not promise physical copying, access to an unrelated module or use of
 an ended host instance.
+
+S8.8-005 ALL host-access runtime boundaries: only two ordinary host integer variables in
+an internal subprogram are covered. Other host entity classes, BLOCK scopes, and C8106
+no-hiding negatives remain pending.
 
 **Dependencies:** C8100/C8103-C8106;8.8p4;19.5.1.4;19.1;7.5.2.1R726;14.2.3;15.4.3.2;19.6.2;4.2.
 
@@ -413,9 +493,20 @@ otherwise ineligible grammar; bare/default behavior is not ALL's no-hiding rule.
 source/interface/declaration graphs, preserving defaults and ordinary shadowing
 exceptions.
 
+S8.8-006 bare IMPORT host-access runtime fixture: one internal subroutine uses bare
+IMPORT to access host hx and hz, assigns hz = 6, returns hx+hz = 11, and the caller
+observes the host hz changed to 6. The feature mutation narrows access to ONLY: hx and
+inserts a local hz declaration, keeping the mutant conforming while making the
+host-state oracle fail.
+
 **Oracle limitation:** No cases are implemented. IMPORT is not executable copying, no-op output is not host
 access, and a finite scalar witness is not universal coverage of every default scope or
 name class.
+
+S8.8-006 bare IMPORT host-access runtime boundaries: only explicit bare IMPORT in an
+internal subprogram is covered. Default host access in scopes with no IMPORT, legitimate
+local-shadow controls, derived-type definitions, module procedure interface bodies,
+module subprograms, and submodules remain pending.
 
 **Dependencies:** 8.8p2/p3/p5;C8105/C8106;19.5.1.4p1/p2;7.5.2.1R726;7.3.2.1C704;10.1.11;14.2.3C1412;15.4.3.2p4;8.7;19.1;19.3.1.
 
@@ -435,9 +526,21 @@ BLOCK-specific identifier rules retain their distinct conditions.
 **Oracle:** Exact listed-name/source/interface connections and actual finite observations where
 legitimate, without changing existing canonical type/interface cases or roles.
 
+S8.8-007 interface-body listed IMPORT fixture: one module procedure contains an ordinary
+interface body for external subroutine monitor. IMPORT :: box, rk, slot_count makes the
+prior host derived type, kind parameter and named constant available for the dummy
+declarations. A call through that explicit interface passes two box values, 31_rk and
+11_rk; the external procedure sums the explicit-shape dummy and returns 42_rk, which the
+main program checks at run time.
+
 **Oracle limitation:** No fixture, linked evidence or graph is implemented. A bare name token, unknown-type
 error, opaque representation probe or empty run cannot establish the required entity
 correspondence.
+
+S8.8-007 interface-body listed IMPORT boundaries: only a prior module type, kind
+parameter and integer named constant imported into one ordinary interface body are
+covered. Multiple basic lists, USE-renamed host names, BLOCK behavior, opaque PRIVATE
+representation, and full source graph inventory remain pending.
 
 **Dependencies:** C8101/C8105/C8106;8.8p1/p2/p4/note5;7.5.2.2;7.1.2;14.2.2;15.4.2.2;15.4.3.2;19.5.1.4;19.1;11.1.4.
 

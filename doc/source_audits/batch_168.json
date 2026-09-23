@@ -1,0 +1,10 @@
+{"schema_version": 1, "review_type": "independent-import-statement-fixture-review", "review_date": "2026-09-23", "baseline_commit": "ae89e6f",
+ "state": "reference-validated-runtime-effects-and-diagnostics", "packet_kind": "FIXTURE", "scope": {"sections": ["8.8"], "facets_established": 20, "new_cases": 15},
+ "review_rounds": [
+  {"round": 1, "commit": "802a2d2", "decision": "BLOCKED", "findings": [
+   {"id": "IMFR-001", "issue": "The mutation runner was VACUOUS: it ran with cwd set to the case directory but passed a repository-relative source path, so every compile failed 'Cannot open file' and the reported 17/17 failures proved nothing.", "resolution": "Isolated temporary workspaces with absolute paths; compile-fail is now distinguished from run-fail and rejected for runtime mutants. The reviewer confirmed non-vacuity by breaking a parent in a scratch copy and seeing it detected."},
+   {"id": "IMFR-002", "issue": "An interface mutant imported a nonexistent name, violating C8101, so it failed by becoming non-conforming.", "resolution": "Replaced by importing an alternate host shape constant that exists, compiles, and changes the checked result."},
+   {"id": "IMFR-003", "issue": "The C8100 negatives had contains_any but no excludes_any, so an ICE or unimplemented message could count as a diagnosis.", "resolution": "excludes_any added; its effectiveness was confirmed by a scratch probe."}]},
+  {"round": 2, "commit": "9688c26", "decision": "VERIFIED", "findings": []}],
+ "lesson": "A mutation matrix that reports every mutant 'killed' is not evidence until the runner has been shown to detect a deliberately broken parent. 17/17 here meant 17 missing files.",
+ "lfortran_defects_recorded": {"count": 1, "case": "import_statement_external_invalid", "observation": "IMPORT in an external subprogram is accepted; C8100 requires a diagnosis", "expected_failures": "848 -> 849"}}

@@ -5426,6 +5426,23 @@ negative now covers the second), and a facet naming finalization with no
 finalization evidence (split off, left pending).
 See `doc/source_audits/batch_169.json`.
 
+## Batch 168 — IMPORT, and a mutation matrix that proved nothing
+
+Twenty facets of 8.8 across fifteen fixtures, after two rounds. The ONLY, NONE,
+ALL and bare forms are told apart at run time by whether a name resolves to the
+host entity or to a local one.
+
+The main finding is a new failure mode worth remembering: the mutation runner
+reported **17/17 mutants killed**, and every one of those "kills" was a compile
+failure because the runner looked for the source file in the wrong directory. A
+perfect-looking matrix was measuring nothing. It was fixed, and the reviewer then
+confirmed it by deliberately breaking a parent in a scratch copy and watching the
+runner catch it — which is now the standard to hold a mutation runner to. One
+mutant also imported a nonexistent name (a C8101 violation), and the C8100
+negatives lacked the ICE exclusion. Frozen LFortran accepts IMPORT in an external
+subprogram, which C8100 requires it to reject.
+See `doc/source_audits/batch_168.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
