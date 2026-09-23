@@ -5183,6 +5183,30 @@ asserts all three of `ios == 0`, the first value `.false.`, and the boundary
 the planted `F`. **No conforming behaviour satisfies all three.**
 See `doc/source_audits/batch_148.json`.
 
+## Batch 153 — the io-control-spec constraints
+
+This packet registers 12.6.2.1, the thirty units that govern every specifier in a
+data transfer statement's control list. Twenty-four are **numbered** rules
+(R1213, R1214, C1210–C1231), and numbered constraints are required to be
+diagnosed — so this is one of the richest sources of genuine negative facets in
+Clause 12. It took two rounds.
+
+The first round was blocked because the packet claimed **zero** mixed
+permission/restriction units, which across thirty units of constraint text is
+itself a warning sign. C1223 says an `ADVANCE=` specifier "shall appear *only*
+in" certain statements, which admits `ADVANCE=` there as well as forbidding it
+elsewhere; C1230's "either … or" does the same for `DELIM=`. Both are now split.
+For C1211, C1218, C1219 and C1226 the admission turns out to be owned by the
+syntax rule R1213, and that decision is now recorded rather than assumed.
+
+C1215 had lost half of a compound obligation: the `ERR=`/`EOR=`/`END=` label must
+be a branch target **and** appear in the same inclusive scope. The reviewer
+derived from the definitions that an inclusive scope *includes* nested `BLOCK`s,
+so only a label in an internal procedure is a valid negative for the second half.
+And a C1224 negative (`EOR=` without `ADVANCE=`) unavoidably also violates the
+unnumbered p2; C1224 is recorded as the only diagnosable rule in that overlap.
+See `doc/source_audits/batch_153.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must

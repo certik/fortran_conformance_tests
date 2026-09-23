@@ -1,0 +1,18 @@
+{
+ "schema_version": 1,
+ "review_type": "independent-io-control-spec-source-review",
+ "review_date": "2026-09-23",
+ "baseline_commit": "b2569f2",
+ "state": "source-registered",
+ "packet_kind": "SOURCE",
+ "scope": {"sections": ["12.6.2", "12.6.2.1"], "pdf_pages": "257-259, read through 260", "base_units": 30, "numbered_rules": ["R1213", "R1214", "C1210-C1231"], "accounted_base_units_delta": 6, "delta_explanation": "The 24 numbered R/C units were already counted on the baseline through doc/fortran_2023_rules.txt; only the 6 unnumbered units are newly accounted. Verified by the reviewer against a temporary baseline archive."},
+ "review_rounds": [
+  {"round": 1, "commit": "4146825", "decision": "BLOCKED", "findings": [
+   {"id": "C12IR-001", "issue": "The packet claimed ZERO mixed permission/restriction units across 30 units of io-control-spec text. C1223 ('An ADVANCE= specifier shall appear ONLY in ...') and C1230 ('either format shall be an asterisk or namelist-group-name shall appear') each carry an admission as well as a restriction.", "resolution": "Split into permission records S12.6.2.1-005 and S12.6.2.1-006 with concrete positive plans, plus the restriction records. For C1211, C1218, C1219 and C1226 the admission is carried by the syntax rule R1213 (and C1225 for ASYNCHRONOUS=YES), so those constraints are recorded as restriction-only with the reasoning cited."},
+   {"id": "C12IR-002", "issue": "C1215 lost a compound obligation: 'The label ... shall be the statement label of a branch target statement that appears in the same inclusive scope as the data transfer statement' imposes BOTH a branch-target requirement AND a same-inclusive-scope requirement.", "resolution": "Same-inclusive-scope facets added for ERR=, EOR= and END=. The reviewer derived from 3.83/19.1 that inclusive scope is a non-block scoping unit plus its nested BLOCKs, so a BLOCK label is NOT a valid negative while an internal procedure's label is."},
+   {"id": "C12IR-003", "issue": "The C1224 negative (EOR= without ADVANCE=) necessarily also violates unnumbered p2 ('an ADVANCE= specifier with the value NO shall also appear').", "resolution": "The overlap is unavoidable and recorded; C1224 is the only NUMBERED, diagnosable rule in it, so the negative is attributable to C1224, and no isolated p2 diagnostic is claimed."}]},
+  {"round": 2, "commit": "c9fe128", "decision": "VERIFIED", "findings": []}
+ ],
+ "lesson": "An empty mixed-split list across dense constraint text is itself a signal. 'Shall appear only in', 'either ... or' and 'unless' forms carry an admission alongside the restriction, and whether that admission belongs to the constraint or to the syntax rule has to be decided and recorded, not assumed.",
+ "separation": {"authored_facets_unchanged": true, "tests_untouched": true, "unittest_count": "1069 on the packet's own baseline"}
+}
