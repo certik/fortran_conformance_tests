@@ -5410,6 +5410,22 @@ two of these genuinely wrong — values read through a numeric-sequence alias, a
 an out-of-bounds failure writing through a same-kind non-default COMPLEX alias.
 See `doc/source_audits/batch_167.json`.
 
+## Batch 169 — INTENT, and a withheld defect again
+
+Thirteen facets of 8.5.10 across eleven fixtures, after two rounds. The
+INTENT(OUT) fixtures read only a default-initialized component and check that an
+allocatable dummy is deallocated on entry, so nothing reads an undefined value.
+
+The first finding repeated wave Q's worst habit despite the new checklist: an
+LFortran-only failure had been **withheld**. Defining the *target* of an
+INTENT(IN) pointer dummy is conforming — only its association may not change —
+gfortran runs it, frozen LFortran rejects it, and the facet had been left pending.
+It now ships. The other two findings were over-claims: a C846 facet named for
+assignment *and loop* contexts that only tested assignment (a DO-variable
+negative now covers the second), and a facet naming finalization with no
+finalization evidence (split off, left pending).
+See `doc/source_audits/batch_169.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
