@@ -1,0 +1,204 @@
+{
+  "schema_version": 1,
+  "section": "12.5.7.2",
+  "requirements": [
+    {
+      "id": "R1208",
+      "title": "A CLOSE statement is CLOSE with a parenthesized close-spec list",
+      "source": "S12.5.7.2, J3/24-007, 18 December 2023, physical PDF256.",
+      "source_units": [
+        "R1208"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "The CLOSE statement syntax is the keyword CLOSE followed by parentheses containing a close-spec-list.",
+      "facets": [
+        "close-keyword-parentheses",
+        "close-spec-list-required"
+      ],
+      "pending": {
+        "close-keyword-parentheses": "Positive-control source uses CLOSE (10) after opening unit 10; syntax-only negatives repair missing parentheses or misspelled keyword without changing the unit setup.",
+        "close-spec-list-required": "Diagnostic/control source uses CLOSE () and repairs only by adding an existing opened unit number; the repaired program closes a pre-opened file so the spec list is load-bearing."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by opening a known file, writing known records, initializing variables to nonzero/nonblank sentinels, or using a distinct labelled control path) and then observe only portable properties: successful IOSTAT zero, nonzero IOSTAT for a specified error condition, exact internal records or file existence where the source fixes it, or named intrinsic status values where the standard names them. Processor-dependent unit numbers, file names, storage encodings, buffering, timing, IOMSG text, and specific numeric status values are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint, or otherwise requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle; unnumbered program restrictions are not promoted to required diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: earlier and later clause 12 connection, specifier, file position, data-transfer, internal-file, status, and input/output-item rules; clause 13 formatting; clause 15 defined I/O; clause 16 inquiry and ISO_FORTRAN_ENV status intrinsics where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "R1209",
+      "title": "A close-spec is UNIT, IOSTAT, IOMSG, ERR, or STATUS",
+      "source": "S12.5.7.2, J3/24-007, 18 December 2023, physical PDF256.",
+      "source_units": [
+        "R1209"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "A close-spec is one of file-unit-number with optional UNIT=, IOSTAT= stat-variable, IOMSG= iomsg-variable, ERR= label, or STATUS= scalar-default-character-expression.",
+      "facets": [
+        "close-spec-unit",
+        "close-spec-iostat",
+        "close-spec-iomsg",
+        "close-spec-err",
+        "close-spec-status"
+      ],
+      "pending": {
+        "close-spec-unit": "Positive-control source opens a known unit and closes it with CLOSE(UNIT=unit); a positional form is credited through C1208.",
+        "close-spec-iostat": "Initialize an integer stat variable to a sentinel, close a controlled open unit with IOSTAT=stat, and assert only zero/nonzero as fixed by 12.11 after that section is registered.",
+        "close-spec-iomsg": "Use an IOMSG character variable initialized to nonblank sentinels only to establish syntax admission; no comparison of message text is a portable oracle.",
+        "close-spec-err": "Use ERR=label with an in-scope branch target and a controlled error case only after 12.11 establishes the branch condition; the label path sets a nondefault marker.",
+        "close-spec-status": "Close a named existing file with STATUS=\"KEEP\" and then reopen/read known content; a DELETE counterpart uses a separate file and observes absence only through portable existence inquiry."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by opening a known file, writing known records, initializing variables to nonzero/nonblank sentinels, or using a distinct labelled control path) and then observe only portable properties: successful IOSTAT zero, nonzero IOSTAT for a specified error condition, exact internal records or file existence where the source fixes it, or named intrinsic status values where the standard names them. Processor-dependent unit numbers, file names, storage encodings, buffering, timing, IOMSG text, and specific numeric status values are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint, or otherwise requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle; unnumbered program restrictions are not promoted to required diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: earlier and later clause 12 connection, specifier, file position, data-transfer, internal-file, status, and input/output-item rules; clause 13 formatting; clause 15 defined I/O; clause 16 inquiry and ISO_FORTRAN_ENV status intrinsics where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "C1207",
+      "title": "No close-spec appears more than once in a CLOSE specifier list",
+      "source": "S12.5.7.2, J3/24-007, 18 December 2023, physical PDF256.",
+      "source_units": [
+        "C1207"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "No specifier shall appear more than once in a given close-spec-list.",
+      "facets": [
+        "duplicate-close-specifier-rejected"
+      ],
+      "pending": {
+        "duplicate-close-specifier-rejected": "Diagnostic/control source duplicates exactly one specifier, for example STATUS=\"KEEP\", STATUS=\"DELETE\", in an otherwise valid CLOSE for an opened unit; repair removes only the duplicate and preserves the opened-unit setup."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by opening a known file, writing known records, initializing variables to nonzero/nonblank sentinels, or using a distinct labelled control path) and then observe only portable properties: successful IOSTAT zero, nonzero IOSTAT for a specified error condition, exact internal records or file existence where the source fixes it, or named intrinsic status values where the standard names them. Processor-dependent unit numbers, file names, storage encodings, buffering, timing, IOMSG text, and specific numeric status values are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint, or otherwise requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle; unnumbered program restrictions are not promoted to required diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: earlier and later clause 12 connection, specifier, file position, data-transfer, internal-file, status, and input/output-item rules; clause 13 formatting; clause 15 defined I/O; clause 16 inquiry and ISO_FORTRAN_ENV status intrinsics where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "C1208",
+      "title": "A CLOSE specifier list specifies a file-unit-number and positional UNIT comes first",
+      "source": "S12.5.7.2, J3/24-007, 18 December 2023, physical PDF256.",
+      "source_units": [
+        "C1208"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "A file-unit-number shall be specified in a close-spec-list; if UNIT= is omitted, the file-unit-number shall be the first item in the list.",
+      "facets": [
+        "close-file-unit-required",
+        "positional-close-unit-first"
+      ],
+      "pending": {
+        "close-file-unit-required": "Diagnostic/control source uses CLOSE(IOSTAT=stat) with no file-unit-number, repairing only by adding UNIT=opened_unit; the repaired source closes a known open file.",
+        "positional-close-unit-first": "Diagnostic/control source uses CLOSE(IOSTAT=stat, opened_unit) and repairs only by moving the positional unit to first or adding UNIT=; all other specifiers and the open file are unchanged."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by opening a known file, writing known records, initializing variables to nonzero/nonblank sentinels, or using a distinct labelled control path) and then observe only portable properties: successful IOSTAT zero, nonzero IOSTAT for a specified error condition, exact internal records or file existence where the source fixes it, or named intrinsic status values where the standard names them. Processor-dependent unit numbers, file names, storage encodings, buffering, timing, IOMSG text, and specific numeric status values are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint, or otherwise requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle; unnumbered program restrictions are not promoted to required diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: earlier and later clause 12 connection, specifier, file position, data-transfer, internal-file, status, and input/output-item rules; clause 13 formatting; clause 15 defined I/O; clause 16 inquiry and ISO_FORTRAN_ENV status intrinsics where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "C1209",
+      "title": "ERR labels in CLOSE identify an in-scope branch target statement",
+      "source": "S12.5.7.2, J3/24-007, 18 December 2023, physical PDF256.",
+      "source_units": [
+        "C1209"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "The label used in the ERR= specifier shall be the statement label of a branch target statement in the same inclusive scope as the CLOSE statement.",
+      "facets": [
+        "close-err-label-branch-target",
+        "close-err-label-same-inclusive-scope"
+      ],
+      "pending": {
+        "close-err-label-branch-target": "Positive-control source uses ERR=100 with label 100 on a CONTINUE or other branch target in the same scope; a negative repairs an absent/non-branch label only by changing the label target.",
+        "close-err-label-same-inclusive-scope": "Diagnostic/control source refers to a label outside the inclusive scope, then repairs by adding an equivalent branch target in the CLOSE scope; no runtime error behavior is required."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by opening a known file, writing known records, initializing variables to nonzero/nonblank sentinels, or using a distinct labelled control path) and then observe only portable properties: successful IOSTAT zero, nonzero IOSTAT for a specified error condition, exact internal records or file existence where the source fixes it, or named intrinsic status values where the standard names them. Processor-dependent unit numbers, file names, storage encodings, buffering, timing, IOMSG text, and specific numeric status values are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint, or otherwise requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle; unnumbered program restrictions are not promoted to required diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: earlier and later clause 12 connection, specifier, file position, data-transfer, internal-file, status, and input/output-item rules; clause 13 formatting; clause 15 defined I/O; clause 16 inquiry and ISO_FORTRAN_ENV status intrinsics where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.5.7.2-001",
+      "title": "STATUS character values ignore case and trailing blanks and are limited by the STATUS rule",
+      "source": "S12.5.7.2, J3/24-007, 18 December 2023, physical PDF256.",
+      "source_units": [
+        "p1"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The scalar-default-character-expression used for CLOSE STATUS has a limited list of character values; trailing blanks are ignored and matching is case-insensitive.",
+      "facets": [
+        "close-status-values-limited",
+        "close-status-trailing-blanks-ignored",
+        "close-status-case-insensitive"
+      ],
+      "pending": {
+        "close-status-values-limited": "Use only KEEP and DELETE values enumerated by 12.5.7.3; invalid-value diagnostics are not filed here because p1 is unnumbered and the value list itself is completed in 12.5.7.3.",
+        "close-status-trailing-blanks-ignored": "Close a named file with STATUS=\"KEEP   \" after writing known content, then reopen and read the content into sentinels; trailing blanks are the only spelling difference from the control.",
+        "close-status-case-insensitive": "Close separate controlled files with STATUS=\"keep\" and STATUS=\"DeLeTe\" and observe the respective KEEP/DELETE effects fixed by 12.5.7.3; file setup prevents vacuous absence/presence."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by opening a known file, writing known records, initializing variables to nonzero/nonblank sentinels, or using a distinct labelled control path) and then observe only portable properties: successful IOSTAT zero, nonzero IOSTAT for a specified error condition, exact internal records or file existence where the source fixes it, or named intrinsic status values where the standard names them. Processor-dependent unit numbers, file names, storage encodings, buffering, timing, IOMSG text, and specific numeric status values are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint, or otherwise requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle; unnumbered program restrictions are not promoted to required diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: earlier and later clause 12 connection, specifier, file position, data-transfer, internal-file, status, and input/output-item rules; clause 13 formatting; clause 15 defined I/O; clause 16 inquiry and ISO_FORTRAN_ENV status intrinsics where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "R1208",
+      "disposition": "requirements",
+      "requirements": [
+        "R1208"
+      ]
+    },
+    {
+      "unit": "R1209",
+      "disposition": "requirements",
+      "requirements": [
+        "R1209"
+      ]
+    },
+    {
+      "unit": "C1207",
+      "disposition": "requirements",
+      "requirements": [
+        "C1207"
+      ]
+    },
+    {
+      "unit": "C1208",
+      "disposition": "requirements",
+      "requirements": [
+        "C1208"
+      ]
+    },
+    {
+      "unit": "C1209",
+      "disposition": "requirements",
+      "requirements": [
+        "C1209"
+      ]
+    },
+    {
+      "unit": "p1",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.5.7.2-001"
+      ]
+    },
+    {
+      "unit": "p2",
+      "disposition": "structural",
+      "rationale": "Cross-reference to 12.11 for IOSTAT, ERR, and IOMSG specifier descriptions; no independent local effect."
+    },
+    {
+      "unit": "note-unnumbered",
+      "disposition": "informative",
+      "rationale": "Example-only CLOSE statement; it is not normative."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_12_5_7_2.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "16c28ebaf71258b291c1a7f78518c650242bc739d9b7e2c4cd9dfc70b6dad7d0",
+  "review_rationale": "Source registration for 12.5.7-12.6.1, the CLOSE statement and data transfer statements in general (batch152). Every unit hash-verified by an independent reviewer across three rounds. Round 1 found a conditional KEEP-on-nonexistent-file plan and scratch DELETE plans that observed only unit closure; both are now explicit no-portable-oracle reasons (no portable way to connect a nonexistent file with KEEP allowed; no portable name for a scratch file), while named-file DELETE keeps a portable EXIST= plan established before the CLOSE. Round 2 found the nonexistent-unit CLOSE plan relied on OPENED=.false.; it is now guarded on INQUIRE EXIST=.false., since no unit number is guaranteed nonexistent. The eight numbered rules were pre-accounted. Source accounting only."
+}

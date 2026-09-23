@@ -1,0 +1,252 @@
+{
+  "schema_version": 1,
+  "section": "12.5.7.3",
+  "subunits": {
+    "p1": [
+      "p1.status-values",
+      "p1.disposition-role",
+      "p1.keep-scratch-prohibition",
+      "p1.keep-existing-file",
+      "p1.keep-nonexistent-file",
+      "p1.delete-file",
+      "p1.default-nonscratch-keep",
+      "p1.default-scratch-delete"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S12.5.7.3-001",
+      "title": "CLOSE STATUS values are KEEP or DELETE",
+      "source": "S12.5.7.3, J3/24-007, 18 December 2023, physical PDF256.",
+      "source_units": [
+        "p1.status-values"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "The STATUS= scalar-default-character-expression shall evaluate to KEEP or DELETE.",
+      "facets": [
+        "close-status-keep-value",
+        "close-status-delete-value",
+        "close-status-other-values-prohibited"
+      ],
+      "pending": {
+        "close-status-keep-value": "Close a named existing file with STATUS=\"KEEP\" after writing known content and then read the content after reopening; this establishes KEEP as an accepted value.",
+        "close-status-delete-value": "Choose a controlled filename and first INQUIRE(FILE=,EXIST=) into a .true.-initialized logical to establish absence; OPEN it with STATUS=\"NEW\", then INQUIRE(FILE=,EXIST=) into a .false.-initialized logical to establish existence before CLOSE(STATUS=\"DELETE\"); after CLOSE, INQUIRE(FILE=,EXIST=) into a .true.-initialized logical and expect .false.",
+        "close-status-other-values-prohibited": "Source-control negative uses STATUS=\"UNKNOWN\" on CLOSE and repairs only to KEEP or DELETE. This unnumbered shall is not a required diagnostic facet; any future observation must not require rejection unless a numbered owner is reached."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by opening a known file, writing known records, initializing variables to nonzero/nonblank sentinels, or using a distinct labelled control path) and then observe only portable properties: successful IOSTAT zero, nonzero IOSTAT for a specified error condition, exact internal records or file existence where the source fixes it, or named intrinsic status values where the standard names them. Processor-dependent unit numbers, file names, storage encodings, buffering, timing, IOMSG text, and specific numeric status values are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint, or otherwise requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle; unnumbered program restrictions are not promoted to required diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: earlier and later clause 12 connection, specifier, file position, data-transfer, internal-file, status, and input/output-item rules; clause 13 formatting; clause 15 defined I/O; clause 16 inquiry and ISO_FORTRAN_ENV status intrinsics where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.5.7.3-002",
+      "title": "The STATUS specifier determines disposition of the connected file",
+      "source": "S12.5.7.3, J3/24-007, 18 December 2023, physical PDF256.",
+      "source_units": [
+        "p1.disposition-role"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The STATUS= specifier determines the disposition of the file connected to the specified unit.",
+      "facets": [
+        "close-status-determines-connected-file-disposition"
+      ],
+      "pending": {
+        "close-status-determines-connected-file-disposition": "Use two controlled named files with known prior existence, close one with KEEP and one with DELETE, and compare subsequent INQUIRE(FILE=,EXIST=) results initialized to opposite sentinels; no processor-dependent filename is used."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by opening a known file, writing known records, initializing variables to nonzero/nonblank sentinels, or using a distinct labelled control path) and then observe only portable properties: successful IOSTAT zero, nonzero IOSTAT for a specified error condition, exact internal records or file existence where the source fixes it, or named intrinsic status values where the standard names them. Processor-dependent unit numbers, file names, storage encodings, buffering, timing, IOMSG text, and specific numeric status values are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint, or otherwise requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle; unnumbered program restrictions are not promoted to required diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: earlier and later clause 12 connection, specifier, file position, data-transfer, internal-file, status, and input/output-item rules; clause 13 formatting; clause 15 defined I/O; clause 16 inquiry and ISO_FORTRAN_ENV status intrinsics where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.5.7.3-003",
+      "title": "KEEP is not specified for a file whose prior status is SCRATCH",
+      "source": "S12.5.7.3, J3/24-007, 18 December 2023, physical PDF256.",
+      "source_units": [
+        "p1.keep-scratch-prohibition"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "KEEP shall not be specified for a file whose status before CLOSE execution is SCRATCH.",
+      "facets": [
+        "close-keep-scratch-prohibited"
+      ],
+      "pending": {
+        "close-keep-scratch-prohibited": "Source-control negative opens STATUS=\"SCRATCH\" and attempts CLOSE(STATUS=\"KEEP\"). Because this is an unnumbered program restriction, the plan records no required processor diagnostic; a conforming positive control omits STATUS= and lets the scratch default be DELETE."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by opening a known file, writing known records, initializing variables to nonzero/nonblank sentinels, or using a distinct labelled control path) and then observe only portable properties: successful IOSTAT zero, nonzero IOSTAT for a specified error condition, exact internal records or file existence where the source fixes it, or named intrinsic status values where the standard names them. Processor-dependent unit numbers, file names, storage encodings, buffering, timing, IOMSG text, and specific numeric status values are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint, or otherwise requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle; unnumbered program restrictions are not promoted to required diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: earlier and later clause 12 connection, specifier, file position, data-transfer, internal-file, status, and input/output-item rules; clause 13 formatting; clause 15 defined I/O; clause 16 inquiry and ISO_FORTRAN_ENV status intrinsics where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.5.7.3-004",
+      "title": "KEEP preserves an existing connected file",
+      "source": "S12.5.7.3, J3/24-007, 18 December 2023, physical PDF256.",
+      "source_units": [
+        "p1.keep-existing-file"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "If KEEP is specified for a file that exists, the file continues to exist after CLOSE execution.",
+      "facets": [
+        "close-keep-existing-file-continues"
+      ],
+      "pending": {
+        "close-keep-existing-file-continues": "Create and open a named file, write distinctive content, CLOSE(STATUS=\"KEEP\"), then INQUIRE existence into a .false.-initialized logical and reopen/read the content into sentinels."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by opening a known file, writing known records, initializing variables to nonzero/nonblank sentinels, or using a distinct labelled control path) and then observe only portable properties: successful IOSTAT zero, nonzero IOSTAT for a specified error condition, exact internal records or file existence where the source fixes it, or named intrinsic status values where the standard names them. Processor-dependent unit numbers, file names, storage encodings, buffering, timing, IOMSG text, and specific numeric status values are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint, or otherwise requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle; unnumbered program restrictions are not promoted to required diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: earlier and later clause 12 connection, specifier, file position, data-transfer, internal-file, status, and input/output-item rules; clause 13 formatting; clause 15 defined I/O; clause 16 inquiry and ISO_FORTRAN_ENV status intrinsics where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.5.7.3-005",
+      "title": "KEEP does not create a nonexistent file",
+      "source": "S12.5.7.3, J3/24-007, 18 December 2023, physical PDF256.",
+      "source_units": [
+        "p1.keep-nonexistent-file"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "If KEEP is specified for a file that does not exist, the file will not exist after CLOSE execution.",
+      "facets": [
+        "close-keep-nonexistent-file-remains-nonexistent"
+      ],
+      "pending": {
+        "close-keep-nonexistent-file-remains-nonexistent": "No portable oracle exists for this disposition effect because the required precondition, a unit connected to a file that does not exist while STATUS=\"KEEP\" is allowed, cannot be established by standard Fortran: named OPEN with NEW or REPLACE creates an existing file, OLD requires an existing file, SCRATCH forbids KEEP and has no portable filename, and UNKNOWN status or external deletion would be processor-dependent or outside the program."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by opening a known file, writing known records, initializing variables to nonzero/nonblank sentinels, or using a distinct labelled control path) and then observe only portable properties: successful IOSTAT zero, nonzero IOSTAT for a specified error condition, exact internal records or file existence where the source fixes it, or named intrinsic status values where the standard names them. Processor-dependent unit numbers, file names, storage encodings, buffering, timing, IOMSG text, and specific numeric status values are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint, or otherwise requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle; unnumbered program restrictions are not promoted to required diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: earlier and later clause 12 connection, specifier, file position, data-transfer, internal-file, status, and input/output-item rules; clause 13 formatting; clause 15 defined I/O; clause 16 inquiry and ISO_FORTRAN_ENV status intrinsics where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.5.7.3-006",
+      "title": "DELETE leaves no file after CLOSE",
+      "source": "S12.5.7.3, J3/24-007, 18 December 2023, physical PDF256.",
+      "source_units": [
+        "p1.delete-file"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "If DELETE is specified, the file will not exist after CLOSE execution.",
+      "facets": [
+        "close-delete-file-nonexistent-after-close"
+      ],
+      "pending": {
+        "close-delete-file-nonexistent-after-close": "Choose a controlled filename and first INQUIRE(FILE=,EXIST=) into a .true.-initialized logical to establish absence; OPEN it with STATUS=\"NEW\", write known content, then INQUIRE(FILE=,EXIST=) into a .false.-initialized logical to establish existence before CLOSE; execute CLOSE(STATUS=\"DELETE\") and INQUIRE(FILE=,EXIST=) into a .true.-initialized logical, expecting .false."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by opening a known file, writing known records, initializing variables to nonzero/nonblank sentinels, or using a distinct labelled control path) and then observe only portable properties: successful IOSTAT zero, nonzero IOSTAT for a specified error condition, exact internal records or file existence where the source fixes it, or named intrinsic status values where the standard names them. Processor-dependent unit numbers, file names, storage encodings, buffering, timing, IOMSG text, and specific numeric status values are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint, or otherwise requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle; unnumbered program restrictions are not promoted to required diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: earlier and later clause 12 connection, specifier, file position, data-transfer, internal-file, status, and input/output-item rules; clause 13 formatting; clause 15 defined I/O; clause 16 inquiry and ISO_FORTRAN_ENV status intrinsics where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.5.7.3-007",
+      "title": "Omitted CLOSE STATUS defaults to KEEP for nonscratch prior status",
+      "source": "S12.5.7.3, J3/24-007, 18 December 2023, physical PDF256.",
+      "source_units": [
+        "p1.default-nonscratch-keep"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "If STATUS= is omitted, the default value is KEEP unless the file status before CLOSE execution is SCRATCH.",
+      "facets": [
+        "close-omitted-status-nonscratch-default-keep"
+      ],
+      "pending": {
+        "close-omitted-status-nonscratch-default-keep": "Open a named nonscratch file, write known content, execute CLOSE without STATUS=, and then INQUIRE/reopen/read to verify the file remains; this scoped CLOSE default is required, not processor dependent."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by opening a known file, writing known records, initializing variables to nonzero/nonblank sentinels, or using a distinct labelled control path) and then observe only portable properties: successful IOSTAT zero, nonzero IOSTAT for a specified error condition, exact internal records or file existence where the source fixes it, or named intrinsic status values where the standard names them. Processor-dependent unit numbers, file names, storage encodings, buffering, timing, IOMSG text, and specific numeric status values are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint, or otherwise requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle; unnumbered program restrictions are not promoted to required diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: earlier and later clause 12 connection, specifier, file position, data-transfer, internal-file, status, and input/output-item rules; clause 13 formatting; clause 15 defined I/O; clause 16 inquiry and ISO_FORTRAN_ENV status intrinsics where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.5.7.3-008",
+      "title": "Omitted CLOSE STATUS defaults to DELETE for prior SCRATCH status",
+      "source": "S12.5.7.3, J3/24-007, 18 December 2023, physical PDF256.",
+      "source_units": [
+        "p1.default-scratch-delete"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "If STATUS= is omitted for a file whose status before CLOSE execution is SCRATCH, the default value is DELETE.",
+      "facets": [
+        "close-omitted-status-scratch-default-delete"
+      ],
+      "pending": {
+        "close-omitted-status-scratch-default-delete": "No portable oracle exists for the DELETE disposition of omitted STATUS on a SCRATCH file. A future source-control can open STATUS=\"SCRATCH\", write known content, and CLOSE without STATUS=, but after CLOSE only unit disconnection is portable; the scratch file has no portable FILE= name for an EXIST= inquiry, so deletion itself cannot be verified by a single-image standard-conforming program."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by opening a known file, writing known records, initializing variables to nonzero/nonblank sentinels, or using a distinct labelled control path) and then observe only portable properties: successful IOSTAT zero, nonzero IOSTAT for a specified error condition, exact internal records or file existence where the source fixes it, or named intrinsic status values where the standard names them. Processor-dependent unit numbers, file names, storage encodings, buffering, timing, IOMSG text, and specific numeric status values are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint, or otherwise requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle; unnumbered program restrictions are not promoted to required diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: earlier and later clause 12 connection, specifier, file position, data-transfer, internal-file, status, and input/output-item rules; clause 13 formatting; clause 15 defined I/O; clause 16 inquiry and ISO_FORTRAN_ENV status intrinsics where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "structural",
+      "rationale": "Single paragraph mixes value restriction, disposition effects, unnumbered scratch restriction, KEEP/DELETE effects, and two required omitted-STATUS defaults; split into fine units."
+    },
+    {
+      "unit": "p1.status-values",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.5.7.3-001"
+      ]
+    },
+    {
+      "unit": "p1.disposition-role",
+      "disposition": "definition",
+      "requirements": [
+        "S12.5.7.3-002"
+      ],
+      "rationale": "Defines the role of STATUS= in file disposition."
+    },
+    {
+      "unit": "p1.keep-scratch-prohibition",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.5.7.3-003"
+      ]
+    },
+    {
+      "unit": "p1.keep-existing-file",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.5.7.3-004"
+      ]
+    },
+    {
+      "unit": "p1.keep-nonexistent-file",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.5.7.3-005"
+      ]
+    },
+    {
+      "unit": "p1.delete-file",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.5.7.3-006"
+      ]
+    },
+    {
+      "unit": "p1.default-nonscratch-keep",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.5.7.3-007"
+      ]
+    },
+    {
+      "unit": "p1.default-scratch-delete",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.5.7.3-008"
+      ]
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_12_5_7_3.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "4fc27a8d0dd8fe675620563b77884dea234c26080b9a15192e701784620dd175",
+  "review_rationale": "Source registration for 12.5.7-12.6.1, the CLOSE statement and data transfer statements in general (batch152). Every unit hash-verified by an independent reviewer across three rounds. Round 1 found a conditional KEEP-on-nonexistent-file plan and scratch DELETE plans that observed only unit closure; both are now explicit no-portable-oracle reasons (no portable way to connect a nonexistent file with KEEP allowed; no portable name for a scratch file), while named-file DELETE keeps a portable EXIST= plan established before the CLOSE. Round 2 found the nonexistent-unit CLOSE plan relied on OPENED=.false.; it is now guarded on INQUIRE EXIST=.false., since no unit number is guaranteed nonexistent. The eight numbered rules were pre-accounted. Source accounting only."
+}

@@ -1,0 +1,145 @@
+{
+  "schema_version": 1,
+  "section": "12.6.1",
+  "requirements": [
+    {
+      "id": "S12.6.1-001",
+      "title": "READ is the data-transfer input statement and WRITE/PRINT are data-transfer output statements",
+      "source": "S12.6.1, J3/24-007, 18 December 2023, physical PDF257.",
+      "source_units": [
+        "p1"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "READ is the data transfer input statement; WRITE and PRINT are the data transfer output statements.",
+      "facets": [
+        "read-data-transfer-input-statement",
+        "write-data-transfer-output-statement",
+        "print-data-transfer-output-statement"
+      ],
+      "pending": {
+        "read-data-transfer-input-statement": "Use a future READ from a controlled internal or external record into an integer initialized to a distinct sentinel and assert the changed value after successful IOSTAT zero.",
+        "write-data-transfer-output-statement": "Use a future WRITE to an internal file prefilled with sentinel characters and assert exact produced characters; no external encoding or buffering is asserted.",
+        "print-data-transfer-output-statement": "Use PRINT only under a harness that captures the processor output unit portably; otherwise keep source classification pending and avoid comparing processor-dependent terminal formatting."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by opening a known file, writing known records, initializing variables to nonzero/nonblank sentinels, or using a distinct labelled control path) and then observe only portable properties: successful IOSTAT zero, nonzero IOSTAT for a specified error condition, exact internal records or file existence where the source fixes it, or named intrinsic status values where the standard names them. Processor-dependent unit numbers, file names, storage encodings, buffering, timing, IOMSG text, and specific numeric status values are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint, or otherwise requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle; unnumbered program restrictions are not promoted to required diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: earlier and later clause 12 connection, specifier, file position, data-transfer, internal-file, status, and input/output-item rules; clause 13 formatting; clause 15 defined I/O; clause 16 inquiry and ISO_FORTRAN_ENV status intrinsics where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "R1210",
+      "title": "A READ statement has parenthesized io-control-spec form or READ format form",
+      "source": "S12.6.1, J3/24-007, 18 December 2023, physical PDF257.",
+      "source_units": [
+        "R1210"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "A read-stmt is READ with a parenthesized io-control-spec-list and optional input-item-list, or READ followed by a format and optional comma input-item-list.",
+      "facets": [
+        "read-parenthesized-control-form",
+        "read-format-form",
+        "read-optional-input-item-list"
+      ],
+      "pending": {
+        "read-parenthesized-control-form": "Positive-control source reads from an internal character record with READ(record,*) integer_sentinel and checks the changed value; malformed parentheses are repaired without changing the record.",
+        "read-format-form": "Positive-control source uses READ fmt_label, x with a labelled FORMAT and a controlled default input source once the owning input-unit rules are registered; the read changes x from a sentinel.",
+        "read-optional-input-item-list": "Use one READ with an input item initialized to a sentinel and one positioning/status READ with no input list only where later rules permit it; absence/presence of the list is the only syntax difference."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by opening a known file, writing known records, initializing variables to nonzero/nonblank sentinels, or using a distinct labelled control path) and then observe only portable properties: successful IOSTAT zero, nonzero IOSTAT for a specified error condition, exact internal records or file existence where the source fixes it, or named intrinsic status values where the standard names them. Processor-dependent unit numbers, file names, storage encodings, buffering, timing, IOMSG text, and specific numeric status values are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint, or otherwise requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle; unnumbered program restrictions are not promoted to required diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: earlier and later clause 12 connection, specifier, file position, data-transfer, internal-file, status, and input/output-item rules; clause 13 formatting; clause 15 defined I/O; clause 16 inquiry and ISO_FORTRAN_ENV status intrinsics where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "R1211",
+      "title": "A WRITE statement has parenthesized io-control-spec form and optional output items",
+      "source": "S12.6.1, J3/24-007, 18 December 2023, physical PDF257.",
+      "source_units": [
+        "R1211"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "A write-stmt is WRITE with a parenthesized io-control-spec-list and optional output-item-list.",
+      "facets": [
+        "write-parenthesized-control-form",
+        "write-optional-output-item-list"
+      ],
+      "pending": {
+        "write-parenthesized-control-form": "Positive-control source writes a distinct integer to an internal character variable initialized with sentinel characters and compares the resulting record to an independently derived string.",
+        "write-optional-output-item-list": "Positive-control source uses WRITE(buffer,\"()\") with no output-item-list for syntax admission and a separate WRITE(buffer,\"(A)\") \"Q\" with an output item; the item case preinitializes buffer with sentinel characters and checks \"Q\", while the no-item case is credited only for the admitted statement form."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by opening a known file, writing known records, initializing variables to nonzero/nonblank sentinels, or using a distinct labelled control path) and then observe only portable properties: successful IOSTAT zero, nonzero IOSTAT for a specified error condition, exact internal records or file existence where the source fixes it, or named intrinsic status values where the standard names them. Processor-dependent unit numbers, file names, storage encodings, buffering, timing, IOMSG text, and specific numeric status values are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint, or otherwise requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle; unnumbered program restrictions are not promoted to required diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: earlier and later clause 12 connection, specifier, file position, data-transfer, internal-file, status, and input/output-item rules; clause 13 formatting; clause 15 defined I/O; clause 16 inquiry and ISO_FORTRAN_ENV status intrinsics where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "R1212",
+      "title": "A PRINT statement is PRINT format with optional output items",
+      "source": "S12.6.1, J3/24-007, 18 December 2023, physical PDF257.",
+      "source_units": [
+        "R1212"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "A print-stmt is PRINT followed by a format and an optional comma output-item-list.",
+      "facets": [
+        "print-format-required",
+        "print-optional-output-item-list"
+      ],
+      "pending": {
+        "print-format-required": "Positive-control source compiles PRINT fmt_label, value with a labelled FORMAT in a complete program; a missing-format negative repairs only by adding the format, so syntax admission does not depend on terminal-output capture.",
+        "print-optional-output-item-list": "Positive-control sources compile both PRINT fmt_label and PRINT fmt_label, value in complete programs with the same labelled FORMAT where valid; the facet is a syntax-form plan and does not compare processor-dependent terminal output."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by opening a known file, writing known records, initializing variables to nonzero/nonblank sentinels, or using a distinct labelled control path) and then observe only portable properties: successful IOSTAT zero, nonzero IOSTAT for a specified error condition, exact internal records or file existence where the source fixes it, or named intrinsic status values where the standard names them. Processor-dependent unit numbers, file names, storage encodings, buffering, timing, IOMSG text, and specific numeric status values are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint, or otherwise requires rejection and a future fixture can observe the rejection portably. IOMSG wording and processor-dependent numeric status values are never an oracle; unnumbered program restrictions are not promoted to required diagnostics.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations. Unregistered dependencies explicitly retained: earlier and later clause 12 connection, specifier, file position, data-transfer, internal-file, status, and input/output-item rules; clause 13 formatting; clause 15 defined I/O; clause 16 inquiry and ISO_FORTRAN_ENV status intrinsics where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "definition",
+      "requirements": [
+        "S12.6.1-001"
+      ],
+      "rationale": "Defines the three data-transfer statement roles."
+    },
+    {
+      "unit": "R1210",
+      "disposition": "requirements",
+      "requirements": [
+        "R1210"
+      ]
+    },
+    {
+      "unit": "R1211",
+      "disposition": "requirements",
+      "requirements": [
+        "R1211"
+      ]
+    },
+    {
+      "unit": "R1212",
+      "disposition": "requirements",
+      "requirements": [
+        "R1212"
+      ]
+    },
+    {
+      "unit": "note1",
+      "disposition": "informative",
+      "rationale": "Examples of READ, WRITE, PRINT, and FORMAT; not normative."
+    },
+    {
+      "unit": "note2",
+      "disposition": "informative",
+      "rationale": "Explanatory note about READ(name) and C1221; the owning constraint is outside this packet."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_12_6_1.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "c247dfac682832cd17326fd207bdc82517fd6b93a6299302236468bf7a5092f1",
+  "review_rationale": "Source registration for 12.5.7-12.6.1, the CLOSE statement and data transfer statements in general (batch152). Every unit hash-verified by an independent reviewer across three rounds. Round 1 found a conditional KEEP-on-nonexistent-file plan and scratch DELETE plans that observed only unit closure; both are now explicit no-portable-oracle reasons (no portable way to connect a nonexistent file with KEEP allowed; no portable name for a scratch file), while named-file DELETE keeps a portable EXIST= plan established before the CLOSE. Round 2 found the nonexistent-unit CLOSE plan relied on OPENED=.false.; it is now guarded on INQUIRE EXIST=.false., since no unit number is guaranteed nonexistent. The eight numbered rules were pre-accounted. Source accounting only."
+}

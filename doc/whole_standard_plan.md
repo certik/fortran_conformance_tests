@@ -5354,6 +5354,22 @@ unsupported character kind, and since none is guaranteed it is now honestly
 source-only.
 See `doc/source_audits/batch_150.json`.
 
+## Batch 152 — CLOSE, and the guarded plan
+
+Twenty-two units of 12.5.7 through 12.6.1, after three rounds. The first round
+rejected two kinds of plan that look reasonable but are not decisions: a
+conditional one ("if no portable way exists …") and ones that observed a
+*neighbouring* state — unit closure — instead of the stated effect, deletion. For
+scratch files deletion genuinely cannot be observed portably, so that is now said
+plainly; for named files it can, by establishing absence and then existence
+before the `CLOSE`.
+
+The second round produced a useful new plan shape. CLOSE on a unit that *does not
+exist* is permitted, but no unit number is guaranteed nonexistent. The plan is
+therefore **guarded**: it probes with `INQUIRE(EXIST=)` and exercises the facet
+only when a probe returns `.false.`, never claiming coverage otherwise.
+See `doc/source_audits/batch_152.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
