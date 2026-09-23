@@ -5399,6 +5399,17 @@ Mutation runners now compile in per-case temporary workspaces, and the checklist
 requires `git status` to be unchanged after running them.
 See `doc/source_audits/batch_171.json`.
 
+## Batch 167 — EQUIVALENCE, portable only where values are defined
+
+Seventeen facets of 8.10.1.1 across eleven fixtures, accepted with no findings.
+The governing hazard is that EQUIVALENCE makes storage shared, not values
+converted (p2), so an alias may be read only where 19.5.3 and 19.6.5–19.6.6
+define the result: the same type and kind, numeric sequence storage, or character
+with character. No fixture reinterprets bits across types. Frozen LFortran gets
+two of these genuinely wrong — values read through a numeric-sequence alias, and
+an out-of-bounds failure writing through a same-kind non-default COMPLEX alias.
+See `doc/source_audits/batch_167.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
