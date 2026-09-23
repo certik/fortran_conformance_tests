@@ -6183,7 +6183,34 @@
         "SIGN AUDIT: every positive-value output case uses SS, so none depends on the processor-dependent optional plus. The single case without SS uses-42, where the minus is required.",
         "C1372FR-001(observation): S13.7.2.4-007also observes leading-zero padding while leaving BOZ-output-leading-zeros-to-m pending - UNDER-CLAIMING, not vacuity.",
         "NOT established: optional plus under S, zero specials, m>w, enum, real/complex BOZ representation, unacceptable-field errors, list-directed/external I/O, R1323syntax. Exclusions audited as honest and not quietly claimed.",
-        "No LFortran defect found:18/18pass on both toolchains."
+        "No LFortran defect  found:18/18pass on both toolchains."
+      ]
+    },
+    {
+      "id": "clause13-list-directed-input-fixtures-142",
+      "state": "reference-validated-runtime-effects",
+      "packet_kind": "FIXTURE",
+      "milestone": "FIRST STDIN-DRIVEN FIXTURES IN CLAUSE 13; NINE FROZEN-LFORTRAN DEFECTS IN ONE PACKET",
+      "baseline_commit": "8f843cd",
+      "sections": ["13.10.2", "13.10.3.1", "13.10.3.2"],
+      "author_handoffs": {"proposal": "182839e"},
+      "source_reviews": ["doc/source_audits/batch_142.json"],
+      "new_executions": 18,
+      "fixture_accounting": {
+        "facets_established": 18,
+        "new_cases": 18,
+        "authored_facets": "1995 -> 2013",
+        "reference_validated": "1955 -> 1973",
+        "expected_failures": "819 -> 828"
+      },
+      "coordination": "LIST-DIRECTED INPUT, not output. 13.10.4leaves list-directed OUTPUT form largely PROCESSOR DEPENDENT, so input is where the standard states exact obligations and therefore where portable oracles exist; this packet asserts NO output form. Input is driven through run.stdin_file, which tests/fixtures/stop_io/ had already proved but which almost nothing in the suite used, so this is the first real exercise of that harness path in Clause13. THE SENTINEL DISCIPLINE MATTERED MORE HERE THAN ANYWHERE: a null value is defined by its ABSENCE of effect, so the oracle is 'the item still holds its prior value' - and a ZERO sentinel would be worthless, because uninitialized memory is commonly zero and a processor that never defined the item at all would pass. The audit confirmed no numeric sentinel is0, every null case DEFINES the item to a distinguished value BEFORE the read so 'unchanged' is a POSITIVE observation, and the single .false. sentinel is not used for an unchanged proof. All character cases assert LEN, because comparison blank-pads the shorter operand.",
+      "reviewer_findings": [
+        "ACCEPTED with ZERO blocking findings - the second clean fixture packet in a row.",
+        "THE COORDINATOR ASKED whether the NINE LFortran failures were independent defects or one root cause, because nine failures in an eighteen-case packet is exactly the shape of a shared malformed test construct rather than nine real bugs. ANSWER: neither. They cluster into THREE areas of incomplete list-directed handling - repeat counts (r*c and r*), null values, and slash termination - and each required result is independently supported by the pinned text, so each is XFAILed on its OWN normative basis.",
+        "The nine are NOT a shared harness artefact: they span three independent normative areas, and the OTHER nine cases in the same packet, built by the same generator through the same stdin harness, PASS on the same toolchain.",
+        "gfortran16.1.0-std=f2023passes18/18; frozen LFortran0.65.0-411fails exactly the nine, reproduced by the coordinator before any XFAIL was recorded.",
+        "REVERSE CONTROLS re-run: all five pass under gfortran when weakened to zero, so they are load-bearing rather than incidentally true.",
+        "FEATURE MUTATION, not just oracle mutation: value reorder,3*7->2*7, slash deletion, and separator changes all fail as intended - including on the cases that PASS under frozen LFortran, which is the subset where a vacuous test would have hidden."
       ]
     }
   ],

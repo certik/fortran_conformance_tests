@@ -4806,6 +4806,58 @@ leaving `BOZ-output-leading-zeros-to-m` pending — **under-claiming, not
 vacuity**.
 See `doc/source_audits/batch_140.json`.
 
+## Batch 142 — list-directed input, and nine defects in one packet
+
+The obvious next target in Clause 13 was list-directed I/O, and the first
+decision was which half to test. **13.10.4 leaves list-directed *output* form
+largely processor dependent** — field widths, separators and the representation
+of many values are the processor's choice. Input is the opposite: 13.10.2 and
+13.10.3 state exact obligations. So this packet tests **input only** and asserts
+nothing whatsoever about output form.
+
+That makes it the first packet to drive input through **`run.stdin_file`**.
+`tests/fixtures/stop_io/` had already proved the harness supports it, but almost
+nothing in the suite used it; the oracle stays entirely internal, since the
+program reads a fixed record set and asserts the resulting *variable values*.
+
+### Why the sentinel discipline mattered more here than anywhere
+
+A **null value is defined by its absence of effect** — 13.10.3.2 p2 says it "has
+no effect on the definition status of the corresponding list item". So the
+oracle is *"the item still holds its prior value"*, and that is exactly the
+shape of assertion this project has been burned by.
+
+A **zero sentinel would be worthless**: uninitialized memory is commonly zero, so
+a processor that never defined the item at all would pass. The audit confirms no
+numeric sentinel is `0`; every null case **defines the item to a distinguished
+value before the read**, so "unchanged" is a *positive* observation rather than
+the absence of one; and the single `.false.` sentinel is not used for an
+unchanged proof. Every character case asserts `LEN`, because comparison
+blank-pads the shorter operand.
+
+### Nine failures — one bug or nine?
+
+The frozen LFortran target failed **nine of eighteen** cases while gfortran
+passed 18/18. Nine failures in an eighteen-case packet is precisely the shape of
+a **shared malformed test construct** rather than nine real defects, so that is
+the question I put to the reviewer before allowing any XFAIL.
+
+The answer was *neither*. They cluster into **three** areas of incomplete
+list-directed handling — **repeat counts** (`r*c` and `r*`), **null values**, and
+**slash termination** — and each required result is independently supported by
+the pinned text, so each is filed on its own normative basis. They are also not a
+harness artefact: the **other nine cases, built by the same generator through the
+same stdin path, pass on the same toolchain**.
+
+Each failure was reproduced by me before recording, and the expected-failure file
+went from 819 to 828 lines.
+
+Non-vacuity was proved by mutating the **feature**, not just the oracle: value
+reorder, `3*7`→`2*7`, slash deletion and separator changes all fail as intended —
+including on the subset that *passes* under frozen LFortran, which is exactly
+where a vacuous test could have hidden.
+See `doc/source_audits/batch_142.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must

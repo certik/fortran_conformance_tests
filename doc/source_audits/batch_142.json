@@ -1,0 +1,94 @@
+{
+ "schema_version": 1,
+ "review_type": "independent-list-directed-input-fixture-review",
+ "review_date": "2026-09-23",
+ "baseline_commit": "8f843cd",
+ "integrated_on": "6b28162",
+ "state": "reference-validated-runtime-effects",
+ "packet_kind": "FIXTURE",
+ "milestone": "FIRST STDIN-DRIVEN FIXTURES IN CLAUSE 13, and the largest single haul of frozen-LFortran defects in one packet so far: nine.",
+ "scope": {
+  "sections": [
+   "13.10.2",
+   "13.10.3.1",
+   "13.10.3.2"
+  ],
+  "section_titles_verified_from_source": {
+   "13.10.2": "Values and value separators",
+   "13.10.3.1": "List-directed input forms",
+   "13.10.3.2": "Null values"
+  },
+  "facets_established": 18,
+  "new_cases": 18
+ },
+ "why_this_target": {
+  "mechanism": "List-directed INPUT is driven through run.stdin_file, which tests/fixtures/stop_io/ already proved but which almost nothing in the suite used. The oracle is entirely internal: the program reads a fixed record set and asserts the resulting variable values, so nothing depends on output formatting, which for list-directed output is deliberately processor dependent.",
+  "why_input_and_not_output": "13.10.4 leaves list-directed OUTPUT form largely to the processor. Input is where the standard states exact obligations, so input is where portable oracles exist. The packet asserts no list-directed output form."
+ },
+ "independent_review": {
+  "reviewer_distinct_from_author": true,
+  "decision": "accept_no_blocking_findings",
+  "blocking_findings": 0,
+  "reviewer_derived_every_oracle_from_source": true,
+  "coordinator_question_answered": "Whether the nine failures were independent defects or one root cause. They are neither nine unrelated bugs nor a single one: they cluster into three areas of incomplete list-directed handling - repeat counts (r*c and r*), null values, and slash termination. Each required result is independently supported by the pinned text, so each is XFAILed on its own normative basis rather than as one lumped defect."
+ },
+ "source_rules_independently_confirmed": [
+  "13.10.2 p2: the r*c form is equivalent to r successive appearances of the constant c",
+  "13.10.2 p2: the r* form is equivalent to r successive appearances of the null value",
+  "13.10.3.1 p2: otherwise c is interpreted as a literal constant",
+  "13.10.3.1 p2: if the first effective item is character and the character after r* is nonblank and not a quote, c is an undelimited character constant",
+  "13.10.3.1 p9: a character value shorter than the list item is blank padded",
+  "13.10.3.2 p1: a null value is specified by no characters between consecutive value separators, by no characters before the first value separator in the first record, or by the r* form",
+  "13.10.3.2 p2: a null value has no effect on the definition status of the corresponding list item",
+  "13.10.3.2 p3: a slash terminates the data transfer after the transference of the previous value, and any characters remaining in the record are ignored"
+ ],
+ "oracles_hand_derived_and_confirmed": [
+  "record end acts as a value separator (blank)",
+  "multiple blanks collapse to one separator",
+  "a comma separates values",
+  "delimited character constants protect embedded comma, slash and semicolon",
+  "'AB' into character(len=4) becomes 'AB' followed by two blanks",
+  "11,3*7,29 defines the list as 11,7,7,7,29",
+  "5,2*7,19 with a non-character first effective item makes 7 a literal constant repeated twice",
+  "2*ab with a character first effective item makes ab an undelimited character constant repeated twice",
+  "10,,30 leaves the second item at its prior value",
+  "leading comma in the first record leaves the first item at its prior value",
+  "1* and 2* leave the corresponding items at their prior values",
+  "1 / 99 transfers 1 and leaves the second item at its sentinel -802"
+ ],
+ "non_vacuity": {
+  "sentinel_audit": "Exhaustive. No numeric sentinel is 0, because uninitialized memory is commonly zero and a zero sentinel cannot distinguish 'null value correctly left the item alone' from 'the item was never defined'. The only .false. sentinel is not used for an unchanged/null proof; that case reads .TRUE. Every character case asserts LEN, because character comparison blank-pads the shorter operand.",
+  "positive_state_established_first": "Every null-value and slash case defines the item to a distinguished value BEFORE the read, so 'unchanged' is a positive observation rather than the absence of one.",
+  "reverse_controls": "All five reverse controls pass under gfortran when weakened to zero, confirming they are load-bearing rather than incidentally true.",
+  "feature_mutation": "Value reorder, repeat-count change (3*7 -> 2*7), slash deletion, and separator changes all fail as intended, including on the cases that pass under frozen LFortran."
+ },
+ "lfortran_defects_recorded": {
+  "count": 9,
+  "clusters": [
+   "repeat counts: r*c and r* forms",
+   "null values: empty between separators, leading empty in first record, and the r* null form",
+   "slash termination"
+  ],
+  "note": "gfortran 16.1.0 with -std=f2023 passes 18/18. The frozen LFortran 0.65.0-411 target fails exactly these nine, reproduced by the coordinator before recording. Each is a genuine defect against a stated obligation, not a shared malformed test construct: the nine span three independent normative areas and the other nine cases in the same packet, built by the same generator with the same harness, pass.",
+  "xfail_lines_added": 9,
+  "expected_failures_before": 819,
+  "expected_failures_after": 828
+ },
+ "integration": {
+  "fixture_reviews_recorded": 18,
+  "catalogue_source_reviews_renewed": [
+   "13.10.2",
+   "13.10.3.1",
+   "13.10.3.2"
+  ],
+  "pre_existing_fixture_reviews_in_those_catalogues": 0,
+  "execution_aggregate_renewed": "S4.2-001.whole-suite-execution",
+  "audit_non_reviewed_after": "18.3.7 draft only",
+  "rendered_views_embed_review_state": false
+ },
+ "limitations": [
+  "Reference validation is gfortran 16.1.0 in f2023 mode on one platform. No universal-processor claim is made.",
+  "The packet asserts nothing about list-directed OUTPUT form, which 13.10.4 leaves largely processor dependent.",
+  "XFAILs remain failures and take no qualified-pass or facet-completion credit."
+ ]
+}
