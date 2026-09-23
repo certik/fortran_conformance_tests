@@ -1,0 +1,138 @@
+{
+  "schema_version": 1,
+  "section": "12.11.1",
+  "requirements": [
+    {
+      "id": "S12.11.1-001",
+      "title": "The set and detection timing of input/output error conditions are processor dependent",
+      "source": "S12.11.1, J3/24-007, 18 December 2023, physical PDF285-286.",
+      "source_units": [
+        "p1"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The set of input/output error conditions is processor dependent, and except where otherwise specified the occurrence or detection point of an error condition is processor dependent.",
+      "facets": [
+        "io-error-condition-set-processor-dependent",
+        "io-error-detection-timing-processor-dependent"
+      ],
+      "pending": {
+        "io-error-condition-set-processor-dependent": "No portable oracle may require a processor to classify an implementation-specific situation as an I/O error unless another registered rule specifies it.",
+        "io-error-detection-timing-processor-dependent": "No portable oracle may require a specific detection point for an otherwise unspecified I/O error; future tests observe only specified status outcomes after statement completion."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or creating a known file) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT for a specified error condition, named intrinsic status values where the standard names them, branch-target execution, or unchanged sentinel values where the source requires no definition. Processor-dependent unit numbers, file names, record lengths, storage-unit encodings, buffering, timing, IOMSG text, and specific nonzero IOSTAT numbers are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe the rejection portably. IOMSG wording, processor-dependent numeric status values, undefined values, indeterminate file positions, and recursive I/O program restrictions without a required diagnostic are never treated as exact oracles.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations; earlier clause 12 input/output concepts, file, unit, connection, positioning, and data-transfer source already registered in this branch. Unregistered dependencies explicitly retained: 12.5.6.x connection correction work; later clause 12 and clause 13 formatting details where pending plans use formatted input; clause 15 defined input/output and child data transfer; clause 16 ISO_FORTRAN_ENV named constants and inquiry intrinsics; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.11.1-002",
+      "title": "Nonadvancing input beyond the current record produces end-of-record except at stream end-of-file",
+      "source": "S12.11.1, J3/24-007, 18 December 2023, physical PDF285-286.",
+      "source_units": [
+        "p2"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "An end-of-record condition occurs when nonadvancing input attempts to transfer from beyond the end of the current record, except that a stream file whose current record is at the end of file produces end-of-file instead.",
+      "facets": [
+        "nonadvancing-beyond-record-eor",
+        "stream-final-record-eof-precedence"
+      ],
+      "pending": {
+        "nonadvancing-beyond-record-eor": "Create an external formatted file with a short current record, initialize IOSTAT to a nonzero sentinel distinct from named constants, perform nonadvancing input past that record, and assert IOSTAT_EOR using the named constant rather than its numeric value.",
+        "stream-final-record-eof-precedence": "Create a formatted stream file with the current record at end of file, attempt nonadvancing input beyond it, and assert IOSTAT_END rather than IOSTAT_EOR using ISO_FORTRAN_ENV names."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or creating a known file) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT for a specified error condition, named intrinsic status values where the standard names them, branch-target execution, or unchanged sentinel values where the source requires no definition. Processor-dependent unit numbers, file names, record lengths, storage-unit encodings, buffering, timing, IOMSG text, and specific nonzero IOSTAT numbers are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe the rejection portably. IOMSG wording, processor-dependent numeric status values, undefined values, indeterminate file positions, and recursive I/O program restrictions without a required diagnostic are never treated as exact oracles.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations; earlier clause 12 input/output concepts, file, unit, connection, positioning, and data-transfer source already registered in this branch. Unregistered dependencies explicitly retained: 12.5.6.x connection correction work; later clause 12 and clause 13 formatting details where pending plans use formatted input; clause 15 defined input/output and child data transfer; clause 16 ISO_FORTRAN_ENV named constants and inquiry intrinsics; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.11.1-003",
+      "title": "End-of-file conditions cover sequential endfile records, internal-file exhaustion, and stream exhaustion",
+      "source": "S12.11.1, J3/24-007, 18 December 2023, physical PDF285-286.",
+      "source_units": [
+        "p3"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "An end-of-file condition occurs when an endfile record is encountered during sequential input, when reading beyond the end of an internal file, or when reading beyond the end of a stream file.",
+      "facets": [
+        "sequential-endfile-record-eof",
+        "internal-file-beyond-end-eof",
+        "stream-beyond-end-eof"
+      ],
+      "pending": {
+        "sequential-endfile-record-eof": "Write a known sequential external record followed by ENDFILE, rewind, read the data, then read again with IOSTAT initialized away from IOSTAT_END and assert IOSTAT_END.",
+        "internal-file-beyond-end-eof": "Use a one-record internal file, read the only record into a nondefault variable, then read again with IOSTAT initialized away from IOSTAT_END and assert IOSTAT_END.",
+        "stream-beyond-end-eof": "Write a finite stream file, position after its written data, read with IOSTAT initialized away from IOSTAT_END, and assert IOSTAT_END without inspecting storage-unit encodings."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or creating a known file) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT for a specified error condition, named intrinsic status values where the standard names them, branch-target execution, or unchanged sentinel values where the source requires no definition. Processor-dependent unit numbers, file names, record lengths, storage-unit encodings, buffering, timing, IOMSG text, and specific nonzero IOSTAT numbers are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe the rejection portably. IOMSG wording, processor-dependent numeric status values, undefined values, indeterminate file positions, and recursive I/O program restrictions without a required diagnostic are never treated as exact oracles.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations; earlier clause 12 input/output concepts, file, unit, connection, positioning, and data-transfer source already registered in this branch. Unregistered dependencies explicitly retained: 12.5.6.x connection correction work; later clause 12 and clause 13 formatting details where pending plans use formatted input; clause 15 defined input/output and child data transfer; clause 16 ISO_FORTRAN_ENV named constants and inquiry intrinsics; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.11.1-004",
+      "title": "End-of-file may occur at input-statement start, during formatted input, or during stream input",
+      "source": "S12.11.1, J3/24-007, 18 December 2023, physical PDF285-286.",
+      "source_units": [
+        "p4"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "An end-of-file condition may occur at the beginning of an input statement, during formatted input when multiple records are required by the input-list/format interaction, or during stream input.",
+      "facets": [
+        "eof-at-input-start-permitted",
+        "eof-during-formatted-input-permitted",
+        "eof-during-stream-input-permitted"
+      ],
+      "pending": {
+        "eof-at-input-start-permitted": "No portable oracle may require a processor to defer an otherwise valid EOF until after partial execution; future EOF tests accept IOSTAT_END at statement completion.",
+        "eof-during-formatted-input-permitted": "Use a format requiring another record after establishing the first record; assert only final IOSTAT_END and defined prior transfers, not an intermediate detection instant.",
+        "eof-during-stream-input-permitted": "Use stream input beyond written data and assert IOSTAT_END after the statement, without requiring a particular detection instant."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or creating a known file) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT for a specified error condition, named intrinsic status values where the standard names them, branch-target execution, or unchanged sentinel values where the source requires no definition. Processor-dependent unit numbers, file names, record lengths, storage-unit encodings, buffering, timing, IOMSG text, and specific nonzero IOSTAT numbers are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe the rejection portably. IOMSG wording, processor-dependent numeric status values, undefined values, indeterminate file positions, and recursive I/O program restrictions without a required diagnostic are never treated as exact oracles.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations; earlier clause 12 input/output concepts, file, unit, connection, positioning, and data-transfer source already registered in this branch. Unregistered dependencies explicitly retained: 12.5.6.x connection correction work; later clause 12 and clause 13 formatting details where pending plans use formatted input; clause 15 defined input/output and child data transfer; clause 16 ISO_FORTRAN_ENV named constants and inquiry intrinsics; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "permission",
+      "requirements": [
+        "S12.11.1-001"
+      ],
+      "rationale": "Processor-dependent error set and timing."
+    },
+    {
+      "unit": "p2",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.11.1-002"
+      ],
+      "rationale": "Defines EOR and stream EOF precedence."
+    },
+    {
+      "unit": "p3",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.11.1-003"
+      ],
+      "rationale": "Defines EOF cases."
+    },
+    {
+      "unit": "p4",
+      "disposition": "permission",
+      "requirements": [
+        "S12.11.1-004"
+      ],
+      "rationale": "Permitted EOF occurrence points; no fixed timing is required."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_12_11_1.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "e5e7854649016e2e61b15995af384d17039334ee90567c86b47db14cbc690d3a",
+  "review_rationale": "Source registration for 12.10.3-12.12: IOLENGTH, error, end-of-record and end-of-file conditions, IOSTAT=, IOMSG=, and restrictions on I/O statements (batch166). Every unit hash-verified by an independent reviewer, accepted with no findings. IOLENGTH's exact count is latitude but its direct-access RECL= suitability is planned; END=/EOR= conditions, IOSTAT_END and IOSTAT_EOR distinctness, zero on success and positive errors are planned portably; IOMSG unchanged on success is planned with a sentinel while condition-message text is never compared. Source accounting only."
+}

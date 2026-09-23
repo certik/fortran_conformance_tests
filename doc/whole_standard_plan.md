@@ -5505,6 +5505,17 @@ sharing one file. The facets are now recorded as having no portable oracle, with
 that reasoning.
 See `doc/source_audits/batch_162.json`.
 
+## Batch 166 — I/O conditions, IOSTAT and IOMSG
+
+Twenty-three units of 12.10.3 through 12.12, accepted with no findings. This is
+where the standard defines the IOSTAT and IOMSG semantics that every earlier
+packet's portability rules rely on, and the registration confirms them: zero on
+success, a positive value on error, the named negative constants `IOSTAT_END` and
+`IOSTAT_EOR` for end conditions and distinct from each other, exact values as
+latitude; IOMSG unchanged when nothing goes wrong, but its message text never a
+basis for comparison.
+See `doc/source_audits/batch_166.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must

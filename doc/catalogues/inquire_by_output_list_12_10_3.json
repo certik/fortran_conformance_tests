@@ -1,0 +1,148 @@
+{
+  "schema_version": 1,
+  "section": "12.10.3",
+  "subunits": {
+    "p1": [
+      "p1.iolength-assignment-suitability",
+      "p1.processor-dependent-count"
+    ],
+    "p2": [
+      "p2.defined-io-derived-item-prohibition",
+      "p2.ordinary-derived-item-assumption"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S12.10.3-001",
+      "title": "IOLENGTH assigns the unformatted direct-access storage requirement and suitability value",
+      "source": "S12.10.3, J3/24-007, 18 December 2023, physical PDF285.",
+      "source_units": [
+        "p1.iolength-assignment-suitability"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The IOLENGTH= variable in an INQUIRE by output list is assigned the number of file storage units that would be required to store the output-list data in an unformatted file, and that value shall be suitable as a RECL= value for a matching unformatted direct-access connection.",
+      "facets": [
+        "iolength-assigned-for-output-list",
+        "iolength-suitable-for-matching-direct-recl"
+      ],
+      "pending": {
+        "iolength-assigned-for-output-list": "Initialize the IOLENGTH variable to a negative sentinel, inquire a nonempty output list with distinct integer and character objects, and assert that the value becomes positive rather than retaining the sentinel.",
+        "iolength-suitable-for-matching-direct-recl": "Use the returned IOLENGTH value as RECL= for a scratch unformatted direct-access file; write and read a record with objects of the same types, type parameters, extents, and order, and assert IOSTAT zero and exact round-trip values."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or creating a known file) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT for a specified error condition, named intrinsic status values where the standard names them, branch-target execution, or unchanged sentinel values where the source requires no definition. Processor-dependent unit numbers, file names, record lengths, storage-unit encodings, buffering, timing, IOMSG text, and specific nonzero IOSTAT numbers are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe the rejection portably. IOMSG wording, processor-dependent numeric status values, undefined values, indeterminate file positions, and recursive I/O program restrictions without a required diagnostic are never treated as exact oracles.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations; earlier clause 12 input/output concepts, file, unit, connection, positioning, and data-transfer source already registered in this branch. Unregistered dependencies explicitly retained: 12.5.6.x connection correction work; later clause 12 and clause 13 formatting details where pending plans use formatted input; clause 15 defined input/output and child data transfer; clause 16 ISO_FORTRAN_ENV named constants and inquiry intrinsics; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.10.3-002",
+      "title": "IOLENGTH exact storage-unit count is processor dependent",
+      "source": "S12.10.3, J3/24-007, 18 December 2023, physical PDF285.",
+      "source_units": [
+        "p1.processor-dependent-count"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The particular number of file storage units assigned by IOLENGTH= is processor dependent.",
+      "facets": [
+        "iolength-exact-count-processor-dependent"
+      ],
+      "pending": {
+        "iolength-exact-count-processor-dependent": "No portable oracle may compare the exact IOLENGTH number across processors; future tests assert only positivity and suitability for the matching RECL= use."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or creating a known file) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT for a specified error condition, named intrinsic status values where the standard names them, branch-target execution, or unchanged sentinel values where the source requires no definition. Processor-dependent unit numbers, file names, record lengths, storage-unit encodings, buffering, timing, IOMSG text, and specific nonzero IOSTAT numbers are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe the rejection portably. IOMSG wording, processor-dependent numeric status values, undefined values, indeterminate file positions, and recursive I/O program restrictions without a required diagnostic are never treated as exact oracles.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations; earlier clause 12 input/output concepts, file, unit, connection, positioning, and data-transfer source already registered in this branch. Unregistered dependencies explicitly retained: 12.5.6.x connection correction work; later clause 12 and clause 13 formatting details where pending plans use formatted input; clause 15 defined input/output and child data transfer; clause 16 ISO_FORTRAN_ENV named constants and inquiry intrinsics; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.10.3-003",
+      "title": "INQUIRE output lists exclude derived-type items that require defined input/output",
+      "source": "S12.10.3, J3/24-007, 18 December 2023, physical PDF285.",
+      "source_units": [
+        "p2.defined-io-derived-item-prohibition"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "The output list in an INQUIRE statement shall not contain a derived-type list item that requires a defined input/output procedure.",
+      "facets": [
+        "inquire-output-list-no-defined-io-derived-item"
+      ],
+      "pending": {
+        "inquire-output-list-no-defined-io-derived-item": "Source-control negative uses a derived type with defined unformatted input/output as an INQUIRE output-list item; no portable diagnostic is claimed because this unnumbered program restriction is not itself a required rejection oracle."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or creating a known file) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT for a specified error condition, named intrinsic status values where the standard names them, branch-target execution, or unchanged sentinel values where the source requires no definition. Processor-dependent unit numbers, file names, record lengths, storage-unit encodings, buffering, timing, IOMSG text, and specific nonzero IOSTAT numbers are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe the rejection portably. IOMSG wording, processor-dependent numeric status values, undefined values, indeterminate file positions, and recursive I/O program restrictions without a required diagnostic are never treated as exact oracles.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations; earlier clause 12 input/output concepts, file, unit, connection, positioning, and data-transfer source already registered in this branch. Unregistered dependencies explicitly retained: 12.5.6.x connection correction work; later clause 12 and clause 13 formatting details where pending plans use formatted input; clause 15 defined input/output and child data transfer; clause 16 ISO_FORTRAN_ENV named constants and inquiry intrinsics; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.10.3-004",
+      "title": "IOLENGTH for ordinary derived-type items assumes no defined input/output invocation",
+      "source": "S12.10.3, J3/24-007, 18 December 2023, physical PDF285.",
+      "source_units": [
+        "p2.ordinary-derived-item-assumption"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "If a derived-type item appears in an INQUIRE output list without requiring defined input/output, the IOLENGTH value assumes that no defined input/output procedure will be invoked.",
+      "facets": [
+        "iolength-ordinary-derived-item-no-defined-io-assumption"
+      ],
+      "pending": {
+        "iolength-ordinary-derived-item-no-defined-io-assumption": "Use a simple derived type with only intrinsic components and no defined input/output; obtain IOLENGTH, use it as RECL= for unformatted direct access, and assert IOSTAT zero and component round-trip values."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or creating a known file) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT for a specified error condition, named intrinsic status values where the standard names them, branch-target execution, or unchanged sentinel values where the source requires no definition. Processor-dependent unit numbers, file names, record lengths, storage-unit encodings, buffering, timing, IOMSG text, and specific nonzero IOSTAT numbers are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe the rejection portably. IOMSG wording, processor-dependent numeric status values, undefined values, indeterminate file positions, and recursive I/O program restrictions without a required diagnostic are never treated as exact oracles.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations; earlier clause 12 input/output concepts, file, unit, connection, positioning, and data-transfer source already registered in this branch. Unregistered dependencies explicitly retained: 12.5.6.x connection correction work; later clause 12 and clause 13 formatting details where pending plans use formatted input; clause 15 defined input/output and child data transfer; clause 16 ISO_FORTRAN_ENV named constants and inquiry intrinsics; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "structural",
+      "rationale": "Mixed IOLENGTH effect, required suitability, and processor-dependent exact count are split into fine units."
+    },
+    {
+      "unit": "p1.iolength-assignment-suitability",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.10.3-001"
+      ],
+      "rationale": "IOLENGTH assignment and required RECL suitability are portable bounded effects."
+    },
+    {
+      "unit": "p1.processor-dependent-count",
+      "disposition": "permission",
+      "requirements": [
+        "S12.10.3-002"
+      ],
+      "rationale": "The exact storage-unit count is processor dependent."
+    },
+    {
+      "unit": "p2",
+      "disposition": "structural",
+      "rationale": "Derived-type output-list prohibition and ordinary derived-item IOLENGTH assumption are split."
+    },
+    {
+      "unit": "p2.defined-io-derived-item-prohibition",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.10.3-003"
+      ],
+      "rationale": "Unnumbered shall-not program restriction."
+    },
+    {
+      "unit": "p2.ordinary-derived-item-assumption",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.10.3-004"
+      ],
+      "rationale": "Defines the IOLENGTH assumption for derived-type items that are permitted by the restriction."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_12_10_3.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "e3facf458ff23a877129f83b71fa47eaa0dde86070ec772da385fc64d8600c94",
+  "review_rationale": "Source registration for 12.10.3-12.12: IOLENGTH, error, end-of-record and end-of-file conditions, IOSTAT=, IOMSG=, and restrictions on I/O statements (batch166). Every unit hash-verified by an independent reviewer, accepted with no findings. IOLENGTH's exact count is latitude but its direct-access RECL= suitability is planned; END=/EOR= conditions, IOSTAT_END and IOSTAT_EOR distinctness, zero on success and positive errors are planned portably; IOMSG unchanged on success is planned with a sentinel while condition-message text is never compared. Source accounting only."
+}

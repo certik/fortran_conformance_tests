@@ -1,0 +1,384 @@
+{
+  "schema_version": 1,
+  "section": "12.12",
+  "subunits": {
+    "p2": [
+      "p2.recursive-external-unit-prohibition",
+      "p2.child-parent-external-unit-permission"
+    ],
+    "p4": [
+      "p4.recursive-internal-unit-prohibition",
+      "p4.recursive-write-internal-unit-permission"
+    ],
+    "p5": [
+      "p5.specifier-independence",
+      "p5.control-not-dependent-on-input-items"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S12.12-001",
+      "title": "Input/output statements require units with the properties needed for execution",
+      "source": "S12.12, J3/24-007, 18 December 2023, physical PDF288.",
+      "source_units": [
+        "p1"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "If a unit, or a file connected to a unit, lacks all properties required for certain I/O statements, those statements shall not refer to that unit.",
+      "facets": [
+        "io-statement-unit-must-have-required-properties"
+      ],
+      "pending": {
+        "io-statement-unit-must-have-required-properties": "Positive control opens a scratch external formatted sequential unit with the needed action and form before executing a matching formatted WRITE; source-control negatives use mismatched unit properties but claim no required diagnostic for this unnumbered restriction alone."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or creating a known file) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT for a specified error condition, named intrinsic status values where the standard names them, branch-target execution, or unchanged sentinel values where the source requires no definition. Processor-dependent unit numbers, file names, record lengths, storage-unit encodings, buffering, timing, IOMSG text, and specific nonzero IOSTAT numbers are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe the rejection portably. IOMSG wording, processor-dependent numeric status values, undefined values, indeterminate file positions, and recursive I/O program restrictions without a required diagnostic are never treated as exact oracles.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations; earlier clause 12 input/output concepts, file, unit, connection, positioning, and data-transfer source already registered in this branch. Unregistered dependencies explicitly retained: 12.5.6.x connection correction work; later clause 12 and clause 13 formatting details where pending plans use formatted input; clause 15 defined input/output and child data transfer; clause 16 ISO_FORTRAN_ENV named constants and inquiry intrinsics; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.12-002",
+      "title": "Recursive input/output generally cannot identify an external unit already being used",
+      "source": "S12.12, J3/24-007, 18 December 2023, physical PDF288.",
+      "source_units": [
+        "p2.recursive-external-unit-prohibition"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "A recursive I/O statement shall not identify an external unit identified by another executing I/O statement, except for the child data transfer allowance recorded separately.",
+      "facets": [
+        "recursive-io-no-same-external-unit-except-child"
+      ],
+      "pending": {
+        "recursive-io-no-same-external-unit-except-child": "Source-control negative uses defined I/O to attempt recursive access to the same external unit outside the child-transfer exception; no portable diagnostic or runtime behavior is claimed for the nonconforming program."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or creating a known file) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT for a specified error condition, named intrinsic status values where the standard names them, branch-target execution, or unchanged sentinel values where the source requires no definition. Processor-dependent unit numbers, file names, record lengths, storage-unit encodings, buffering, timing, IOMSG text, and specific nonzero IOSTAT numbers are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe the rejection portably. IOMSG wording, processor-dependent numeric status values, undefined values, indeterminate file positions, and recursive I/O program restrictions without a required diagnostic are never treated as exact oracles.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations; earlier clause 12 input/output concepts, file, unit, connection, positioning, and data-transfer source already registered in this branch. Unregistered dependencies explicitly retained: 12.5.6.x connection correction work; later clause 12 and clause 13 formatting details where pending plans use formatted input; clause 15 defined input/output and child data transfer; clause 16 ISO_FORTRAN_ENV named constants and inquiry intrinsics; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.12-003",
+      "title": "Child data transfer may identify its parent data transfer external unit",
+      "source": "S12.12, J3/24-007, 18 December 2023, physical PDF288.",
+      "source_units": [
+        "p2.child-parent-external-unit-permission"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A child data transfer statement is permitted to identify its parent data transfer statement external unit.",
+      "facets": [
+        "child-data-transfer-may-use-parent-external-unit"
+      ],
+      "pending": {
+        "child-data-transfer-may-use-parent-external-unit": "After clause 15 child data transfer support is registered, use defined output whose child WRITE writes to the parent external unit, initialize surrounding output to known sentinels, and assert the resulting parent record content without relying on recursion diagnostics."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or creating a known file) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT for a specified error condition, named intrinsic status values where the standard names them, branch-target execution, or unchanged sentinel values where the source requires no definition. Processor-dependent unit numbers, file names, record lengths, storage-unit encodings, buffering, timing, IOMSG text, and specific nonzero IOSTAT numbers are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe the rejection portably. IOMSG wording, processor-dependent numeric status values, undefined values, indeterminate file positions, and recursive I/O program restrictions without a required diagnostic are never treated as exact oracles.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations; earlier clause 12 input/output concepts, file, unit, connection, positioning, and data-transfer source already registered in this branch. Unregistered dependencies explicitly retained: 12.5.6.x connection correction work; later clause 12 and clause 13 formatting details where pending plans use formatted input; clause 15 defined input/output and child data transfer; clause 16 ISO_FORTRAN_ENV named constants and inquiry intrinsics; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.12-004",
+      "title": "Input/output statements cannot modify established format specifications",
+      "source": "S12.12, J3/24-007, 18 December 2023, physical PDF288.",
+      "source_units": [
+        "p3"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "An input/output statement shall not cause the value of any established format specification to be modified.",
+      "facets": [
+        "io-statement-no-established-format-modification"
+      ],
+      "pending": {
+        "io-statement-no-established-format-modification": "Use a character variable containing a format, prefill it with a nondefault format string, perform a successful internal WRITE using it as FMT= while outputting unrelated data, and assert the format variable is unchanged."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or creating a known file) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT for a specified error condition, named intrinsic status values where the standard names them, branch-target execution, or unchanged sentinel values where the source requires no definition. Processor-dependent unit numbers, file names, record lengths, storage-unit encodings, buffering, timing, IOMSG text, and specific nonzero IOSTAT numbers are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe the rejection portably. IOMSG wording, processor-dependent numeric status values, undefined values, indeterminate file positions, and recursive I/O program restrictions without a required diagnostic are never treated as exact oracles.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations; earlier clause 12 input/output concepts, file, unit, connection, positioning, and data-transfer source already registered in this branch. Unregistered dependencies explicitly retained: 12.5.6.x connection correction work; later clause 12 and clause 13 formatting details where pending plans use formatted input; clause 15 defined input/output and child data transfer; clause 16 ISO_FORTRAN_ENV named constants and inquiry intrinsics; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.12-005",
+      "title": "Recursive input/output cannot modify internal units except its own recursive WRITE target",
+      "source": "S12.12, J3/24-007, 18 December 2023, physical PDF288.",
+      "source_units": [
+        "p4.recursive-internal-unit-prohibition"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "A recursive I/O statement shall not modify the value of any internal unit except for the recursive WRITE allowance recorded separately.",
+      "facets": [
+        "recursive-io-no-modify-other-internal-unit"
+      ],
+      "pending": {
+        "recursive-io-no-modify-other-internal-unit": "Source-control negative uses recursive defined I/O to attempt modification of an internal unit not identified by that recursive WRITE; no portable diagnostic is claimed for this unnumbered program restriction."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or creating a known file) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT for a specified error condition, named intrinsic status values where the standard names them, branch-target execution, or unchanged sentinel values where the source requires no definition. Processor-dependent unit numbers, file names, record lengths, storage-unit encodings, buffering, timing, IOMSG text, and specific nonzero IOSTAT numbers are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe the rejection portably. IOMSG wording, processor-dependent numeric status values, undefined values, indeterminate file positions, and recursive I/O program restrictions without a required diagnostic are never treated as exact oracles.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations; earlier clause 12 input/output concepts, file, unit, connection, positioning, and data-transfer source already registered in this branch. Unregistered dependencies explicitly retained: 12.5.6.x connection correction work; later clause 12 and clause 13 formatting details where pending plans use formatted input; clause 15 defined input/output and child data transfer; clause 16 ISO_FORTRAN_ENV named constants and inquiry intrinsics; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.12-006",
+      "title": "A recursive WRITE may modify the internal unit that it identifies",
+      "source": "S12.12, J3/24-007, 18 December 2023, physical PDF288.",
+      "source_units": [
+        "p4.recursive-write-internal-unit-permission"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A recursive WRITE statement may modify the internal unit identified by that recursive WRITE statement.",
+      "facets": [
+        "recursive-write-may-modify-own-internal-unit"
+      ],
+      "pending": {
+        "recursive-write-may-modify-own-internal-unit": "After defined output dependencies are registered, perform a recursive WRITE to an internal character variable prefilled with nonblank sentinels and assert only the exact characters written by that recursive WRITE."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or creating a known file) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT for a specified error condition, named intrinsic status values where the standard names them, branch-target execution, or unchanged sentinel values where the source requires no definition. Processor-dependent unit numbers, file names, record lengths, storage-unit encodings, buffering, timing, IOMSG text, and specific nonzero IOSTAT numbers are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe the rejection portably. IOMSG wording, processor-dependent numeric status values, undefined values, indeterminate file positions, and recursive I/O program restrictions without a required diagnostic are never treated as exact oracles.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations; earlier clause 12 input/output concepts, file, unit, connection, positioning, and data-transfer source already registered in this branch. Unregistered dependencies explicitly retained: 12.5.6.x connection correction work; later clause 12 and clause 13 formatting details where pending plans use formatted input; clause 15 defined input/output and child data transfer; clause 16 ISO_FORTRAN_ENV named constants and inquiry intrinsics; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.12-007",
+      "title": "Specifier values cannot depend on other specifier definitions or evaluations in the same statement",
+      "source": "S12.12, J3/24-007, 18 December 2023, physical PDF288.",
+      "source_units": [
+        "p5.specifier-independence"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "The value of a specifier in an I/O statement shall not depend on the definition or evaluation of any other specifier in the same io-control-spec-list or inquire-spec-list.",
+      "facets": [
+        "specifier-value-independent-of-other-specifiers"
+      ],
+      "pending": {
+        "specifier-value-independent-of-other-specifiers": "Positive controls compute all specifier values before the I/O statement and verify a successful transfer; source-control negatives use side-effecting functions across specifiers but claim no portable diagnostic for this unnumbered dependency restriction."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or creating a known file) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT for a specified error condition, named intrinsic status values where the standard names them, branch-target execution, or unchanged sentinel values where the source requires no definition. Processor-dependent unit numbers, file names, record lengths, storage-unit encodings, buffering, timing, IOMSG text, and specific nonzero IOSTAT numbers are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe the rejection portably. IOMSG wording, processor-dependent numeric status values, undefined values, indeterminate file positions, and recursive I/O program restrictions without a required diagnostic are never treated as exact oracles.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations; earlier clause 12 input/output concepts, file, unit, connection, positioning, and data-transfer source already registered in this branch. Unregistered dependencies explicitly retained: 12.5.6.x connection correction work; later clause 12 and clause 13 formatting details where pending plans use formatted input; clause 15 defined input/output and child data transfer; clause 16 ISO_FORTRAN_ENV named constants and inquiry intrinsics; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.12-008",
+      "title": "File, format, ID, message, status, and size controls cannot depend on input-list values or implied-do variables in the same statement",
+      "source": "S12.12, J3/24-007, 18 December 2023, physical PDF288.",
+      "source_units": [
+        "p5.control-not-dependent-on-input-items"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "The value of an internal-file-variable or of FMT=, ID=, IOMSG=, IOSTAT=, or SIZE= shall not depend on the value of an input item or an io-implied-do do-variable in the same statement.",
+      "facets": [
+        "control-values-independent-of-input-items-and-io-implied-do"
+      ],
+      "pending": {
+        "control-values-independent-of-input-items-and-io-implied-do": "Positive controls initialize the internal file, format, and status/message/size variables before READ; source-control negatives make one depend on an input item or implied-do variable and claim no required diagnostic."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or creating a known file) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT for a specified error condition, named intrinsic status values where the standard names them, branch-target execution, or unchanged sentinel values where the source requires no definition. Processor-dependent unit numbers, file names, record lengths, storage-unit encodings, buffering, timing, IOMSG text, and specific nonzero IOSTAT numbers are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe the rejection portably. IOMSG wording, processor-dependent numeric status values, undefined values, indeterminate file positions, and recursive I/O program restrictions without a required diagnostic are never treated as exact oracles.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations; earlier clause 12 input/output concepts, file, unit, connection, positioning, and data-transfer source already registered in this branch. Unregistered dependencies explicitly retained: 12.5.6.x connection correction work; later clause 12 and clause 13 formatting details where pending plans use formatted input; clause 15 defined input/output and child data transfer; clause 16 ISO_FORTRAN_ENV named constants and inquiry intrinsics; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.12-009",
+      "title": "Specifier variable subscripts and substring bounds cannot depend on input items, implied-do variables, or other specifiers",
+      "source": "S12.12, J3/24-007, 18 December 2023, physical PDF288.",
+      "source_units": [
+        "p6"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "Any subscript or substring bound of a variable in an I/O specifier shall not depend on an input item, an io-implied-do do-variable, or the definition or evaluation of any other specifier in the same specifier list.",
+      "facets": [
+        "specifier-variable-subscript-bound-independence"
+      ],
+      "pending": {
+        "specifier-variable-subscript-bound-independence": "Positive controls use precomputed subscript and substring-bound integers for IOSTAT/IOMSG/SIZE variables; source-control negatives make those bounds depend on same-statement input or specifier side effects and claim no portable diagnostic."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or creating a known file) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT for a specified error condition, named intrinsic status values where the standard names them, branch-target execution, or unchanged sentinel values where the source requires no definition. Processor-dependent unit numbers, file names, record lengths, storage-unit encodings, buffering, timing, IOMSG text, and specific nonzero IOSTAT numbers are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe the rejection portably. IOMSG wording, processor-dependent numeric status values, undefined values, indeterminate file positions, and recursive I/O program restrictions without a required diagnostic are never treated as exact oracles.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations; earlier clause 12 input/output concepts, file, unit, connection, positioning, and data-transfer source already registered in this branch. Unregistered dependencies explicitly retained: 12.5.6.x connection correction work; later clause 12 and clause 13 formatting details where pending plans use formatted input; clause 15 defined input/output and child data transfer; clause 16 ISO_FORTRAN_ENV named constants and inquiry intrinsics; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.12-010",
+      "title": "IOSTAT=, IOMSG=, and SIZE= variables cannot be associated with transfer list, namelist, or implied-do entities",
+      "source": "S12.12, J3/24-007, 18 December 2023, physical PDF288.",
+      "source_units": [
+        "p7"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "In a data transfer statement, a variable specified by IOSTAT=, IOMSG=, or SIZE= shall not be associated with any entity in the data transfer list, namelist group object list, or an io-implied-do do-variable in the transfer list.",
+      "facets": [
+        "status-message-size-vars-not-associated-with-transfer-entities"
+      ],
+      "pending": {
+        "status-message-size-vars-not-associated-with-transfer-entities": "Positive controls use distinct scalar variables for IOSTAT/IOMSG/SIZE and separate input/output-list objects initialized to nondefault values; source-control negatives alias them directly or by association and claim no required diagnostic for this unnumbered restriction."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or creating a known file) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT for a specified error condition, named intrinsic status values where the standard names them, branch-target execution, or unchanged sentinel values where the source requires no definition. Processor-dependent unit numbers, file names, record lengths, storage-unit encodings, buffering, timing, IOMSG text, and specific nonzero IOSTAT numbers are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe the rejection portably. IOMSG wording, processor-dependent numeric status values, undefined values, indeterminate file positions, and recursive I/O program restrictions without a required diagnostic are never treated as exact oracles.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations; earlier clause 12 input/output concepts, file, unit, connection, positioning, and data-transfer source already registered in this branch. Unregistered dependencies explicitly retained: 12.5.6.x connection correction work; later clause 12 and clause 13 formatting details where pending plans use formatted input; clause 15 defined input/output and child data transfer; clause 16 ISO_FORTRAN_ENV named constants and inquiry intrinsics; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.12-011",
+      "title": "Array-element IOSTAT=, IOMSG=, and SIZE= subscripts cannot be affected by the same transfer",
+      "source": "S12.12, J3/24-007, 18 December 2023, physical PDF288.",
+      "source_units": [
+        "p8"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "If an IOSTAT=, IOMSG=, or SIZE= variable is an array element reference, its subscript values shall not be affected by the data transfer, io-implied-do processing, or the definition or evaluation of any other io-control specifier.",
+      "facets": [
+        "status-message-size-array-subscript-values-stable"
+      ],
+      "pending": {
+        "status-message-size-array-subscript-values-stable": "Positive controls store the array subscript in a separate initialized scalar not modified by the transfer and assert status/message results in that element; source-control negatives alter the subscript through transfer or specifier side effects and claim no portable diagnostic."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or creating a known file) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT for a specified error condition, named intrinsic status values where the standard names them, branch-target execution, or unchanged sentinel values where the source requires no definition. Processor-dependent unit numbers, file names, record lengths, storage-unit encodings, buffering, timing, IOMSG text, and specific nonzero IOSTAT numbers are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe the rejection portably. IOMSG wording, processor-dependent numeric status values, undefined values, indeterminate file positions, and recursive I/O program restrictions without a required diagnostic are never treated as exact oracles.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations; earlier clause 12 input/output concepts, file, unit, connection, positioning, and data-transfer source already registered in this branch. Unregistered dependencies explicitly retained: 12.5.6.x connection correction work; later clause 12 and clause 13 formatting details where pending plans use formatted input; clause 15 defined input/output and child data transfer; clause 16 ISO_FORTRAN_ENV named constants and inquiry intrinsics; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.12-012",
+      "title": "INQUIRE specifier variables that can become defined or undefined cannot appear in another specifier in the same INQUIRE",
+      "source": "S12.12, J3/24-007, 18 December 2023, physical PDF288.",
+      "source_units": [
+        "p9"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "A variable that can become defined or undefined by its use in an INQUIRE specifier, or an associated entity, shall not appear in another specifier in the same INQUIRE statement.",
+      "facets": [
+        "inquire-defined-or-undefined-specifier-var-not-reused"
+      ],
+      "pending": {
+        "inquire-defined-or-undefined-specifier-var-not-reused": "Positive controls use separate variables for INQUIRE results and query specifiers, each prefilled with nonmatching sentinels; source-control negatives reuse or associate a definable result variable in another specifier and claim no portable diagnostic."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or creating a known file) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT for a specified error condition, named intrinsic status values where the standard names them, branch-target execution, or unchanged sentinel values where the source requires no definition. Processor-dependent unit numbers, file names, record lengths, storage-unit encodings, buffering, timing, IOMSG text, and specific nonzero IOSTAT numbers are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe the rejection portably. IOMSG wording, processor-dependent numeric status values, undefined values, indeterminate file positions, and recursive I/O program restrictions without a required diagnostic are never treated as exact oracles.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations; earlier clause 12 input/output concepts, file, unit, connection, positioning, and data-transfer source already registered in this branch. Unregistered dependencies explicitly retained: 12.5.6.x connection correction work; later clause 12 and clause 13 formatting details where pending plans use formatted input; clause 15 defined input/output and child data transfer; clause 16 ISO_FORTRAN_ENV named constants and inquiry intrinsics; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.12-001"
+      ],
+      "rationale": "Required unit/file properties restriction."
+    },
+    {
+      "unit": "p2",
+      "disposition": "structural",
+      "rationale": "Recursive external-unit prohibition and child data transfer exception are split."
+    },
+    {
+      "unit": "p2.recursive-external-unit-prohibition",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.12-002"
+      ],
+      "rationale": "Recursive same-external-unit prohibition."
+    },
+    {
+      "unit": "p2.child-parent-external-unit-permission",
+      "disposition": "permission",
+      "requirements": [
+        "S12.12-003"
+      ],
+      "rationale": "Explicit child data transfer permission for the parent external unit."
+    },
+    {
+      "unit": "p3",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.12-004"
+      ],
+      "rationale": "Established format modification restriction."
+    },
+    {
+      "unit": "p4",
+      "disposition": "structural",
+      "rationale": "Recursive internal-unit prohibition and recursive WRITE exception are split."
+    },
+    {
+      "unit": "p4.recursive-internal-unit-prohibition",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.12-005"
+      ],
+      "rationale": "Recursive modification prohibition for internal units."
+    },
+    {
+      "unit": "p4.recursive-write-internal-unit-permission",
+      "disposition": "permission",
+      "requirements": [
+        "S12.12-006"
+      ],
+      "rationale": "Explicit permission for a recursive WRITE to modify its own internal unit."
+    },
+    {
+      "unit": "p5",
+      "disposition": "structural",
+      "rationale": "Specifier-to-specifier dependency and control-to-input dependency restrictions are split."
+    },
+    {
+      "unit": "p5.specifier-independence",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.12-007"
+      ],
+      "rationale": "Specifier value independence restriction."
+    },
+    {
+      "unit": "p5.control-not-dependent-on-input-items",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.12-008"
+      ],
+      "rationale": "Internal-file/FMT/ID/IOMSG/IOSTAT/SIZE independence from input items and implied-do variables."
+    },
+    {
+      "unit": "p6",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.12-009"
+      ],
+      "rationale": "Specifier variable subscript and substring-bound independence restriction."
+    },
+    {
+      "unit": "p7",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.12-010"
+      ],
+      "rationale": "Association restriction for status/message/size variables."
+    },
+    {
+      "unit": "p8",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.12-011"
+      ],
+      "rationale": "Array-element subscript stability restriction for status/message/size variables."
+    },
+    {
+      "unit": "p9",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.12-012"
+      ],
+      "rationale": "INQUIRE same-statement specifier reuse restriction."
+    },
+    {
+      "unit": "note-unnumbered",
+      "disposition": "informative",
+      "rationale": "NOTE only cross-references expression side-effect restrictions and is not normative."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_12_12.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "a073e50c89ec0fbb0aeef17ff9e6fa8246aefbb0a47da0d28ba2c784908056ad",
+  "review_rationale": "Source registration for 12.10.3-12.12: IOLENGTH, error, end-of-record and end-of-file conditions, IOSTAT=, IOMSG=, and restrictions on I/O statements (batch166). Every unit hash-verified by an independent reviewer, accepted with no findings. IOLENGTH's exact count is latitude but its direct-access RECL= suitability is planned; END=/EOR= conditions, IOSTAT_END and IOSTAT_EOR distinctness, zero on success and positive errors are planned portably; IOMSG unchanged on success is planned with a sentinel while condition-message text is never compared. Source accounting only."
+}

@@ -1,0 +1,83 @@
+{
+  "schema_version": 1,
+  "section": "12.11.6",
+  "subunits": {
+    "p1": [
+      "p1.condition-message-assignment",
+      "p1.success-unchanged"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S12.11.6-001",
+      "title": "IOMSG= receives an explanatory message for error, end-of-file, or end-of-record conditions",
+      "source": "S12.11.6, J3/24-007, 18 December 2023, physical PDF288.",
+      "source_units": [
+        "p1.condition-message-assignment"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "If an error, EOF, or EOR condition occurs during an input/output statement, the IOMSG variable is assigned an explanatory message as if by intrinsic assignment.",
+      "facets": [
+        "iomsg-condition-explanatory-message-assigned"
+      ],
+      "pending": {
+        "iomsg-condition-explanatory-message-assigned": "No portable oracle compares IOMSG text or proves the assigned text differs from any chosen sentinel; future condition tests observe IOSTAT named constants or branch targets and merely avoid assuming message contents."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or creating a known file) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT for a specified error condition, named intrinsic status values where the standard names them, branch-target execution, or unchanged sentinel values where the source requires no definition. Processor-dependent unit numbers, file names, record lengths, storage-unit encodings, buffering, timing, IOMSG text, and specific nonzero IOSTAT numbers are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe the rejection portably. IOMSG wording, processor-dependent numeric status values, undefined values, indeterminate file positions, and recursive I/O program restrictions without a required diagnostic are never treated as exact oracles.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations; earlier clause 12 input/output concepts, file, unit, connection, positioning, and data-transfer source already registered in this branch. Unregistered dependencies explicitly retained: 12.5.6.x connection correction work; later clause 12 and clause 13 formatting details where pending plans use formatted input; clause 15 defined input/output and child data transfer; clause 16 ISO_FORTRAN_ENV named constants and inquiry intrinsics; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.11.6-002",
+      "title": "IOMSG= is unchanged when no error, end-of-file, or end-of-record condition occurs",
+      "source": "S12.11.6, J3/24-007, 18 December 2023, physical PDF288.",
+      "source_units": [
+        "p1.success-unchanged"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "If no error, EOF, or EOR condition occurs during an input/output statement, the definition status and value of the IOMSG variable are unchanged.",
+      "facets": [
+        "iomsg-success-definition-status-unchanged",
+        "iomsg-success-value-unchanged"
+      ],
+      "pending": {
+        "iomsg-success-definition-status-unchanged": "Define IOMSG with a nonblank sentinel before a successful internal WRITE with IOSTAT initialized to a nonzero sentinel; assert IOSTAT zero and that the sentinel remains defined and usable.",
+        "iomsg-success-value-unchanged": "In the same successful statement, assert the IOMSG character value is exactly the prefilled sentinel."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or creating a known file) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT for a specified error condition, named intrinsic status values where the standard names them, branch-target execution, or unchanged sentinel values where the source requires no definition. Processor-dependent unit numbers, file names, record lengths, storage-unit encodings, buffering, timing, IOMSG text, and specific nonzero IOSTAT numbers are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe the rejection portably. IOMSG wording, processor-dependent numeric status values, undefined values, indeterminate file positions, and recursive I/O program restrictions without a required diagnostic are never treated as exact oracles.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations; earlier clause 12 input/output concepts, file, unit, connection, positioning, and data-transfer source already registered in this branch. Unregistered dependencies explicitly retained: 12.5.6.x connection correction work; later clause 12 and clause 13 formatting details where pending plans use formatted input; clause 15 defined input/output and child data transfer; clause 16 ISO_FORTRAN_ENV named constants and inquiry intrinsics; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "structural",
+      "rationale": "Condition message assignment and no-condition unchanged effects have different portable observability."
+    },
+    {
+      "unit": "p1.condition-message-assignment",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.11.6-001"
+      ],
+      "rationale": "Message assignment for error/EOF/EOR conditions; text is nonportable."
+    },
+    {
+      "unit": "p1.success-unchanged",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.11.6-002"
+      ],
+      "rationale": "No-condition definition status and value unchanged effect."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_12_11_6.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "1542dce5cab469b2f8f87cbcf3a5030ddc42b9fc502ecac76f77945f0834eb9c",
+  "review_rationale": "Source registration for 12.10.3-12.12: IOLENGTH, error, end-of-record and end-of-file conditions, IOSTAT=, IOMSG=, and restrictions on I/O statements (batch166). Every unit hash-verified by an independent reviewer, accepted with no findings. IOLENGTH's exact count is latitude but its direct-access RECL= suitability is planned; END=/EOR= conditions, IOSTAT_END and IOSTAT_EOR distinctness, zero on success and positive errors are planned portably; IOMSG unchanged on success is planned with a sentinel while condition-message text is never compared. Source accounting only."
+}

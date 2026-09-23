@@ -1,0 +1,175 @@
+{
+  "schema_version": 1,
+  "section": "12.11.2",
+  "subunits": {
+    "p2": [
+      "p2.unhandled-error-termination",
+      "p2.handled-error-effects",
+      "p2.handled-error-undefineds",
+      "p2.err-branch"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S12.11.2-001",
+      "title": "An input/output error condition makes the file position indeterminate",
+      "source": "S12.11.2, J3/24-007, 18 December 2023, physical PDF286.",
+      "source_units": [
+        "p1"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "If an error condition occurs during execution of an input/output statement, the position of the file becomes indeterminate.",
+      "facets": [
+        "io-error-file-position-indeterminate"
+      ],
+      "pending": {
+        "io-error-file-position-indeterminate": "No portable oracle may read a specific file position after an I/O error; future error-condition tests close or reestablish the connection before observing subsequent data."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or creating a known file) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT for a specified error condition, named intrinsic status values where the standard names them, branch-target execution, or unchanged sentinel values where the source requires no definition. Processor-dependent unit numbers, file names, record lengths, storage-unit encodings, buffering, timing, IOMSG text, and specific nonzero IOSTAT numbers are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe the rejection portably. IOMSG wording, processor-dependent numeric status values, undefined values, indeterminate file positions, and recursive I/O program restrictions without a required diagnostic are never treated as exact oracles.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations; earlier clause 12 input/output concepts, file, unit, connection, positioning, and data-transfer source already registered in this branch. Unregistered dependencies explicitly retained: 12.5.6.x connection correction work; later clause 12 and clause 13 formatting details where pending plans use formatted input; clause 15 defined input/output and child data transfer; clause 16 ISO_FORTRAN_ENV named constants and inquiry intrinsics; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.11.2-002",
+      "title": "Unhandled input/output errors initiate error termination",
+      "source": "S12.11.2, J3/24-007, 18 December 2023, physical PDF286.",
+      "source_units": [
+        "p2.unhandled-error-termination"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "An I/O error in a statement containing neither ERR= nor IOSTAT= initiates error termination.",
+      "facets": [
+        "io-error-without-err-or-iostat-terminates"
+      ],
+      "pending": {
+        "io-error-without-err-or-iostat-terminates": "In a subprocess fixture, first establish a nonexistent file name with INQUIRE(FILE=..., EXIST=.false.), then OPEN it with STATUS=\"OLD\" and neither ERR= nor IOSTAT=; assert abnormal termination rather than an exact message or status code."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or creating a known file) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT for a specified error condition, named intrinsic status values where the standard names them, branch-target execution, or unchanged sentinel values where the source requires no definition. Processor-dependent unit numbers, file names, record lengths, storage-unit encodings, buffering, timing, IOMSG text, and specific nonzero IOSTAT numbers are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe the rejection portably. IOMSG wording, processor-dependent numeric status values, undefined values, indeterminate file positions, and recursive I/O program restrictions without a required diagnostic are never treated as exact oracles.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations; earlier clause 12 input/output concepts, file, unit, connection, positioning, and data-transfer source already registered in this branch. Unregistered dependencies explicitly retained: 12.5.6.x connection correction work; later clause 12 and clause 13 formatting details where pending plans use formatted input; clause 15 defined input/output and child data transfer; clause 16 ISO_FORTRAN_ENV named constants and inquiry intrinsics; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.11.2-003",
+      "title": "Handled input/output errors terminate list processing and define status specifiers",
+      "source": "S12.11.2, J3/24-007, 18 December 2023, physical PDF286.",
+      "source_units": [
+        "p2.handled-error-effects"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "When an I/O error occurs and ERR= or IOSTAT= is present, input/output-list processing terminates; IOSTAT=, IOMSG=, and READ SIZE= specifiers that appear become defined as specified by their owning rules.",
+      "facets": [
+        "handled-error-list-processing-terminates",
+        "handled-error-iostat-defined",
+        "handled-error-iomsg-defined",
+        "handled-error-read-size-defined"
+      ],
+      "pending": {
+        "handled-error-list-processing-terminates": "Use a guarded known input error after a first nondefault input item and before a later item; assert only the reported error status and avoid relying on later item values, which may be undefined.",
+        "handled-error-iostat-defined": "Initialize IOSTAT to zero, provoke a guarded STATUS=\"OLD\" open error with IOSTAT= present, and assert a positive nonzero status without comparing exact values.",
+        "handled-error-iomsg-defined": "No portable oracle compares IOMSG text or proves assignment changed the previous value; future tests may require only that use of IOMSG does not alter the portable IOSTAT/ERR behavior.",
+        "handled-error-read-size-defined": "For a future nonadvancing READ error case with SIZE= initialized to a negative sentinel, assert only the value specified by 12.6.2.16 once that SIZE= rule is registered for the chosen transfer."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or creating a known file) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT for a specified error condition, named intrinsic status values where the standard names them, branch-target execution, or unchanged sentinel values where the source requires no definition. Processor-dependent unit numbers, file names, record lengths, storage-unit encodings, buffering, timing, IOMSG text, and specific nonzero IOSTAT numbers are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe the rejection portably. IOMSG wording, processor-dependent numeric status values, undefined values, indeterminate file positions, and recursive I/O program restrictions without a required diagnostic are never treated as exact oracles.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations; earlier clause 12 input/output concepts, file, unit, connection, positioning, and data-transfer source already registered in this branch. Unregistered dependencies explicitly retained: 12.5.6.x connection correction work; later clause 12 and clause 13 formatting details where pending plans use formatted input; clause 15 defined input/output and child data transfer; clause 16 ISO_FORTRAN_ENV named constants and inquiry intrinsics; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.11.2-004",
+      "title": "Handled input/output errors make transfer do-variables and READ input items undefined",
+      "source": "S12.11.2, J3/24-007, 18 December 2023, physical PDF286.",
+      "source_units": [
+        "p2.handled-error-undefineds"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For a data transfer statement or wait operation error, do-variables in the initiating statement become undefined; for READ-initiated errors, input items or namelist group objects in the initiating statement become undefined.",
+      "facets": [
+        "handled-error-do-variables-undefined",
+        "handled-error-read-items-undefined"
+      ],
+      "pending": {
+        "handled-error-do-variables-undefined": "No portable oracle may inspect an undefined do-variable after the error; future tests avoid using it after provoking the condition.",
+        "handled-error-read-items-undefined": "No portable oracle may inspect input items or namelist objects that the source makes undefined after a READ error; future tests reinitialize them before further checks."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or creating a known file) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT for a specified error condition, named intrinsic status values where the standard names them, branch-target execution, or unchanged sentinel values where the source requires no definition. Processor-dependent unit numbers, file names, record lengths, storage-unit encodings, buffering, timing, IOMSG text, and specific nonzero IOSTAT numbers are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe the rejection portably. IOMSG wording, processor-dependent numeric status values, undefined values, indeterminate file positions, and recursive I/O program restrictions without a required diagnostic are never treated as exact oracles.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations; earlier clause 12 input/output concepts, file, unit, connection, positioning, and data-transfer source already registered in this branch. Unregistered dependencies explicitly retained: 12.5.6.x connection correction work; later clause 12 and clause 13 formatting details where pending plans use formatted input; clause 15 defined input/output and child data transfer; clause 16 ISO_FORTRAN_ENV named constants and inquiry intrinsics; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.11.2-005",
+      "title": "ERR= branches on handled input/output errors",
+      "source": "S12.11.2, J3/24-007, 18 December 2023, physical PDF286.",
+      "source_units": [
+        "p2.err-branch"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "If an ERR= specifier appears for a handled I/O error, execution branches to the statement with the specified label.",
+      "facets": [
+        "handled-error-err-branch"
+      ],
+      "pending": {
+        "handled-error-err-branch": "Initialize a branch marker to a nonmatching sentinel, provoke a guarded STATUS=\"OLD\" open error with ERR= and IOSTAT=, set the marker only at the ERR target, and assert the marker and positive IOSTAT without comparing exact status."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or creating a known file) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT for a specified error condition, named intrinsic status values where the standard names them, branch-target execution, or unchanged sentinel values where the source requires no definition. Processor-dependent unit numbers, file names, record lengths, storage-unit encodings, buffering, timing, IOMSG text, and specific nonzero IOSTAT numbers are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe the rejection portably. IOMSG wording, processor-dependent numeric status values, undefined values, indeterminate file positions, and recursive I/O program restrictions without a required diagnostic are never treated as exact oracles.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations; earlier clause 12 input/output concepts, file, unit, connection, positioning, and data-transfer source already registered in this branch. Unregistered dependencies explicitly retained: 12.5.6.x connection correction work; later clause 12 and clause 13 formatting details where pending plans use formatted input; clause 15 defined input/output and child data transfer; clause 16 ISO_FORTRAN_ENV named constants and inquiry intrinsics; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.11.2-001"
+      ],
+      "rationale": "Error condition effect on file position."
+    },
+    {
+      "unit": "p2",
+      "disposition": "structural",
+      "rationale": "Compound handled/unhandled error effects are split into termination, status, undefinedness, and branch fine units."
+    },
+    {
+      "unit": "p2.unhandled-error-termination",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.11.2-002"
+      ],
+      "rationale": "Unhandled error termination effect."
+    },
+    {
+      "unit": "p2.handled-error-effects",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.11.2-003"
+      ],
+      "rationale": "Handled error list termination and status specifier effects."
+    },
+    {
+      "unit": "p2.handled-error-undefineds",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.11.2-004"
+      ],
+      "rationale": "Undefined do-variable and input-item effects."
+    },
+    {
+      "unit": "p2.err-branch",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.11.2-005"
+      ],
+      "rationale": "ERR= branch effect."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_12_11_2.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "6896af8cd1b99aab7c261188d1b156fc6f8477ff0023a89ad19996c893de74d5",
+  "review_rationale": "Source registration for 12.10.3-12.12: IOLENGTH, error, end-of-record and end-of-file conditions, IOSTAT=, IOMSG=, and restrictions on I/O statements (batch166). Every unit hash-verified by an independent reviewer, accepted with no findings. IOLENGTH's exact count is latitude but its direct-access RECL= suitability is planned; END=/EOR= conditions, IOSTAT_END and IOSTAT_EOR distinctness, zero on success and positive errors are planned portably; IOMSG unchanged on success is planned with a sentinel while condition-message text is never compared. Source accounting only."
+}

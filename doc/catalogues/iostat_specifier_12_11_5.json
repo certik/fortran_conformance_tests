@@ -1,0 +1,241 @@
+{
+  "schema_version": 1,
+  "section": "12.11.5",
+  "subunits": {
+    "p1": [
+      "p1.success-zero",
+      "p1.inquire-internal-unit-status",
+      "p1.other-error-status",
+      "p1.eof-status",
+      "p1.eor-status",
+      "p1.flush-unsupported-status",
+      "p1.numeric-status-latitude"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S12.11.5-001",
+      "title": "IOSTAT= is zero when no error, end-of-file, or end-of-record condition occurs",
+      "source": "S12.11.5, J3/24-007, 18 December 2023, physical PDF287.",
+      "source_units": [
+        "p1.success-zero"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Executing an I/O statement with IOSTAT= defines the stat variable with zero if no error, EOF, or EOR condition occurs.",
+      "facets": [
+        "iostat-success-zero"
+      ],
+      "pending": {
+        "iostat-success-zero": "Initialize IOSTAT to a nonzero sentinel, perform a successful internal WRITE or READ with known data, and assert IOSTAT equals zero."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or creating a known file) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT for a specified error condition, named intrinsic status values where the standard names them, branch-target execution, or unchanged sentinel values where the source requires no definition. Processor-dependent unit numbers, file names, record lengths, storage-unit encodings, buffering, timing, IOMSG text, and specific nonzero IOSTAT numbers are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe the rejection portably. IOMSG wording, processor-dependent numeric status values, undefined values, indeterminate file positions, and recursive I/O program restrictions without a required diagnostic are never treated as exact oracles.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations; earlier clause 12 input/output concepts, file, unit, connection, positioning, and data-transfer source already registered in this branch. Unregistered dependencies explicitly retained: 12.5.6.x connection correction work; later clause 12 and clause 13 formatting details where pending plans use formatted input; clause 15 defined input/output and child data transfer; clause 16 ISO_FORTRAN_ENV named constants and inquiry intrinsics; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.11.5-002",
+      "title": "INQUIRE on an internal-file unit number reports the named positive IOSTAT value",
+      "source": "S12.11.5, J3/24-007, 18 December 2023, physical PDF287.",
+      "source_units": [
+        "p1.inquire-internal-unit-status"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "If a unit number in an INQUIRE statement identifies an internal file, IOSTAT= is defined with the positive processor-dependent value of ISO_FORTRAN_ENV IOSTAT_INQUIRE_INTERNAL_UNIT.",
+      "facets": [
+        "iostat-inquire-internal-unit-positive-named"
+      ],
+      "pending": {
+        "iostat-inquire-internal-unit-positive-named": "Use an INQUIRE whose unit number identifies an internal file as specified by the INQUIRE rules, initialize IOSTAT to zero, and assert equality to IOSTAT_INQUIRE_INTERNAL_UNIT and that the value is positive."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or creating a known file) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT for a specified error condition, named intrinsic status values where the standard names them, branch-target execution, or unchanged sentinel values where the source requires no definition. Processor-dependent unit numbers, file names, record lengths, storage-unit encodings, buffering, timing, IOMSG text, and specific nonzero IOSTAT numbers are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe the rejection portably. IOMSG wording, processor-dependent numeric status values, undefined values, indeterminate file positions, and recursive I/O program restrictions without a required diagnostic are never treated as exact oracles.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations; earlier clause 12 input/output concepts, file, unit, connection, positioning, and data-transfer source already registered in this branch. Unregistered dependencies explicitly retained: 12.5.6.x connection correction work; later clause 12 and clause 13 formatting details where pending plans use formatted input; clause 15 defined input/output and child data transfer; clause 16 ISO_FORTRAN_ENV named constants and inquiry intrinsics; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.11.5-003",
+      "title": "Other input/output errors report a positive IOSTAT value distinct from IOSTAT_INQUIRE_INTERNAL_UNIT",
+      "source": "S12.11.5, J3/24-007, 18 December 2023, physical PDF287.",
+      "source_units": [
+        "p1.other-error-status"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For any other error condition, IOSTAT= is defined with a processor-dependent positive integer value different from IOSTAT_INQUIRE_INTERNAL_UNIT.",
+      "facets": [
+        "iostat-other-error-positive",
+        "iostat-other-error-distinct-from-inquire-internal-unit"
+      ],
+      "pending": {
+        "iostat-other-error-positive": "Establish a nonexistent file name with INQUIRE EXIST=.false., OPEN it with STATUS=\"OLD\" and IOSTAT=, and assert a positive IOSTAT value.",
+        "iostat-other-error-distinct-from-inquire-internal-unit": "In the same program, separately obtain IOSTAT_INQUIRE_INTERNAL_UNIT through the named constant and assert the other-error status is not equal to it, without comparing either exact number."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or creating a known file) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT for a specified error condition, named intrinsic status values where the standard names them, branch-target execution, or unchanged sentinel values where the source requires no definition. Processor-dependent unit numbers, file names, record lengths, storage-unit encodings, buffering, timing, IOMSG text, and specific nonzero IOSTAT numbers are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe the rejection portably. IOMSG wording, processor-dependent numeric status values, undefined values, indeterminate file positions, and recursive I/O program restrictions without a required diagnostic are never treated as exact oracles.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations; earlier clause 12 input/output concepts, file, unit, connection, positioning, and data-transfer source already registered in this branch. Unregistered dependencies explicitly retained: 12.5.6.x connection correction work; later clause 12 and clause 13 formatting details where pending plans use formatted input; clause 15 defined input/output and child data transfer; clause 16 ISO_FORTRAN_ENV named constants and inquiry intrinsics; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.11.5-004",
+      "title": "End-of-file reports the named negative IOSTAT_END value when no error occurs",
+      "source": "S12.11.5, J3/24-007, 18 December 2023, physical PDF287.",
+      "source_units": [
+        "p1.eof-status"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For EOF with no error condition, IOSTAT= is defined with the processor-dependent negative value of ISO_FORTRAN_ENV IOSTAT_END.",
+      "facets": [
+        "iostat-eof-iostat-end",
+        "iostat-eof-negative"
+      ],
+      "pending": {
+        "iostat-eof-iostat-end": "Read beyond a one-record internal file with IOSTAT initialized to zero and assert equality to the named constant IOSTAT_END.",
+        "iostat-eof-negative": "In the same EOF case, assert the resulting status is less than zero, not any exact negative value."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or creating a known file) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT for a specified error condition, named intrinsic status values where the standard names them, branch-target execution, or unchanged sentinel values where the source requires no definition. Processor-dependent unit numbers, file names, record lengths, storage-unit encodings, buffering, timing, IOMSG text, and specific nonzero IOSTAT numbers are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe the rejection portably. IOMSG wording, processor-dependent numeric status values, undefined values, indeterminate file positions, and recursive I/O program restrictions without a required diagnostic are never treated as exact oracles.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations; earlier clause 12 input/output concepts, file, unit, connection, positioning, and data-transfer source already registered in this branch. Unregistered dependencies explicitly retained: 12.5.6.x connection correction work; later clause 12 and clause 13 formatting details where pending plans use formatted input; clause 15 defined input/output and child data transfer; clause 16 ISO_FORTRAN_ENV named constants and inquiry intrinsics; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.11.5-005",
+      "title": "End-of-record reports the named negative IOSTAT_EOR value when no error or EOF occurs",
+      "source": "S12.11.5, J3/24-007, 18 December 2023, physical PDF287.",
+      "source_units": [
+        "p1.eor-status"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For EOR with no error or EOF condition, IOSTAT= is defined with the processor-dependent negative value of ISO_FORTRAN_ENV IOSTAT_EOR.",
+      "facets": [
+        "iostat-eor-iostat-eor",
+        "iostat-eor-negative",
+        "iostat-eor-distinct-from-end"
+      ],
+      "pending": {
+        "iostat-eor-iostat-eor": "Provoke nonadvancing EOR on a short external formatted record with IOSTAT initialized to zero and assert equality to the named constant IOSTAT_EOR.",
+        "iostat-eor-negative": "In the same EOR case, assert the resulting status is less than zero, not any exact negative value.",
+        "iostat-eor-distinct-from-end": "Assert IOSTAT_EOR is distinct from IOSTAT_END by named constants, as required by the separate status alternatives."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or creating a known file) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT for a specified error condition, named intrinsic status values where the standard names them, branch-target execution, or unchanged sentinel values where the source requires no definition. Processor-dependent unit numbers, file names, record lengths, storage-unit encodings, buffering, timing, IOMSG text, and specific nonzero IOSTAT numbers are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe the rejection portably. IOMSG wording, processor-dependent numeric status values, undefined values, indeterminate file positions, and recursive I/O program restrictions without a required diagnostic are never treated as exact oracles.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations; earlier clause 12 input/output concepts, file, unit, connection, positioning, and data-transfer source already registered in this branch. Unregistered dependencies explicitly retained: 12.5.6.x connection correction work; later clause 12 and clause 13 formatting details where pending plans use formatted input; clause 15 defined input/output and child data transfer; clause 16 ISO_FORTRAN_ENV named constants and inquiry intrinsics; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.11.5-006",
+      "title": "Unsupported FLUSH reports a negative IOSTAT value distinct from IOSTAT_EOR and IOSTAT_END",
+      "source": "S12.11.5, J3/24-007, 18 December 2023, physical PDF287.",
+      "source_units": [
+        "p1.flush-unsupported-status"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "If IOSTAT= appears in a FLUSH statement and the processor does not support flush for the specified unit, the status is a processor-dependent negative value different from IOSTAT_EOR and IOSTAT_END.",
+      "facets": [
+        "iostat-flush-unsupported-negative",
+        "iostat-flush-unsupported-distinct-from-eor-end"
+      ],
+      "pending": {
+        "iostat-flush-unsupported-negative": "No portable oracle can require a processor to lack FLUSH support for a chosen unit; future tests may guard on observing unsupported FLUSH and then assert only negative status.",
+        "iostat-flush-unsupported-distinct-from-eor-end": "Under the same guarded unsupported-FLUSH observation, assert the status is not IOSTAT_EOR and not IOSTAT_END; otherwise make no claim."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or creating a known file) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT for a specified error condition, named intrinsic status values where the standard names them, branch-target execution, or unchanged sentinel values where the source requires no definition. Processor-dependent unit numbers, file names, record lengths, storage-unit encodings, buffering, timing, IOMSG text, and specific nonzero IOSTAT numbers are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe the rejection portably. IOMSG wording, processor-dependent numeric status values, undefined values, indeterminate file positions, and recursive I/O program restrictions without a required diagnostic are never treated as exact oracles.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations; earlier clause 12 input/output concepts, file, unit, connection, positioning, and data-transfer source already registered in this branch. Unregistered dependencies explicitly retained: 12.5.6.x connection correction work; later clause 12 and clause 13 formatting details where pending plans use formatted input; clause 15 defined input/output and child data transfer; clause 16 ISO_FORTRAN_ENV named constants and inquiry intrinsics; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.11.5-007",
+      "title": "Exact nonzero IOSTAT numeric values are processor dependent",
+      "source": "S12.11.5, J3/24-007, 18 December 2023, physical PDF287.",
+      "source_units": [
+        "p1.numeric-status-latitude"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The exact positive and negative nonzero IOSTAT values, including the values of the named constants, are processor dependent except for their required sign and distinctness relationships.",
+      "facets": [
+        "iostat-exact-nonzero-values-processor-dependent"
+      ],
+      "pending": {
+        "iostat-exact-nonzero-values-processor-dependent": "No portable oracle may compare exact numeric values for IOSTAT_END, IOSTAT_EOR, IOSTAT_INQUIRE_INTERNAL_UNIT, other errors, or unsupported FLUSH; future tests compare signs, zero, named constants, and required distinctness only."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first (for example by writing known records, initializing variables to nonzero/nonblank sentinels, or creating a known file) and then observe only portable properties: exact internal records, successful IOSTAT zero, nonzero IOSTAT for a specified error condition, named intrinsic status values where the standard names them, branch-target execution, or unchanged sentinel values where the source requires no definition. Processor-dependent unit numbers, file names, record lengths, storage-unit encodings, buffering, timing, IOMSG text, and specific nonzero IOSTAT numbers are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself requires rejection and a future fixture can observe the rejection portably. IOMSG wording, processor-dependent numeric status values, undefined values, indeterminate file positions, and recursive I/O program restrictions without a required diagnostic are never treated as exact oracles.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, and 11 for source form, names, expressions, execution constructs, and existing declaration/execution foundations; earlier clause 12 input/output concepts, file, unit, connection, positioning, and data-transfer source already registered in this branch. Unregistered dependencies explicitly retained: 12.5.6.x connection correction work; later clause 12 and clause 13 formatting details where pending plans use formatted input; clause 15 defined input/output and child data transfer; clause 16 ISO_FORTRAN_ENV named constants and inquiry intrinsics; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "structural",
+      "rationale": "IOSTAT alternatives mix required signs/named constants/distinctness with processor-dependent exact values."
+    },
+    {
+      "unit": "p1.success-zero",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.11.5-001"
+      ],
+      "rationale": "Portable successful status value."
+    },
+    {
+      "unit": "p1.inquire-internal-unit-status",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.11.5-002"
+      ],
+      "rationale": "Portable sign and named-constant equality for internal-file unit inquiry."
+    },
+    {
+      "unit": "p1.other-error-status",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.11.5-003"
+      ],
+      "rationale": "Portable positive other-error status and distinctness."
+    },
+    {
+      "unit": "p1.eof-status",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.11.5-004"
+      ],
+      "rationale": "Portable EOF named constant and sign."
+    },
+    {
+      "unit": "p1.eor-status",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.11.5-005"
+      ],
+      "rationale": "Portable EOR named constant, sign, and distinctness from EOF."
+    },
+    {
+      "unit": "p1.flush-unsupported-status",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.11.5-006"
+      ],
+      "rationale": "Guarded unsupported-FLUSH status relationships."
+    },
+    {
+      "unit": "p1.numeric-status-latitude",
+      "disposition": "permission",
+      "requirements": [
+        "S12.11.5-007"
+      ],
+      "rationale": "Processor latitude for exact nonzero numeric status values."
+    },
+    {
+      "unit": "note-unnumbered",
+      "disposition": "informative",
+      "rationale": "NOTE gives example EOF/error branching logic and is not normative."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_12_11_5.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "28dc10fc15abfffadccdf4f2c314c25f47d978a0d5b5cd6c6bf6668df545ad58",
+  "review_rationale": "Source registration for 12.10.3-12.12: IOLENGTH, error, end-of-record and end-of-file conditions, IOSTAT=, IOMSG=, and restrictions on I/O statements (batch166). Every unit hash-verified by an independent reviewer, accepted with no findings. IOLENGTH's exact count is latitude but its direct-access RECL= suitability is planned; END=/EOR= conditions, IOSTAT_END and IOSTAT_EOR distinctness, zero on success and positive errors are planned portably; IOMSG unchanged on success is planned with a sentinel while condition-message text is never compared. Source accounting only."
+}
