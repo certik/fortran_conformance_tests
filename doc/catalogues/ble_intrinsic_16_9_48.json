@@ -1,0 +1,123 @@
+{
+  "schema_version": 1,
+  "section": "16.9.48",
+  "subunits": {},
+  "requirements": [
+    {
+      "id": "S16.9.48-001",
+      "title": "BLE arguments are integer or BOZ bit sequences",
+      "source": "S16.9.48, J3/24-007, 18 December 2023, physical PDF393.",
+      "source_units": [
+        "p3"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "The I and J arguments to BLE shall each be of type integer or be a BOZ literal constant.",
+      "facets": [
+        "ble-i-integer-or-boz",
+        "ble-j-integer-or-boz"
+      ],
+      "pending": {
+        "ble-i-integer-or-boz": "Use a guarded generated most-significant-bit BOZ literal matched to z=BIT_SIZE(0): for z==32 emit MSB_BOZ=Z'80000000' and ONE_BOZ=Z'00000001', and for z==64 emit MSB_BOZ=Z'8000000000000000' and ONE_BOZ=Z'0000000000000001'; extend the generator table only with literals of exactly z bits and emit only the matching supported-z case, so the source never relies on a BOZ length the processor need not support. This uses no INT(boz) value semantics: 16.9.48 p6 says a boz-literal-constant argument is interpreted as the bit sequence described in 7.7; 7.7 p1 says such a constant has no type; 7.7 p2 says each hexadecimal digit represents four bits and the literal is the concatenation of those bit sequences; and 16.3.2 compares the resulting bit sequences from the left, padding shorter sequences with zero bits if necessary. There is no largest-kind or other-integer-kind conversion rule for these bit-comparison intrinsics; a both-BOZ control compares the two 7.7 bit sequences directly. With result initialized to .true., assert BLE(MSB_BOZ,1) is .false. because the BOZ sequence starts with 1 and the nonnegative integer 1 sequence has leading zero bits; also assert BLE(ONE_BOZ,MSB_BOZ) is .true. for both BOZ actuals. Mutate MSB_BOZ to an all-zero z-bit BOZ literal so the mixed-actual assertion fails. Wrong-type source controls are unnumbered and expect no local diagnostic.",
+        "ble-j-integer-or-boz": "Use a guarded generated most-significant-bit BOZ literal matched to z=BIT_SIZE(0): for z==32 emit MSB_BOZ=Z'80000000' and ONE_BOZ=Z'00000001', and for z==64 emit MSB_BOZ=Z'8000000000000000' and ONE_BOZ=Z'0000000000000001'; extend the generator table only with literals of exactly z bits and emit only the matching supported-z case, so the source never relies on a BOZ length the processor need not support. This uses no INT(boz) value semantics: 16.9.48 p6 says a boz-literal-constant argument is interpreted as the bit sequence described in 7.7; 7.7 p1 says such a constant has no type; 7.7 p2 says each hexadecimal digit represents four bits and the literal is the concatenation of those bit sequences; and 16.3.2 compares the resulting bit sequences from the left, padding shorter sequences with zero bits if necessary. There is no largest-kind or other-integer-kind conversion rule for these bit-comparison intrinsics; a both-BOZ control compares the two 7.7 bit sequences directly. With result initialized to .false., assert BLE(1,MSB_BOZ) is .true. because the nonnegative integer 1 sequence has leading zero bits and the BOZ sequence starts with 1; also assert BLE(ONE_BOZ,MSB_BOZ) is .true. for both BOZ actuals. Mutate MSB_BOZ in the J position to an all-zero z-bit BOZ literal so the mixed-actual assertion fails. Wrong-type source controls are unnumbered and expect no local diagnostic."
+      },
+      "oracle": "Plans are pending and source-derived. Future fixtures initialize scalar result variables or arrays to non-default, opposite, or otherwise load-bearing sentinels before calling the intrinsic and assert only exact logical, integer, kind, scalar-rank, or bit-sequence properties fixed by 16.9 and its 16.3/16.3.2 dependencies. Bit comparison plans use equality controls for the inclusive/non-inclusive operators and guarded BOZ literals with the leftmost bit set for the z-bit model length in use, deriving the bit sequence from 7.7 and the comparison from 16.3.2 without converting the BOZ literal to an integer value.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Clause 16 argument shall-restrictions in these intrinsic sections are unnumbered program restrictions, so this packet records no local diagnostic facet for wrong argument type, argument class, or out-of-range POS; a future negative requires an independently numbered rule requiring rejection. Negative-integer examples such as comparisons with -1 are not executable pending plans because 16.3.1 p3 makes the interpretation of a negative integer as a sequence of bits processor dependent; BOZ interpretation outside the cited 7.7 bit-sequence rules, and example-only text used without a forcing Result Value rule are not portable conformance oracles.",
+      "dependencies": "Registered dependencies: existing source-form, type, declaration, expression, assignment, execution, and I/O foundations from clauses 6 through 13 where already present. Unregistered dependencies retained for future fixtures: 7.7 BOZ literal interpretation, 16.3 integer bit model, 16.3.2 bit sequence comparison, sibling 16.9 bit intrinsics such as IAND/IOR/IBSET/BTEST where a plan uses them, and clause 19 scoping/association terminology where reached."
+    },
+    {
+      "id": "S16.9.48-002",
+      "title": "BLE result has default logical characteristics",
+      "source": "S16.9.48, J3/24-007, 18 December 2023, physical PDF393.",
+      "source_units": [
+        "p4"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The BLE result is default logical.",
+      "facets": [
+        "ble-result-default-logical"
+      ],
+      "pending": {
+        "ble-result-default-logical": "Initialize a default logical sentinel to the opposite value, assign BLE(2,1), and assert KIND(result)==KIND(.true.) plus the exact logical value from the result-value facet."
+      },
+      "oracle": "Plans are pending and source-derived. Future fixtures initialize scalar result variables or arrays to non-default, opposite, or otherwise load-bearing sentinels before calling the intrinsic and assert only exact logical, integer, kind, scalar-rank, or bit-sequence properties fixed by 16.9 and its 16.3/16.3.2 dependencies. Bit comparison plans use equality controls for the inclusive/non-inclusive operators and guarded BOZ literals with the leftmost bit set for the z-bit model length in use, deriving the bit sequence from 7.7 and the comparison from 16.3.2 without converting the BOZ literal to an integer value.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Clause 16 argument shall-restrictions in these intrinsic sections are unnumbered program restrictions, so this packet records no local diagnostic facet for wrong argument type, argument class, or out-of-range POS; a future negative requires an independently numbered rule requiring rejection. Negative-integer examples such as comparisons with -1 are not executable pending plans because 16.3.1 p3 makes the interpretation of a negative integer as a sequence of bits processor dependent; BOZ interpretation outside the cited 7.7 bit-sequence rules, and example-only text used without a forcing Result Value rule are not portable conformance oracles.",
+      "dependencies": "Registered dependencies: existing source-form, type, declaration, expression, assignment, execution, and I/O foundations from clauses 6 through 13 where already present. Unregistered dependencies retained for future fixtures: 7.7 BOZ literal interpretation, 16.3 integer bit model, 16.3.2 bit sequence comparison, sibling 16.9 bit intrinsics such as IAND/IOR/IBSET/BTEST where a plan uses them, and clause 19 scoping/association terminology where reached."
+    },
+    {
+      "id": "S16.9.48-003",
+      "title": "BLE compares bit sequences as less than or equal to",
+      "source": "S16.9.48, J3/24-007, 18 December 2023, physical PDF393.",
+      "source_units": [
+        "p5"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "BLE returns true exactly when the bit sequence represented by I is less than or equal to the bit sequence represented by J according to 16.3.2, and false otherwise.",
+      "facets": [
+        "ble-true-case",
+        "ble-false-case"
+      ],
+      "pending": {
+        "ble-true-case": "Use result=.false. as a sentinel, then assert BLE(1,2) and the equality discriminator BLE(2,2) are true for nonnegative integers; mutate BLE to BLT so the equality subcase fails. Add the guarded BOZ discriminator BLE(1,MSB_BOZ)==.true. using the 16.9.48 p6 BOZ interpretation by 7.7 plus the 16.3.2 comparison, where MSB_BOZ is a z-bit BOZ sequence with its leftmost bit set and z=BIT_SIZE(0).",
+        "ble-false-case": "Use result=.true. as a sentinel, then assert BLE(2,1) is false; mutate by swapping I and J so the comparison direction is load-bearing. Add the guarded BOZ discriminator BLE(MSB_BOZ,1)==.false. using the 16.9.48 p6 BOZ interpretation by 7.7 plus the 16.3.2 comparison, where MSB_BOZ is a z-bit BOZ sequence with its leftmost bit set and z=BIT_SIZE(0)."
+      },
+      "oracle": "Plans are pending and source-derived. Future fixtures initialize scalar result variables or arrays to non-default, opposite, or otherwise load-bearing sentinels before calling the intrinsic and assert only exact logical, integer, kind, scalar-rank, or bit-sequence properties fixed by 16.9 and its 16.3/16.3.2 dependencies. Bit comparison plans use equality controls for the inclusive/non-inclusive operators and guarded BOZ literals with the leftmost bit set for the z-bit model length in use, deriving the bit sequence from 7.7 and the comparison from 16.3.2 without converting the BOZ literal to an integer value.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Clause 16 argument shall-restrictions in these intrinsic sections are unnumbered program restrictions, so this packet records no local diagnostic facet for wrong argument type, argument class, or out-of-range POS; a future negative requires an independently numbered rule requiring rejection. Negative-integer examples such as comparisons with -1 are not executable pending plans because 16.3.1 p3 makes the interpretation of a negative integer as a sequence of bits processor dependent; BOZ interpretation outside the cited 7.7 bit-sequence rules, and example-only text used without a forcing Result Value rule are not portable conformance oracles.",
+      "dependencies": "Registered dependencies: existing source-form, type, declaration, expression, assignment, execution, and I/O foundations from clauses 6 through 13 where already present. Unregistered dependencies retained for future fixtures: 7.7 BOZ literal interpretation, 16.3 integer bit model, 16.3.2 bit sequence comparison, sibling 16.9 bit intrinsics such as IAND/IOR/IBSET/BTEST where a plan uses them, and clause 19 scoping/association terminology where reached."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "definition",
+      "rationale": "Description identifies BLE as bitwise less than or equal to; p5 owns the executable comparison result."
+    },
+    {
+      "unit": "p2",
+      "disposition": "definition",
+      "rationale": "Classifies BLE as elemental; general elemental semantics are owned outside this section."
+    },
+    {
+      "unit": "p3",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.48-001"
+      ],
+      "rationale": "Unnumbered program restrictions on I and J argument forms."
+    },
+    {
+      "unit": "p4",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.48-002"
+      ],
+      "rationale": "Processor result-characteristics requirement."
+    },
+    {
+      "unit": "p5",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.48-003"
+      ],
+      "rationale": "Exact processor result-value requirement for the bit-sequence comparison."
+    },
+    {
+      "unit": "p6",
+      "disposition": "definition",
+      "rationale": "Cross-reference to BOZ and integer bit-sequence interpretation; those definitions are owned by 7.7 and 16.3."
+    },
+    {
+      "unit": "p7",
+      "disposition": "informative",
+      "rationale": "Example text is illustrative and is not the basis for an independent requirement."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_16_9_48.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "d764f0bbc80a9db698d111628ef3bff5230d372b7c6c6557888eb63d622272a4",
+  "review_rationale": "Source registration for 16.9.45-16.9.50: BGE, BGT, BIT_SIZE, BLE, BLT and BTEST (batch185). Every unit verified by an independent reviewer across three rounds; bit comparisons are discriminated from signed comparison by a guarded BOZ operand with its leftmost bit set rather than by negative integers, whose bit interpretation is processor dependent. Source accounting only."
+}

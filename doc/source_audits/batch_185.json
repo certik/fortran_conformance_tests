@@ -1,0 +1,78 @@
+{
+ "schema_version": 1,
+ "review_type": "independent-clause16-bit-comparisons-source-185-review",
+ "review_date": "2026-09-23",
+ "baseline_commit": "42ce769",
+ "state": "source-registered",
+ "packet_kind": "SOURCE",
+ "scope": {
+  "sections": [
+   "16.9.45-16.9.50"
+  ],
+  "pdf_pages": "392-393",
+  "base_units": 40,
+  "numbered_rules_preaccounted": 0,
+  "accounted_base_units_delta": 40
+ },
+ "review_rounds": [
+  {
+   "round": 1,
+   "commit": "97c6a77",
+   "decision": "BLOCKED",
+   "findings": [
+    {
+     "id": "C16GBR-001",
+     "issue": "plans used only small positive integers, so a signed comparison would pass",
+     "resolution": "equality and bit-order discriminators added"
+    },
+    {
+     "id": "C16GBR-002",
+     "issue": "BOZ plans were conditional",
+     "resolution": "concrete BOZ actuals for each position"
+    },
+    {
+     "id": "C16GBR-003",
+     "issue": "the BIT_SIZE plan was self-referential",
+     "resolution": "relations with SHIFTL and BTEST"
+    },
+    {
+     "id": "C16GBR-004",
+     "issue": "BTEST POS plans missed the boundaries",
+     "resolution": "POS=0 and POS=BIT_SIZE(I)-1"
+    },
+    {
+     "id": "C16GBR-005",
+     "issue": "16.9.50 failed the reader hash check",
+     "resolution": "the known census-hash-drift-math-glyphs extraction issue, recorded in the catalogue"
+    }
+   ]
+  },
+  {
+   "round": 2,
+   "commit": "a532913",
+   "decision": "BLOCKED",
+   "findings": [
+    {
+     "id": "C16GBR-006",
+     "issue": "the negative-operand discriminators are not portable, because the bit interpretation of a negative integer is processor dependent (16.3.1)",
+     "resolution": "replaced by a BOZ with the leftmost bit set, guarded on BIT_SIZE"
+    },
+    {
+     "id": "C16GBR-007",
+     "issue": "SHIFTL(1,z-1) /= 0 observes the numeric value of a leftmost-bit-set integer",
+     "resolution": "BTEST(SHIFTL(1,z-1),z-1) instead"
+    }
+   ]
+  },
+  {
+   "round": 3,
+   "commit": "a5cb447",
+   "decision": "VERIFIED",
+   "findings": []
+  }
+ ],
+ "separation": {
+  "authored_facets_unchanged": true,
+  "tests_untouched": true
+ }
+}

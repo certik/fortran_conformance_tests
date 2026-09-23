@@ -1,0 +1,137 @@
+{
+  "schema_version": 1,
+  "section": "16.9.50",
+  "subunits": {
+    "p5": [
+      "p5.result-value",
+      "p5.example-fragment"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S16.9.50-001",
+      "title": "BTEST arguments are an integer and a valid bit position",
+      "source": "S16.9.50, J3/24-007, 18 December 2023, physical PDF393.",
+      "source_units": [
+        "p3"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "The I argument to BTEST shall be of type integer; POS shall be of type integer, nonnegative, and less than BIT_SIZE(I).",
+      "facets": [
+        "btest-i-integer",
+        "btest-pos-integer",
+        "btest-pos-nonnegative",
+        "btest-pos-less-than-bit-size"
+      ],
+      "pending": {
+        "btest-i-integer": "Call BTEST with a nonnegative integer I such as 8; wrong-type I controls are unnumbered and expect no local diagnostic.",
+        "btest-pos-integer": "Call BTEST(8,3) with integer POS; wrong-type POS controls are unnumbered and expect no local diagnostic.",
+        "btest-pos-nonnegative": "Use the lower boundary POS=0 with BTEST(1,0) and assert .true. after initializing the result to .false.; negative POS remains an unnumbered program restriction with no local diagnostic facet. Mutate POS to 1 so the boundary assertion fails for value 1.",
+        "btest-pos-less-than-bit-size": "Set z=BIT_SIZE(0), assert z>0, then use the upper valid boundary POS=z-1 with BTEST(IBSET(0,z-1),z-1) asserted .true. and BTEST(0,z-1) asserted .false.; POS=z is an invalid program restriction but carries no local diagnostic facet here. Mutate POS to 0 in the IBSET/BTEST pair so the boundary bit rather than a low bit is load-bearing."
+      },
+      "oracle": "Plans are pending and source-derived. Future fixtures initialize scalar result variables or arrays to non-default, opposite, or otherwise load-bearing sentinels before calling the intrinsic and assert only exact logical, integer, kind, scalar-rank, POS-boundary, or bit-sequence properties fixed by 16.9 and its 16.3/16.3.2 dependencies. POS controls include both the lower boundary 0 and the upper valid boundary BIT_SIZE(I)-1.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Clause 16 argument shall-restrictions in these intrinsic sections are unnumbered program restrictions, so this packet records no local diagnostic facet for wrong argument type, argument class, or out-of-range POS; a future negative requires an independently numbered rule requiring rejection. Negative-integer bit interpretation beyond the exact source examples, BOZ interpretation outside the cited 7.7 bit-sequence rules, and example-only text used without a forcing Result Value rule are not portable conformance oracles. Units 16.9.50 p5-p6 were verified visually/by text while retaining the census hashes because of the known census-hash-drift-math-glyphs followup.",
+      "dependencies": "Registered dependencies: existing source-form, type, declaration, expression, assignment, execution, and I/O foundations from clauses 6 through 13 where already present. Unregistered dependencies retained for future fixtures: 7.7 BOZ literal interpretation, 16.3 integer bit model, 16.3.2 bit sequence comparison, sibling 16.9 bit intrinsics such as IAND/IOR/IBSET/BTEST where a plan uses them, and clause 19 scoping/association terminology where reached."
+    },
+    {
+      "id": "S16.9.50-002",
+      "title": "BTEST result has default logical characteristics",
+      "source": "S16.9.50, J3/24-007, 18 December 2023, physical PDF393.",
+      "source_units": [
+        "p4"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The BTEST result is default logical.",
+      "facets": [
+        "btest-result-default-logical"
+      ],
+      "pending": {
+        "btest-result-default-logical": "Initialize a default logical sentinel to .false., assign BTEST(8,3), and assert KIND(result)==KIND(.true.) plus the exact true value from the result-value facet."
+      },
+      "oracle": "Plans are pending and source-derived. Future fixtures initialize scalar result variables or arrays to non-default, opposite, or otherwise load-bearing sentinels before calling the intrinsic and assert only exact logical, integer, kind, scalar-rank, POS-boundary, or bit-sequence properties fixed by 16.9 and its 16.3/16.3.2 dependencies. POS controls include both the lower boundary 0 and the upper valid boundary BIT_SIZE(I)-1.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Clause 16 argument shall-restrictions in these intrinsic sections are unnumbered program restrictions, so this packet records no local diagnostic facet for wrong argument type, argument class, or out-of-range POS; a future negative requires an independently numbered rule requiring rejection. Negative-integer bit interpretation beyond the exact source examples, BOZ interpretation outside the cited 7.7 bit-sequence rules, and example-only text used without a forcing Result Value rule are not portable conformance oracles. Units 16.9.50 p5-p6 were verified visually/by text while retaining the census hashes because of the known census-hash-drift-math-glyphs followup.",
+      "dependencies": "Registered dependencies: existing source-form, type, declaration, expression, assignment, execution, and I/O foundations from clauses 6 through 13 where already present. Unregistered dependencies retained for future fixtures: 7.7 BOZ literal interpretation, 16.3 integer bit model, 16.3.2 bit sequence comparison, sibling 16.9 bit intrinsics such as IAND/IOR/IBSET/BTEST where a plan uses them, and clause 19 scoping/association terminology where reached."
+    },
+    {
+      "id": "S16.9.50-003",
+      "title": "BTEST reports whether bit POS of I is one",
+      "source": "S16.9.50, J3/24-007, 18 December 2023, physical PDF393.",
+      "source_units": [
+        "p5.result-value"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "BTEST returns true if bit POS of I has value 1 and false if bit POS of I has value 0, using the integer bit model of 16.3.",
+      "facets": [
+        "btest-true-for-one-bit",
+        "btest-false-for-zero-bit"
+      ],
+      "pending": {
+        "btest-true-for-one-bit": "Use result=.false. as a sentinel and assert BTEST(8,3) is true because bit position 3 of nonnegative integer 8 is one; mutate POS to 2 so the check fails.",
+        "btest-false-for-zero-bit": "Use result=.true. as a sentinel and assert BTEST(8,2) is false because bit position 2 of nonnegative integer 8 is zero; mutate POS to 3 so the check fails."
+      },
+      "oracle": "Plans are pending and source-derived. Future fixtures initialize scalar result variables or arrays to non-default, opposite, or otherwise load-bearing sentinels before calling the intrinsic and assert only exact logical, integer, kind, scalar-rank, POS-boundary, or bit-sequence properties fixed by 16.9 and its 16.3/16.3.2 dependencies. POS controls include both the lower boundary 0 and the upper valid boundary BIT_SIZE(I)-1.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Clause 16 argument shall-restrictions in these intrinsic sections are unnumbered program restrictions, so this packet records no local diagnostic facet for wrong argument type, argument class, or out-of-range POS; a future negative requires an independently numbered rule requiring rejection. Negative-integer bit interpretation beyond the exact source examples, BOZ interpretation outside the cited 7.7 bit-sequence rules, and example-only text used without a forcing Result Value rule are not portable conformance oracles. Units 16.9.50 p5-p6 were verified visually/by text while retaining the census hashes because of the known census-hash-drift-math-glyphs followup.",
+      "dependencies": "Registered dependencies: existing source-form, type, declaration, expression, assignment, execution, and I/O foundations from clauses 6 through 13 where already present. Unregistered dependencies retained for future fixtures: 7.7 BOZ literal interpretation, 16.3 integer bit model, 16.3.2 bit sequence comparison, sibling 16.9 bit intrinsics such as IAND/IOR/IBSET/BTEST where a plan uses them, and clause 19 scoping/association terminology where reached."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "definition",
+      "rationale": "Description identifies BTEST as testing a single bit in an integer; p5 owns the exact true/false result."
+    },
+    {
+      "unit": "p2",
+      "disposition": "definition",
+      "rationale": "Classifies BTEST as elemental; general elemental semantics are owned outside this section."
+    },
+    {
+      "unit": "p3",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.50-001"
+      ],
+      "rationale": "Unnumbered program restrictions on I and POS."
+    },
+    {
+      "unit": "p4",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.50-002"
+      ],
+      "rationale": "Processor result-characteristics requirement."
+    },
+    {
+      "unit": "p5",
+      "disposition": "structural",
+      "rationale": "Mixed result-value text and an extracted fragment of the following example are split into fine units."
+    },
+    {
+      "unit": "p5.result-value",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.50-003"
+      ],
+      "rationale": "Exact processor result-value requirement for the selected bit."
+    },
+    {
+      "unit": "p5.example-fragment",
+      "disposition": "informative",
+      "rationale": "Matrix/header fragment belongs to the illustrative examples and is not used as a requirement."
+    },
+    {
+      "unit": "p6",
+      "disposition": "informative",
+      "rationale": "Examples are illustrative and are not the basis for an independent requirement."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_16_9_50.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "508aa83d956a7999173fa1920fc52ca1cda3f4736176a4acb9ddecd10eaac961",
+  "review_rationale": "Source registration for 16.9.45-16.9.50: BGE, BGT, BIT_SIZE, BLE, BLT and BTEST (batch185). Every unit verified by an independent reviewer across three rounds; bit comparisons are discriminated from signed comparison by a guarded BOZ operand with its leftmost bit set rather than by negative integers, whose bit interpretation is processor dependent. Source accounting only."
+}

@@ -5669,6 +5669,11 @@ See `doc/source_audits/batch_183.json`.
 Forty-two units, accepted with no findings. The standard fixes no Bessel value — not even J0(0) — so every value is latitude; what is portable is the result kind and the size of the transformational forms.
 See `doc/source_audits/batch_184.json`.
 
+## Batch 185 — bit comparisons, BIT_SIZE and BTEST
+
+Forty units, after three rounds, and a useful subtlety. The obvious way to show BGE compares bits rather than signed values is a negative operand — but 16.3.1 makes the bit interpretation of a negative integer processor dependent. The portable discriminator is a BOZ literal with its leftmost bit set, because a BOZ specifies its bits exactly; the same rule forbids observing the numeric value of SHIFTL(1, z-1).
+See `doc/source_audits/batch_185.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
