@@ -5370,6 +5370,18 @@ therefore **guarded**: it probes with `INQUIRE(EXIST=)` and exercises the facet
 only when a probe returns `.false.`, never claiming coverage otherwise.
 See `doc/source_audits/batch_152.json`.
 
+## Batch 170 — array section syntax, clean on the first round
+
+Twenty facets of 9.5.3.1 across eleven fixtures, **accepted with no findings** —
+the first packet of wave R, and the first since the recurring-blocker checklist
+was added to the authoring rules after wave Q. Every mutant is conforming, and
+the constraints C924, C925, C926 and C929 are claimed only on their *admission*
+side, with their rejection facets left for a diagnostic packet. Non-default lower
+bounds (`a(-1:3:2)`) and an order-sensitive vector subscript (`[3,-2,1]`) make a
+wrong bound, stride or order visible. The new F2023 `@` multiple-subscript forms
+stay pending because gfortran itself rejects them.
+See `doc/source_audits/batch_170.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
