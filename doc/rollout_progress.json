@@ -6268,9 +6268,45 @@
         "EN/ES/E DISCRIMINATION verified by hand, not by compiler: EN and ES coincide for many values, so the substitution could have been vacuous.0.5gives EN E-03, ES E-01, E E+00;100.0gives EN E+00, ES E+02, E E+03.",
         "ROUNDING neutralised:0.5,0.125and100.0are exact in binary and every discarded decimal digit is zero, including the d=2cases, so the processor-dependent default rounding mode cannot change a single asserted byte."
       ]
+    },
+    {
+      "id": "clause13-f-editing-fixtures-143",
+      "state": "reference-validated-runtime-effects",
+      "packet_kind": "FIXTURE",
+      "milestone": "FOUR REVIEW ROUNDS - the most any packet in this project has needed. Five blocking findings, all accepted.",
+      "baseline_commit": "6b28162",
+      "sections": ["13.7.2.3.2"],
+      "author_handoffs": {"proposal": "cee4228", "correction_round2": "bfcbfee", "correction_round3": "df185c31", "correction_round4": "9b7b098"},
+      "source_reviews": ["doc/source_audits/batch_143.json"],
+      "new_executions": 19,
+      "fixture_accounting": {
+        "facets_established": 25,
+        "new_cases": 19,
+        "authored_facets": "2047 -> 2072",
+        "reference_validated": "2007 -> 2026",
+        "expected_failures": "unchanged at828"
+      },
+      "coordination": "THE PACKET THAT KEPT TEACHING. Round1caught the worst defect class this project tracks - AN EXACT-STRING PLAN A CONFORMING PROCESSOR CAN FAIL: '(SS,F4.1)' on0.5was asserted to give' 0.5', but13.7.2.3.2p11makes that zero OPTIONAL because the fractional digit means the mandatory 'there would otherwise be no digits' clause does not apply, and13.8.5p2leaves the default mode PROCESSOR_DEFINED. Both compilers print the zero; compiler consensus is not an oracle. Replaced with the MANDATORY half - '(SS,RZ,F3.0)' on0.25giving exactly' 0.' - where d=0means omitting the zero would leave NO digits, with RZ pinning the otherwise processor-dependent rounding mode and UP proving RZ load-bearing rather than decorative.",
+      "reviewer_findings": [
+        "FEFR-001: the non-portable leading-zero oracle. Raised by the coordinator BEFORE review and confirmed independently.",
+        "FEFR-002: OVER-SUPPRESSION. Facets were left pending claiming no portable oracle when exact ones existed under the IEEE gate the packet already used - lowercase 'inf' input (p2), narrow infinity output (p9), and NaN output at w=0and narrow widths (p10). At w=5the payload form is IMPOSSIBLE because w-5=0, which is exactly what makes'  NaN' forced.",
+        "FEFR-003: the over-suppression fix was only PARTIAL. nan-empty-payload-quiet stayed pending although p6requires a QUIET NaN for 'NAN' or 'NAN()', and the existing fixture asserted only ieee_is_nan - which establishes A NaN, not a QUIET one. STANDING LESSON: when fixing an over-suppression finding, RE-AUDIT THE WHOLE CATALOGUE, not the named instances.",
+        "FEFR-004: the freshly added lowercase-'inf' fixture read into an UNINITIALIZED real. The demanded whole-packet audit then found that EVERY input fixture lacked a sentinel, including ones from the original commit that had already passed round1- which is precisely why a whole-packet audit was demanded instead of a point fix.",
+        "FEFR-005: the sentinels were added but NOT MUTATION-COVERED. A sentinel that is never mutated is an unverified claim - if the oracle would pass anyway with the sentinel removed, the fixture is still vacuous and the fix accomplished nothing.36permanent sentinel-init probes were added: remove the init, replace it with the expected read result, and replace it with0.0.",
+        "THE METHODOLOGICAL FINDING: the 'replace sentinel with expected value' probe exposed a hole the ordinary discipline CANNOT catch. A quiet-NaN sentinel would satisfy 'ieee_class(value) == ieee_quiet_nan' with NO READ AT ALL, because the usual protection relies on comparison and A NaN NEVER COMPARES EQUAL TO ITSELF - so the sentinel looks distinct while being indistinguishable to the oracle. Closed with pre-READ guards. Infinity needs no guard because +Inf does compare equal to itself.",
+        "THE COORDINATOR WAS OVERRULED, correctly: '(SS,F0.1)' on3.0giving'3.0' was suspected non-portable, but13.7.2.1(6) requires 'the smallest positive actual field width that does not result in a field filled with asterisks', which forces it.",
+        "HEX-SIGNIFICAND INPUT: gfortran rejects0X1P+2etc with ios=5010while frozen LFortran accepts them and returns1.0,1.5,1.0,-1.0where p7requires4.0,3.0,8.0,-4.0. LFortran is wrong, but the f2023REFERENCE also fails, so no reference validation exists and the facets stay PENDING with NO one-sided XFAIL, per the batch130precedent.",
+        "IN ALL THREE MULTI-ROUND PACKETS SO FAR (136,141,143), THE LATE-ROUND DEFECT WAS IN MATERIAL THE CORRECTION NEWLY WROTE, not in what it removed. Removing a bad test is safe; the replacement is not."
+      ]
     }
   ],
   "cross_batch_followups": [
+    {
+      "id": "nan-sentinel-discipline-checklist",
+      "section": "13.7.2.3.2",
+      "state": "open-from-batch143",
+      "scope": "A NaN sentinel silently defeats the standard sentinel discipline. The usual protection - the sentinel must differ from the expected value - relies on comparison, and a NaN never compares equal to itself, so a NaN-valued sentinel satisfies an ieee_class or ieee_is_nan oracle with no READ occurring at all. Batch143 closed this with pre-READ guards. A grep found ieee_class and ieee_is_nan used ONLY in batch143, so there is no existing exposure, but any future IEEE packet must inherit the rule: an oracle over a value that is not equal to itself requires a pre-READ guard, not merely a distinct sentinel."
+    },
     {
       "id": "c1302-r1303-fixture-migration",
       "section": "13.3.1",

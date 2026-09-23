@@ -4971,6 +4971,80 @@ exact in binary and every discarded decimal digit is zero — including in the
 single asserted byte.
 See `doc/source_audits/batch_144.json`.
 
+## Batch 143 — four rounds, and a hole the discipline could not catch
+
+Twenty-five facets of 13.7.2.3.2 F editing across **nineteen** fixtures, accepted
+only after **four review rounds** and five blocking findings. It is the most
+corrected packet in the project, and every round taught something.
+
+### Round 1: an exact-string plan a conforming processor can fail
+
+The packet asserted `WRITE(buf,'(SS,F4.1)') 0.5` gives exactly `" 0.5"`. But
+p11 says leading zeros are not permitted "except for an **optional** zero
+immediately to the left of the decimal symbol", mandatory only "if there would
+otherwise be no digits in the output field". With `F4.1` on `0.5` the fractional
+`5` *is* a digit, so the mandatory clause never applies, and 13.8.5 p2 leaves the
+default mode `PROCESSOR_DEFINED`. A conforming processor may legally print
+`"  .5"`.
+
+Both compilers print the zero. That is exactly why **compiler consensus is not an
+oracle**.
+
+The replacement tests the mandatory half instead: `(SS,RZ,F3.0)` on `0.25` giving
+`" 0."`, where `d=0` means omitting the zero would leave *no digits at all*. `RZ`
+pins the otherwise processor-dependent rounding mode, and `UP` would give `"1."`
+— which is what makes `RZ` load-bearing rather than decorative.
+
+### Rounds 2 and 3: over-suppression, twice
+
+Facets had been left pending claiming no portable oracle when exact ones existed
+under the IEEE gate the packet already used — lowercase `inf` input, narrow
+infinity output, and NaN output at `w=0` and narrow widths. (At `w=5` the payload
+form is *impossible*, since `w-5 = 0`; that is precisely what forces `"  NaN"`.)
+
+The fix was then only **partial**: `nan-empty-payload-quiet` stayed pending even
+though p6 requires a **quiet** NaN for `NAN()`, and the fixture asserted only
+`ieee_is_nan` — which establishes *a* NaN, not a quiet one. Standing lesson
+recorded: **when fixing an over-suppression finding, re-audit the whole
+catalogue, not the instances the reviewer named.**
+
+The same round found a freshly added fixture reading into an **uninitialized**
+variable. Demanding a whole-packet audit rather than a point fix immediately
+revealed that **every** input fixture lacked a sentinel — including ones that had
+already passed round 1.
+
+### Round 4: the finding that justifies the whole method
+
+Round 3 added the sentinels but never **mutated** them. A sentinel that is never
+mutated is an unverified claim: if the oracle would pass anyway with the sentinel
+removed, the fixture is still vacuous and the fix accomplished nothing. Thirty-six
+permanent sentinel probes were added — remove the initializer, replace it with
+the expected read result, replace it with `0.0`.
+
+And the decisive probe exposed a hole **the ordinary discipline cannot catch**. A
+quiet-NaN sentinel satisfies `ieee_class(value) == ieee_quiet_nan` with **no READ
+occurring at all** — because the usual protection ("the sentinel must differ from
+the expected value") relies on comparison, and **a NaN never compares equal to
+itself**. The sentinel looks distinct while being indistinguishable to the
+oracle. Closed with pre-READ guards; infinity needs none, since `+Inf` does
+compare equal to itself. Recorded as followup `nan-sentinel-discipline-checklist`.
+
+### Two other outcomes worth recording
+
+I was **overruled, correctly**: I suspected `(SS,F0.1)` on `3.0` giving `"3.0"`
+was non-portable, but 13.7.2.1(6) requires "the smallest positive actual field
+width that does not result in a field filled with asterisks", which forces it.
+
+And hexadecimal-significand input found LFortran genuinely wrong — it returns
+`1.0, 1.5, 1.0, -1.0` where p7 requires `4.0, 3.0, 8.0, -4.0` — but gfortran
+*also* rejects the form, so there is no reference validation, and the facets stay
+pending with **no one-sided XFAIL**.
+
+In all three multi-round packets so far (136, 141, 143) the late-round defect was
+in material the correction **newly wrote**, not in what it removed. Removing a bad
+test is safe; its replacement is not.
+See `doc/source_audits/batch_143.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must

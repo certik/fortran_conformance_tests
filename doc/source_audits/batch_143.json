@@ -1,0 +1,124 @@
+{
+ "schema_version": 1,
+ "review_type": "independent-f-editing-fixture-review",
+ "review_date": "2026-09-23",
+ "baseline_commit": "6b28162",
+ "integrated_on": "843c2f6",
+ "state": "reference-validated-runtime-effects",
+ "packet_kind": "FIXTURE",
+ "milestone": "FOUR REVIEW ROUNDS - the most any packet in this project has needed. Five blocking findings, every one accepted.",
+ "scope": {
+  "sections": [
+   "13.7.2.3.2"
+  ],
+  "section_title_verified_from_source": "F editing",
+  "facets_established": 25,
+  "new_cases": 19
+ },
+ "review_rounds": [
+  {
+   "round": 1,
+   "commit": "cee4228",
+   "decision": "BLOCKED",
+   "findings": [
+    {
+     "id": "FEFR-001",
+     "issue": "The fixture asserted WRITE(buf,'(SS,F4.1)') 0.5 produces exactly ' 0.5'. 13.7.2.3.2 p11 says leading zeros are not permitted 'except for an OPTIONAL zero immediately to the left of the decimal symbol if the magnitude of the value in the output field is less than one', and that the optional zero 'shall appear if there would otherwise be no digits in the output field'. With F4.1 on 0.5 the fractional digit 5 IS a digit, so the mandatory clause does NOT apply and the zero is optional. 13.8.5 p2 confirms the default PROCESSOR_DEFINED leading-zero mode leaves it to the processor.",
+     "adjudication": "ACCEPTED. The coordinator raised this before the review and the reviewer confirmed it independently. This is the worst defect class this project tracks: AN EXACT-STRING PLAN A CONFORMING PROCESSOR CAN FAIL. That both gfortran and LFortran print the zero is irrelevant - compiler consensus is not an oracle.",
+     "resolution": "Replaced with the MANDATORY half: (SS,RZ,F3.0) on 0.25 giving exactly ' 0.'. With d=0 there would otherwise be NO digits, so the zero is required. RZ pins round-toward-zero (13.8.8 p1, 13.7.2.3.8 p3) because the default rounding mode is itself processor dependent; UP would give '1.', which makes RZ load-bearing rather than decorative. No 13.7.2.3.8 facet is claimed."
+    },
+    {
+     "id": "FEFR-002",
+     "issue": "OVER-SUPPRESSION. Several facets were left pending claiming no portable oracle, when exact portable oracles exist under the same IEEE profile gate the packet already used: lowercase IEEE exceptional input (p2), narrow infinity output (p9), and NaN output at w=0 and narrow widths (p10).",
+     "adjudication": "ACCEPTED. Over-suppression is itself a defect, and the rule is symmetric with the latitude rule: do not sweep a required behaviour into 'processor dependent' because part of the surrounding sentence is latitude.",
+     "resolution": "Added gated fixtures: lowercase 'inf'; F4.1 infinity giving ' Inf' and F2.1 giving '**'; NaN at F5.1 giving '  NaN', F0.1 giving 'NaN', F2.1 giving '**'. At w=5 the payload form is impossible because w-5=0, which is what makes '  NaN' forced."
+    }
+   ]
+  },
+  {
+   "round": 2,
+   "commit": "bfcbfee",
+   "decision": "BLOCKED",
+   "findings": [
+    {
+     "id": "FEFR-003",
+     "issue": "FEFR-002 was only PARTIALLY fixed. The facet nan-empty-payload-quiet remained pending although p6 states a required result reachable under the same gate: 'The NaN value is a quiet NaN if the only nonblank characters in the field are NAN or NAN().' The existing fixture asserted only ieee_is_nan, which establishes that the result is A NaN, not that it is a QUIET NaN.",
+     "adjudication": "ACCEPTED, with the standing lesson recorded: WHEN FIXING AN OVER-SUPPRESSION FINDING, RE-AUDIT THE WHOLE CATALOGUE, not only the instances the reviewer named.",
+     "resolution": "New gated fixture reads NAN() and asserts ieee_class(value) == ieee_quiet_nan, comparing the IEEE class named constant rather than re-asserting is-a-NaN. Payload and sign remain pending because p6 makes both processor dependent."
+    },
+    {
+     "id": "FEFR-004",
+     "issue": "The freshly added lowercase-'inf' fixture read into an UNINITIALIZED real and compared against +Inf, so a successful read was not a positive observation.",
+     "adjudication": "ACCEPTED, with the same whole-packet instruction.",
+     "resolution": "Sentinel -99.0 added. THE WHOLE-PACKET AUDIT THEN FOUND THAT EVERY INPUT FIXTURE LACKED A SENTINEL, including ones from the original commit that had already passed round 1 - which is precisely why the audit was demanded rather than a point fix."
+    }
+   ]
+  },
+  {
+   "round": 3,
+   "commit": "df185c31",
+   "decision": "BLOCKED",
+   "findings": [
+    {
+     "id": "FEFR-005",
+     "issue": "The sentinels were added but NOT mutation-covered. The 119-probe matrix contained no probe mentioning -99.0 or -88.0; the input probes were still field and value mutations only.",
+     "adjudication": "ACCEPTED. A sentinel that is never mutated is an unverified claim: if the oracle would pass anyway with the sentinel removed or set to the expected value, the fixture is still vacuous and the round-2 fix accomplished nothing. A sentinel must be proved load-bearing the same way every other design choice in this suite is - by mutation.",
+     "resolution": "36 permanent table-driven sentinel-init probes: for every input target, remove the initialization, replace it with the value the READ is expected to produce, and replace it with 0.0. IEEE replacements use ieee_value(...) rather than arithmetic like 1.0/0.0, which is not portable and may trap."
+    }
+   ]
+  },
+  {
+   "round": 4,
+   "commit": "9b7b098",
+   "decision": "VERIFIED",
+   "findings": []
+  }
+ ],
+ "the_methodological_finding": {
+  "title": "A NaN sentinel silently defeats the sentinel discipline",
+  "detail": "The 'replace the sentinel with the expected value' probe revealed a hole that the ordinary discipline cannot catch. A quiet-NaN sentinel WOULD satisfy ieee_class(value) == ieee_quiet_nan with no READ occurring at all, because the usual protection - 'the sentinel must differ from the expected value' - relies on comparison, and A NaN NEVER COMPARES EQUAL TO ITSELF. The sentinel therefore looks distinct while being indistinguishable to the oracle.",
+  "resolution": "Pre-READ guards: each input target is initialized to a finite sentinel and then CHECKED before the READ, so a NaN-valued sentinel mutation fails at the guard rather than sliding through to a passing oracle. The infinity fixtures need only the ordinary sentinel, because +Inf does compare equal to itself.",
+  "generalisation": "The reviewer judged that this generalises to any IEEE NaN or ieee_class oracle in the suite. A grep of the worktree found ieee_class and ieee_is_nan used only in this packet, so there is no existing exposure, but the followup nan-sentinel-discipline-checklist is recorded so future IEEE packets inherit the rule."
+ },
+ "source_rules_independently_confirmed": [
+  "p2: a lower-case letter is equivalent to the corresponding upper-case letter in an IEEE exceptional specification or an exponent",
+  "p6: the NaN value is quiet if the only nonblank characters are 'NAN' or 'NAN()'; the payload and the interpretation of a sign are processor dependent",
+  "p9: minimum width for 'Inf' is 3 with no sign and 4 otherwise; for 'Infinity' 8 and 9; below the minimum for any form the field is filled with asterisks",
+  "p10: for NaN, w>0 and w<3 fills with asterisks; w=0 gives 'NaN'; a payload of one to w-5 processor-dependent characters is optional",
+  "p11: leading zeros are not permitted except for an OPTIONAL zero left of the decimal symbol when the magnitude is under one, which SHALL appear if there would otherwise be no digits",
+  "13.7.2.1(6): w=0 selects the smallest positive actual field width that does not result in a field filled with asterisks",
+  "13.8.8 p1 and 13.7.2.3.8 p3: RZ sets ROUND=ZERO, defined as closest with no greater magnitude"
+ ],
+ "coordinator_concern_overruled_by_reviewer": {
+  "concern": "The coordinator suspected (SS,F0.1) on 3.0 giving '3.0' was non-portable, since p1 says only that 'the processor selects the field width'.",
+  "verdict": "OVERRULED, correctly. 13.7.2.1(6) requires the smallest positive actual field width that does not result in a field filled with asterisks, which forces '3.0'. Overruling the coordinator is expected behaviour when the source supports it."
+ },
+ "non_vacuity": {
+  "total_mutations": 167,
+  "descriptor_substitutions": 29,
+  "sign_mutations": 6,
+  "input_mutations": 21,
+  "sentinel_init_mutations": 36,
+  "all_detected_on_both_toolchains": true,
+  "no_sentinel_probe_passed": true
+ },
+ "facets_left_pending": "F0 input restriction (source-control), IEEE support-absence controls, NaN payload and sign latitude, hexadecimal-significand input, nonstandard processor-acceptable input, and rounding-sensitive output. Each rationale was walked individually by the reviewer in round 3 and confirmed honest.",
+ "hex_significand_finding": {
+  "observation": "gfortran 16.1.0 -std=f2023 rejects 0X1P+2, 0X1.8P+1, 0X1P+3 and -0X1P+2 with ios=5010; frozen LFortran accepts them but returns 1.0, 1.5, 1.0 and -1.0.",
+  "hand_derivation": "p7: 'The value is equal to the significand multiplied by two raised to the power of the exponent' gives 4.0, 3.0, 8.0 and -4.0. LFortran's values are wrong.",
+  "disposition": "Facets remain PENDING with NO one-sided LFortran XFAIL, because the f2023 reference also fails and therefore no reference validation exists. This follows the batch130 precedent."
+ },
+ "integration": {
+  "fixture_reviews_recorded": 19,
+  "catalogue_source_reviews_renewed": [
+   "13.7.2.3.2"
+  ],
+  "audit_non_reviewed_after": "18.3.7 draft only",
+  "expected_failures_unchanged_at": 828
+ },
+ "limitations": [
+  "Reference validation is gfortran 16.1.0 in f2023 mode on one platform. No universal-processor claim is made.",
+  "Only the mandatory half of p11's leading-zero sentence is asserted; the optional zero remains untested and untestable under the default mode.",
+  "IEEE fixtures are gated on profiles ieee-binary and claim nothing on a processor without IEEE support."
+ ]
+}
