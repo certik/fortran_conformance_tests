@@ -5382,6 +5382,23 @@ wrong bound, stride or order visible. The new F2023 `@` multiple-subscript forms
 stay pending because gfortran itself rejects them.
 See `doc/source_audits/batch_170.json`.
 
+## Batch 171 — specification expressions
+
+Twenty facets of 10.1.11 across thirteen fixtures. Each permitted primary of a
+restricted expression — a constant, a dummy, a common or host/use-associated
+object, a specification inquiry, a standard intrinsic, a pure specification
+function, parentheses — is observed through the run-time `SIZE` or `LEN` of an
+automatic object, and each fixture calls the procedure with two distinguished
+values so a processor that constant-folded the bound, or evaluated it at the
+wrong time, would fail. C1011's list is admission text, so every facet claimed
+here is an admission.
+
+The one finding was mechanical but worth a rule: the permanent mutation checker
+compiled module sources in the repository root and left `.mod` files behind.
+Mutation runners now compile in per-case temporary workspaces, and the checklist
+requires `git status` to be unchanged after running them.
+See `doc/source_audits/batch_171.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
