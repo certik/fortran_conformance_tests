@@ -5649,6 +5649,11 @@ See `doc/source_audits/batch_179.json`.
 Forty-one units of exact intrinsics, after two rounds. Two findings are worth keeping: a plan claimed DIM=1 turns ALL of a rank-one mask into a rank-one result, when 16.9.12 makes it scalar — the mutation proved nothing until the mask became rank 2 — and a new catalogue asserted a *reviewed* state, which a source packet must never do.
 See `doc/source_audits/batch_180.json`.
 
+## Batch 181 — ANY through ATAN, including ASSOCIATED
+
+Forty-three units, after two rounds, dominated by ASSOCIATED. Its zero-sized storage-sequence cases had been missed, and its internal-procedure host-instance cases had been written off as unobservable — but a recursive host procedure keeps two live instances, so pointers to its internal procedure can be compared within one instance and across two.
+See `doc/source_audits/batch_181.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
