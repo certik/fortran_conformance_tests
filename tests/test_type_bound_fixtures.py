@@ -15,6 +15,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 import generate_type_bound_fixtures as generated
 import generate_derived_parameter_fixtures as parameters
+import generate_derived_types_7_5_5_fixtures as derived755
 
 
 PAIRS = {
@@ -213,18 +214,18 @@ class TypeBoundFixturesTests(unittest.TestCase):
         self.assertEqual({r: p["direct"] for r, p in partitions.items() if p["direct"]}, coverage)
         self.assertEqual({r: p["linked"] for r, p in partitions.items() if p["linked"]}, LINKED)
         self.assertEqual(sum(len(p["linked"]) for p in partitions.values()), 5)
-        self.assertEqual(sum(len(r["pending"]) for r in self.catalogue["requirements"]), 61)
+        companion = {rule: set(facets) for rule, facets in derived755.SELECTED.items()}
+        self.assertEqual(sum(len(r["pending"]) for r in self.catalogue["requirements"]), 58)
         for r in self.catalogue["requirements"]:
             self.assertEqual(set(r["pending"]), partitions[r["id"]]["pending"])
             self.assertEqual(set(r["facets"]), coverage.get(r["id"], set())
-                             | set(LINKED.get(r["id"], {})) | set(r["pending"]))
+                             | companion.get(r["id"], set()) | set(LINKED.get(r["id"], {})) | set(r["pending"]))
         for rule in ["R748", "C780", "C781", "C782", "S7.5.5-002"]:
             self.assertNotIn(rule, coverage)
         self.assertIn("access-alternative-identity-source-question", self.registry.requirements["C783"]["pending"])
         self.assertEqual(set(self.registry.requirements["S7.5.5-005"]["pending"]),
-                         {"inherited-default-origin", "generic-default-source-use"})
-        self.assertEqual(set(self.registry.requirements["S7.5.5-006"]["pending"]),
-                         {"nameless-binding-access-source-use"})
+                         {"generic-default-source-use"})
+        self.assertEqual(set(self.registry.requirements["S7.5.5-006"]["pending"]), set())
         self.assertIn("defining-module-control", self.registry.requirements["S7.5.5-007"]["pending"])
 
     def test_facet_partitions_reject_missing_links_unknown_targets_and_double_credit(self):
@@ -232,13 +233,13 @@ class TypeBoundFixturesTests(unittest.TestCase):
             for facet in facets:
                 removed = json.loads(json.dumps(LINKED))
                 del removed[rule][facet]
-                with self.subTest(rule=rule, facet=facet), self.assertRaisesRegex(
-                        ValueError, "missing original pending"):
+                with self.subTest(rule=rule, facet=facet), self.assertRaisesRegex(ValueError, "missing original pending"):
                     generated.synced_catalogue(self.catalogue, self.specs, removed)
         for facet, message in (("invented-facet", "unknown generated or linked"),
                                ("explicit-public-over-private", "direct and linked facets overlap")):
             invalid = json.loads(json.dumps(LINKED))
             invalid["S7.5.5-005"][facet] = "synthetic.invalid-connection"
+            message = message.replace("direct and linked", "direct, companion and linked")
             with self.subTest(facet=facet), self.assertRaisesRegex(ValueError, message):
                 generated.facet_partitions(self.catalogue, self.specs, invalid)
         invented = {name: dict(spec) for name, spec in self.specs.items()}
@@ -249,9 +250,9 @@ class TypeBoundFixturesTests(unittest.TestCase):
         for requirement in restored["requirements"]:
             requirement["pending"].update(RESTORED_PENDING.get(requirement["id"], {}))
         unlinked = generated.synced_catalogue(restored, self.specs, {})
-        self.assertEqual(sum(len(r["pending"]) for r in unlinked["requirements"]), 66)
+        self.assertEqual(sum(len(r["pending"]) for r in unlinked["requirements"]), 63)
         linked = generated.synced_catalogue(restored, self.specs, LINKED)
-        self.assertEqual(sum(len(r["pending"]) for r in linked["requirements"]), 61)
+        self.assertEqual(sum(len(r["pending"]) for r in linked["requirements"]), 58)
 
     def test_explicit_linked_overrides_reject_unknown_owners(self):
         invalid = json.loads(json.dumps(LINKED))
@@ -320,9 +321,10 @@ class TypeBoundFixturesTests(unittest.TestCase):
                 self.assertEqual({r: p["linked"] for r, p in partitions.items() if p["linked"]}, active)
                 self.assertEqual(generated.synced_catalogue(updated, self.specs), updated)
                 view = generated.render_view(updated, self.specs)
-                self.assertIn("**90 are directly represented**", view)
+                self.assertIn("**90 are directly represented here**", view)
+                self.assertIn("**3 are directly represented by the `derived_types_755_` companion packet**", view)
                 self.assertIn(f"**{len(selected)} have registered canonical links**", view)
-                self.assertIn(f"**{66-len(selected)} remain PENDING**", view)
+                self.assertIn(f"**{63-len(selected)} remain PENDING**", view)
                 self.assertFalse("Explicit canonical connections consume" in view, choices)
                 self.assertEqual({k: v for k, v in updated.items() if k.startswith("review_")}, original_admin)
                 for requirement in updated["requirements"]:
@@ -423,10 +425,11 @@ class TypeBoundFixturesTests(unittest.TestCase):
         view = (ROOT / generated.VIEW).read_text()
         self.assertEqual(view, generated.render_view(self.catalogue, self.specs))
         appendix = view.split("## Complete finite pending plans\n", 1)[1].split("## Reproduction and gates", 1)[0]
-        self.assertEqual(appendix.count("* **`"), 61)
-        self.assertIn("**90 are directly represented**", view)
+        self.assertEqual(appendix.count("* **`"), 58)
+        self.assertIn("**90 are directly represented here**", view)
+        self.assertIn("**3 are directly represented by the `derived_types_755_` companion packet**", view)
         self.assertIn("**5 have registered canonical links**", view)
-        self.assertIn("**61 remain PENDING**", view)
+        self.assertIn("**58 remain PENDING**", view)
         for facets in LINKED.values():
             for facet, link in facets.items():
                 self.assertIn(f"| `{facet}` | `{link}` |", view)

@@ -5585,6 +5585,20 @@ catalogue text and added remove-feature mutants. Frozen LFortran also leaks
 LOCAL and LOCAL_INIT construct entities into the outside variables.
 See `doc/source_audits/batch_172.json`.
 
+## Batch 177 — derived-type bindings, and delegation is not ownership
+
+Three facets of 7.5.5, after two rounds — down from eight. Five fixtures were
+removed because they credited 7.5.5 constraints with behaviour those constraints
+merely *delegate*: C780 and C781 say a binding's interface "shall be as specified
+in 15.4.3.4.2/.3", which does not make them the owners of how operators and
+defined assignment then behave; C785 requires a dummy to exist when
+`PASS(arg-name)` names it, not the passed-object semantics of 7.5.4.5; and C789
+and C790 are prohibitions that a positive fixture never reaches. The three that
+remain observe effects 7.5.5 actually states. Integration renewed fifteen older
+type-bound fixture reviews at their original state, since the shared catalogue
+was re-fingerprinted.
+See `doc/source_audits/batch_177.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must

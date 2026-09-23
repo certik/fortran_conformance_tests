@@ -52,6 +52,22 @@ ELIGIBLE = {
 }
 
 
+def companion_direct_facets():
+    try:
+        import generate_derived_types_7_5_5_fixtures as companion
+    except ImportError:
+        return {}
+    return {rule: set(facets) for rule, facets in companion.SELECTED.items()}
+
+
+def apply_companion_catalogue_updates(catalogue):
+    try:
+        import generate_derived_types_7_5_5_fixtures as companion
+    except ImportError:
+        return catalogue
+    return companion.synced_catalogue(catalogue)
+
+
 def text(value):
     return textwrap.dedent(value).strip() + "\n"
 
@@ -1129,9 +1145,16 @@ def catalogue_review_status(catalogue):
     return registry.catalogue_review_state("7.5.5")
 
 
-def facet_partitions(catalogue, specs, linked=None):
+def facet_partitions(catalogue, specs, linked=None, external_direct=None):
     """Partition one catalogue; an explicit override is scoped to its requirements."""
     requirements = {r["id"]: r for r in catalogue["requirements"]}
+    if external_direct is None:
+        external_direct = companion_direct_facets()
+    else:
+        external_direct = {rule: set(facets) for rule, facets in external_direct.items()}
+    if set(external_direct) - set(requirements):
+        raise ValueError("unknown companion requirement for this catalogue: "
+                         + ", ".join(sorted(set(external_direct) - set(requirements))))
     if linked is None:
         sys.path.insert(0, str(ROOT / "tests"))
         from suite_data import Registry
@@ -1150,14 +1173,15 @@ def facet_partitions(catalogue, specs, linked=None):
     result = {}
     for rule, requirement in requirements.items():
         direct = {facet for spec in specs.values() if spec["rule"] == rule for facet in spec["facets"]}
+        external = set(external_direct.get(rule, set()))
         connections = dict(linked.get(rule, {}))
         declared = set(requirement["facets"])
-        if (direct | set(connections)) - declared:
+        if (direct | external | set(connections)) - declared:
             raise ValueError("unknown generated or linked facet for " + rule)
-        if direct & set(connections):
-            raise ValueError("direct and linked facets overlap for " + rule)
-        result[rule] = dict(direct=direct, linked=connections,
-                            pending=declared - direct - set(connections))
+        if direct & set(connections) or direct & external or external & set(connections):
+            raise ValueError("direct, companion and linked facets overlap for " + rule)
+        result[rule] = dict(direct=direct, external=external, linked=connections,
+                            pending=declared - direct - external - set(connections))
     return result
 
 
@@ -1169,6 +1193,7 @@ def render_view(catalogue, specs):
     controls = len(specs) - negative - runtime
     partitions = facet_partitions(catalogue, specs)
     direct = sum(len(p["direct"]) for p in partitions.values())
+    external = sum(len(p["external"]) for p in partitions.values())
     linked = sum(len(p["linked"]) for p in partitions.values())
     pending = sum(len(r["pending"]) for r in catalogue["requirements"])
     declared = sum(len(r["facets"]) for r in catalogue["requirements"])
@@ -1179,9 +1204,10 @@ def render_view(catalogue, specs):
         "# Fortran 2023: 7.5.5 Type-bound procedures — phase-2 implementation\n\n"
         f"**Catalogue source review: {catalogue_review_status(catalogue)}.** "
         "Case and evidence adjudications are maintained in their separate content-bound records.\n\n"
-        f"The finite packet has **{len(specs)} cases**: **{negative} diagnostic inputs**, "
+        f"The original type-bound packet has **{len(specs)} cases**: **{negative} diagnostic inputs**, "
         f"**{controls} compile-only positive controls/admissions**, and **{runtime} runtime effect cases**. "
-        f"Of **{declared} facets**, **{direct} are directly represented**, "
+        f"Of **{declared} facets**, **{direct} are directly represented here**, "
+        f"**{external} are directly represented by the `derived_types_755_` companion packet**, "
         f"**{linked} have registered canonical links**, and "
         f"**{pending} remain PENDING**. Representation is not a claim of compiler success, "
         "independent review or source closure.\n\n" + CONTRACT
@@ -1300,7 +1326,7 @@ def synced_catalogue(catalogue, specs, linked=None):
                     + ", ".join(f"{facet} ({name})" for facet, name in sorted(connections.items())) + ".")
             elif r["id"] in ("S7.5.5-005", "S7.5.5-006"):
                 r["oracle"] += " No canonical links are registered for this requirement."
-    return catalogue
+    return apply_companion_catalogue_updates(catalogue)
 
 
 def main():
@@ -1335,10 +1361,12 @@ def main():
             (ROOT / VIEW).write_text(view)
     partitions = facet_partitions(updated, specs)
     direct = sum(len(p["direct"]) for p in partitions.values())
+    external = sum(len(p["external"]) for p in partitions.values())
     linked = sum(len(p["linked"]) for p in partitions.values())
     pending = sum(len(p["pending"]) for p in partitions.values())
     print(f"{'Checked' if args.check else 'Generated'} {len(outputs)} files for {len(specs)} "
-          f"type-bound cases: {direct} direct, {linked} registered linked and {pending} pending facets.")
+          f"type-bound cases: {direct} direct, {external} companion direct, "
+          f"{linked} registered linked and {pending} pending facets.")
 
 
 if __name__ == "__main__":
