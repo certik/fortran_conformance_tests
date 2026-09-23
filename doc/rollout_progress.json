@@ -6394,6 +6394,41 @@
         "Round 2 VERIFIED, including that 1.0 has no precision latitude because every extended digit is zero, and that 101P->100P is conforming and load-bearing.",
         "TWO LFORTRAN DEFECTS: the large scale factor fails at runtime with 'Got argument of type (REAL), while the format specifier is (P)' on a conforming format."
       ]
+    },
+    {
+      "id": "clause13-logical-character-editing-fixtures-148",
+      "state": "reference-validated-runtime-effects",
+      "packet_kind": "FIXTURE",
+      "milestone": "Four rounds, all about MUTATION QUALITY - the oracles were right from the first commit",
+      "baseline_commit": "b2569f2",
+      "sections": [
+        "13.7.3",
+        "13.7.4"
+      ],
+      "author_handoffs": {
+        "proposal": "5e889fc",
+        "correction_round2": "2b6f3d2",
+        "correction_round3": "3b199f0",
+        "correction_round4": "d7c1469"
+      },
+      "source_reviews": [
+        "doc/source_audits/batch_148.json"
+      ],
+      "new_executions": 15,
+      "fixture_accounting": {
+        "facets_established": 17,
+        "new_cases": 15,
+        "authored_facets": "2108 -> 2125",
+        "expected_failures": "unchanged at 831"
+      },
+      "coordination": "EVERY ROUND FOUND A DIFFERENT WAY FOR A MUTANT TO LOOK LOAD-BEARING WITHOUT BEING SO: (1) L->I substitutions failed only because the program became non-conforming; (2) removing them left two fixtures with no feature mutation, hidden by an allowlist; (3) the fix changed the datum, confounding the facet with the trailing-character rule, and its new mutants read a different planted value rather than testing width; (4) the final width mutants push the decisive F outside the field, and because the narrowed field is non-standard they add a boundary read under IOSTAT so the mutant fails under EVERY conforming behaviour - rejection or extension.",
+      "reviewer_findings": [
+        "LAFR-001: a mutant that fails by becoming non-conforming proves nothing about the descriptor.",
+        "LAFR-002: an allowlist let two fixtures carry no feature mutation at all.",
+        "LAFR-003: changing the datum to make room for a mutant silently changed which sentence the facet depended on.",
+        "LAFR-004: a mutant reading a different planted value tests the datum, not the feature.",
+        "Round 4 VERIFIED: no conforming processor can satisfy ios==0, first==.false. and boundary==.true. under the narrowed-width mutant."
+      ]
     }
   ],
   "cross_batch_followups": [

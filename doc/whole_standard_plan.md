@@ -5151,6 +5151,38 @@ Frozen LFortran rejects that conforming format at runtime ("Got argument of type
 expected failures.
 See `doc/source_audits/batch_147.json`.
 
+## Batch 148 — L and A editing, and four ways a mutant can lie
+
+Seventeen facets of 13.7.3 (L) and 13.7.4 (A) across fifteen fixtures, after
+**four review rounds**. What makes this packet worth recording is that the
+**oracles were correct from the first commit**. Every finding was about whether
+the mutations actually proved anything — and each round found a different way
+for a mutant to *look* load-bearing without being so.
+
+1. **A mutant that fails by becoming non-conforming proves nothing.** `L4`→`I4`
+   on a logical item fails because I editing requires an integer (13.7.2.2 p1),
+   not because I and L interpret the field differently.
+2. **Removing a bad mutant can leave no feature mutation at all.** Two fixtures
+   were left with only input mutations, hidden by an allowlist in the test
+   module.
+3. **Changing the datum to make room for a mutant can change the facet.** Moving
+   `'   F'` to `'  FT'` quietly made the "standard false form" facet depend on
+   the trailing-characters sentence as well.
+4. **A mutant that reads a different planted value tests the datum, not the
+   feature.** `L4`→`T4,L1` would be "detected" even on a processor that ignored
+   the L width entirely.
+
+The final mutants are plain width substitutions — `L4`→`L3` on `'   F'`,
+`L2`→`L1` on `'.f'` — that push the decisive `F` out of the field. The subtle
+part is that the narrowed fields `'   '` and `'.'` are *not* standard forms, so a
+conforming processor may reject them *or* accept them as an extension. A mutant
+whose outcome is processor dependent is only load-bearing on some processors. So
+each fixture now reads a separate one-character boundary field under `IOSTAT` and
+asserts all three of `ios == 0`, the first value `.false.`, and the boundary
+`.true.`: rejection makes `ios` nonzero, and acceptance shifts the next `L1` onto
+the planted `F`. **No conforming behaviour satisfies all three.**
+See `doc/source_audits/batch_148.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must

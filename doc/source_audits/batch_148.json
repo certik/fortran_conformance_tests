@@ -1,0 +1,31 @@
+{
+ "schema_version": 1,
+ "review_type": "independent-logical-character-editing-fixture-review",
+ "review_date": "2026-09-23",
+ "baseline_commit": "b2569f2",
+ "state": "reference-validated-runtime-effects",
+ "packet_kind": "FIXTURE",
+ "milestone": "Four review rounds, every finding about MUTATION QUALITY rather than oracle correctness. The oracles were right from the first commit; proving they were load-bearing took three corrections.",
+ "scope": {"sections": ["13.7.3", "13.7.4"], "facets_established": 17, "new_cases": 15},
+ "review_rounds": [
+  {"round": 1, "commit": "5e889fc", "decision": "BLOCKED", "findings": [{"id": "LAFR-001", "issue": "L4->I4, L2->I2 and G0->I1 were counted as load-bearing descriptor substitutions, but they fail only because I editing requires an integer item (13.7.2.2 p1) - the mutant became NON-CONFORMING. A mutant that fails by becoming invalid proves nothing about the descriptor under test.", "resolution": "G0->I1 replaced by the conforming G0->L2 (G0 logical output follows L1 per 13.7.5.3, and the internal record is blank-filled per 12.4 p2, so 'F ' vs ' F'). The other two removed."}]},
+  {"round": 2, "commit": "2b6f3d2", "decision": "BLOCKED", "findings": [{"id": "LAFR-002", "issue": "Removing the invalid mutants left two logical-input fixtures with only input/sentinel mutations and no feature mutation, protected by an allowlist in the test module.", "resolution": "Allowlist removed; every fixture must carry a descriptor mutation."}]},
+  {"round": 3, "commit": "3b199f0", "decision": "BLOCKED", "findings": [
+    {"id": "LAFR-003", "issue": "To make room for a mutant the correction CHANGED THE DATUM ('   F' -> '  FT', '.f' -> '.ft'), so the facets now also depended on the trailing-characters sentence, already covered by a sibling fixture.", "resolution": "Original data restored."},
+    {"id": "LAFR-004", "issue": "The new mutants L4->T4,L1 and L3->T3,L1 read a different PLANTED datum rather than testing L's width: a processor that ignored the width and read the first nonblank letter would pass the parent and fail the mutant, so the mutant proves nothing about width.", "resolution": "Same-feature width substitutions L4->L3 and L2->L1 that push the decisive F outside the field."}]},
+  {"round": 4, "commit": "d7c1469", "decision": "VERIFIED", "findings": []}
+ ],
+ "the_subtle_part": "The narrowed fields '   ' and '.' are not standard logical forms, so a conforming processor may either raise an error condition or accept them as an extension. A mutant whose outcome is processor dependent would be load-bearing on some processors and not others. The fix reads a separate one-character BOUNDARY field after the first under IOSTAT and asserts ios == 0, first == .false. and boundary == .true.: if the processor rejects the narrowed field ios is nonzero, and if it accepts it the following L1 shifts onto the planted F. NO conforming behaviour can satisfy all three, so the mutant fails deterministically everywhere.",
+ "mutation_lessons": [
+  "A mutant that fails by making the program non-conforming is not load-bearing.",
+  "Removing a bad mutant can leave a fixture with no feature mutation at all; an allowlist that permits this hides it.",
+  "Changing the datum to make room for a mutant can silently change which sentences the fixture depends on.",
+  "A mutant that reads a different planted value tests the datum, not the feature.",
+  "A mutant on a non-standard field must fail under EVERY conforming behaviour, not just the one the reference compiler happens to choose."
+ ],
+ "source_rules_confirmed": ["13.7.3 p1-p4 (L width, standard input form, lowercase equivalence, w-1 blanks on output)", "13.7.4 p2-p4 (A width, rightmost characters on wide input, left padding on wide output, leftmost on narrow output)", "13.7.5.3 and 13.7.5.4 (G0 on logical and character items)", "12.4 p2 (internal record blank fill)", "12.11.5 p1 (IOSTAT zero when no error or end condition)"],
+ "non_vacuity": {"total_mutations": 108, "descriptor": 16, "input": 16, "sentinel_init": 18, "pre_read_guards": 8, "all_detected_on_both_toolchains": true},
+ "facets_left_pending": "AT output (both the reference and frozen LFortran reject the descriptor, so no reference validation; no one-sided XFAIL), non-logical-item-with-L and AT-input diagnostics, nonstandard logical input latitude, non-default character kinds, stream NEW_LINE and file positioning.",
+ "lfortran_defects_recorded": 0,
+ "limitations": ["Reference validation is gfortran 16.1.0 in f2023 mode on one platform.", "Default character kind only."]
+}
