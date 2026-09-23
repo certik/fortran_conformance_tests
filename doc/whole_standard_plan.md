@@ -5626,6 +5626,19 @@ sign mode is processor defined. With this packet, **Clause 12 is fully
 registered**.
 See `doc/source_audits/batch_160.json`.
 
+## Batch 178 — opening Clause 16
+
+Sixty-seven units of 16 through 16.8, the general text of the intrinsic procedures
+clause: procedure classes and general rules, the bit and numeric models, atomic and
+collective subroutines, and the name tables. This opens Clause 16, the largest in
+the standard at 1,476 units. The one finding set a pattern for the rest of the
+clause: STAT semantics for atomics and collectives had been left as conditional
+placeholders. They are now explicit — image-dependent facets are **out of scope**
+for single-image fixtures by the user's decision, and the "any other error" STAT
+value has **no portable oracle** because no such error can be induced portably. The
+two labels mean different things and are used for different reasons.
+See `doc/source_audits/batch_178.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
