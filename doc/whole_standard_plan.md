@@ -6164,6 +6164,11 @@ See `doc/source_audits/batch_279.json`.
 21 programs, 30 facets. The clock may be absent, the time zone may be unknown; where they are present, the formats and the agreement between ZONE and VALUES(4) are not optional.
 See `doc/source_audits/batch_280.json`.
 
+## Batch 282 — USE statement and use association fixtures 14.2.2
+
+38 programs, 68 facets and eight LFortran defects in USE: ONLY lists, renames, operator renames and the constraints a processor must enforce on them.
+See `doc/source_audits/batch_282.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
