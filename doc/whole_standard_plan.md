@@ -6014,6 +6014,11 @@ See `doc/source_audits/batch_258.json`.
 Seventy units in one round, closing Clause 3 at its alphabetical end: types, units, variables, and the vocabulary of teams, each traced to the catalogue that already tests it.
 See `doc/source_audits/batch_259.json`.
 
+## Batch 257 — Terms and definitions 3.86.1-3.111
+
+Seventy-three units in one round. Even 'processor dependent' is only a definition here: the latitude it names is registered, and bounded, where the standard grants it.
+See `doc/source_audits/batch_257.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
