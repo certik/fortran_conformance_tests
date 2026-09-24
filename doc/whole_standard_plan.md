@@ -6109,6 +6109,11 @@ See `doc/source_audits/batch_268.json`.
 Twenty-three programs, twenty-five facets and five LFortran defects in submodules and block data: two submodules of the same name under different ancestors are distinct, and three block-data constraints go undiagnosed.
 See `doc/source_audits/batch_270.json`.
 
+## Batch 277 — File access method and file position fixtures 12.3.3.1-12.3.4.1
+
+The first Clause 12 fixtures to land: twenty-one programs, thirty-eight facets of sequential, direct and stream access and file positioning, with every READ target guarded and every stream position derived from INQUIRE rather than assumed.
+See `doc/source_audits/batch_277.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must

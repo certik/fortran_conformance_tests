@@ -1,0 +1,73 @@
+{
+ "schema_version": 1,
+ "review_type": "independent-clause12-access-position-fixtures-277-review",
+ "review_date": "2026-09-24",
+ "baseline_commit": "0e5f8a2",
+ "state": "reference-validated-runtime-effects",
+ "packet_kind": "FIXTURE",
+ "scope": {
+  "sections": [
+   "12.3.3.1",
+   "12.3.3.2",
+   "12.3.3.3",
+   "12.3.3.4",
+   "12.3.4.1"
+  ],
+  "facets_established": 38,
+  "new_cases": 21
+ },
+ "review_rounds": [
+  {
+   "round": 1,
+   "commit": "1a7ff2f",
+   "decision": "BLOCKED",
+   "findings": [
+    {
+     "id": "F277R-001",
+     "issue": "READ targets lacked pre-READ guards and sentinel-init probes",
+     "resolution": "40 targets guarded; 120 permanent sentinel probes."
+    },
+    {
+     "id": "F277R-002",
+     "issue": "Stream POS offsets assumed one file storage unit per character",
+     "resolution": "Positions computed from INQUIRE(IOLENGTH=)."
+    },
+    {
+     "id": "F277R-003",
+     "issue": "Access-method-at-connection facet over-suppressed",
+     "resolution": "Added with a connection-method feature mutant."
+    },
+    {
+     "id": "F277R-004",
+     "issue": "Formatted-stream positive-position assertion unbound",
+     "resolution": "Bound with a facet-specific mutant."
+    }
+   ]
+  },
+  {
+   "round": 2,
+   "commit": "b71ffb6",
+   "decision": "BLOCKED",
+   "findings": [
+    {
+     "id": "F277R-101",
+     "issue": "A mutant read an unwritten stream storage unit (non-conforming per 12.3.3.4 p3)",
+     "resolution": "Parent writes the position; mutant fails by value."
+    },
+    {
+     "id": "F277R-102",
+     "issue": "A mutant left POS=1 unwritten then read it",
+     "resolution": "Parent pre-writes POS=1; all mutant reads audited."
+    }
+   ]
+  },
+  {
+   "round": 3,
+   "commit": "b4d04cf",
+   "decision": "VERIFIED",
+   "findings": []
+  }
+ ],
+ "lfortran_defects_recorded": 0,
+ "lesson": "A mutant must stay conforming: reading a storage unit that was never written makes the program invalid, and then its failure proves nothing."
+}
