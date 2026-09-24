@@ -5789,6 +5789,11 @@ See `doc/source_audits/batch_206.json`.
 Forty-one units after three rounds. The second-round finding is the one to remember: an expected result whose elements are all equal cannot see a permutation. SUM(A, DIM=1) = [-1,-1,-1] was arithmetically right and still useless for checking that the i-th result element comes from the i-th column.
 See `doc/source_audits/batch_208.json`.
 
+## Batch 207 — SINH through SQRT
+
+Forty-two units after two rounds, with the now-familiar finding: a model function recorded as untestable when its model definition makes it exactly comparable to another model function. SPACING(1.0) == EPSILON(1.0) holds on every processor, however its reals are built.
+See `doc/source_audits/batch_207.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
