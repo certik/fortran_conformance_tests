@@ -1,0 +1,134 @@
+{
+  "schema_version": 1,
+  "section": "16.9.102",
+  "review_state": "reviewed",
+  "subunits": {
+    "p5": [
+      "p5.bit-clear",
+      "p5.model-cross-reference"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S16.9.102-001",
+      "title": "IBCLR argument restrictions",
+      "source": "S16.9.102, J3/24-007, 18 December 2023, physical PDF418.",
+      "source_units": [
+        "p3"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "I shall be integer and POS shall be an integer value that is nonnegative and less than BIT_SIZE(I).",
+      "facets": [
+        "IBCLR-I-integer",
+        "IBCLR-POS-integer",
+        "IBCLR-POS-nonnegative",
+        "IBCLR-POS-less-than-bit-size"
+      ],
+      "pending": {
+        "IBCLR-I-integer": "Use an integer I with several selected bits set; mutate I to real as a source-control restriction with no diagnostic facet.",
+        "IBCLR-POS-integer": "Use integer POS values 0, 1, and BIT_SIZE(I)-1; mutate POS to real as a source-control restriction with no diagnostic facet.",
+        "IBCLR-POS-nonnegative": "Use POS=0 as the lower boundary and assert the cleared bit by BTEST; negative POS remains a source-control restriction with no diagnostic facet.",
+        "IBCLR-POS-less-than-bit-size": "Use POS=BIT_SIZE(I)-1 as the upper valid boundary and assert the cleared high bit by BTEST; POS=BIT_SIZE(I) remains a source-control restriction with no diagnostic facet."
+      },
+      "oracle": "Source registration only. Future fixtures use exact integer, logical, character, shape, kind, and bit-pattern observations. Bit-producing intrinsic results are observed in bit context by BTEST, POPCNT, or bit-pattern comparisons, not by signed numeric interpretation of a result whose leftmost bit may be set. Each positive plan establishes a non-default state first, uses a non-vacuous companion for zero, .FALSE., blank, or identity results, and includes a feature mutation such as changing the intrinsic name, argument order, DIM, MASK, POS, LEN, KIND, or a BOZ literal. Unnumbered argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Exact bit plans use real BOZ actual arguments for BOZ rules and observe bit results only in bit context. Grep of tests/ and tests/fixtures/*/fixture.json for IALL, IAND, IANY, IBCLR, IBITS, IBSET, and ICHAR found no existing fixture.json binding in this worktree; IAND appears only in a Clause 11 DO CONCURRENT reduction fixture source and related test assertions, so this packet records that coverage without rebinding it.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, and 13 where already catalogued for source form, intrinsic and character types, declarations, expressions, arrays, execution, internal I/O, and exact formatting helpers. Unregistered dependencies retained: clause 16.3 integer bit model, 7.4.4.4 character collating sequence rules, sibling 16.9 intrinsics named by result formulas, and clauses 3, 5, 14, 15, 17, 18, and 19 where future fixtures need terms, constants, programs, procedure interfaces, IEEE support, deleted features, or scope rules."
+    },
+    {
+      "id": "S16.9.102-002",
+      "title": "IBCLR result characteristics match I",
+      "source": "S16.9.102, J3/24-007, 18 December 2023, physical PDF418.",
+      "source_units": [
+        "p4"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The IBCLR result has the same characteristics as I.",
+      "facets": [
+        "IBCLR-result-same-kind-as-I"
+      ],
+      "pending": {
+        "IBCLR-result-same-kind-as-I": "Use I with a nondefault integer kind; assert KIND(IBCLR(I,1)) equals KIND(I) and verify the value by BTEST separately."
+      },
+      "oracle": "Source registration only. Future fixtures use exact integer, logical, character, shape, kind, and bit-pattern observations. Bit-producing intrinsic results are observed in bit context by BTEST, POPCNT, or bit-pattern comparisons, not by signed numeric interpretation of a result whose leftmost bit may be set. Each positive plan establishes a non-default state first, uses a non-vacuous companion for zero, .FALSE., blank, or identity results, and includes a feature mutation such as changing the intrinsic name, argument order, DIM, MASK, POS, LEN, KIND, or a BOZ literal. Unnumbered argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Exact bit plans use real BOZ actual arguments for BOZ rules and observe bit results only in bit context. Grep of tests/ and tests/fixtures/*/fixture.json for IALL, IAND, IANY, IBCLR, IBITS, IBSET, and ICHAR found no existing fixture.json binding in this worktree; IAND appears only in a Clause 11 DO CONCURRENT reduction fixture source and related test assertions, so this packet records that coverage without rebinding it.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, and 13 where already catalogued for source form, intrinsic and character types, declarations, expressions, arrays, execution, internal I/O, and exact formatting helpers. Unregistered dependencies retained: clause 16.3 integer bit model, 7.4.4.4 character collating sequence rules, sibling 16.9 intrinsics named by result formulas, and clauses 3, 5, 14, 15, 17, 18, and 19 where future fixtures need terms, constants, programs, procedure interfaces, IEEE support, deleted features, or scope rules."
+    },
+    {
+      "id": "S16.9.102-003",
+      "title": "IBCLR clears exactly bit POS",
+      "source": "S16.9.102, J3/24-007, 18 December 2023, physical PDF418.",
+      "source_units": [
+        "p5.bit-clear"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The IBCLR result has I's bit sequence except bit POS is zero, using the integer bit model of 16.3.",
+      "facets": [
+        "IBCLR-clears-selected-bit",
+        "IBCLR-preserves-other-observed-bits"
+      ],
+      "pending": {
+        "IBCLR-clears-selected-bit": "Use I with bits 0, 1, 3, and BIT_SIZE(I)-1 set; call IBCLR(I,1) and assert BTEST(result,1) is false, with POS mutation to 3.",
+        "IBCLR-preserves-other-observed-bits": "For the same call assert by BTEST that bits 0, 3, and BIT_SIZE(I)-1 remain true and an originally clear bit remains false."
+      },
+      "oracle": "Source registration only. Future fixtures use exact integer, logical, character, shape, kind, and bit-pattern observations. Bit-producing intrinsic results are observed in bit context by BTEST, POPCNT, or bit-pattern comparisons, not by signed numeric interpretation of a result whose leftmost bit may be set. Each positive plan establishes a non-default state first, uses a non-vacuous companion for zero, .FALSE., blank, or identity results, and includes a feature mutation such as changing the intrinsic name, argument order, DIM, MASK, POS, LEN, KIND, or a BOZ literal. Unnumbered argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Exact bit plans use real BOZ actual arguments for BOZ rules and observe bit results only in bit context. Grep of tests/ and tests/fixtures/*/fixture.json for IALL, IAND, IANY, IBCLR, IBITS, IBSET, and ICHAR found no existing fixture.json binding in this worktree; IAND appears only in a Clause 11 DO CONCURRENT reduction fixture source and related test assertions, so this packet records that coverage without rebinding it.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, and 13 where already catalogued for source form, intrinsic and character types, declarations, expressions, arrays, execution, internal I/O, and exact formatting helpers. Unregistered dependencies retained: clause 16.3 integer bit model, 7.4.4.4 character collating sequence rules, sibling 16.9 intrinsics named by result formulas, and clauses 3, 5, 14, 15, 17, 18, and 19 where future fixtures need terms, constants, programs, procedure interfaces, IEEE support, deleted features, or scope rules."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "definition",
+      "rationale": "Description defines the purpose of the IBCLR intrinsic."
+    },
+    {
+      "unit": "p2",
+      "disposition": "definition",
+      "rationale": "Classifies IBCLR as a elemental function; general class semantics are owned by the intrinsic framework."
+    },
+    {
+      "unit": "p3",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.102-001"
+      ]
+    },
+    {
+      "unit": "p4",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.102-002"
+      ]
+    },
+    {
+      "unit": "p5",
+      "disposition": "structural",
+      "rationale": "Result Value paragraph is split into the bit effect and the 16.3 model cross-reference."
+    },
+    {
+      "unit": "p5.bit-clear",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.102-003"
+      ]
+    },
+    {
+      "unit": "p5.model-cross-reference",
+      "disposition": "definition",
+      "rationale": "Cross-reference to the integer bit-sequence model in 16.3."
+    },
+    {
+      "unit": "p6",
+      "disposition": "informative",
+      "rationale": "Examples are illustrative and not independent requirements."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_16_9_102.md"
+  },
+  "review_fingerprint": "680c2dea48c801779579cd0246a1f77702ce1f92e67c49ef58261997d6d32ba4",
+  "review_rationale": "Source registration for 16.9.99-16.9.105: IALL, IAND, IANY, IBCLR, IBITS, IBSET and ICHAR (batch193). Every unit hash-verified by an independent reviewer across two rounds; bit results are observed in bit context, IBITS reaches its high-bit edge, and ICHAR(CHAR(i)) == i is planned for positions the default character set is guaranteed to contain. Source accounting only."
+}

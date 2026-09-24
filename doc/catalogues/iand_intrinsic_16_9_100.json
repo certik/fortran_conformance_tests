@@ -1,0 +1,159 @@
+{
+  "schema_version": 1,
+  "section": "16.9.100",
+  "review_state": "reviewed",
+  "subunits": {
+    "p5": [
+      "p5.boz-conversion",
+      "p5.truth-table"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S16.9.100-001",
+      "title": "IAND argument restrictions",
+      "source": "S16.9.100, J3/24-007, 18 December 2023, physical PDF417.",
+      "source_units": [
+        "p3"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "I and J shall each be integer or a BOZ literal constant, matching integer kinds are required for two integer operands, and both operands shall not be BOZ literal constants.",
+      "facets": [
+        "IAND-I-integer-or-boz",
+        "IAND-J-integer-or-boz",
+        "IAND-integer-kinds-match",
+        "IAND-not-both-boz"
+      ],
+      "pending": {
+        "IAND-I-integer-or-boz": "Use an integer I call and a BOZ-literal I call with an integer J; mutate I to real as a source-control restriction with no diagnostic facet.",
+        "IAND-J-integer-or-boz": "Use an integer J call and a BOZ-literal J call with an integer I; mutate J to real as a source-control restriction with no diagnostic facet.",
+        "IAND-integer-kinds-match": "Use same-kind integer operands selected from one declaration; mutate one operand to a distinct integer kind as a source-control restriction with no diagnostic facet.",
+        "IAND-not-both-boz": "Use exactly one BOZ actual argument and one integer operand; mutate both operands to BOZ literals as a source-control restriction with no diagnostic facet."
+      },
+      "oracle": "Source registration only. Future fixtures use exact integer, logical, character, shape, kind, and bit-pattern observations. Bit-producing intrinsic results are observed in bit context by BTEST, POPCNT, or bit-pattern comparisons, not by signed numeric interpretation of a result whose leftmost bit may be set. Each positive plan establishes a non-default state first, uses a non-vacuous companion for zero, .FALSE., blank, or identity results, and includes a feature mutation such as changing the intrinsic name, argument order, DIM, MASK, POS, LEN, KIND, or a BOZ literal. Unnumbered argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Exact bit plans use real BOZ actual arguments for BOZ rules and observe bit results only in bit context. Grep of tests/ and tests/fixtures/*/fixture.json for IALL, IAND, IANY, IBCLR, IBITS, IBSET, and ICHAR found no existing fixture.json binding in this worktree; IAND appears only in a Clause 11 DO CONCURRENT reduction fixture source and related test assertions, so this packet records that coverage without rebinding it.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, and 13 where already catalogued for source form, intrinsic and character types, declarations, expressions, arrays, execution, internal I/O, and exact formatting helpers. Unregistered dependencies retained: clause 16.3 integer bit model, 7.4.4.4 character collating sequence rules, sibling 16.9 intrinsics named by result formulas, and clauses 3, 5, 14, 15, 17, 18, and 19 where future fixtures need terms, constants, programs, procedure interfaces, IEEE support, deleted features, or scope rules."
+    },
+    {
+      "id": "S16.9.100-002",
+      "title": "IAND result characteristics follow the integer operand",
+      "source": "S16.9.100, J3/24-007, 18 December 2023, physical PDF417.",
+      "source_units": [
+        "p4"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The IAND result has the same characteristics as I for integer I, otherwise the same characteristics as J.",
+      "facets": [
+        "IAND-result-kind-from-non-boz-operand"
+      ],
+      "pending": {
+        "IAND-result-kind-from-non-boz-operand": "Use a nondefault integer kind for I in one call and for J in a one-BOZ call; assert KIND(result) follows the integer operand and mutate which operand is BOZ."
+      },
+      "oracle": "Source registration only. Future fixtures use exact integer, logical, character, shape, kind, and bit-pattern observations. Bit-producing intrinsic results are observed in bit context by BTEST, POPCNT, or bit-pattern comparisons, not by signed numeric interpretation of a result whose leftmost bit may be set. Each positive plan establishes a non-default state first, uses a non-vacuous companion for zero, .FALSE., blank, or identity results, and includes a feature mutation such as changing the intrinsic name, argument order, DIM, MASK, POS, LEN, KIND, or a BOZ literal. Unnumbered argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Exact bit plans use real BOZ actual arguments for BOZ rules and observe bit results only in bit context. Grep of tests/ and tests/fixtures/*/fixture.json for IALL, IAND, IANY, IBCLR, IBITS, IBSET, and ICHAR found no existing fixture.json binding in this worktree; IAND appears only in a Clause 11 DO CONCURRENT reduction fixture source and related test assertions, so this packet records that coverage without rebinding it.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, and 13 where already catalogued for source form, intrinsic and character types, declarations, expressions, arrays, execution, internal I/O, and exact formatting helpers. Unregistered dependencies retained: clause 16.3 integer bit model, 7.4.4.4 character collating sequence rules, sibling 16.9 intrinsics named by result formulas, and clauses 3, 5, 14, 15, 17, 18, and 19 where future fixtures need terms, constants, programs, procedure interfaces, IEEE support, deleted features, or scope rules."
+    },
+    {
+      "id": "S16.9.100-003",
+      "title": "IAND converts a BOZ operand as INT to the other integer kind",
+      "source": "S16.9.100, J3/24-007, 18 December 2023, physical PDF417.",
+      "source_units": [
+        "p5.boz-conversion"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "With either operand a BOZ literal constant, IAND first converts that operand as INT to the integer kind of the other operand.",
+      "facets": [
+        "IAND-boz-converted-as-int-to-other-kind"
+      ],
+      "pending": {
+        "IAND-boz-converted-as-int-to-other-kind": "Call IAND(Z'0F', int_value) and IAND(int_value, Z'0F') with int_value using a nondefault kind; assert selected result bits by BTEST and compare with companion calls using INT(Z'0F',kind=int_kind)."
+      },
+      "oracle": "Source registration only. Future fixtures use exact integer, logical, character, shape, kind, and bit-pattern observations. Bit-producing intrinsic results are observed in bit context by BTEST, POPCNT, or bit-pattern comparisons, not by signed numeric interpretation of a result whose leftmost bit may be set. Each positive plan establishes a non-default state first, uses a non-vacuous companion for zero, .FALSE., blank, or identity results, and includes a feature mutation such as changing the intrinsic name, argument order, DIM, MASK, POS, LEN, KIND, or a BOZ literal. Unnumbered argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Exact bit plans use real BOZ actual arguments for BOZ rules and observe bit results only in bit context. Grep of tests/ and tests/fixtures/*/fixture.json for IALL, IAND, IANY, IBCLR, IBITS, IBSET, and ICHAR found no existing fixture.json binding in this worktree; IAND appears only in a Clause 11 DO CONCURRENT reduction fixture source and related test assertions, so this packet records that coverage without rebinding it.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, and 13 where already catalogued for source form, intrinsic and character types, declarations, expressions, arrays, execution, internal I/O, and exact formatting helpers. Unregistered dependencies retained: clause 16.3 integer bit model, 7.4.4.4 character collating sequence rules, sibling 16.9 intrinsics named by result formulas, and clauses 3, 5, 14, 15, 17, 18, and 19 where future fixtures need terms, constants, programs, procedure interfaces, IEEE support, deleted features, or scope rules."
+    },
+    {
+      "id": "S16.9.100-004",
+      "title": "IAND combines bits by logical AND",
+      "source": "S16.9.100, J3/24-007, 18 December 2023, physical PDF417.",
+      "source_units": [
+        "p5.truth-table"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The IAND result bit is one exactly for operand bit pairs 1 and 1, and zero for pairs 1/0, 0/1, and 0/0, using the integer bit model of 16.3.",
+      "facets": [
+        "IAND-bit-truth-table"
+      ],
+      "pending": {
+        "IAND-bit-truth-table": "Use operands whose bit positions cover 1/1, 1/0, 0/1, and 0/0; assert the four positions by BTEST, with an IOR intrinsic-name mutation changing the non-1/1 positions."
+      },
+      "oracle": "Source registration only. Future fixtures use exact integer, logical, character, shape, kind, and bit-pattern observations. Bit-producing intrinsic results are observed in bit context by BTEST, POPCNT, or bit-pattern comparisons, not by signed numeric interpretation of a result whose leftmost bit may be set. Each positive plan establishes a non-default state first, uses a non-vacuous companion for zero, .FALSE., blank, or identity results, and includes a feature mutation such as changing the intrinsic name, argument order, DIM, MASK, POS, LEN, KIND, or a BOZ literal. Unnumbered argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Exact bit plans use real BOZ actual arguments for BOZ rules and observe bit results only in bit context. Grep of tests/ and tests/fixtures/*/fixture.json for IALL, IAND, IANY, IBCLR, IBITS, IBSET, and ICHAR found no existing fixture.json binding in this worktree; IAND appears only in a Clause 11 DO CONCURRENT reduction fixture source and related test assertions, so this packet records that coverage without rebinding it.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, and 13 where already catalogued for source form, intrinsic and character types, declarations, expressions, arrays, execution, internal I/O, and exact formatting helpers. Unregistered dependencies retained: clause 16.3 integer bit model, 7.4.4.4 character collating sequence rules, sibling 16.9 intrinsics named by result formulas, and clauses 3, 5, 14, 15, 17, 18, and 19 where future fixtures need terms, constants, programs, procedure interfaces, IEEE support, deleted features, or scope rules."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "definition",
+      "rationale": "Description defines the purpose of the IAND intrinsic."
+    },
+    {
+      "unit": "p2",
+      "disposition": "definition",
+      "rationale": "Classifies IAND as a elemental function; general class semantics are owned by the intrinsic framework."
+    },
+    {
+      "unit": "p3",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.100-001"
+      ]
+    },
+    {
+      "unit": "p4",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.100-002"
+      ]
+    },
+    {
+      "unit": "p5",
+      "disposition": "structural",
+      "rationale": "Result Value paragraph is split into BOZ conversion and bit truth-table effects."
+    },
+    {
+      "unit": "p5.boz-conversion",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.100-003"
+      ]
+    },
+    {
+      "unit": "p5.truth-table",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.100-004"
+      ]
+    },
+    {
+      "unit": "p6",
+      "disposition": "definition",
+      "rationale": "Cross-reference to the integer bit-sequence model in 16.3."
+    },
+    {
+      "unit": "p7",
+      "disposition": "informative",
+      "rationale": "Example paragraph is illustrative."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_16_9_100.md"
+  },
+  "review_fingerprint": "9c12d9e0a93a56fa30997b8e213168f5c57ea524bcd2211fad4ecbd5049ec838",
+  "review_rationale": "Source registration for 16.9.99-16.9.105: IALL, IAND, IANY, IBCLR, IBITS, IBSET and ICHAR (batch193). Every unit hash-verified by an independent reviewer across two rounds; bit results are observed in bit context, IBITS reaches its high-bit edge, and ICHAR(CHAR(i)) == i is planned for positions the default character set is guaranteed to contain. Source accounting only."
+}

@@ -5694,6 +5694,11 @@ See `doc/source_audits/batch_187.json`.
 Forty-one units, after two rounds. The reviewer questioned whether SELECTED_INT_KIND(18) can be relied on; it can — 7.4.3.1 p2 requires a representation with a decimal exponent range of at least 18 — so I overruled the premise and the plans now cite it. The accepted finding split IS_CONTIGUOUS's "may be of any type" admission from its restrictions.
 See `doc/source_audits/batch_195.json`.
 
+## Batch 193 — IALL through ICHAR
+
+Forty-three units of integer bit intrinsics and ICHAR, after two rounds. The ICHAR fix is a neat use of an indirect guarantee: the standard never says where any particular character sits in the processor's collating sequence, but CHAR promises ICHAR(CHAR(i)) == i across the whole range, and the default character set must hold at least the sixty-nine characters of the Fortran character set, so positions 0, 32 and 65 are safe.
+See `doc/source_audits/batch_193.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
