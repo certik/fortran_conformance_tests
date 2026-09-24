@@ -6189,6 +6189,11 @@ See `doc/source_audits/batch_266.json`.
 24 programs, 38 facets and two LFortran defects: a vector-subscripted internal file crashes the compiler instead of being diagnosed, and BLANK='ZERO' on a READ is ignored.
 See `doc/source_audits/batch_287.json`.
 
+## Batch 288 — Intrinsic fixtures EPSILON-EXTENDS_TYPE_OF (16.9.78-16.9.86 subset)
+
+29 programs, 37 facets. EPSILON and EXPONENT are exact, but only in the processor's own model, so the tests compute every expected value from RADIX and DIGITS rather than assuming binary.
+See `doc/source_audits/batch_288.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
