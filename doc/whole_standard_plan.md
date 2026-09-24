@@ -6169,6 +6169,11 @@ See `doc/source_audits/batch_280.json`.
 38 programs, 68 facets and eight LFortran defects in USE: ONLY lists, renames, operator renames and the constraints a processor must enforce on them.
 See `doc/source_audits/batch_282.json`.
 
+## Batch 286 — Pointer association fixtures 19.5.2.1-19.5.2.7
+
+11 programs, 33 facets, accepted in one round: every way the standard lists for a pointer to become associated or disassociated, each observed and each mutated away.
+See `doc/source_audits/batch_286.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
