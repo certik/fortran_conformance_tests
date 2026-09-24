@@ -6204,6 +6204,11 @@ See `doc/source_audits/batch_289.json`.
 28 programs, 61 facets, including the new conditional expression: only the chosen branch is evaluated, and both branches must agree in type, kind and rank.
 See `doc/source_audits/batch_291.json`.
 
+## Batch 293 — Intrinsic fixtures 16.9.96-16.9.100 (HUGE-IAND)
+
+19 programs, 39 facets, six LFortran defects, accepted in one round: IALL with a mask crashes the compiler, and IAND refuses a BOZ constant beside a nondefault integer.
+See `doc/source_audits/batch_293.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
