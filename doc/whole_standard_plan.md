@@ -5864,6 +5864,11 @@ See `doc/source_audits/batch_223.json`.
 Thirty-nine units accepted on the first round. The support inquiries are the guards every other Clause 17 plan uses, so their own catalogues mostly record the relation: a true result obliges the processor to the corresponding behaviour, and that behaviour is what the guarded branch tests.
 See `doc/source_audits/batch_228.json`.
 
+## Batch 219 — IEEE_QUIET_EQ through IEEE_QUIET_NE (17.11.28-17.11.33)
+
+Forty-two units after two rounds, planned against the suite's oldest recurring defect — operator tests whose inputs never reach the rows where two operators differ. The reviewer's table separates all fifteen pairs of the six comparisons; +0 vs -0 matters because the six must treat them as equal, and a NaN operand makes every comparison false except NE.
+See `doc/source_audits/batch_219.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must

@@ -1,0 +1,252 @@
+{
+  "schema_version": 1,
+  "section": "17.11.33",
+  "requirements": [
+    {
+      "id": "S17.11.33-001",
+      "title": "IEEE_QUIET_NE arguments are real with matching kind",
+      "source": "17.11.33 p3; J3/24-007, 18 December 2023, physical PDF500.",
+      "source_units": [
+        "p3"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "The actual argument A to IEEE_QUIET_NE shall be of type real, and B shall have the same type and kind type parameter as A.",
+      "facets": [
+        "ieee_quiet_ne-argument-a-real",
+        "ieee_quiet_ne-argument-b-same-type-kind"
+      ],
+      "pending": {
+        "ieee_quiet_ne-argument-a-real": "Future source-control fixture compiles IEEE_QUIET_NE(1.5, 1.5) under a supported IEEE real kind and a contrasting invalid nonreal-call source is kept diagnostic-neutral because p3 is unnumbered.",
+        "ieee_quiet_ne-argument-b-same-type-kind": "Future source-control fixture compiles same-kind real calls for default real and real64 controls; a mixed-kind negative source remains diagnostic-neutral because p3 is unnumbered."
+      },
+      "oracle": "Plans are pending and source-derived. Guarded branch plans name the IEEE inquiry probe, execute assertions only on supported branches, and record unsupported branches as skips rather than passes. Exact finite controls use representable values such as -1.0, 0.0, 1.0, 1.5, and 2.0. IEEE_COPY_SIGN, IEEE_IS_NEGATIVE, IEEE_VALUE, IEEE_IS_NAN, and IEEE_CLASS observer calls carry their own IEEE_SUPPORT_DATATYPE restriction guard before constructing or observing signed zeros, infinities, or NaNs; NaN rows additionally probe IEEE_SUPPORT_NAN(1.0), and infinity rows additionally probe IEEE_SUPPORT_INF(1.0). Named preamble FLAG-HALTING-OFF(flag, x), referenced by each flag row: after IEEE_SUPPORT_FLAG(flag, x) succeeds, execute the explicit branch \"if IEEE_SUPPORT_HALTING(flag, x): IEEE_SET_HALTING_MODE(flag,.FALSE.); else IEEE_GET_HALTING_MODE(flag,h), proceed only if h is .FALSE., else skip\". Exception-flag controls clear all supported flags before each exception row and observe each flag in its own guarded branch.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. IEEE comparison execution is guarded by the relevant IEEE_SUPPORT_DATATYPE and, for IEEE_VALUE/IEEE_IS_NAN/IEEE_CLASS NaN observers, IEEE_SUPPORT_NAN; infinity rows also require IEEE_SUPPORT_INF. Flag observations are keyed to IEEE_SUPPORT_FLAG(flag, 1.0), with halting disabled or verified quiet by the named FLAG-HALTING-OFF preamble before signaling-NaN operations. These sections contain no set/restore round-trip facet; IEEE_SET_HALTING_MODE(flag,.FALSE.) appears only in the FLAG-HALTING-OFF precondition, so calibration rule 10 changed-value and restored-original observations are not applicable here. Argument restrictions and invocation restrictions in module procedure descriptions are not numbered constraints and therefore carry no local diagnostic facet. Halting .TRUE. behavior is not exercised.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 13, and 16 for source form, type/kind concepts, declarations, expressions, execution, I/O harnesses, logical observation, and intrinsic inquiry support. Unregistered dependencies explicitly retained: neighbouring clause 17 IEEE_ARITHMETIC and IEEE_EXCEPTIONS procedures, IEEE named constants, and ISO/IEC 60559 operation semantics referenced by these sections."
+    },
+    {
+      "id": "S17.11.33-002",
+      "title": "IEEE_QUIET_NE is invoked only for supported IEEE datatypes",
+      "source": "17.11.33 p4; J3/24-007, 18 December 2023, physical PDF500.",
+      "source_units": [
+        "p4"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "IEEE_QUIET_NE(A, B) shall not be invoked with IEEE_SUPPORT_DATATYPE(A) false.",
+      "facets": [
+        "ieee_quiet_ne-requires-supported-datatype"
+      ],
+      "pending": {
+        "ieee_quiet_ne-requires-supported-datatype": "Guarded source-control plan: probe IEEE_SUPPORT_DATATYPE(1.5); supported branch exercises IEEE_QUIET_NE comparisons, unsupported branch skips invocation and records no pass."
+      },
+      "oracle": "Plans are pending and source-derived. Guarded branch plans name the IEEE inquiry probe, execute assertions only on supported branches, and record unsupported branches as skips rather than passes. Exact finite controls use representable values such as -1.0, 0.0, 1.0, 1.5, and 2.0. IEEE_COPY_SIGN, IEEE_IS_NEGATIVE, IEEE_VALUE, IEEE_IS_NAN, and IEEE_CLASS observer calls carry their own IEEE_SUPPORT_DATATYPE restriction guard before constructing or observing signed zeros, infinities, or NaNs; NaN rows additionally probe IEEE_SUPPORT_NAN(1.0), and infinity rows additionally probe IEEE_SUPPORT_INF(1.0). Named preamble FLAG-HALTING-OFF(flag, x), referenced by each flag row: after IEEE_SUPPORT_FLAG(flag, x) succeeds, execute the explicit branch \"if IEEE_SUPPORT_HALTING(flag, x): IEEE_SET_HALTING_MODE(flag,.FALSE.); else IEEE_GET_HALTING_MODE(flag,h), proceed only if h is .FALSE., else skip\". Exception-flag controls clear all supported flags before each exception row and observe each flag in its own guarded branch.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. IEEE comparison execution is guarded by the relevant IEEE_SUPPORT_DATATYPE and, for IEEE_VALUE/IEEE_IS_NAN/IEEE_CLASS NaN observers, IEEE_SUPPORT_NAN; infinity rows also require IEEE_SUPPORT_INF. Flag observations are keyed to IEEE_SUPPORT_FLAG(flag, 1.0), with halting disabled or verified quiet by the named FLAG-HALTING-OFF preamble before signaling-NaN operations. These sections contain no set/restore round-trip facet; IEEE_SET_HALTING_MODE(flag,.FALSE.) appears only in the FLAG-HALTING-OFF precondition, so calibration rule 10 changed-value and restored-original observations are not applicable here. Argument restrictions and invocation restrictions in module procedure descriptions are not numbered constraints and therefore carry no local diagnostic facet. Halting .TRUE. behavior is not exercised.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 13, and 16 for source form, type/kind concepts, declarations, expressions, execution, I/O harnesses, logical observation, and intrinsic inquiry support. Unregistered dependencies explicitly retained: neighbouring clause 17 IEEE_ARITHMETIC and IEEE_EXCEPTIONS procedures, IEEE named constants, and ISO/IEC 60559 operation semantics referenced by these sections."
+    },
+    {
+      "id": "S17.11.33-003",
+      "title": "IEEE_QUIET_NE returns default logical",
+      "source": "17.11.33 p5; J3/24-007, 18 December 2023, physical PDF500.",
+      "source_units": [
+        "p5"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The result of IEEE_QUIET_NE has type default logical.",
+      "facets": [
+        "ieee_quiet_ne-result-default-logical"
+      ],
+      "pending": {
+        "ieee_quiet_ne-result-default-logical": "Future source fixture assigns IEEE_QUIET_NE(1.5, 1.5) to a default logical sentinel under IEEE_SUPPORT_DATATYPE(1.5) support and rejects no alternate logical kind requirement."
+      },
+      "oracle": "Plans are pending and source-derived. Guarded branch plans name the IEEE inquiry probe, execute assertions only on supported branches, and record unsupported branches as skips rather than passes. Exact finite controls use representable values such as -1.0, 0.0, 1.0, 1.5, and 2.0. IEEE_COPY_SIGN, IEEE_IS_NEGATIVE, IEEE_VALUE, IEEE_IS_NAN, and IEEE_CLASS observer calls carry their own IEEE_SUPPORT_DATATYPE restriction guard before constructing or observing signed zeros, infinities, or NaNs; NaN rows additionally probe IEEE_SUPPORT_NAN(1.0), and infinity rows additionally probe IEEE_SUPPORT_INF(1.0). Named preamble FLAG-HALTING-OFF(flag, x), referenced by each flag row: after IEEE_SUPPORT_FLAG(flag, x) succeeds, execute the explicit branch \"if IEEE_SUPPORT_HALTING(flag, x): IEEE_SET_HALTING_MODE(flag,.FALSE.); else IEEE_GET_HALTING_MODE(flag,h), proceed only if h is .FALSE., else skip\". Exception-flag controls clear all supported flags before each exception row and observe each flag in its own guarded branch.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. IEEE comparison execution is guarded by the relevant IEEE_SUPPORT_DATATYPE and, for IEEE_VALUE/IEEE_IS_NAN/IEEE_CLASS NaN observers, IEEE_SUPPORT_NAN; infinity rows also require IEEE_SUPPORT_INF. Flag observations are keyed to IEEE_SUPPORT_FLAG(flag, 1.0), with halting disabled or verified quiet by the named FLAG-HALTING-OFF preamble before signaling-NaN operations. These sections contain no set/restore round-trip facet; IEEE_SET_HALTING_MODE(flag,.FALSE.) appears only in the FLAG-HALTING-OFF precondition, so calibration rule 10 changed-value and restored-original observations are not applicable here. Argument restrictions and invocation restrictions in module procedure descriptions are not numbered constraints and therefore carry no local diagnostic facet. Halting .TRUE. behavior is not exercised.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 13, and 16 for source form, type/kind concepts, declarations, expressions, execution, I/O harnesses, logical observation, and intrinsic inquiry support. Unregistered dependencies explicitly retained: neighbouring clause 17 IEEE_ARITHMETIC and IEEE_EXCEPTIONS procedures, IEEE named constants, and ISO/IEC 60559 operation semantics referenced by these sections."
+    },
+    {
+      "id": "S17.11.33-004",
+      "title": "IEEE_QUIET_NE implements quiet not-equal comparison for finite operands",
+      "source": "17.11.33 p6 finite comparison; J3/24-007, 18 December 2023, physical PDF500.",
+      "source_units": [
+        "p6.finite-comparison"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For non-NaN real operands, the IEEE_QUIET_NE result is true exactly for operands where A compares not equal to B according to the ISO/IEC 60559:2020 compareQuietNotEqual operation.",
+      "facets": [
+        "ieee_quiet_ne-finite-true-case",
+        "ieee_quiet_ne-finite-false-case",
+        "ieee_quiet_ne-signed-zero-row-false",
+        "ieee_quiet_ne-infinity-truth-table"
+      ],
+      "pending": {
+        "ieee_quiet_ne-finite-true-case": "Guarded branch plan: probe IEEE_SUPPORT_DATATYPE(1.5); supported branch asserts A=1.5 and B=2.0 returns true; unsupported branch skips with no pass.",
+        "ieee_quiet_ne-finite-false-case": "Guarded branch plan: probe IEEE_SUPPORT_DATATYPE(1.5); supported branch asserts A=1.5 and B=1.5 returns false; unsupported branch skips with no pass.",
+        "ieee_quiet_ne-signed-zero-row-false": "Guarded branch plan: probe IEEE_SUPPORT_DATATYPE(0.0) as IEEE_COPY_SIGN and IEEE_IS_NEGATIVE own restriction guard; supported branch constructs nz=IEEE_COPY_SIGN(0.0, -1.0), pre-verifies IEEE_IS_NEGATIVE(nz), and asserts IEEE_QUIET_NE(0.0, nz) and IEEE_QUIET_NE(nz, 0.0) are false; unsupported branch skips with no pass.",
+        "ieee_quiet_ne-infinity-truth-table": "Guarded branch plan: probe IEEE_SUPPORT_DATATYPE(1.0) as IEEE_VALUE own restriction guard and IEEE_SUPPORT_INF(1.0); supported branch constructs pinf=IEEE_VALUE(1.0, IEEE_POSITIVE_INF) and ninf=IEEE_VALUE(1.0, IEEE_NEGATIVE_INF), then asserts IEEE_QUIET_NE truth table (+inf, 1.0) -> true, (1.0, +inf) -> true, (-inf, 1.0) -> true, (+inf, +inf) -> false, (-inf, +inf) -> true; unsupported branch skips with no pass."
+      },
+      "oracle": "Plans are pending and source-derived. Guarded branch plans name the IEEE inquiry probe, execute assertions only on supported branches, and record unsupported branches as skips rather than passes. Exact finite controls use representable values such as -1.0, 0.0, 1.0, 1.5, and 2.0. IEEE_COPY_SIGN, IEEE_IS_NEGATIVE, IEEE_VALUE, IEEE_IS_NAN, and IEEE_CLASS observer calls carry their own IEEE_SUPPORT_DATATYPE restriction guard before constructing or observing signed zeros, infinities, or NaNs; NaN rows additionally probe IEEE_SUPPORT_NAN(1.0), and infinity rows additionally probe IEEE_SUPPORT_INF(1.0). Named preamble FLAG-HALTING-OFF(flag, x), referenced by each flag row: after IEEE_SUPPORT_FLAG(flag, x) succeeds, execute the explicit branch \"if IEEE_SUPPORT_HALTING(flag, x): IEEE_SET_HALTING_MODE(flag,.FALSE.); else IEEE_GET_HALTING_MODE(flag,h), proceed only if h is .FALSE., else skip\". Exception-flag controls clear all supported flags before each exception row and observe each flag in its own guarded branch.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. IEEE comparison execution is guarded by the relevant IEEE_SUPPORT_DATATYPE and, for IEEE_VALUE/IEEE_IS_NAN/IEEE_CLASS NaN observers, IEEE_SUPPORT_NAN; infinity rows also require IEEE_SUPPORT_INF. Flag observations are keyed to IEEE_SUPPORT_FLAG(flag, 1.0), with halting disabled or verified quiet by the named FLAG-HALTING-OFF preamble before signaling-NaN operations. These sections contain no set/restore round-trip facet; IEEE_SET_HALTING_MODE(flag,.FALSE.) appears only in the FLAG-HALTING-OFF precondition, so calibration rule 10 changed-value and restored-original observations are not applicable here. Argument restrictions and invocation restrictions in module procedure descriptions are not numbered constraints and therefore carry no local diagnostic facet. Halting .TRUE. behavior is not exercised.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 13, and 16 for source form, type/kind concepts, declarations, expressions, execution, I/O harnesses, logical observation, and intrinsic inquiry support. Unregistered dependencies explicitly retained: neighbouring clause 17 IEEE_ARITHMETIC and IEEE_EXCEPTIONS procedures, IEEE named constants, and ISO/IEC 60559 operation semantics referenced by these sections."
+    },
+    {
+      "id": "S17.11.33-005",
+      "title": "IEEE_QUIET_NE gives true for NaN operands",
+      "source": "17.11.33 p6 NaN result; J3/24-007, 18 December 2023, physical PDF500.",
+      "source_units": [
+        "p6.nan-result"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For IEEE_QUIET_NE, the result is true with a NaN operand.",
+      "facets": [
+        "ieee_quiet_ne-quiet-nan-result-true",
+        "ieee_quiet_ne-signaling-nan-result-true"
+      ],
+      "pending": {
+        "ieee_quiet_ne-quiet-nan-result-true": "Guarded branch plan: probe IEEE_SUPPORT_DATATYPE(1.0) as IEEE_VALUE and IEEE_IS_NAN own restriction guard and IEEE_SUPPORT_NAN(1.0); supported branch forms qnan=IEEE_VALUE(1.0, IEEE_QUIET_NAN), pre-verifies IEEE_IS_NAN(qnan), and asserts IEEE_QUIET_NE(qnan, 1.0), IEEE_QUIET_NE(1.0, qnan), and IEEE_QUIET_NE(qnan, qnan) are true; unsupported branch skips with no pass.",
+        "ieee_quiet_ne-signaling-nan-result-true": "Guarded branch plan: probe IEEE_SUPPORT_DATATYPE(1.0) as IEEE_VALUE, IEEE_CLASS, and IEEE_IS_NAN own restriction guard, IEEE_SUPPORT_NAN(1.0), and IEEE_SUPPORT_FLAG(IEEE_INVALID, 1.0), then apply FLAG-HALTING-OFF(IEEE_INVALID, 1.0); supported branch forms snan=IEEE_VALUE(1.0, IEEE_SIGNALING_NAN) and qnan=IEEE_VALUE(1.0, IEEE_QUIET_NAN), pre-verifies IEEE_CLASS(snan)==IEEE_SIGNALING_NAN and IEEE_IS_NAN(qnan), then asserts IEEE_QUIET_NE(snan, 1.0), IEEE_QUIET_NE(1.0, snan), IEEE_QUIET_NE(snan, snan), IEEE_QUIET_NE(qnan, snan), and IEEE_QUIET_NE(snan, qnan) are true; unsupported branch skips with no pass."
+      },
+      "oracle": "Plans are pending and source-derived. Guarded branch plans name the IEEE inquiry probe, execute assertions only on supported branches, and record unsupported branches as skips rather than passes. Exact finite controls use representable values such as -1.0, 0.0, 1.0, 1.5, and 2.0. IEEE_COPY_SIGN, IEEE_IS_NEGATIVE, IEEE_VALUE, IEEE_IS_NAN, and IEEE_CLASS observer calls carry their own IEEE_SUPPORT_DATATYPE restriction guard before constructing or observing signed zeros, infinities, or NaNs; NaN rows additionally probe IEEE_SUPPORT_NAN(1.0), and infinity rows additionally probe IEEE_SUPPORT_INF(1.0). Named preamble FLAG-HALTING-OFF(flag, x), referenced by each flag row: after IEEE_SUPPORT_FLAG(flag, x) succeeds, execute the explicit branch \"if IEEE_SUPPORT_HALTING(flag, x): IEEE_SET_HALTING_MODE(flag,.FALSE.); else IEEE_GET_HALTING_MODE(flag,h), proceed only if h is .FALSE., else skip\". Exception-flag controls clear all supported flags before each exception row and observe each flag in its own guarded branch.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. IEEE comparison execution is guarded by the relevant IEEE_SUPPORT_DATATYPE and, for IEEE_VALUE/IEEE_IS_NAN/IEEE_CLASS NaN observers, IEEE_SUPPORT_NAN; infinity rows also require IEEE_SUPPORT_INF. Flag observations are keyed to IEEE_SUPPORT_FLAG(flag, 1.0), with halting disabled or verified quiet by the named FLAG-HALTING-OFF preamble before signaling-NaN operations. These sections contain no set/restore round-trip facet; IEEE_SET_HALTING_MODE(flag,.FALSE.) appears only in the FLAG-HALTING-OFF precondition, so calibration rule 10 changed-value and restored-original observations are not applicable here. Argument restrictions and invocation restrictions in module procedure descriptions are not numbered constraints and therefore carry no local diagnostic facet. Halting .TRUE. behavior is not exercised.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 13, and 16 for source form, type/kind concepts, declarations, expressions, execution, I/O harnesses, logical observation, and intrinsic inquiry support. Unregistered dependencies explicitly retained: neighbouring clause 17 IEEE_ARITHMETIC and IEEE_EXCEPTIONS procedures, IEEE named constants, and ISO/IEC 60559 operation semantics referenced by these sections."
+    },
+    {
+      "id": "S17.11.33-006",
+      "title": "IEEE_QUIET_NE signals IEEE_INVALID for signaling NaN operands",
+      "source": "17.11.33 p6 signaling NaN; J3/24-007, 18 December 2023, physical PDF500.",
+      "source_units": [
+        "p6.signaling-nan-invalid"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For IEEE_QUIET_NE, IEEE_INVALID signals with a signaling NaN operand.",
+      "facets": [
+        "ieee_quiet_ne-signaling-nan-invalid-flag",
+        "ieee_quiet_ne-signaling-nan-other-flags-quiet"
+      ],
+      "pending": {
+        "ieee_quiet_ne-signaling-nan-invalid-flag": "Guarded branch plan: probe IEEE_SUPPORT_DATATYPE(1.0) as IEEE_VALUE, IEEE_CLASS, and IEEE_IS_NAN own restriction guard, IEEE_SUPPORT_NAN(1.0), and IEEE_SUPPORT_FLAG(IEEE_INVALID, 1.0), then apply FLAG-HALTING-OFF(IEEE_INVALID, 1.0); supported branch forms snan=IEEE_VALUE(1.0, IEEE_SIGNALING_NAN) and qnan=IEEE_VALUE(1.0, IEEE_QUIET_NAN), pre-verifies IEEE_CLASS(snan)==IEEE_SIGNALING_NAN and IEEE_IS_NAN(qnan), clears all supported flags among IEEE_INVALID, IEEE_OVERFLOW, IEEE_DIVIDE_BY_ZERO, IEEE_UNDERFLOW, IEEE_INEXACT before each row, and asserts IEEE_INVALID true after IEEE_QUIET_NE(snan, 1.0), IEEE_QUIET_NE(1.0, snan), IEEE_QUIET_NE(qnan, snan), IEEE_QUIET_NE(snan, qnan), and IEEE_QUIET_NE(snan, snan); unsupported branch skips with no pass.",
+        "ieee_quiet_ne-signaling-nan-other-flags-quiet": "Guarded branch plan: probe IEEE_SUPPORT_DATATYPE(1.0) as IEEE_VALUE, IEEE_CLASS, and IEEE_IS_NAN own restriction guard, IEEE_SUPPORT_NAN(1.0), and each flag support independently; supported branches form snan=IEEE_VALUE(1.0, IEEE_SIGNALING_NAN) and qnan=IEEE_VALUE(1.0, IEEE_QUIET_NAN), pre-verify IEEE_CLASS(snan)==IEEE_SIGNALING_NAN and IEEE_IS_NAN(qnan), then for every supported flag among IEEE_OVERFLOW, IEEE_DIVIDE_BY_ZERO, IEEE_UNDERFLOW, IEEE_INEXACT, apply FLAG-HALTING-OFF(flag, 1.0), clear all supported flags among IEEE_INVALID, IEEE_OVERFLOW, IEEE_DIVIDE_BY_ZERO, IEEE_UNDERFLOW, IEEE_INEXACT before each row, call IEEE_QUIET_NE(snan, 1.0), IEEE_QUIET_NE(1.0, snan), IEEE_QUIET_NE(qnan, snan), IEEE_QUIET_NE(snan, qnan), and IEEE_QUIET_NE(snan, snan), then assert that non-invalid flag remains quiet; unsupported branches skip with no pass."
+      },
+      "oracle": "Plans are pending and source-derived. Guarded branch plans name the IEEE inquiry probe, execute assertions only on supported branches, and record unsupported branches as skips rather than passes. Exact finite controls use representable values such as -1.0, 0.0, 1.0, 1.5, and 2.0. IEEE_COPY_SIGN, IEEE_IS_NEGATIVE, IEEE_VALUE, IEEE_IS_NAN, and IEEE_CLASS observer calls carry their own IEEE_SUPPORT_DATATYPE restriction guard before constructing or observing signed zeros, infinities, or NaNs; NaN rows additionally probe IEEE_SUPPORT_NAN(1.0), and infinity rows additionally probe IEEE_SUPPORT_INF(1.0). Named preamble FLAG-HALTING-OFF(flag, x), referenced by each flag row: after IEEE_SUPPORT_FLAG(flag, x) succeeds, execute the explicit branch \"if IEEE_SUPPORT_HALTING(flag, x): IEEE_SET_HALTING_MODE(flag,.FALSE.); else IEEE_GET_HALTING_MODE(flag,h), proceed only if h is .FALSE., else skip\". Exception-flag controls clear all supported flags before each exception row and observe each flag in its own guarded branch.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. IEEE comparison execution is guarded by the relevant IEEE_SUPPORT_DATATYPE and, for IEEE_VALUE/IEEE_IS_NAN/IEEE_CLASS NaN observers, IEEE_SUPPORT_NAN; infinity rows also require IEEE_SUPPORT_INF. Flag observations are keyed to IEEE_SUPPORT_FLAG(flag, 1.0), with halting disabled or verified quiet by the named FLAG-HALTING-OFF preamble before signaling-NaN operations. These sections contain no set/restore round-trip facet; IEEE_SET_HALTING_MODE(flag,.FALSE.) appears only in the FLAG-HALTING-OFF precondition, so calibration rule 10 changed-value and restored-original observations are not applicable here. Argument restrictions and invocation restrictions in module procedure descriptions are not numbered constraints and therefore carry no local diagnostic facet. Halting .TRUE. behavior is not exercised.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 13, and 16 for source form, type/kind concepts, declarations, expressions, execution, I/O harnesses, logical observation, and intrinsic inquiry support. Unregistered dependencies explicitly retained: neighbouring clause 17 IEEE_ARITHMETIC and IEEE_EXCEPTIONS procedures, IEEE named constants, and ISO/IEC 60559 operation semantics referenced by these sections."
+    },
+    {
+      "id": "S17.11.33-007",
+      "title": "IEEE_QUIET_NE signals no exception for finite and quiet-NaN operands",
+      "source": "17.11.33 p6 quiet operands; J3/24-007, 18 December 2023, physical PDF500.",
+      "source_units": [
+        "p6.no-exception-quiet-operands"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For IEEE_QUIET_NE, no exception is signaled except for signaling NaN operands.",
+      "facets": [
+        "ieee_quiet_ne-finite-no-exception-flags",
+        "ieee_quiet_ne-quiet-nan-no-exception-flags"
+      ],
+      "pending": {
+        "ieee_quiet_ne-finite-no-exception-flags": "Guarded branch plan: probe IEEE_SUPPORT_DATATYPE(1.5); before the finite row, clear all supported flags among IEEE_INVALID, IEEE_OVERFLOW, IEEE_DIVIDE_BY_ZERO, IEEE_UNDERFLOW, IEEE_INEXACT; for each supported flag, probe IEEE_SUPPORT_FLAG(flag, 1.5), apply FLAG-HALTING-OFF(flag, 1.5), call IEEE_QUIET_NE(1.5, 2.0) and IEEE_QUIET_NE(2.0, 1.5), then assert that flag remains quiet; unsupported branches skip with no pass.",
+        "ieee_quiet_ne-quiet-nan-no-exception-flags": "Guarded branch plan: probe IEEE_SUPPORT_DATATYPE(1.0) as IEEE_VALUE and IEEE_IS_NAN own restriction guard and IEEE_SUPPORT_NAN(1.0); form qnan=IEEE_VALUE(1.0, IEEE_QUIET_NAN) and pre-verify IEEE_IS_NAN(qnan); before each quiet-NaN row, clear all supported flags among IEEE_INVALID, IEEE_OVERFLOW, IEEE_DIVIDE_BY_ZERO, IEEE_UNDERFLOW, IEEE_INEXACT; for each supported flag, probe IEEE_SUPPORT_FLAG(flag, 1.0), apply FLAG-HALTING-OFF(flag, 1.0), call IEEE_QUIET_NE(qnan, 1.0), IEEE_QUIET_NE(1.0, qnan), and IEEE_QUIET_NE(qnan, qnan), then assert that flag remains quiet; unsupported branches skip with no pass."
+      },
+      "oracle": "Plans are pending and source-derived. Guarded branch plans name the IEEE inquiry probe, execute assertions only on supported branches, and record unsupported branches as skips rather than passes. Exact finite controls use representable values such as -1.0, 0.0, 1.0, 1.5, and 2.0. IEEE_COPY_SIGN, IEEE_IS_NEGATIVE, IEEE_VALUE, IEEE_IS_NAN, and IEEE_CLASS observer calls carry their own IEEE_SUPPORT_DATATYPE restriction guard before constructing or observing signed zeros, infinities, or NaNs; NaN rows additionally probe IEEE_SUPPORT_NAN(1.0), and infinity rows additionally probe IEEE_SUPPORT_INF(1.0). Named preamble FLAG-HALTING-OFF(flag, x), referenced by each flag row: after IEEE_SUPPORT_FLAG(flag, x) succeeds, execute the explicit branch \"if IEEE_SUPPORT_HALTING(flag, x): IEEE_SET_HALTING_MODE(flag,.FALSE.); else IEEE_GET_HALTING_MODE(flag,h), proceed only if h is .FALSE., else skip\". Exception-flag controls clear all supported flags before each exception row and observe each flag in its own guarded branch.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. IEEE comparison execution is guarded by the relevant IEEE_SUPPORT_DATATYPE and, for IEEE_VALUE/IEEE_IS_NAN/IEEE_CLASS NaN observers, IEEE_SUPPORT_NAN; infinity rows also require IEEE_SUPPORT_INF. Flag observations are keyed to IEEE_SUPPORT_FLAG(flag, 1.0), with halting disabled or verified quiet by the named FLAG-HALTING-OFF preamble before signaling-NaN operations. These sections contain no set/restore round-trip facet; IEEE_SET_HALTING_MODE(flag,.FALSE.) appears only in the FLAG-HALTING-OFF precondition, so calibration rule 10 changed-value and restored-original observations are not applicable here. Argument restrictions and invocation restrictions in module procedure descriptions are not numbered constraints and therefore carry no local diagnostic facet. Halting .TRUE. behavior is not exercised.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 13, and 16 for source form, type/kind concepts, declarations, expressions, execution, I/O harnesses, logical observation, and intrinsic inquiry support. Unregistered dependencies explicitly retained: neighbouring clause 17 IEEE_ARITHMETIC and IEEE_EXCEPTIONS procedures, IEEE named constants, and ISO/IEC 60559 operation semantics referenced by these sections."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "definition",
+      "rationale": "Description names the IEEE_QUIET_NE quiet comparison; executable semantics are in p6."
+    },
+    {
+      "unit": "p2",
+      "disposition": "definition",
+      "rationale": "Classifies IEEE_QUIET_NE as elemental; elemental procedure obligations are owned by general module procedure rules."
+    },
+    {
+      "unit": "p3",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.11.33-001"
+      ],
+      "rationale": "Unnumbered program restrictions on argument type and matching kind."
+    },
+    {
+      "unit": "p4",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.11.33-002"
+      ],
+      "rationale": "Unnumbered invocation restriction tied to IEEE_SUPPORT_DATATYPE."
+    },
+    {
+      "unit": "p5",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.11.33-003"
+      ],
+      "rationale": "Processor result-characteristics requirement."
+    },
+    {
+      "unit": "p6",
+      "disposition": "structural",
+      "rationale": "Mixed finite-result, NaN-result, and exception-signaling effects are split into fine units."
+    },
+    {
+      "unit": "p6.finite-comparison",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.11.33-004"
+      ],
+      "rationale": "Exact quiet comparison result for non-NaN operands."
+    },
+    {
+      "unit": "p6.nan-result",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.11.33-005"
+      ],
+      "rationale": "Exact quiet comparison result for quiet NaN, signaling NaN, and two-NaN operand cases."
+    },
+    {
+      "unit": "p6.signaling-nan-invalid",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.11.33-006"
+      ],
+      "rationale": "Exception-signaling requirement for signaling NaN operands."
+    },
+    {
+      "unit": "p6.no-exception-quiet-operands",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.11.33-007"
+      ],
+      "rationale": "No-exception requirement for finite and quiet-NaN operands across observable IEEE flags."
+    },
+    {
+      "unit": "p7",
+      "disposition": "informative",
+      "rationale": "Example is illustrative; the normative result and exception behavior are accounted through p6."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_17_11_33.md"
+  },
+  "review_state": "reviewed",
+  "subunits": {
+    "p6": [
+      "p6.finite-comparison",
+      "p6.nan-result",
+      "p6.signaling-nan-invalid",
+      "p6.no-exception-quiet-operands"
+    ]
+  },
+  "review_fingerprint": "ede4e36bae7549033a24831bbcdc5ff58567910588e15ec1f79b2e8cd07cdfb3",
+  "review_rationale": "Source registration for 17.11.28-17.11.33: IEEE_QUIET_EQ, IEEE_QUIET_GE, IEEE_QUIET_GT, IEEE_QUIET_LE, IEEE_QUIET_LT and IEEE_QUIET_NE (batch219). Every unit hash-verified by an independent reviewer across two rounds; the planned rows separate every pair of the six comparisons, including signed zeros, infinities and NaNs, and exception rows check that only IEEE_INVALID signals. Source accounting only."
+}
