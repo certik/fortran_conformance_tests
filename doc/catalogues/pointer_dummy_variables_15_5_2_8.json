@@ -1,0 +1,231 @@
+{
+  "schema_version": 1,
+  "section": "15.5.2.8",
+  "subunits": {
+    "p2": [
+      "p2.non-intent-in-pointer-actual-required",
+      "p2.intent-in-pointer-or-target-required",
+      "p2.nonpointer-target-association"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S15.5.2.8-001",
+      "title": "Pointer dummy-variable requirements apply to actual arguments for dummy data pointers",
+      "source": "15.5.2.8, J3/24-007, 18 December 2023, physical PDF343.",
+      "source_units": [
+        "p1"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The subclause applies to actual arguments that correspond to dummy data pointers.",
+      "facets": [
+        "dummy-data-pointer-scope"
+      ],
+      "pending": {
+        "dummy-data-pointer-scope": "PENDING source-control plan: pass a target actual value 42 to an INTENT(IN) dummy data pointer and a pointer actual associated with target value 43 to an INTENT(INOUT) dummy data pointer; procedures copy exact values to sentinels -42 and -43."
+      },
+      "oracle": "Plans are pending and source-derived. Positive runtime plans establish a distinguished non-default state first, then observe exact integer, logical, allocation, bounds, association, or procedure-result properties fixed by this source unit. Negative source controls are not diagnostic claims unless a numbered constraint names a required rejection.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Unnumbered program restrictions do not create required diagnostics. Notes are informative only.",
+      "dependencies": "Dependencies retained: clauses 7, 8, 9, 10, 14, 15.3, 15.4, 15.5, 15.6, 16, and 19 for type compatibility, attributes, allocation, pointer assignment, modules, procedure characteristics, interfaces, argument association, intrinsic procedure identity, and host association. Processor conformance diagnostics in clause 4 apply only to numbered constraints and syntax rules."
+    },
+    {
+      "id": "C1550",
+      "title": "Actual arguments for CONTIGUOUS dummy pointers must be simply contiguous",
+      "source": "15.5.2.8, J3/24-007, 18 December 2023, physical PDF343.",
+      "source_units": [
+        "C1550"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "The actual argument corresponding to a dummy pointer with the CONTIGUOUS attribute is required to be simply contiguous.",
+      "facets": [
+        "contiguous-dummy-pointer-simply-contiguous-positive",
+        "contiguous-dummy-pointer-noncontiguous-actual-negative"
+      ],
+      "pending": {
+        "contiguous-dummy-pointer-simply-contiguous-positive": "PENDING positive control: explicit-interface subroutine s(p) has INTEGER, POINTER, CONTIGUOUS, INTENT(IN) :: p(:); caller declares INTEGER, TARGET :: a(4)=[39,40,41,42] and calls s(a(::1)), where s verifies p(1)==39 from sentinel -39.",
+        "contiguous-dummy-pointer-noncontiguous-actual-negative": "PENDING diagnostic/control pair: the rejected program has the same names, dummy interface, section form, and observable first-element result as the positive control, changing only the actual section stride from CALL s(a(::1)) to CALL s(a(::2)); a(::2) is not simply contiguous for the CONTIGUOUS dummy pointer. A required diagnostic is expected, with no assertion on diagnostic wording."
+      },
+      "oracle": "Plans are pending and source-derived. Positive runtime plans establish a distinguished non-default state first, then observe exact integer, logical, allocation, bounds, association, or procedure-result properties fixed by this source unit. Negative source controls are not diagnostic claims unless a numbered constraint names a required rejection.",
+      "oracle_limitation": "Required diagnostic source plan only. This packet creates no diagnostic fixture; the future negative must differ from its positive control only in the actual argument contiguity.",
+      "dependencies": "Dependencies retained: clauses 7, 8, 9, 10, 14, 15.3, 15.4, 15.5, 15.6, 16, and 19 for type compatibility, attributes, allocation, pointer assignment, modules, procedure characteristics, interfaces, argument association, intrinsic procedure identity, and host association. Processor conformance diagnostics in clause 4 apply only to numbered constraints and syntax rules."
+    },
+    {
+      "id": "C1551",
+      "title": "Actual arguments for dummy pointers must not be coindexed objects",
+      "source": "15.5.2.8, J3/24-007, 18 December 2023, physical PDF343.",
+      "source_units": [
+        "C1551"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "The actual argument corresponding to a dummy pointer is prohibited from being a coindexed object.",
+      "facets": [
+        "dummy-pointer-coindexed-actual-out-of-scope"
+      ],
+      "pending": {
+        "dummy-pointer-coindexed-actual-out-of-scope": "OUT OF SCOPE: coindexed-object constraint; out of scope by user decision; a compile-time diagnostic plan would be possible if scope is extended."
+      },
+      "oracle": "Plans are pending and source-derived. Positive runtime plans establish a distinguished non-default state first, then observe exact integer, logical, allocation, bounds, association, or procedure-result properties fixed by this source unit. Negative source controls are not diagnostic claims unless a numbered constraint names a required rejection.",
+      "oracle_limitation": "Coindexed-object constraint; out of scope by user decision; a compile-time diagnostic plan would be possible if scope is extended.",
+      "dependencies": "Dependencies retained: clauses 7, 8, 9, 10, 14, 15.3, 15.4, 15.5, 15.6, 16, and 19 for type compatibility, attributes, allocation, pointer assignment, modules, procedure characteristics, interfaces, argument association, intrinsic procedure identity, and host association. Processor conformance diagnostics in clause 4 apply only to numbered constraints and syntax rules."
+    },
+    {
+      "id": "S15.5.2.8-002",
+      "title": "Non-INTENT(IN) dummy data pointers require pointer actual arguments",
+      "source": "15.5.2.8, J3/24-007, 18 December 2023, physical PDF343.",
+      "source_units": [
+        "p2.non-intent-in-pointer-actual-required"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "A dummy data pointer without INTENT(IN) requires the actual argument to be a pointer.",
+      "facets": [
+        "non-intent-in-dummy-pointer-actual-pointer-required"
+      ],
+      "pending": {
+        "non-intent-in-dummy-pointer-actual-pointer-required": "PENDING positive plan: pointer actual p is first associated with target t initialized to 42, then passed to INTEGER, POINTER, INTENT(INOUT) dummy q; the procedure verifies ASSOCIATED(q)==.TRUE. and q==42 from sentinels .FALSE. and -42. A target-only actual companion is nonconforming with no required diagnostic claimed here."
+      },
+      "oracle": "Plans are pending and source-derived. Positive runtime plans establish a distinguished non-default state first, then observe exact integer, logical, allocation, bounds, association, or procedure-result properties fixed by this source unit. Negative source controls are not diagnostic claims unless a numbered constraint names a required rejection.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Unnumbered program restrictions do not create required diagnostics. Notes are informative only.",
+      "dependencies": "Dependencies retained: clauses 7, 8, 9, 10, 14, 15.3, 15.4, 15.5, 15.6, 16, and 19 for type compatibility, attributes, allocation, pointer assignment, modules, procedure characteristics, interfaces, argument association, intrinsic procedure identity, and host association. Processor conformance diagnostics in clause 4 apply only to numbered constraints and syntax rules."
+    },
+    {
+      "id": "S15.5.2.8-003",
+      "title": "INTENT(IN) dummy data pointers accept pointer actuals or valid pointer-assignment targets",
+      "source": "15.5.2.8, J3/24-007, 18 December 2023, physical PDF343.",
+      "source_units": [
+        "p2.intent-in-pointer-or-target-required"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "A dummy data pointer with INTENT(IN) requires the actual argument to be a pointer or a valid target for the dummy pointer in a pointer assignment statement.",
+      "facets": [
+        "intent-in-dummy-pointer-actual-pointer-or-target"
+      ],
+      "pending": {
+        "intent-in-dummy-pointer-actual-pointer-or-target": "PENDING positive plan: run two controls, one passing pointer actual p associated with value 41 and one passing TARGET actual t with value 42 to INTEGER, POINTER, INTENT(IN) dummy q; each procedure copies q to distinct sentinels -41 and -42."
+      },
+      "oracle": "Plans are pending and source-derived. Positive runtime plans establish a distinguished non-default state first, then observe exact integer, logical, allocation, bounds, association, or procedure-result properties fixed by this source unit. Negative source controls are not diagnostic claims unless a numbered constraint names a required rejection.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Unnumbered program restrictions do not create required diagnostics. Notes are informative only.",
+      "dependencies": "Dependencies retained: clauses 7, 8, 9, 10, 14, 15.3, 15.4, 15.5, 15.6, 16, and 19 for type compatibility, attributes, allocation, pointer assignment, modules, procedure characteristics, interfaces, argument association, intrinsic procedure identity, and host association. Processor conformance diagnostics in clause 4 apply only to numbered constraints and syntax rules."
+    },
+    {
+      "id": "S15.5.2.8-004",
+      "title": "INTENT(IN) dummy data pointers become associated with nonpointer target actual arguments",
+      "source": "15.5.2.8, J3/24-007, 18 December 2023, physical PDF343.",
+      "source_units": [
+        "p2.nonpointer-target-association"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For an INTENT(IN) dummy data pointer with a nonpointer actual argument, the dummy pointer becomes pointer associated with the actual argument.",
+      "facets": [
+        "intent-in-dummy-pointer-associated-with-target-actual"
+      ],
+      "pending": {
+        "intent-in-dummy-pointer-associated-with-target-actual": "PENDING positive plan: TARGET actual t starts with value 42 and a separate result sentinel -42; subroutine s has INTEGER, POINTER, INTENT(IN) :: q, records ASSOCIATED(q,t)==.TRUE. through a host-associated TARGET t and copies q to the result, proving q is associated with the target actual."
+      },
+      "oracle": "Plans are pending and source-derived. Positive runtime plans establish a distinguished non-default state first, then observe exact integer, logical, allocation, bounds, association, or procedure-result properties fixed by this source unit. Negative source controls are not diagnostic claims unless a numbered constraint names a required rejection.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Unnumbered program restrictions do not create required diagnostics. Notes are informative only.",
+      "dependencies": "Dependencies retained: clauses 7, 8, 9, 10, 14, 15.3, 15.4, 15.5, 15.6, 16, and 19 for type compatibility, attributes, allocation, pointer assignment, modules, procedure characteristics, interfaces, argument association, intrinsic procedure identity, and host association. Processor conformance diagnostics in clause 4 apply only to numbered constraints and syntax rules."
+    },
+    {
+      "id": "S15.5.2.8-005",
+      "title": "INTENT(OUT) dummy data pointers make the actual pointer association status undefined on invocation",
+      "source": "15.5.2.8, J3/24-007, 18 December 2023, physical PDF343.",
+      "source_units": [
+        "p3"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For an INTENT(OUT) dummy data pointer, the pointer association status of the actual argument becomes undefined on procedure invocation.",
+      "facets": [
+        "intent-out-dummy-pointer-actual-status-undefined"
+      ],
+      "pending": {
+        "intent-out-dummy-pointer-actual-status-undefined": "PENDING limitation record: caller first associates actual pointer p with target bad=17, then procedure with POINTER, INTENT(OUT) dummy q may pointer-assign q to good=42 for later observations, but no conforming assertion can inspect the entry undefined status directly; ASSOCIATED(p) on an undefined pointer is not a portable oracle."
+      },
+      "oracle": "Plans are pending and source-derived. Positive runtime plans establish a distinguished non-default state first, then observe exact integer, logical, allocation, bounds, association, or procedure-result properties fixed by this source unit. Negative source controls are not diagnostic claims unless a numbered constraint names a required rejection.",
+      "oracle_limitation": "The stated entry status is undefined. A conforming test cannot inquire or dereference the undefined actual pointer to prove the entry state; later pointer assignment only proves a later definition, not the paragraph effect itself.",
+      "dependencies": "Dependencies retained: clauses 7, 8, 9, 10, 14, 15.3, 15.4, 15.5, 15.6, 16, and 19 for type compatibility, attributes, allocation, pointer assignment, modules, procedure characteristics, interfaces, argument association, intrinsic procedure identity, and host association. Processor conformance diagnostics in clause 4 apply only to numbered constraints and syntax rules."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "definition",
+      "requirements": [
+        "S15.5.2.8-001"
+      ],
+      "rationale": "Applicability statement for dummy data pointers."
+    },
+    {
+      "unit": "C1550",
+      "disposition": "requirements",
+      "requirements": [
+        "C1550"
+      ],
+      "rationale": "Numbered constraint; grep found no existing C1550 coverage."
+    },
+    {
+      "unit": "C1551",
+      "disposition": "requirements",
+      "requirements": [
+        "C1551"
+      ],
+      "rationale": "Numbered constraint; grep found no existing C1551 coverage. Coindexed execution remains out of scope."
+    },
+    {
+      "unit": "note1",
+      "disposition": "informative",
+      "rationale": "Explanatory note about intrinsic procedures; no requirement is based on it."
+    },
+    {
+      "unit": "p2",
+      "disposition": "structural",
+      "rationale": "Mixed actual eligibility restrictions and nonpointer-target association effect are split."
+    },
+    {
+      "unit": "p2.non-intent-in-pointer-actual-required",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.5.2.8-002"
+      ]
+    },
+    {
+      "unit": "p2.intent-in-pointer-or-target-required",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.5.2.8-003"
+      ]
+    },
+    {
+      "unit": "p2.nonpointer-target-association",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.5.2.8-004"
+      ]
+    },
+    {
+      "unit": "p3",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.5.2.8-005"
+      ],
+      "rationale": "Undefined pointer association status effect; no direct portable runtime oracle."
+    },
+    {
+      "unit": "note2",
+      "disposition": "informative",
+      "rationale": "Cross-reference note only; no requirement is based on it."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_15_5_2_8.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "ae8c7bbfe2f84cc5e5dec72d042d9834f31a964186cc7c14505ad741b393c262",
+  "review_rationale": "Source registration for 15.5.2.6-15.5.2.10: allocatable and pointer dummy variables, coarray dummies and dummy procedure entities (batch232). Every unit hash-verified by an independent reviewer across two rounds; C1550 has a one-feature diagnostic plan, while C1551 and all coarray-dummy facets are out of scope by user decision. Source accounting only."
+}

@@ -1,0 +1,202 @@
+{
+  "schema_version": 1,
+  "section": "15.5.2.6",
+  "subunits": {
+    "p3": [
+      "p3.rank-match",
+      "p3.type-parameter-agreement",
+      "p3.assumed-type-parameter-capture"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S15.5.2.6-001",
+      "title": "Allocatable and pointer dummy-variable requirements apply to same-attribute actual and dummy arguments",
+      "source": "15.5.2.6, J3/24-007, 18 December 2023, physical PDF342.",
+      "source_units": [
+        "p1"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The subclause applies to an actual argument with the ALLOCATABLE or POINTER attribute that corresponds to a dummy argument with the same attribute.",
+      "facets": [
+        "allocatable-pointer-same-attribute-scope"
+      ],
+      "pending": {
+        "allocatable-pointer-same-attribute-scope": "PENDING source-control plan: declare one allocatable actual/dummy pair and one pointer actual/dummy pair, initialize each actual to sentinels -31 and -41, call procedures that copy the values to result sentinels -301 and -401, and keep mismatched-attribute cases under the later rule that owns their rejection."
+      },
+      "oracle": "Plans are pending and source-derived. Positive runtime plans establish a distinguished non-default state first, then observe exact integer, logical, allocation, bounds, association, or procedure-result properties fixed by this source unit. Negative source controls are not diagnostic claims unless a numbered constraint names a required rejection.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Unnumbered program restrictions do not create required diagnostics. Notes are informative only.",
+      "dependencies": "Dependencies retained: clauses 7, 8, 9, 10, 14, 15.3, 15.4, 15.5, 15.6, 16, and 19 for type compatibility, attributes, allocation, pointer assignment, modules, procedure characteristics, interfaces, argument association, intrinsic procedure identity, and host association. Processor conformance diagnostics in clause 4 apply only to numbered constraints and syntax rules."
+    },
+    {
+      "id": "S15.5.2.6-002",
+      "title": "Polymorphism and declared type must correspond for allocatable or pointer actual and dummy arguments",
+      "source": "15.5.2.6, J3/24-007, 18 December 2023, physical PDF342.",
+      "source_units": [
+        "p2"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "For ALLOCATABLE or POINTER actual and dummy arguments, the actual argument is polymorphic exactly in the cases where the associated dummy argument is polymorphic; both are unlimited polymorphic or the declared type of the actual is the same as the declared type of the dummy.",
+      "facets": [
+        "allocatable-pointer-polymorphic-correspondence",
+        "allocatable-pointer-unlimited-polymorphic-correspondence",
+        "allocatable-pointer-declared-type-same"
+      ],
+      "pending": {
+        "allocatable-pointer-polymorphic-correspondence": "PENDING positive plan: CLASS(base), POINTER actual associated with an extended target storing tag 42 is passed to CLASS(base), POINTER dummy; SELECT TYPE in the procedure writes exact 42 to a result initialized to -42, with a source-control companion changing only the dummy declaration to TYPE(base).",
+        "allocatable-pointer-unlimited-polymorphic-correspondence": "PENDING positive plan: CLASS(*), ALLOCATABLE actual allocated as INTEGER with value 42 is passed to CLASS(*), ALLOCATABLE dummy; SELECT TYPE integer branch copies 42 to a sentinel -42, with a companion changing only one side away from unlimited polymorphic.",
+        "allocatable-pointer-declared-type-same": "PENDING positive plan: TYPE(base), ALLOCATABLE actual allocated with component 42 is passed to TYPE(base), ALLOCATABLE dummy and copied to a sentinel -42; the nonconforming companion changes only the dummy declared type to a distinct extension type and claims no required diagnostic here."
+      },
+      "oracle": "Plans are pending and source-derived. Positive runtime plans establish a distinguished non-default state first, then observe exact integer, logical, allocation, bounds, association, or procedure-result properties fixed by this source unit. Negative source controls are not diagnostic claims unless a numbered constraint names a required rejection.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Unnumbered program restrictions do not create required diagnostics. Notes are informative only.",
+      "dependencies": "Dependencies retained: clauses 7, 8, 9, 10, 14, 15.3, 15.4, 15.5, 15.6, 16, and 19 for type compatibility, attributes, allocation, pointer assignment, modules, procedure characteristics, interfaces, argument association, intrinsic procedure identity, and host association. Processor conformance diagnostics in clause 4 apply only to numbered constraints and syntax rules."
+    },
+    {
+      "id": "S15.5.2.6-003",
+      "title": "Rank must match unless the dummy argument is assumed-rank",
+      "source": "15.5.2.6, J3/24-007, 18 December 2023, physical PDF343.",
+      "source_units": [
+        "p3.rank-match"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "The rank of the actual argument is required to be the same as that of the dummy argument, apart from an assumed-rank dummy argument.",
+      "facets": [
+        "allocatable-pointer-rank-match",
+        "assumed-rank-dummy-rank-admission"
+      ],
+      "pending": {
+        "allocatable-pointer-rank-match": "PENDING positive plan: rank-one allocatable actual with bounds -1:1 and values [40,41,42] is passed to rank-one allocatable dummy; the procedure verifies LBOUND -1, UBOUND 1, and element zero equals 41 from result sentinels -11, -12, and -13.",
+        "assumed-rank-dummy-rank-admission": "PENDING positive plan: rank-two pointer actual associated with a 2 by 3 target is passed to POINTER assumed-rank dummy; SELECT RANK(2) verifies extents 2 and 3 and value 42 from sentinels -2, -3, and -42."
+      },
+      "oracle": "Plans are pending and source-derived. Positive runtime plans establish a distinguished non-default state first, then observe exact integer, logical, allocation, bounds, association, or procedure-result properties fixed by this source unit. Negative source controls are not diagnostic claims unless a numbered constraint names a required rejection.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Unnumbered program restrictions do not create required diagnostics. Notes are informative only.",
+      "dependencies": "Dependencies retained: clauses 7, 8, 9, 10, 14, 15.3, 15.4, 15.5, 15.6, 16, and 19 for type compatibility, attributes, allocation, pointer assignment, modules, procedure characteristics, interfaces, argument association, intrinsic procedure identity, and host association. Processor conformance diagnostics in clause 4 apply only to numbered constraints and syntax rules."
+    },
+    {
+      "id": "S15.5.2.6-004",
+      "title": "Nonassumed and nondeferred type parameter values must agree",
+      "source": "15.5.2.6, J3/24-007, 18 December 2023, physical PDF343.",
+      "source_units": [
+        "p3.type-parameter-agreement"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "Type parameter values of the actual argument are required to agree with corresponding dummy-argument type parameters that are not assumed or deferred.",
+      "facets": [
+        "allocatable-pointer-type-parameter-agreement"
+      ],
+      "pending": {
+        "allocatable-pointer-type-parameter-agreement": "PENDING positive plan: CHARACTER(LEN=2), ALLOCATABLE actual initialized to \"42\" is passed to CHARACTER(LEN=2), ALLOCATABLE dummy; the procedure copies LEN 2 and text \"42\" to sentinels -2 and \"##\", with a companion changing only the dummy length to 3."
+      },
+      "oracle": "Plans are pending and source-derived. Positive runtime plans establish a distinguished non-default state first, then observe exact integer, logical, allocation, bounds, association, or procedure-result properties fixed by this source unit. Negative source controls are not diagnostic claims unless a numbered constraint names a required rejection.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Unnumbered program restrictions do not create required diagnostics. Notes are informative only.",
+      "dependencies": "Dependencies retained: clauses 7, 8, 9, 10, 14, 15.3, 15.4, 15.5, 15.6, 16, and 19 for type compatibility, attributes, allocation, pointer assignment, modules, procedure characteristics, interfaces, argument association, intrinsic procedure identity, and host association. Processor conformance diagnostics in clause 4 apply only to numbered constraints and syntax rules."
+    },
+    {
+      "id": "S15.5.2.6-005",
+      "title": "Assumed dummy type parameters are taken from the effective argument",
+      "source": "15.5.2.6, J3/24-007, 18 December 2023, physical PDF343.",
+      "source_units": [
+        "p3.assumed-type-parameter-capture"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Values of assumed type parameters of the dummy argument are assumed from the corresponding type parameters of its effective argument.",
+      "facets": [
+        "allocatable-pointer-assumed-type-parameter-capture"
+      ],
+      "pending": {
+        "allocatable-pointer-assumed-type-parameter-capture": "PENDING positive plan: CHARACTER(LEN=3), POINTER actual associated with target \"abc\" is passed to CHARACTER(LEN=*), POINTER dummy; the procedure records LEN(dummy)==3 and the third character \"c\" from sentinels -3 and \"#\"."
+      },
+      "oracle": "Plans are pending and source-derived. Positive runtime plans establish a distinguished non-default state first, then observe exact integer, logical, allocation, bounds, association, or procedure-result properties fixed by this source unit. Negative source controls are not diagnostic claims unless a numbered constraint names a required rejection.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Unnumbered program restrictions do not create required diagnostics. Notes are informative only.",
+      "dependencies": "Dependencies retained: clauses 7, 8, 9, 10, 14, 15.3, 15.4, 15.5, 15.6, 16, and 19 for type compatibility, attributes, allocation, pointer assignment, modules, procedure characteristics, interfaces, argument association, intrinsic procedure identity, and host association. Processor conformance diagnostics in clause 4 apply only to numbered constraints and syntax rules."
+    },
+    {
+      "id": "S15.5.2.6-006",
+      "title": "Actual arguments must have the same deferred type parameters as the dummy argument",
+      "source": "15.5.2.6, J3/24-007, 18 December 2023, physical PDF343.",
+      "source_units": [
+        "p4"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "The actual argument is required to have deferred the same type parameters as the dummy argument.",
+      "facets": [
+        "allocatable-pointer-same-deferred-type-parameters"
+      ],
+      "pending": {
+        "allocatable-pointer-same-deferred-type-parameters": "PENDING positive plan: deferred-length CHARACTER(:), ALLOCATABLE actual allocated with length 2 and value \"42\" is passed to CHARACTER(:), ALLOCATABLE dummy; the procedure verifies LEN 2 and value \"42\" from sentinels -2 and \"##\", with a source-control companion replacing one side with explicit length."
+      },
+      "oracle": "Plans are pending and source-derived. Positive runtime plans establish a distinguished non-default state first, then observe exact integer, logical, allocation, bounds, association, or procedure-result properties fixed by this source unit. Negative source controls are not diagnostic claims unless a numbered constraint names a required rejection.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Unnumbered program restrictions do not create required diagnostics. Notes are informative only.",
+      "dependencies": "Dependencies retained: clauses 7, 8, 9, 10, 14, 15.3, 15.4, 15.5, 15.6, 16, and 19 for type compatibility, attributes, allocation, pointer assignment, modules, procedure characteristics, interfaces, argument association, intrinsic procedure identity, and host association. Processor conformance diagnostics in clause 4 apply only to numbered constraints and syntax rules."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "definition",
+      "requirements": [
+        "S15.5.2.6-001"
+      ],
+      "rationale": "Applicability statement for same-attribute allocatable and pointer actual/dummy pairs."
+    },
+    {
+      "unit": "p2",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.5.2.6-002"
+      ],
+      "rationale": "Polymorphism and declared-type restrictions."
+    },
+    {
+      "unit": "note-unnumbered",
+      "disposition": "informative",
+      "rationale": "Explanatory note only; no requirement is based on it."
+    },
+    {
+      "unit": "p3",
+      "disposition": "structural",
+      "rationale": "Mixed rank, type-parameter agreement, and assumed-parameter capture obligations are split."
+    },
+    {
+      "unit": "p3.rank-match",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.5.2.6-003"
+      ]
+    },
+    {
+      "unit": "p3.type-parameter-agreement",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.5.2.6-004"
+      ]
+    },
+    {
+      "unit": "p3.assumed-type-parameter-capture",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.5.2.6-005"
+      ]
+    },
+    {
+      "unit": "p4",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.5.2.6-006"
+      ],
+      "rationale": "Deferred type-parameter matching restriction."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_15_5_2_6.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "d4353c745d625d2a15e5e9f46bffe4bb92fa89f925897c6c6b358214f0d5f1e2",
+  "review_rationale": "Source registration for 15.5.2.6-15.5.2.10: allocatable and pointer dummy variables, coarray dummies and dummy procedure entities (batch232). Every unit hash-verified by an independent reviewer across two rounds; C1550 has a one-feature diagnostic plan, while C1551 and all coarray-dummy facets are out of scope by user decision. Source accounting only."
+}

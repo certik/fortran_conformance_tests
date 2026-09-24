@@ -5904,6 +5904,11 @@ See `doc/source_audits/batch_227.json`.
 Thirty-one units, twenty numbered, after two rounds. Its findings produced the rule now applied to every Clause 15 constraint: the positive control must be the rejected program with the one constrained feature changed — same names, same form, same generic identifier. A control that renames the generic proves the new name is fine, not that the constraint is enforced.
 See `doc/source_audits/batch_221.json`.
 
+## Batch 232 — Allocatable, pointer, coarray and procedure dummies (15.5.2.6-15.5.2.10)
+
+Thirty-one units after two rounds. The only finding was a scope slip: a coindexed actual argument is coarray material however it is phrased, so C1551 joins the other coarray constraints as a recorded, reversible out-of-scope decision.
+See `doc/source_audits/batch_232.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
