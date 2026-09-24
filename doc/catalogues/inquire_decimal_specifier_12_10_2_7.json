@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "section": "12.10.2.7",
+  "requirements": [
+    {
+      "id": "S12.10.2.7-001",
+      "title": "DECIMAL= returns fixed INQUIRE character tokens",
+      "source": "S12.10.2.7, J3/24-007, 18 December 2023, physical PDF281.",
+      "source_units": [
+        "p1"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "DECIMAL= is assigned COMMA or POINT for the decimal edit mode on a formatted connection; with no connection or a nonformatted connection it is assigned UNDEFINED.",
+      "facets": [
+        "decimal-comma-token",
+        "decimal-point-token",
+        "decimal-unformatted-undefined",
+        "decimal-no-connection-undefined"
+      ],
+      "pending": {
+        "decimal-comma-token": "Open formatted I/O with DECIMAL=\"COMMA\", initialize DECIMAL to sentinels, and expect COMMA.",
+        "decimal-point-token": "Open formatted I/O with DECIMAL=\"POINT\", initialize DECIMAL to sentinels, and expect POINT.",
+        "decimal-unformatted-undefined": "Open an unformatted connection first, initialize DECIMAL to sentinels, and expect UNDEFINED.",
+        "decimal-no-connection-undefined": "After closing a known unit, reset DECIMAL to sentinels and expect UNDEFINED."
+      },
+      "oracle": "Plans are pending and source-derived. Positive INQUIRE plans first establish the connection or file state being observed, initialize every inquiry variable to a nonmatching sentinel value, execute INQUIRE, and assert only values fixed by 12.10.2: exact tokens such as UNDEFINED or UNKNOWN, logical true/false where specified, zero/nonzero IOSTAT where 12.11 later permits it, or bounded set membership where the source gives a set. Processor-dependent file names, case interpretation, multi-unit choices, file storage unit counts, asynchronous completion policy, IOMSG text, and numeric status codes are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint and a future fixture can observe the rejection portably. Undefined inquiry variables are not read as an oracle; IOMSG wording and processor-dependent numeric status values are never compared.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, and earlier clause 12 catalogues for source form, names, expressions, execution constructs, units, connections, file access, file position, CLOSE/OPEN context where already registered, and data-transfer foundations. Unregistered dependencies explicitly retained: later clause 12 OPEN, asynchronous transfer, I/O status, data transfer, internal-file, and input/output-item rules; clause 13 formatting and modes; clause 15 defined I/O; clause 16 inquiry/status intrinsics where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.10.2.7-001"
+      ]
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_12_10_2_7.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "81def8117e174389fdaea4cce949db45cfa74a8a3db94e7ebfb7a0afeffde9cf",
+  "review_rationale": "Source registration for 12.10, the INQUIRE statement and all thirty-four inquiry specifiers (batch165). Every unit hash-verified by independent reviewers across three rounds. Round 1 split the 'unable to determine' latitude out of eight YES/NO/UNKNOWN specifiers and out of ENCODING and SIZE; round 2 made the plans assert only what that latitude leaves portable - membership in {YES, UNKNOWN} for a method in use, and {POS-1, -1} for the size of a stream file. R1230, R1231 and C1247-C1251 were pre-accounted. With this packet Clause 12 is fully registered. Source accounting only."
+}

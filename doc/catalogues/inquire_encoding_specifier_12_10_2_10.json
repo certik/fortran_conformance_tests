@@ -1,0 +1,109 @@
+{
+  "schema_version": 1,
+  "section": "12.10.2.10",
+  "requirements": [
+    {
+      "id": "S12.10.2.10-001",
+      "title": "ENCODING= returns required values for connected forms and unconnected units",
+      "source": "S12.10.2.10, J3/24-007, 18 December 2023, physical PDF281.",
+      "source_units": [
+        "p1.connected-returned-values",
+        "p1.unconnected-file-utf8",
+        "p1.unconnected-unit-unknown"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "ENCODING= is assigned UTF-8 for formatted input/output with UTF-8 encoding, UNDEFINED for unformatted input/output, UTF-8 for an unconnected file if the processor can determine that the encoding form is UTF-8, and UNKNOWN if the unit identified by file-unit-number is not connected to a file.",
+      "facets": [
+        "encoding-utf8-formatted-token",
+        "encoding-unformatted-undefined",
+        "encoding-unconnected-file-utf8-if-determined",
+        "encoding-unconnected-unit-unknown"
+      ],
+      "pending": {
+        "encoding-utf8-formatted-token": "Open a formatted connection with ENCODING=\"UTF-8\", initialize ENCODING to sentinels, and expect UTF-8.",
+        "encoding-unformatted-undefined": "Open an unformatted connection first, initialize ENCODING to sentinels, and expect UNDEFINED.",
+        "encoding-unconnected-file-utf8-if-determined": "No unconditional portable oracle: an unconnected file is reported as UTF-8 only when the processor can determine that form; future tests may assert UTF-8 only after a processor-independent setup establishes that determinability.",
+        "encoding-unconnected-unit-unknown": "Open and close a known external unit so it is not connected to a file, initialize ENCODING to sentinels, inquire by UNIT= for that unit, and expect UNKNOWN."
+      },
+      "oracle": "Plans are pending and source-derived. Positive INQUIRE plans first establish the connection or file state being observed, initialize every inquiry variable to a nonmatching sentinel value, execute INQUIRE, and assert only values fixed by 12.10.2: exact tokens such as UNDEFINED or UNKNOWN, logical true/false where specified, zero/nonzero IOSTAT where 12.11 later permits it, or bounded set membership where the source gives a set. Processor-dependent file names, case interpretation, multi-unit choices, file storage unit counts, asynchronous completion policy, IOMSG text, and numeric status codes are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint and a future fixture can observe the rejection portably. Undefined inquiry variables are not read as an oracle; IOMSG wording and processor-dependent numeric status values are never compared.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, and earlier clause 12 catalogues for source form, names, expressions, execution constructs, units, connections, file access, file position, CLOSE/OPEN context where already registered, and data-transfer foundations. Unregistered dependencies explicitly retained: later clause 12 OPEN, asynchronous transfer, I/O status, data transfer, internal-file, and input/output-item rules; clause 13 formatting and modes; clause 15 defined I/O; clause 16 inquiry/status intrinsics where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.10.2.10-002",
+      "title": "ENCODING= UNKNOWN for inability to determine encoding is processor latitude",
+      "source": "S12.10.2.10, J3/24-007, 18 December 2023, physical PDF281.",
+      "source_units": [
+        "p1.determinability-latitude"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "ENCODING= is assigned UNKNOWN if the processor is unable to determine the encoding form of the file.",
+      "facets": [
+        "encoding-unable-to-determine-unknown-latitude"
+      ],
+      "pending": {
+        "encoding-unable-to-determine-unknown-latitude": "No portable oracle can force processor inability to determine the encoding form of a particular file; this latitude is recorded separately from the required unconnected-unit UNKNOWN result."
+      },
+      "oracle": "Plans are pending and source-derived. Positive INQUIRE plans first establish the connection or file state being observed, initialize every inquiry variable to a nonmatching sentinel value, execute INQUIRE, and assert only values fixed by 12.10.2: exact tokens such as UNDEFINED or UNKNOWN, logical true/false where specified, zero/nonzero IOSTAT where 12.11 later permits it, or bounded set membership where the source gives a set. Processor-dependent file names, case interpretation, multi-unit choices, file storage unit counts, asynchronous completion policy, IOMSG text, and numeric status codes are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint and a future fixture can observe the rejection portably. Undefined inquiry variables are not read as an oracle; IOMSG wording and processor-dependent numeric status values are never compared.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, and earlier clause 12 catalogues for source form, names, expressions, execution constructs, units, connections, file access, file position, CLOSE/OPEN context where already registered, and data-transfer foundations. Unregistered dependencies explicitly retained: later clause 12 OPEN, asynchronous transfer, I/O status, data transfer, internal-file, and input/output-item rules; clause 13 formatting and modes; clause 15 defined I/O; clause 16 inquiry/status intrinsics where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "structural",
+      "rationale": "ENCODING= mixes required connected/unconnected returned values with processor latitude for inability to determine an encoding form."
+    },
+    {
+      "unit": "p1.connected-returned-values",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.10.2.10-001"
+      ]
+    },
+    {
+      "unit": "p1.unconnected-file-utf8",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.10.2.10-001"
+      ]
+    },
+    {
+      "unit": "p1.unconnected-unit-unknown",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.10.2.10-001"
+      ]
+    },
+    {
+      "unit": "p1.determinability-latitude",
+      "disposition": "permission",
+      "requirements": [
+        "S12.10.2.10-002"
+      ],
+      "rationale": "Classified source unit."
+    },
+    {
+      "unit": "note-unnumbered",
+      "disposition": "informative",
+      "rationale": "NOTE about other processor-supported encodings is not normative."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_12_10_2_10.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "d0bb7fdd90e55005e873eeb4d02e295aaac5434996968db0d36f15b662715454",
+  "review_rationale": "Source registration for 12.10, the INQUIRE statement and all thirty-four inquiry specifiers (batch165). Every unit hash-verified by independent reviewers across three rounds. Round 1 split the 'unable to determine' latitude out of eight YES/NO/UNKNOWN specifiers and out of ENCODING and SIZE; round 2 made the plans assert only what that latitude leaves portable - membership in {YES, UNKNOWN} for a method in use, and {POS-1, -1} for the size of a stream file. R1230, R1231 and C1247-C1251 were pre-accounted. With this packet Clause 12 is fully registered. Source accounting only.",
+  "subunits": {
+    "p1": [
+      "p1.connected-returned-values",
+      "p1.unconnected-file-utf8",
+      "p1.unconnected-unit-unknown",
+      "p1.determinability-latitude"
+    ]
+  }
+}

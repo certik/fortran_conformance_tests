@@ -1,0 +1,181 @@
+{
+  "schema_version": 1,
+  "section": "12.10.2.31",
+  "subunits": {
+    "p1": [
+      "p1.file-size-value",
+      "p1.undetermined-size-latitude",
+      "p1.unconnected-unit-minus-one"
+    ],
+    "p3": [
+      "p3.sequential-direct-size-latitude"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S12.10.2.31-001",
+      "title": "SIZE= reports file size or -1 for an unconnected unit",
+      "source": "S12.10.2.31, J3/24-007, 18 December 2023, physical PDF284.",
+      "source_units": [
+        "p1.file-size-value",
+        "p1.unconnected-unit-minus-one"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "SIZE= is assigned the size of the file in file storage units; if the unit identified by file-unit-number is not connected to a file, it is assigned -1.",
+      "facets": [
+        "size-file-storage-units",
+        "size-unconnected-unit-minus-one"
+      ],
+      "pending": {
+        "size-file-storage-units": "Open a stream file, write nonempty content, immediately inquire POS into a sentinel integer to obtain the one-past-terminal position, close KEEP, then inquire SIZE into a separate sentinel and assert only that SIZE is either POS - 1 or -1: 12.10.2.31 p2 defines the stream file size as the highest-numbered file storage unit, while 12.10.2.31 p1 assigns -1 if the file size cannot be determined.",
+        "size-unconnected-unit-minus-one": "Open and close a known unit, initialize SIZE to -777, inquire by unit, and expect -1."
+      },
+      "oracle": "Plans are pending and source-derived. Positive INQUIRE plans first establish the connection or file state being observed, initialize every inquiry variable to a nonmatching sentinel value, execute INQUIRE, and assert only values fixed by 12.10.2: exact tokens such as UNDEFINED or UNKNOWN, logical true/false where specified, zero/nonzero IOSTAT where 12.11 later permits it, or bounded set membership where the source gives a set. Processor-dependent file names, case interpretation, multi-unit choices, file storage unit counts, asynchronous completion policy, IOMSG text, and numeric status codes are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint and a future fixture can observe the rejection portably. Undefined inquiry variables are not read as an oracle; IOMSG wording and processor-dependent numeric status values are never compared.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, and earlier clause 12 catalogues for source form, names, expressions, execution constructs, units, connections, file access, file position, CLOSE/OPEN context where already registered, and data-transfer foundations. Unregistered dependencies explicitly retained: later clause 12 OPEN, asynchronous transfer, I/O status, data transfer, internal-file, and input/output-item rules; clause 13 formatting and modes; clause 15 defined I/O; clause 16 inquiry/status intrinsics where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.10.2.31-002",
+      "title": "Stream-capable file size is the highest-numbered file storage unit",
+      "source": "S12.10.2.31, J3/24-007, 18 December 2023, physical PDF284.",
+      "source_units": [
+        "p2"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For a file that can be connected for stream access, the file size is the number of the highest-numbered file storage unit in the file.",
+      "facets": [
+        "size-stream-highest-numbered-storage-unit"
+      ],
+      "pending": {
+        "size-stream-highest-numbered-storage-unit": "Open a stream file, write nonempty content, record the one-past-terminal POS value, then inquire SIZE and assert only that SIZE is either POS - 1 or -1: POS - 1 is the highest-numbered file storage unit under 12.10.2.31 p2, and 12.10.2.31 p1 still permits -1 if the file size cannot be determined."
+      },
+      "oracle": "Plans are pending and source-derived. Positive INQUIRE plans first establish the connection or file state being observed, initialize every inquiry variable to a nonmatching sentinel value, execute INQUIRE, and assert only values fixed by 12.10.2: exact tokens such as UNDEFINED or UNKNOWN, logical true/false where specified, zero/nonzero IOSTAT where 12.11 later permits it, or bounded set membership where the source gives a set. Processor-dependent file names, case interpretation, multi-unit choices, file storage unit counts, asynchronous completion policy, IOMSG text, and numeric status codes are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint and a future fixture can observe the rejection portably. Undefined inquiry variables are not read as an oracle; IOMSG wording and processor-dependent numeric status values are never compared.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, and earlier clause 12 catalogues for source form, names, expressions, execution constructs, units, connections, file access, file position, CLOSE/OPEN context where already registered, and data-transfer foundations. Unregistered dependencies explicitly retained: later clause 12 OPEN, asynchronous transfer, I/O status, data transfer, internal-file, and input/output-item rules; clause 13 formatting and modes; clause 15 defined I/O; clause 16 inquiry/status intrinsics where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.10.2.31-003",
+      "title": "Sequential/direct file-size relationship to record data is processor dependent",
+      "source": "S12.10.2.31, J3/24-007, 18 December 2023, physical PDF284.",
+      "source_units": [
+        "p3.sequential-direct-size-latitude"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For sequential or direct access files, file size may differ from storage units implied by record data and the exact relationship is processor dependent.",
+      "facets": [
+        "size-record-data-relationship-processor-dependent"
+      ],
+      "pending": {
+        "size-record-data-relationship-processor-dependent": "No portable oracle may require a byte count or storage-unit relation for sequential/direct records; future tests avoid comparing SIZE to record payload lengths."
+      },
+      "oracle": "Plans are pending and source-derived. Positive INQUIRE plans first establish the connection or file state being observed, initialize every inquiry variable to a nonmatching sentinel value, execute INQUIRE, and assert only values fixed by 12.10.2: exact tokens such as UNDEFINED or UNKNOWN, logical true/false where specified, zero/nonzero IOSTAT where 12.11 later permits it, or bounded set membership where the source gives a set. Processor-dependent file names, case interpretation, multi-unit choices, file storage unit counts, asynchronous completion policy, IOMSG text, and numeric status codes are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint and a future fixture can observe the rejection portably. Undefined inquiry variables are not read as an oracle; IOMSG wording and processor-dependent numeric status values are never compared.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, and earlier clause 12 catalogues for source form, names, expressions, execution constructs, units, connections, file access, file position, CLOSE/OPEN context where already registered, and data-transfer foundations. Unregistered dependencies explicitly retained: later clause 12 OPEN, asynchronous transfer, I/O status, data transfer, internal-file, and input/output-item rules; clause 13 formatting and modes; clause 15 defined I/O; clause 16 inquiry/status intrinsics where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.10.2.31-004",
+      "title": "SIZE= accounts for pending transfers as if completed",
+      "source": "S12.10.2.31, J3/24-007, 18 December 2023, physical PDF284.",
+      "source_units": [
+        "p4"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "If there are pending data transfers for the unit, SIZE= is computed as if all pending transfers had completed.",
+      "facets": [
+        "size-pending-computed-complete"
+      ],
+      "pending": {
+        "size-pending-computed-complete": "No portable oracle until a future asynchronous fixture establishes pending transfers and derives final size from prior INQUIRE positions without processor-dependent storage counts."
+      },
+      "oracle": "Plans are pending and source-derived. Positive INQUIRE plans first establish the connection or file state being observed, initialize every inquiry variable to a nonmatching sentinel value, execute INQUIRE, and assert only values fixed by 12.10.2: exact tokens such as UNDEFINED or UNKNOWN, logical true/false where specified, zero/nonzero IOSTAT where 12.11 later permits it, or bounded set membership where the source gives a set. Processor-dependent file names, case interpretation, multi-unit choices, file storage unit counts, asynchronous completion policy, IOMSG text, and numeric status codes are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint and a future fixture can observe the rejection portably. Undefined inquiry variables are not read as an oracle; IOMSG wording and processor-dependent numeric status values are never compared.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, and earlier clause 12 catalogues for source form, names, expressions, execution constructs, units, connections, file access, file position, CLOSE/OPEN context where already registered, and data-transfer foundations. Unregistered dependencies explicitly retained: later clause 12 OPEN, asynchronous transfer, I/O status, data transfer, internal-file, and input/output-item rules; clause 13 formatting and modes; clause 15 defined I/O; clause 16 inquiry/status intrinsics where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.10.2.31-005",
+      "title": "SIZE= -1 for inability to determine file size is processor latitude",
+      "source": "S12.10.2.31, J3/24-007, 18 December 2023, physical PDF284.",
+      "source_units": [
+        "p1.undetermined-size-latitude"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "SIZE= is assigned -1 if the file size cannot be determined.",
+      "facets": [
+        "size-cannot-determine-minus-one-latitude"
+      ],
+      "pending": {
+        "size-cannot-determine-minus-one-latitude": "No portable way to force inability to determine the size of a particular file; this latitude is recorded separately from the required -1 result for an unconnected unit."
+      },
+      "oracle": "Plans are pending and source-derived. Positive INQUIRE plans first establish the connection or file state being observed, initialize every inquiry variable to a nonmatching sentinel value, execute INQUIRE, and assert only values fixed by 12.10.2: exact tokens such as UNDEFINED or UNKNOWN, logical true/false where specified, zero/nonzero IOSTAT where 12.11 later permits it, or bounded set membership where the source gives a set. Processor-dependent file names, case interpretation, multi-unit choices, file storage unit counts, asynchronous completion policy, IOMSG text, and numeric status codes are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint and a future fixture can observe the rejection portably. Undefined inquiry variables are not read as an oracle; IOMSG wording and processor-dependent numeric status values are never compared.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, and earlier clause 12 catalogues for source form, names, expressions, execution constructs, units, connections, file access, file position, CLOSE/OPEN context where already registered, and data-transfer foundations. Unregistered dependencies explicitly retained: later clause 12 OPEN, asynchronous transfer, I/O status, data transfer, internal-file, and input/output-item rules; clause 13 formatting and modes; clause 15 defined I/O; clause 16 inquiry/status intrinsics where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "structural",
+      "rationale": "SIZE= mixes required file-size and unconnected-unit -1 results with processor latitude for inability to determine file size."
+    },
+    {
+      "unit": "p1.file-size-value",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.10.2.31-001"
+      ]
+    },
+    {
+      "unit": "p1.undetermined-size-latitude",
+      "disposition": "permission",
+      "requirements": [
+        "S12.10.2.31-005"
+      ],
+      "rationale": "Classified source unit."
+    },
+    {
+      "unit": "p1.unconnected-unit-minus-one",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.10.2.31-001"
+      ]
+    },
+    {
+      "unit": "p2",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.10.2.31-002"
+      ]
+    },
+    {
+      "unit": "p3",
+      "disposition": "structural",
+      "rationale": "Processor-dependent sequential/direct size relationship split as fine unit."
+    },
+    {
+      "unit": "p3.sequential-direct-size-latitude",
+      "disposition": "permission",
+      "requirements": [
+        "S12.10.2.31-003"
+      ],
+      "rationale": "Classified source unit."
+    },
+    {
+      "unit": "p4",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.10.2.31-004"
+      ]
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_12_10_2_31.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "acfdf049e31c0955838201da1c7e59e7aa5c87c43c98670c7799b35a82641c0f",
+  "review_rationale": "Source registration for 12.10, the INQUIRE statement and all thirty-four inquiry specifiers (batch165). Every unit hash-verified by independent reviewers across three rounds. Round 1 split the 'unable to determine' latitude out of eight YES/NO/UNKNOWN specifiers and out of ENCODING and SIZE; round 2 made the plans assert only what that latitude leaves portable - membership in {YES, UNKNOWN} for a method in use, and {POS-1, -1} for the size of a stream file. R1230, R1231 and C1247-C1251 were pre-accounted. With this packet Clause 12 is fully registered. Source accounting only."
+}

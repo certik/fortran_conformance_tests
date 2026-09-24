@@ -5674,6 +5674,11 @@ See `doc/source_audits/batch_184.json`.
 Forty units, after three rounds, and a useful subtlety. The obvious way to show BGE compares bits rather than signed values is a negative operand — but 16.3.1 makes the bit interpretation of a negative integer processor dependent. The portable discriminator is a BOZ literal with its leftmost bit set, because a BOZ specifies its bits exactly; the same rule forbids observing the numeric value of SHIFTL(1, z-1).
 See `doc/source_audits/batch_185.json`.
 
+## Batch 165 — the INQUIRE statement, completing Clause 12
+
+Sixty units of 12.10, the INQUIRE statement and its thirty-four specifiers, after three rounds — and with it **Clause 12 is fully registered**. The findings were all one idea applied carefully: most specifiers that answer YES or NO may also answer UNKNOWN "if the processor is unable to determine", so that branch is latitude, and a plan may assert only what it leaves forced. For a file connected for direct access, INQUIRE(DIRECT=) is guaranteed to be YES *or* UNKNOWN, not YES; the size of a stream file is its terminal position minus one *or* -1. INQUIRE is the observation mechanism much of Clause 12 relies on, so getting its guarantees exactly right protects every plan that cites it.
+See `doc/source_audits/batch_165.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must

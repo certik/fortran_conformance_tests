@@ -1,0 +1,118 @@
+{
+  "schema_version": 1,
+  "section": "12.10.2.24",
+  "subunits": {
+    "p1": [
+      "p1.open-position-token",
+      "p1.undefined-cases",
+      "p1.repositioned-latitude"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S12.10.2.24-001",
+      "title": "POSITION= returns REWIND, APPEND, or ASIS for the opening position mode",
+      "source": "S12.10.2.24, J3/24-007, 18 December 2023, physical PDF283.",
+      "source_units": [
+        "p1.open-position-token"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "POSITION= is assigned REWIND if opened for positioning at the initial point, APPEND if opened before the endfile record or at terminal point, and ASIS if opened without changing position.",
+      "facets": [
+        "position-rewind-token",
+        "position-append-token",
+        "position-asis-token"
+      ],
+      "pending": {
+        "position-rewind-token": "Open a known file with POSITION=\"REWIND\", initialize POSITION to sentinels, and expect REWIND.",
+        "position-append-token": "Open a known file with POSITION=\"APPEND\", initialize POSITION to sentinels, and expect APPEND.",
+        "position-asis-token": "Open a known positioned file with POSITION=\"ASIS\", initialize POSITION to sentinels, and expect ASIS."
+      },
+      "oracle": "Plans are pending and source-derived. Positive INQUIRE plans first establish the connection or file state being observed, initialize every inquiry variable to a nonmatching sentinel value, execute INQUIRE, and assert only values fixed by 12.10.2: exact tokens such as UNDEFINED or UNKNOWN, logical true/false where specified, zero/nonzero IOSTAT where 12.11 later permits it, or bounded set membership where the source gives a set. Processor-dependent file names, case interpretation, multi-unit choices, file storage unit counts, asynchronous completion policy, IOMSG text, and numeric status codes are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint and a future fixture can observe the rejection portably. Undefined inquiry variables are not read as an oracle; IOMSG wording and processor-dependent numeric status values are never compared.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, and earlier clause 12 catalogues for source form, names, expressions, execution constructs, units, connections, file access, file position, CLOSE/OPEN context where already registered, and data-transfer foundations. Unregistered dependencies explicitly retained: later clause 12 OPEN, asynchronous transfer, I/O status, data transfer, internal-file, and input/output-item rules; clause 13 formatting and modes; clause 15 defined I/O; clause 16 inquiry/status intrinsics where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.10.2.24-002",
+      "title": "POSITION= is UNDEFINED without a connection or for direct access",
+      "source": "S12.10.2.24, J3/24-007, 18 December 2023, physical PDF283.",
+      "source_units": [
+        "p1.undefined-cases"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "If there is no connection or the file is connected for direct access, POSITION= is assigned UNDEFINED.",
+      "facets": [
+        "position-no-connection-undefined",
+        "position-direct-undefined"
+      ],
+      "pending": {
+        "position-no-connection-undefined": "After closing a known unit, initialize POSITION to sentinels, inquire by unit, and expect UNDEFINED.",
+        "position-direct-undefined": "Open direct access with explicit RECL, initialize POSITION to sentinels, inquire, and expect UNDEFINED."
+      },
+      "oracle": "Plans are pending and source-derived. Positive INQUIRE plans first establish the connection or file state being observed, initialize every inquiry variable to a nonmatching sentinel value, execute INQUIRE, and assert only values fixed by 12.10.2: exact tokens such as UNDEFINED or UNKNOWN, logical true/false where specified, zero/nonzero IOSTAT where 12.11 later permits it, or bounded set membership where the source gives a set. Processor-dependent file names, case interpretation, multi-unit choices, file storage unit counts, asynchronous completion policy, IOMSG text, and numeric status codes are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint and a future fixture can observe the rejection portably. Undefined inquiry variables are not read as an oracle; IOMSG wording and processor-dependent numeric status values are never compared.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, and earlier clause 12 catalogues for source form, names, expressions, execution constructs, units, connections, file access, file position, CLOSE/OPEN context where already registered, and data-transfer foundations. Unregistered dependencies explicitly retained: later clause 12 OPEN, asynchronous transfer, I/O status, data transfer, internal-file, and input/output-item rules; clause 13 formatting and modes; clause 15 defined I/O; clause 16 inquiry/status intrinsics where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.10.2.24-003",
+      "title": "POSITION= after repositioning is processor dependent but bounded",
+      "source": "S12.10.2.24, J3/24-007, 18 December 2023, physical PDF283.",
+      "source_units": [
+        "p1.repositioned-latitude"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "If the file has been repositioned since connection, POSITION= is processor dependent, but shall not be REWIND unless at the initial point and shall not be APPEND unless the endfile record is next or the file is at terminal point with no endfile record.",
+      "facets": [
+        "position-repositioned-processor-dependent",
+        "position-repositioned-not-rewind-unless-initial",
+        "position-repositioned-not-append-unless-end-or-terminal"
+      ],
+      "pending": {
+        "position-repositioned-processor-dependent": "No portable oracle for an exact token after repositioning; future tests assert only the stated forbidden tokens under established positions.",
+        "position-repositioned-not-rewind-unless-initial": "After opening a multi-record sequential file and repositioning away from the initial point, initialize POSITION to sentinels and assert the result is not REWIND.",
+        "position-repositioned-not-append-unless-end-or-terminal": "After repositioning to a middle record so neither endfile nor terminal position is next, initialize POSITION to sentinels and assert the result is not APPEND."
+      },
+      "oracle": "Plans are pending and source-derived. Positive INQUIRE plans first establish the connection or file state being observed, initialize every inquiry variable to a nonmatching sentinel value, execute INQUIRE, and assert only values fixed by 12.10.2: exact tokens such as UNDEFINED or UNKNOWN, logical true/false where specified, zero/nonzero IOSTAT where 12.11 later permits it, or bounded set membership where the source gives a set. Processor-dependent file names, case interpretation, multi-unit choices, file storage unit counts, asynchronous completion policy, IOMSG text, and numeric status codes are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint and a future fixture can observe the rejection portably. Undefined inquiry variables are not read as an oracle; IOMSG wording and processor-dependent numeric status values are never compared.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, and earlier clause 12 catalogues for source form, names, expressions, execution constructs, units, connections, file access, file position, CLOSE/OPEN context where already registered, and data-transfer foundations. Unregistered dependencies explicitly retained: later clause 12 OPEN, asynchronous transfer, I/O status, data transfer, internal-file, and input/output-item rules; clause 13 formatting and modes; clause 15 defined I/O; clause 16 inquiry/status intrinsics where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "structural",
+      "rationale": "Opening-position tokens, UNDEFINED cases, and repositioned processor latitude are split."
+    },
+    {
+      "unit": "p1.open-position-token",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.10.2.24-001"
+      ]
+    },
+    {
+      "unit": "p1.undefined-cases",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.10.2.24-002"
+      ]
+    },
+    {
+      "unit": "p1.repositioned-latitude",
+      "disposition": "permission",
+      "requirements": [
+        "S12.10.2.24-003"
+      ],
+      "rationale": "Classified source unit."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_12_10_2_24.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "ca32b065ed8137b293bdeafab9f244198f10ac681b559b2b846bbb0cfb389249",
+  "review_rationale": "Source registration for 12.10, the INQUIRE statement and all thirty-four inquiry specifiers (batch165). Every unit hash-verified by independent reviewers across three rounds. Round 1 split the 'unable to determine' latitude out of eight YES/NO/UNKNOWN specifiers and out of ENCODING and SIZE; round 2 made the plans assert only what that latitude leaves portable - membership in {YES, UNKNOWN} for a method in use, and {POS-1, -1} for the size of a stream file. R1230, R1231 and C1247-C1251 were pre-accounted. With this packet Clause 12 is fully registered. Source accounting only."
+}

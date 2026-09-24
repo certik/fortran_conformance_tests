@@ -1,0 +1,328 @@
+{
+  "schema_version": 1,
+  "section": "12.10.1",
+  "subunits": {
+    "p1": [
+      "p1.inquiry-forms",
+      "p1.specifier-assignment"
+    ],
+    "p2": [
+      "p2.unit-form-permission",
+      "p2.connected-unit-subject"
+    ],
+    "p3": [
+      "p3.file-form-permission",
+      "p3.connected-file-subject"
+    ],
+    "p4": [
+      "p4.execution-timing-permission",
+      "p4.current-values"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S12.10.1-001",
+      "title": "INQUIRE forms may observe files, units, or output-list storage requirements",
+      "source": "S12.10.1, J3/24-007, 18 December 2023, physical PDF278.",
+      "source_units": [
+        "p1.inquiry-forms"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The INQUIRE statement can be used in three forms: inquire by file with FILE=, inquire by unit with UNIT= or positional file-unit-number, and inquire by output list with only IOLENGTH=.",
+      "facets": [
+        "inquire-by-file-form",
+        "inquire-by-unit-form",
+        "inquire-by-output-list-form"
+      ],
+      "pending": {
+        "inquire-by-file-form": "Positive-control source uses INQUIRE(FILE=name, EXIST=flag) after creating a named file; flag is initialized to .false. and is expected true by 12.10.2.11.",
+        "inquire-by-unit-form": "Positive-control source opens a known external unit, initializes OPENED to .false., and uses INQUIRE(UNIT=unit, OPENED=opened), expecting true by 12.10.2.20.",
+        "inquire-by-output-list-form": "Future 12.10.3 fixture initializes an integer IOLENGTH variable to -777 and executes INQUIRE(IOLENGTH=iol) on a nonempty list; only positivity/suitability fixed by 12.10.3 is asserted."
+      },
+      "oracle": "Plans are pending and source-derived. Positive INQUIRE plans first establish the connection or file state being observed, initialize every inquiry variable to a nonmatching sentinel value, execute INQUIRE, and assert only values fixed by 12.10.2: exact tokens such as UNDEFINED or UNKNOWN, logical true/false where specified, zero/nonzero IOSTAT where 12.11 later permits it, or bounded set membership where the source gives a set. Processor-dependent file names, case interpretation, multi-unit choices, file storage unit counts, asynchronous completion policy, IOMSG text, and numeric status codes are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint and a future fixture can observe the rejection portably. Undefined inquiry variables are not read as an oracle; IOMSG wording and processor-dependent numeric status values are never compared.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, and earlier clause 12 catalogues for source form, names, expressions, execution constructs, units, connections, file access, file position, CLOSE/OPEN context where already registered, and data-transfer foundations. Unregistered dependencies explicitly retained: later clause 12 OPEN, asynchronous transfer, I/O status, data transfer, internal-file, and input/output-item rules; clause 13 formatting and modes; clause 15 defined I/O; clause 16 inquiry/status intrinsics where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.10.1-002",
+      "title": "INQUIRE assignments use intrinsic-assignment conversion, truncation, and padding",
+      "source": "S12.10.1, J3/24-007, 18 December 2023, physical PDF278.",
+      "source_units": [
+        "p1.specifier-assignment"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Assignments to variables named in INQUIRE specifiers are converted, truncated, or padded according to intrinsic assignment rules.",
+      "facets": [
+        "inquire-character-padding",
+        "inquire-character-truncation",
+        "inquire-numeric-logical-assignment"
+      ],
+      "pending": {
+        "inquire-character-padding": "Use a character inquiry variable longer than the token, prefilled with sentinels, and assert the token plus intrinsic-assignment blank padding, not unchanged sentinel bytes.",
+        "inquire-character-truncation": "Use a shorter character variable for a token with a unique prefix after a connection that fixes the token; assert only intrinsic-assignment truncation of that fixed token.",
+        "inquire-numeric-logical-assignment": "Use integer/logical specifier variables initialized to nondefault sentinels and assert exact fixed values such as NUMBER=-1 or OPENED=.true. after establishing the required state."
+      },
+      "oracle": "Plans are pending and source-derived. Positive INQUIRE plans first establish the connection or file state being observed, initialize every inquiry variable to a nonmatching sentinel value, execute INQUIRE, and assert only values fixed by 12.10.2: exact tokens such as UNDEFINED or UNKNOWN, logical true/false where specified, zero/nonzero IOSTAT where 12.11 later permits it, or bounded set membership where the source gives a set. Processor-dependent file names, case interpretation, multi-unit choices, file storage unit counts, asynchronous completion policy, IOMSG text, and numeric status codes are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint and a future fixture can observe the rejection portably. Undefined inquiry variables are not read as an oracle; IOMSG wording and processor-dependent numeric status values are never compared.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, and earlier clause 12 catalogues for source form, names, expressions, execution constructs, units, connections, file access, file position, CLOSE/OPEN context where already registered, and data-transfer foundations. Unregistered dependencies explicitly retained: later clause 12 OPEN, asynchronous transfer, I/O status, data transfer, internal-file, and input/output-item rules; clause 13 formatting and modes; clause 15 defined I/O; clause 16 inquiry/status intrinsics where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.10.1-003",
+      "title": "Inquiry by unit is permitted for nonexistent or unconnected units",
+      "source": "S12.10.1, J3/24-007, 18 December 2023, physical PDF278.",
+      "source_units": [
+        "p2.unit-form-permission"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For inquiry by unit, the specified unit need not exist and need not be connected to a file.",
+      "facets": [
+        "inquire-unit-need-not-exist",
+        "inquire-unit-need-not-be-connected"
+      ],
+      "pending": {
+        "inquire-unit-need-not-exist": "Guarded plan probes candidate unit numbers with INQUIRE(UNIT=u, EXIST=exists) until a false result is found; only then execute another INQUIRE by that unit and assert a specifier value fixed for nonexistent or unconnected units, such as OPENED=.false.",
+        "inquire-unit-need-not-be-connected": "Open and then close a known unit so it is not connected; initialize OPENED to .true., inquire by unit, and expect OPENED=.false. without assuming the unit is nonexistent."
+      },
+      "oracle": "Plans are pending and source-derived. Positive INQUIRE plans first establish the connection or file state being observed, initialize every inquiry variable to a nonmatching sentinel value, execute INQUIRE, and assert only values fixed by 12.10.2: exact tokens such as UNDEFINED or UNKNOWN, logical true/false where specified, zero/nonzero IOSTAT where 12.11 later permits it, or bounded set membership where the source gives a set. Processor-dependent file names, case interpretation, multi-unit choices, file storage unit counts, asynchronous completion policy, IOMSG text, and numeric status codes are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint and a future fixture can observe the rejection portably. Undefined inquiry variables are not read as an oracle; IOMSG wording and processor-dependent numeric status values are never compared.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, and earlier clause 12 catalogues for source form, names, expressions, execution constructs, units, connections, file access, file position, CLOSE/OPEN context where already registered, and data-transfer foundations. Unregistered dependencies explicitly retained: later clause 12 OPEN, asynchronous transfer, I/O status, data transfer, internal-file, and input/output-item rules; clause 13 formatting and modes; clause 15 defined I/O; clause 16 inquiry/status intrinsics where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.10.1-004",
+      "title": "Inquiry by unit observes the connection and connected file when connected",
+      "source": "S12.10.1, J3/24-007, 18 December 2023, physical PDF278.",
+      "source_units": [
+        "p2.connected-unit-subject"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "If the unit in an inquiry by unit is connected to a file, the inquiry is about the connection and the connected file.",
+      "facets": [
+        "unit-inquiry-connection-properties",
+        "unit-inquiry-connected-file-properties"
+      ],
+      "pending": {
+        "unit-inquiry-connection-properties": "Open a known unit with ACCESS=\"STREAM\" and ACTION=\"READWRITE\", prefill ACCESS/ACTION variables with sentinels, and expect STREAM/READWRITE.",
+        "unit-inquiry-connected-file-properties": "Open a named file on one unit, initialize NAME/NAMED sentinels, and inquire by unit; assert NAMED=.true. and use the returned NAME only in a subsequent OPEN attempt, not for spelling equality."
+      },
+      "oracle": "Plans are pending and source-derived. Positive INQUIRE plans first establish the connection or file state being observed, initialize every inquiry variable to a nonmatching sentinel value, execute INQUIRE, and assert only values fixed by 12.10.2: exact tokens such as UNDEFINED or UNKNOWN, logical true/false where specified, zero/nonzero IOSTAT where 12.11 later permits it, or bounded set membership where the source gives a set. Processor-dependent file names, case interpretation, multi-unit choices, file storage unit counts, asynchronous completion policy, IOMSG text, and numeric status codes are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint and a future fixture can observe the rejection portably. Undefined inquiry variables are not read as an oracle; IOMSG wording and processor-dependent numeric status values are never compared.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, and earlier clause 12 catalogues for source form, names, expressions, execution constructs, units, connections, file access, file position, CLOSE/OPEN context where already registered, and data-transfer foundations. Unregistered dependencies explicitly retained: later clause 12 OPEN, asynchronous transfer, I/O status, data transfer, internal-file, and input/output-item rules; clause 13 formatting and modes; clause 15 defined I/O; clause 16 inquiry/status intrinsics where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.10.1-005",
+      "title": "Inquiry by file is permitted for nonexistent or unconnected files",
+      "source": "S12.10.1, J3/24-007, 18 December 2023, physical PDF278.",
+      "source_units": [
+        "p3.file-form-permission"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For inquiry by file, the named file need not exist and need not be connected to a unit.",
+      "facets": [
+        "inquire-file-need-not-exist",
+        "inquire-file-need-not-be-connected"
+      ],
+      "pending": {
+        "inquire-file-need-not-exist": "Use a suite-generated filename after first verifying EXIST=.false.; then INQUIRE(FILE=name, EXIST=flag, OPENED=opened) with opposite sentinels and expect false/false.",
+        "inquire-file-need-not-be-connected": "Create and close a named file, prefill EXIST=.false. and OPENED=.true., inquire by file, and expect EXIST=.true. and OPENED=.false."
+      },
+      "oracle": "Plans are pending and source-derived. Positive INQUIRE plans first establish the connection or file state being observed, initialize every inquiry variable to a nonmatching sentinel value, execute INQUIRE, and assert only values fixed by 12.10.2: exact tokens such as UNDEFINED or UNKNOWN, logical true/false where specified, zero/nonzero IOSTAT where 12.11 later permits it, or bounded set membership where the source gives a set. Processor-dependent file names, case interpretation, multi-unit choices, file storage unit counts, asynchronous completion policy, IOMSG text, and numeric status codes are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint and a future fixture can observe the rejection portably. Undefined inquiry variables are not read as an oracle; IOMSG wording and processor-dependent numeric status values are never compared.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, and earlier clause 12 catalogues for source form, names, expressions, execution constructs, units, connections, file access, file position, CLOSE/OPEN context where already registered, and data-transfer foundations. Unregistered dependencies explicitly retained: later clause 12 OPEN, asynchronous transfer, I/O status, data transfer, internal-file, and input/output-item rules; clause 13 formatting and modes; clause 15 defined I/O; clause 16 inquiry/status intrinsics where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.10.1-006",
+      "title": "Inquiry by file observes the connected unit and file when connected",
+      "source": "S12.10.1, J3/24-007, 18 December 2023, physical PDF278.",
+      "source_units": [
+        "p3.connected-file-subject"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "If the file named in an inquiry by file is connected to a unit, the inquiry is about the connection as well as the file.",
+      "facets": [
+        "file-inquiry-connection-properties",
+        "file-inquiry-connected-file-properties"
+      ],
+      "pending": {
+        "file-inquiry-connection-properties": "Open a named file on exactly one known unit with explicit ACCESS and FORM, initialize ACCESS/FORM to sentinels, and inquire by FILE=; expect the connection tokens fixed by 12.10.2.3 and 12.10.2.12.",
+        "file-inquiry-connected-file-properties": "Open a named file on exactly one unit, initialize NUMBER to -777 and OPENED to .false., inquire by FILE=, and expect NUMBER equal to that unit and OPENED=.true."
+      },
+      "oracle": "Plans are pending and source-derived. Positive INQUIRE plans first establish the connection or file state being observed, initialize every inquiry variable to a nonmatching sentinel value, execute INQUIRE, and assert only values fixed by 12.10.2: exact tokens such as UNDEFINED or UNKNOWN, logical true/false where specified, zero/nonzero IOSTAT where 12.11 later permits it, or bounded set membership where the source gives a set. Processor-dependent file names, case interpretation, multi-unit choices, file storage unit counts, asynchronous completion policy, IOMSG text, and numeric status codes are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint and a future fixture can observe the rejection portably. Undefined inquiry variables are not read as an oracle; IOMSG wording and processor-dependent numeric status values are never compared.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, and earlier clause 12 catalogues for source form, names, expressions, execution constructs, units, connections, file access, file position, CLOSE/OPEN context where already registered, and data-transfer foundations. Unregistered dependencies explicitly retained: later clause 12 OPEN, asynchronous transfer, I/O status, data transfer, internal-file, and input/output-item rules; clause 13 formatting and modes; clause 15 defined I/O; clause 16 inquiry/status intrinsics where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.10.1-007",
+      "title": "INQUIRE may be executed before, during, or after connection",
+      "source": "S12.10.1, J3/24-007, 18 December 2023, physical PDF278.",
+      "source_units": [
+        "p4.execution-timing-permission"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "An INQUIRE statement may be executed before, while, or after a file is connected to a unit.",
+      "facets": [
+        "inquire-before-connection",
+        "inquire-during-connection",
+        "inquire-after-connection"
+      ],
+      "pending": {
+        "inquire-before-connection": "Before opening a suite-generated filename, prefill EXIST/OPENED with opposite sentinels and expect EXIST=.false., OPENED=.false. after verifying the file is absent.",
+        "inquire-during-connection": "While a named file is open on one unit, prefill OPENED and NUMBER sentinels and expect OPENED=.true. and the known unit number.",
+        "inquire-after-connection": "After closing a previously connected named file with STATUS=\"KEEP\", prefill EXIST=.false. and OPENED=.true.; expect EXIST=.true. and OPENED=.false."
+      },
+      "oracle": "Plans are pending and source-derived. Positive INQUIRE plans first establish the connection or file state being observed, initialize every inquiry variable to a nonmatching sentinel value, execute INQUIRE, and assert only values fixed by 12.10.2: exact tokens such as UNDEFINED or UNKNOWN, logical true/false where specified, zero/nonzero IOSTAT where 12.11 later permits it, or bounded set membership where the source gives a set. Processor-dependent file names, case interpretation, multi-unit choices, file storage unit counts, asynchronous completion policy, IOMSG text, and numeric status codes are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint and a future fixture can observe the rejection portably. Undefined inquiry variables are not read as an oracle; IOMSG wording and processor-dependent numeric status values are never compared.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, and earlier clause 12 catalogues for source form, names, expressions, execution constructs, units, connections, file access, file position, CLOSE/OPEN context where already registered, and data-transfer foundations. Unregistered dependencies explicitly retained: later clause 12 OPEN, asynchronous transfer, I/O status, data transfer, internal-file, and input/output-item rules; clause 13 formatting and modes; clause 15 defined I/O; clause 16 inquiry/status intrinsics where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.10.1-008",
+      "title": "INQUIRE returns values current at execution time",
+      "source": "S12.10.1, J3/24-007, 18 December 2023, physical PDF278.",
+      "source_units": [
+        "p4.current-values"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "All values assigned by an INQUIRE statement are those current at the time the statement is executed.",
+      "facets": [
+        "inquire-values-current-at-execution"
+      ],
+      "pending": {
+        "inquire-values-current-at-execution": "Execute two INQUIRE statements around an OPEN/CLOSE transition using variables reset to sentinels each time; assert OPENED changes from false before opening to true while connected and back to false after close."
+      },
+      "oracle": "Plans are pending and source-derived. Positive INQUIRE plans first establish the connection or file state being observed, initialize every inquiry variable to a nonmatching sentinel value, execute INQUIRE, and assert only values fixed by 12.10.2: exact tokens such as UNDEFINED or UNKNOWN, logical true/false where specified, zero/nonzero IOSTAT where 12.11 later permits it, or bounded set membership where the source gives a set. Processor-dependent file names, case interpretation, multi-unit choices, file storage unit counts, asynchronous completion policy, IOMSG text, and numeric status codes are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint and a future fixture can observe the rejection portably. Undefined inquiry variables are not read as an oracle; IOMSG wording and processor-dependent numeric status values are never compared.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, and earlier clause 12 catalogues for source form, names, expressions, execution constructs, units, connections, file access, file position, CLOSE/OPEN context where already registered, and data-transfer foundations. Unregistered dependencies explicitly retained: later clause 12 OPEN, asynchronous transfer, I/O status, data transfer, internal-file, and input/output-item rules; clause 13 formatting and modes; clause 15 defined I/O; clause 16 inquiry/status intrinsics where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "R1230",
+      "title": "An INQUIRE statement is a parenthesized specifier list or IOLENGTH form",
+      "source": "S12.10.1, J3/24-007, 18 December 2023, physical PDF278.",
+      "source_units": [
+        "R1230"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "The INQUIRE statement syntax is either INQUIRE with a parenthesized inquire-spec-list, or INQUIRE with IOLENGTH=scalar-int-variable followed by an output-item-list.",
+      "facets": [
+        "inquire-spec-list-form",
+        "inquire-iolength-output-list-form"
+      ],
+      "pending": {
+        "inquire-spec-list-form": "Positive control uses INQUIRE(UNIT=unit, OPENED=opened) after opening a known unit; syntax negatives remove the parentheses or specifier list only.",
+        "inquire-iolength-output-list-form": "Positive control initializes an integer length sentinel and uses INQUIRE(IOLENGTH=length) scalar; syntax negatives omit IOLENGTH or the output list with all surrounding declarations unchanged."
+      },
+      "oracle": "Plans are pending and source-derived. Positive INQUIRE plans first establish the connection or file state being observed, initialize every inquiry variable to a nonmatching sentinel value, execute INQUIRE, and assert only values fixed by 12.10.2: exact tokens such as UNDEFINED or UNKNOWN, logical true/false where specified, zero/nonzero IOSTAT where 12.11 later permits it, or bounded set membership where the source gives a set. Processor-dependent file names, case interpretation, multi-unit choices, file storage unit counts, asynchronous completion policy, IOMSG text, and numeric status codes are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint and a future fixture can observe the rejection portably. Undefined inquiry variables are not read as an oracle; IOMSG wording and processor-dependent numeric status values are never compared.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, and earlier clause 12 catalogues for source form, names, expressions, execution constructs, units, connections, file access, file position, CLOSE/OPEN context where already registered, and data-transfer foundations. Unregistered dependencies explicitly retained: later clause 12 OPEN, asynchronous transfer, I/O status, data transfer, internal-file, and input/output-item rules; clause 13 formatting and modes; clause 15 defined I/O; clause 16 inquiry/status intrinsics where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "structural",
+      "rationale": "Mixed form permissions and intrinsic-assignment effects are split."
+    },
+    {
+      "unit": "p1.inquiry-forms",
+      "disposition": "permission",
+      "requirements": [
+        "S12.10.1-001"
+      ],
+      "rationale": "Classified source unit."
+    },
+    {
+      "unit": "p1.specifier-assignment",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.10.1-002"
+      ]
+    },
+    {
+      "unit": "p2",
+      "disposition": "structural",
+      "rationale": "Permission for unconnected/nonexistent units is split from connected-unit subject semantics."
+    },
+    {
+      "unit": "p2.unit-form-permission",
+      "disposition": "permission",
+      "requirements": [
+        "S12.10.1-003"
+      ],
+      "rationale": "Classified source unit."
+    },
+    {
+      "unit": "p2.connected-unit-subject",
+      "disposition": "definition",
+      "requirements": [
+        "S12.10.1-004"
+      ],
+      "rationale": "Classified source unit."
+    },
+    {
+      "unit": "p3",
+      "disposition": "structural",
+      "rationale": "Permission for nonexistent/unconnected files is split from connected-file subject semantics."
+    },
+    {
+      "unit": "p3.file-form-permission",
+      "disposition": "permission",
+      "requirements": [
+        "S12.10.1-005"
+      ],
+      "rationale": "Classified source unit."
+    },
+    {
+      "unit": "p3.connected-file-subject",
+      "disposition": "definition",
+      "requirements": [
+        "S12.10.1-006"
+      ],
+      "rationale": "Classified source unit."
+    },
+    {
+      "unit": "p4",
+      "disposition": "structural",
+      "rationale": "Execution-time permission is split from current-value requirement."
+    },
+    {
+      "unit": "p4.execution-timing-permission",
+      "disposition": "permission",
+      "requirements": [
+        "S12.10.1-007"
+      ],
+      "rationale": "Classified source unit."
+    },
+    {
+      "unit": "p4.current-values",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.10.1-008"
+      ]
+    },
+    {
+      "unit": "R1230",
+      "disposition": "requirements",
+      "requirements": [
+        "R1230"
+      ]
+    },
+    {
+      "unit": "note-unnumbered",
+      "disposition": "informative",
+      "rationale": "Examples only; not normative."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_12_10_1.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "0fd4a36f626133699ccfa7277e545dd4ed0d6f5bbf8ca2c72bc6e53bf4e3e4e4",
+  "review_rationale": "Source registration for 12.10, the INQUIRE statement and all thirty-four inquiry specifiers (batch165). Every unit hash-verified by independent reviewers across three rounds. Round 1 split the 'unable to determine' latitude out of eight YES/NO/UNKNOWN specifiers and out of ENCODING and SIZE; round 2 made the plans assert only what that latitude leaves portable - membership in {YES, UNKNOWN} for a method in use, and {POS-1, -1} for the size of a stream file. R1230, R1231 and C1247-C1251 were pre-accounted. With this packet Clause 12 is fully registered. Source accounting only."
+}

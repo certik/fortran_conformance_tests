@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "section": "12.10.2.28",
+  "requirements": [
+    {
+      "id": "S12.10.2.28-001",
+      "title": "ROUND= returns fixed INQUIRE character tokens",
+      "source": "S12.10.2.28, J3/24-007, 18 December 2023, physical PDF284.",
+      "source_units": [
+        "p1"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "ROUND= is assigned UP, DOWN, ZERO, NEAREST, COMPATIBLE, or PROCESSOR_DEFINED for the formatted I/O rounding mode; with no connection or a nonformatted connection it is assigned UNDEFINED. PROCESSOR_DEFINED may be returned only if behavior differs from the listed modes.",
+      "facets": [
+        "round-up-token",
+        "round-down-token",
+        "round-zero-token",
+        "round-nearest-token",
+        "round-compatible-token",
+        "round-processor-defined-token-bounded",
+        "round-unformatted-undefined",
+        "round-no-connection-undefined"
+      ],
+      "pending": {
+        "round-up-token": "Open formatted I/O with ROUND=\"UP\", initialize ROUND to sentinels, and expect UP.",
+        "round-down-token": "Open formatted I/O with ROUND=\"DOWN\", initialize ROUND to sentinels, and expect DOWN.",
+        "round-zero-token": "Open formatted I/O with ROUND=\"ZERO\", initialize ROUND to sentinels, and expect ZERO.",
+        "round-nearest-token": "Open formatted I/O with ROUND=\"NEAREST\", initialize ROUND to sentinels, and expect NEAREST.",
+        "round-compatible-token": "Open formatted I/O with ROUND=\"COMPATIBLE\", initialize ROUND to sentinels, and expect COMPATIBLE.",
+        "round-processor-defined-token-bounded": "When ROUND is omitted, initialize to sentinels and assert only membership in the six listed tokens; no portable oracle requires the processor default choice or proves a PROCESSOR_DEFINED behavioral difference here.",
+        "round-unformatted-undefined": "Open an unformatted connection first, initialize ROUND to sentinels, and expect UNDEFINED.",
+        "round-no-connection-undefined": "After closing a known unit, reset ROUND to sentinels and expect UNDEFINED."
+      },
+      "oracle": "Plans are pending and source-derived. Positive INQUIRE plans first establish the connection or file state being observed, initialize every inquiry variable to a nonmatching sentinel value, execute INQUIRE, and assert only values fixed by 12.10.2: exact tokens such as UNDEFINED or UNKNOWN, logical true/false where specified, zero/nonzero IOSTAT where 12.11 later permits it, or bounded set membership where the source gives a set. Processor-dependent file names, case interpretation, multi-unit choices, file storage unit counts, asynchronous completion policy, IOMSG text, and numeric status codes are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint and a future fixture can observe the rejection portably. Undefined inquiry variables are not read as an oracle; IOMSG wording and processor-dependent numeric status values are never compared.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, and earlier clause 12 catalogues for source form, names, expressions, execution constructs, units, connections, file access, file position, CLOSE/OPEN context where already registered, and data-transfer foundations. Unregistered dependencies explicitly retained: later clause 12 OPEN, asynchronous transfer, I/O status, data transfer, internal-file, and input/output-item rules; clause 13 formatting and modes; clause 15 defined I/O; clause 16 inquiry/status intrinsics where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.10.2.28-001"
+      ]
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_12_10_2_28.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "6fe54af903d7dd5efd300974f33eb9c4fe30050c5a0450ba0f6d1ac5339cbd7c",
+  "review_rationale": "Source registration for 12.10, the INQUIRE statement and all thirty-four inquiry specifiers (batch165). Every unit hash-verified by independent reviewers across three rounds. Round 1 split the 'unable to determine' latitude out of eight YES/NO/UNKNOWN specifiers and out of ENCODING and SIZE; round 2 made the plans assert only what that latitude leaves portable - membership in {YES, UNKNOWN} for a method in use, and {POS-1, -1} for the size of a stream file. R1230, R1231 and C1247-C1251 were pre-accounted. With this packet Clause 12 is fully registered. Source accounting only."
+}

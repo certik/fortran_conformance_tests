@@ -1,0 +1,86 @@
+{
+  "schema_version": 1,
+  "section": "12.10.2.2",
+  "subunits": {
+    "p1": [
+      "p1.file-name-requirements",
+      "p1.case-latitude"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S12.10.2.2-001",
+      "title": "FILE= names the file to inquire and ignores trailing blanks",
+      "source": "S12.10.2.2, J3/24-007, 18 December 2023, physical PDF280.",
+      "source_units": [
+        "p1.file-name-requirements"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The FILE= expression value specifies the file being inquired about; the file need not exist or be connected, the value shall be acceptable as a processor file name, and trailing blanks are ignored.",
+      "facets": [
+        "file-specifier-names-inquired-file",
+        "file-name-need-not-exist-or-connect",
+        "file-name-form-acceptable",
+        "file-name-trailing-blanks-ignored"
+      ],
+      "pending": {
+        "file-specifier-names-inquired-file": "Create a named file, initialize EXIST to .false., use FILE=name, and expect EXIST=.true.; repeat with a distinct absent name verified by EXIST=.false.",
+        "file-name-need-not-exist-or-connect": "After verifying a generated name is absent and unconnected, INQUIRE(FILE=name, EXIST=e, OPENED=o) with opposite sentinels and expect .false./.false.",
+        "file-name-form-acceptable": "Use only suite-generated file names known acceptable to the processor; invalid-name rejection is not portable here.",
+        "file-name-trailing-blanks-ignored": "Create a file with base name, inquire using a longer character FILE expression with trailing blanks, and expect EXIST=.true. with sentinel initialization."
+      },
+      "oracle": "Plans are pending and source-derived. Positive INQUIRE plans first establish the connection or file state being observed, initialize every inquiry variable to a nonmatching sentinel value, execute INQUIRE, and assert only values fixed by 12.10.2: exact tokens such as UNDEFINED or UNKNOWN, logical true/false where specified, zero/nonzero IOSTAT where 12.11 later permits it, or bounded set membership where the source gives a set. Processor-dependent file names, case interpretation, multi-unit choices, file storage unit counts, asynchronous completion policy, IOMSG text, and numeric status codes are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint and a future fixture can observe the rejection portably. Undefined inquiry variables are not read as an oracle; IOMSG wording and processor-dependent numeric status values are never compared.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, and earlier clause 12 catalogues for source form, names, expressions, execution constructs, units, connections, file access, file position, CLOSE/OPEN context where already registered, and data-transfer foundations. Unregistered dependencies explicitly retained: later clause 12 OPEN, asynchronous transfer, I/O status, data transfer, internal-file, and input/output-item rules; clause 13 formatting and modes; clause 15 defined I/O; clause 16 inquiry/status intrinsics where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.10.2.2-002",
+      "title": "FILE= case interpretation is processor dependent",
+      "source": "S12.10.2.2, J3/24-007, 18 December 2023, physical PDF280.",
+      "source_units": [
+        "p1.case-latitude"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The interpretation of case in the FILE= specifier is processor dependent.",
+      "facets": [
+        "file-name-case-interpretation-processor-dependent"
+      ],
+      "pending": {
+        "file-name-case-interpretation-processor-dependent": "No portable oracle may require upper/lowercase file-name equivalence or distinction; future tests use exactly the same suite-generated spelling."
+      },
+      "oracle": "Plans are pending and source-derived. Positive INQUIRE plans first establish the connection or file state being observed, initialize every inquiry variable to a nonmatching sentinel value, execute INQUIRE, and assert only values fixed by 12.10.2: exact tokens such as UNDEFINED or UNKNOWN, logical true/false where specified, zero/nonzero IOSTAT where 12.11 later permits it, or bounded set membership where the source gives a set. Processor-dependent file names, case interpretation, multi-unit choices, file storage unit counts, asynchronous completion policy, IOMSG text, and numeric status codes are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint and a future fixture can observe the rejection portably. Undefined inquiry variables are not read as an oracle; IOMSG wording and processor-dependent numeric status values are never compared.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, and earlier clause 12 catalogues for source form, names, expressions, execution constructs, units, connections, file access, file position, CLOSE/OPEN context where already registered, and data-transfer foundations. Unregistered dependencies explicitly retained: later clause 12 OPEN, asynchronous transfer, I/O status, data transfer, internal-file, and input/output-item rules; clause 13 formatting and modes; clause 15 defined I/O; clause 16 inquiry/status intrinsics where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "structural",
+      "rationale": "FILE= obligations are split from processor-dependent case interpretation."
+    },
+    {
+      "unit": "p1.file-name-requirements",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.10.2.2-001"
+      ]
+    },
+    {
+      "unit": "p1.case-latitude",
+      "disposition": "permission",
+      "requirements": [
+        "S12.10.2.2-002"
+      ],
+      "rationale": "Classified source unit."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_12_10_2_2.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "4c40ea42b2607178a4e6f073d250ecae98f5c09f1fab65675934e10fd8eb75d8",
+  "review_rationale": "Source registration for 12.10, the INQUIRE statement and all thirty-four inquiry specifiers (batch165). Every unit hash-verified by independent reviewers across three rounds. Round 1 split the 'unable to determine' latitude out of eight YES/NO/UNKNOWN specifiers and out of ENCODING and SIZE; round 2 made the plans assert only what that latitude leaves portable - membership in {YES, UNKNOWN} for a method in use, and {POS-1, -1} for the size of a stream file. R1230, R1231 and C1247-C1251 were pre-accounted. With this packet Clause 12 is fully registered. Source accounting only."
+}

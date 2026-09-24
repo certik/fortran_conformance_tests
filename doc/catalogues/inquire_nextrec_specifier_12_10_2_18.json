@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "section": "12.10.2.18",
+  "requirements": [
+    {
+      "id": "S12.10.2.18-001",
+      "title": "NEXTREC= reports the next direct-access record number or becomes undefined",
+      "source": "S12.10.2.18, J3/24-007, 18 December 2023, physical PDF282.",
+      "source_units": [
+        "p1"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "NEXTREC= is assigned n+1 where n is the last direct-access record read or written, 1 if no record has been read or written since connection, becomes undefined with no connection, nondirect access, or indeterminate position after error, and accounts for pending transfers as if completed.",
+      "facets": [
+        "nextrec-after-direct-transfer",
+        "nextrec-initial-direct-one",
+        "nextrec-undefined-without-direct-connection",
+        "nextrec-pending-computed-complete"
+      ],
+      "pending": {
+        "nextrec-after-direct-transfer": "Open direct access with explicit RECL, write record 3, initialize NEXTREC to -777, inquire, and expect 4.",
+        "nextrec-initial-direct-one": "Open direct access and perform no record transfer, initialize NEXTREC to -777, inquire, and expect 1.",
+        "nextrec-undefined-without-direct-connection": "No portable oracle for the undefined value; use ACCESS= or OPENED= to establish the neighboring nondirect/no-connection state instead of reading NEXTREC.",
+        "nextrec-pending-computed-complete": "No portable oracle until a future asynchronous direct-access fixture can keep a transfer pending with a known record number; asynchronous completion policy is processor dependent."
+      },
+      "oracle": "Plans are pending and source-derived. Positive INQUIRE plans first establish the connection or file state being observed, initialize every inquiry variable to a nonmatching sentinel value, execute INQUIRE, and assert only values fixed by 12.10.2: exact tokens such as UNDEFINED or UNKNOWN, logical true/false where specified, zero/nonzero IOSTAT where 12.11 later permits it, or bounded set membership where the source gives a set. Processor-dependent file names, case interpretation, multi-unit choices, file storage unit counts, asynchronous completion policy, IOMSG text, and numeric status codes are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint and a future fixture can observe the rejection portably. Undefined inquiry variables are not read as an oracle; IOMSG wording and processor-dependent numeric status values are never compared.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, and earlier clause 12 catalogues for source form, names, expressions, execution constructs, units, connections, file access, file position, CLOSE/OPEN context where already registered, and data-transfer foundations. Unregistered dependencies explicitly retained: later clause 12 OPEN, asynchronous transfer, I/O status, data transfer, internal-file, and input/output-item rules; clause 13 formatting and modes; clause 15 defined I/O; clause 16 inquiry/status intrinsics where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.10.2.18-001"
+      ]
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_12_10_2_18.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "54e8ddc3fe8b4aceb615e562610efa5d882ac0a2c151d68a5829f799bccb92ff",
+  "review_rationale": "Source registration for 12.10, the INQUIRE statement and all thirty-four inquiry specifiers (batch165). Every unit hash-verified by independent reviewers across three rounds. Round 1 split the 'unable to determine' latitude out of eight YES/NO/UNKNOWN specifiers and out of ENCODING and SIZE; round 2 made the plans assert only what that latitude leaves portable - membership in {YES, UNKNOWN} for a method in use, and {POS-1, -1} for the size of a stream file. R1230, R1231 and C1247-C1251 were pre-accounted. With this packet Clause 12 is fully registered. Source accounting only."
+}

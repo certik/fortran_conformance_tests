@@ -1,0 +1,110 @@
+{
+  "schema_version": 1,
+  "section": "12.10.2.26",
+  "requirements": [
+    {
+      "id": "S12.10.2.26-001",
+      "title": "READWRITE= returns YES or NO for determinable allowed-action membership",
+      "source": "S12.10.2.26, J3/24-007, 18 December 2023, physical PDF284.",
+      "source_units": [
+        "p1.allowed-set-returned-values"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "READWRITE= is assigned YES if READWRITE is included in the set of allowed actions for the file and NO if READWRITE is not included in that set.",
+      "facets": [
+        "readwrite-yes-token",
+        "readwrite-no-token"
+      ],
+      "pending": {
+        "readwrite-yes-token": "Open a file with ACTION=\"READWRITE\", initialize READWRITE to sentinels, inquire, and assert only that READWRITE is in {YES, UNKNOWN}: 12.10.2.26 p1 assigns YES when READWRITE is included in the allowed actions, but also assigns UNKNOWN if the processor is unable to determine that membership.",
+        "readwrite-no-token": "No unconditional portable NO oracle: no source in this packet requires a processor-independent file to exclude READWRITE from its allowed actions. A future test that first establishes exclusion by another portable rule may assert only membership in {NO, UNKNOWN}, because 12.10.2.26 p1 permits UNKNOWN when the processor is unable to determine membership."
+      },
+      "oracle": "Plans are pending and source-derived. Positive INQUIRE plans first establish the connection or file state being observed, initialize every inquiry variable to a nonmatching sentinel value, execute INQUIRE, and assert only values fixed by 12.10.2: exact tokens such as UNDEFINED or UNKNOWN, logical true/false where specified, zero/nonzero IOSTAT where 12.11 later permits it, or bounded set membership where the source gives a set. Processor-dependent file names, case interpretation, multi-unit choices, file storage unit counts, asynchronous completion policy, IOMSG text, and numeric status codes are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint and a future fixture can observe the rejection portably. Undefined inquiry variables are not read as an oracle; IOMSG wording and processor-dependent numeric status values are never compared.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, and earlier clause 12 catalogues for source form, names, expressions, execution constructs, units, connections, file access, file position, CLOSE/OPEN context where already registered, and data-transfer foundations. Unregistered dependencies explicitly retained: later clause 12 OPEN, asynchronous transfer, I/O status, data transfer, internal-file, and input/output-item rules; clause 13 formatting and modes; clause 15 defined I/O; clause 16 inquiry/status intrinsics where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.10.2.26-002",
+      "title": "READWRITE= returns UNKNOWN for an unconnected unit inquiry",
+      "source": "S12.10.2.26, J3/24-007, 18 December 2023, physical PDF284.",
+      "source_units": [
+        "p1.unconnected-unit-unknown"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "READWRITE= is assigned UNKNOWN if the unit identified by file-unit-number is not connected to a file.",
+      "facets": [
+        "readwrite-unconnected-unit-unknown-token"
+      ],
+      "pending": {
+        "readwrite-unconnected-unit-unknown-token": "Open and close a known external unit so it is not connected to a file, initialize READWRITE to sentinels, inquire by UNIT= for that unit, and expect UNKNOWN."
+      },
+      "oracle": "Plans are pending and source-derived. Positive INQUIRE plans first establish the connection or file state being observed, initialize every inquiry variable to a nonmatching sentinel value, execute INQUIRE, and assert only values fixed by 12.10.2: exact tokens such as UNDEFINED or UNKNOWN, logical true/false where specified, zero/nonzero IOSTAT where 12.11 later permits it, or bounded set membership where the source gives a set. Processor-dependent file names, case interpretation, multi-unit choices, file storage unit counts, asynchronous completion policy, IOMSG text, and numeric status codes are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint and a future fixture can observe the rejection portably. Undefined inquiry variables are not read as an oracle; IOMSG wording and processor-dependent numeric status values are never compared.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, and earlier clause 12 catalogues for source form, names, expressions, execution constructs, units, connections, file access, file position, CLOSE/OPEN context where already registered, and data-transfer foundations. Unregistered dependencies explicitly retained: later clause 12 OPEN, asynchronous transfer, I/O status, data transfer, internal-file, and input/output-item rules; clause 13 formatting and modes; clause 15 defined I/O; clause 16 inquiry/status intrinsics where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    },
+    {
+      "id": "S12.10.2.26-003",
+      "title": "READWRITE= UNKNOWN for inability to determine allowed actions is processor latitude",
+      "source": "S12.10.2.26, J3/24-007, 18 December 2023, physical PDF284.",
+      "source_units": [
+        "p1.determinability-latitude"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "READWRITE= is assigned UNKNOWN if the processor is unable to determine whether READWRITE is included in the set of allowed actions for the file.",
+      "facets": [
+        "readwrite-unable-to-determine-unknown-latitude"
+      ],
+      "pending": {
+        "readwrite-unable-to-determine-unknown-latitude": "No portable oracle can force processor inability to determine allowed actions for a particular file; this latitude is recorded separately from the required unconnected-unit UNKNOWN result."
+      },
+      "oracle": "Plans are pending and source-derived. Positive INQUIRE plans first establish the connection or file state being observed, initialize every inquiry variable to a nonmatching sentinel value, execute INQUIRE, and assert only values fixed by 12.10.2: exact tokens such as UNDEFINED or UNKNOWN, logical true/false where specified, zero/nonzero IOSTAT where 12.11 later permits it, or bounded set membership where the source gives a set. Processor-dependent file names, case interpretation, multi-unit choices, file storage unit counts, asynchronous completion policy, IOMSG text, and numeric status codes are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Negative plans are source-control plans unless this unit itself is a numbered syntax rule or numbered constraint and a future fixture can observe the rejection portably. Undefined inquiry variables are not read as an oracle; IOMSG wording and processor-dependent numeric status values are never compared.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, and earlier clause 12 catalogues for source form, names, expressions, execution constructs, units, connections, file access, file position, CLOSE/OPEN context where already registered, and data-transfer foundations. Unregistered dependencies explicitly retained: later clause 12 OPEN, asynchronous transfer, I/O status, data transfer, internal-file, and input/output-item rules; clause 13 formatting and modes; clause 15 defined I/O; clause 16 inquiry/status intrinsics where future fixtures need them; clauses 3, 5, 14, 17, 18, and 19 where terminology, constants, images, IEEE support, deleted features, or scope/lifetime controls are reached."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "structural",
+      "rationale": "READWRITE= mixes required YES/NO and unconnected-unit UNKNOWN results with processor latitude for inability to determine the allowed actions."
+    },
+    {
+      "unit": "p1.allowed-set-returned-values",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.10.2.26-001"
+      ]
+    },
+    {
+      "unit": "p1.unconnected-unit-unknown",
+      "disposition": "requirements",
+      "requirements": [
+        "S12.10.2.26-002"
+      ]
+    },
+    {
+      "unit": "p1.determinability-latitude",
+      "disposition": "permission",
+      "requirements": [
+        "S12.10.2.26-003"
+      ],
+      "rationale": "Classified source unit."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_12_10_2_26.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "2bfa8cc62346334024b9c8c2bce478bc3e26dad78d63d01158d742946d7c1ecb",
+  "review_rationale": "Source registration for 12.10, the INQUIRE statement and all thirty-four inquiry specifiers (batch165). Every unit hash-verified by independent reviewers across three rounds. Round 1 split the 'unable to determine' latitude out of eight YES/NO/UNKNOWN specifiers and out of ENCODING and SIZE; round 2 made the plans assert only what that latitude leaves portable - membership in {YES, UNKNOWN} for a method in use, and {POS-1, -1} for the size of a stream file. R1230, R1231 and C1247-C1251 were pre-accounted. With this packet Clause 12 is fully registered. Source accounting only.",
+  "subunits": {
+    "p1": [
+      "p1.allowed-set-returned-values",
+      "p1.unconnected-unit-unknown",
+      "p1.determinability-latitude"
+    ]
+  }
+}
