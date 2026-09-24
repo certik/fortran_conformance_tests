@@ -6114,6 +6114,11 @@ See `doc/source_audits/batch_270.json`.
 The first Clause 12 fixtures to land: twenty-one programs, thirty-eight facets of sequential, direct and stream access and file positioning, with every READ target guarded and every stream position derived from INQUIRE rather than assumed.
 See `doc/source_audits/batch_277.json`.
 
+## Batch 281 — Main program and module syntax fixtures 14.1-14.2.1
+
+Twenty-five programs, fifteen facets: the grammar of main programs and modules, tested chiefly by what a processor must refuse, each refusal paired with a program that differs by one token and must compile.
+See `doc/source_audits/batch_281.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
