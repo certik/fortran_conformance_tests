@@ -5954,6 +5954,11 @@ See `doc/source_audits/batch_239.json`.
 Fifty-five units after two rounds, and with batch239 **Clause 14 is fully registered**. Both findings were the same miss: a 'may' inside a paragraph of requirements is a permission of its own, even when it sits between two 'shall's.
 See `doc/source_audits/batch_238.json`.
 
+## Batch 240 — Interoperability with C through C_F_POINTER (18-18.2.3.3)
+
+Twenty-nine units after two rounds, the opening of C interoperability. A C kind constant may be negative, so even writing REAL(C_DOUBLE) has to sit under a guard; the negative values themselves are exact and testable.
+See `doc/source_audits/batch_240.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
