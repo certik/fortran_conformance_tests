@@ -5699,6 +5699,11 @@ See `doc/source_audits/batch_195.json`.
 Forty-three units of integer bit intrinsics and ICHAR, after two rounds. The ICHAR fix is a neat use of an indirect guarantee: the standard never says where any particular character sits in the processor's collating sequence, but CHAR promises ICHAR(CHAR(i)) == i across the whole range, and the default character set must hold at least the sixty-nine characters of the Fortran character set, so positions 0, 32 and 65 are safe.
 See `doc/source_audits/batch_193.json`.
 
+## Batch 190 — ERF through EXPONENT, including EXECUTE_COMMAND_LINE
+
+Forty-three units, after two rounds, with one old trap resurfacing: the EXPONENT result-kind plan assigned the result to a variable and checked KIND of the variable — which only reports how the variable was declared. The plan now checks KIND(EXPONENT(1.0)) on the expression itself. EXECUTE_COMMAND_LINE got the mixed-obligation treatment: its status arguments ARE assigned (a requirement) even though their values are the processor's (latitude), and CMDMSG staying unchanged when no error occurs is portably observable.
+See `doc/source_audits/batch_190.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
