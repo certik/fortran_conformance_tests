@@ -6049,6 +6049,11 @@ See `doc/source_audits/batch_247.json`.
 Seventy-two units, three rounds. A definition names a concept; the review kept asking which catalogue actually tests it, and would not accept a heading that tests nothing.
 See `doc/source_audits/batch_256.json`.
 
+## Batch 271 — Scope and local-identifier class fixtures 19.1-19.3.4
+
+The suite's first Clause 19 tests: eighteen programs, twenty-seven facets. Each name is given a different value in every scope that could claim it, so a compiler that resolves a name to the wrong entity prints the wrong number.
+See `doc/source_audits/batch_271.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
