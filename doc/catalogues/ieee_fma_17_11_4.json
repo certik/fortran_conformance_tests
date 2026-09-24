@@ -1,0 +1,176 @@
+{
+  "schema_version": 1,
+  "section": "17.11.4",
+  "requirements": [
+    {
+      "id": "S17.11.4-001",
+      "title": "IEEE_FMA procedure identity",
+      "source": "S17.11.4 p1/p2; J3/24-007, 18 December 2023, physical PDF489.",
+      "source_units": [
+        "p1",
+        "p2"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "IEEE_FMA is the elemental function whose description is fused multiply-add operation.",
+      "facets": [
+        "IEEE_FMA-fused-multiply-add-description",
+        "IEEE_FMA-elemental-function-class"
+      ],
+      "pending": {
+        "IEEE_FMA-fused-multiply-add-description": "Source-use plan imports IEEE_ARITHMETIC, probes IEEE_SUPPORT_DATATYPE(A) for A=1.5, then calls IEEE_FMA(A,B,C) in the supported branch; source mutation replaces it with A*B+C so a future discriminating fused-operation fixture owns the contrast.",
+        "IEEE_FMA-elemental-function-class": "Probe IEEE_SUPPORT_DATATYPE(A) for scalar A=1.5 and rank-one default real A arrays before IEEE_FMA calls. Supported branch uses scalar A/B/C and rank-one A/B/C of equal shape with IEEE_FMA, then asserts scalar result rank zero and array result rank one with elementwise results [2.0, 5.0] from hand-computed inputs; unsupported branch records skip."
+      },
+      "oracle": "Source registration only for IEEE_FMA. Future fixtures use guarded branch plans for IEEE processor support: probe the relevant IEEE_SUPPORT_* inquiry first, assert the stated effect only in the supported branch, and record an unsupported branch as skip rather than pass. Positive observations initialize result variables or flags to opposite sentinels, use exactly representable binary inputs such as 1.5, 2.0, -1.0, and -2.5, and compare NaN, infinity, flag, rounding, halting, mode, and status effects only through IEEE inquiry or get/set procedures.",
+      "oracle_limitation": "Source registration only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Case-insensitive grep of tests/ and tests/fixtures/*/fixture.json for IEEE_COPY_SIGN, IEEE_FMA, IEEE_GET_FLAG, IEEE_GET_HALTING_MODE, IEEE_GET_MODES, IEEE_GET_ROUNDING_MODE, IEEE_GET_STATUS, the in-scope IEEE_* derived types and named constants found only tests/profiles/ieee_binary.f90 using ieee_support_datatype; no fixture.json binding or procedure-name coverage exists for 17.11.3-17.11.9 in this worktree.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 13, 15, and 16 where already catalogued for source form, intrinsic types, declarations, expressions, execution, program units, internal I/O observation, procedure calls, and intrinsic inquiry helpers. Unregistered dependencies retained: clause 17 IEEE module definitions, IEEE_SUPPORT_* inquiries, IEEE_SET_* companions, IEEE_VALUE and IEEE_IS_* classifiers, exception flag and rounding mode constants, and neighbouring Clause 17 procedure catalogues owned by sibling packets."
+    },
+    {
+      "id": "S17.11.4-002",
+      "title": "IEEE_FMA argument restrictions",
+      "source": "S17.11.4 p3; J3/24-007, 18 December 2023, physical PDF489.",
+      "source_units": [
+        "p3"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "A shall be real; B and C shall have the same type and kind type parameter as A.",
+      "facets": [
+        "IEEE_FMA-A-real",
+        "IEEE_FMA-B-same-type-kind-as-A",
+        "IEEE_FMA-C-same-type-kind-as-A"
+      ],
+      "pending": {
+        "IEEE_FMA-A-real": "Positive source control probes IEEE_SUPPORT_DATATYPE(A) for real A=1.5 before calling IEEE_FMA with B=2.0 and C=-1.0; source-control mutation uses an integer A and claims no diagnostic facet.",
+        "IEEE_FMA-B-same-type-kind-as-A": "Positive source control probes IEEE_SUPPORT_DATATYPE(A) for default real A=1.5 and double precision A=1.5D0 before IEEE_FMA calls with matching B values; source-control mutation gives B a different real kind and claims no diagnostic facet.",
+        "IEEE_FMA-C-same-type-kind-as-A": "Positive source control probes IEEE_SUPPORT_DATATYPE(A) for default real A=1.5 and double precision A=1.5D0 before IEEE_FMA calls with matching C values; source-control mutation gives C a different real kind and claims no diagnostic facet."
+      },
+      "oracle": "Source registration only for IEEE_FMA. Future fixtures use guarded branch plans for IEEE processor support: probe the relevant IEEE_SUPPORT_* inquiry first, assert the stated effect only in the supported branch, and record an unsupported branch as skip rather than pass. Positive observations initialize result variables or flags to opposite sentinels, use exactly representable binary inputs such as 1.5, 2.0, -1.0, and -2.5, and compare NaN, infinity, flag, rounding, halting, mode, and status effects only through IEEE inquiry or get/set procedures.",
+      "oracle_limitation": "Source registration only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Case-insensitive grep of tests/ and tests/fixtures/*/fixture.json for IEEE_COPY_SIGN, IEEE_FMA, IEEE_GET_FLAG, IEEE_GET_HALTING_MODE, IEEE_GET_MODES, IEEE_GET_ROUNDING_MODE, IEEE_GET_STATUS, the in-scope IEEE_* derived types and named constants found only tests/profiles/ieee_binary.f90 using ieee_support_datatype; no fixture.json binding or procedure-name coverage exists for 17.11.3-17.11.9 in this worktree.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 13, 15, and 16 where already catalogued for source form, intrinsic types, declarations, expressions, execution, program units, internal I/O observation, procedure calls, and intrinsic inquiry helpers. Unregistered dependencies retained: clause 17 IEEE module definitions, IEEE_SUPPORT_* inquiries, IEEE_SET_* companions, IEEE_VALUE and IEEE_IS_* classifiers, exception flag and rounding mode constants, and neighbouring Clause 17 procedure catalogues owned by sibling packets."
+    },
+    {
+      "id": "S17.11.4-003",
+      "title": "IEEE_FMA datatype support restriction",
+      "source": "S17.11.4 p4; J3/24-007, 18 December 2023, physical PDF489.",
+      "source_units": [
+        "p4"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "IEEE_FMA(A,B,C) shall not be invoked unless IEEE_SUPPORT_DATATYPE(A) is true.",
+      "facets": [
+        "IEEE_FMA-requires-A-supported-datatype"
+      ],
+      "pending": {
+        "IEEE_FMA-requires-A-supported-datatype": "Guarded source-control plan: probe IEEE_SUPPORT_DATATYPE(A) before the call; supported branch invokes IEEE_FMA, unsupported branch records skip and performs no call, with no diagnostic facet claimed."
+      },
+      "oracle": "Source registration only for IEEE_FMA. Future fixtures use guarded branch plans for IEEE processor support: probe the relevant IEEE_SUPPORT_* inquiry first, assert the stated effect only in the supported branch, and record an unsupported branch as skip rather than pass. Positive observations initialize result variables or flags to opposite sentinels, use exactly representable binary inputs such as 1.5, 2.0, -1.0, and -2.5, and compare NaN, infinity, flag, rounding, halting, mode, and status effects only through IEEE inquiry or get/set procedures.",
+      "oracle_limitation": "Source registration only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Case-insensitive grep of tests/ and tests/fixtures/*/fixture.json for IEEE_COPY_SIGN, IEEE_FMA, IEEE_GET_FLAG, IEEE_GET_HALTING_MODE, IEEE_GET_MODES, IEEE_GET_ROUNDING_MODE, IEEE_GET_STATUS, the in-scope IEEE_* derived types and named constants found only tests/profiles/ieee_binary.f90 using ieee_support_datatype; no fixture.json binding or procedure-name coverage exists for 17.11.3-17.11.9 in this worktree.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 13, 15, and 16 where already catalogued for source form, intrinsic types, declarations, expressions, execution, program units, internal I/O observation, procedure calls, and intrinsic inquiry helpers. Unregistered dependencies retained: clause 17 IEEE module definitions, IEEE_SUPPORT_* inquiries, IEEE_SET_* companions, IEEE_VALUE and IEEE_IS_* classifiers, exception flag and rounding mode constants, and neighbouring Clause 17 procedure catalogues owned by sibling packets."
+    },
+    {
+      "id": "S17.11.4-004",
+      "title": "IEEE_FMA result characteristics follow A",
+      "source": "S17.11.4 p5; J3/24-007, 18 December 2023, physical PDF489.",
+      "source_units": [
+        "p5"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The IEEE_FMA result has the same type, kind, and rank characteristics as A.",
+      "facets": [
+        "IEEE_FMA-result-same-characteristics-as-A"
+      ],
+      "pending": {
+        "IEEE_FMA-result-same-characteristics-as-A": "Probe IEEE_SUPPORT_DATATYPE for default real A=1.5, double precision A=1.5D0, and rank-one default real A arrays before IEEE_FMA calls. Supported branch assigns IEEE_FMA(1.5,2.0,-1.0) to default real and IEEE_FMA(1.5D0,2.0D0,-1.0D0) to double precision results, asserts KIND equality to A, and uses rank-one A/B/C arrays to assert SHAPE [2]."
+      },
+      "oracle": "Source registration only for IEEE_FMA. Future fixtures use guarded branch plans for IEEE processor support: probe the relevant IEEE_SUPPORT_* inquiry first, assert the stated effect only in the supported branch, and record an unsupported branch as skip rather than pass. Positive observations initialize result variables or flags to opposite sentinels, use exactly representable binary inputs such as 1.5, 2.0, -1.0, and -2.5, and compare NaN, infinity, flag, rounding, halting, mode, and status effects only through IEEE inquiry or get/set procedures.",
+      "oracle_limitation": "Source registration only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Case-insensitive grep of tests/ and tests/fixtures/*/fixture.json for IEEE_COPY_SIGN, IEEE_FMA, IEEE_GET_FLAG, IEEE_GET_HALTING_MODE, IEEE_GET_MODES, IEEE_GET_ROUNDING_MODE, IEEE_GET_STATUS, the in-scope IEEE_* derived types and named constants found only tests/profiles/ieee_binary.f90 using ieee_support_datatype; no fixture.json binding or procedure-name coverage exists for 17.11.3-17.11.9 in this worktree.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 13, 15, and 16 where already catalogued for source form, intrinsic types, declarations, expressions, execution, program units, internal I/O observation, procedure calls, and intrinsic inquiry helpers. Unregistered dependencies retained: clause 17 IEEE module definitions, IEEE_SUPPORT_* inquiries, IEEE_SET_* companions, IEEE_VALUE and IEEE_IS_* classifiers, exception flag and rounding mode constants, and neighbouring Clause 17 procedure catalogues owned by sibling packets."
+    },
+    {
+      "id": "S17.11.4-005",
+      "title": "IEEE_FMA result value and final-step exception signaling",
+      "source": "S17.11.4 p6; J3/24-007, 18 December 2023, physical PDF489.",
+      "source_units": [
+        "p6"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "IEEE_FMA returns the ISO/IEC 60559 fusedMultiplyAdd result, equal in range to the mathematical value of (A times B) plus C rounded once to A according to the rounding mode; IEEE_OVERFLOW, IEEE_UNDERFLOW, and IEEE_INEXACT are signaled from the final calculation step and not intermediate calculation.",
+      "facets": [
+        "IEEE_FMA-exact-in-range-fused-value",
+        "IEEE_FMA-final-step-exception-signaling"
+      ],
+      "pending": {
+        "IEEE_FMA-exact-in-range-fused-value": "Probe IEEE_SUPPORT_DATATYPE(0.0) for IEEE_FMA and IEEE_SUPPORT_ROUNDING(IEEE_NEAREST,0.0) for the rounding-mode setup. Supported branch sets IEEE_NEAREST, asserts the existing exact cases IEEE_FMA(1.5,2.0,-1.0)==2.0 and IEEE_FMA(-1.5,2.0,1.0)==-2.0, then runs a fused-discrimination case guarded by RADIX(0.0)==2. Let p=DIGITS(0.0). The p=24 branch chooses k=13; the p=53 branch chooses k=27; both choices satisfy p+1 <= 2*k and k <= p-2. Other p values record skip until a k satisfying those inequalities is derived. With t=2.0**(-k), a=b=1.0+t, and c=-(1.0+2.0*t), assert IEEE_FMA(a,b,c)==t*t exactly, where t*t is 2.0**(-2*k) and is nonzero. The discrimination rationale is that a separate rounded multiply followed by add loses t*t under round-to-nearest; the fixture does not assert the unfused value. Restore the saved rounding mode; mutation changes C to 0.0.",
+        "IEEE_FMA-final-step-exception-signaling": "Probe IEEE_SUPPORT_DATATYPE(0.0), IEEE_SUPPORT_ROUNDING(IEEE_NEAREST,0.0), and separate IEEE_SUPPORT_FLAG branches for IEEE_INEXACT, IEEE_UNDERFLOW, and IEEE_OVERFLOW used by IEEE_SET_FLAG and IEEE_GET_FLAG. Supported branches quiet the observed flag, evaluate IEEE_FMA(TINY(0.0),TINY(0.0),1.0) under IEEE_NEAREST, assert result 1.0, assert IEEE_INEXACT signaling in its branch, and assert IEEE_UNDERFLOW and IEEE_OVERFLOW quiet in their branches; unsupported branches record skip."
+      },
+      "oracle": "Source registration only for IEEE_FMA. Future fixtures use guarded branch plans for IEEE processor support: probe the relevant IEEE_SUPPORT_* inquiry first, assert the stated effect only in the supported branch, and record an unsupported branch as skip rather than pass. Positive observations initialize result variables or flags to opposite sentinels, use exactly representable binary inputs such as 1.5, 2.0, -1.0, and -2.5, and compare NaN, infinity, flag, rounding, halting, mode, and status effects only through IEEE inquiry or get/set procedures.",
+      "oracle_limitation": "Source registration only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Case-insensitive grep of tests/ and tests/fixtures/*/fixture.json for IEEE_COPY_SIGN, IEEE_FMA, IEEE_GET_FLAG, IEEE_GET_HALTING_MODE, IEEE_GET_MODES, IEEE_GET_ROUNDING_MODE, IEEE_GET_STATUS, the in-scope IEEE_* derived types and named constants found only tests/profiles/ieee_binary.f90 using ieee_support_datatype; no fixture.json binding or procedure-name coverage exists for 17.11.3-17.11.9 in this worktree.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 13, 15, and 16 where already catalogued for source form, intrinsic types, declarations, expressions, execution, program units, internal I/O observation, procedure calls, and intrinsic inquiry helpers. Unregistered dependencies retained: clause 17 IEEE module definitions, IEEE_SUPPORT_* inquiries, IEEE_SET_* companions, IEEE_VALUE and IEEE_IS_* classifiers, exception flag and rounding mode constants, and neighbouring Clause 17 procedure catalogues owned by sibling packets."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "definition",
+      "requirements": [
+        "S17.11.4-001"
+      ],
+      "rationale": "Description names the fused multiply-add procedure."
+    },
+    {
+      "unit": "p2",
+      "disposition": "definition",
+      "requirements": [
+        "S17.11.4-001"
+      ],
+      "rationale": "Classifies IEEE_FMA as elemental function."
+    },
+    {
+      "unit": "p3",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.11.4-002"
+      ],
+      "rationale": "Argument shall restrictions."
+    },
+    {
+      "unit": "p4",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.11.4-003"
+      ],
+      "rationale": "Invocation restriction guarded by datatype support."
+    },
+    {
+      "unit": "p5",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.11.4-004"
+      ],
+      "rationale": "Result characteristics are processor obligations."
+    },
+    {
+      "unit": "p6",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.11.4-005"
+      ],
+      "rationale": "Fused result and final-step exceptions are processor obligations."
+    },
+    {
+      "unit": "p7",
+      "disposition": "informative",
+      "rationale": "Example only; p6 owns the normative fused-result and exception plan."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_17_11_4.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "3adf014cfe1cb3da719f7cf0c0ad03f3a761e6be7f9751a2e852351d55da43be",
+  "review_rationale": "Source registration for 17.11.3-17.11.9: IEEE_COPY_SIGN, IEEE_FMA, IEEE_GET_FLAG, IEEE_GET_HALTING_MODE, IEEE_GET_MODES, IEEE_GET_ROUNDING_MODE and IEEE_GET_STATUS (batch215). Every unit hash-verified by an independent reviewer across three rounds; IEEE_FMA is discriminated from multiply-then-add, and every mode round trip observes the changed value before restoring. Source accounting only."
+}

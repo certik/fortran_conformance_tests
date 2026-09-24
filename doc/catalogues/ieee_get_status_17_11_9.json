@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "section": "17.11.9",
+  "requirements": [
+    {
+      "id": "S17.11.9-001",
+      "title": "IEEE_GET_STATUS procedure identity",
+      "source": "S17.11.9 p1/p2; J3/24-007, 18 December 2023, physical PDF491.",
+      "source_units": [
+        "p1",
+        "p2"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "IEEE_GET_STATUS is the simple subroutine whose description is get floating-point status.",
+      "facets": [
+        "IEEE_GET_STATUS-get-floating-point-status-description",
+        "IEEE_GET_STATUS-simple-subroutine-class"
+      ],
+      "pending": {
+        "IEEE_GET_STATUS-get-floating-point-status-description": "Source-use plan imports IEEE_EXCEPTIONS or IEEE_ARITHMETIC and calls IEEE_GET_STATUS with a scalar IEEE_STATUS_TYPE variable before restoring flags via IEEE_SET_STATUS.",
+        "IEEE_GET_STATUS-simple-subroutine-class": "Compile a scalar call to IEEE_GET_STATUS; source-control mutation attempts an elemental array call and claims no diagnostic facet because p2 defines a simple subroutine, not an elemental one."
+      },
+      "oracle": "Source registration only for IEEE_GET_STATUS. Future fixtures use guarded branch plans for IEEE processor support: probe the relevant IEEE_SUPPORT_* inquiry first, assert the stated effect only in the supported branch, and record an unsupported branch as skip rather than pass. Positive observations initialize result variables or flags to opposite sentinels, use exactly representable binary inputs such as 1.5, 2.0, -1.0, and -2.5, and compare NaN, infinity, flag, rounding, halting, mode, and status effects only through IEEE inquiry or get/set procedures.",
+      "oracle_limitation": "Source registration only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Case-insensitive grep of tests/ and tests/fixtures/*/fixture.json for IEEE_COPY_SIGN, IEEE_FMA, IEEE_GET_FLAG, IEEE_GET_HALTING_MODE, IEEE_GET_MODES, IEEE_GET_ROUNDING_MODE, IEEE_GET_STATUS, the in-scope IEEE_* derived types and named constants found only tests/profiles/ieee_binary.f90 using ieee_support_datatype; no fixture.json binding or procedure-name coverage exists for 17.11.3-17.11.9 in this worktree.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 13, 15, and 16 where already catalogued for source form, intrinsic types, declarations, expressions, execution, program units, internal I/O observation, procedure calls, and intrinsic inquiry helpers. Unregistered dependencies retained: clause 17 IEEE module definitions, IEEE_SUPPORT_* inquiries, IEEE_SET_* companions, IEEE_VALUE and IEEE_IS_* classifiers, exception flag and rounding mode constants, and neighbouring Clause 17 procedure catalogues owned by sibling packets."
+    },
+    {
+      "id": "S17.11.9-002",
+      "title": "IEEE_GET_STATUS argument and saved status value",
+      "source": "S17.11.9 p3; J3/24-007, 18 December 2023, physical PDF491.",
+      "source_units": [
+        "p3"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "STATUS_VALUE shall be a scalar IEEE_STATUS_TYPE INTENT(OUT) argument assigned the current floating-point status.",
+      "facets": [
+        "IEEE_GET_STATUS-STATUS_VALUE-scalar-ieee-status-type",
+        "IEEE_GET_STATUS-assigns-current-status"
+      ],
+      "pending": {
+        "IEEE_GET_STATUS-STATUS_VALUE-scalar-ieee-status-type": "Positive source control declares TYPE(IEEE_STATUS_TYPE) :: status_value and calls IEEE_GET_STATUS(status_value); source-control mutation uses TYPE(IEEE_MODES_TYPE) and claims no diagnostic facet.",
+        "IEEE_GET_STATUS-assigns-current-status": "For each listed flag F in IEEE_INVALID, IEEE_OVERFLOW, IEEE_DIVIDE_BY_ZERO, IEEE_UNDERFLOW, and IEEE_INEXACT, run a separate branch probing IEEE_SUPPORT_FLAG(F). Supported branch quiets IEEE_ALL, sets F signaling with IEEE_SET_FLAG, calls IEEE_GET_STATUS(save), quiets F, calls IEEE_SET_STATUS(save), and asserts IEEE_GET_FLAG(F) returns signaling while a companion quiet setup returns quiet. Unsupported branch records skip."
+      },
+      "oracle": "Source registration only for IEEE_GET_STATUS. Future fixtures use guarded branch plans for IEEE processor support: probe the relevant IEEE_SUPPORT_* inquiry first, assert the stated effect only in the supported branch, and record an unsupported branch as skip rather than pass. Positive observations initialize result variables or flags to opposite sentinels, use exactly representable binary inputs such as 1.5, 2.0, -1.0, and -2.5, and compare NaN, infinity, flag, rounding, halting, mode, and status effects only through IEEE inquiry or get/set procedures.",
+      "oracle_limitation": "Source registration only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Case-insensitive grep of tests/ and tests/fixtures/*/fixture.json for IEEE_COPY_SIGN, IEEE_FMA, IEEE_GET_FLAG, IEEE_GET_HALTING_MODE, IEEE_GET_MODES, IEEE_GET_ROUNDING_MODE, IEEE_GET_STATUS, the in-scope IEEE_* derived types and named constants found only tests/profiles/ieee_binary.f90 using ieee_support_datatype; no fixture.json binding or procedure-name coverage exists for 17.11.3-17.11.9 in this worktree.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 13, 15, and 16 where already catalogued for source form, intrinsic types, declarations, expressions, execution, program units, internal I/O observation, procedure calls, and intrinsic inquiry helpers. Unregistered dependencies retained: clause 17 IEEE module definitions, IEEE_SUPPORT_* inquiries, IEEE_SET_* companions, IEEE_VALUE and IEEE_IS_* classifiers, exception flag and rounding mode constants, and neighbouring Clause 17 procedure catalogues owned by sibling packets."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "definition",
+      "requirements": [
+        "S17.11.9-001"
+      ],
+      "rationale": "Description names the get-status procedure."
+    },
+    {
+      "unit": "p2",
+      "disposition": "definition",
+      "requirements": [
+        "S17.11.9-001"
+      ],
+      "rationale": "Classifies IEEE_GET_STATUS as simple subroutine."
+    },
+    {
+      "unit": "p3",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.11.9-002"
+      ],
+      "rationale": "Argument contract and assigned status effect."
+    },
+    {
+      "unit": "p4",
+      "disposition": "informative",
+      "rationale": "Example only; p3 owns the normative status-saving observation."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_17_11_9.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "d1002fa8a7b58fa5539c9530ab8d9691175f71fbedf6d5d58ed2adbd318eb14f",
+  "review_rationale": "Source registration for 17.11.3-17.11.9: IEEE_COPY_SIGN, IEEE_FMA, IEEE_GET_FLAG, IEEE_GET_HALTING_MODE, IEEE_GET_MODES, IEEE_GET_ROUNDING_MODE and IEEE_GET_STATUS (batch215). Every unit hash-verified by an independent reviewer across three rounds; IEEE_FMA is discriminated from multiply-then-add, and every mode round trip observes the changed value before restoring. Source accounting only."
+}

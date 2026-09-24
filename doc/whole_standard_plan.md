@@ -5829,6 +5829,11 @@ See `doc/source_audits/batch_217.json`.
 Thirty-four units after three rounds, the first Clause 15 packet. Its last finding was mine: the coordinator's suggested sentinel used SIN, and intrinsic SIN(0.0) is only an approximation, so the companion 'intrinsic is called' case was not portable. ABS is exact, and the lesson is now in the template: a name-resolution sentinel needs an exactly-specified intrinsic on the other side.
 See `doc/source_audits/batch_222.json`.
 
+## Batch 215 — IEEE_COPY_SIGN through IEEE_GET_STATUS (17.11.3-17.11.9)
+
+Thirty-four units after three rounds. Two anti-vacuity lessons: a fused multiply-add test needs inputs whose exact product carries bits a separate multiply would round away, and a save/restore test must see the value actually change before it checks the restore — otherwise a SET that does nothing passes. Setting halting on is safe, provided nothing signals before it is restored.
+See `doc/source_audits/batch_215.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must

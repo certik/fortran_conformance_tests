@@ -1,0 +1,90 @@
+{
+  "schema_version": 1,
+  "section": "17.11.5",
+  "requirements": [
+    {
+      "id": "S17.11.5-001",
+      "title": "IEEE_GET_FLAG procedure identity",
+      "source": "S17.11.5 p1/p2; J3/24-007, 18 December 2023, physical PDF489.",
+      "source_units": [
+        "p1",
+        "p2"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "IEEE_GET_FLAG is the simple elemental subroutine whose description is get an exception flag.",
+      "facets": [
+        "IEEE_GET_FLAG-get-exception-flag-description",
+        "IEEE_GET_FLAG-simple-elemental-subroutine-class"
+      ],
+      "pending": {
+        "IEEE_GET_FLAG-get-exception-flag-description": "Source-use plan imports IEEE_EXCEPTIONS or IEEE_ARITHMETIC and calls IEEE_GET_FLAG with IEEE_OVERFLOW and a logical variable initialized to the opposite sentinel.",
+        "IEEE_GET_FLAG-simple-elemental-subroutine-class": "Probe IEEE_SUPPORT_FLAG for IEEE_OVERFLOW and IEEE_INEXACT before IEEE_SET_FLAG setup and IEEE_GET_FLAG observation. Supported branch calls IEEE_GET_FLAG for a scalar flag and a rank-one array of those two flags with a conforming logical array, then asserts elementwise logical results after explicit setup; unsupported branch records skip."
+      },
+      "oracle": "Source registration only for IEEE_GET_FLAG. Future fixtures use guarded branch plans for IEEE processor support: probe the relevant IEEE_SUPPORT_* inquiry first, assert the stated effect only in the supported branch, and record an unsupported branch as skip rather than pass. Positive observations initialize result variables or flags to opposite sentinels, use exactly representable binary inputs such as 1.5, 2.0, -1.0, and -2.5, and compare NaN, infinity, flag, rounding, halting, mode, and status effects only through IEEE inquiry or get/set procedures.",
+      "oracle_limitation": "Source registration only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Case-insensitive grep of tests/ and tests/fixtures/*/fixture.json for IEEE_COPY_SIGN, IEEE_FMA, IEEE_GET_FLAG, IEEE_GET_HALTING_MODE, IEEE_GET_MODES, IEEE_GET_ROUNDING_MODE, IEEE_GET_STATUS, the in-scope IEEE_* derived types and named constants found only tests/profiles/ieee_binary.f90 using ieee_support_datatype; no fixture.json binding or procedure-name coverage exists for 17.11.3-17.11.9 in this worktree.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 13, 15, and 16 where already catalogued for source form, intrinsic types, declarations, expressions, execution, program units, internal I/O observation, procedure calls, and intrinsic inquiry helpers. Unregistered dependencies retained: clause 17 IEEE module definitions, IEEE_SUPPORT_* inquiries, IEEE_SET_* companions, IEEE_VALUE and IEEE_IS_* classifiers, exception flag and rounding mode constants, and neighbouring Clause 17 procedure catalogues owned by sibling packets."
+    },
+    {
+      "id": "S17.11.5-002",
+      "title": "IEEE_GET_FLAG argument contract and flag value result",
+      "source": "S17.11.5 p3; J3/24-007, 18 December 2023, physical PDF489.",
+      "source_units": [
+        "p3"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "FLAG shall be IEEE_FLAG_TYPE and specifies the exception flag; FLAG_VALUE shall be logical INTENT(OUT) and receives true for a signaling IEEE_INVALID, IEEE_OVERFLOW, IEEE_DIVIDE_BY_ZERO, IEEE_UNDERFLOW, or IEEE_INEXACT flag and false otherwise.",
+      "facets": [
+        "IEEE_GET_FLAG-FLAG-type",
+        "IEEE_GET_FLAG-FLAG_VALUE-logical-intent-out",
+        "IEEE_GET_FLAG-returns-signaling-state"
+      ],
+      "pending": {
+        "IEEE_GET_FLAG-FLAG-type": "Positive source control calls IEEE_GET_FLAG with IEEE_OVERFLOW and IEEE_INEXACT constants; source-control mutation uses an IEEE_ROUND_TYPE constant and claims no diagnostic facet.",
+        "IEEE_GET_FLAG-FLAG_VALUE-logical-intent-out": "Probe IEEE_SUPPORT_FLAG(IEEE_OVERFLOW) before IEEE_SET_FLAG and IEEE_GET_FLAG calls. Supported branch initializes FLAG_VALUE to .true., sets IEEE_OVERFLOW quiet, calls IEEE_GET_FLAG, asserts FLAG_VALUE becomes .false.; companion initializes .false., sets signaling, and asserts .true.; unsupported branch records skip.",
+        "IEEE_GET_FLAG-returns-signaling-state": "Probe IEEE_SUPPORT_FLAG(IEEE_OVERFLOW). Supported branch uses IEEE_SET_FLAG to set IEEE_OVERFLOW quiet then signaling, calls IEEE_GET_FLAG after each setup, and asserts .false. then .true.; unsupported branch records skip."
+      },
+      "oracle": "Source registration only for IEEE_GET_FLAG. Future fixtures use guarded branch plans for IEEE processor support: probe the relevant IEEE_SUPPORT_* inquiry first, assert the stated effect only in the supported branch, and record an unsupported branch as skip rather than pass. Positive observations initialize result variables or flags to opposite sentinels, use exactly representable binary inputs such as 1.5, 2.0, -1.0, and -2.5, and compare NaN, infinity, flag, rounding, halting, mode, and status effects only through IEEE inquiry or get/set procedures.",
+      "oracle_limitation": "Source registration only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Case-insensitive grep of tests/ and tests/fixtures/*/fixture.json for IEEE_COPY_SIGN, IEEE_FMA, IEEE_GET_FLAG, IEEE_GET_HALTING_MODE, IEEE_GET_MODES, IEEE_GET_ROUNDING_MODE, IEEE_GET_STATUS, the in-scope IEEE_* derived types and named constants found only tests/profiles/ieee_binary.f90 using ieee_support_datatype; no fixture.json binding or procedure-name coverage exists for 17.11.3-17.11.9 in this worktree.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 13, 15, and 16 where already catalogued for source form, intrinsic types, declarations, expressions, execution, program units, internal I/O observation, procedure calls, and intrinsic inquiry helpers. Unregistered dependencies retained: clause 17 IEEE module definitions, IEEE_SUPPORT_* inquiries, IEEE_SET_* companions, IEEE_VALUE and IEEE_IS_* classifiers, exception flag and rounding mode constants, and neighbouring Clause 17 procedure catalogues owned by sibling packets."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "definition",
+      "requirements": [
+        "S17.11.5-001"
+      ],
+      "rationale": "Description names the get-flag procedure."
+    },
+    {
+      "unit": "p2",
+      "disposition": "definition",
+      "requirements": [
+        "S17.11.5-001"
+      ],
+      "rationale": "Classifies IEEE_GET_FLAG as simple elemental subroutine."
+    },
+    {
+      "unit": "p3",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.11.5-002"
+      ],
+      "rationale": "Argument contract and assigned flag-value effect."
+    },
+    {
+      "unit": "p4",
+      "disposition": "informative",
+      "rationale": "Example only; p3 owns the normative flag observation."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_17_11_5.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "6b9c41257c0ee2227e25fdabf310a0799fd98f64787e4d6610ac75c6e7a445df",
+  "review_rationale": "Source registration for 17.11.3-17.11.9: IEEE_COPY_SIGN, IEEE_FMA, IEEE_GET_FLAG, IEEE_GET_HALTING_MODE, IEEE_GET_MODES, IEEE_GET_ROUNDING_MODE and IEEE_GET_STATUS (batch215). Every unit hash-verified by an independent reviewer across three rounds; IEEE_FMA is discriminated from multiply-then-add, and every mode round trip observes the changed value before restoring. Source accounting only."
+}

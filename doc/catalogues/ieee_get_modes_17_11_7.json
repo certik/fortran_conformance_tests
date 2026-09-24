@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "section": "17.11.7",
+  "requirements": [
+    {
+      "id": "S17.11.7-001",
+      "title": "IEEE_GET_MODES procedure identity",
+      "source": "S17.11.7 p1/p2; J3/24-007, 18 December 2023, physical PDF490.",
+      "source_units": [
+        "p1",
+        "p2"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "IEEE_GET_MODES is the simple subroutine whose description is get floating-point modes.",
+      "facets": [
+        "IEEE_GET_MODES-get-floating-point-modes-description",
+        "IEEE_GET_MODES-simple-subroutine-class"
+      ],
+      "pending": {
+        "IEEE_GET_MODES-get-floating-point-modes-description": "Source-use plan imports IEEE_ARITHMETIC and calls IEEE_GET_MODES with a scalar IEEE_MODES_TYPE variable, then uses IEEE_SET_MODES to restore a saved mode state.",
+        "IEEE_GET_MODES-simple-subroutine-class": "Compile a scalar call to IEEE_GET_MODES; source-control mutation attempts an elemental array call and claims no diagnostic facet because p2 defines a simple subroutine, not an elemental one."
+      },
+      "oracle": "Source registration only for IEEE_GET_MODES. Future fixtures use guarded branch plans for IEEE processor support: probe the relevant IEEE_SUPPORT_* inquiry first, assert the stated effect only in the supported branch, and record an unsupported branch as skip rather than pass. Positive observations initialize result variables or flags to opposite sentinels, use exactly representable binary inputs such as 1.5, 2.0, -1.0, and -2.5, and compare NaN, infinity, flag, rounding, halting, mode, and status effects only through IEEE inquiry or get/set procedures.",
+      "oracle_limitation": "Source registration only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Case-insensitive grep of tests/ and tests/fixtures/*/fixture.json for IEEE_COPY_SIGN, IEEE_FMA, IEEE_GET_FLAG, IEEE_GET_HALTING_MODE, IEEE_GET_MODES, IEEE_GET_ROUNDING_MODE, IEEE_GET_STATUS, the in-scope IEEE_* derived types and named constants found only tests/profiles/ieee_binary.f90 using ieee_support_datatype; no fixture.json binding or procedure-name coverage exists for 17.11.3-17.11.9 in this worktree.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 13, 15, and 16 where already catalogued for source form, intrinsic types, declarations, expressions, execution, program units, internal I/O observation, procedure calls, and intrinsic inquiry helpers. Unregistered dependencies retained: clause 17 IEEE module definitions, IEEE_SUPPORT_* inquiries, IEEE_SET_* companions, IEEE_VALUE and IEEE_IS_* classifiers, exception flag and rounding mode constants, and neighbouring Clause 17 procedure catalogues owned by sibling packets."
+    },
+    {
+      "id": "S17.11.7-002",
+      "title": "IEEE_GET_MODES argument and saved modes value",
+      "source": "S17.11.7 p3; J3/24-007, 18 December 2023, physical PDF490.",
+      "source_units": [
+        "p3"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "MODES shall be a scalar IEEE_MODES_TYPE INTENT(OUT) argument assigned the current floating-point modes.",
+      "facets": [
+        "IEEE_GET_MODES-MODES-scalar-ieee-modes-type",
+        "IEEE_GET_MODES-assigns-current-modes"
+      ],
+      "pending": {
+        "IEEE_GET_MODES-MODES-scalar-ieee-modes-type": "Positive source control declares TYPE(IEEE_MODES_TYPE) :: modes and calls IEEE_GET_MODES(modes); source-control mutation uses TYPE(IEEE_STATUS_TYPE) and claims no diagnostic facet.",
+        "IEEE_GET_MODES-assigns-current-modes": "Rounding component: read the current binary rounding mode, save modes with IEEE_GET_MODES, then choose IEEE_UP for non-IEEE_UP current values and IEEE_DOWN for an IEEE_UP current value after probing IEEE_SUPPORT_ROUNDING for the chosen mode with X=0.0. Set that different mode, verify IEEE_GET_ROUNDING_MODE reports the changed value, call IEEE_SET_MODES(saved), and assert IEEE_GET_ROUNDING_MODE returns the original value. Underflow component: probe IEEE_SUPPORT_UNDERFLOW_CONTROL(0.0), read current GRADUAL, save modes, set .not. GRADUAL with IEEE_SET_UNDERFLOW_MODE, verify IEEE_GET_UNDERFLOW_MODE changed, restore with IEEE_SET_MODES(saved), and assert the original GRADUAL value is back. Halting component: for each listed flag F, probe IEEE_SUPPORT_HALTING(F), read h0 with IEEE_GET_HALTING_MODE(F,h0), save modes with IEEE_GET_MODES(saved), set IEEE_SET_HALTING_MODE(F,.not.h0), perform no floating-point operation or other operation that could signal F while halting is .TRUE., read h1 with IEEE_GET_HALTING_MODE(F,h1), assert h1 == .not.h0, restore with IEEE_SET_MODES(saved), assert IEEE_GET_HALTING_MODE(F) returns h0, and finally ensure IEEE_SET_HALTING_MODE(F,.FALSE.) before any later exception-signaling row."
+      },
+      "oracle": "Source registration only for IEEE_GET_MODES. Future fixtures use guarded branch plans for IEEE processor support: probe the relevant IEEE_SUPPORT_* inquiry first, assert the stated effect only in the supported branch, and record an unsupported branch as skip rather than pass. Positive observations initialize result variables or flags to opposite sentinels, use exactly representable binary inputs such as 1.5, 2.0, -1.0, and -2.5, and compare NaN, infinity, flag, rounding, halting, mode, and status effects only through IEEE inquiry or get/set procedures.",
+      "oracle_limitation": "Source registration only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Case-insensitive grep of tests/ and tests/fixtures/*/fixture.json for IEEE_COPY_SIGN, IEEE_FMA, IEEE_GET_FLAG, IEEE_GET_HALTING_MODE, IEEE_GET_MODES, IEEE_GET_ROUNDING_MODE, IEEE_GET_STATUS, the in-scope IEEE_* derived types and named constants found only tests/profiles/ieee_binary.f90 using ieee_support_datatype; no fixture.json binding or procedure-name coverage exists for 17.11.3-17.11.9 in this worktree.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 13, 15, and 16 where already catalogued for source form, intrinsic types, declarations, expressions, execution, program units, internal I/O observation, procedure calls, and intrinsic inquiry helpers. Unregistered dependencies retained: clause 17 IEEE module definitions, IEEE_SUPPORT_* inquiries, IEEE_SET_* companions, IEEE_VALUE and IEEE_IS_* classifiers, exception flag and rounding mode constants, and neighbouring Clause 17 procedure catalogues owned by sibling packets."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "definition",
+      "requirements": [
+        "S17.11.7-001"
+      ],
+      "rationale": "Description names the get-modes procedure."
+    },
+    {
+      "unit": "p2",
+      "disposition": "definition",
+      "requirements": [
+        "S17.11.7-001"
+      ],
+      "rationale": "Classifies IEEE_GET_MODES as simple subroutine."
+    },
+    {
+      "unit": "p3",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.11.7-002"
+      ],
+      "rationale": "Argument contract and assigned modes effect."
+    },
+    {
+      "unit": "p4",
+      "disposition": "informative",
+      "rationale": "Example only; p3 owns the normative mode-saving observation."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_17_11_7.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "5de4d26b2c5c1c3e55348651072b859a5b82abc24cb4a3a81a38ff2b21aabac9",
+  "review_rationale": "Source registration for 17.11.3-17.11.9: IEEE_COPY_SIGN, IEEE_FMA, IEEE_GET_FLAG, IEEE_GET_HALTING_MODE, IEEE_GET_MODES, IEEE_GET_ROUNDING_MODE and IEEE_GET_STATUS (batch215). Every unit hash-verified by an independent reviewer across three rounds; IEEE_FMA is discriminated from multiply-then-add, and every mode round trip observes the changed value before restoring. Source accounting only."
+}

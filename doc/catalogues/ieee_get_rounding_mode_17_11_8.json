@@ -1,0 +1,115 @@
+{
+  "schema_version": 1,
+  "section": "17.11.8",
+  "requirements": [
+    {
+      "id": "S17.11.8-001",
+      "title": "IEEE_GET_ROUNDING_MODE procedure identity",
+      "source": "S17.11.8 p1/p2; J3/24-007, 18 December 2023, physical PDF490.",
+      "source_units": [
+        "p1",
+        "p2"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "IEEE_GET_ROUNDING_MODE is the simple subroutine whose description is get rounding mode.",
+      "facets": [
+        "IEEE_GET_ROUNDING_MODE-get-rounding-mode-description",
+        "IEEE_GET_ROUNDING_MODE-simple-subroutine-class"
+      ],
+      "pending": {
+        "IEEE_GET_ROUNDING_MODE-get-rounding-mode-description": "Source-use plan imports IEEE_ARITHMETIC and calls IEEE_GET_ROUNDING_MODE with a scalar IEEE_ROUND_TYPE variable after explicit IEEE_SET_ROUNDING_MODE setup.",
+        "IEEE_GET_ROUNDING_MODE-simple-subroutine-class": "Compile scalar calls with absent RADIX, RADIX=2, and RADIX=10; source-control mutation attempts an elemental array call and claims no diagnostic facet."
+      },
+      "oracle": "Source registration only for IEEE_GET_ROUNDING_MODE. Future fixtures use guarded branch plans for IEEE processor support: probe the relevant IEEE_SUPPORT_* inquiry first, assert the stated effect only in the supported branch, and record an unsupported branch as skip rather than pass. Positive observations initialize result variables or flags to opposite sentinels, use exactly representable binary inputs such as 1.5, 2.0, -1.0, and -2.5, and compare NaN, infinity, flag, rounding, halting, mode, and status effects only through IEEE inquiry or get/set procedures.",
+      "oracle_limitation": "Source registration only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Case-insensitive grep of tests/ and tests/fixtures/*/fixture.json for IEEE_COPY_SIGN, IEEE_FMA, IEEE_GET_FLAG, IEEE_GET_HALTING_MODE, IEEE_GET_MODES, IEEE_GET_ROUNDING_MODE, IEEE_GET_STATUS, the in-scope IEEE_* derived types and named constants found only tests/profiles/ieee_binary.f90 using ieee_support_datatype; no fixture.json binding or procedure-name coverage exists for 17.11.3-17.11.9 in this worktree.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 13, 15, and 16 where already catalogued for source form, intrinsic types, declarations, expressions, execution, program units, internal I/O observation, procedure calls, and intrinsic inquiry helpers. Unregistered dependencies retained: clause 17 IEEE module definitions, IEEE_SUPPORT_* inquiries, IEEE_SET_* companions, IEEE_VALUE and IEEE_IS_* classifiers, exception flag and rounding mode constants, and neighbouring Clause 17 procedure catalogues owned by sibling packets."
+    },
+    {
+      "id": "S17.11.8-002",
+      "title": "IEEE_GET_ROUNDING_MODE round value result",
+      "source": "S17.11.8 p3; J3/24-007, 18 December 2023, physical PDF490.",
+      "source_units": [
+        "p3"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "ROUND_VALUE shall be a scalar IEEE_ROUND_TYPE INTENT(OUT) argument assigned IEEE_NEAREST, IEEE_TO_ZERO, IEEE_UP, IEEE_DOWN, IEEE_AWAY for the corresponding rounding mode in operation, or IEEE_OTHER otherwise.",
+      "facets": [
+        "IEEE_GET_ROUNDING_MODE-ROUND_VALUE-scalar-ieee-round-type",
+        "IEEE_GET_ROUNDING_MODE-returns-current-rounding-constant",
+        "IEEE_GET_ROUNDING_MODE-returns-ieee-other-for-other-mode"
+      ],
+      "pending": {
+        "IEEE_GET_ROUNDING_MODE-ROUND_VALUE-scalar-ieee-round-type": "Positive source control declares TYPE(IEEE_ROUND_TYPE) :: round_value and calls IEEE_GET_ROUNDING_MODE(round_value); source-control mutation uses TYPE(IEEE_FLAG_TYPE) and claims no diagnostic facet.",
+        "IEEE_GET_ROUNDING_MODE-returns-current-rounding-constant": "Probe IEEE_SUPPORT_ROUNDING(IEEE_NEAREST,0.0) and IEEE_SUPPORT_ROUNDING(IEEE_TO_ZERO,0.0). Supported branch sets each mode, calls IEEE_GET_ROUNDING_MODE, and asserts equality with IEEE_NEAREST then IEEE_TO_ZERO; unsupported branch records skip.",
+        "IEEE_GET_ROUNDING_MODE-returns-ieee-other-for-other-mode": "No portable oracle forces a processor to expose an unlisted current rounding mode. Future fixtures may assert set membership among IEEE_NEAREST, IEEE_TO_ZERO, IEEE_UP, IEEE_DOWN, IEEE_AWAY, and IEEE_OTHER for an observed query, not require IEEE_OTHER to occur."
+      },
+      "oracle": "Source registration only for IEEE_GET_ROUNDING_MODE. Future fixtures use guarded branch plans for IEEE processor support: probe the relevant IEEE_SUPPORT_* inquiry first, assert the stated effect only in the supported branch, and record an unsupported branch as skip rather than pass. Positive observations initialize result variables or flags to opposite sentinels, use exactly representable binary inputs such as 1.5, 2.0, -1.0, and -2.5, and compare NaN, infinity, flag, rounding, halting, mode, and status effects only through IEEE inquiry or get/set procedures.",
+      "oracle_limitation": "Source registration only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Case-insensitive grep of tests/ and tests/fixtures/*/fixture.json for IEEE_COPY_SIGN, IEEE_FMA, IEEE_GET_FLAG, IEEE_GET_HALTING_MODE, IEEE_GET_MODES, IEEE_GET_ROUNDING_MODE, IEEE_GET_STATUS, the in-scope IEEE_* derived types and named constants found only tests/profiles/ieee_binary.f90 using ieee_support_datatype; no fixture.json binding or procedure-name coverage exists for 17.11.3-17.11.9 in this worktree.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 13, 15, and 16 where already catalogued for source form, intrinsic types, declarations, expressions, execution, program units, internal I/O observation, procedure calls, and intrinsic inquiry helpers. Unregistered dependencies retained: clause 17 IEEE module definitions, IEEE_SUPPORT_* inquiries, IEEE_SET_* companions, IEEE_VALUE and IEEE_IS_* classifiers, exception flag and rounding mode constants, and neighbouring Clause 17 procedure catalogues owned by sibling packets."
+    },
+    {
+      "id": "S17.11.8-003",
+      "title": "IEEE_GET_ROUNDING_MODE radix argument selects decimal or binary query",
+      "source": "S17.11.8 p3; J3/24-007, 18 December 2023, physical PDF490.",
+      "source_units": [
+        "p3"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Optional RADIX shall be an integer scalar with value two or ten; RADIX=10 queries decimal rounding mode, otherwise the binary rounding mode is queried.",
+      "facets": [
+        "IEEE_GET_ROUNDING_MODE-RADIX-integer-scalar-two-or-ten",
+        "IEEE_GET_ROUNDING_MODE-RADIX-absent-or-two-binary-query",
+        "IEEE_GET_ROUNDING_MODE-RADIX-ten-decimal-query"
+      ],
+      "pending": {
+        "IEEE_GET_ROUNDING_MODE-RADIX-integer-scalar-two-or-ten": "Positive source controls call IEEE_GET_ROUNDING_MODE(round_value), IEEE_GET_ROUNDING_MODE(round_value,2), and IEEE_GET_ROUNDING_MODE(round_value,10); source-control mutation uses RADIX=3 and claims no diagnostic facet.",
+        "IEEE_GET_ROUNDING_MODE-RADIX-absent-or-two-binary-query": "Probe IEEE_SUPPORT_DATATYPE(0.0), IEEE_SUPPORT_ROUNDING(IEEE_NEAREST,0.0), and IEEE_SUPPORT_ROUNDING(IEEE_TO_ZERO,0.0) for the binary IEEE_SET_ROUNDING_MODE restriction. Supported branch saves the original binary mode, sets binary mode to IEEE_TO_ZERO with IEEE_SET_ROUNDING_MODE(IEEE_TO_ZERO) and again with RADIX=2, calls absent-RADIX and RADIX=2 IEEE_GET_ROUNDING_MODE forms, asserts both return IEEE_TO_ZERO exactly, then restores the saved mode.",
+        "IEEE_GET_ROUNDING_MODE-RADIX-ten-decimal-query": "Decimal branch: select a real exemplar X10 with RADIX(X10)==10, probe IEEE_SUPPORT_DATATYPE(X10), and probe IEEE_SUPPORT_ROUNDING(IEEE_NEAREST,X10) for the IEEE_SET_ROUNDING_MODE(ROUND_VALUE,RADIX=10) restriction. Supported branch saves the original decimal mode with IEEE_GET_ROUNDING_MODE(saved,RADIX=10), calls IEEE_SET_ROUNDING_MODE(IEEE_NEAREST,RADIX=10), calls IEEE_GET_ROUNDING_MODE(round_value,RADIX=10), asserts round_value==IEEE_NEAREST exactly, and restores saved with IEEE_SET_ROUNDING_MODE(saved,RADIX=10). No-decimal-kind or unsupported branch records skip rather than pass."
+      },
+      "oracle": "Source registration only for IEEE_GET_ROUNDING_MODE. Future fixtures use guarded branch plans for IEEE processor support: probe the relevant IEEE_SUPPORT_* inquiry first, assert the stated effect only in the supported branch, and record an unsupported branch as skip rather than pass. Positive observations initialize result variables or flags to opposite sentinels, use exactly representable binary inputs such as 1.5, 2.0, -1.0, and -2.5, and compare NaN, infinity, flag, rounding, halting, mode, and status effects only through IEEE inquiry or get/set procedures.",
+      "oracle_limitation": "Source registration only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Case-insensitive grep of tests/ and tests/fixtures/*/fixture.json for IEEE_COPY_SIGN, IEEE_FMA, IEEE_GET_FLAG, IEEE_GET_HALTING_MODE, IEEE_GET_MODES, IEEE_GET_ROUNDING_MODE, IEEE_GET_STATUS, the in-scope IEEE_* derived types and named constants found only tests/profiles/ieee_binary.f90 using ieee_support_datatype; no fixture.json binding or procedure-name coverage exists for 17.11.3-17.11.9 in this worktree.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 13, 15, and 16 where already catalogued for source form, intrinsic types, declarations, expressions, execution, program units, internal I/O observation, procedure calls, and intrinsic inquiry helpers. Unregistered dependencies retained: clause 17 IEEE module definitions, IEEE_SUPPORT_* inquiries, IEEE_SET_* companions, IEEE_VALUE and IEEE_IS_* classifiers, exception flag and rounding mode constants, and neighbouring Clause 17 procedure catalogues owned by sibling packets."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "definition",
+      "requirements": [
+        "S17.11.8-001"
+      ],
+      "rationale": "Description names the get-rounding-mode procedure."
+    },
+    {
+      "unit": "p2",
+      "disposition": "definition",
+      "requirements": [
+        "S17.11.8-001"
+      ],
+      "rationale": "Classifies IEEE_GET_ROUNDING_MODE as simple subroutine."
+    },
+    {
+      "unit": "p3",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.11.8-002",
+        "S17.11.8-003"
+      ],
+      "rationale": "Argument contracts, result constants, and RADIX query selection."
+    },
+    {
+      "unit": "p4",
+      "disposition": "informative",
+      "rationale": "Example only; p3 owns the normative rounding-mode query."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_17_11_8.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "144d0c71c0a11182fcca4efbfd2d988e516c4f42777b95a27b19ee5351ff121e",
+  "review_rationale": "Source registration for 17.11.3-17.11.9: IEEE_COPY_SIGN, IEEE_FMA, IEEE_GET_FLAG, IEEE_GET_HALTING_MODE, IEEE_GET_MODES, IEEE_GET_ROUNDING_MODE and IEEE_GET_STATUS (batch215). Every unit hash-verified by an independent reviewer across three rounds; IEEE_FMA is discriminated from multiply-then-add, and every mode round trip observes the changed value before restoring. Source accounting only."
+}
