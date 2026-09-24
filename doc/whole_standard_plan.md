@@ -5749,6 +5749,11 @@ See `doc/source_audits/batch_188.json`.
 Forty-one units after two rounds. All three findings were edge cases the author had left without a plan: PACK under a scalar mask, PARITY of nothing (.FALSE., with a non-vacuous odd-count companion), and PRESENT passed through a second procedure — each one exactly determined by the text.
 See `doc/source_audits/batch_202.json`.
 
+## Batch 203 — PRODUCT through RANK
+
+Forty-one units after two rounds, in both directions: integer PRODUCT had been over-suppressed (it is exact), while the random-number plans had over-claimed. "A different sequence" does not mean any finite prefix differs, and distinct PUT seeds need not give distinct sequences; what *is* required is that re-PUTting a seed obtained by GET reproduces the same sequence.
+See `doc/source_audits/batch_203.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must

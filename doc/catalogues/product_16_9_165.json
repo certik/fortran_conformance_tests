@@ -1,0 +1,333 @@
+{
+  "schema_version": 1,
+  "section": "16.9.165",
+  "review_state": "reviewed",
+  "subunits": {
+    "p3": [
+      "p3.argument-restrictions"
+    ],
+    "p4": [
+      "p4.type-kind",
+      "p4.rank-shape"
+    ],
+    "p5": [
+      "p5.case-i-integer-product",
+      "p5.case-i-real-complex-approximation",
+      "p5.case-i-empty-identity",
+      "p5.case-ii-integer-selected-product",
+      "p5.case-ii-real-complex-approximation",
+      "p5.case-ii-no-true-identity",
+      "p5.case-iii-rank-one",
+      "p5.case-iii-slice-mapping"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S16.9.165-001",
+      "title": "PRODUCT argument restrictions",
+      "source": "S16.9.165, J3/24-007, 18 December 2023, physical PDF446.",
+      "source_units": [
+        "p3.argument-restrictions"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "ARRAY shall be a numeric array, DIM shall be an integer scalar in range one through rank(ARRAY), and MASK shall be logical and conformable with ARRAY.",
+      "facets": [
+        "PRODUCT-ARRAY-numeric-array",
+        "PRODUCT-DIM-valid",
+        "PRODUCT-MASK-logical-conformable"
+      ],
+      "pending": {
+        "PRODUCT-ARRAY-numeric-array": "Positive source control calls PRODUCT with integer, real, and complex arrays; a source-control mutation supplies a logical array and claims no diagnostic facet.",
+        "PRODUCT-DIM-valid": "Positive source control calls PRODUCT on a rank-two array with DIM=1 and DIM=2; source-control mutations use DIM=0 and DIM=3 and claim no diagnostic facet.",
+        "PRODUCT-MASK-logical-conformable": "Positive source control uses a logical MASK with the same shape as ARRAY; source-control mutations use a numeric mask and a nonconformable logical mask and claim no diagnostic facet."
+      },
+      "oracle": "Source registration only. Future fixtures initialize observed variables to non-default sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact logical, integer, kind, character, shape, rank, interval, sequence-equality, seed-consistency, or bit-pattern observations. Processor-dependent approximations, random values, distribution quality, and image-dependent behavior are separated from exact result obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/*.py and tests/fixtures/*/fixture.json for PRODUCT, RADIX, RANDOM_INIT, RANDOM_NUMBER, RANDOM_SEED, RANGE, RANK, and S16.9.165 through S16.9.171 found no existing fixture binding in this worktree; incidental profile/helper mentions are not existing 16.9 fixture coverage.",
+      "dependencies": "Registered dependencies: existing source-form, type, declaration, expression, assignment, execution, array, and I/O foundations from clauses 6 through 13 where already catalogued. Unregistered dependencies retained: 16.3 integer bit model, 16.4 numeric model terminology, sibling 16.9 intrinsics used by pending plans such as HUGE, TINY, LOG10, INT, REAL, RANDOM_NUMBER, RANDOM_SEED, PRODUCT, KIND, SIZE, SHAPE, and SELECTED_*_KIND, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, image, or scope terms."
+    },
+    {
+      "id": "S16.9.165-002",
+      "title": "PRODUCT result type, kind, rank, and shape",
+      "source": "S16.9.165, J3/24-007, 18 December 2023, physical PDF446.",
+      "source_units": [
+        "p4.type-kind",
+        "p4.rank-shape"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The result has ARRAY type and kind; without DIM it is scalar, and with DIM it has rank n-1 and shape formed by removing dimension DIM.",
+      "facets": [
+        "PRODUCT-result-type-kind",
+        "PRODUCT-without-DIM-scalar",
+        "PRODUCT-with-DIM-rank-shape"
+      ],
+      "pending": {
+        "PRODUCT-result-type-kind": "Use integer and complex ARRAY operands; assert KIND(PRODUCT(...)) equals KIND(ARRAY) and mutate ARRAY kind to a distinct selected kind.",
+        "PRODUCT-without-DIM-scalar": "Evaluate PRODUCT on a rank-two ARRAY without DIM and assert RANK(result)==0; mutate by adding DIM=1 so the scalar-rank check fails.",
+        "PRODUCT-with-DIM-rank-shape": "Use ARRAY shape [2,3,4] with DIM=2 and assert RANK(result)==2 and SHAPE(result)==[2,4]; companion DIM=1 gives [3,4]."
+      },
+      "oracle": "Source registration only. Future fixtures initialize observed variables to non-default sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact logical, integer, kind, character, shape, rank, interval, sequence-equality, seed-consistency, or bit-pattern observations. Processor-dependent approximations, random values, distribution quality, and image-dependent behavior are separated from exact result obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/*.py and tests/fixtures/*/fixture.json for PRODUCT, RADIX, RANDOM_INIT, RANDOM_NUMBER, RANDOM_SEED, RANGE, RANK, and S16.9.165 through S16.9.171 found no existing fixture binding in this worktree; incidental profile/helper mentions are not existing 16.9 fixture coverage.",
+      "dependencies": "Registered dependencies: existing source-form, type, declaration, expression, assignment, execution, array, and I/O foundations from clauses 6 through 13 where already catalogued. Unregistered dependencies retained: 16.3 integer bit model, 16.4 numeric model terminology, sibling 16.9 intrinsics used by pending plans such as HUGE, TINY, LOG10, INT, REAL, RANDOM_NUMBER, RANDOM_SEED, PRODUCT, KIND, SIZE, SHAPE, and SELECTED_*_KIND, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, image, or scope terms."
+    },
+    {
+      "id": "S16.9.165-003",
+      "title": "PRODUCT exact integer no-DIM product",
+      "source": "S16.9.165, J3/24-007, 18 December 2023, physical PDF446.",
+      "source_units": [
+        "p5.case-i-integer-product"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For an integer ARRAY whose mathematical product is representable in the result kind, PRODUCT(ARRAY) has the exact integer product value.",
+      "facets": [
+        "PRODUCT-unmasked-integer-exact-product"
+      ],
+      "pending": {
+        "PRODUCT-unmasked-integer-exact-product": "Use a default-integer ARRAY [2, 3, -4] with result initialized to -77, assert PRODUCT(ARRAY)==-24, and use companion ARRAY [2, 3, 5] expecting 30 so sign and multiplication are load-bearing; mutate PRODUCT to SUM so the exact product check fails."
+      },
+      "oracle": "Source registration only. Future fixtures initialize observed variables to non-default sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact logical, integer, kind, character, shape, rank, interval, sequence-equality, seed-consistency, or bit-pattern observations. Processor-dependent approximations, random values, distribution quality, and image-dependent behavior are separated from exact result obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/*.py and tests/fixtures/*/fixture.json for PRODUCT, RADIX, RANDOM_INIT, RANDOM_NUMBER, RANDOM_SEED, RANGE, RANK, and S16.9.165 through S16.9.171 found no existing fixture binding in this worktree; incidental profile/helper mentions are not existing 16.9 fixture coverage.",
+      "dependencies": "Registered dependencies: existing source-form, type, declaration, expression, assignment, execution, array, and I/O foundations from clauses 6 through 13 where already catalogued. Unregistered dependencies retained: 16.3 integer bit model, 16.4 numeric model terminology, sibling 16.9 intrinsics used by pending plans such as HUGE, TINY, LOG10, INT, REAL, RANDOM_NUMBER, RANDOM_SEED, PRODUCT, KIND, SIZE, SHAPE, and SELECTED_*_KIND, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, image, or scope terms."
+    },
+    {
+      "id": "S16.9.165-004",
+      "title": "PRODUCT identity for empty or all-false reductions",
+      "source": "S16.9.165, J3/24-007, 18 December 2023, physical PDF446.",
+      "source_units": [
+        "p5.case-i-empty-identity",
+        "p5.case-ii-no-true-identity"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "PRODUCT has value one for size-zero ARRAY and for MASKed reductions with no true MASK elements.",
+      "facets": [
+        "PRODUCT-size-zero-identity-one",
+        "PRODUCT-mask-no-true-identity-one"
+      ],
+      "pending": {
+        "PRODUCT-size-zero-identity-one": "Use a zero-size default-integer ARRAY with result initialized to -7, assert PRODUCT(ARRAY)==1, and use a nonempty integer ARRAY [2, 3] expecting 6 as a non-vacuous companion.",
+        "PRODUCT-mask-no-true-identity-one": "Use integer ARRAY [2, 3, 5] with MASK all false, initialize result to -7, assert PRODUCT(ARRAY,MASK)==1, and pair with MASK [.true., .false., .true.] expecting 10 as a non-vacuous companion."
+      },
+      "oracle": "Source registration only. Future fixtures initialize observed variables to non-default sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact logical, integer, kind, character, shape, rank, interval, sequence-equality, seed-consistency, or bit-pattern observations. Processor-dependent approximations, random values, distribution quality, and image-dependent behavior are separated from exact result obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/*.py and tests/fixtures/*/fixture.json for PRODUCT, RADIX, RANDOM_INIT, RANDOM_NUMBER, RANDOM_SEED, RANGE, RANK, and S16.9.165 through S16.9.171 found no existing fixture binding in this worktree; incidental profile/helper mentions are not existing 16.9 fixture coverage.",
+      "dependencies": "Registered dependencies: existing source-form, type, declaration, expression, assignment, execution, array, and I/O foundations from clauses 6 through 13 where already catalogued. Unregistered dependencies retained: 16.3 integer bit model, 16.4 numeric model terminology, sibling 16.9 intrinsics used by pending plans such as HUGE, TINY, LOG10, INT, REAL, RANDOM_NUMBER, RANDOM_SEED, PRODUCT, KIND, SIZE, SHAPE, and SELECTED_*_KIND, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, image, or scope terms."
+    },
+    {
+      "id": "S16.9.165-005",
+      "title": "PRODUCT exact integer MASK-selected product",
+      "source": "S16.9.165, J3/24-007, 18 December 2023, physical PDF446.",
+      "source_units": [
+        "p5.case-ii-integer-selected-product"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For an integer ARRAY whose selected mathematical product is representable in the result kind, PRODUCT(ARRAY,MASK=MASK) has the exact product of elements corresponding to true MASK elements.",
+      "facets": [
+        "PRODUCT-mask-integer-exact-selected-product"
+      ],
+      "pending": {
+        "PRODUCT-mask-integer-exact-selected-product": "Use default-integer ARRAY [2, -3, 5, 7] with MASK [.true., .true., .false., .false.], initialize result to 99, assert PRODUCT(ARRAY,MASK)==-6, and use companion MASK [.true., .false., .true., .false.] expecting 10; mutate the MASK keyword to omit masking so the selected-product check fails."
+      },
+      "oracle": "Source registration only. Future fixtures initialize observed variables to non-default sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact logical, integer, kind, character, shape, rank, interval, sequence-equality, seed-consistency, or bit-pattern observations. Processor-dependent approximations, random values, distribution quality, and image-dependent behavior are separated from exact result obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/*.py and tests/fixtures/*/fixture.json for PRODUCT, RADIX, RANDOM_INIT, RANDOM_NUMBER, RANDOM_SEED, RANGE, RANK, and S16.9.165 through S16.9.171 found no existing fixture binding in this worktree; incidental profile/helper mentions are not existing 16.9 fixture coverage.",
+      "dependencies": "Registered dependencies: existing source-form, type, declaration, expression, assignment, execution, array, and I/O foundations from clauses 6 through 13 where already catalogued. Unregistered dependencies retained: 16.3 integer bit model, 16.4 numeric model terminology, sibling 16.9 intrinsics used by pending plans such as HUGE, TINY, LOG10, INT, REAL, RANDOM_NUMBER, RANDOM_SEED, PRODUCT, KIND, SIZE, SHAPE, and SELECTED_*_KIND, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, image, or scope terms."
+    },
+    {
+      "id": "S16.9.165-006",
+      "title": "PRODUCT DIM rank-one and slice mapping",
+      "source": "S16.9.165, J3/24-007, 18 December 2023, physical PDF446.",
+      "source_units": [
+        "p5.case-iii-rank-one",
+        "p5.case-iii-slice-mapping"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For rank-one ARRAY, the DIM form has the value of the no-DIM PRODUCT; otherwise each result element is PRODUCT of the corresponding slice, with the same MASK slice as applicable.",
+      "facets": [
+        "PRODUCT-DIM-rank-one-equivalence",
+        "PRODUCT-DIM-slice-mapping",
+        "PRODUCT-DIM-mask-slice-mapping"
+      ],
+      "pending": {
+        "PRODUCT-DIM-rank-one-equivalence": "Use rank-one default-integer ARRAY [2, -3, 5] with DIM=1, assert the result equals the no-DIM exact product -30, and use a zero-size rank-one companion expecting identity one.",
+        "PRODUCT-DIM-slice-mapping": "Use a rank-two default-integer ARRAY whose DIM=1 column products are [14, -33, -65] and whose DIM=2 row products are [-30, -1001]; assert SHAPE plus exact integer values for both DIM choices and mutate DIM so the value pattern fails.",
+        "PRODUCT-DIM-mask-slice-mapping": "Use a rank-two default-integer ARRAY with MASK selecting [2, 5] in one DIM=1 slice, no elements in another slice, and [-3, 7] in a third slice; assert exact results [10, 1, -21] so selected products and identity-one slices are both observed."
+      },
+      "oracle": "Source registration only. Future fixtures initialize observed variables to non-default sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact logical, integer, kind, character, shape, rank, interval, sequence-equality, seed-consistency, or bit-pattern observations. Processor-dependent approximations, random values, distribution quality, and image-dependent behavior are separated from exact result obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/*.py and tests/fixtures/*/fixture.json for PRODUCT, RADIX, RANDOM_INIT, RANDOM_NUMBER, RANDOM_SEED, RANGE, RANK, and S16.9.165 through S16.9.171 found no existing fixture binding in this worktree; incidental profile/helper mentions are not existing 16.9 fixture coverage.",
+      "dependencies": "Registered dependencies: existing source-form, type, declaration, expression, assignment, execution, array, and I/O foundations from clauses 6 through 13 where already catalogued. Unregistered dependencies retained: 16.3 integer bit model, 16.4 numeric model terminology, sibling 16.9 intrinsics used by pending plans such as HUGE, TINY, LOG10, INT, REAL, RANDOM_NUMBER, RANDOM_SEED, PRODUCT, KIND, SIZE, SHAPE, and SELECTED_*_KIND, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, image, or scope terms."
+    },
+    {
+      "id": "S16.9.165-007",
+      "title": "PRODUCT real and complex no-DIM approximation latitude",
+      "source": "S16.9.165, J3/24-007, 18 December 2023, physical PDF446.",
+      "source_units": [
+        "p5.case-i-real-complex-approximation"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For real or complex ARRAY values with contributing elements, PRODUCT(ARRAY) is a processor-dependent approximation to the mathematical product.",
+      "facets": [
+        "PRODUCT-unmasked-real-complex-approximation-latitude"
+      ],
+      "pending": {
+        "PRODUCT-unmasked-real-complex-approximation-latitude": "No portable oracle can require a particular rounded real or complex product, overflow behavior, evaluation order, or compiler consensus value; exact no-DIM PRODUCT plans in this catalogue are restricted to non-overflowing integer products."
+      },
+      "oracle": "Source registration only. Future fixtures initialize observed variables to non-default sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact logical, integer, kind, character, shape, rank, interval, sequence-equality, seed-consistency, or bit-pattern observations. Processor-dependent approximations, random values, distribution quality, and image-dependent behavior are separated from exact result obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/*.py and tests/fixtures/*/fixture.json for PRODUCT, RADIX, RANDOM_INIT, RANDOM_NUMBER, RANDOM_SEED, RANGE, RANK, and S16.9.165 through S16.9.171 found no existing fixture binding in this worktree; incidental profile/helper mentions are not existing 16.9 fixture coverage.",
+      "dependencies": "Registered dependencies: existing source-form, type, declaration, expression, assignment, execution, array, and I/O foundations from clauses 6 through 13 where already catalogued. Unregistered dependencies retained: 16.3 integer bit model, 16.4 numeric model terminology, sibling 16.9 intrinsics used by pending plans such as HUGE, TINY, LOG10, INT, REAL, RANDOM_NUMBER, RANDOM_SEED, PRODUCT, KIND, SIZE, SHAPE, and SELECTED_*_KIND, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, image, or scope terms."
+    },
+    {
+      "id": "S16.9.165-008",
+      "title": "PRODUCT real and complex MASK-selected approximation latitude",
+      "source": "S16.9.165, J3/24-007, 18 December 2023, physical PDF446.",
+      "source_units": [
+        "p5.case-ii-real-complex-approximation"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For real or complex ARRAY values with true MASK elements, PRODUCT(ARRAY,MASK=MASK) is a processor-dependent approximation to the selected mathematical product.",
+      "facets": [
+        "PRODUCT-mask-real-complex-approximation-latitude"
+      ],
+      "pending": {
+        "PRODUCT-mask-real-complex-approximation-latitude": "No portable oracle can require a particular rounded selected real or complex product or evaluation order; exact MASK= PRODUCT plans in this catalogue are restricted to non-overflowing integer products."
+      },
+      "oracle": "Source registration only. Future fixtures initialize observed variables to non-default sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact logical, integer, kind, character, shape, rank, interval, sequence-equality, seed-consistency, or bit-pattern observations. Processor-dependent approximations, random values, distribution quality, and image-dependent behavior are separated from exact result obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/*.py and tests/fixtures/*/fixture.json for PRODUCT, RADIX, RANDOM_INIT, RANDOM_NUMBER, RANDOM_SEED, RANGE, RANK, and S16.9.165 through S16.9.171 found no existing fixture binding in this worktree; incidental profile/helper mentions are not existing 16.9 fixture coverage.",
+      "dependencies": "Registered dependencies: existing source-form, type, declaration, expression, assignment, execution, array, and I/O foundations from clauses 6 through 13 where already catalogued. Unregistered dependencies retained: 16.3 integer bit model, 16.4 numeric model terminology, sibling 16.9 intrinsics used by pending plans such as HUGE, TINY, LOG10, INT, REAL, RANDOM_NUMBER, RANDOM_SEED, PRODUCT, KIND, SIZE, SHAPE, and SELECTED_*_KIND, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, image, or scope terms."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "body",
+      "disposition": "definition",
+      "rationale": "Intrinsic signature."
+    },
+    {
+      "unit": "p1",
+      "disposition": "definition",
+      "rationale": "Description defines purpose."
+    },
+    {
+      "unit": "p2",
+      "disposition": "definition",
+      "rationale": "Classifies PRODUCT as transformational."
+    },
+    {
+      "unit": "p3",
+      "disposition": "structural",
+      "rationale": "Split into argument shall-restrictions."
+    },
+    {
+      "unit": "p3.argument-restrictions",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.165-001"
+      ],
+      "rationale": "Argument shall-restrictions."
+    },
+    {
+      "unit": "p4",
+      "disposition": "structural",
+      "rationale": "Split into type/kind and rank/shape result characteristics."
+    },
+    {
+      "unit": "p4.type-kind",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.165-002"
+      ],
+      "rationale": "Type and kind result characteristic."
+    },
+    {
+      "unit": "p4.rank-shape",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.165-002"
+      ],
+      "rationale": "Rank and shape result characteristic."
+    },
+    {
+      "unit": "p5",
+      "disposition": "structural",
+      "rationale": "Mixed exact integer products, real/complex approximation latitude, exact identities, and DIM mapping."
+    },
+    {
+      "unit": "p6",
+      "disposition": "informative",
+      "rationale": "Examples are illustrative; this is the known census-hash-drift math-glyph unit and the inventory hash is retained."
+    },
+    {
+      "unit": "p5.case-i-integer-product",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.165-003"
+      ],
+      "rationale": "Exact representable integer no-DIM product."
+    },
+    {
+      "unit": "p5.case-i-real-complex-approximation",
+      "disposition": "permission",
+      "requirements": [
+        "S16.9.165-007"
+      ],
+      "rationale": "Processor-dependent approximation latitude for real and complex no-DIM products."
+    },
+    {
+      "unit": "p5.case-i-empty-identity",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.165-004"
+      ],
+      "rationale": "Exact identity for size zero."
+    },
+    {
+      "unit": "p5.case-ii-integer-selected-product",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.165-005"
+      ],
+      "rationale": "Exact representable integer MASK-selected product."
+    },
+    {
+      "unit": "p5.case-ii-real-complex-approximation",
+      "disposition": "permission",
+      "requirements": [
+        "S16.9.165-008"
+      ],
+      "rationale": "Processor-dependent approximation latitude for real and complex MASK-selected products."
+    },
+    {
+      "unit": "p5.case-ii-no-true-identity",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.165-004"
+      ],
+      "rationale": "Exact identity for no true MASK elements."
+    },
+    {
+      "unit": "p5.case-iii-rank-one",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.165-006"
+      ],
+      "rationale": "Rank-one DIM equivalence."
+    },
+    {
+      "unit": "p5.case-iii-slice-mapping",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.165-006"
+      ],
+      "rationale": "DIM slice mapping including MASK slice mapping."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_16_9_165.md"
+  },
+  "review_fingerprint": "d4900e15b2eb92ff503cb5204da2d2b9fa741ebb006407483c2d8952769a7b17",
+  "review_rationale": "Source registration for 16.9.165-16.9.171: PRODUCT, RADIX, RANDOM_INIT, RANDOM_NUMBER, RANDOM_SEED, RANGE and RANK (batch203). Every unit hash-verified by an independent reviewer across two rounds (16.9.165 typeset example drift verified visually); random-number facets assert only the GET/PUT reproducibility the text requires. Source accounting only."
+}

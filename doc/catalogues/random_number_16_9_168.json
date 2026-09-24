@@ -1,0 +1,135 @@
+{
+  "schema_version": 1,
+  "section": "16.9.168",
+  "review_state": "reviewed",
+  "subunits": {
+    "p3": [
+      "p3.argument-restrictions",
+      "p3.interval-assignment",
+      "p3.uniform-distribution"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S16.9.168-001",
+      "title": "RANDOM_NUMBER HARVEST restrictions",
+      "source": "S16.9.168, J3/24-007, 18 December 2023, physical PDF447.",
+      "source_units": [
+        "p3.argument-restrictions"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "HARVEST shall be real, INTENT(OUT), and may be scalar or array.",
+      "facets": [
+        "RANDOM_NUMBER-HARVEST-real",
+        "RANDOM_NUMBER-HARVEST-intent-out",
+        "RANDOM_NUMBER-HARVEST-scalar-or-array"
+      ],
+      "pending": {
+        "RANDOM_NUMBER-HARVEST-real": "Positive source control calls RANDOM_NUMBER with default-real and nondefault-real HARVEST variables; source-control mutation supplies an integer variable and claims no diagnostic facet.",
+        "RANDOM_NUMBER-HARVEST-intent-out": "Initialize HARVEST to -0.5, call RANDOM_NUMBER, and assert all elements are in [0,1); mutation removes the call so the sentinel remains outside the interval.",
+        "RANDOM_NUMBER-HARVEST-scalar-or-array": "Positive source control calls RANDOM_NUMBER with scalar, vector, and rank-two HARVEST variables; mutation changes HARVEST to an unsupported type and claims no diagnostic facet."
+      },
+      "oracle": "Source registration only. Future fixtures initialize observed variables to non-default sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact logical, integer, kind, character, shape, rank, interval, sequence-equality, seed-consistency, or bit-pattern observations. Processor-dependent approximations, random values, distribution quality, and image-dependent behavior are separated from exact result obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/*.py and tests/fixtures/*/fixture.json for PRODUCT, RADIX, RANDOM_INIT, RANDOM_NUMBER, RANDOM_SEED, RANGE, RANK, and S16.9.165 through S16.9.171 found no existing fixture binding in this worktree; incidental profile/helper mentions are not existing 16.9 fixture coverage.",
+      "dependencies": "Registered dependencies: existing source-form, type, declaration, expression, assignment, execution, array, and I/O foundations from clauses 6 through 13 where already catalogued. Unregistered dependencies retained: 16.3 integer bit model, 16.4 numeric model terminology, sibling 16.9 intrinsics used by pending plans such as HUGE, TINY, LOG10, INT, REAL, RANDOM_NUMBER, RANDOM_SEED, PRODUCT, KIND, SIZE, SHAPE, and SELECTED_*_KIND, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, image, or scope terms."
+    },
+    {
+      "id": "S16.9.168-002",
+      "title": "RANDOM_NUMBER assigns values in the half-open interval",
+      "source": "S16.9.168, J3/24-007, 18 December 2023, physical PDF447.",
+      "source_units": [
+        "p3.interval-assignment"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "RANDOM_NUMBER assigns pseudorandom real numbers from 0 <= x < 1 to HARVEST.",
+      "facets": [
+        "RANDOM_NUMBER-values-ge-zero",
+        "RANDOM_NUMBER-values-less-than-one",
+        "RANDOM_NUMBER-array-elements-assigned"
+      ],
+      "pending": {
+        "RANDOM_NUMBER-values-ge-zero": "Initialize scalar HARVEST to -0.5, call RANDOM_NUMBER, assert HARVEST>=0.0, and mutate by removing the call so the lower-bound check fails.",
+        "RANDOM_NUMBER-values-less-than-one": "Initialize scalar HARVEST to 2.0, call RANDOM_NUMBER, assert HARVEST<1.0, and mutate by removing the call so the upper-bound check fails.",
+        "RANDOM_NUMBER-array-elements-assigned": "Initialize a rank-two HARVEST array to -0.5, call RANDOM_NUMBER, assert every element lies in [0,1), and mutate to call RANDOM_NUMBER only on one scalar element so unassigned sentinels remain."
+      },
+      "oracle": "Source registration only. Future fixtures initialize observed variables to non-default sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact logical, integer, kind, character, shape, rank, interval, sequence-equality, seed-consistency, or bit-pattern observations. Processor-dependent approximations, random values, distribution quality, and image-dependent behavior are separated from exact result obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/*.py and tests/fixtures/*/fixture.json for PRODUCT, RADIX, RANDOM_INIT, RANDOM_NUMBER, RANDOM_SEED, RANGE, RANK, and S16.9.165 through S16.9.171 found no existing fixture binding in this worktree; incidental profile/helper mentions are not existing 16.9 fixture coverage.",
+      "dependencies": "Registered dependencies: existing source-form, type, declaration, expression, assignment, execution, array, and I/O foundations from clauses 6 through 13 where already catalogued. Unregistered dependencies retained: 16.3 integer bit model, 16.4 numeric model terminology, sibling 16.9 intrinsics used by pending plans such as HUGE, TINY, LOG10, INT, REAL, RANDOM_NUMBER, RANDOM_SEED, PRODUCT, KIND, SIZE, SHAPE, and SELECTED_*_KIND, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, image, or scope terms."
+    },
+    {
+      "id": "S16.9.168-003",
+      "title": "RANDOM_NUMBER distribution has no finite exact-value oracle",
+      "source": "S16.9.168, J3/24-007, 18 December 2023, physical PDF447.",
+      "source_units": [
+        "p3.uniform-distribution"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The values are from a uniform pseudorandom distribution, with no exact finite sample sequence specified.",
+      "facets": [
+        "RANDOM_NUMBER-uniform-distribution-no-finite-oracle",
+        "RANDOM_NUMBER-exact-values-unspecified"
+      ],
+      "pending": {
+        "RANDOM_NUMBER-uniform-distribution-no-finite-oracle": "No portable finite-run oracle can prove uniform distribution quality; future fixtures may only assert the required [0,1) interval and assignment effects, not statistical acceptance from a finite sample.",
+        "RANDOM_NUMBER-exact-values-unspecified": "No portable oracle can require a particular real value, bit pattern, or sequence from RANDOM_NUMBER; the standard specifies distribution and interval rather than exact results."
+      },
+      "oracle": "Source registration only. Future fixtures initialize observed variables to non-default sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact logical, integer, kind, character, shape, rank, interval, sequence-equality, seed-consistency, or bit-pattern observations. Processor-dependent approximations, random values, distribution quality, and image-dependent behavior are separated from exact result obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/*.py and tests/fixtures/*/fixture.json for PRODUCT, RADIX, RANDOM_INIT, RANDOM_NUMBER, RANDOM_SEED, RANGE, RANK, and S16.9.165 through S16.9.171 found no existing fixture binding in this worktree; incidental profile/helper mentions are not existing 16.9 fixture coverage.",
+      "dependencies": "Registered dependencies: existing source-form, type, declaration, expression, assignment, execution, array, and I/O foundations from clauses 6 through 13 where already catalogued. Unregistered dependencies retained: 16.3 integer bit model, 16.4 numeric model terminology, sibling 16.9 intrinsics used by pending plans such as HUGE, TINY, LOG10, INT, REAL, RANDOM_NUMBER, RANDOM_SEED, PRODUCT, KIND, SIZE, SHAPE, and SELECTED_*_KIND, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, image, or scope terms."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "definition",
+      "rationale": "Description names generation."
+    },
+    {
+      "unit": "p2",
+      "disposition": "definition",
+      "rationale": "Classifies RANDOM_NUMBER as subroutine."
+    },
+    {
+      "unit": "p3",
+      "disposition": "structural",
+      "rationale": "Mixed argument restrictions, interval assignment, and distribution."
+    },
+    {
+      "unit": "p3.argument-restrictions",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.168-001"
+      ],
+      "rationale": "HARVEST restrictions."
+    },
+    {
+      "unit": "p3.interval-assignment",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.168-002"
+      ],
+      "rationale": "Observable interval assignment."
+    },
+    {
+      "unit": "p3.uniform-distribution",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.168-003"
+      ],
+      "rationale": "Uniform distribution has no finite exact-value oracle."
+    },
+    {
+      "unit": "p4",
+      "disposition": "informative",
+      "rationale": "Example is illustrative."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_16_9_168.md"
+  },
+  "review_fingerprint": "c97f4d2d82dd39d7bf9904d8389ad10dba25e78e105faacb123420550bb35067",
+  "review_rationale": "Source registration for 16.9.165-16.9.171: PRODUCT, RADIX, RANDOM_INIT, RANDOM_NUMBER, RANDOM_SEED, RANGE and RANK (batch203). Every unit hash-verified by an independent reviewer across two rounds (16.9.165 typeset example drift verified visually); random-number facets assert only the GET/PUT reproducibility the text requires. Source accounting only."
+}

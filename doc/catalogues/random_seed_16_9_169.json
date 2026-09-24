@@ -1,0 +1,294 @@
+{
+  "schema_version": 1,
+  "section": "16.9.169",
+  "review_state": "reviewed",
+  "subunits": {
+    "p3": [
+      "p3.cardinality",
+      "p3.argument-restrictions",
+      "p3.size-assignment",
+      "p3.put-processor-use",
+      "p3.get-assignment"
+    ],
+    "p5": [
+      "p5.seed-maintenance",
+      "p5.put-computation-latitude",
+      "p5.get-put-inequality-permission",
+      "p5.get-put-sequence-equivalence"
+    ],
+    "p6": [
+      "p6.examples",
+      "p6.invoking-image-footnote"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S16.9.169-001",
+      "title": "RANDOM_SEED argument restrictions",
+      "source": "S16.9.169, J3/24-007, 18 December 2023, physical PDF448.",
+      "source_units": [
+        "p3.cardinality",
+        "p3.argument-restrictions"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "There shall be exactly one or no arguments; SIZE is default integer scalar INTENT(OUT), PUT is default integer rank-one size at least N INTENT(IN), and GET is default integer rank-one size at least N INTENT(OUT).",
+      "facets": [
+        "RANDOM_SEED-zero-or-one-argument",
+        "RANDOM_SEED-SIZE-default-integer-scalar",
+        "RANDOM_SEED-PUT-default-integer-rank-one-size",
+        "RANDOM_SEED-GET-default-integer-rank-one-size"
+      ],
+      "pending": {
+        "RANDOM_SEED-zero-or-one-argument": "Positive source controls call RANDOM_SEED with no argument, SIZE alone, PUT alone, and GET alone; source-control mutation presents SIZE and GET together and claims no diagnostic facet.",
+        "RANDOM_SEED-SIZE-default-integer-scalar": "Call RANDOM_SEED(SIZE=n) with n initialized to a non-default sentinel, then use the assigned n to allocate a default-integer GET array and call RANDOM_SEED(GET=get); the plan observes that SIZE supplies the extent needed for GET without asserting any lower bound beyond the reported extent.",
+        "RANDOM_SEED-PUT-default-integer-rank-one-size": "Call RANDOM_SEED(SIZE=n), allocate a default-integer rank-one PUT array of size n, pass PUT to RANDOM_SEED, and mutate to rank-two or too-small PUT in source review without claiming a diagnostic facet.",
+        "RANDOM_SEED-GET-default-integer-rank-one-size": "Call RANDOM_SEED(SIZE=n), allocate a default-integer rank-one GET array of size n initialized to a sentinel pattern, pass GET to RANDOM_SEED, and mutate to rank-two or too-small GET in source review without claiming a diagnostic facet."
+      },
+      "oracle": "Source registration only. Future fixtures initialize observed variables to non-default sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact logical, integer, kind, character, shape, rank, interval, sequence-equality, seed-consistency, or bit-pattern observations. Processor-dependent approximations, random values, distribution quality, and image-dependent behavior are separated from exact result obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/*.py and tests/fixtures/*/fixture.json for PRODUCT, RADIX, RANDOM_INIT, RANDOM_NUMBER, RANDOM_SEED, RANGE, RANK, and S16.9.165 through S16.9.171 found no existing fixture binding in this worktree; incidental profile/helper mentions are not existing 16.9 fixture coverage. Image-local seed effects are out of scope for this single-image suite by user decision.",
+      "dependencies": "Registered dependencies: existing source-form, type, declaration, expression, assignment, execution, array, and I/O foundations from clauses 6 through 13 where already catalogued. Unregistered dependencies retained: 16.3 integer bit model, 16.4 numeric model terminology, sibling 16.9 intrinsics used by pending plans such as HUGE, TINY, LOG10, INT, REAL, RANDOM_NUMBER, RANDOM_SEED, PRODUCT, KIND, SIZE, SHAPE, and SELECTED_*_KIND, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, image, or scope terms."
+    },
+    {
+      "id": "S16.9.169-002",
+      "title": "RANDOM_SEED SIZE reports seed vector extent",
+      "source": "S16.9.169, J3/24-007, 18 December 2023, physical PDF448.",
+      "source_units": [
+        "p3.size-assignment"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "SIZE is assigned the number N of integers used by the processor to hold the seed value.",
+      "facets": [
+        "RANDOM_SEED-SIZE-assigns-N-for-seed-vector"
+      ],
+      "pending": {
+        "RANDOM_SEED-SIZE-assigns-N-for-seed-vector": "Initialize SIZE to a non-default sentinel, call RANDOM_SEED(SIZE=n), allocate default-integer rank-one arrays of size n, and call RANDOM_SEED(GET=get); this observes that n is the seed-vector extent accepted by GET without asserting any lower bound beyond the reported extent."
+      },
+      "oracle": "Source registration only. Future fixtures initialize observed variables to non-default sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact logical, integer, kind, character, shape, rank, interval, sequence-equality, seed-consistency, or bit-pattern observations. Processor-dependent approximations, random values, distribution quality, and image-dependent behavior are separated from exact result obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/*.py and tests/fixtures/*/fixture.json for PRODUCT, RADIX, RANDOM_INIT, RANDOM_NUMBER, RANDOM_SEED, RANGE, RANK, and S16.9.165 through S16.9.171 found no existing fixture binding in this worktree; incidental profile/helper mentions are not existing 16.9 fixture coverage. Image-local seed effects are out of scope for this single-image suite by user decision.",
+      "dependencies": "Registered dependencies: existing source-form, type, declaration, expression, assignment, execution, array, and I/O foundations from clauses 6 through 13 where already catalogued. Unregistered dependencies retained: 16.3 integer bit model, 16.4 numeric model terminology, sibling 16.9 intrinsics used by pending plans such as HUGE, TINY, LOG10, INT, REAL, RANDOM_NUMBER, RANDOM_SEED, PRODUCT, KIND, SIZE, SHAPE, and SELECTED_*_KIND, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, image, or scope terms."
+    },
+    {
+      "id": "S16.9.169-003",
+      "title": "RANDOM_SEED PUT and GET access seed state",
+      "source": "S16.9.169, J3/24-007, 18 December 2023, physical PDF448.",
+      "source_units": [
+        "p3.put-processor-use",
+        "p3.get-assignment",
+        "p5.seed-maintenance"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "PUT is used in a processor-dependent manner to compute the seed, GET is assigned the seed value, and RANDOM_NUMBER maintains a seed on each image that is updated and can be retrieved or changed.",
+      "facets": [
+        "RANDOM_SEED-PUT-computes-single-image-seed",
+        "RANDOM_SEED-GET-retrieves-single-image-seed",
+        "RANDOM_SEED-RANDOM_NUMBER-updates-seed",
+        "RANDOM_SEED-per-image-seed-out-of-scope"
+      ],
+      "pending": {
+        "RANDOM_SEED-PUT-computes-single-image-seed": "Call RANDOM_SEED(SIZE=n), create one deterministic default-integer PUT array of size n, call RANDOM_SEED(PUT=seed1), immediately call RANDOM_SEED(GET=seed2), and use the S16.9.169-005 sequence-equivalence plan to observe that the PUT-established state is represented by a seed value usable in a later PUT; the plan uses only one PUT vector and makes no unequal-vector distinctness claim.",
+        "RANDOM_SEED-GET-retrieves-single-image-seed": "Call RANDOM_SEED(SIZE=n), call RANDOM_SEED(PUT=seed1), call RANDOM_SEED(GET=seed2) into a size-n array initialized to a sentinel pattern, then use seed2 as PUT in the S16.9.169-005 equivalence plan; this observes retrieval of a usable seed representation without requiring seed2 to equal seed1.",
+        "RANDOM_SEED-RANDOM_NUMBER-updates-seed": "Call RANDOM_SEED(GET=before), execute RANDOM_NUMBER on a scalar, and call RANDOM_SEED(GET=after) only as source evidence that GET is available around the update point; no equality or inequality of before, after, or finite random prefixes is a portable oracle for the update itself.",
+        "RANDOM_SEED-per-image-seed-out-of-scope": "OUT OF SCOPE: proving independent maintained seeds on multiple images requires multi-image execution, excluded from this single-image fixture suite by user decision."
+      },
+      "oracle": "Source registration only. Future fixtures initialize observed variables to non-default sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact logical, integer, kind, character, shape, rank, interval, sequence-equality, seed-consistency, or bit-pattern observations. Processor-dependent approximations, random values, distribution quality, and image-dependent behavior are separated from exact result obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/*.py and tests/fixtures/*/fixture.json for PRODUCT, RADIX, RANDOM_INIT, RANDOM_NUMBER, RANDOM_SEED, RANGE, RANK, and S16.9.165 through S16.9.171 found no existing fixture binding in this worktree; incidental profile/helper mentions are not existing 16.9 fixture coverage. Image-local seed effects are out of scope for this single-image suite by user decision.",
+      "dependencies": "Registered dependencies: existing source-form, type, declaration, expression, assignment, execution, array, and I/O foundations from clauses 6 through 13 where already catalogued. Unregistered dependencies retained: 16.3 integer bit model, 16.4 numeric model terminology, sibling 16.9 intrinsics used by pending plans such as HUGE, TINY, LOG10, INT, REAL, RANDOM_NUMBER, RANDOM_SEED, PRODUCT, KIND, SIZE, SHAPE, and SELECTED_*_KIND, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, image, or scope terms."
+    },
+    {
+      "id": "S16.9.169-004",
+      "title": "RANDOM_SEED seed computation latitude",
+      "source": "S16.9.169, J3/24-007, 18 December 2023, physical PDF448.",
+      "source_units": [
+        "p4",
+        "p5.put-computation-latitude",
+        "p5.get-put-inequality-permission"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "With no argument, the processor assigns a processor-dependent seed; PUT computation is processor dependent, and GET need not equal an immediately preceding PUT.",
+      "facets": [
+        "RANDOM_SEED-no-argument-seed-latitude",
+        "RANDOM_SEED-PUT-computation-latitude",
+        "RANDOM_SEED-GET-need-not-equal-PUT-permission"
+      ],
+      "pending": {
+        "RANDOM_SEED-no-argument-seed-latitude": "No portable oracle can require the no-argument seed value, resulting sequence, or equality across processors because the seed is processor dependent.",
+        "RANDOM_SEED-PUT-computation-latitude": "No portable oracle can require a particular internal seed for a PUT vector, equality between PUT and a later GET value, or different sequences from unequal PUT vectors because computation of the seed from PUT is processor dependent.",
+        "RANDOM_SEED-GET-need-not-equal-PUT-permission": "Permission only: a fixture shall not fail a processor solely because GET differs from PUT or equals PUT after a PUT call; future tests observe only sequence equivalence."
+      },
+      "oracle": "Source registration only. Future fixtures initialize observed variables to non-default sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact logical, integer, kind, character, shape, rank, interval, sequence-equality, seed-consistency, or bit-pattern observations. Processor-dependent approximations, random values, distribution quality, and image-dependent behavior are separated from exact result obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/*.py and tests/fixtures/*/fixture.json for PRODUCT, RADIX, RANDOM_INIT, RANDOM_NUMBER, RANDOM_SEED, RANGE, RANK, and S16.9.165 through S16.9.171 found no existing fixture binding in this worktree; incidental profile/helper mentions are not existing 16.9 fixture coverage. Image-local seed effects are out of scope for this single-image suite by user decision.",
+      "dependencies": "Registered dependencies: existing source-form, type, declaration, expression, assignment, execution, array, and I/O foundations from clauses 6 through 13 where already catalogued. Unregistered dependencies retained: 16.3 integer bit model, 16.4 numeric model terminology, sibling 16.9 intrinsics used by pending plans such as HUGE, TINY, LOG10, INT, REAL, RANDOM_NUMBER, RANDOM_SEED, PRODUCT, KIND, SIZE, SHAPE, and SELECTED_*_KIND, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, image, or scope terms."
+    },
+    {
+      "id": "S16.9.169-005",
+      "title": "RANDOM_SEED GET value as PUT reproduces sequence",
+      "source": "S16.9.169, J3/24-007, 18 December 2023, physical PDF448.",
+      "source_units": [
+        "p5.get-put-sequence-equivalence"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "After PUT=SEED1 followed by GET=SEED2, using either value as a later PUT shall result in the same pseudorandom sequence.",
+      "facets": [
+        "RANDOM_SEED-GET-as-PUT-reproduces-sequence",
+        "RANDOM_SEED-PUT-as-PUT-reproduces-sequence"
+      ],
+      "pending": {
+        "RANDOM_SEED-GET-as-PUT-reproduces-sequence": "Call RANDOM_SEED(SIZE=n), choose one deterministic PUT array seed1 of size n, call RANDOM_SEED(PUT=seed1), call RANDOM_SEED(GET=seed2), harvest x1, call RANDOM_SEED(PUT=seed2), harvest x2, and assert x2==x1 plus [0,1) bounds; mutate the second PUT call to use the no-argument form so the reset-to-seed2 feature is load-bearing.",
+        "RANDOM_SEED-PUT-as-PUT-reproduces-sequence": "After obtaining seed2 from the immediately preceding GET, perform two trials that each call RANDOM_SEED(PUT=seed1) and harvest the first value; assert the two first values are equal, and compare them with the seed2 trial from the companion facet to exercise the text that either seed1 or seed2 as PUT gives the same sequence."
+      },
+      "oracle": "Source registration only. Future fixtures initialize observed variables to non-default sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact logical, integer, kind, character, shape, rank, interval, sequence-equality, seed-consistency, or bit-pattern observations. Processor-dependent approximations, random values, distribution quality, and image-dependent behavior are separated from exact result obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/*.py and tests/fixtures/*/fixture.json for PRODUCT, RADIX, RANDOM_INIT, RANDOM_NUMBER, RANDOM_SEED, RANGE, RANK, and S16.9.165 through S16.9.171 found no existing fixture binding in this worktree; incidental profile/helper mentions are not existing 16.9 fixture coverage. Image-local seed effects are out of scope for this single-image suite by user decision.",
+      "dependencies": "Registered dependencies: existing source-form, type, declaration, expression, assignment, execution, array, and I/O foundations from clauses 6 through 13 where already catalogued. Unregistered dependencies retained: 16.3 integer bit model, 16.4 numeric model terminology, sibling 16.9 intrinsics used by pending plans such as HUGE, TINY, LOG10, INT, REAL, RANDOM_NUMBER, RANDOM_SEED, PRODUCT, KIND, SIZE, SHAPE, and SELECTED_*_KIND, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, image, or scope terms."
+    },
+    {
+      "id": "S16.9.169-006",
+      "title": "RANDOM_SEED affects only invoking image",
+      "source": "S16.9.169, J3/24-007, 18 December 2023, physical PDF448.",
+      "source_units": [
+        "p6.invoking-image-footnote"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "RANDOM_INIT, RANDOM_NUMBER, and RANDOM_SEED only affect the seed value on the invoking image.",
+      "facets": [
+        "RANDOM_SEED-invoking-image-only-out-of-scope"
+      ],
+      "pending": {
+        "RANDOM_SEED-invoking-image-only-out-of-scope": "OUT OF SCOPE: proving that non-invoking images are unaffected requires multi-image execution, excluded from this single-image fixture suite by user decision."
+      },
+      "oracle": "Source registration only. Future fixtures initialize observed variables to non-default sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact logical, integer, kind, character, shape, rank, interval, sequence-equality, seed-consistency, or bit-pattern observations. Processor-dependent approximations, random values, distribution quality, and image-dependent behavior are separated from exact result obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/*.py and tests/fixtures/*/fixture.json for PRODUCT, RADIX, RANDOM_INIT, RANDOM_NUMBER, RANDOM_SEED, RANGE, RANK, and S16.9.165 through S16.9.171 found no existing fixture binding in this worktree; incidental profile/helper mentions are not existing 16.9 fixture coverage. Image-local seed effects are out of scope for this single-image suite by user decision.",
+      "dependencies": "Registered dependencies: existing source-form, type, declaration, expression, assignment, execution, array, and I/O foundations from clauses 6 through 13 where already catalogued. Unregistered dependencies retained: 16.3 integer bit model, 16.4 numeric model terminology, sibling 16.9 intrinsics used by pending plans such as HUGE, TINY, LOG10, INT, REAL, RANDOM_NUMBER, RANDOM_SEED, PRODUCT, KIND, SIZE, SHAPE, and SELECTED_*_KIND, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, image, or scope terms."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "definition",
+      "rationale": "Description names generator control."
+    },
+    {
+      "unit": "p2",
+      "disposition": "definition",
+      "rationale": "Classifies RANDOM_SEED as subroutine."
+    },
+    {
+      "unit": "p3",
+      "disposition": "structural",
+      "rationale": "Mixed cardinality, restrictions, SIZE, PUT, and GET effects."
+    },
+    {
+      "unit": "p3.cardinality",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.169-001"
+      ],
+      "rationale": "Argument cardinality."
+    },
+    {
+      "unit": "p3.argument-restrictions",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.169-001"
+      ],
+      "rationale": "Argument restrictions."
+    },
+    {
+      "unit": "p3.size-assignment",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.169-002"
+      ],
+      "rationale": "SIZE reports seed-vector extent N without a positivity guarantee."
+    },
+    {
+      "unit": "p3.put-processor-use",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.169-003"
+      ],
+      "rationale": "PUT is used to compute the seed through processor-dependent mapping; unequal PUT vectors are not assumed to produce unequal seeds."
+    },
+    {
+      "unit": "p3.get-assignment",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.169-003"
+      ],
+      "rationale": "GET is assigned seed."
+    },
+    {
+      "unit": "p4",
+      "disposition": "permission",
+      "requirements": [
+        "S16.9.169-004"
+      ],
+      "rationale": "No-argument seed latitude."
+    },
+    {
+      "unit": "p5",
+      "disposition": "structural",
+      "rationale": "Mixed seed maintenance, latitude, permission, sequence equivalence, and image scope."
+    },
+    {
+      "unit": "p5.seed-maintenance",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.169-003"
+      ],
+      "rationale": "Seed maintenance."
+    },
+    {
+      "unit": "p5.put-computation-latitude",
+      "disposition": "permission",
+      "requirements": [
+        "S16.9.169-004"
+      ],
+      "rationale": "PUT computation latitude."
+    },
+    {
+      "unit": "p5.get-put-inequality-permission",
+      "disposition": "permission",
+      "requirements": [
+        "S16.9.169-004"
+      ],
+      "rationale": "GET need not equal PUT."
+    },
+    {
+      "unit": "p5.get-put-sequence-equivalence",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.169-005"
+      ],
+      "rationale": "Sequence equivalence."
+    },
+    {
+      "unit": "p6",
+      "disposition": "structural",
+      "rationale": "Examples plus invoking-image footnote."
+    },
+    {
+      "unit": "p6.examples",
+      "disposition": "informative",
+      "rationale": "Example calls are illustrative."
+    },
+    {
+      "unit": "p6.invoking-image-footnote",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.169-006"
+      ],
+      "rationale": "Image-only effect out of scope."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_16_9_169.md"
+  },
+  "review_fingerprint": "86dbe741d29d12b2b4a3caaefccf6c293c0413b39475090cc71d3381024a9493",
+  "review_rationale": "Source registration for 16.9.165-16.9.171: PRODUCT, RADIX, RANDOM_INIT, RANDOM_NUMBER, RANDOM_SEED, RANGE and RANK (batch203). Every unit hash-verified by an independent reviewer across two rounds (16.9.165 typeset example drift verified visually); random-number facets assert only the GET/PUT reproducibility the text requires. Source accounting only."
+}

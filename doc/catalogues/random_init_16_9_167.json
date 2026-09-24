@@ -1,0 +1,201 @@
+{
+  "schema_version": 1,
+  "section": "16.9.167",
+  "review_state": "reviewed",
+  "subunits": {
+    "p4": [
+      "p4.repeatable-true",
+      "p4.repeatable-false",
+      "p4.image-distinct-true",
+      "p4.image-distinct-false"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S16.9.167-001",
+      "title": "RANDOM_INIT argument restrictions",
+      "source": "S16.9.167, J3/24-007, 18 December 2023, physical PDF447.",
+      "source_units": [
+        "p3"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "REPEATABLE and IMAGE_DISTINCT shall be logical scalars with INTENT(IN).",
+      "facets": [
+        "RANDOM_INIT-REPEATABLE-logical-scalar",
+        "RANDOM_INIT-IMAGE_DISTINCT-logical-scalar",
+        "RANDOM_INIT-arguments-intent-in"
+      ],
+      "pending": {
+        "RANDOM_INIT-REPEATABLE-logical-scalar": "Positive source control calls RANDOM_INIT with REPEATABLE true and false; source-control mutation supplies an integer expression and claims no diagnostic facet.",
+        "RANDOM_INIT-IMAGE_DISTINCT-logical-scalar": "Positive source control calls RANDOM_INIT with IMAGE_DISTINCT true and false; source-control mutation supplies a rank-one logical expression and claims no diagnostic facet.",
+        "RANDOM_INIT-arguments-intent-in": "Positive source control passes named logical variables, records unchanged values after the call, and treats attempted output use as source review only."
+      },
+      "oracle": "Source registration only. Future fixtures initialize observed variables to non-default sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact logical, integer, kind, character, shape, rank, interval, sequence-equality, seed-consistency, or bit-pattern observations. Processor-dependent approximations, random values, distribution quality, and image-dependent behavior are separated from exact result obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/*.py and tests/fixtures/*/fixture.json for PRODUCT, RADIX, RANDOM_INIT, RANDOM_NUMBER, RANDOM_SEED, RANGE, RANK, and S16.9.165 through S16.9.171 found no existing fixture binding in this worktree; incidental profile/helper mentions are not existing 16.9 fixture coverage. Image-distinct RANDOM_INIT effects are out of scope for this single-image suite by user decision.",
+      "dependencies": "Registered dependencies: existing source-form, type, declaration, expression, assignment, execution, array, and I/O foundations from clauses 6 through 13 where already catalogued. Unregistered dependencies retained: 16.3 integer bit model, 16.4 numeric model terminology, sibling 16.9 intrinsics used by pending plans such as HUGE, TINY, LOG10, INT, REAL, RANDOM_NUMBER, RANDOM_SEED, PRODUCT, KIND, SIZE, SHAPE, and SELECTED_*_KIND, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, image, or scope terms."
+    },
+    {
+      "id": "S16.9.167-002",
+      "title": "RANDOM_INIT repeatable true gives stable single-image seed",
+      "source": "S16.9.167, J3/24-007, 18 December 2023, physical PDF447.",
+      "source_units": [
+        "p4.repeatable-true"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "With REPEATABLE true, the processor-dependent PUT value is stable for the same execution environment and invoking image index.",
+      "facets": [
+        "RANDOM_INIT-repeatable-true-stable-single-image",
+        "RANDOM_INIT-repeatable-true-put-latitude"
+      ],
+      "pending": {
+        "RANDOM_INIT-repeatable-true-stable-single-image": "Call RANDOM_INIT(.true.,.false.), harvest a short RANDOM_NUMBER sequence, call RANDOM_INIT(.true.,.false.) again, harvest again, and assert elementwise equality plus all values in [0,1); mutate REPEATABLE to .false. so equality fails.",
+        "RANDOM_INIT-repeatable-true-put-latitude": "No portable oracle can require the actual PUT vector or exact random sequence because the PUT value is processor dependent."
+      },
+      "oracle": "Source registration only. Future fixtures initialize observed variables to non-default sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact logical, integer, kind, character, shape, rank, interval, sequence-equality, seed-consistency, or bit-pattern observations. Processor-dependent approximations, random values, distribution quality, and image-dependent behavior are separated from exact result obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/*.py and tests/fixtures/*/fixture.json for PRODUCT, RADIX, RANDOM_INIT, RANDOM_NUMBER, RANDOM_SEED, RANGE, RANK, and S16.9.165 through S16.9.171 found no existing fixture binding in this worktree; incidental profile/helper mentions are not existing 16.9 fixture coverage. Image-distinct RANDOM_INIT effects are out of scope for this single-image suite by user decision.",
+      "dependencies": "Registered dependencies: existing source-form, type, declaration, expression, assignment, execution, array, and I/O foundations from clauses 6 through 13 where already catalogued. Unregistered dependencies retained: 16.3 integer bit model, 16.4 numeric model terminology, sibling 16.9 intrinsics used by pending plans such as HUGE, TINY, LOG10, INT, REAL, RANDOM_NUMBER, RANDOM_SEED, PRODUCT, KIND, SIZE, SHAPE, and SELECTED_*_KIND, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, image, or scope terms."
+    },
+    {
+      "id": "S16.9.167-003",
+      "title": "RANDOM_INIT repeatable false changes later single-image seeds",
+      "source": "S16.9.167, J3/24-007, 18 December 2023, physical PDF447.",
+      "source_units": [
+        "p4.repeatable-false"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "With REPEATABLE false, different PUT values shall be used for later invocations and for each execution.",
+      "facets": [
+        "RANDOM_INIT-repeatable-false-subsequent-different-seed",
+        "RANDOM_INIT-repeatable-false-put-latitude"
+      ],
+      "pending": {
+        "RANDOM_INIT-repeatable-false-subsequent-different-seed": "No portable finite-prefix oracle is filed for the required different sequence: the standard requires different PUT values and different pseudorandom sequences, but no bounded run is guaranteed to expose the first differing element. Future fixtures may only assert interval bounds for harvested values and source-control use of REPEATABLE=.false. without claiming sequence inequality.",
+        "RANDOM_INIT-repeatable-false-put-latitude": "No portable oracle can require any particular nonrepeatable seed or random value because the PUT values are processor dependent."
+      },
+      "oracle": "Source registration only. Future fixtures initialize observed variables to non-default sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact logical, integer, kind, character, shape, rank, interval, sequence-equality, seed-consistency, or bit-pattern observations. Processor-dependent approximations, random values, distribution quality, and image-dependent behavior are separated from exact result obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/*.py and tests/fixtures/*/fixture.json for PRODUCT, RADIX, RANDOM_INIT, RANDOM_NUMBER, RANDOM_SEED, RANGE, RANK, and S16.9.165 through S16.9.171 found no existing fixture binding in this worktree; incidental profile/helper mentions are not existing 16.9 fixture coverage. Image-distinct RANDOM_INIT effects are out of scope for this single-image suite by user decision.",
+      "dependencies": "Registered dependencies: existing source-form, type, declaration, expression, assignment, execution, array, and I/O foundations from clauses 6 through 13 where already catalogued. Unregistered dependencies retained: 16.3 integer bit model, 16.4 numeric model terminology, sibling 16.9 intrinsics used by pending plans such as HUGE, TINY, LOG10, INT, REAL, RANDOM_NUMBER, RANDOM_SEED, PRODUCT, KIND, SIZE, SHAPE, and SELECTED_*_KIND, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, image, or scope terms."
+    },
+    {
+      "id": "S16.9.167-004",
+      "title": "RANDOM_INIT image-distinct facets are out of scope",
+      "source": "S16.9.167, J3/24-007, 18 December 2023, physical PDF447.",
+      "source_units": [
+        "p4.image-distinct-true",
+        "p4.image-distinct-false"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "IMAGE_DISTINCT true requests different PUT values on every invoking image; IMAGE_DISTINCT false requests the same PUT value on every invoking image.",
+      "facets": [
+        "RANDOM_INIT-image-distinct-true-out-of-scope",
+        "RANDOM_INIT-image-distinct-false-out-of-scope"
+      ],
+      "pending": {
+        "RANDOM_INIT-image-distinct-true-out-of-scope": "OUT OF SCOPE: proving distinct PUT values across images requires multi-image execution, excluded from this single-image fixture suite by user decision.",
+        "RANDOM_INIT-image-distinct-false-out-of-scope": "OUT OF SCOPE: proving sameness across invoking images requires multi-image execution, excluded from this single-image fixture suite by user decision."
+      },
+      "oracle": "Source registration only. Future fixtures initialize observed variables to non-default sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact logical, integer, kind, character, shape, rank, interval, sequence-equality, seed-consistency, or bit-pattern observations. Processor-dependent approximations, random values, distribution quality, and image-dependent behavior are separated from exact result obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/*.py and tests/fixtures/*/fixture.json for PRODUCT, RADIX, RANDOM_INIT, RANDOM_NUMBER, RANDOM_SEED, RANGE, RANK, and S16.9.165 through S16.9.171 found no existing fixture binding in this worktree; incidental profile/helper mentions are not existing 16.9 fixture coverage. Image-distinct RANDOM_INIT effects are out of scope for this single-image suite by user decision.",
+      "dependencies": "Registered dependencies: existing source-form, type, declaration, expression, assignment, execution, array, and I/O foundations from clauses 6 through 13 where already catalogued. Unregistered dependencies retained: 16.3 integer bit model, 16.4 numeric model terminology, sibling 16.9 intrinsics used by pending plans such as HUGE, TINY, LOG10, INT, REAL, RANDOM_NUMBER, RANDOM_SEED, PRODUCT, KIND, SIZE, SHAPE, and SELECTED_*_KIND, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, image, or scope terms."
+    },
+    {
+      "id": "S16.9.167-005",
+      "title": "RANDOM_INIT different PUT values produce different sequences",
+      "source": "S16.9.167, J3/24-007, 18 December 2023, physical PDF447.",
+      "source_units": [
+        "p5"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A different processor-dependent PUT value shall result in a different sequence of pseudorandom numbers.",
+      "facets": [
+        "RANDOM_INIT-different-put-different-sequence"
+      ],
+      "pending": {
+        "RANDOM_INIT-different-put-different-sequence": "No portable finite-prefix oracle is filed: different infinite pseudorandom sequences need not differ within any chosen bounded prefix, and the processor-dependent PUT values are not directly observable. This facet remains pending with no single-image finite-run oracle beyond the [0,1) bounds owned by RANDOM_NUMBER."
+      },
+      "oracle": "Source registration only. Future fixtures initialize observed variables to non-default sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact logical, integer, kind, character, shape, rank, interval, sequence-equality, seed-consistency, or bit-pattern observations. Processor-dependent approximations, random values, distribution quality, and image-dependent behavior are separated from exact result obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/*.py and tests/fixtures/*/fixture.json for PRODUCT, RADIX, RANDOM_INIT, RANDOM_NUMBER, RANDOM_SEED, RANGE, RANK, and S16.9.165 through S16.9.171 found no existing fixture binding in this worktree; incidental profile/helper mentions are not existing 16.9 fixture coverage. Image-distinct RANDOM_INIT effects are out of scope for this single-image suite by user decision.",
+      "dependencies": "Registered dependencies: existing source-form, type, declaration, expression, assignment, execution, array, and I/O foundations from clauses 6 through 13 where already catalogued. Unregistered dependencies retained: 16.3 integer bit model, 16.4 numeric model terminology, sibling 16.9 intrinsics used by pending plans such as HUGE, TINY, LOG10, INT, REAL, RANDOM_NUMBER, RANDOM_SEED, PRODUCT, KIND, SIZE, SHAPE, and SELECTED_*_KIND, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, image, or scope terms."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "definition",
+      "rationale": "Description names initialization."
+    },
+    {
+      "unit": "p2",
+      "disposition": "definition",
+      "rationale": "Classifies RANDOM_INIT as subroutine."
+    },
+    {
+      "unit": "p3",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.167-001"
+      ],
+      "rationale": "Argument restrictions."
+    },
+    {
+      "unit": "p4",
+      "disposition": "structural",
+      "rationale": "Mixed repeatability, seed latitude, and image effects."
+    },
+    {
+      "unit": "p4.repeatable-true",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.167-002"
+      ],
+      "rationale": "Stable single-image seed."
+    },
+    {
+      "unit": "p4.repeatable-false",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.167-003"
+      ],
+      "rationale": "Later nonrepeatable seed difference."
+    },
+    {
+      "unit": "p4.image-distinct-true",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.167-004"
+      ],
+      "rationale": "Image effect out of scope."
+    },
+    {
+      "unit": "p4.image-distinct-false",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.167-004"
+      ],
+      "rationale": "Image effect out of scope."
+    },
+    {
+      "unit": "p5",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.167-005"
+      ],
+      "rationale": "Different seeds produce different sequences."
+    },
+    {
+      "unit": "p6",
+      "disposition": "informative",
+      "rationale": "Example is illustrative and image-dependent."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_16_9_167.md"
+  },
+  "review_fingerprint": "405ad6744e73d11961e967d474b04b0a76b270efa28365543fa6a0c7c358a0b2",
+  "review_rationale": "Source registration for 16.9.165-16.9.171: PRODUCT, RADIX, RANDOM_INIT, RANDOM_NUMBER, RANDOM_SEED, RANGE and RANK (batch203). Every unit hash-verified by an independent reviewer across two rounds (16.9.165 typeset example drift verified visually); random-number facets assert only the GET/PUT reproducibility the text requires. Source accounting only."
+}
