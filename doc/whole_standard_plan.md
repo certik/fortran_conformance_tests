@@ -5689,6 +5689,11 @@ See `doc/source_audits/batch_189.json`.
 Forty-one units, after two rounds. Two coarray-bound intrinsics, CO_SUM and COSHAPE, had crept back into single-image plans; they are out of scope under the user's rule. The rest is ordinary: CONJG is exact, COMMAND_ARGUMENT_COUNT is zero when nothing is passed, and the cosine family's values are latitude.
 See `doc/source_audits/batch_187.json`.
 
+## Batch 195 — ISHFT through LBOUND
+
+Forty-one units, after two rounds. The reviewer questioned whether SELECTED_INT_KIND(18) can be relied on; it can — 7.4.3.1 p2 requires a representation with a decimal exponent range of at least 18 — so I overruled the premise and the plans now cite it. The accepted finding split IS_CONTIGUOUS's "may be of any type" admission from its restrictions.
+See `doc/source_audits/batch_195.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
