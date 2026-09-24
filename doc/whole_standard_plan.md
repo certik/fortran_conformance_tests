@@ -5834,6 +5834,11 @@ See `doc/source_audits/batch_222.json`.
 Thirty-four units after three rounds. Two anti-vacuity lessons: a fused multiply-add test needs inputs whose exact product carries bits a separate multiply would round away, and a save/restore test must see the value actually change before it checks the restore — otherwise a SET that does nothing passes. Setting halting on is safe, provided nothing signals before it is restored.
 See `doc/source_audits/batch_215.json`.
 
+## Batch 216 — IEEE_GET_UNDERFLOW_MODE through IEEE_IS_NORMAL (17.11.10-17.11.15)
+
+Forty units after two rounds. Two details worth remembering: IEEE_AWAY is round-to-nearest with ties away from zero, not directed rounding away from zero, so only a non-tie row separates it from IEEE_UP/IEEE_DOWN on the right sign; and Fortran's IEEE_IS_NORMAL is true for zeros, because its Result Value lists the zero classes explicitly.
+See `doc/source_audits/batch_216.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
