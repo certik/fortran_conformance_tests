@@ -1,0 +1,274 @@
+{
+  "schema_version": 1,
+  "section": "18.9.1",
+  "subunits": {
+    "p1": [
+      "p1.c-global-interoperation-permitted",
+      "p1.bind-required"
+    ],
+    "p2": [
+      "p2.one-fortran-variable-per-c-variable",
+      "p2.one-initial-defining-processor"
+    ],
+    "p3": [
+      "p3.common-same-binding-label",
+      "p3.common-structure-correspondence",
+      "p3.common-single-variable-correspondence"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S18.9.1-001",
+      "title": "C external-linkage variables may interoperate with BIND module variables or common blocks",
+      "source": "S18.9.1 p1.c-global-interoperation-permitted; J3/24-007, 18 December 2023, physical PDF544.",
+      "source_units": [
+        "p1.c-global-interoperation-permitted"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A C variable with external linkage may interoperate with a common block or with a variable declared in a module scope.",
+      "facets": [
+        "c-external-variable-interoperates-with-bind-module-variable",
+        "c-external-variable-interoperates-with-bind-common-block"
+      ],
+      "pending": {
+        "c-external-variable-interoperates-with-bind-module-variable": "Mixed C plan defines global int c_extern with value 101; After guarding C_INT > 0 before any C_INT-kind declaration, Fortran declares integer(c_int), bind(C, name=\"c_extern\") :: f_extern in a module, reads 101, writes 103, and C reads back 103 through a helper function.",
+        "c-external-variable-interoperates-with-bind-common-block": "Mixed C plan defines struct global com with float members r=1.25 and s=-2.5; After guarding C_FLOAT > 0 before any C_FLOAT-kind declaration, Fortran declares matching real(c_float) common /com/ r, s with BIND(C), reads both exact binary values, writes 3.5 and 4.5, and C reads the updated members."
+      },
+      "oracle": "Plans are pending and source-derived. Mixed Fortran/C plans use the suite C interop harness with separate C and Fortran sources. They guard every ISO_C_BINDING kind constant with k > 0 before using it as a kind and observe only portable properties fixed by Clause 18: exact integer or exactly representable real sentinel values, successful linkage through required binding labels, Fortran ALLOCATED or ASSOCIATED status after CFI calls, and required diagnostics for numbered constraints. Program obligations on C descriptors, object lifetimes, setjmp/longjmp, signal handling, floating-point status, and asynchronous communication are not treated as required diagnostics unless a numbered constraint owns the rejection.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Undefined behavior and processor-dependent behavior are not execution oracles. Invalid source-control variants for unnumbered program obligations are retained only as future design notes because a processor is not required to diagnose them.",
+      "dependencies": "Registered dependencies: clauses 6-12 for source form, declarations, execution, program units, and existing I/O harnesses; clause 15 for procedure interfaces and BIND(C) procedure characteristics; clause 16 ISO_C_BINDING and ISO_FORTRAN_ENV names; clause 17 IEEE status terminology. Unregistered dependencies explicitly retained: companion C processor details, CFI descriptor function semantics from 18.5.5, global identifier/linkage association from clause 19, and future mixed Fortran/C fixture profiles."
+    },
+    {
+      "id": "S18.9.1-002",
+      "title": "Interoperating common blocks and module variables have the BIND attribute",
+      "source": "S18.9.1 p1.bind-required; J3/24-007, 18 December 2023, physical PDF544.",
+      "source_units": [
+        "p1.bind-required"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "The common block or module variable that interoperates with a C external-linkage variable shall be specified to have the BIND attribute.",
+      "facets": [
+        "c-global-fortran-entity-bind-required"
+      ],
+      "pending": {
+        "c-global-fortran-entity-bind-required": "Positive mixed C plans for module variables and common blocks both spell BIND(C) on the Fortran entity and observe cross-language updates. A no-BIND variant is source-control only because this unnumbered program obligation has no required diagnostic."
+      },
+      "oracle": "Plans are pending and source-derived. Mixed Fortran/C plans use the suite C interop harness with separate C and Fortran sources. They guard every ISO_C_BINDING kind constant with k > 0 before using it as a kind and observe only portable properties fixed by Clause 18: exact integer or exactly representable real sentinel values, successful linkage through required binding labels, Fortran ALLOCATED or ASSOCIATED status after CFI calls, and required diagnostics for numbered constraints. Program obligations on C descriptors, object lifetimes, setjmp/longjmp, signal handling, floating-point status, and asynchronous communication are not treated as required diagnostics unless a numbered constraint owns the rejection.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Undefined behavior and processor-dependent behavior are not execution oracles. Invalid source-control variants for unnumbered program obligations are retained only as future design notes because a processor is not required to diagnose them.",
+      "dependencies": "Registered dependencies: clauses 6-12 for source form, declarations, execution, program units, and existing I/O harnesses; clause 15 for procedure interfaces and BIND(C) procedure characteristics; clause 16 ISO_C_BINDING and ISO_FORTRAN_ENV names; clause 17 IEEE status terminology. Unregistered dependencies explicitly retained: companion C processor details, CFI descriptor function semantics from 18.5.5, global identifier/linkage association from clause 19, and future mixed Fortran/C fixture profiles."
+    },
+    {
+      "id": "S18.9.1-003",
+      "title": "Only one Fortran variable may be associated with a particular C external variable",
+      "source": "S18.9.1 p2.one-fortran-variable-per-c-variable; J3/24-007, 18 December 2023, physical PDF544.",
+      "source_units": [
+        "p2.one-fortran-variable-per-c-variable"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "Across all Fortran program units of a program, at most one variable associated with a particular C variable whose name has external linkage is permitted.",
+      "facets": [
+        "single-fortran-variable-associated-with-each-c-external-variable"
+      ],
+      "pending": {
+        "single-fortran-variable-associated-with-each-c-external-variable": "No portable diagnostic is required. Future conforming mixed C fixtures use exactly one Fortran module variable for C global c_unique, initialize it from C value 107, and avoid duplicate Fortran declarations for the same binding label."
+      },
+      "oracle": "Plans are pending and source-derived. Mixed Fortran/C plans use the suite C interop harness with separate C and Fortran sources. They guard every ISO_C_BINDING kind constant with k > 0 before using it as a kind and observe only portable properties fixed by Clause 18: exact integer or exactly representable real sentinel values, successful linkage through required binding labels, Fortran ALLOCATED or ASSOCIATED status after CFI calls, and required diagnostics for numbered constraints. Program obligations on C descriptors, object lifetimes, setjmp/longjmp, signal handling, floating-point status, and asynchronous communication are not treated as required diagnostics unless a numbered constraint owns the rejection.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Undefined behavior and processor-dependent behavior are not execution oracles. Invalid source-control variants for unnumbered program obligations are retained only as future design notes because a processor is not required to diagnose them.",
+      "dependencies": "Registered dependencies: clauses 6-12 for source form, declarations, execution, program units, and existing I/O harnesses; clause 15 for procedure interfaces and BIND(C) procedure characteristics; clause 16 ISO_C_BINDING and ISO_FORTRAN_ENV names; clause 17 IEEE status terminology. Unregistered dependencies explicitly retained: companion C processor details, CFI descriptor function semantics from 18.5.5, global identifier/linkage association from clause 19, and future mixed Fortran/C fixture profiles."
+    },
+    {
+      "id": "S18.9.1-004",
+      "title": "A variable is initially defined by no more than one processor",
+      "source": "S18.9.1 p2.one-initial-defining-processor; J3/24-007, 18 December 2023, physical PDF544.",
+      "source_units": [
+        "p2.one-initial-defining-processor"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "A variable shall not be initially defined by more than one processor.",
+      "facets": [
+        "variable-not-initially-defined-by-multiple-processors"
+      ],
+      "pending": {
+        "variable-not-initially-defined-by-multiple-processors": "No portable diagnostic is required for competing C and Fortran initial definitions. Future conforming plans choose a single initial definition, for example C global int c_owner = 109 with the Fortran BIND(C) variable lacking initialization."
+      },
+      "oracle": "Plans are pending and source-derived. Mixed Fortran/C plans use the suite C interop harness with separate C and Fortran sources. They guard every ISO_C_BINDING kind constant with k > 0 before using it as a kind and observe only portable properties fixed by Clause 18: exact integer or exactly representable real sentinel values, successful linkage through required binding labels, Fortran ALLOCATED or ASSOCIATED status after CFI calls, and required diagnostics for numbered constraints. Program obligations on C descriptors, object lifetimes, setjmp/longjmp, signal handling, floating-point status, and asynchronous communication are not treated as required diagnostics unless a numbered constraint owns the rejection.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Undefined behavior and processor-dependent behavior are not execution oracles. Invalid source-control variants for unnumbered program obligations are retained only as future design notes because a processor is not required to diagnose them.",
+      "dependencies": "Registered dependencies: clauses 6-12 for source form, declarations, execution, program units, and existing I/O harnesses; clause 15 for procedure interfaces and BIND(C) procedure characteristics; clause 16 ISO_C_BINDING and ISO_FORTRAN_ENV names; clause 17 IEEE status terminology. Unregistered dependencies explicitly retained: companion C processor details, CFI descriptor function semantics from 18.5.5, global identifier/linkage association from clause 19, and future mixed Fortran/C fixture profiles."
+    },
+    {
+      "id": "S18.9.1-005",
+      "title": "BIND common blocks use the same binding label in every declaring scoping unit",
+      "source": "S18.9.1 p3.common-same-binding-label; J3/24-007, 18 December 2023, physical PDF544.",
+      "source_units": [
+        "p3.common-same-binding-label"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "A common block specified in a BIND statement shall use a BIND statement with the same binding label in each scoping unit where it is declared.",
+      "facets": [
+        "bind-common-same-label-each-scoping-unit"
+      ],
+      "pending": {
+        "bind-common-same-label-each-scoping-unit": "Positive source plan declares common /shared/ in two Fortran scoping units with BIND(C, NAME=\"shared_c\") in both places and uses C global shared_c to confirm both Fortran scopes observe the same exact integer sentinels 113 and 127."
+      },
+      "oracle": "Plans are pending and source-derived. Mixed Fortran/C plans use the suite C interop harness with separate C and Fortran sources. They guard every ISO_C_BINDING kind constant with k > 0 before using it as a kind and observe only portable properties fixed by Clause 18: exact integer or exactly representable real sentinel values, successful linkage through required binding labels, Fortran ALLOCATED or ASSOCIATED status after CFI calls, and required diagnostics for numbered constraints. Program obligations on C descriptors, object lifetimes, setjmp/longjmp, signal handling, floating-point status, and asynchronous communication are not treated as required diagnostics unless a numbered constraint owns the rejection.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Undefined behavior and processor-dependent behavior are not execution oracles. Invalid source-control variants for unnumbered program obligations are retained only as future design notes because a processor is not required to diagnose them.",
+      "dependencies": "Registered dependencies: clauses 6-12 for source form, declarations, execution, program units, and existing I/O harnesses; clause 15 for procedure interfaces and BIND(C) procedure characteristics; clause 16 ISO_C_BINDING and ISO_FORTRAN_ENV names; clause 17 IEEE status terminology. Unregistered dependencies explicitly retained: companion C processor details, CFI descriptor function semantics from 18.5.5, global identifier/linkage association from clause 19, and future mixed Fortran/C fixture profiles."
+    },
+    {
+      "id": "S18.9.1-006",
+      "title": "C structure variables interoperate with corresponding BIND common-block members",
+      "source": "S18.9.1 p3.common-structure-correspondence; J3/24-007, 18 December 2023, physical PDF544.",
+      "source_units": [
+        "p3.common-structure-correspondence"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A C external-linkage variable of structure type interoperates with a BIND common block whose member variables are interoperable with corresponding structure components.",
+      "facets": [
+        "c-structure-corresponds-to-bind-common-components"
+      ],
+      "pending": {
+        "c-structure-corresponds-to-bind-common-components": "Mixed C plan defines struct pair { int a; int b; } com_pair initialized to 131 and 137; After guarding C_INT > 0 before any C_INT-kind declaration, Fortran declares common /com_pair/ a, b with integer(c_int) members and BIND(C), reads the two values, writes 139 and 149, and C verifies both updates."
+      },
+      "oracle": "Plans are pending and source-derived. Mixed Fortran/C plans use the suite C interop harness with separate C and Fortran sources. They guard every ISO_C_BINDING kind constant with k > 0 before using it as a kind and observe only portable properties fixed by Clause 18: exact integer or exactly representable real sentinel values, successful linkage through required binding labels, Fortran ALLOCATED or ASSOCIATED status after CFI calls, and required diagnostics for numbered constraints. Program obligations on C descriptors, object lifetimes, setjmp/longjmp, signal handling, floating-point status, and asynchronous communication are not treated as required diagnostics unless a numbered constraint owns the rejection.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Undefined behavior and processor-dependent behavior are not execution oracles. Invalid source-control variants for unnumbered program obligations are retained only as future design notes because a processor is not required to diagnose them.",
+      "dependencies": "Registered dependencies: clauses 6-12 for source form, declarations, execution, program units, and existing I/O harnesses; clause 15 for procedure interfaces and BIND(C) procedure characteristics; clause 16 ISO_C_BINDING and ISO_FORTRAN_ENV names; clause 17 IEEE status terminology. Unregistered dependencies explicitly retained: companion C processor details, CFI descriptor function semantics from 18.5.5, global identifier/linkage association from clause 19, and future mixed Fortran/C fixture profiles."
+    },
+    {
+      "id": "S18.9.1-007",
+      "title": "Single-variable BIND common blocks can interoperate with a corresponding C variable",
+      "source": "S18.9.1 p3.common-single-variable-correspondence; J3/24-007, 18 December 2023, physical PDF544.",
+      "source_units": [
+        "p3.common-single-variable-correspondence"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A C external-linkage variable interoperates with a BIND common block containing a single interoperable variable corresponding to the C variable.",
+      "facets": [
+        "single-variable-bind-common-corresponds-to-c-variable"
+      ],
+      "pending": {
+        "single-variable-bind-common-corresponds-to-c-variable": "Mixed C plan defines global int single = 151; After guarding C_INT > 0 before any C_INT-kind declaration, Fortran declares common /single/ x with integer(c_int) and BIND(C), reads 151, writes 157, and C verifies global single changed to 157."
+      },
+      "oracle": "Plans are pending and source-derived. Mixed Fortran/C plans use the suite C interop harness with separate C and Fortran sources. They guard every ISO_C_BINDING kind constant with k > 0 before using it as a kind and observe only portable properties fixed by Clause 18: exact integer or exactly representable real sentinel values, successful linkage through required binding labels, Fortran ALLOCATED or ASSOCIATED status after CFI calls, and required diagnostics for numbered constraints. Program obligations on C descriptors, object lifetimes, setjmp/longjmp, signal handling, floating-point status, and asynchronous communication are not treated as required diagnostics unless a numbered constraint owns the rejection.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Undefined behavior and processor-dependent behavior are not execution oracles. Invalid source-control variants for unnumbered program obligations are retained only as future design notes because a processor is not required to diagnose them.",
+      "dependencies": "Registered dependencies: clauses 6-12 for source form, declarations, execution, program units, and existing I/O harnesses; clause 15 for procedure interfaces and BIND(C) procedure characteristics; clause 16 ISO_C_BINDING and ISO_FORTRAN_ENV names; clause 17 IEEE status terminology. Unregistered dependencies explicitly retained: companion C processor details, CFI descriptor function semantics from 18.5.5, global identifier/linkage association from clause 19, and future mixed Fortran/C fixture profiles."
+    },
+    {
+      "id": "S18.9.1-008",
+      "title": "A Fortran BIND entity need not have an associated C entity",
+      "source": "S18.9.1 p4; J3/24-007, 18 December 2023, physical PDF544.",
+      "source_units": [
+        "p4"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A Fortran entity with the BIND attribute is not required to have an associated C entity.",
+      "facets": [
+        "bind-fortran-entity-without-c-entity-permitted"
+      ],
+      "pending": {
+        "bind-fortran-entity-without-c-entity-permitted": "Fortran-only plan first guards C_INT > 0 before any C_INT-kind declaration, then declares integer(c_int), bind(C, name=\"fortran_only_global\") :: v, assigns 163, and reads back 163 in Fortran without linking any C source that defines fortran_only_global."
+      },
+      "oracle": "Plans are pending and source-derived. Mixed Fortran/C plans use the suite C interop harness with separate C and Fortran sources. They guard every ISO_C_BINDING kind constant with k > 0 before using it as a kind and observe only portable properties fixed by Clause 18: exact integer or exactly representable real sentinel values, successful linkage through required binding labels, Fortran ALLOCATED or ASSOCIATED status after CFI calls, and required diagnostics for numbered constraints. Program obligations on C descriptors, object lifetimes, setjmp/longjmp, signal handling, floating-point status, and asynchronous communication are not treated as required diagnostics unless a numbered constraint owns the rejection.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Undefined behavior and processor-dependent behavior are not execution oracles. Invalid source-control variants for unnumbered program obligations are retained only as future design notes because a processor is not required to diagnose them.",
+      "dependencies": "Registered dependencies: clauses 6-12 for source form, declarations, execution, program units, and existing I/O harnesses; clause 15 for procedure interfaces and BIND(C) procedure characteristics; clause 16 ISO_C_BINDING and ISO_FORTRAN_ENV names; clause 17 IEEE status terminology. Unregistered dependencies explicitly retained: companion C processor details, CFI descriptor function semantics from 18.5.5, global identifier/linkage association from clause 19, and future mixed Fortran/C fixture profiles."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "structural",
+      "rationale": "Admission of C global interoperation and required BIND attribute are split."
+    },
+    {
+      "unit": "p1.c-global-interoperation-permitted",
+      "disposition": "permission",
+      "requirements": [
+        "S18.9.1-001"
+      ],
+      "rationale": "Permission for cross-language association of C external variables with Fortran BIND entities."
+    },
+    {
+      "unit": "p1.bind-required",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.9.1-002"
+      ]
+    },
+    {
+      "unit": "p2",
+      "disposition": "structural",
+      "rationale": "Contains two independent program restrictions."
+    },
+    {
+      "unit": "p2.one-fortran-variable-per-c-variable",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.9.1-003"
+      ]
+    },
+    {
+      "unit": "p2.one-initial-defining-processor",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.9.1-004"
+      ]
+    },
+    {
+      "unit": "p3",
+      "disposition": "structural",
+      "rationale": "Common-block label consistency and two C/common correspondence alternatives are split."
+    },
+    {
+      "unit": "p3.common-same-binding-label",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.9.1-005"
+      ]
+    },
+    {
+      "unit": "p3.common-structure-correspondence",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.9.1-006"
+      ]
+    },
+    {
+      "unit": "p3.common-single-variable-correspondence",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.9.1-007"
+      ]
+    },
+    {
+      "unit": "p4",
+      "disposition": "permission",
+      "requirements": [
+        "S18.9.1-008"
+      ],
+      "rationale": "Permission for a BIND Fortran entity without a C counterpart."
+    },
+    {
+      "unit": "note-unnumbered",
+      "disposition": "informative",
+      "rationale": "Example only; the normative label and interoperation rules are catalogued from p1-p4 and 18.9.2."
+    },
+    {
+      "unit": "note-unnumbered.2",
+      "disposition": "informative",
+      "rationale": "Continuation of the nonnormative example."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_18_9_1.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "314437bc661cc15a808029eb6ba8a60057030600a4b477c781943722f561943e",
+  "review_rationale": "Source registration for 18.6-18.10.4: restrictions on C descriptors and lifetimes, interoperation with C global variables and binding labels, and interoperation with C functions (batch245). Every unit hash-verified by an independent reviewer across two rounds; cross-language calls, descriptors and binding labels are planned as mixed Fortran/C programs with exact results, and program-side restrictions carry no oracle. C1807 had no existing tests. Source accounting only."
+}

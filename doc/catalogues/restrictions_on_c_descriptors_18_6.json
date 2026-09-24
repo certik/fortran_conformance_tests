@@ -1,0 +1,140 @@
+{
+  "schema_version": 1,
+  "section": "18.6",
+  "subunits": {
+    "p2": [
+      "p2.descriptor-not-modified",
+      "p2.base-addr-before-value"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S18.6-001",
+      "title": "C descriptors are initialized, updated, or copied only by specified CFI functions",
+      "source": "S18.6 p1; J3/24-007, 18 December 2023, physical PDF543.",
+      "source_units": [
+        "p1"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "A C descriptor shall not be initialized, updated, or copied except by calling the functions specified in 18.5.5.",
+      "facets": [
+        "c-descriptor-managed-only-by-cfi-functions"
+      ],
+      "pending": {
+        "c-descriptor-managed-only-by-cfi-functions": "No portable diagnostic is required for the unnumbered program obligation. A future positive mixed C plan establishes a descriptor through CFI_establish, updates allocation only through CFI_allocate or CFI_deallocate, passes it to Fortran, and observes the described object rather than any manual CFI_cdesc_t copy."
+      },
+      "oracle": "Plans are pending and source-derived. Mixed Fortran/C plans use the suite C interop harness with separate C and Fortran sources. They guard every ISO_C_BINDING kind constant with k > 0 before using it as a kind and observe only portable properties fixed by Clause 18: exact integer or exactly representable real sentinel values, successful linkage through required binding labels, Fortran ALLOCATED or ASSOCIATED status after CFI calls, and required diagnostics for numbered constraints. Program obligations on C descriptors, object lifetimes, setjmp/longjmp, signal handling, floating-point status, and asynchronous communication are not treated as required diagnostics unless a numbered constraint owns the rejection.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Undefined behavior and processor-dependent behavior are not execution oracles. Invalid source-control variants for unnumbered program obligations are retained only as future design notes because a processor is not required to diagnose them.",
+      "dependencies": "Registered dependencies: clauses 6-12 for source form, declarations, execution, program units, and existing I/O harnesses; clause 15 for procedure interfaces and BIND(C) procedure characteristics; clause 16 ISO_C_BINDING and ISO_FORTRAN_ENV names; clause 17 IEEE status terminology. Unregistered dependencies explicitly retained: companion C processor details, CFI descriptor function semantics from 18.5.5, global identifier/linkage association from clause 19, and future mixed Fortran/C fixture profiles."
+    },
+    {
+      "id": "S18.6-002",
+      "title": "Certain corresponding C descriptors are not modified through formal parameters",
+      "source": "S18.6 p2.descriptor-not-modified; J3/24-007, 18 December 2023, physical PDF543.",
+      "source_units": [
+        "p2.descriptor-not-modified"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "A C descriptor formal parameter corresponding to a Fortran actual argument or to a C actual argument for a Fortran dummy shall not be modified for an INTENT(IN) dummy or for a nonallocatable nonpointer object.",
+      "facets": [
+        "intent-in-corresponding-descriptor-not-modified",
+        "nonallocatable-nonpointer-descriptor-not-modified"
+      ],
+      "pending": {
+        "intent-in-corresponding-descriptor-not-modified": "No portable diagnostic or runtime oracle is required for this unnumbered C-program obligation; a C function that merely refrains from descriptor modification is a vacuous observation of the rule. Non-credited descriptor-context control after guarding C_FLOAT > 0 before any C_FLOAT-kind declaration: Fortran calls a BIND(C) C function with assumed-shape dummy real(c_float) :: a(:,:) using actual x(10:11,-1:1) containing column-major values 1.25, 2.25, 3.25, 4.25, 5.25, 6.25. C receives a CFI_cdesc_t*, checks rank == 2, type == CFI_type_float, attribute == CFI_attribute_other, elem_len == sizeof(float), extents 2 and 3, lower_bound values 0 and 0 per 18.5.3 p3 for a nonallocatable nonpointer object, and reads those six values with CFI_address subscripts (0,0), (1,0), (0,1), (1,1), (0,2), and (1,2). An assumed-rank analogue uses real(c_float) :: a(..) and checks the same descriptor facts after confirming rank == 2.",
+        "nonallocatable-nonpointer-descriptor-not-modified": "No portable diagnostic or runtime oracle is required for this unnumbered C-program obligation; preserving a nonallocatable nonpointer descriptor snapshot only proves that the test C code was well behaved. The descriptor-context control is the same non-credited assumed-shape and assumed-rank CFI_cdesc_t plan: guarded C_FLOAT kind, actual x(10:11,-1:1), extents 2 by 3, lower_bound values 0 and 0 from 18.5.3 p3, attribute CFI_attribute_other, elem_len sizeof(float), type CFI_type_float, and column-major values 1.25, 2.25, 3.25, 4.25, 5.25, 6.25 read via CFI_address."
+      },
+      "oracle": "Plans are pending and source-derived. Mixed Fortran/C plans use the suite C interop harness with separate C and Fortran sources. They guard every ISO_C_BINDING kind constant with k > 0 before using it as a kind and observe only portable properties fixed by Clause 18: exact integer or exactly representable real sentinel values, successful linkage through required binding labels, Fortran ALLOCATED or ASSOCIATED status after CFI calls, and required diagnostics for numbered constraints. Program obligations on C descriptors, object lifetimes, setjmp/longjmp, signal handling, floating-point status, and asynchronous communication are not treated as required diagnostics unless a numbered constraint owns the rejection.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Undefined behavior and processor-dependent behavior are not execution oracles. Invalid source-control variants for unnumbered program obligations are retained only as future design notes because a processor is not required to diagnose them.",
+      "dependencies": "Registered dependencies: clauses 6-12 for source form, declarations, execution, program units, and existing I/O harnesses; clause 15 for procedure interfaces and BIND(C) procedure characteristics; clause 16 ISO_C_BINDING and ISO_FORTRAN_ENV names; clause 17 IEEE status terminology. Unregistered dependencies explicitly retained: companion C processor details, CFI descriptor function semantics from 18.5.5, global identifier/linkage association from clause 19, and future mixed Fortran/C fixture profiles."
+    },
+    {
+      "id": "S18.6-003",
+      "title": "POINTER INTENT(OUT) descriptor base_addr is not accessed before receiving a value",
+      "source": "S18.6 p2.base-addr-before-value; J3/24-007, 18 December 2023, physical PDF543.",
+      "source_units": [
+        "p2.base-addr-before-value"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "For a C descriptor corresponding to a POINTER dummy with INTENT(OUT), base_addr shall not be accessed before it is given a value.",
+      "facets": [
+        "pointer-intent-out-base-addr-not-read-before-value"
+      ],
+      "pending": {
+        "pointer-intent-out-base-addr-not-read-before-value": "No portable diagnostic or runtime oracle exists for the forbidden early access. A future conforming mixed C plan first gives base_addr a value through the registered CFI route, then reads through the established target and checks a nonzero sentinel."
+      },
+      "oracle": "Plans are pending and source-derived. Mixed Fortran/C plans use the suite C interop harness with separate C and Fortran sources. They guard every ISO_C_BINDING kind constant with k > 0 before using it as a kind and observe only portable properties fixed by Clause 18: exact integer or exactly representable real sentinel values, successful linkage through required binding labels, Fortran ALLOCATED or ASSOCIATED status after CFI calls, and required diagnostics for numbered constraints. Program obligations on C descriptors, object lifetimes, setjmp/longjmp, signal handling, floating-point status, and asynchronous communication are not treated as required diagnostics unless a numbered constraint owns the rejection.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Undefined behavior and processor-dependent behavior are not execution oracles. Invalid source-control variants for unnumbered program obligations are retained only as future design notes because a processor is not required to diagnose them.",
+      "dependencies": "Registered dependencies: clauses 6-12 for source form, declarations, execution, program units, and existing I/O harnesses; clause 15 for procedure interfaces and BIND(C) procedure characteristics; clause 16 ISO_C_BINDING and ISO_FORTRAN_ENV names; clause 17 IEEE status terminology. Unregistered dependencies explicitly retained: companion C processor details, CFI descriptor function semantics from 18.5.5, global identifier/linkage association from clause 19, and future mixed Fortran/C fixture profiles."
+    },
+    {
+      "id": "S18.6-004",
+      "title": "Assumed-shape dummy descriptors are not assumed-size descriptors",
+      "source": "S18.6 p3; J3/24-007, 18 December 2023, physical PDF543.",
+      "source_units": [
+        "p3"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "A C descriptor passed as a C actual argument corresponding to an assumed-shape Fortran dummy shall not describe an assumed-size array.",
+      "facets": [
+        "assumed-shape-correspondence-excludes-assumed-size-descriptor"
+      ],
+      "pending": {
+        "assumed-shape-correspondence-excludes-assumed-size-descriptor": "No portable diagnostic is required for this unnumbered C descriptor obligation. Positive descriptor plan after guarding C_FLOAT > 0 before any C_FLOAT-kind declaration: a C caller passes a C descriptor for a rank-two real(c_float) object to a BIND(C) Fortran procedure with assumed-shape dummy real(c_float) :: a(:,:); the descriptor has rank 2, extents 2 and 3, lower_bound values 0 and 0 for the nonallocatable nonpointer object as specified by 18.5.3 p3, and neither extent equals -1, so it is not an assumed-size descriptor. The hand-derived element order is (10,-1)=1.25, (11,-1)=2.25, (10,0)=3.25, (11,0)=4.25, (10,1)=5.25, (11,1)=6.25 for the Fortran actual x(10:11,-1:1); an assumed-rank companion real(c_float) :: a(..) first confirms rank 2 and then uses the same extent and CFI_address value checks."
+      },
+      "oracle": "Plans are pending and source-derived. Mixed Fortran/C plans use the suite C interop harness with separate C and Fortran sources. They guard every ISO_C_BINDING kind constant with k > 0 before using it as a kind and observe only portable properties fixed by Clause 18: exact integer or exactly representable real sentinel values, successful linkage through required binding labels, Fortran ALLOCATED or ASSOCIATED status after CFI calls, and required diagnostics for numbered constraints. Program obligations on C descriptors, object lifetimes, setjmp/longjmp, signal handling, floating-point status, and asynchronous communication are not treated as required diagnostics unless a numbered constraint owns the rejection.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Undefined behavior and processor-dependent behavior are not execution oracles. Invalid source-control variants for unnumbered program obligations are retained only as future design notes because a processor is not required to diagnose them.",
+      "dependencies": "Registered dependencies: clauses 6-12 for source form, declarations, execution, program units, and existing I/O harnesses; clause 15 for procedure interfaces and BIND(C) procedure characteristics; clause 16 ISO_C_BINDING and ISO_FORTRAN_ENV names; clause 17 IEEE status terminology. Unregistered dependencies explicitly retained: companion C processor details, CFI descriptor function semantics from 18.5.5, global identifier/linkage association from clause 19, and future mixed Fortran/C fixture profiles."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.6-001"
+      ]
+    },
+    {
+      "unit": "p2",
+      "disposition": "structural",
+      "rationale": "Contains two independent descriptor restrictions that are split into fine units."
+    },
+    {
+      "unit": "p2.descriptor-not-modified",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.6-002"
+      ]
+    },
+    {
+      "unit": "p2.base-addr-before-value",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.6-003"
+      ]
+    },
+    {
+      "unit": "note-unnumbered",
+      "disposition": "informative",
+      "rationale": "Note only; it explains the intended meaning of descriptor modification."
+    },
+    {
+      "unit": "p3",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.6-004"
+      ]
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_18_6.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "754f1cd9545b8460dd7484b45c124d58be761c5943495a37da95490d2ab14417",
+  "review_rationale": "Source registration for 18.6-18.10.4: restrictions on C descriptors and lifetimes, interoperation with C global variables and binding labels, and interoperation with C functions (batch245). Every unit hash-verified by an independent reviewer across two rounds; cross-language calls, descriptors and binding labels are planned as mixed Fortran/C programs with exact results, and program-side restrictions carry no oracle. C1807 had no existing tests. Source accounting only."
+}

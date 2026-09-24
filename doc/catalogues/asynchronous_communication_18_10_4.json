@@ -1,0 +1,165 @@
+{
+  "schema_version": 1,
+  "section": "18.10.4",
+  "subunits": {
+    "p1": [
+      "p1.communication-through-nonfortran",
+      "p1.initiation-and-completion",
+      "p1.pending-communication-affector",
+      "p1.initiation-completion-processor-dependent"
+    ],
+    "p2": [
+      "p2.input-communication-affector-restrictions",
+      "p2.output-communication-affector-restrictions",
+      "p2.same-as-async-data-transfer"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S18.10.4-001",
+      "title": "Asynchronous communication is performed by non-Fortran procedures with initiation and completion actions",
+      "source": "S18.10.4 p1.communication-through-nonfortran, p1.initiation-and-completion, p1.pending-communication-affector; J3/24-007, 18 December 2023, physical PDF547.",
+      "source_units": [
+        "p1.communication-through-nonfortran",
+        "p1.initiation-and-completion",
+        "p1.pending-communication-affector"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Asynchronous communication for an ASYNCHRONOUS Fortran variable occurs through procedures defined by other means, starts by an initiation procedure, completes by a completion procedure, and creates pending communication affectors for variables associated with the asynchronous communication variable between those calls.",
+      "facets": [
+        "asynchronous-communication-through-nonfortran-procedures",
+        "asynchronous-communication-initiated-and-completed-by-procedures",
+        "pending-communication-affector-defined-between-initiation-completion"
+      ],
+      "pending": {
+        "asynchronous-communication-through-nonfortran-procedures": "No portable single-image oracle exists without a processor-defined non-Fortran asynchronous communication facility. Future MPI-profile tests may document this outside conformance credit.",
+        "asynchronous-communication-initiated-and-completed-by-procedures": "No portable oracle identifies the initiation and completion procedures without a processor-specific asynchronous communication binding.",
+        "pending-communication-affector-defined-between-initiation-completion": "No portable oracle observes pending communication affector status without an established asynchronous communication facility and completion operation."
+      },
+      "oracle": "Plans are pending and source-derived. Mixed Fortran/C plans use the suite C interop harness with separate C and Fortran sources. They guard every ISO_C_BINDING kind constant with k > 0 before using it as a kind and observe only portable properties fixed by Clause 18: exact integer or exactly representable real sentinel values, successful linkage through required binding labels, Fortran ALLOCATED or ASSOCIATED status after CFI calls, and required diagnostics for numbered constraints. Program obligations on C descriptors, object lifetimes, setjmp/longjmp, signal handling, floating-point status, and asynchronous communication are not treated as required diagnostics unless a numbered constraint owns the rejection.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Undefined behavior and processor-dependent behavior are not execution oracles. Invalid source-control variants for unnumbered program obligations are retained only as future design notes because a processor is not required to diagnose them.",
+      "dependencies": "Registered dependencies: clauses 6-12 for source form, declarations, execution, program units, and existing I/O harnesses; clause 15 for procedure interfaces and BIND(C) procedure characteristics; clause 16 ISO_C_BINDING and ISO_FORTRAN_ENV names; clause 17 IEEE status terminology. Unregistered dependencies explicitly retained: companion C processor details, CFI descriptor function semantics from 18.5.5, global identifier/linkage association from clause 19, and future mixed Fortran/C fixture profiles."
+    },
+    {
+      "id": "S18.10.4-002",
+      "title": "Classification of asynchronous initiation and completion procedures is processor dependent",
+      "source": "S18.10.4 p1.initiation-completion-processor-dependent; J3/24-007, 18 December 2023, physical PDF547.",
+      "source_units": [
+        "p1.initiation-completion-processor-dependent"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Whether a non-Fortran procedure is an asynchronous communication initiation procedure or completion procedure is processor dependent.",
+      "facets": [
+        "async-initiation-completion-procedure-classification-processor-dependent"
+      ],
+      "pending": {
+        "async-initiation-completion-procedure-classification-processor-dependent": "No portable oracle may require a particular C or MPI routine to be classified as initiation or completion. Future profiles may name such routines outside base conformance credit."
+      },
+      "oracle": "Plans are pending and source-derived. Mixed Fortran/C plans use the suite C interop harness with separate C and Fortran sources. They guard every ISO_C_BINDING kind constant with k > 0 before using it as a kind and observe only portable properties fixed by Clause 18: exact integer or exactly representable real sentinel values, successful linkage through required binding labels, Fortran ALLOCATED or ASSOCIATED status after CFI calls, and required diagnostics for numbered constraints. Program obligations on C descriptors, object lifetimes, setjmp/longjmp, signal handling, floating-point status, and asynchronous communication are not treated as required diagnostics unless a numbered constraint owns the rejection.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Undefined behavior and processor-dependent behavior are not execution oracles. Invalid source-control variants for unnumbered program obligations are retained only as future design notes because a processor is not required to diagnose them.",
+      "dependencies": "Registered dependencies: clauses 6-12 for source form, declarations, execution, program units, and existing I/O harnesses; clause 15 for procedure interfaces and BIND(C) procedure characteristics; clause 16 ISO_C_BINDING and ISO_FORTRAN_ENV names; clause 17 IEEE status terminology. Unregistered dependencies explicitly retained: companion C processor details, CFI descriptor function semantics from 18.5.5, global identifier/linkage association from clause 19, and future mixed Fortran/C fixture profiles."
+    },
+    {
+      "id": "S18.10.4-003",
+      "title": "Pending communication affectors obey asynchronous input and output restrictions",
+      "source": "S18.10.4 p2.input-communication-affector-restrictions, p2.output-communication-affector-restrictions, p2.same-as-async-data-transfer; J3/24-007, 18 December 2023, physical PDF547.",
+      "source_units": [
+        "p2.input-communication-affector-restrictions",
+        "p2.output-communication-affector-restrictions",
+        "p2.same-as-async-data-transfer"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "For input communication, a pending communication affector shall not be referenced, defined, undefined, associated with a VALUE dummy, or have pointer association status changed; for output communication, it shall not be redefined, undefined, or have pointer association status changed. These restrictions match asynchronous input and output data transfer restrictions.",
+      "facets": [
+        "input-pending-communication-affector-restrictions",
+        "output-pending-communication-affector-restrictions",
+        "communication-affector-restrictions-match-async-data-transfer"
+      ],
+      "pending": {
+        "input-pending-communication-affector-restrictions": "No portable diagnostic or runtime oracle exists without a processor-defined asynchronous communication facility that creates a pending affector.",
+        "output-pending-communication-affector-restrictions": "No portable diagnostic or runtime oracle exists without a processor-defined asynchronous communication facility that creates a pending affector.",
+        "communication-affector-restrictions-match-async-data-transfer": "Source-use plan cross-references future 12. asynchronous data-transfer restriction fixtures; this packet makes no executable claim for processor-specific asynchronous communication."
+      },
+      "oracle": "Plans are pending and source-derived. Mixed Fortran/C plans use the suite C interop harness with separate C and Fortran sources. They guard every ISO_C_BINDING kind constant with k > 0 before using it as a kind and observe only portable properties fixed by Clause 18: exact integer or exactly representable real sentinel values, successful linkage through required binding labels, Fortran ALLOCATED or ASSOCIATED status after CFI calls, and required diagnostics for numbered constraints. Program obligations on C descriptors, object lifetimes, setjmp/longjmp, signal handling, floating-point status, and asynchronous communication are not treated as required diagnostics unless a numbered constraint owns the rejection.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Undefined behavior and processor-dependent behavior are not execution oracles. Invalid source-control variants for unnumbered program obligations are retained only as future design notes because a processor is not required to diagnose them.",
+      "dependencies": "Registered dependencies: clauses 6-12 for source form, declarations, execution, program units, and existing I/O harnesses; clause 15 for procedure interfaces and BIND(C) procedure characteristics; clause 16 ISO_C_BINDING and ISO_FORTRAN_ENV names; clause 17 IEEE status terminology. Unregistered dependencies explicitly retained: companion C processor details, CFI descriptor function semantics from 18.5.5, global identifier/linkage association from clause 19, and future mixed Fortran/C fixture profiles."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "structural",
+      "rationale": "Definitions of asynchronous communication, pending affectors, and processor latitude are split."
+    },
+    {
+      "unit": "p1.communication-through-nonfortran",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.10.4-001"
+      ]
+    },
+    {
+      "unit": "p1.initiation-and-completion",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.10.4-001"
+      ]
+    },
+    {
+      "unit": "p1.pending-communication-affector",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.10.4-001"
+      ]
+    },
+    {
+      "unit": "p1.initiation-completion-processor-dependent",
+      "disposition": "permission",
+      "requirements": [
+        "S18.10.4-002"
+      ],
+      "rationale": "Processor-dependent latitude for classifying initiation and completion procedures."
+    },
+    {
+      "unit": "p2",
+      "disposition": "structural",
+      "rationale": "Input restrictions, output restrictions, and the cross-reference to asynchronous data transfer are split."
+    },
+    {
+      "unit": "p2.input-communication-affector-restrictions",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.10.4-003"
+      ]
+    },
+    {
+      "unit": "p2.output-communication-affector-restrictions",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.10.4-003"
+      ]
+    },
+    {
+      "unit": "p2.same-as-async-data-transfer",
+      "disposition": "definition",
+      "requirements": [
+        "S18.10.4-003"
+      ],
+      "rationale": "Defines the communication restrictions by reference to asynchronous data transfer restrictions."
+    },
+    {
+      "unit": "note-unnumbered",
+      "disposition": "informative",
+      "rationale": "MPI example only; not a normative requirement."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_18_10_4.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "87590cfbd1b62cd7aa51761403eb31113810aaaf57a82618150e8591f63145ae",
+  "review_rationale": "Source registration for 18.6-18.10.4: restrictions on C descriptors and lifetimes, interoperation with C global variables and binding labels, and interoperation with C functions (batch245). Every unit hash-verified by an independent reviewer across two rounds; cross-language calls, descriptors and binding labels are planned as mixed Fortran/C programs with exact results, and program-side restrictions carry no oracle. C1807 had no existing tests. Source accounting only."
+}

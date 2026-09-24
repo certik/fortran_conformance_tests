@@ -1,0 +1,388 @@
+{
+  "schema_version": 1,
+  "section": "18.10.1",
+  "subunits": {
+    "p1": [
+      "p1.definition-by-c-or-fortran",
+      "p1.not-both-definitions",
+      "p1.inline-c-not-definition"
+    ],
+    "p2": [
+      "p2.c-prototype-interoperable",
+      "p2.label-access-external-linkage",
+      "p2.label-access-same-binding-label"
+    ],
+    "p4": [
+      "p4.c-reference-invokes-fortran",
+      "p4.no-c-funloc-noninteroperable-invocation"
+    ],
+    "p5": [
+      "p5.fortran-no-setjmp-longjmp",
+      "p5.c-setjmp-longjmp-no-fortran-invocation",
+      "p5.fortran-not-signal-handler"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S18.10.1-001",
+      "title": "Interoperable procedures may be defined by C-side means or by Fortran subprograms",
+      "source": "S18.10.1 p1.definition-by-c-or-fortran; J3/24-007, 18 December 2023, physical PDF545.",
+      "source_units": [
+        "p1.definition-by-c-or-fortran"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "An interoperable procedure may be defined either by means other than Fortran or by means of a Fortran subprogram.",
+      "facets": [
+        "interoperable-procedure-definition-by-companion-processor",
+        "interoperable-procedure-definition-by-fortran-subprogram"
+      ],
+      "pending": {
+        "interoperable-procedure-definition-by-companion-processor": "Fortran-calls-C analogue after guarding C_INT > 0 before any C_INT-kind declaration: C defines int c_value_add_one(int x) with prototype int c_value_add_one(int), Fortran declares integer(c_int) function c_value_add_one(x) bind(C, name=\"c_value_add_one\") with integer(c_int), value :: x, calls c_value_add_one(41), and expects 42. A companion reference-dummy analogue defines void c_set_ref(int *y), Fortran declares subroutine c_set_ref(y) bind(C, name=\"c_set_ref\") with integer(c_int) :: y, initializes y to -11 before the call, and expects y == 7 after C stores *y = 7.",
+        "interoperable-procedure-definition-by-fortran-subprogram": "C-calls-Fortran analogue after guarding C_INT > 0 before any C_INT-kind declaration: Fortran defines integer(c_int) function f_value_add_one(x) bind(C, name=\"f_value_add_one\") with integer(c_int), value :: x returning x+1, C declares int f_value_add_one(int), calls f_value_add_one(41), and observes 42. A companion reference-dummy analogue defines Fortran subroutine f_set_ref(y) bind(C, name=\"f_set_ref\") with integer(c_int) :: y assigning y = 7; C declares void f_set_ref(int *y), initializes int y = -13, calls f_set_ref(&y), and observes y == 7."
+      },
+      "oracle": "Plans are pending and source-derived. Mixed Fortran/C plans use the suite C interop harness with separate C and Fortran sources. They guard every ISO_C_BINDING kind constant with k > 0 before using it as a kind and observe only portable properties fixed by Clause 18: exact integer or exactly representable real sentinel values, successful linkage through required binding labels, Fortran ALLOCATED or ASSOCIATED status after CFI calls, and required diagnostics for numbered constraints. Program obligations on C descriptors, object lifetimes, setjmp/longjmp, signal handling, floating-point status, and asynchronous communication are not treated as required diagnostics unless a numbered constraint owns the rejection.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Undefined behavior and processor-dependent behavior are not execution oracles. Invalid source-control variants for unnumbered program obligations are retained only as future design notes because a processor is not required to diagnose them.",
+      "dependencies": "Registered dependencies: clauses 6-12 for source form, declarations, execution, program units, and existing I/O harnesses; clause 15 for procedure interfaces and BIND(C) procedure characteristics; clause 16 ISO_C_BINDING and ISO_FORTRAN_ENV names; clause 17 IEEE status terminology. Unregistered dependencies explicitly retained: companion C processor details, CFI descriptor function semantics from 18.5.5, global identifier/linkage association from clause 19, and future mixed Fortran/C fixture profiles."
+    },
+    {
+      "id": "S18.10.1-002",
+      "title": "An interoperable procedure is not defined both by Fortran and by other means",
+      "source": "S18.10.1 p1.not-both-definitions; J3/24-007, 18 December 2023, physical PDF545.",
+      "source_units": [
+        "p1.not-both-definitions"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "An interoperable procedure shall not be defined both by means other than Fortran and by a Fortran subprogram.",
+      "facets": [
+        "interoperable-procedure-not-defined-by-both-languages"
+      ],
+      "pending": {
+        "interoperable-procedure-not-defined-by-both-languages": "No portable diagnostic is required for duplicate cross-language definitions; link-editor behavior and symbol diagnostics are processor dependent. Future conforming plans define each binding label in exactly one language."
+      },
+      "oracle": "Plans are pending and source-derived. Mixed Fortran/C plans use the suite C interop harness with separate C and Fortran sources. They guard every ISO_C_BINDING kind constant with k > 0 before using it as a kind and observe only portable properties fixed by Clause 18: exact integer or exactly representable real sentinel values, successful linkage through required binding labels, Fortran ALLOCATED or ASSOCIATED status after CFI calls, and required diagnostics for numbered constraints. Program obligations on C descriptors, object lifetimes, setjmp/longjmp, signal handling, floating-point status, and asynchronous communication are not treated as required diagnostics unless a numbered constraint owns the rejection.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Undefined behavior and processor-dependent behavior are not execution oracles. Invalid source-control variants for unnumbered program obligations are retained only as future design notes because a processor is not required to diagnose them.",
+      "dependencies": "Registered dependencies: clauses 6-12 for source form, declarations, execution, program units, and existing I/O harnesses; clause 15 for procedure interfaces and BIND(C) procedure characteristics; clause 16 ISO_C_BINDING and ISO_FORTRAN_ENV names; clause 17 IEEE status terminology. Unregistered dependencies explicitly retained: companion C processor details, CFI descriptor function semantics from 18.5.5, global identifier/linkage association from clause 19, and future mixed Fortran/C fixture profiles."
+    },
+    {
+      "id": "S18.10.1-003",
+      "title": "Inline-only C functions are not definitions for interoperable-procedure exclusivity",
+      "source": "S18.10.1 p1.inline-c-not-definition; J3/24-007, 18 December 2023, physical PDF545.",
+      "source_units": [
+        "p1.inline-c-not-definition"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A C function with an inline definition and no external definition is not considered to define the interoperable procedure for the exclusivity rule.",
+      "facets": [
+        "inline-only-c-function-not-definition-for-interoperability"
+      ],
+      "pending": {
+        "inline-only-c-function-not-definition-for-interoperability": "Source-control plan pairs a Fortran BIND(C) definition with a C header inline helper lacking an external definition and checks that no fixture claims an additional C definition from the inline-only helper."
+      },
+      "oracle": "Plans are pending and source-derived. Mixed Fortran/C plans use the suite C interop harness with separate C and Fortran sources. They guard every ISO_C_BINDING kind constant with k > 0 before using it as a kind and observe only portable properties fixed by Clause 18: exact integer or exactly representable real sentinel values, successful linkage through required binding labels, Fortran ALLOCATED or ASSOCIATED status after CFI calls, and required diagnostics for numbered constraints. Program obligations on C descriptors, object lifetimes, setjmp/longjmp, signal handling, floating-point status, and asynchronous communication are not treated as required diagnostics unless a numbered constraint owns the rejection.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Undefined behavior and processor-dependent behavior are not execution oracles. Invalid source-control variants for unnumbered program obligations are retained only as future design notes because a processor is not required to diagnose them.",
+      "dependencies": "Registered dependencies: clauses 6-12 for source form, declarations, execution, program units, and existing I/O harnesses; clause 15 for procedure interfaces and BIND(C) procedure characteristics; clause 16 ISO_C_BINDING and ISO_FORTRAN_ENV names; clause 17 IEEE status terminology. Unregistered dependencies explicitly retained: companion C processor details, CFI descriptor function semantics from 18.5.5, global identifier/linkage association from clause 19, and future mixed Fortran/C fixture profiles."
+    },
+    {
+      "id": "S18.10.1-004",
+      "title": "C-defined interoperable procedures are describable by interoperable C prototypes",
+      "source": "S18.10.1 p2.c-prototype-interoperable; J3/24-007, 18 December 2023, physical PDF545.",
+      "source_units": [
+        "p2.c-prototype-interoperable"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "A procedure defined by means other than Fortran shall be describable by a C prototype interoperable with the Fortran interface.",
+      "facets": [
+        "c-defined-procedure-has-interoperable-prototype"
+      ],
+      "pending": {
+        "c-defined-procedure-has-interoperable-prototype": "After guarding C_INT > 0 before any C_INT-kind declaration, use two C-defined prototypes and matching Fortran interfaces: int proto_add_one(int) with Fortran integer(c_int) function proto_add_one(x) bind(C) and integer(c_int), value :: x returning proto_add_one(41) == 42, plus void proto_set_ref(int *y) with Fortran subroutine proto_set_ref(y) bind(C) and integer(c_int) :: y changing a Fortran sentinel -17 to 7 through the C store *y = 7."
+      },
+      "oracle": "Plans are pending and source-derived. Mixed Fortran/C plans use the suite C interop harness with separate C and Fortran sources. They guard every ISO_C_BINDING kind constant with k > 0 before using it as a kind and observe only portable properties fixed by Clause 18: exact integer or exactly representable real sentinel values, successful linkage through required binding labels, Fortran ALLOCATED or ASSOCIATED status after CFI calls, and required diagnostics for numbered constraints. Program obligations on C descriptors, object lifetimes, setjmp/longjmp, signal handling, floating-point status, and asynchronous communication are not treated as required diagnostics unless a numbered constraint owns the rejection.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Undefined behavior and processor-dependent behavior are not execution oracles. Invalid source-control variants for unnumbered program obligations are retained only as future design notes because a processor is not required to diagnose them.",
+      "dependencies": "Registered dependencies: clauses 6-12 for source form, declarations, execution, program units, and existing I/O harnesses; clause 15 for procedure interfaces and BIND(C) procedure characteristics; clause 16 ISO_C_BINDING and ISO_FORTRAN_ENV names; clause 17 IEEE status terminology. Unregistered dependencies explicitly retained: companion C processor details, CFI descriptor function semantics from 18.5.5, global identifier/linkage association from clause 19, and future mixed Fortran/C fixture profiles."
+    },
+    {
+      "id": "S18.10.1-005",
+      "title": "Binding-label access to C-defined procedures uses external linkage and the same binding label",
+      "source": "S18.10.1 p2.label-access-external-linkage, p2.label-access-same-binding-label; J3/24-007, 18 December 2023, physical PDF545.",
+      "source_units": [
+        "p2.label-access-external-linkage",
+        "p2.label-access-same-binding-label"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "A procedure defined by means other than Fortran and accessed using its binding label shall have a C name with external linkage and the same binding label as the interface.",
+      "facets": [
+        "c-defined-label-access-requires-external-linkage",
+        "c-defined-label-access-requires-same-binding-label"
+      ],
+      "pending": {
+        "c-defined-label-access-requires-external-linkage": "Positive mixed C plan defines external-linkage C function int c_external_label(int); Fortran BIND(C, NAME=\"c_external_label\") calls it with 227 and expects 229 from an add-two body.",
+        "c-defined-label-access-requires-same-binding-label": "Positive mixed C plan uses the exact shared label c_same_label in the C function definition and Fortran BIND(C, NAME=\"c_same_label\") interface, then verifies c_same_label(233) returns 239."
+      },
+      "oracle": "Plans are pending and source-derived. Mixed Fortran/C plans use the suite C interop harness with separate C and Fortran sources. They guard every ISO_C_BINDING kind constant with k > 0 before using it as a kind and observe only portable properties fixed by Clause 18: exact integer or exactly representable real sentinel values, successful linkage through required binding labels, Fortran ALLOCATED or ASSOCIATED status after CFI calls, and required diagnostics for numbered constraints. Program obligations on C descriptors, object lifetimes, setjmp/longjmp, signal handling, floating-point status, and asynchronous communication are not treated as required diagnostics unless a numbered constraint owns the rejection.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Undefined behavior and processor-dependent behavior are not execution oracles. Invalid source-control variants for unnumbered program obligations are retained only as future design notes because a processor is not required to diagnose them.",
+      "dependencies": "Registered dependencies: clauses 6-12 for source form, declarations, execution, program units, and existing I/O harnesses; clause 15 for procedure interfaces and BIND(C) procedure characteristics; clause 16 ISO_C_BINDING and ISO_FORTRAN_ENV names; clause 17 IEEE status terminology. Unregistered dependencies explicitly retained: companion C processor details, CFI descriptor function semantics from 18.5.5, global identifier/linkage association from clause 19, and future mixed Fortran/C fixture profiles."
+    },
+    {
+      "id": "S18.10.1-006",
+      "title": "Fortran references to C-defined interoperable procedures call the C prototype function",
+      "source": "S18.10.1 p3; J3/24-007, 18 December 2023, physical PDF545.",
+      "source_units": [
+        "p3"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A Fortran reference to a procedure defined by means other than Fortran causes the function described by the interoperable C prototype to be called as specified by C.",
+      "facets": [
+        "fortran-reference-invokes-c-prototype-function"
+      ],
+      "pending": {
+        "fortran-reference-invokes-c-prototype-function": "After guarding C_INT > 0 before any C_INT-kind declaration, Fortran declares and calls C prototype int c_value_add_one(int) as integer(c_int) function c_value_add_one(x) bind(C, name=\"c_value_add_one\") with integer(c_int), value :: x; c_value_add_one(41) returns 42 and stores 41 in a C global read back through a BIND(C) variable. A reference-dummy analogue declares C prototype void c_set_ref(int *y) as subroutine c_set_ref(y) bind(C, name=\"c_set_ref\") with integer(c_int) :: y; Fortran initializes y = -19, calls c_set_ref(y), and observes y == 7."
+      },
+      "oracle": "Plans are pending and source-derived. Mixed Fortran/C plans use the suite C interop harness with separate C and Fortran sources. They guard every ISO_C_BINDING kind constant with k > 0 before using it as a kind and observe only portable properties fixed by Clause 18: exact integer or exactly representable real sentinel values, successful linkage through required binding labels, Fortran ALLOCATED or ASSOCIATED status after CFI calls, and required diagnostics for numbered constraints. Program obligations on C descriptors, object lifetimes, setjmp/longjmp, signal handling, floating-point status, and asynchronous communication are not treated as required diagnostics unless a numbered constraint owns the rejection.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Undefined behavior and processor-dependent behavior are not execution oracles. Invalid source-control variants for unnumbered program obligations are retained only as future design notes because a processor is not required to diagnose them.",
+      "dependencies": "Registered dependencies: clauses 6-12 for source form, declarations, execution, program units, and existing I/O harnesses; clause 15 for procedure interfaces and BIND(C) procedure characteristics; clause 16 ISO_C_BINDING and ISO_FORTRAN_ENV names; clause 17 IEEE status terminology. Unregistered dependencies explicitly retained: companion C processor details, CFI descriptor function semantics from 18.5.5, global identifier/linkage association from clause 19, and future mixed Fortran/C fixture profiles."
+    },
+    {
+      "id": "S18.10.1-007",
+      "title": "C references to Fortran BIND procedures with matching labels invoke the Fortran procedure",
+      "source": "S18.10.1 p4.c-reference-invokes-fortran; J3/24-007, 18 December 2023, physical PDF545.",
+      "source_units": [
+        "p4.c-reference-invokes-fortran"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A C reference to a Fortran-defined procedure with the BIND attribute and the same binding label causes the Fortran procedure to be invoked.",
+      "facets": [
+        "c-reference-invokes-fortran-bind-procedure"
+      ],
+      "pending": {
+        "c-reference-invokes-fortran-bind-procedure": "After guarding C_INT > 0 before any C_INT-kind declaration, Fortran defines integer(c_int) function f_value_add_one(x) bind(C, name=\"f_value_add_one\") with integer(c_int), value :: x returning x+1; C declares int f_value_add_one(int), calls f_value_add_one(41), and observes 42. A reference-dummy analogue defines Fortran subroutine f_set_ref(y) bind(C, name=\"f_set_ref\") with integer(c_int) :: y assigning y = 7; C declares void f_set_ref(int *y), initializes int y = -23, calls f_set_ref(&y), and observes y == 7."
+      },
+      "oracle": "Plans are pending and source-derived. Mixed Fortran/C plans use the suite C interop harness with separate C and Fortran sources. They guard every ISO_C_BINDING kind constant with k > 0 before using it as a kind and observe only portable properties fixed by Clause 18: exact integer or exactly representable real sentinel values, successful linkage through required binding labels, Fortran ALLOCATED or ASSOCIATED status after CFI calls, and required diagnostics for numbered constraints. Program obligations on C descriptors, object lifetimes, setjmp/longjmp, signal handling, floating-point status, and asynchronous communication are not treated as required diagnostics unless a numbered constraint owns the rejection.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Undefined behavior and processor-dependent behavior are not execution oracles. Invalid source-control variants for unnumbered program obligations are retained only as future design notes because a processor is not required to diagnose them.",
+      "dependencies": "Registered dependencies: clauses 6-12 for source form, declarations, execution, program units, and existing I/O harnesses; clause 15 for procedure interfaces and BIND(C) procedure characteristics; clause 16 ISO_C_BINDING and ISO_FORTRAN_ENV names; clause 17 IEEE status terminology. Unregistered dependencies explicitly retained: companion C processor details, CFI descriptor function semantics from 18.5.5, global identifier/linkage association from clause 19, and future mixed Fortran/C fixture profiles."
+    },
+    {
+      "id": "S18.10.1-008",
+      "title": "C functions do not invoke function pointers from C_FUNLOC of noninteroperable arguments",
+      "source": "S18.10.1 p4.no-c-funloc-noninteroperable-invocation; J3/24-007, 18 December 2023, physical PDF545.",
+      "source_units": [
+        "p4.no-c-funloc-noninteroperable-invocation"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "A C function shall not invoke a function pointer whose value is the result of C_FUNLOC applied to a noninteroperable argument.",
+      "facets": [
+        "c-funloc-noninteroperable-function-pointer-not-invoked"
+      ],
+      "pending": {
+        "c-funloc-noninteroperable-function-pointer-not-invoked": "No portable diagnostic is required for this unnumbered program obligation, and invoking the pointer is nonconforming. Future positive controls apply C_FUNLOC only to an interoperable BIND(C) procedure returning exact sentinel 263."
+      },
+      "oracle": "Plans are pending and source-derived. Mixed Fortran/C plans use the suite C interop harness with separate C and Fortran sources. They guard every ISO_C_BINDING kind constant with k > 0 before using it as a kind and observe only portable properties fixed by Clause 18: exact integer or exactly representable real sentinel values, successful linkage through required binding labels, Fortran ALLOCATED or ASSOCIATED status after CFI calls, and required diagnostics for numbered constraints. Program obligations on C descriptors, object lifetimes, setjmp/longjmp, signal handling, floating-point status, and asynchronous communication are not treated as required diagnostics unless a numbered constraint owns the rejection.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Undefined behavior and processor-dependent behavior are not execution oracles. Invalid source-control variants for unnumbered program obligations are retained only as future design notes because a processor is not required to diagnose them.",
+      "dependencies": "Registered dependencies: clauses 6-12 for source form, declarations, execution, program units, and existing I/O harnesses; clause 15 for procedure interfaces and BIND(C) procedure characteristics; clause 16 ISO_C_BINDING and ISO_FORTRAN_ENV names; clause 17 IEEE status terminology. Unregistered dependencies explicitly retained: companion C processor details, CFI descriptor function semantics from 18.5.5, global identifier/linkage association from clause 19, and future mixed Fortran/C fixture profiles."
+    },
+    {
+      "id": "S18.10.1-009",
+      "title": "Fortran procedures are not entered through setjmp, longjmp, or signal-handler routes",
+      "source": "S18.10.1 p5.fortran-no-setjmp-longjmp, p5.c-setjmp-longjmp-no-fortran-invocation, p5.fortran-not-signal-handler; J3/24-007, 18 December 2023, physical PDF546.",
+      "source_units": [
+        "p5.fortran-no-setjmp-longjmp",
+        "p5.c-setjmp-longjmp-no-fortran-invocation",
+        "p5.fortran-not-signal-handler"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "A Fortran-defined procedure shall not invoke setjmp or longjmp, a non-Fortran procedure using setjmp or longjmp shall not cause a Fortran-defined procedure to be invoked, and a Fortran-defined procedure shall not be invoked as a signal handler.",
+      "facets": [
+        "fortran-procedure-does-not-invoke-setjmp-longjmp",
+        "c-setjmp-longjmp-does-not-invoke-fortran-procedure",
+        "fortran-procedure-not-signal-handler"
+      ],
+      "pending": {
+        "fortran-procedure-does-not-invoke-setjmp-longjmp": "No portable diagnostic or result oracle exists for forbidden setjmp or longjmp use from a Fortran-defined procedure.",
+        "c-setjmp-longjmp-does-not-invoke-fortran-procedure": "No portable diagnostic or result oracle exists for the forbidden path from C setjmp or longjmp into a Fortran procedure.",
+        "fortran-procedure-not-signal-handler": "No portable diagnostic or result oracle exists for installing a Fortran procedure as a C signal handler; C signal behavior is outside this suite oracle."
+      },
+      "oracle": "Plans are pending and source-derived. Mixed Fortran/C plans use the suite C interop harness with separate C and Fortran sources. They guard every ISO_C_BINDING kind constant with k > 0 before using it as a kind and observe only portable properties fixed by Clause 18: exact integer or exactly representable real sentinel values, successful linkage through required binding labels, Fortran ALLOCATED or ASSOCIATED status after CFI calls, and required diagnostics for numbered constraints. Program obligations on C descriptors, object lifetimes, setjmp/longjmp, signal handling, floating-point status, and asynchronous communication are not treated as required diagnostics unless a numbered constraint owns the rejection.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Undefined behavior and processor-dependent behavior are not execution oracles. Invalid source-control variants for unnumbered program obligations are retained only as future design notes because a processor is not required to diagnose them.",
+      "dependencies": "Registered dependencies: clauses 6-12 for source form, declarations, execution, program units, and existing I/O harnesses; clause 15 for procedure interfaces and BIND(C) procedure characteristics; clause 16 ISO_C_BINDING and ISO_FORTRAN_ENV names; clause 17 IEEE status terminology. Unregistered dependencies explicitly retained: companion C processor details, CFI descriptor function semantics from 18.5.5, global identifier/linkage association from clause 19, and future mixed Fortran/C fixture profiles."
+    },
+    {
+      "id": "S18.10.1-010",
+      "title": "Shared external-file I/O by Fortran and non-Fortran procedures has processor-dependent results",
+      "source": "S18.10.1 p6; J3/24-007, 18 December 2023, physical PDF546.",
+      "source_units": [
+        "p6"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Results are processor dependent for input/output operations on the same external file by a Fortran-defined procedure and by a procedure defined by other means.",
+      "facets": [
+        "mixed-language-same-external-file-io-processor-dependent"
+      ],
+      "pending": {
+        "mixed-language-same-external-file-io-processor-dependent": "No portable oracle may require a particular record order, buffering point, or file position for mixed Fortran and C I/O on the same external file. Future fixtures keep Fortran and C I/O effects on separate files or document processor profiles outside conformance credit."
+      },
+      "oracle": "Plans are pending and source-derived. Mixed Fortran/C plans use the suite C interop harness with separate C and Fortran sources. They guard every ISO_C_BINDING kind constant with k > 0 before using it as a kind and observe only portable properties fixed by Clause 18: exact integer or exactly representable real sentinel values, successful linkage through required binding labels, Fortran ALLOCATED or ASSOCIATED status after CFI calls, and required diagnostics for numbered constraints. Program obligations on C descriptors, object lifetimes, setjmp/longjmp, signal handling, floating-point status, and asynchronous communication are not treated as required diagnostics unless a numbered constraint owns the rejection.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Undefined behavior and processor-dependent behavior are not execution oracles. Invalid source-control variants for unnumbered program obligations are retained only as future design notes because a processor is not required to diagnose them.",
+      "dependencies": "Registered dependencies: clauses 6-12 for source form, declarations, execution, program units, and existing I/O harnesses; clause 15 for procedure interfaces and BIND(C) procedure characteristics; clause 16 ISO_C_BINDING and ISO_FORTRAN_ENV names; clause 17 IEEE status terminology. Unregistered dependencies explicitly retained: companion C processor details, CFI descriptor function semantics from 18.5.5, global identifier/linkage association from clause 19, and future mixed Fortran/C fixture profiles."
+    },
+    {
+      "id": "S18.10.1-011",
+      "title": "C function pointers for noninteroperable C_FUNLOC results should use void pointer-to-function type",
+      "source": "S18.10.1 p7; J3/24-007, 18 December 2023, physical PDF546.",
+      "source_units": [
+        "p7"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For a C function pointer whose value will come from C_FUNLOC with a noninteroperable argument, the pointer is recommended to be declared with type void (*)().",
+      "facets": [
+        "noninteroperable-c-funloc-result-void-function-pointer-recommended"
+      ],
+      "pending": {
+        "noninteroperable-c-funloc-result-void-function-pointer-recommended": "Recommendation only. Future source-use inventory records any C header example as advisory and makes no pass/fail oracle from the chosen C function pointer spelling."
+      },
+      "oracle": "Plans are pending and source-derived. Mixed Fortran/C plans use the suite C interop harness with separate C and Fortran sources. They guard every ISO_C_BINDING kind constant with k > 0 before using it as a kind and observe only portable properties fixed by Clause 18: exact integer or exactly representable real sentinel values, successful linkage through required binding labels, Fortran ALLOCATED or ASSOCIATED status after CFI calls, and required diagnostics for numbered constraints. Program obligations on C descriptors, object lifetimes, setjmp/longjmp, signal handling, floating-point status, and asynchronous communication are not treated as required diagnostics unless a numbered constraint owns the rejection.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Undefined behavior and processor-dependent behavior are not execution oracles. Invalid source-control variants for unnumbered program obligations are retained only as future design notes because a processor is not required to diagnose them.",
+      "dependencies": "Registered dependencies: clauses 6-12 for source form, declarations, execution, program units, and existing I/O harnesses; clause 15 for procedure interfaces and BIND(C) procedure characteristics; clause 16 ISO_C_BINDING and ISO_FORTRAN_ENV names; clause 17 IEEE status terminology. Unregistered dependencies explicitly retained: companion C processor details, CFI descriptor function semantics from 18.5.5, global identifier/linkage association from clause 19, and future mixed Fortran/C fixture profiles."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "structural",
+      "rationale": "Definition alternatives, exclusivity, and inline-C exception are split."
+    },
+    {
+      "unit": "p1.definition-by-c-or-fortran",
+      "disposition": "permission",
+      "requirements": [
+        "S18.10.1-001"
+      ],
+      "rationale": "Admission of either C-side or Fortran-side definitions."
+    },
+    {
+      "unit": "p1.not-both-definitions",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.10.1-002"
+      ]
+    },
+    {
+      "unit": "p1.inline-c-not-definition",
+      "disposition": "definition",
+      "requirements": [
+        "S18.10.1-003"
+      ],
+      "rationale": "Defines an inline-only C function as not a definition for this rule."
+    },
+    {
+      "unit": "p2",
+      "disposition": "structural",
+      "rationale": "C prototype and binding-label access restrictions are split."
+    },
+    {
+      "unit": "p2.c-prototype-interoperable",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.10.1-004"
+      ]
+    },
+    {
+      "unit": "p2.label-access-external-linkage",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.10.1-005"
+      ]
+    },
+    {
+      "unit": "p2.label-access-same-binding-label",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.10.1-005"
+      ]
+    },
+    {
+      "unit": "p3",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.10.1-006"
+      ]
+    },
+    {
+      "unit": "p4",
+      "disposition": "structural",
+      "rationale": "C-to-Fortran invocation effect and C_FUNLOC restriction are split."
+    },
+    {
+      "unit": "p4.c-reference-invokes-fortran",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.10.1-007"
+      ]
+    },
+    {
+      "unit": "p4.no-c-funloc-noninteroperable-invocation",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.10.1-008"
+      ]
+    },
+    {
+      "unit": "p5",
+      "disposition": "structural",
+      "rationale": "setjmp, longjmp, and signal-handler restrictions are split."
+    },
+    {
+      "unit": "p5.fortran-no-setjmp-longjmp",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.10.1-009"
+      ]
+    },
+    {
+      "unit": "p5.c-setjmp-longjmp-no-fortran-invocation",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.10.1-009"
+      ]
+    },
+    {
+      "unit": "p5.fortran-not-signal-handler",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.10.1-009"
+      ]
+    },
+    {
+      "unit": "p6",
+      "disposition": "permission",
+      "requirements": [
+        "S18.10.1-010"
+      ],
+      "rationale": "Processor-dependent latitude for mixed-language I/O on the same external file."
+    },
+    {
+      "unit": "p7",
+      "disposition": "recommendation",
+      "requirements": [
+        "S18.10.1-011"
+      ],
+      "rationale": "Recommendation for C function pointer declaration."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_18_10_1.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "7dbde0be8c51325dcd210069ed4a0e0c2ca9dd7b5db4404abdacbc853d16d7ad",
+  "review_rationale": "Source registration for 18.6-18.10.4: restrictions on C descriptors and lifetimes, interoperation with C global variables and binding labels, and interoperation with C functions (batch245). Every unit hash-verified by an independent reviewer across two rounds; cross-language calls, descriptors and binding labels are planned as mixed Fortran/C programs with exact results, and program-side restrictions carry no oracle. C1807 had no existing tests. Source accounting only."
+}

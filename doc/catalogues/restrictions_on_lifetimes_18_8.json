@@ -1,0 +1,217 @@
+{
+  "schema_version": 1,
+  "section": "18.8",
+  "subunits": {
+    "p2": [
+      "p2.descriptor-undefined-on-return",
+      "p2.c-pointers-undefined-on-return"
+    ],
+    "p3": [
+      "p3.descriptor-lifetime-through-call",
+      "p3.object-lifetime-through-call"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S18.8-001",
+      "title": "C descriptors and C pointers to Fortran objects become undefined with matching Fortran pointer conditions",
+      "source": "S18.8 p1; J3/24-007, 18 December 2023, physical PDF543.",
+      "source_units": [
+        "p1"
+      ],
+      "category": "undefined-result",
+      "diagnostic_obligation": "not-required",
+      "definition": "A C descriptor of, or C pointer to, any part of a Fortran object becomes undefined under the same conditions as a Fortran pointer associated with that object, and further use has C undefined behavior.",
+      "facets": [
+        "c-descriptor-undefined-with-fortran-pointer-status",
+        "c-pointer-undefined-with-fortran-pointer-status",
+        "further-use-of-undefined-c-view-is-undefined-behavior"
+      ],
+      "pending": {
+        "c-descriptor-undefined-with-fortran-pointer-status": "No portable oracle exists: after the descriptor becomes undefined, any attempt to use it has undefined behavior rather than a required diagnostic or value.",
+        "c-pointer-undefined-with-fortran-pointer-status": "No portable oracle exists: the C pointer has undefined status under the stated lifetime or association event, and dereferencing it cannot be part of a conforming observation.",
+        "further-use-of-undefined-c-view-is-undefined-behavior": "No portable oracle exists for C undefined behavior; future fixtures must stop observing the C view before the Fortran pointer status would become undefined."
+      },
+      "oracle": "Plans are pending and source-derived. Mixed Fortran/C plans use the suite C interop harness with separate C and Fortran sources. They guard every ISO_C_BINDING kind constant with k > 0 before using it as a kind and observe only portable properties fixed by Clause 18: exact integer or exactly representable real sentinel values, successful linkage through required binding labels, Fortran ALLOCATED or ASSOCIATED status after CFI calls, and required diagnostics for numbered constraints. Program obligations on C descriptors, object lifetimes, setjmp/longjmp, signal handling, floating-point status, and asynchronous communication are not treated as required diagnostics unless a numbered constraint owns the rejection.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Undefined behavior and processor-dependent behavior are not execution oracles. Invalid source-control variants for unnumbered program obligations are retained only as future design notes because a processor is not required to diagnose them.",
+      "dependencies": "Registered dependencies: clauses 6-12 for source form, declarations, execution, program units, and existing I/O harnesses; clause 15 for procedure interfaces and BIND(C) procedure characteristics; clause 16 ISO_C_BINDING and ISO_FORTRAN_ENV names; clause 17 IEEE status terminology. Unregistered dependencies explicitly retained: companion C processor details, CFI descriptor function semantics from 18.5.5, global identifier/linkage association from clause 19, and future mixed Fortran/C fixture profiles."
+    },
+    {
+      "id": "S18.8-002",
+      "title": "Formal-parameter C descriptors become undefined on return from Fortran-to-C calls",
+      "source": "S18.8 p2.descriptor-undefined-on-return; J3/24-007, 18 December 2023, physical PDF543.",
+      "source_units": [
+        "p2.descriptor-undefined-on-return"
+      ],
+      "category": "undefined-result",
+      "diagnostic_obligation": "not-required",
+      "definition": "A C descriptor formal parameter corresponding to a Fortran dummy argument becomes undefined on return from a call to the C function from Fortran.",
+      "facets": [
+        "formal-c-descriptor-undefined-on-return"
+      ],
+      "pending": {
+        "formal-c-descriptor-undefined-on-return": "No portable oracle exists after return because the descriptor is undefined. A conforming mixed C plan records all needed observations inside the C call and performs no post-return descriptor access."
+      },
+      "oracle": "Plans are pending and source-derived. Mixed Fortran/C plans use the suite C interop harness with separate C and Fortran sources. They guard every ISO_C_BINDING kind constant with k > 0 before using it as a kind and observe only portable properties fixed by Clause 18: exact integer or exactly representable real sentinel values, successful linkage through required binding labels, Fortran ALLOCATED or ASSOCIATED status after CFI calls, and required diagnostics for numbered constraints. Program obligations on C descriptors, object lifetimes, setjmp/longjmp, signal handling, floating-point status, and asynchronous communication are not treated as required diagnostics unless a numbered constraint owns the rejection.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Undefined behavior and processor-dependent behavior are not execution oracles. Invalid source-control variants for unnumbered program obligations are retained only as future design notes because a processor is not required to diagnose them.",
+      "dependencies": "Registered dependencies: clauses 6-12 for source form, declarations, execution, program units, and existing I/O harnesses; clause 15 for procedure interfaces and BIND(C) procedure characteristics; clause 16 ISO_C_BINDING and ISO_FORTRAN_ENV names; clause 17 IEEE status terminology. Unregistered dependencies explicitly retained: companion C processor details, CFI descriptor function semantics from 18.5.5, global identifier/linkage association from clause 19, and future mixed Fortran/C fixture profiles."
+    },
+    {
+      "id": "S18.8-003",
+      "title": "C pointers to nontarget nonasynchronous described objects become undefined on return",
+      "source": "S18.8 p2.c-pointers-undefined-on-return; J3/24-007, 18 December 2023, physical PDF543.",
+      "source_units": [
+        "p2.c-pointers-undefined-on-return"
+      ],
+      "category": "undefined-result",
+      "diagnostic_obligation": "not-required",
+      "definition": "Without TARGET or ASYNCHRONOUS on the dummy, all C pointers to any part of the object described by the C descriptor become undefined on return from the call, and further use has C undefined behavior.",
+      "facets": [
+        "c-pointers-to-nontarget-nonasynchronous-dummy-undefined-on-return",
+        "post-return-use-of-those-c-pointers-undefined-behavior"
+      ],
+      "pending": {
+        "c-pointers-to-nontarget-nonasynchronous-dummy-undefined-on-return": "No portable oracle exists after return because the C pointer status is undefined; a conforming positive plan copies ordinary scalar values before return rather than preserving a pointer.",
+        "post-return-use-of-those-c-pointers-undefined-behavior": "No portable oracle exists for the forbidden post-return dereference because C undefined behavior supplies no required result."
+      },
+      "oracle": "Plans are pending and source-derived. Mixed Fortran/C plans use the suite C interop harness with separate C and Fortran sources. They guard every ISO_C_BINDING kind constant with k > 0 before using it as a kind and observe only portable properties fixed by Clause 18: exact integer or exactly representable real sentinel values, successful linkage through required binding labels, Fortran ALLOCATED or ASSOCIATED status after CFI calls, and required diagnostics for numbered constraints. Program obligations on C descriptors, object lifetimes, setjmp/longjmp, signal handling, floating-point status, and asynchronous communication are not treated as required diagnostics unless a numbered constraint owns the rejection.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Undefined behavior and processor-dependent behavior are not execution oracles. Invalid source-control variants for unnumbered program obligations are retained only as future design notes because a processor is not required to diagnose them.",
+      "dependencies": "Registered dependencies: clauses 6-12 for source form, declarations, execution, program units, and existing I/O harnesses; clause 15 for procedure interfaces and BIND(C) procedure characteristics; clause 16 ISO_C_BINDING and ISO_FORTRAN_ENV names; clause 17 IEEE status terminology. Unregistered dependencies explicitly retained: companion C processor details, CFI descriptor function semantics from 18.5.5, global identifier/linkage association from clause 19, and future mixed Fortran/C fixture profiles."
+    },
+    {
+      "id": "S18.8-004",
+      "title": "C descriptor and nonallocatable nonpointer actual lifetimes extend through Fortran procedure calls",
+      "source": "S18.8 p3.descriptor-lifetime-through-call, p3.object-lifetime-through-call; J3/24-007, 18 December 2023, physical PDF543.",
+      "source_units": [
+        "p3.descriptor-lifetime-through-call",
+        "p3.object-lifetime-through-call"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "A C descriptor passed to a Fortran procedure, and an object passed as a nonallocatable nonpointer dummy argument, shall have a lifetime that does not end before return from the procedure call.",
+      "facets": [
+        "c-descriptor-lifetime-extends-through-fortran-call",
+        "nonallocatable-nonpointer-object-lifetime-extends-through-fortran-call"
+      ],
+      "pending": {
+        "c-descriptor-lifetime-extends-through-fortran-call": "Positive mixed C plan stores the C descriptor in automatic C storage whose block encloses the entire Fortran call; Fortran reads sentinels 71 and 73 during the call, and C destroys the storage only after return.",
+        "nonallocatable-nonpointer-object-lifetime-extends-through-fortran-call": "Positive mixed C plan passes a C int object with value 79 to a Fortran VALUE-free nonpointer dummy, keeps the C object alive through return, and observes Fortran adding 1 through a distinct result slot."
+      },
+      "oracle": "Plans are pending and source-derived. Mixed Fortran/C plans use the suite C interop harness with separate C and Fortran sources. They guard every ISO_C_BINDING kind constant with k > 0 before using it as a kind and observe only portable properties fixed by Clause 18: exact integer or exactly representable real sentinel values, successful linkage through required binding labels, Fortran ALLOCATED or ASSOCIATED status after CFI calls, and required diagnostics for numbered constraints. Program obligations on C descriptors, object lifetimes, setjmp/longjmp, signal handling, floating-point status, and asynchronous communication are not treated as required diagnostics unless a numbered constraint owns the rejection.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Undefined behavior and processor-dependent behavior are not execution oracles. Invalid source-control variants for unnumbered program obligations are retained only as future design notes because a processor is not required to diagnose them.",
+      "dependencies": "Registered dependencies: clauses 6-12 for source form, declarations, execution, program units, and existing I/O harnesses; clause 15 for procedure interfaces and BIND(C) procedure characteristics; clause 16 ISO_C_BINDING and ISO_FORTRAN_ENV names; clause 17 IEEE status terminology. Unregistered dependencies explicitly retained: companion C processor details, CFI descriptor function semantics from 18.5.5, global identifier/linkage association from clause 19, and future mixed Fortran/C fixture profiles."
+    },
+    {
+      "id": "S18.8-005",
+      "title": "C-established allocatable descriptor lifetime ending before program exit requires unallocation",
+      "source": "S18.8 p4; J3/24-007, 18 December 2023, physical PDF544.",
+      "source_units": [
+        "p4"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "If the lifetime of a C descriptor for an allocatable object established by C ends before program exit, the object shall be unallocated at that time.",
+      "facets": [
+        "c-established-allocatable-unallocated-before-descriptor-lifetime-ends"
+      ],
+      "pending": {
+        "c-established-allocatable-unallocated-before-descriptor-lifetime-ends": "Positive mixed C plan establishes an allocatable descriptor, calls CFI_allocate, stores sentinel 83, calls CFI_deallocate, then ends the descriptor lifetime; the observable Fortran-side check occurs before lifetime end and verifies the deallocation status change."
+      },
+      "oracle": "Plans are pending and source-derived. Mixed Fortran/C plans use the suite C interop harness with separate C and Fortran sources. They guard every ISO_C_BINDING kind constant with k > 0 before using it as a kind and observe only portable properties fixed by Clause 18: exact integer or exactly representable real sentinel values, successful linkage through required binding labels, Fortran ALLOCATED or ASSOCIATED status after CFI calls, and required diagnostics for numbered constraints. Program obligations on C descriptors, object lifetimes, setjmp/longjmp, signal handling, floating-point status, and asynchronous communication are not treated as required diagnostics unless a numbered constraint owns the rejection.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Undefined behavior and processor-dependent behavior are not execution oracles. Invalid source-control variants for unnumbered program obligations are retained only as future design notes because a processor is not required to diagnose them.",
+      "dependencies": "Registered dependencies: clauses 6-12 for source form, declarations, execution, program units, and existing I/O harnesses; clause 15 for procedure interfaces and BIND(C) procedure characteristics; clause 16 ISO_C_BINDING and ISO_FORTRAN_ENV names; clause 17 IEEE status terminology. Unregistered dependencies explicitly retained: companion C processor details, CFI descriptor function semantics from 18.5.5, global identifier/linkage association from clause 19, and future mixed Fortran/C fixture profiles."
+    },
+    {
+      "id": "S18.8-006",
+      "title": "Fortran pointers to companion-processor data become undefined as the C data lifetime ends",
+      "source": "S18.8 p5; J3/24-007, 18 December 2023, physical PDF544.",
+      "source_units": [
+        "p5"
+      ],
+      "category": "undefined-result",
+      "diagnostic_obligation": "not-required",
+      "definition": "If a Fortran pointer becomes associated with a data object defined by the companion processor, its association status becomes undefined when that data object lifetime ends.",
+      "facets": [
+        "fortran-pointer-to-c-data-undefined-at-c-lifetime-end"
+      ],
+      "pending": {
+        "fortran-pointer-to-c-data-undefined-at-c-lifetime-end": "No portable oracle exists after the companion data lifetime ends because the Fortran pointer association status is undefined; future conforming fixtures must complete all checks before the C object lifetime ends."
+      },
+      "oracle": "Plans are pending and source-derived. Mixed Fortran/C plans use the suite C interop harness with separate C and Fortran sources. They guard every ISO_C_BINDING kind constant with k > 0 before using it as a kind and observe only portable properties fixed by Clause 18: exact integer or exactly representable real sentinel values, successful linkage through required binding labels, Fortran ALLOCATED or ASSOCIATED status after CFI calls, and required diagnostics for numbered constraints. Program obligations on C descriptors, object lifetimes, setjmp/longjmp, signal handling, floating-point status, and asynchronous communication are not treated as required diagnostics unless a numbered constraint owns the rejection.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Undefined behavior and processor-dependent behavior are not execution oracles. Invalid source-control variants for unnumbered program obligations are retained only as future design notes because a processor is not required to diagnose them.",
+      "dependencies": "Registered dependencies: clauses 6-12 for source form, declarations, execution, program units, and existing I/O harnesses; clause 15 for procedure interfaces and BIND(C) procedure characteristics; clause 16 ISO_C_BINDING and ISO_FORTRAN_ENV names; clause 17 IEEE status terminology. Unregistered dependencies explicitly retained: companion C processor details, CFI descriptor function semantics from 18.5.5, global identifier/linkage association from clause 19, and future mixed Fortran/C fixture profiles."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.8-001"
+      ]
+    },
+    {
+      "unit": "p2",
+      "disposition": "structural",
+      "rationale": "Descriptor and C-pointer post-return undefined-status consequences are split."
+    },
+    {
+      "unit": "p2.descriptor-undefined-on-return",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.8-002"
+      ]
+    },
+    {
+      "unit": "p2.c-pointers-undefined-on-return",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.8-003"
+      ]
+    },
+    {
+      "unit": "p3",
+      "disposition": "structural",
+      "rationale": "Descriptor lifetime and ordinary object lifetime restrictions are split."
+    },
+    {
+      "unit": "p3.descriptor-lifetime-through-call",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.8-004"
+      ]
+    },
+    {
+      "unit": "p3.object-lifetime-through-call",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.8-004"
+      ]
+    },
+    {
+      "unit": "p4",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.8-005"
+      ]
+    },
+    {
+      "unit": "p5",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.8-006"
+      ]
+    },
+    {
+      "unit": "note-unnumbered",
+      "disposition": "informative",
+      "rationale": "Example only; it illustrates p2 consequences without adding requirements."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_18_8.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "09f7850d8c825903ff197ac693511432a28a4a97ed2bced61302060e61d2415f",
+  "review_rationale": "Source registration for 18.6-18.10.4: restrictions on C descriptors and lifetimes, interoperation with C global variables and binding labels, and interoperation with C functions (batch245). Every unit hash-verified by an independent reviewer across two rounds; cross-language calls, descriptors and binding labels are planned as mixed Fortran/C programs with exact results, and program-side restrictions carry no oracle. C1807 had no existing tests. Source accounting only."
+}

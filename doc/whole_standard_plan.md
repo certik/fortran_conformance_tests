@@ -5964,6 +5964,11 @@ See `doc/source_audits/batch_240.json`.
 Thirty-six units after two rounds. ASSOCIATED(p) only says a pointer points somewhere; the conversion rules promise it points at the original target, which is what ASSOCIATED(p, x) checks.
 See `doc/source_audits/batch_241.json`.
 
+## Batch 245 — C descriptor restrictions through interoperation with C functions (18.6-18.10.4)
+
+Forty-one units after two rounds. One finding was overruled: a rule that the C program 'shall not modify' a descriptor gives nothing to test on the processor side — checking that unmodifying C code left the descriptor unmodified would only confirm the test itself.
+See `doc/source_audits/batch_245.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
