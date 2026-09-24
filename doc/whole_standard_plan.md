@@ -6044,6 +6044,11 @@ See `doc/source_audits/batch_264.json`.
 Thirty units, four rounds. Two corrections were about output a conforming processor may legally vary: a leading zero is optional, and a deferred-length internal file is resized, not padded.
 See `doc/source_audits/batch_247.json`.
 
+## Batch 256 — Terms and definitions 3.55-3.86
+
+Seventy-two units, three rounds. A definition names a concept; the review kept asking which catalogue actually tests it, and would not accept a heading that tests nothing.
+See `doc/source_audits/batch_256.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
