@@ -1,0 +1,70 @@
+{
+ "schema_version": 1,
+ "review_type": "independent-clause16-nint-out-of-range-source-201-review",
+ "review_date": "2026-09-23",
+ "baseline_commit": "dbd8856",
+ "state": "source-registered",
+ "packet_kind": "SOURCE",
+ "scope": {
+  "sections": [
+   "16.9.152-16.9.157"
+  ],
+  "pdf_pages": "440-444",
+  "base_units": 43,
+  "numbered_rules_preaccounted": 0,
+  "accounted_base_units_delta": 43
+ },
+ "review_rounds": [
+  {
+   "round": 1,
+   "commit": "b6e98e3",
+   "decision": "BLOCKED",
+   "findings": [
+    {
+     "id": "C16UR-001",
+     "issue": "the negative ROUND=.TRUE. boundary claimed -HUGE-0.5 is out of range, but on a two's-complement kind -HUGE-1 is representable (the p7 example: OUT_OF_RANGE(-128.5, 0_INT8) is false without ROUND); the integer lower bound is not portable",
+     "resolution": "only the positive boundary: HUGE(0_k)+0.25 false and HUGE(0_k)+0.5 true under ROUND=.TRUE."
+    },
+    {
+     "id": "C16UR-002",
+     "issue": "REAL(HUGE(0.0_small), large) false was guarded only by RANGE, but conversion can round above the small-kind boundary",
+     "resolution": "same-kind OUT_OF_RANGE(HUGE(0.0_k), 0.0_k) is .FALSE.; the cross-kind case is kept only for true overflow"
+    }
+   ]
+  },
+  {
+   "round": 2,
+   "commit": "6362d02",
+   "decision": "BLOCKED",
+   "findings": [
+    {
+     "id": "C16UR-001",
+     "issue": "reopened: DIGITS(real) >= DIGITS(integer)+1 is insufficient; with H = 2^q-1, H+0.25 needs q+2 significand bits, otherwise it is a rounding tie that may become H+0.5",
+     "resolution": "RADIX(0.0_rk)==2 and DIGITS(0.0_rk) >= DIGITS(0_k)+2"
+    }
+   ]
+  },
+  {
+   "round": 3,
+   "commit": "539c0b5",
+   "decision": "BLOCKED",
+   "findings": [
+    {
+     "id": "C16UR-001",
+     "issue": "reopened: the bit argument assumes H = 2^q-1, which needs the integer model radix to be 2 as well",
+     "resolution": "RADIX(0_k)==2 added to both boundary plans, with the reason for each guard stated"
+    }
+   ]
+  },
+  {
+   "round": 4,
+   "commit": "13c9575",
+   "decision": "VERIFIED",
+   "findings": []
+  }
+ ],
+ "separation": {
+  "authored_facets_unchanged": true,
+  "tests_untouched": true
+ }
+}

@@ -5754,6 +5754,11 @@ See `doc/source_audits/batch_202.json`.
 Forty-one units after two rounds, in both directions: integer PRODUCT had been over-suppressed (it is exact), while the random-number plans had over-claimed. "A different sequence" does not mean any finite prefix differs, and distinct PUT seeds need not give distinct sequences; what *is* required is that re-PUTting a seed obtained by GET reproduces the same sequence.
 See `doc/source_audits/batch_203.json`.
 
+## Batch 201 — NINT through OUT_OF_RANGE
+
+Forty-three units, and the longest review so far: four rounds on a single plan. The OUT_OF_RANGE rounding boundary looks trivial — HUGE+0.25 is in range, HUGE+0.5 is not — but it is only exact if the real kind has two more binary digits than the integer kind *and both models are binary*. Each round the reviewer found the next missing hypothesis. The negative boundary was dropped altogether: the model is symmetric, but the representation may extend one further.
+See `doc/source_audits/batch_201.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must

@@ -1,0 +1,157 @@
+{
+  "schema_version": 1,
+  "section": "16.9.156",
+  "review_state": "reviewed",
+  "subunits": {
+    "p3": [
+      "p3.team-argument",
+      "p3.team-number-argument"
+    ],
+    "p5": [
+      "p5.current-team-count",
+      "p5.specified-team-count"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S16.9.156-001",
+      "title": "NUM_IMAGES TEAM and TEAM_NUMBER argument restrictions",
+      "source": "S16.9.156, J3/24-007, 18 December 2023, physical PDF442.",
+      "source_units": [
+        "p3.team-argument",
+        "p3.team-number-argument"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "TEAM shall be a scalar TEAM_TYPE identifying the current or an ancestor team; TEAM_NUMBER shall be an integer scalar identifying the initial team or a sibling team of the current team.",
+      "facets": [
+        "NUM_IMAGES-TEAM-scalar-current-or-ancestor-team",
+        "NUM_IMAGES-TEAM_NUMBER-initial-or-sibling-team"
+      ],
+      "pending": {
+        "NUM_IMAGES-TEAM-scalar-current-or-ancestor-team": "OUT OF SCOPE for this suite: constructing and identifying TEAM_TYPE values for current or ancestor teams requires coarray team execution beyond the single-image fixture profile.",
+        "NUM_IMAGES-TEAM_NUMBER-initial-or-sibling-team": "OUT OF SCOPE for this suite: sibling-team TEAM_NUMBER observations require multi-image team execution beyond the single-image fixture profile."
+      },
+      "oracle": "Source registration only. Future fixtures initialize observed variables to non-default sentinels before invoking the intrinsic and assert only source-derived properties fixed by 16.9: exact logical, integer, kind, character, shape, association/allocation status, or bit-context observations. Processor-dependent approximations are separated from exact obligations. Unnumbered argument shall-restrictions remain source-control restrictions and are not promoted to diagnostic facets. Coarray, team, and multi-image observations are marked OUT OF SCOPE for this suite rather than treated as no-oracle items.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for NINT, NORM2, NOT, NUM_IMAGES, and OUT_OF_RANGE found no existing binding for 16.9.152-16.9.154 or 16.9.156-16.9.157; NOT appears widely only as the logical operator/spelling in unrelated fixtures. NULL appears in existing R/C and 7/8/10/13 fixtures, including structure-constructor and initialization cases, but no binding is made here to 16.9.155. NUM_IMAGES is image/team dependent; multi-image and team facets are OUT OF SCOPE for this single-image suite by user decision, while the bare single-image inquiry remains a concrete portable plan.",
+      "dependencies": "Registered dependencies: clauses 6 through 13 where already catalogued for source form, intrinsic and derived types, declarations, expressions, pointer/allocatable status, arrays, assignment, execution, and internal I/O helpers. Unregistered dependencies retained: 16.3 integer bit model, 16.4 numeric model terminology, 16.10 ISO_FORTRAN_ENV named constants and team types, clause 17 IEEE support inquiries for guarded special-value plans, and clauses 14 through 19 where future fixtures need program, procedure, interoperability, deleted-feature, or scope terms."
+    },
+    {
+      "id": "S16.9.156-002",
+      "title": "NUM_IMAGES result is default integer scalar",
+      "source": "S16.9.156, J3/24-007, 18 December 2023, physical PDF442.",
+      "source_units": [
+        "p4"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The NUM_IMAGES result is a default integer scalar.",
+      "facets": [
+        "NUM_IMAGES-result-default-integer-scalar"
+      ],
+      "pending": {
+        "NUM_IMAGES-result-default-integer-scalar": "Call bare NUM_IMAGES() in the single-image fixture profile, initialize an integer sentinel to -77, assign the result, and assert RANK(NUM_IMAGES()) is zero and KIND(NUM_IMAGES()) equals KIND(0); mutate to a nondefault-kind expression so the kind check fails."
+      },
+      "oracle": "Source registration only. Future fixtures initialize observed variables to non-default sentinels before invoking the intrinsic and assert only source-derived properties fixed by 16.9: exact logical, integer, kind, character, shape, association/allocation status, or bit-context observations. Processor-dependent approximations are separated from exact obligations. Unnumbered argument shall-restrictions remain source-control restrictions and are not promoted to diagnostic facets. Coarray, team, and multi-image observations are marked OUT OF SCOPE for this suite rather than treated as no-oracle items.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for NINT, NORM2, NOT, NUM_IMAGES, and OUT_OF_RANGE found no existing binding for 16.9.152-16.9.154 or 16.9.156-16.9.157; NOT appears widely only as the logical operator/spelling in unrelated fixtures. NULL appears in existing R/C and 7/8/10/13 fixtures, including structure-constructor and initialization cases, but no binding is made here to 16.9.155. NUM_IMAGES is image/team dependent; multi-image and team facets are OUT OF SCOPE for this single-image suite by user decision, while the bare single-image inquiry remains a concrete portable plan.",
+      "dependencies": "Registered dependencies: clauses 6 through 13 where already catalogued for source form, intrinsic and derived types, declarations, expressions, pointer/allocatable status, arrays, assignment, execution, and internal I/O helpers. Unregistered dependencies retained: 16.3 integer bit model, 16.4 numeric model terminology, 16.10 ISO_FORTRAN_ENV named constants and team types, clause 17 IEEE support inquiries for guarded special-value plans, and clauses 14 through 19 where future fixtures need program, procedure, interoperability, deleted-feature, or scope terms."
+    },
+    {
+      "id": "S16.9.156-003",
+      "title": "NUM_IMAGES returns number of images in current or specified team",
+      "source": "S16.9.156, J3/24-007, 18 December 2023, physical PDF442.",
+      "source_units": [
+        "p5.current-team-count",
+        "p5.specified-team-count"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "NUM_IMAGES returns the number of images in the specified team, or in the current team without a team argument.",
+      "facets": [
+        "NUM_IMAGES-current-team-single-image-count",
+        "NUM_IMAGES-specified-team-count"
+      ],
+      "pending": {
+        "NUM_IMAGES-current-team-single-image-count": "Single-image portable plan calls bare NUM_IMAGES(), initializes the observed value to -77, and asserts the current-team count is exactly one; mutate the intrinsic call to constant zero so the non-default sentinel and value check fail.",
+        "NUM_IMAGES-specified-team-count": "OUT OF SCOPE for this suite: observing specified-team counts requires coarray teams or multi-image execution; no local-coarray single-image substitute is registered."
+      },
+      "oracle": "Source registration only. Future fixtures initialize observed variables to non-default sentinels before invoking the intrinsic and assert only source-derived properties fixed by 16.9: exact logical, integer, kind, character, shape, association/allocation status, or bit-context observations. Processor-dependent approximations are separated from exact obligations. Unnumbered argument shall-restrictions remain source-control restrictions and are not promoted to diagnostic facets. Coarray, team, and multi-image observations are marked OUT OF SCOPE for this suite rather than treated as no-oracle items.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for NINT, NORM2, NOT, NUM_IMAGES, and OUT_OF_RANGE found no existing binding for 16.9.152-16.9.154 or 16.9.156-16.9.157; NOT appears widely only as the logical operator/spelling in unrelated fixtures. NULL appears in existing R/C and 7/8/10/13 fixtures, including structure-constructor and initialization cases, but no binding is made here to 16.9.155. NUM_IMAGES is image/team dependent; multi-image and team facets are OUT OF SCOPE for this single-image suite by user decision, while the bare single-image inquiry remains a concrete portable plan.",
+      "dependencies": "Registered dependencies: clauses 6 through 13 where already catalogued for source form, intrinsic and derived types, declarations, expressions, pointer/allocatable status, arrays, assignment, execution, and internal I/O helpers. Unregistered dependencies retained: 16.3 integer bit model, 16.4 numeric model terminology, 16.10 ISO_FORTRAN_ENV named constants and team types, clause 17 IEEE support inquiries for guarded special-value plans, and clauses 14 through 19 where future fixtures need program, procedure, interoperability, deleted-feature, or scope terms."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "body",
+      "disposition": "definition",
+      "rationale": "Unlabelled line records the TEAM_NUMBER reference form; argument semantics are catalogued in p3."
+    },
+    {
+      "unit": "p1",
+      "disposition": "definition",
+      "rationale": "Description names NUM_IMAGES as number of images."
+    },
+    {
+      "unit": "p2",
+      "disposition": "definition",
+      "rationale": "Classifies NUM_IMAGES as transformational."
+    },
+    {
+      "unit": "p3",
+      "disposition": "structural",
+      "rationale": "Argument paragraph contains separate TEAM and TEAM_NUMBER restrictions, both image/team dependent."
+    },
+    {
+      "unit": "p3.team-argument",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.156-001"
+      ]
+    },
+    {
+      "unit": "p3.team-number-argument",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.156-001"
+      ]
+    },
+    {
+      "unit": "p4",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.156-002"
+      ],
+      "rationale": "Result characteristic obligation; default integer kind is single-image observable."
+    },
+    {
+      "unit": "p5",
+      "disposition": "structural",
+      "rationale": "Result Value splits current-team single-image count from specified-team multi-image/team observations."
+    },
+    {
+      "unit": "p5.current-team-count",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.156-003"
+      ]
+    },
+    {
+      "unit": "p5.specified-team-count",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.156-003"
+      ],
+      "rationale": "Registered but marked OUT OF SCOPE for this suite's fixture profile."
+    },
+    {
+      "unit": "p6",
+      "disposition": "informative",
+      "rationale": "Example is illustrative and uses coarray image communication outside this source packet."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_16_9_156.md"
+  },
+  "review_fingerprint": "6d27f250b26b631e18c15dfb5d74fb5d6d9845cebba63d30d2d1c5d9de88d095",
+  "review_rationale": "Source registration for 16.9.152-16.9.157: NINT, NORM2, NOT, NULL, NUM_IMAGES and OUT_OF_RANGE (batch201). Every unit hash-verified by an independent reviewer across four rounds (16.9.153 typeset drift verified visually); OUT_OF_RANGE rounding boundaries are planned only under explicit radix and digit guards on both the integer and the real model; NUM_IMAGES image facets are out of scope. Source accounting only."
+}

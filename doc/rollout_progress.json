@@ -7863,6 +7863,37 @@
         "C16WR-003: RANDOM_INIT 'different sequence' was tested by finite-prefix inequality -> removed; no finite prefix is required to differ, so 'different' has no portable oracle",
         "C16WR-004: distinct PUT arrays were assumed to give distinct sequences -> removed; only the p5 GET/PUT equivalence ('shall result in the same sequence') is planned"
       ]
+    },
+    {
+      "id": "clause16-nint-out-of-range-source-201",
+      "state": "source-registered",
+      "packet_kind": "SOURCE",
+      "baseline_commit": "dbd8856",
+      "sections": [
+        "16.9.152-16.9.157"
+      ],
+      "author_handoffs": {
+        "commit_1": "6d4ea55",
+        "commit_2": "b6e98e3",
+        "commit_3": "6362d02",
+        "commit_4": "539c0b5",
+        "commit_5": "13c9575"
+      },
+      "source_reviews": [
+        "doc/source_audits/batch_201.json"
+      ],
+      "new_executions": 0,
+      "source_accounting": {
+        "base_units": 43,
+        "numbered_rules_preaccounted": 0,
+        "accounted_base_units_delta": 43
+      },
+      "reviewer_findings": [
+        "C16UR-001: the negative ROUND=.TRUE. boundary claimed -HUGE-0.5 is out of range, but on a two's-complement kind -HUGE-1 is representable (the p7 example: OUT_OF_RANGE(-128.5, 0_INT8) is false without ROUND); the integer lower bound is not portable -> only the positive boundary: HUGE(0_k)+0.25 false and HUGE(0_k)+0.5 true under ROUND=.TRUE.",
+        "C16UR-002: REAL(HUGE(0.0_small), large) false was guarded only by RANGE, but conversion can round above the small-kind boundary -> same-kind OUT_OF_RANGE(HUGE(0.0_k), 0.0_k) is .FALSE.; the cross-kind case is kept only for true overflow",
+        "C16UR-001: reopened: DIGITS(real) >= DIGITS(integer)+1 is insufficient; with H = 2^q-1, H+0.25 needs q+2 significand bits, otherwise it is a rounding tie that may become H+0.5 -> RADIX(0.0_rk)==2 and DIGITS(0.0_rk) >= DIGITS(0_k)+2",
+        "C16UR-001: reopened: the bit argument assumes H = 2^q-1, which needs the integer model radix to be 2 as well -> RADIX(0_k)==2 added to both boundary plans, with the reason for each guard stated"
+      ]
     }
   ],
   "cross_batch_followups": [

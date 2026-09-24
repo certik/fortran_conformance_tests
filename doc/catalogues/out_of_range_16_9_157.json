@@ -1,0 +1,260 @@
+{
+  "schema_version": 1,
+  "section": "16.9.157",
+  "review_state": "reviewed",
+  "subunits": {
+    "p3": [
+      "p3.x-type",
+      "p3.mold-type-and-scalar",
+      "p3.mold-value-not-required",
+      "p3.round-restriction"
+    ],
+    "p5": [
+      "p5.integer-mold-truncation",
+      "p5.integer-mold-rounded",
+      "p5.real-mold-or-otherwise",
+      "p5.ieee-special-values"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S16.9.157-001",
+      "title": "OUT_OF_RANGE argument restrictions and MOLD permission",
+      "source": "S16.9.157, J3/24-007, 18 December 2023, physical PDF443.",
+      "source_units": [
+        "p3.x-type",
+        "p3.mold-type-and-scalar",
+        "p3.mold-value-not-required",
+        "p3.round-restriction"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "X shall be integer or real; MOLD shall be an integer or real scalar and need not be defined; ROUND shall be logical scalar and present only for real X with integer MOLD.",
+      "facets": [
+        "OUT_OF_RANGE-X-integer-or-real",
+        "OUT_OF_RANGE-MOLD-integer-or-real-scalar",
+        "OUT_OF_RANGE-MOLD-value-not-required",
+        "OUT_OF_RANGE-ROUND-logical-scalar-real-to-integer-only"
+      ],
+      "pending": {
+        "OUT_OF_RANGE-X-integer-or-real": "Positive source controls use integer and real X actuals; source-control mutation uses a logical or complex X and claims no diagnostic facet.",
+        "OUT_OF_RANGE-MOLD-integer-or-real-scalar": "Positive controls use integer and real scalar MOLD actuals; source-control mutations use logical, complex, or array MOLD actuals and claim no diagnostic facet.",
+        "OUT_OF_RANGE-MOLD-value-not-required": "Positive control passes an undefined scalar variable as MOLD and observes only its type and kind through the OUT_OF_RANGE result; mutation reads MOLD value so the control becomes invalid.",
+        "OUT_OF_RANGE-ROUND-logical-scalar-real-to-integer-only": "Positive controls use ROUND=.true. and .false. only for real X with integer MOLD; source-control mutations use nonlogical ROUND or use ROUND with integer-to-integer and real-to-real cases and claim no diagnostic facet."
+      },
+      "oracle": "Source registration only. Future fixtures initialize observed variables to non-default sentinels before invoking the intrinsic and assert only source-derived properties fixed by 16.9: exact logical, integer, kind, character, shape, association/allocation status, or bit-context observations. Processor-dependent approximations are separated from exact obligations. Unnumbered argument shall-restrictions remain source-control restrictions and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for NINT, NORM2, NOT, NUM_IMAGES, and OUT_OF_RANGE found no existing binding for 16.9.152-16.9.154 or 16.9.156-16.9.157; NOT appears widely only as the logical operator/spelling in unrelated fixtures. NULL appears in existing R/C and 7/8/10/13 fixtures, including structure-constructor and initialization cases, but no binding is made here to 16.9.155.",
+      "dependencies": "Registered dependencies: clauses 6 through 13 where already catalogued for source form, intrinsic and derived types, declarations, expressions, pointer/allocatable status, arrays, assignment, execution, and internal I/O helpers. Unregistered dependencies retained: 16.3 integer bit model, 16.4 numeric model terminology, 16.10 ISO_FORTRAN_ENV named constants and team types, clause 17 IEEE support inquiries for guarded special-value plans, and clauses 14 through 19 where future fixtures need program, procedure, interoperability, deleted-feature, or scope terms."
+    },
+    {
+      "id": "S16.9.157-002",
+      "title": "OUT_OF_RANGE result is default logical",
+      "source": "S16.9.157, J3/24-007, 18 December 2023, physical PDF443.",
+      "source_units": [
+        "p4"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The OUT_OF_RANGE result is default logical.",
+      "facets": [
+        "OUT_OF_RANGE-result-default-logical"
+      ],
+      "pending": {
+        "OUT_OF_RANGE-result-default-logical": "Assign OUT_OF_RANGE(0,0) to a logical sentinel initialized to .true. through a companion case expected false, assert KIND(result) equals KIND(.false.) and the value changes; mutate to an integer-valued expression so kind/type checks fail."
+      },
+      "oracle": "Source registration only. Future fixtures initialize observed variables to non-default sentinels before invoking the intrinsic and assert only source-derived properties fixed by 16.9: exact logical, integer, kind, character, shape, association/allocation status, or bit-context observations. Processor-dependent approximations are separated from exact obligations. Unnumbered argument shall-restrictions remain source-control restrictions and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for NINT, NORM2, NOT, NUM_IMAGES, and OUT_OF_RANGE found no existing binding for 16.9.152-16.9.154 or 16.9.156-16.9.157; NOT appears widely only as the logical operator/spelling in unrelated fixtures. NULL appears in existing R/C and 7/8/10/13 fixtures, including structure-constructor and initialization cases, but no binding is made here to 16.9.155.",
+      "dependencies": "Registered dependencies: clauses 6 through 13 where already catalogued for source form, intrinsic and derived types, declarations, expressions, pointer/allocatable status, arrays, assignment, execution, and internal I/O helpers. Unregistered dependencies retained: 16.3 integer bit model, 16.4 numeric model terminology, 16.10 ISO_FORTRAN_ENV named constants and team types, clause 17 IEEE support inquiries for guarded special-value plans, and clauses 14 through 19 where future fixtures need program, procedure, interoperability, deleted-feature, or scope terms."
+    },
+    {
+      "id": "S16.9.157-003",
+      "title": "OUT_OF_RANGE integer MOLD without rounding uses truncation toward zero bound",
+      "source": "S16.9.157, J3/24-007, 18 December 2023, physical PDF443.",
+      "source_units": [
+        "p5.integer-mold-truncation"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For integer MOLD with ROUND absent or false, the result is true exactly for IEEE infinity or NaN X, or for values whose largest-magnitude integer between zero and X inclusive is not representable by MOLD type and kind.",
+      "facets": [
+        "OUT_OF_RANGE-integer-MOLD-truncation-finite-false",
+        "OUT_OF_RANGE-integer-MOLD-truncation-finite-true"
+      ],
+      "pending": {
+        "OUT_OF_RANGE-integer-MOLD-truncation-finite-false": "Guarded plan probes an integer kind pair with RANGE(large)>RANGE(small); with H=HUGE(0_small), assert OUT_OF_RANGE(H,0_small) is false and OUT_OF_RANGE(REAL(H,kind=exact_real)+0.25,0_small,ROUND=.false.) is false, relying on H as the portable representability boundary rather than its exact model value.",
+        "OUT_OF_RANGE-integer-MOLD-truncation-finite-true": "Using the guarded small/large integer-kind pair, assert OUT_OF_RANGE(INT(HUGE(0_small),large)+1_large,0_small) is true because the probed value is one greater than the MOLD-kind boundary; mutate the boundary relation back to H so the true case fails."
+      },
+      "oracle": "Source registration only. Future fixtures initialize observed variables to non-default sentinels before invoking the intrinsic and assert only source-derived properties fixed by 16.9: exact logical, integer, kind, character, shape, association/allocation status, or bit-context observations. Processor-dependent approximations are separated from exact obligations. Unnumbered argument shall-restrictions remain source-control restrictions and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for NINT, NORM2, NOT, NUM_IMAGES, and OUT_OF_RANGE found no existing binding for 16.9.152-16.9.154 or 16.9.156-16.9.157; NOT appears widely only as the logical operator/spelling in unrelated fixtures. NULL appears in existing R/C and 7/8/10/13 fixtures, including structure-constructor and initialization cases, but no binding is made here to 16.9.155. Exact model inquiry values are not asserted; plans use only portable model relations such as HUGE being the representability boundary for its kind, RANGE ordering established by a guarded probe, and IEEE_SUPPORT_* guarding construction of IEEE special values.",
+      "dependencies": "Registered dependencies: clauses 6 through 13 where already catalogued for source form, intrinsic and derived types, declarations, expressions, pointer/allocatable status, arrays, assignment, execution, and internal I/O helpers. Unregistered dependencies retained: 16.3 integer bit model, 16.4 numeric model terminology, 16.10 ISO_FORTRAN_ENV named constants and team types, clause 17 IEEE support inquiries for guarded special-value plans, and clauses 14 through 19 where future fixtures need program, procedure, interoperability, deleted-feature, or scope terms."
+    },
+    {
+      "id": "S16.9.157-004",
+      "title": "OUT_OF_RANGE integer MOLD with rounding uses NINT tie rule",
+      "source": "S16.9.157, J3/24-007, 18 December 2023, physical PDF443.",
+      "source_units": [
+        "p5.integer-mold-rounded"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For integer MOLD with ROUND true, the result is true exactly for IEEE infinity or NaN X, or for values whose nearest integer, using the greater-magnitude tie rule, is not representable by MOLD type and kind.",
+      "facets": [
+        "OUT_OF_RANGE-integer-MOLD-rounded-finite-false",
+        "OUT_OF_RANGE-integer-MOLD-rounded-finite-true"
+      ],
+      "pending": {
+        "OUT_OF_RANGE-integer-MOLD-rounded-finite-false": "Guarded plan first selects an integer kind k and real kind rk with RADIX(0_k)==2, RADIX(0.0_rk)==2, DIGITS(0.0_rk) >= DIGITS(0_k)+2, and sufficient RANGE to represent H=HUGE(0_k) exactly. RADIX(0_k)==2 makes H=2**q-1 for q=DIGITS(0_k); RADIX(0.0_rk)==2 makes the fractional-bit guard meaningful; the +0.25 case needs q+2 real significand bits. Assert OUT_OF_RANGE(REAL(H,rk)+0.25_rk,0_k,ROUND=.true.) is false after a .true. sentinel, testing the portable positive boundary relation.",
+        "OUT_OF_RANGE-integer-MOLD-rounded-finite-true": "Using the same guarded positive-boundary pair with RADIX(0_k)==2, RADIX(0.0_rk)==2, and DIGITS(0.0_rk) >= DIGITS(0_k)+2, assert OUT_OF_RANGE(REAL(HUGE(0_k),rk)+0.5_rk,0_k,ROUND=.true.) is true because the nearest integer by the greater-magnitude tie rule is H+1, not representable by kind k. The integer radix guard makes H=2**q-1, the real radix guard makes 0.5 exact in the same model, and this +0.5 case needs q+1 bits while the shared guard uses q+2 for the false companion. Mutate ROUND to .false. so the rounded case fails."
+      },
+      "oracle": "Source registration only. Future fixtures initialize observed variables to non-default sentinels before invoking the intrinsic and assert only source-derived properties fixed by 16.9: exact logical, integer, kind, character, shape, association/allocation status, or bit-context observations. Processor-dependent approximations are separated from exact obligations. Unnumbered argument shall-restrictions remain source-control restrictions and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for NINT, NORM2, NOT, NUM_IMAGES, and OUT_OF_RANGE found no existing binding for 16.9.152-16.9.154 or 16.9.156-16.9.157; NOT appears widely only as the logical operator/spelling in unrelated fixtures. NULL appears in existing R/C and 7/8/10/13 fixtures, including structure-constructor and initialization cases, but no binding is made here to 16.9.155. Exact model inquiry values are not asserted; plans use only portable model relations such as HUGE being the representability boundary for its kind, positive-boundary rounding relations guarded by binary integer and real RADIX, per-value DIGITS requirements (q+2 for H+0.25 and q+1 for H+0.5), and RANGE probes, and IEEE_SUPPORT_* guarding construction of IEEE special values.",
+      "dependencies": "Registered dependencies: clauses 6 through 13 where already catalogued for source form, intrinsic and derived types, declarations, expressions, pointer/allocatable status, arrays, assignment, execution, and internal I/O helpers. Unregistered dependencies retained: 16.3 integer bit model, 16.4 numeric model terminology, 16.10 ISO_FORTRAN_ENV named constants and team types, clause 17 IEEE support inquiries for guarded special-value plans, and clauses 14 through 19 where future fixtures need program, procedure, interoperability, deleted-feature, or scope terms."
+    },
+    {
+      "id": "S16.9.157-005",
+      "title": "OUT_OF_RANGE real MOLD and remaining cases use representability in MOLD kind",
+      "source": "S16.9.157, J3/24-007, 18 December 2023, physical PDF443.",
+      "source_units": [
+        "p5.real-mold-or-otherwise"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Otherwise, the result is true exactly for unsupported IEEE infinity or NaN values, or finite values whose rounded value in the extended model for MOLD kind exceeds the largest same-sign finite representable value of that type and kind.",
+      "facets": [
+        "OUT_OF_RANGE-real-MOLD-finite-false",
+        "OUT_OF_RANGE-real-MOLD-finite-true"
+      ],
+      "pending": {
+        "OUT_OF_RANGE-real-MOLD-finite-false": "Same-kind model-relation plan asserts OUT_OF_RANGE(1.0_k,0.0_k) is false and OUT_OF_RANGE(HUGE(0.0_k),0.0_k) is false for each exercised real kind k, using HUGE only as that kind's own portable largest-finite boundary; mutate the first argument to a larger-kind overflow-boundary case so the false check fails.",
+        "OUT_OF_RANGE-real-MOLD-finite-true": "Guarded real-kind-pair plan selects RANGE(large)>RANGE(small), constructs a finite large-kind value whose EXPONENT exceeds EXPONENT(HUGE(0.0_small)), and asserts OUT_OF_RANGE(value,0.0_small) is true; mutate MOLD to the large kind so the true case fails. The exact decimal value is not asserted."
+      },
+      "oracle": "Source registration only. Future fixtures initialize observed variables to non-default sentinels before invoking the intrinsic and assert only source-derived properties fixed by 16.9: exact logical, integer, kind, character, shape, association/allocation status, or bit-context observations. Processor-dependent approximations are separated from exact obligations. Unnumbered argument shall-restrictions remain source-control restrictions and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for NINT, NORM2, NOT, NUM_IMAGES, and OUT_OF_RANGE found no existing binding for 16.9.152-16.9.154 or 16.9.156-16.9.157; NOT appears widely only as the logical operator/spelling in unrelated fixtures. NULL appears in existing R/C and 7/8/10/13 fixtures, including structure-constructor and initialization cases, but no binding is made here to 16.9.155. Exact model inquiry values are not asserted; plans use only portable model relations such as HUGE being the representability boundary for the same real kind, RANGE ordering for true overflow-boundary relations, and IEEE_SUPPORT_* guarding construction of IEEE special values.",
+      "dependencies": "Registered dependencies: clauses 6 through 13 where already catalogued for source form, intrinsic and derived types, declarations, expressions, pointer/allocatable status, arrays, assignment, execution, and internal I/O helpers. Unregistered dependencies retained: 16.3 integer bit model, 16.4 numeric model terminology, 16.10 ISO_FORTRAN_ENV named constants and team types, clause 17 IEEE support inquiries for guarded special-value plans, and clauses 14 through 19 where future fixtures need program, procedure, interoperability, deleted-feature, or scope terms."
+    },
+    {
+      "id": "S16.9.157-006",
+      "title": "OUT_OF_RANGE IEEE infinity and NaN handling is guarded by IEEE support",
+      "source": "S16.9.157, J3/24-007, 18 December 2023, physical PDF443.",
+      "source_units": [
+        "p5.ieee-special-values"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "IEEE infinity and NaN values contribute true results for integer MOLD, and for real MOLD only those not supported by objects of MOLD type and kind contribute true results.",
+      "facets": [
+        "OUT_OF_RANGE-IEEE-infinity-handling",
+        "OUT_OF_RANGE-IEEE-NaN-handling"
+      ],
+      "pending": {
+        "OUT_OF_RANGE-IEEE-infinity-handling": "Guarded plan queries IEEE_SUPPORT_INF for the source and MOLD kinds before constructing infinities with IEEE_VALUE; it asserts integer-MOLD true results and real-MOLD support relations without decimal-value comparisons or assumptions about unsupported IEEE values.",
+        "OUT_OF_RANGE-IEEE-NaN-handling": "Guarded plan queries IEEE_SUPPORT_NAN for the source and MOLD kinds before constructing quiet NaNs with IEEE_VALUE; it asserts integer-MOLD true results and real-MOLD support relations without comparing NaN values directly or assuming unsupported IEEE values."
+      },
+      "oracle": "Source registration only. Future fixtures initialize observed variables to non-default sentinels before invoking the intrinsic and assert only source-derived properties fixed by 16.9: exact logical, integer, kind, character, shape, association/allocation status, or bit-context observations. Processor-dependent approximations are separated from exact obligations. Unnumbered argument shall-restrictions remain source-control restrictions and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for NINT, NORM2, NOT, NUM_IMAGES, and OUT_OF_RANGE found no existing binding for 16.9.152-16.9.154 or 16.9.156-16.9.157; NOT appears widely only as the logical operator/spelling in unrelated fixtures. NULL appears in existing R/C and 7/8/10/13 fixtures, including structure-constructor and initialization cases, but no binding is made here to 16.9.155. Exact model inquiry values are not asserted; plans use only portable model relations such as HUGE being the representability boundary for its kind, RANGE ordering established by a guarded probe, and IEEE_SUPPORT_* guarding construction of IEEE special values.",
+      "dependencies": "Registered dependencies: clauses 6 through 13 where already catalogued for source form, intrinsic and derived types, declarations, expressions, pointer/allocatable status, arrays, assignment, execution, and internal I/O helpers. Unregistered dependencies retained: 16.3 integer bit model, 16.4 numeric model terminology, 16.10 ISO_FORTRAN_ENV named constants and team types, clause 17 IEEE support inquiries for guarded special-value plans, and clauses 14 through 19 where future fixtures need program, procedure, interoperability, deleted-feature, or scope terms."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "definition",
+      "rationale": "Description defines OUT_OF_RANGE as inquiry for unsafe conversion."
+    },
+    {
+      "unit": "p2",
+      "disposition": "definition",
+      "rationale": "Classifies OUT_OF_RANGE as elemental."
+    },
+    {
+      "unit": "p3",
+      "disposition": "structural",
+      "rationale": "Argument paragraph mixes type restrictions, scalar restrictions, MOLD value permission, and ROUND presence restriction."
+    },
+    {
+      "unit": "p3.x-type",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.157-001"
+      ]
+    },
+    {
+      "unit": "p3.mold-type-and-scalar",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.157-001"
+      ]
+    },
+    {
+      "unit": "p3.mold-value-not-required",
+      "disposition": "permission",
+      "requirements": [
+        "S16.9.157-001"
+      ],
+      "rationale": "Permission or latitude facet split from a mixed source paragraph."
+    },
+    {
+      "unit": "p3.round-restriction",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.157-001"
+      ]
+    },
+    {
+      "unit": "p4",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.157-002"
+      ],
+      "rationale": "Result characteristic obligation."
+    },
+    {
+      "unit": "p5",
+      "disposition": "structural",
+      "rationale": "Result Value contains distinct integer truncation, integer rounding, real/remaining, and IEEE-special cases."
+    },
+    {
+      "unit": "p5.integer-mold-truncation",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.157-003"
+      ]
+    },
+    {
+      "unit": "p5.integer-mold-rounded",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.157-004"
+      ]
+    },
+    {
+      "unit": "p5.real-mold-or-otherwise",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.157-005"
+      ]
+    },
+    {
+      "unit": "p5.ieee-special-values",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.157-006"
+      ]
+    },
+    {
+      "unit": "p6",
+      "disposition": "informative",
+      "rationale": "Example paragraph is illustrative; the finite rounded boundary case is covered by p5 plans."
+    },
+    {
+      "unit": "note-unnumbered",
+      "disposition": "informative",
+      "rationale": "NOTE is nonnormative explanation of scalar MOLD and ROUND."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_16_9_157.md"
+  },
+  "review_fingerprint": "541dad5c428a72aa6ded4d45783c354832978a8ac18e5b9111af6ade3847516c",
+  "review_rationale": "Source registration for 16.9.152-16.9.157: NINT, NORM2, NOT, NULL, NUM_IMAGES and OUT_OF_RANGE (batch201). Every unit hash-verified by an independent reviewer across four rounds (16.9.153 typeset drift verified visually); OUT_OF_RANGE rounding boundaries are planned only under explicit radix and digit guards on both the integer and the real model; NUM_IMAGES image facets are out of scope. Source accounting only."
+}
