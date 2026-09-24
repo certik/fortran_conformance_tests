@@ -6104,6 +6104,11 @@ See `doc/source_audits/batch_267.json`.
 Twenty-two programs, forty-five facets, six LFortran defects. ASSOCIATED is where the detail lives: zero-sized targets are never associated, and a pointer shifted by one element is not associated with the section it no longer matches.
 See `doc/source_audits/batch_268.json`.
 
+## Batch 270 — Submodule and block data fixtures 14.2.3-14.3
+
+Twenty-three programs, twenty-five facets and five LFortran defects in submodules and block data: two submodules of the same name under different ancestors are distinct, and three block-data constraints go undiagnosed.
+See `doc/source_audits/batch_270.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
