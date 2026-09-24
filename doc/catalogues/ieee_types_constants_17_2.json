@@ -1,0 +1,197 @@
+{
+  "schema_version": 1,
+  "section": "17.2",
+  "subunits": {
+    "p3": [
+      "p3.class-constants",
+      "p3.round-constants",
+      "p3.comparison-operators"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S17.2-001",
+      "title": "IEEE module derived types have private nonallocatable nonpointer direct components",
+      "source": "S17.2 p1; J3/24-007, 18 December 2023, physical PDF480.",
+      "source_units": [
+        "p1"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The IEEE_EXCEPTIONS, IEEE_ARITHMETIC, and IEEE_FEATURES modules define derived types whose components are all private and whose direct components are not allocatable or pointers.",
+      "facets": [
+        "ieee-derived-types-components-private",
+        "ieee-derived-types-no-direct-allocatable-components",
+        "ieee-derived-types-no-direct-pointer-components"
+      ],
+      "pending": {
+        "ieee-derived-types-components-private": "Guard probe: compile USE statements importing IEEE_FLAG_TYPE, IEEE_CLASS_TYPE, IEEE_FEATURES_TYPE and use only named constants plus assignment. TRUE branch: no component selection is used; a separate source-control negative tries an invented component selector and is rejected as no public component. FALSE branch: skip absent module/type.",
+        "ieee-derived-types-no-direct-allocatable-components": "No portable runtime oracle can inspect private direct component attributes; fixtures rely on the public named constants and never assume allocatable component behavior.",
+        "ieee-derived-types-no-direct-pointer-components": "No portable runtime oracle can inspect private direct component attributes; fixtures rely on value assignment/comparison only and never assume pointer component behavior."
+      },
+      "oracle": "Plans are pending and source-derived. IEEE effects are tested only under explicit capability probes; the TRUE branch asserts the concrete flag, mode, type, constant, or operation effect, and the FALSE branch is a skip rather than a pass. Named FLAG-ROW-PREAMBLE(flag,x): under IEEE_SUPPORT_FLAG(flag,x), if IEEE_SUPPORT_HALTING(flag) then CALL IEEE_SET_HALTING_MODE(flag,.FALSE.); else CALL IEEE_GET_HALTING_MODE(flag,h) and proceed only if h is .FALSE. (otherwise skip); CALL IEEE_SET_FLAG(IEEE_ALL,.FALSE.). Positive plans establish a non-default state first by setting distinguished sentinel values and apply FLAG-ROW-PREAMBLE before any exception operation or flag-state assertion unless the row explicitly says the preamble is not applied because it would destroy the initial-state oracle.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Fixture authors must re-derive every pending plan from the pinned source. IEEE module availability, feature-set inclusion, exact supported real kinds, initial modes, halting mechanics, NaN payloads, the identity of a NaN result not fixed by the text, signaling-NaN behavior outside a stated rule, and operations that may also signal are treated as processor latitude.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 13, and 16 for source form, type declarations, expressions, execution constructs, scoping units, I/O and format contexts, intrinsic procedures, and intrinsic module USE mechanics. Unregistered dependencies explicitly retained: later Clause 17 inquiry and mode procedures, IEEE value constructors/classification procedures, exact operation descriptions, and feature profiles such as tests/profiles/ieee_binary.f90."
+    },
+    {
+      "id": "S17.2-002",
+      "title": "IEEE_EXCEPTIONS defines flag, modes, status types and exception constants",
+      "source": "S17.2 p2; J3/24-007, 18 December 2023, physical PDF480.",
+      "source_units": [
+        "p2"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "IEEE_EXCEPTIONS defines IEEE_FLAG_TYPE, IEEE_MODES_TYPE, IEEE_STATUS_TYPE, scalar exception constants, and the IEEE_USUAL and IEEE_ALL arrays with the listed elements.",
+      "facets": [
+        "ieee-flag-type-values-are-named-exception-constants",
+        "ieee-usual-array-has-overflow-divide-invalid",
+        "ieee-all-array-extends-usual-underflow-inexact",
+        "ieee-modes-status-types-defined"
+      ],
+      "pending": {
+        "ieee-flag-type-values-are-named-exception-constants": "Guard probe: compile USE, INTRINSIC :: IEEE_EXCEPTIONS importing all five scalar flag constants, IEEE_SET_FLAG, IEEE_GET_FLAG, IEEE_SUPPORT_FLAG, and halting controls. TRUE branch for each named FLAG with IEEE_SUPPORT_FLAG(FLAG,X) true: Apply FLAG-ROW-PREAMBLE(FLAG,X). Call IEEE_SET_FLAG(FLAG,.TRUE.), then IEEE_GET_FLAG observes only that named FLAG signaling among supported flags. FALSE branch: no direct equality oracle exists for IEEE_FLAG_TYPE values, and unsupported optional flags are covered by the always-quiet rule in S17.3-013.",
+        "ieee-usual-array-has-overflow-divide-invalid": "Guard probe: compile IEEE_USUAL and the three named scalar constants plus IEEE_SET_FLAG, IEEE_GET_FLAG, IEEE_SUPPORT_FLAG, and halting controls. TRUE branch with IEEE_SUPPORT_FLAG true for each of IEEE_OVERFLOW, IEEE_DIVIDE_BY_ZERO, and IEEE_INVALID on profiled X: for each corresponding IEEE_USUAL element, Apply FLAG-ROW-PREAMBLE(that element FLAG,X). Call IEEE_SET_FLAG for IEEE_USUAL(1), IEEE_USUAL(2), and IEEE_USUAL(3) one at a time and observe respectively only IEEE_OVERFLOW, IEEE_DIVIDE_BY_ZERO, and IEEE_INVALID signaling. FALSE branch: skip the order oracle for unsupported optional flags; no == or /= comparison is used for IEEE_FLAG_TYPE.",
+        "ieee-all-array-extends-usual-underflow-inexact": "Guard probe: compile IEEE_ALL, IEEE_USUAL, and all five scalar flag constants plus IEEE_SET_FLAG, IEEE_GET_FLAG, IEEE_SUPPORT_FLAG, and halting controls. TRUE branch with IEEE_SUPPORT_FLAG true for all five flags on profiled X: for each corresponding IEEE_ALL element, Apply FLAG-ROW-PREAMBLE(that element FLAG,X). Call IEEE_SET_FLAG for IEEE_ALL(1) through IEEE_ALL(5) one at a time and observe respectively only IEEE_OVERFLOW, IEEE_DIVIDE_BY_ZERO, IEEE_INVALID, IEEE_UNDERFLOW, and IEEE_INEXACT signaling. FALSE branch: skip the unsupported optional-flag positions; no direct equality oracle exists for IEEE_FLAG_TYPE arrays.",
+        "ieee-modes-status-types-defined": "Guard probe: compile declarations of IEEE_MODES_TYPE and IEEE_STATUS_TYPE variables and internal procedure dummy arguments of each type. TRUE branch: assignment-free declaration and argument association compile, proving the public types are defined without inspecting private representation; detailed IEEE_GET/SET_MODES and IEEE_GET/SET_STATUS component round trips are owned by their procedure sections. FALSE branch: skip absent module."
+      },
+      "oracle": "Plans are pending and source-derived. IEEE effects are tested only under explicit capability probes; the TRUE branch asserts the concrete flag, mode, type, constant, or operation effect, and the FALSE branch is a skip rather than a pass. Named FLAG-ROW-PREAMBLE(flag,x): under IEEE_SUPPORT_FLAG(flag,x), if IEEE_SUPPORT_HALTING(flag) then CALL IEEE_SET_HALTING_MODE(flag,.FALSE.); else CALL IEEE_GET_HALTING_MODE(flag,h) and proceed only if h is .FALSE. (otherwise skip); CALL IEEE_SET_FLAG(IEEE_ALL,.FALSE.). Positive plans establish a non-default state first by setting distinguished sentinel values and apply FLAG-ROW-PREAMBLE before any exception operation or flag-state assertion unless the row explicitly says the preamble is not applied because it would destroy the initial-state oracle.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Fixture authors must re-derive every pending plan from the pinned source. IEEE module availability, feature-set inclusion, exact supported real kinds, initial modes, halting mechanics, NaN payloads, the identity of a NaN result not fixed by the text, signaling-NaN behavior outside a stated rule, and operations that may also signal are treated as processor latitude.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 13, and 16 for source form, type declarations, expressions, execution constructs, scoping units, I/O and format contexts, intrinsic procedures, and intrinsic module USE mechanics. Unregistered dependencies explicitly retained: later Clause 17 inquiry and mode procedures, IEEE value constructors/classification procedures, exact operation descriptions, and feature profiles such as tests/profiles/ieee_binary.f90."
+    },
+    {
+      "id": "S17.2-003",
+      "title": "IEEE_ARITHMETIC defines IEEE_CLASS_TYPE class constants and denormal aliases",
+      "source": "S17.2 p3.class-constants; J3/24-007, 18 December 2023, physical PDF480.",
+      "source_units": [
+        "p3.class-constants"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "IEEE_CLASS_TYPE identifies floating-point classes with the listed named constants; IEEE_NEGATIVE_DENORMAL and IEEE_POSITIVE_DENORMAL have the same values as the corresponding SUBNORMAL constants.",
+      "facets": [
+        "ieee-class-type-listed-class-constants",
+        "ieee-denormal-class-aliases-equal-subnormal-classes",
+        "ieee-class-type-values-comparable"
+      ],
+      "pending": {
+        "ieee-class-type-listed-class-constants": "Guard probe: compile USE, INTRINSIC :: IEEE_ARITHMETIC importing IEEE_CLASS_TYPE and all listed class constants. TRUE branch: assign each constant to an IEEE_CLASS_TYPE array and assert expected distinct pairs with /= except the denormal aliases. FALSE branch: skip.",
+        "ieee-denormal-class-aliases-equal-subnormal-classes": "Guard probe: same compile. TRUE branch: assert IEEE_NEGATIVE_DENORMAL == IEEE_NEGATIVE_SUBNORMAL and IEEE_POSITIVE_DENORMAL == IEEE_POSITIVE_SUBNORMAL. FALSE branch: skip.",
+        "ieee-class-type-values-comparable": "Guard probe: same compile. TRUE branch: assert == is true for each constant compared with itself and /= is true for IEEE_POSITIVE_ZERO versus IEEE_NEGATIVE_ZERO. FALSE branch: skip."
+      },
+      "oracle": "Plans are pending and source-derived. IEEE effects are tested only under explicit capability probes; the TRUE branch asserts the concrete flag, mode, type, constant, or operation effect, and the FALSE branch is a skip rather than a pass. Named FLAG-ROW-PREAMBLE(flag,x): under IEEE_SUPPORT_FLAG(flag,x), if IEEE_SUPPORT_HALTING(flag) then CALL IEEE_SET_HALTING_MODE(flag,.FALSE.); else CALL IEEE_GET_HALTING_MODE(flag,h) and proceed only if h is .FALSE. (otherwise skip); CALL IEEE_SET_FLAG(IEEE_ALL,.FALSE.). Positive plans establish a non-default state first by setting distinguished sentinel values and apply FLAG-ROW-PREAMBLE before any exception operation or flag-state assertion unless the row explicitly says the preamble is not applied because it would destroy the initial-state oracle.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Fixture authors must re-derive every pending plan from the pinned source. IEEE module availability, feature-set inclusion, exact supported real kinds, initial modes, halting mechanics, NaN payloads, the identity of a NaN result not fixed by the text, signaling-NaN behavior outside a stated rule, and operations that may also signal are treated as processor latitude.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 13, and 16 for source form, type declarations, expressions, execution constructs, scoping units, I/O and format contexts, intrinsic procedures, and intrinsic module USE mechanics. Unregistered dependencies explicitly retained: later Clause 17 inquiry and mode procedures, IEEE value constructors/classification procedures, exact operation descriptions, and feature profiles such as tests/profiles/ieee_binary.f90."
+    },
+    {
+      "id": "S17.2-004",
+      "title": "IEEE_ARITHMETIC defines rounding constants and comparison operators for IEEE types",
+      "source": "S17.2 p3.round-constants, p3.comparison-operators; J3/24-007, 18 December 2023, physical PDF480.",
+      "source_units": [
+        "p3.round-constants",
+        "p3.comparison-operators"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "IEEE_ROUND_TYPE identifies the listed rounding modes, and simple elemental == and /= compare values of IEEE_CLASS_TYPE and IEEE_ROUND_TYPE for sameness or difference.",
+      "facets": [
+        "ieee-round-type-listed-rounding-constants",
+        "ieee-other-rounding-constant-defined",
+        "ieee-types-equality-operator-same-values",
+        "ieee-types-inequality-operator-different-values"
+      ],
+      "pending": {
+        "ieee-round-type-listed-rounding-constants": "Guard probe: compile USE, INTRINSIC :: IEEE_ARITHMETIC importing IEEE_ROUND_TYPE and IEEE_NEAREST, IEEE_TO_ZERO, IEEE_UP, IEEE_DOWN, IEEE_AWAY. TRUE branch: assign constants to an IEEE_ROUND_TYPE array and assert selected unequal pairs with /=. FALSE branch: skip.",
+        "ieee-other-rounding-constant-defined": "Guard probe: compile importing IEEE_OTHER. TRUE branch: assign IEEE_OTHER to IEEE_ROUND_TYPE and assert IEEE_OTHER == IEEE_OTHER; no effect of the mode is asserted. FALSE branch: skip.",
+        "ieee-types-equality-operator-same-values": "Guard probe: build arrays [IEEE_NEAREST, IEEE_UP] and [IEEE_NEAREST, IEEE_UP]. TRUE branch: elemental == returns [.true.,.true.] with logical rank one. FALSE branch: skip.",
+        "ieee-types-inequality-operator-different-values": "Guard probe: compare [IEEE_NEAREST, IEEE_UP] to [IEEE_DOWN, IEEE_TO_ZERO]. TRUE branch: elemental /= returns [.true.,.true.]. FALSE branch: skip."
+      },
+      "oracle": "Plans are pending and source-derived. IEEE effects are tested only under explicit capability probes; the TRUE branch asserts the concrete flag, mode, type, constant, or operation effect, and the FALSE branch is a skip rather than a pass. Named FLAG-ROW-PREAMBLE(flag,x): under IEEE_SUPPORT_FLAG(flag,x), if IEEE_SUPPORT_HALTING(flag) then CALL IEEE_SET_HALTING_MODE(flag,.FALSE.); else CALL IEEE_GET_HALTING_MODE(flag,h) and proceed only if h is .FALSE. (otherwise skip); CALL IEEE_SET_FLAG(IEEE_ALL,.FALSE.). Positive plans establish a non-default state first by setting distinguished sentinel values and apply FLAG-ROW-PREAMBLE before any exception operation or flag-state assertion unless the row explicitly says the preamble is not applied because it would destroy the initial-state oracle.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Fixture authors must re-derive every pending plan from the pinned source. IEEE module availability, feature-set inclusion, exact supported real kinds, initial modes, halting mechanics, NaN payloads, the identity of a NaN result not fixed by the text, signaling-NaN behavior outside a stated rule, and operations that may also signal are treated as processor latitude.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 13, and 16 for source form, type declarations, expressions, execution constructs, scoping units, I/O and format contexts, intrinsic procedures, and intrinsic module USE mechanics. Unregistered dependencies explicitly retained: later Clause 17 inquiry and mode procedures, IEEE value constructors/classification procedures, exact operation descriptions, and feature profiles such as tests/profiles/ieee_binary.f90."
+    },
+    {
+      "id": "S17.2-005",
+      "title": "IEEE_FEATURES defines feature type and listed feature constants",
+      "source": "S17.2 p4; J3/24-007, 18 December 2023, physical PDF480.",
+      "source_units": [
+        "p4"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "IEEE_FEATURES_TYPE expresses the need for particular 60559 features, and its only possible values are the listed named constants of IEEE_FEATURES.",
+      "facets": [
+        "ieee-features-type-listed-feature-constants",
+        "ieee-features-type-values-assignable"
+      ],
+      "pending": {
+        "ieee-features-type-listed-feature-constants": "Guard probe: compile USE, INTRINSIC :: IEEE_FEATURES importing IEEE_FEATURES_TYPE and every listed feature constant present on the processor. TRUE branch: assign imported constants to IEEE_FEATURES_TYPE variables; no absent constant is required. FALSE branch: skip absent module.",
+        "ieee-features-type-values-assignable": "Guard probe: compile with at least one imported feature constant such as IEEE_DATATYPE. TRUE branch: assign it to an IEEE_FEATURES_TYPE scalar and pass it through an internal procedure dummy of that type. FALSE branch: skip absent constant."
+      },
+      "oracle": "Plans are pending and source-derived. IEEE effects are tested only under explicit capability probes; the TRUE branch asserts the concrete flag, mode, type, constant, or operation effect, and the FALSE branch is a skip rather than a pass. Named FLAG-ROW-PREAMBLE(flag,x): under IEEE_SUPPORT_FLAG(flag,x), if IEEE_SUPPORT_HALTING(flag) then CALL IEEE_SET_HALTING_MODE(flag,.FALSE.); else CALL IEEE_GET_HALTING_MODE(flag,h) and proceed only if h is .FALSE. (otherwise skip); CALL IEEE_SET_FLAG(IEEE_ALL,.FALSE.). Positive plans establish a non-default state first by setting distinguished sentinel values and apply FLAG-ROW-PREAMBLE before any exception operation or flag-state assertion unless the row explicitly says the preamble is not applied because it would destroy the initial-state oracle.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Fixture authors must re-derive every pending plan from the pinned source. IEEE module availability, feature-set inclusion, exact supported real kinds, initial modes, halting mechanics, NaN payloads, the identity of a NaN result not fixed by the text, signaling-NaN behavior outside a stated rule, and operations that may also signal are treated as processor latitude.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 13, and 16 for source form, type declarations, expressions, execution constructs, scoping units, I/O and format contexts, intrinsic procedures, and intrinsic module USE mechanics. Unregistered dependencies explicitly retained: later Clause 17 inquiry and mode procedures, IEEE value constructors/classification procedures, exact operation descriptions, and feature profiles such as tests/profiles/ieee_binary.f90."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.2-001"
+      ],
+      "rationale": "Derived type component privacy and component-attribute requirements."
+    },
+    {
+      "unit": "p2",
+      "disposition": "definition",
+      "requirements": [
+        "S17.2-002"
+      ],
+      "rationale": "Defines IEEE_EXCEPTIONS types and constants."
+    },
+    {
+      "unit": "p3",
+      "disposition": "structural",
+      "rationale": "IEEE_ARITHMETIC type/class constants, round constants, and operators are split."
+    },
+    {
+      "unit": "p3.class-constants",
+      "disposition": "definition",
+      "requirements": [
+        "S17.2-003"
+      ],
+      "rationale": "Defines class type constants and aliases."
+    },
+    {
+      "unit": "p3.round-constants",
+      "disposition": "definition",
+      "requirements": [
+        "S17.2-004"
+      ],
+      "rationale": "Defines round type constants."
+    },
+    {
+      "unit": "p3.comparison-operators",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.2-004"
+      ],
+      "rationale": "Defines == and /= operator semantics."
+    },
+    {
+      "unit": "p4",
+      "disposition": "definition",
+      "requirements": [
+        "S17.2-005"
+      ],
+      "rationale": "Defines IEEE_FEATURES_TYPE and feature constants."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_17_2.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "bb8e970ccd0e5e39df25f26c3a8f7b086eea5b726ef1798cd36c8f34ce141ab4",
+  "review_rationale": "Source registration for the Clause 17 heading and 17.1-17.5: the IEEE overview, derived types and constants, exceptions, rounding modes and underflow mode (batch213). Every unit hash-verified by an independent reviewer across four rounds; every flag row uses a named halting-off preamble and every mode round trip observes the changed value before restoring. Source accounting only."
+}

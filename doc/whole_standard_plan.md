@@ -5844,6 +5844,11 @@ See `doc/source_audits/batch_216.json`.
 Twenty-five units over thirty catalogues, after two rounds. The characteristics paragraphs are pure vocabulary — 'the characteristics of a procedure are ...' — so they now point to the rules that use them rather than carrying tests of their own. The explicit-interface list is an obligation on the program; what is observable is that each listed feature works when the interface is present, including BIND(C) without any C code.
 See `doc/source_audits/batch_220.json`.
 
+## Batch 213 — IEEE overview through underflow mode (17-17.5)
+
+Thirty-four units after four rounds, the general IEEE semantics that every later Clause 17 procedure relies on. Most of the rounds were about one discipline applied uniformly: the halting mode must be known to be off before any flag is raised, and a restore test must see the value change first. Spelling that out once, as a named preamble every row cites, is what finally closed it.
+See `doc/source_audits/batch_213.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must

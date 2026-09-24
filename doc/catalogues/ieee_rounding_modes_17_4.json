@@ -1,0 +1,225 @@
+{
+  "schema_version": 1,
+  "section": "17.4",
+  "subunits": {
+    "p2": [
+      "p2.rounding-attribute-mapping",
+      "p2.ieee-other-latitude"
+    ],
+    "p3": [
+      "p3.get-rounding",
+      "p3.initial-latitude"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S17.4-001",
+      "title": "Binary and decimal rounding modes apply by operation radix",
+      "source": "S17.4 p1; J3/24-007, 18 December 2023, physical PDF483.",
+      "source_units": [
+        "p1"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The document specifies separate binary and decimal rounding modes affecting radix-two and radix-ten floating-point arithmetic; unqualified rounding-mode references for operations refer to the operation radix and other references to both modes.",
+      "facets": [
+        "binary-rounding-mode-affects-radix-two-arithmetic",
+        "decimal-rounding-mode-affects-radix-ten-arithmetic",
+        "unqualified-rounding-mode-reference-selects-operation-radix-or-both"
+      ],
+      "pending": {
+        "binary-rounding-mode-affects-radix-two-arithmetic": "Guard probe: profiled real kind X has RADIX(X)==2 and supports IEEE_UP plus IEEE_DOWN. TRUE branch: set each mode around volatile 1.0_X + EPSILON(1.0_X)/2.0_X and assert directed binary results differ as specified by S17.4-002. FALSE branch: skip.",
+        "decimal-rounding-mode-affects-radix-ten-arithmetic": "Guard probe: profiled real kind X has RADIX(X)==10 and supports IEEE_UP plus IEEE_DOWN. TRUE branch: repeat the directed half-ulp addition for decimal X. FALSE branch: skip absent decimal support.",
+        "unqualified-rounding-mode-reference-selects-operation-radix-or-both": "Guard probe: one binary and one decimal supported kind are present. TRUE branch: setting the unqualified mode form is checked with GET for both radix modes, then each kind uses its own mode in the directed operation. FALSE branch: skip missing radix branch."
+      },
+      "oracle": "Plans are pending and source-derived. IEEE effects are tested only under explicit capability probes; the TRUE branch asserts the concrete flag, mode, type, constant, or operation effect, and the FALSE branch is a skip rather than a pass. Named FLAG-ROW-PREAMBLE(flag,x): under IEEE_SUPPORT_FLAG(flag,x), if IEEE_SUPPORT_HALTING(flag) then CALL IEEE_SET_HALTING_MODE(flag,.FALSE.); else CALL IEEE_GET_HALTING_MODE(flag,h) and proceed only if h is .FALSE. (otherwise skip); CALL IEEE_SET_FLAG(IEEE_ALL,.FALSE.). Positive plans establish a non-default state first by setting distinguished sentinel values and apply FLAG-ROW-PREAMBLE before any exception operation or flag-state assertion unless the row explicitly says the preamble is not applied because it would destroy the initial-state oracle.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Fixture authors must re-derive every pending plan from the pinned source. IEEE module availability, feature-set inclusion, exact supported real kinds, initial modes, halting mechanics, NaN payloads, the identity of a NaN result not fixed by the text, signaling-NaN behavior outside a stated rule, and operations that may also signal are treated as processor latitude.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 13, and 16 for source form, type declarations, expressions, execution constructs, scoping units, I/O and format contexts, intrinsic procedures, and intrinsic module USE mechanics. Unregistered dependencies explicitly retained: later Clause 17 inquiry and mode procedures, IEEE value constructors/classification procedures, exact operation descriptions, and feature profiles such as tests/profiles/ieee_binary.f90."
+    },
+    {
+      "id": "S17.4-002",
+      "title": "IEEE rounding constants correspond to 60559 attributes and IEEE_OTHER is processor dependent",
+      "source": "S17.4 p2.rounding-attribute-mapping, p2.ieee-other-latitude; J3/24-007, 18 December 2023, physical PDF483.",
+      "source_units": [
+        "p2.rounding-attribute-mapping",
+        "p2.ieee-other-latitude"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "IEEE_NEAREST, IEEE_TO_ZERO, IEEE_UP, IEEE_DOWN, and IEEE_AWAY correspond respectively to roundTiesToEven, roundTowardZero, roundTowardPositive, roundTowardNegative, and roundTiesToAway; IEEE_OTHER has no 60559 rounding-direction attribute and has processor-dependent effect if supported.",
+      "facets": [
+        "ieee-nearest-ties-to-even-half-ulp-result",
+        "ieee-to-zero-directed-half-ulp-result",
+        "ieee-up-directed-half-ulp-result",
+        "ieee-down-directed-half-ulp-result",
+        "ieee-away-ties-to-away-half-ulp-result",
+        "ieee-other-effect-processor-dependent"
+      ],
+      "pending": {
+        "ieee-nearest-ties-to-even-half-ulp-result": "Guard probe: radix-two kind X supports IEEE_NEAREST. TRUE branch: set mode, compute volatile 1.0_X + EPSILON(1.0_X)/2.0_X, assert result equals 1.0_X because the even significand endpoint is chosen. FALSE branch: skip.",
+        "ieee-to-zero-directed-half-ulp-result": "Guard probe: radix-two kind X supports IEEE_TO_ZERO. TRUE branch: positive half-ulp addition rounds to 1.0_X and negative -1.0_X - EPSILON/2.0_X rounds to -1.0_X. FALSE branch: skip.",
+        "ieee-up-directed-half-ulp-result": "Guard probe: radix-two kind X supports IEEE_UP. TRUE branch: positive half-ulp addition yields 1.0_X + EPSILON(1.0_X), while negative half-ulp addition yields -1.0_X. FALSE branch: skip.",
+        "ieee-down-directed-half-ulp-result": "Guard probe: radix-two kind X supports IEEE_DOWN. TRUE branch: positive half-ulp addition yields 1.0_X, while negative half-ulp addition yields -1.0_X - EPSILON(1.0_X). FALSE branch: skip.",
+        "ieee-away-ties-to-away-half-ulp-result": "Guard probe: kind X supports IEEE_AWAY. TRUE branch: half-ulp ties on +1.0_X and -1.0_X round away from zero to adjacent representable values. FALSE branch: skip unsupported mode.",
+        "ieee-other-effect-processor-dependent": "No portable oracle fixes the arithmetic effect of IEEE_OTHER; fixtures may only assert set/get round-trip on processors reporting IEEE_SUPPORT_ROUNDING(IEEE_OTHER,X)."
+      },
+      "oracle": "Plans are pending and source-derived. IEEE effects are tested only under explicit capability probes; the TRUE branch asserts the concrete flag, mode, type, constant, or operation effect, and the FALSE branch is a skip rather than a pass. Named FLAG-ROW-PREAMBLE(flag,x): under IEEE_SUPPORT_FLAG(flag,x), if IEEE_SUPPORT_HALTING(flag) then CALL IEEE_SET_HALTING_MODE(flag,.FALSE.); else CALL IEEE_GET_HALTING_MODE(flag,h) and proceed only if h is .FALSE. (otherwise skip); CALL IEEE_SET_FLAG(IEEE_ALL,.FALSE.). Positive plans establish a non-default state first by setting distinguished sentinel values and apply FLAG-ROW-PREAMBLE before any exception operation or flag-state assertion unless the row explicitly says the preamble is not applied because it would destroy the initial-state oracle.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Fixture authors must re-derive every pending plan from the pinned source. IEEE module availability, feature-set inclusion, exact supported real kinds, initial modes, halting mechanics, NaN payloads, the identity of a NaN result not fixed by the text, signaling-NaN behavior outside a stated rule, and operations that may also signal are treated as processor latitude.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 13, and 16 for source form, type declarations, expressions, execution constructs, scoping units, I/O and format contexts, intrinsic procedures, and intrinsic module USE mechanics. Unregistered dependencies explicitly retained: later Clause 17 inquiry and mode procedures, IEEE value constructors/classification procedures, exact operation descriptions, and feature profiles such as tests/profiles/ieee_binary.f90."
+    },
+    {
+      "id": "S17.4-003",
+      "title": "IEEE_GET_ROUNDING_MODE retrieves rounding modes and initial modes are processor dependent",
+      "source": "S17.4 p3.get-rounding, p3.initial-latitude; J3/24-007, 18 December 2023, physical PDF483.",
+      "source_units": [
+        "p3.get-rounding",
+        "p3.initial-latitude"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "IEEE_GET_ROUNDING_MODE gets the rounding modes; the initial rounding modes are processor dependent.",
+      "facets": [
+        "ieee-get-rounding-mode-retrieves-current-mode",
+        "initial-rounding-modes-processor-dependent"
+      ],
+      "pending": {
+        "ieee-get-rounding-mode-retrieves-current-mode": "Guard probe: kind X supports IEEE_UP and IEEE_DOWN. TRUE branch: set IEEE_UP, initialize result to IEEE_DOWN, call IEEE_GET_ROUNDING_MODE, and assert result == IEEE_UP; repeat reversed. FALSE branch: skip.",
+        "initial-rounding-modes-processor-dependent": "No portable oracle requires an initial rounding mode; fixtures save the initial mode for restoration and do not compare it to a named constant."
+      },
+      "oracle": "Plans are pending and source-derived. IEEE effects are tested only under explicit capability probes; the TRUE branch asserts the concrete flag, mode, type, constant, or operation effect, and the FALSE branch is a skip rather than a pass. Named FLAG-ROW-PREAMBLE(flag,x): under IEEE_SUPPORT_FLAG(flag,x), if IEEE_SUPPORT_HALTING(flag) then CALL IEEE_SET_HALTING_MODE(flag,.FALSE.); else CALL IEEE_GET_HALTING_MODE(flag,h) and proceed only if h is .FALSE. (otherwise skip); CALL IEEE_SET_FLAG(IEEE_ALL,.FALSE.). Positive plans establish a non-default state first by setting distinguished sentinel values and apply FLAG-ROW-PREAMBLE before any exception operation or flag-state assertion unless the row explicitly says the preamble is not applied because it would destroy the initial-state oracle.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Fixture authors must re-derive every pending plan from the pinned source. IEEE module availability, feature-set inclusion, exact supported real kinds, initial modes, halting mechanics, NaN payloads, the identity of a NaN result not fixed by the text, signaling-NaN behavior outside a stated rule, and operations that may also signal are treated as processor latitude.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 13, and 16 for source form, type declarations, expressions, execution constructs, scoping units, I/O and format contexts, intrinsic procedures, and intrinsic module USE mechanics. Unregistered dependencies explicitly retained: later Clause 17 inquiry and mode procedures, IEEE value constructors/classification procedures, exact operation descriptions, and feature profiles such as tests/profiles/ieee_binary.f90."
+    },
+    {
+      "id": "S17.4-004",
+      "title": "IEEE_SET_ROUNDING_MODE alters supported rounding modes",
+      "source": "S17.4 p4; J3/24-007, 18 December 2023, physical PDF483.",
+      "source_units": [
+        "p4"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "On processors that support alteration of rounding modes during execution, IEEE_SET_ROUNDING_MODE can alter them.",
+      "facets": [
+        "ieee-set-rounding-mode-alters-supported-mode"
+      ],
+      "pending": {
+        "ieee-set-rounding-mode-alters-supported-mode": "Guard probe: IEEE_SUPPORT_ROUNDING reports true for two distinct modes on kind X. TRUE branch: set first mode and GET observes it, set second mode and GET observes it; restore saved mode. FALSE branch: skip alteration test."
+      },
+      "oracle": "Plans are pending and source-derived. IEEE effects are tested only under explicit capability probes; the TRUE branch asserts the concrete flag, mode, type, constant, or operation effect, and the FALSE branch is a skip rather than a pass. Named FLAG-ROW-PREAMBLE(flag,x): under IEEE_SUPPORT_FLAG(flag,x), if IEEE_SUPPORT_HALTING(flag) then CALL IEEE_SET_HALTING_MODE(flag,.FALSE.); else CALL IEEE_GET_HALTING_MODE(flag,h) and proceed only if h is .FALSE. (otherwise skip); CALL IEEE_SET_FLAG(IEEE_ALL,.FALSE.). Positive plans establish a non-default state first by setting distinguished sentinel values and apply FLAG-ROW-PREAMBLE before any exception operation or flag-state assertion unless the row explicitly says the preamble is not applied because it would destroy the initial-state oracle.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Fixture authors must re-derive every pending plan from the pinned source. IEEE module availability, feature-set inclusion, exact supported real kinds, initial modes, halting mechanics, NaN payloads, the identity of a NaN result not fixed by the text, signaling-NaN behavior outside a stated rule, and operations that may also signal are treated as processor latitude.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 13, and 16 for source form, type declarations, expressions, execution constructs, scoping units, I/O and format contexts, intrinsic procedures, and intrinsic module USE mechanics. Unregistered dependencies explicitly retained: later Clause 17 inquiry and mode procedures, IEEE value constructors/classification procedures, exact operation descriptions, and feature profiles such as tests/profiles/ieee_binary.f90."
+    },
+    {
+      "id": "S17.4-005",
+      "title": "Procedures preserve rounding modes on entry and restore them on return",
+      "source": "S17.4 p5; J3/24-007, 18 December 2023, physical PDF483.",
+      "source_units": [
+        "p5"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "In a procedure other than IEEE_SET_ROUNDING_MODE or IEEE_SET_STATUS, the processor does not change rounding modes on entry and ensures they are the same on return as on entry.",
+      "facets": [
+        "rounding-mode-unchanged-on-procedure-entry",
+        "rounding-mode-restored-on-procedure-return"
+      ],
+      "pending": {
+        "rounding-mode-unchanged-on-procedure-entry": "Guard probe: kind X supports IEEE_UP and IEEE_DOWN; caller sets IEEE_UP then calls helper. TRUE branch: helper first GET returns IEEE_UP before any setter call. FALSE branch: skip.",
+        "rounding-mode-restored-on-procedure-return": "Guard probe: same helper then sets IEEE_DOWN internally, calls IEEE_GET_ROUNDING_MODE before return, and confirms IEEE_DOWN was the changed in-helper value. TRUE branch: caller GET returns original IEEE_UP after return, then caller restores saved initial mode. FALSE branch: skip."
+      },
+      "oracle": "Plans are pending and source-derived. IEEE effects are tested only under explicit capability probes; the TRUE branch asserts the concrete flag, mode, type, constant, or operation effect, and the FALSE branch is a skip rather than a pass. Named FLAG-ROW-PREAMBLE(flag,x): under IEEE_SUPPORT_FLAG(flag,x), if IEEE_SUPPORT_HALTING(flag) then CALL IEEE_SET_HALTING_MODE(flag,.FALSE.); else CALL IEEE_GET_HALTING_MODE(flag,h) and proceed only if h is .FALSE. (otherwise skip); CALL IEEE_SET_FLAG(IEEE_ALL,.FALSE.). Positive plans establish a non-default state first by setting distinguished sentinel values and apply FLAG-ROW-PREAMBLE before any exception operation or flag-state assertion unless the row explicitly says the preamble is not applied because it would destroy the initial-state oracle.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Fixture authors must re-derive every pending plan from the pinned source. IEEE module availability, feature-set inclusion, exact supported real kinds, initial modes, halting mechanics, NaN payloads, the identity of a NaN result not fixed by the text, signaling-NaN behavior outside a stated rule, and operations that may also signal are treated as processor latitude.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 13, and 16 for source form, type declarations, expressions, execution constructs, scoping units, I/O and format contexts, intrinsic procedures, and intrinsic module USE mechanics. Unregistered dependencies explicitly retained: later Clause 17 inquiry and mode procedures, IEEE value constructors/classification procedures, exact operation descriptions, and feature profiles such as tests/profiles/ieee_binary.f90."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "definition",
+      "requirements": [
+        "S17.4-001"
+      ],
+      "rationale": "Defines binary/decimal rounding modes and unqualified references."
+    },
+    {
+      "unit": "p2",
+      "disposition": "structural",
+      "rationale": "60559 mapping and IEEE_OTHER latitude are split."
+    },
+    {
+      "unit": "p2.rounding-attribute-mapping",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.4-002"
+      ],
+      "rationale": "Maps named constants to 60559 rounding attributes."
+    },
+    {
+      "unit": "p2.ieee-other-latitude",
+      "disposition": "permission",
+      "requirements": [
+        "S17.4-002"
+      ],
+      "rationale": "IEEE_OTHER effect is processor dependent."
+    },
+    {
+      "unit": "p3",
+      "disposition": "structural",
+      "rationale": "GET operation and initial-mode latitude are split."
+    },
+    {
+      "unit": "p3.get-rounding",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.4-003"
+      ],
+      "rationale": "IEEE_GET_ROUNDING_MODE retrieves modes."
+    },
+    {
+      "unit": "p3.initial-latitude",
+      "disposition": "permission",
+      "requirements": [
+        "S17.4-003"
+      ],
+      "rationale": "Initial rounding modes are processor dependent."
+    },
+    {
+      "unit": "p4",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.4-004"
+      ],
+      "rationale": "IEEE_SET_ROUNDING_MODE can alter modes under support."
+    },
+    {
+      "unit": "p5",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.4-005"
+      ],
+      "rationale": "Procedure entry/return rounding-mode preservation."
+    },
+    {
+      "unit": "note1",
+      "disposition": "informative",
+      "rationale": "NOTE describes 60559 decimal ties-to-away requirement."
+    },
+    {
+      "unit": "note2",
+      "disposition": "informative",
+      "rationale": "NOTE suggests a block idiom and is not normative."
+    },
+    {
+      "unit": "note3",
+      "disposition": "informative",
+      "rationale": "NOTE restates literal constant behavior from 7.1.4."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_17_4.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "336753cdca5aed50b63fdd2606fb910be03cbff95fdb43fd58cdcc250c286732",
+  "review_rationale": "Source registration for the Clause 17 heading and 17.1-17.5: the IEEE overview, derived types and constants, exceptions, rounding modes and underflow mode (batch213). Every unit hash-verified by an independent reviewer across four rounds; every flag row uses a named halting-off preamble and every mode round trip observes the changed value before restoring. Source accounting only."
+}

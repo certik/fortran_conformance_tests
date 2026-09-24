@@ -1,0 +1,607 @@
+{
+  "schema_version": 1,
+  "section": "17.3",
+  "subunits": {
+    "p1": [
+      "p1.overflow-supported",
+      "p1.overflow-latitude",
+      "p1.divide-supported",
+      "p1.divide-latitude",
+      "p1.invalid",
+      "p1.underflow",
+      "p1.inexact"
+    ],
+    "p2": [
+      "p2.flag-state",
+      "p2.initial-quiet",
+      "p2.exception-sets-flag",
+      "p2.setters",
+      "p2.persistence"
+    ],
+    "p5": [
+      "p5.preserve-entry-flags",
+      "p5.final-result-latitude",
+      "p5.intermediate-calculation-rule"
+    ],
+    "p6": [
+      "p6.relational-rule",
+      "p6.conversion-latitude"
+    ],
+    "p9": [
+      "p9.no-extra-operations",
+      "p9.permitted-short-circuit-latitude"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S17.3-001",
+      "title": "IEEE_OVERFLOW occurrence is fixed for supported real operations and processor dependent otherwise",
+      "source": "S17.3 p1.overflow-supported, p1.overflow-latitude; J3/24-007, 18 December 2023, physical PDF480-482.",
+      "source_units": [
+        "p1.overflow-supported",
+        "p1.overflow-latitude"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "IEEE_OVERFLOW occurs for real addition, subtraction, multiplication, division, REAL conversion, and complex operation or CMPLX conversion part calculations as specified by 60559 for operands whose IEEE_SUPPORT_DATATYPE is true; unsupported operands and real exponentiation are processor dependent.",
+      "facets": [
+        "overflow-signals-for-supported-real-arithmetic",
+        "overflow-signals-for-supported-real-conversion",
+        "overflow-signals-for-complex-part-calculation",
+        "overflow-unsupported-or-exponentiation-latitude"
+      ],
+      "pending": {
+        "overflow-signals-for-supported-real-arithmetic": "Guard probe: real kind X has IEEE_SUPPORT_DATATYPE(X) and IEEE_SUPPORT_FLAG(IEEE_OVERFLOW,X) true. Apply FLAG-ROW-PREAMBLE(IEEE_OVERFLOW,X). TRUE branch: assert IEEE_OVERFLOW signaling for HUGE(X)+HUGE(X), -HUGE(X)-HUGE(X), HUGE(X)*2.0_X, and HUGE(X)/TINY(X) through volatile variables, applying the preamble before each named operation. FALSE branch: skip that kind.",
+        "overflow-signals-for-supported-real-conversion": "Guard probe: two profiled real kinds convert a finite source value larger than HUGE(target), the target has IEEE_SUPPORT_DATATYPE true, and IEEE_SUPPORT_FLAG(IEEE_OVERFLOW,target) true. Apply FLAG-ROW-PREAMBLE(IEEE_OVERFLOW,X). TRUE branch: execute REAL(source,KIND=target_kind) and assert IEEE_OVERFLOW signaling. FALSE branch: skip profile gap.",
+        "overflow-signals-for-complex-part-calculation": "Guard probe: default real kind X and double kind Y both have IEEE_SUPPORT_DATATYPE true, IEEE_SUPPORT_FLAG(IEEE_OVERFLOW,X) is true, and HUGE(Y)>HUGE(X). Apply FLAG-ROW-PREAMBLE(IEEE_OVERFLOW,X). TRUE branch operation case: multiply CMPLX(HUGE(X),0.0_X)*CMPLX(2.0_X,0.0_X) and assert IEEE_OVERFLOW signaling from the real part. TRUE branch CMPLX-conversion case: reapply the preamble, evaluate CMPLX(HUGE(0.0D0),0.0D0,KIND(0.0)), and assert IEEE_OVERFLOW signaling from conversion of the real part. FALSE branch: skip the missing support or range branch.",
+        "overflow-unsupported-or-exponentiation-latitude": "No portable oracle fixes overflow signaling for unsupported operands or real exponentiation; FLAG-ROW-PREAMBLE is referenced but not applied because this latitude row records either flag state without failure."
+      },
+      "oracle": "Plans are pending and source-derived. IEEE effects are tested only under explicit capability probes; the TRUE branch asserts the concrete flag, mode, type, constant, or operation effect, and the FALSE branch is a skip rather than a pass. Named FLAG-ROW-PREAMBLE(flag,x): under IEEE_SUPPORT_FLAG(flag,x), if IEEE_SUPPORT_HALTING(flag) then CALL IEEE_SET_HALTING_MODE(flag,.FALSE.); else CALL IEEE_GET_HALTING_MODE(flag,h) and proceed only if h is .FALSE. (otherwise skip); CALL IEEE_SET_FLAG(IEEE_ALL,.FALSE.). Positive plans establish a non-default state first by setting distinguished sentinel values and apply FLAG-ROW-PREAMBLE before any exception operation or flag-state assertion unless the row explicitly says the preamble is not applied because it would destroy the initial-state oracle.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Fixture authors must re-derive every pending plan from the pinned source. IEEE module availability, feature-set inclusion, exact supported real kinds, initial modes, halting mechanics, NaN payloads, the identity of a NaN result not fixed by the text, signaling-NaN behavior outside a stated rule, and operations that may also signal are treated as processor latitude.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 13, and 16 for source form, type declarations, expressions, execution constructs, scoping units, I/O and format contexts, intrinsic procedures, and intrinsic module USE mechanics. Unregistered dependencies explicitly retained: later Clause 17 inquiry and mode procedures, IEEE value constructors/classification procedures, exact operation descriptions, and feature profiles such as tests/profiles/ieee_binary.f90."
+    },
+    {
+      "id": "S17.3-002",
+      "title": "IEEE_DIVIDE_BY_ZERO occurrence is fixed for supported real division and complex part calculations",
+      "source": "S17.3 p1.divide-supported, p1.divide-latitude; J3/24-007, 18 December 2023, physical PDF480-482.",
+      "source_units": [
+        "p1.divide-supported",
+        "p1.divide-latitude"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "IEEE_DIVIDE_BY_ZERO occurs for supported real division as specified by 60559 and for complex division caused by a part calculation; unsupported real division and negative-exponent exponentiation are processor dependent.",
+      "facets": [
+        "divide-by-zero-signals-for-supported-real-division",
+        "divide-by-zero-signals-for-complex-part-calculation",
+        "divide-by-zero-unsupported-or-negative-exponent-latitude"
+      ],
+      "pending": {
+        "divide-by-zero-signals-for-supported-real-division": "Guard probe: real kind X has IEEE_SUPPORT_DATATYPE(X) and IEEE_SUPPORT_FLAG(IEEE_DIVIDE_BY_ZERO,X) true. Apply FLAG-ROW-PREAMBLE(IEEE_DIVIDE_BY_ZERO,X). TRUE branch: compute volatile 1.0_X/0.0_X and assert IEEE_DIVIDE_BY_ZERO signaling. FALSE branch: skip that kind.",
+        "divide-by-zero-signals-for-complex-part-calculation": "Guard probe: real kind X has IEEE_SUPPORT_DATATYPE(X) and IEEE_SUPPORT_FLAG(IEEE_DIVIDE_BY_ZERO,X) true. Apply FLAG-ROW-PREAMBLE(IEEE_DIVIDE_BY_ZERO,X). TRUE branch: divide CMPLX(1.0_X,0.0_X) by CMPLX(0.0_X,0.0_X) and assert IEEE_DIVIDE_BY_ZERO signaling from a part calculation. FALSE branch: skip.",
+        "divide-by-zero-unsupported-or-negative-exponent-latitude": "No portable oracle fixes signaling for unsupported real division or real exponentiation with a negative exponent; FLAG-ROW-PREAMBLE is referenced but not applied because this latitude row must not fail either flag state."
+      },
+      "oracle": "Plans are pending and source-derived. IEEE effects are tested only under explicit capability probes; the TRUE branch asserts the concrete flag, mode, type, constant, or operation effect, and the FALSE branch is a skip rather than a pass. Named FLAG-ROW-PREAMBLE(flag,x): under IEEE_SUPPORT_FLAG(flag,x), if IEEE_SUPPORT_HALTING(flag) then CALL IEEE_SET_HALTING_MODE(flag,.FALSE.); else CALL IEEE_GET_HALTING_MODE(flag,h) and proceed only if h is .FALSE. (otherwise skip); CALL IEEE_SET_FLAG(IEEE_ALL,.FALSE.). Positive plans establish a non-default state first by setting distinguished sentinel values and apply FLAG-ROW-PREAMBLE before any exception operation or flag-state assertion unless the row explicitly says the preamble is not applied because it would destroy the initial-state oracle.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Fixture authors must re-derive every pending plan from the pinned source. IEEE module availability, feature-set inclusion, exact supported real kinds, initial modes, halting mechanics, NaN payloads, the identity of a NaN result not fixed by the text, signaling-NaN behavior outside a stated rule, and operations that may also signal are treated as processor latitude.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 13, and 16 for source form, type declarations, expressions, execution constructs, scoping units, I/O and format contexts, intrinsic procedures, and intrinsic module USE mechanics. Unregistered dependencies explicitly retained: later Clause 17 inquiry and mode procedures, IEEE value constructors/classification procedures, exact operation descriptions, and feature profiles such as tests/profiles/ieee_binary.f90."
+    },
+    {
+      "id": "S17.3-003",
+      "title": "IEEE_INVALID occurs for invalid real or complex operations, assignments, and specified relations",
+      "source": "S17.3 p1.invalid; J3/24-007, 18 December 2023, physical PDF480-482.",
+      "source_units": [
+        "p1.invalid"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "IEEE_INVALID occurs for invalid real or complex operations or assignments, including real SQRT of a nonzero negative value and too-large integer conversion, and for numeric relational operations as specified later.",
+      "facets": [
+        "invalid-signals-for-negative-real-sqrt",
+        "invalid-signals-for-too-large-integer-conversion",
+        "invalid-relational-operations-deferred-to-table"
+      ],
+      "pending": {
+        "invalid-signals-for-negative-real-sqrt": "Guard probe: real kind X has IEEE_SUPPORT_DATATYPE(X) true for the IEEE_IS_NAN observer, IEEE_SUPPORT_NAN(X) true, and IEEE_SUPPORT_FLAG(IEEE_INVALID,X) true. Apply FLAG-ROW-PREAMBLE(IEEE_INVALID,X). TRUE branch: compute SQRT(-1.0_X) through a volatile variable, assert IEEE_INVALID signaling, then invoke IEEE_IS_NAN on the result and assert true. FALSE branch: skip.",
+        "invalid-signals-for-too-large-integer-conversion": "Guard probe: profiled real kind X and integer kind I can form HUGE(0_I)+1 as a real value and IEEE_SUPPORT_FLAG(IEEE_INVALID,X) is true. Apply FLAG-ROW-PREAMBLE(IEEE_INVALID,X). TRUE branch: convert to integer via INT and assert IEEE_INVALID signaling or diagnostic-free invalid flag before using the integer result. FALSE branch: skip profile gap.",
+        "invalid-relational-operations-deferred-to-table": "Use the S17.3-009 relational-table fixtures; this facet records the cross-reference and performs no separate assertion."
+      },
+      "oracle": "Plans are pending and source-derived. IEEE effects are tested only under explicit capability probes; the TRUE branch asserts the concrete flag, mode, type, constant, or operation effect, and the FALSE branch is a skip rather than a pass. Named FLAG-ROW-PREAMBLE(flag,x): under IEEE_SUPPORT_FLAG(flag,x), if IEEE_SUPPORT_HALTING(flag) then CALL IEEE_SET_HALTING_MODE(flag,.FALSE.); else CALL IEEE_GET_HALTING_MODE(flag,h) and proceed only if h is .FALSE. (otherwise skip); CALL IEEE_SET_FLAG(IEEE_ALL,.FALSE.). Positive plans establish a non-default state first by setting distinguished sentinel values and apply FLAG-ROW-PREAMBLE before any exception operation or flag-state assertion unless the row explicitly says the preamble is not applied because it would destroy the initial-state oracle.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Fixture authors must re-derive every pending plan from the pinned source. IEEE module availability, feature-set inclusion, exact supported real kinds, initial modes, halting mechanics, NaN payloads, the identity of a NaN result not fixed by the text, signaling-NaN behavior outside a stated rule, and operations that may also signal are treated as processor latitude.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 13, and 16 for source form, type declarations, expressions, execution constructs, scoping units, I/O and format contexts, intrinsic procedures, and intrinsic module USE mechanics. Unregistered dependencies explicitly retained: later Clause 17 inquiry and mode procedures, IEEE value constructors/classification procedures, exact operation descriptions, and feature profiles such as tests/profiles/ieee_binary.f90."
+    },
+    {
+      "id": "S17.3-004",
+      "title": "IEEE_UNDERFLOW and IEEE_INEXACT occurrence definitions use processor limits and exactness",
+      "source": "S17.3 p1.underflow, p1.inexact; J3/24-007, 18 December 2023, physical PDF480-482.",
+      "source_units": [
+        "p1.underflow",
+        "p1.inexact"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "IEEE_UNDERFLOW occurs for real or complex operation or assignment results whose relevant part has absolute value below a processor-dependent limit, and IEEE_INEXACT occurs for inexact real or complex operation or assignment results.",
+      "facets": [
+        "underflow-signals-for-inexact-tiny-real-result-under-support",
+        "underflow-signals-for-real-assignment-under-support",
+        "underflow-limit-is-processor-dependent",
+        "inexact-signals-for-inexact-real-result-under-support",
+        "inexact-signals-for-real-assignment-under-support",
+        "inexact-signals-for-inexact-complex-part-under-support"
+      ],
+      "pending": {
+        "underflow-signals-for-inexact-tiny-real-result-under-support": "Guard probe: real kind X has IEEE_SUPPORT_DATATYPE(X) and IEEE_SUPPORT_FLAG(IEEE_UNDERFLOW,X) true. Apply FLAG-ROW-PREAMBLE(IEEE_UNDERFLOW,X). TRUE branch: compute volatile TINY(X)/3.0_X so the result is tiny and inexact, then assert IEEE_UNDERFLOW signaling. FALSE branch: skip.",
+        "underflow-limit-is-processor-dependent": "No portable oracle fixes the numeric underflow threshold beyond using TINY-derived guarded operations; fixtures must not require a processor-specific boundary value.",
+        "inexact-signals-for-inexact-real-result-under-support": "Guard probe: real kind X has IEEE_SUPPORT_DATATYPE(X) and IEEE_SUPPORT_FLAG(IEEE_INEXACT,X) true. Apply FLAG-ROW-PREAMBLE(IEEE_INEXACT,X). TRUE branch: compute volatile 1.0_X/3.0_X, then assert IEEE_INEXACT signaling. FALSE branch: skip.",
+        "inexact-signals-for-inexact-complex-part-under-support": "Guard probe: real kind X has IEEE_SUPPORT_DATATYPE(X) and IEEE_SUPPORT_FLAG(IEEE_INEXACT,X) true. Apply FLAG-ROW-PREAMBLE(IEEE_INEXACT,X). TRUE branch: compute CMPLX(1.0_X,0.0_X)/CMPLX(3.0_X,0.0_X), then assert IEEE_INEXACT signaling. FALSE branch: skip.",
+        "underflow-signals-for-real-assignment-under-support": "Guard probe: default real kind X and double kind Y both have IEEE_SUPPORT_DATATYPE true, IEEE_SUPPORT_FLAG(IEEE_UNDERFLOW,X) is true, TINY(0.0D0)<TINY(0.0), and the assignment conversion of TINY(0.0D0) to default real is inexact because the stored result differs from the double source. Apply FLAG-ROW-PREAMBLE(IEEE_UNDERFLOW,X). TRUE branch: execute real_default = TINY(0.0D0) and assert IEEE_UNDERFLOW signaling for assignment. FALSE branch: skip the range, support, or exact-underflow caveat branch.",
+        "inexact-signals-for-real-assignment-under-support": "Guard probe: default real kind X and double kind Y both have IEEE_SUPPORT_DATATYPE true, RADIX(0.0)==2, RADIX(0.0D0)==2, DIGITS(0.0D0)>DIGITS(0.0), and IEEE_SUPPORT_FLAG(IEEE_INEXACT,X) true. Apply FLAG-ROW-PREAMBLE(IEEE_INEXACT,X). TRUE branch: execute real_default = 0.1D0 and assert IEEE_INEXACT signaling for assignment conversion to default real. FALSE branch: skip non-binary, support, or precision branch."
+      },
+      "oracle": "Plans are pending and source-derived. IEEE effects are tested only under explicit capability probes; the TRUE branch asserts the concrete flag, mode, type, constant, or operation effect, and the FALSE branch is a skip rather than a pass. Named FLAG-ROW-PREAMBLE(flag,x): under IEEE_SUPPORT_FLAG(flag,x), if IEEE_SUPPORT_HALTING(flag) then CALL IEEE_SET_HALTING_MODE(flag,.FALSE.); else CALL IEEE_GET_HALTING_MODE(flag,h) and proceed only if h is .FALSE. (otherwise skip); CALL IEEE_SET_FLAG(IEEE_ALL,.FALSE.). Positive plans establish a non-default state first by setting distinguished sentinel values and apply FLAG-ROW-PREAMBLE before any exception operation or flag-state assertion unless the row explicitly says the preamble is not applied because it would destroy the initial-state oracle.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Fixture authors must re-derive every pending plan from the pinned source. IEEE module availability, feature-set inclusion, exact supported real kinds, initial modes, halting mechanics, NaN payloads, the identity of a NaN result not fixed by the text, signaling-NaN behavior outside a stated rule, and operations that may also signal are treated as processor latitude.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 13, and 16 for source form, type declarations, expressions, execution constructs, scoping units, I/O and format contexts, intrinsic procedures, and intrinsic module USE mechanics. Unregistered dependencies explicitly retained: later Clause 17 inquiry and mode procedures, IEEE value constructors/classification procedures, exact operation descriptions, and feature profiles such as tests/profiles/ieee_binary.f90."
+    },
+    {
+      "id": "S17.3-005",
+      "title": "Exception flags are quiet or signaling, initially quiet, set by exceptions, and mutable by status procedures",
+      "source": "S17.3 p2.flag-state, p2.initial-quiet, p2.exception-sets-flag, p2.setters, p2.persistence; J3/24-007, 18 December 2023, physical PDF480-482.",
+      "source_units": [
+        "p2.flag-state",
+        "p2.initial-quiet",
+        "p2.exception-sets-flag",
+        "p2.setters",
+        "p2.persistence"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Each exception has a quiet/signaling flag; IEEE_GET_FLAG determines it, the initial value is quiet, exceptions set the associated flag except exact underflow under default handling, IEEE_SET_FLAG and IEEE_SET_STATUS can change status, and a signaling flag remains signaling within a procedure until one of those setters makes it quiet.",
+      "facets": [
+        "flags-have-quiet-or-signaling-state",
+        "flags-initially-quiet",
+        "exception-occurrence-sets-associated-flag",
+        "exact-underflow-default-handling-caveat",
+        "set-flag-and-set-status-change-flag-status",
+        "signaling-flag-persists-until-set-quiet"
+      ],
+      "pending": {
+        "flags-have-quiet-or-signaling-state": "Guard probe: import IEEE_GET_FLAG and a supported flag. TRUE branch: initialize a logical sentinel .true., call IEEE_GET_FLAG, and assert the result is either .true. or .false. logical scalar; FLAG-ROW-PREAMBLE is referenced but not applied because this row checks GET_FLAG callability and state domain, not a prepared flag assertion. FALSE branch: skip unsupported optional flag except p10 quiet branch.",
+        "flags-initially-quiet": "Guard probe: fresh main program queries IEEE_OVERFLOW before arithmetic and module procedures other than GET_FLAG. TRUE branch: IEEE_GET_FLAG returns .false. for the initial quiet state; FLAG-ROW-PREAMBLE is referenced but not applied before the query because clearing flags would destroy the initial-state oracle. FALSE branch: skip absent module.",
+        "exception-occurrence-sets-associated-flag": "Guard probe: use S17.3-001 through S17.3-004 supported-operation branches. TRUE branch: those rows apply the FLAG-ROW-PREAMBLE for their associated FLAG, execute the operation, and IEEE_GET_FLAG(FLAG) returns .true. FALSE branch: skip unsupported flag.",
+        "exact-underflow-default-handling-caveat": "No portable oracle requires IEEE_UNDERFLOW to signal for an exact tiny result under default 60559 underflow handling; FLAG-ROW-PREAMBLE is referenced but not applied because this row records a caveat, and fixtures use an inexact TINY/3.0 operation for required underflow signaling.",
+        "set-flag-and-set-status-change-flag-status": "Guard probe: for each FLAG in IEEE_ALL, use its own IEEE_SUPPORT_FLAG(FLAG,X) branch and apply FLAG-ROW-PREAMBLE(FLAG,X). TRUE branch: IEEE_SET_FLAG sets that FLAG .true. then .false.; reapply FLAG-ROW-PREAMBLE(FLAG,X), set the FLAG true, and IEEE_GET_STATUS captures a saved status with that FLAG .true.; call IEEE_SET_FLAG(IEEE_ALL,.FALSE.) and IEEE_GET_FLAG confirms that FLAG is quiet before IEEE_SET_STATUS(saved); after IEEE_SET_STATUS(saved), IEEE_GET_FLAG confirms that same FLAG is signaling again. FALSE branch: skip the status component for that unsupported flag, with always-quiet optional flags covered separately by S17.3-013.",
+        "signaling-flag-persists-until-set-quiet": "Guard probe: helper procedure with IEEE_SUPPORT_FLAG(IEEE_OVERFLOW,X) true applies FLAG-ROW-PREAMBLE(IEEE_OVERFLOW,X), sets IEEE_OVERFLOW .true., executes integer sentinel assignments, queries before setter, then clears it. TRUE branch: pre-clear query remains .true. and post-clear query is .false. FALSE branch: skip."
+      },
+      "oracle": "Plans are pending and source-derived. IEEE effects are tested only under explicit capability probes; the TRUE branch asserts the concrete flag, mode, type, constant, or operation effect, and the FALSE branch is a skip rather than a pass. Named FLAG-ROW-PREAMBLE(flag,x): under IEEE_SUPPORT_FLAG(flag,x), if IEEE_SUPPORT_HALTING(flag) then CALL IEEE_SET_HALTING_MODE(flag,.FALSE.); else CALL IEEE_GET_HALTING_MODE(flag,h) and proceed only if h is .FALSE. (otherwise skip); CALL IEEE_SET_FLAG(IEEE_ALL,.FALSE.). Positive plans establish a non-default state first by setting distinguished sentinel values and apply FLAG-ROW-PREAMBLE before any exception operation or flag-state assertion unless the row explicitly says the preamble is not applied because it would destroy the initial-state oracle.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Fixture authors must re-derive every pending plan from the pinned source. IEEE module availability, feature-set inclusion, exact supported real kinds, initial modes, halting mechanics, NaN payloads, the identity of a NaN result not fixed by the text, signaling-NaN behavior outside a stated rule, and operations that may also signal are treated as processor latitude.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 13, and 16 for source form, type declarations, expressions, execution constructs, scoping units, I/O and format contexts, intrinsic procedures, and intrinsic module USE mechanics. Unregistered dependencies explicitly retained: later Clause 17 inquiry and mode procedures, IEEE value constructors/classification procedures, exact operation descriptions, and feature profiles such as tests/profiles/ieee_binary.f90."
+    },
+    {
+      "id": "S17.3-006",
+      "title": "Procedure entry and return quiet and restore signaling flags, but do not quiet flags raised inside",
+      "source": "S17.3 p3; J3/24-007, 18 December 2023, physical PDF480-482.",
+      "source_units": [
+        "p3"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A procedure other than IEEE_GET_FLAG or IEEE_GET_STATUS sees entry-signaling flags quieted on entry and restored on return; a flag that signals during procedure execution is not set quiet on return.",
+      "facets": [
+        "signaling-flag-quieted-on-procedure-entry",
+        "entry-signaling-flag-restored-on-return",
+        "flag-signaled-inside-procedure-not-quieted-on-return"
+      ],
+      "pending": {
+        "signaling-flag-quieted-on-procedure-entry": "Guard probe: IEEE_SUPPORT_FLAG(IEEE_OVERFLOW,X) true. Apply FLAG-ROW-PREAMBLE(IEEE_OVERFLOW,X). Caller sets IEEE_OVERFLOW signaling, then calls a helper subroutine. TRUE branch: the helper first calls IEEE_GET_FLAG and observes .false. on entry. FALSE branch: skip.",
+        "entry-signaling-flag-restored-on-return": "Guard probe: IEEE_SUPPORT_FLAG(IEEE_OVERFLOW,X) true. Apply FLAG-ROW-PREAMBLE(IEEE_OVERFLOW,X). Caller sets IEEE_OVERFLOW signaling and calls the helper used for entry-quiet observation. TRUE branch: after helper returns without setting the flag, caller observes IEEE_OVERFLOW .true. again. FALSE branch: skip.",
+        "flag-signaled-inside-procedure-not-quieted-on-return": "Guard probe: IEEE_SUPPORT_FLAG(IEEE_DIVIDE_BY_ZERO,X) true. Apply FLAG-ROW-PREAMBLE(IEEE_DIVIDE_BY_ZERO,X). Caller clears flags, then calls helper that computes 1.0_X/0.0_X. TRUE branch: caller observes IEEE_DIVIDE_BY_ZERO signaling after return. FALSE branch: skip."
+      },
+      "oracle": "Plans are pending and source-derived. IEEE effects are tested only under explicit capability probes; the TRUE branch asserts the concrete flag, mode, type, constant, or operation effect, and the FALSE branch is a skip rather than a pass. Named FLAG-ROW-PREAMBLE(flag,x): under IEEE_SUPPORT_FLAG(flag,x), if IEEE_SUPPORT_HALTING(flag) then CALL IEEE_SET_HALTING_MODE(flag,.FALSE.); else CALL IEEE_GET_HALTING_MODE(flag,h) and proceed only if h is .FALSE. (otherwise skip); CALL IEEE_SET_FLAG(IEEE_ALL,.FALSE.). Positive plans establish a non-default state first by setting distinguished sentinel values and apply FLAG-ROW-PREAMBLE before any exception operation or flag-state assertion unless the row explicitly says the preamble is not applied because it would destroy the initial-state oracle.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Fixture authors must re-derive every pending plan from the pinned source. IEEE module availability, feature-set inclusion, exact supported real kinds, initial modes, halting mechanics, NaN payloads, the identity of a NaN result not fixed by the text, signaling-NaN behavior outside a stated rule, and operations that may also signal are treated as processor latitude.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 13, and 16 for source form, type declarations, expressions, execution constructs, scoping units, I/O and format contexts, intrinsic procedures, and intrinsic module USE mechanics. Unregistered dependencies explicitly retained: later Clause 17 inquiry and mode procedures, IEEE value constructors/classification procedures, exact operation descriptions, and feature profiles such as tests/profiles/ieee_binary.f90."
+    },
+    {
+      "id": "S17.3-007",
+      "title": "Specification-expression evaluation may signal exceptions",
+      "source": "S17.3 p4; J3/24-007, 18 December 2023, physical PDF480-482.",
+      "source_units": [
+        "p4"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Evaluation of a specification expression is permitted to cause an exception to signal.",
+      "facets": [
+        "specification-expression-exception-signaling-permitted"
+      ],
+      "pending": {
+        "specification-expression-exception-signaling-permitted": "No portable oracle requires or forbids signaling from a specification expression; FLAG-ROW-PREAMBLE is referenced but not applied because this permission row asserts no flag state, and future tests must not depend on flag state caused solely by such evaluation."
+      },
+      "oracle": "Plans are pending and source-derived. IEEE effects are tested only under explicit capability probes; the TRUE branch asserts the concrete flag, mode, type, constant, or operation effect, and the FALSE branch is a skip rather than a pass. Named FLAG-ROW-PREAMBLE(flag,x): under IEEE_SUPPORT_FLAG(flag,x), if IEEE_SUPPORT_HALTING(flag) then CALL IEEE_SET_HALTING_MODE(flag,.FALSE.); else CALL IEEE_GET_HALTING_MODE(flag,h) and proceed only if h is .FALSE. (otherwise skip); CALL IEEE_SET_FLAG(IEEE_ALL,.FALSE.). Positive plans establish a non-default state first by setting distinguished sentinel values and apply FLAG-ROW-PREAMBLE before any exception operation or flag-state assertion unless the row explicitly says the preamble is not applied because it would destroy the initial-state oracle.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Fixture authors must re-derive every pending plan from the pinned source. IEEE module availability, feature-set inclusion, exact supported real kinds, initial modes, halting mechanics, NaN payloads, the identity of a NaN result not fixed by the text, signaling-NaN behavior outside a stated rule, and operations that may also signal are treated as processor latitude.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 13, and 16 for source form, type declarations, expressions, execution constructs, scoping units, I/O and format contexts, intrinsic procedures, and intrinsic module USE mechanics. Unregistered dependencies explicitly retained: later Clause 17 inquiry and mode procedures, IEEE value constructors/classification procedures, exact operation descriptions, and feature profiles such as tests/profiles/ieee_binary.f90."
+    },
+    {
+      "id": "S17.3-008",
+      "title": "Intrinsic procedures and intermediate calculations preserve relevant flags except permitted final-result signaling",
+      "source": "S17.3 p5.preserve-entry-flags, p5.final-result-latitude, p5.intermediate-calculation-rule; J3/24-007, 18 December 2023, physical PDF480-482.",
+      "source_units": [
+        "p5.preserve-entry-flags",
+        "p5.final-result-latitude",
+        "p5.intermediate-calculation-rule"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "With IEEE_EXCEPTIONS or IEEE_ARITHMETIC accessible, normally executing intrinsic procedures and intrinsic-module procedures preserve entry values of IEEE_OVERFLOW, IEEE_DIVIDE_BY_ZERO, and IEEE_INVALID; final too-large or invalid-NaN results may signal, and intermediate calculations that do not affect the result neither quiet signaling flags nor signal quiet flags.",
+      "facets": [
+        "intrinsic-procedure-preserves-entry-overflow-divide-invalid",
+        "final-overlarge-result-may-signal-overflow",
+        "final-invalid-nan-result-may-signal-invalid",
+        "intermediate-calculation-not-affecting-result-does-not-change-flags"
+      ],
+      "pending": {
+        "intrinsic-procedure-preserves-entry-overflow-divide-invalid": "Guard probe: for each FLAG among IEEE_OVERFLOW, IEEE_DIVIDE_BY_ZERO, and IEEE_INVALID with IEEE_SUPPORT_FLAG(FLAG,X) true. Apply FLAG-ROW-PREAMBLE(FLAG,X). TRUE branch: around ABS(1.0_X), entry FLAG .true. remains .true.; after reapplying the preamble, entry FLAG .false. remains .false. FALSE branch: skip unsupported flag.",
+        "final-overlarge-result-may-signal-overflow": "Latitude: a real or complex intrinsic result too large for the procedure may signal IEEE_OVERFLOW; FLAG-ROW-PREAMBLE is referenced but not applied because this row records permitted latitude, and fixtures record either flag state unless another source unit requires signaling.",
+        "final-invalid-nan-result-may-signal-invalid": "Latitude: an intrinsic result that is NaN because of invalid operation may signal IEEE_INVALID; FLAG-ROW-PREAMBLE is referenced but not applied because this row records permitted latitude, and fixtures record either flag state unless another source unit requires signaling.",
+        "intermediate-calculation-not-affecting-result-does-not-change-flags": "Guard probe: real kind X has IEEE_SUPPORT_DATATYPE(X) and IEEE_SUPPORT_FLAG(IEEE_DIVIDE_BY_ZERO,X) true. Apply FLAG-ROW-PREAMBLE(IEEE_DIVIDE_BY_ZERO,X). TRUE branch: evaluate MERGE(1.0_X, 1.0_X/zero, .true.) or another registered expression whose selected result does not depend on division; assert IEEE_DIVIDE_BY_ZERO remains quiet, then reapply the preamble and check the companion with selected division signals. FALSE branch: skip."
+      },
+      "oracle": "Plans are pending and source-derived. IEEE effects are tested only under explicit capability probes; the TRUE branch asserts the concrete flag, mode, type, constant, or operation effect, and the FALSE branch is a skip rather than a pass. Named FLAG-ROW-PREAMBLE(flag,x): under IEEE_SUPPORT_FLAG(flag,x), if IEEE_SUPPORT_HALTING(flag) then CALL IEEE_SET_HALTING_MODE(flag,.FALSE.); else CALL IEEE_GET_HALTING_MODE(flag,h) and proceed only if h is .FALSE. (otherwise skip); CALL IEEE_SET_FLAG(IEEE_ALL,.FALSE.). Positive plans establish a non-default state first by setting distinguished sentinel values and apply FLAG-ROW-PREAMBLE before any exception operation or flag-state assertion unless the row explicitly says the preamble is not applied because it would destroy the initial-state oracle.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Fixture authors must re-derive every pending plan from the pinned source. IEEE module availability, feature-set inclusion, exact supported real kinds, initial modes, halting mechanics, NaN payloads, the identity of a NaN result not fixed by the text, signaling-NaN behavior outside a stated rule, and operations that may also signal are treated as processor latitude.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 13, and 16 for source form, type declarations, expressions, execution constructs, scoping units, I/O and format contexts, intrinsic procedures, and intrinsic module USE mechanics. Unregistered dependencies explicitly retained: later Clause 17 inquiry and mode procedures, IEEE value constructors/classification procedures, exact operation descriptions, and feature profiles such as tests/profiles/ieee_binary.f90."
+    },
+    {
+      "id": "S17.3-009",
+      "title": "Numeric relational operations on real-result operands signal IEEE_INVALID according to Table 17.1",
+      "source": "S17.3 p6.relational-rule, p6.conversion-latitude, table17.1; J3/24-007, 18 December 2023, physical PDF480-482.",
+      "source_units": [
+        "p6.relational-rule",
+        "p6.conversion-latitude",
+        "table17.1"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For numeric entities whose x1+x2 type is real and whose NaN support inquiry is true, relational operators signal IEEE_INVALID according to the ISO/IEC 60559 predicates in Table 17.1; operand conversions may signal exceptions instead of or in addition to the comparison.",
+      "facets": [
+        "real-less-less-equal-greater-greater-equal-quiet-nan-signal-invalid",
+        "real-equality-inequality-quiet-nan-do-not-signal-invalid",
+        "relational-operator-predicate-mapping-table",
+        "relational-conversions-may-also-signal"
+      ],
+      "pending": {
+        "real-less-less-equal-greater-greater-equal-quiet-nan-signal-invalid": "Guard probe: real kind X has IEEE_SUPPORT_DATATYPE(X) true for IEEE_VALUE, IEEE_SUPPORT_NAN(X) true, and IEEE_SUPPORT_FLAG(IEEE_INVALID,X) true. Apply FLAG-ROW-PREAMBLE(IEEE_INVALID,X). Construct q=IEEE_VALUE(0.0_X,IEEE_QUIET_NAN). TRUE branch: each of q<1.0_X, q<=1.0_X, q>1.0_X, and q>=1.0_X after reapplying the preamble signals IEEE_INVALID. FALSE branch: skip.",
+        "real-equality-inequality-quiet-nan-do-not-signal-invalid": "Guard probe: real kind X has IEEE_SUPPORT_DATATYPE(X) true for IEEE_VALUE, IEEE_SUPPORT_NAN(X) true, and IEEE_SUPPORT_FLAG(IEEE_INVALID,X) true. Apply FLAG-ROW-PREAMBLE(IEEE_INVALID,X). Construct q=IEEE_VALUE(0.0_X,IEEE_QUIET_NAN). TRUE branch: q==1.0_X and q/=1.0_X leave IEEE_INVALID quiet, while returning .false. and .true. respectively. FALSE branch: skip.",
+        "relational-operator-predicate-mapping-table": "Guard probe: real kind X has IEEE_SUPPORT_DATATYPE(X) true for IEEE_VALUE, IEEE_SUPPORT_NAN(X) true, and IEEE_SUPPORT_FLAG(IEEE_INVALID,X) true. Apply FLAG-ROW-PREAMBLE(IEEE_INVALID,X). Construct q=IEEE_VALUE(0.0_X,IEEE_QUIET_NAN). TRUE branch: exercise both symbolic and dotted spellings for <, <=, >, >=, ==, and /= and assert the same flag behavior for paired spellings, reapplying the preamble before each row. FALSE branch: skip.",
+        "relational-conversions-may-also-signal": "Latitude: mixed type or kind conversions can signal instead of or in addition to comparison invalid; FLAG-ROW-PREAMBLE is referenced but applied only in the same-kind required comparison rows, while fixtures use same-kind operands for the required table oracle and record conversion flags separately."
+      },
+      "oracle": "Plans are pending and source-derived. IEEE effects are tested only under explicit capability probes; the TRUE branch asserts the concrete flag, mode, type, constant, or operation effect, and the FALSE branch is a skip rather than a pass. Named FLAG-ROW-PREAMBLE(flag,x): under IEEE_SUPPORT_FLAG(flag,x), if IEEE_SUPPORT_HALTING(flag) then CALL IEEE_SET_HALTING_MODE(flag,.FALSE.); else CALL IEEE_GET_HALTING_MODE(flag,h) and proceed only if h is .FALSE. (otherwise skip); CALL IEEE_SET_FLAG(IEEE_ALL,.FALSE.). Positive plans establish a non-default state first by setting distinguished sentinel values and apply FLAG-ROW-PREAMBLE before any exception operation or flag-state assertion unless the row explicitly says the preamble is not applied because it would destroy the initial-state oracle.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Fixture authors must re-derive every pending plan from the pinned source. IEEE module availability, feature-set inclusion, exact supported real kinds, initial modes, halting mechanics, NaN payloads, the identity of a NaN result not fixed by the text, signaling-NaN behavior outside a stated rule, and operations that may also signal are treated as processor latitude.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 13, and 16 for source form, type declarations, expressions, execution constructs, scoping units, I/O and format contexts, intrinsic procedures, and intrinsic module USE mechanics. Unregistered dependencies explicitly retained: later Clause 17 inquiry and mode procedures, IEEE value constructors/classification procedures, exact operation descriptions, and feature profiles such as tests/profiles/ieee_binary.f90."
+    },
+    {
+      "id": "S17.3-010",
+      "title": "Complex equality and inequality may signal invalid for signaling NaN parts",
+      "source": "S17.3 p7; J3/24-007, 18 December 2023, physical PDF480-482.",
+      "source_units": [
+        "p7"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Complex equality or inequality may signal IEEE_INVALID for signaling NaN real or imaginary parts, and conversions before comparison may signal instead of or in addition to the comparison.",
+      "facets": [
+        "complex-equality-inequality-signaling-nan-invalid-latitude",
+        "complex-comparison-conversions-may-also-signal"
+      ],
+      "pending": {
+        "complex-equality-inequality-signaling-nan-invalid-latitude": "No portable oracle requires a particular invalid flag result for complex == or /= involving signaling NaN parts; FLAG-ROW-PREAMBLE is referenced but not applied because this row records signaling-NaN latitude, and signaling-NaN creation and quieting behavior are processor latitude.",
+        "complex-comparison-conversions-may-also-signal": "Latitude: conversions before complex comparison may signal instead of or in addition to comparison invalid; FLAG-ROW-PREAMBLE is referenced but not applied because this row records conversion latitude, and fixtures avoid mixed-kind complex operands for required comparison oracles."
+      },
+      "oracle": "Plans are pending and source-derived. IEEE effects are tested only under explicit capability probes; the TRUE branch asserts the concrete flag, mode, type, constant, or operation effect, and the FALSE branch is a skip rather than a pass. Named FLAG-ROW-PREAMBLE(flag,x): under IEEE_SUPPORT_FLAG(flag,x), if IEEE_SUPPORT_HALTING(flag) then CALL IEEE_SET_HALTING_MODE(flag,.FALSE.); else CALL IEEE_GET_HALTING_MODE(flag,h) and proceed only if h is .FALSE. (otherwise skip); CALL IEEE_SET_FLAG(IEEE_ALL,.FALSE.). Positive plans establish a non-default state first by setting distinguished sentinel values and apply FLAG-ROW-PREAMBLE before any exception operation or flag-state assertion unless the row explicitly says the preamble is not applied because it would destroy the initial-state oracle.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Fixture authors must re-derive every pending plan from the pinned source. IEEE module availability, feature-set inclusion, exact supported real kinds, initial modes, halting mechanics, NaN payloads, the identity of a NaN result not fixed by the text, signaling-NaN behavior outside a stated rule, and operations that may also signal are treated as processor latitude.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 13, and 16 for source form, type declarations, expressions, execution constructs, scoping units, I/O and format contexts, intrinsic procedures, and intrinsic module USE mechanics. Unregistered dependencies explicitly retained: later Clause 17 inquiry and mode procedures, IEEE value constructors/classification procedures, exact operation descriptions, and feature profiles such as tests/profiles/ieee_binary.f90."
+    },
+    {
+      "id": "S17.3-011",
+      "title": "Dead exception-causing operations without flag/status calls have processor-dependent flag results",
+      "source": "S17.3 p8; J3/24-007, 18 December 2023, physical PDF480-482.",
+      "source_units": [
+        "p8"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "In a sequence without IEEE flag, status, or halting procedure calls, an exception-causing operation whose value affects no variable has processor-dependent post-sequence signaling state.",
+      "facets": [
+        "dead-operation-exception-flag-state-processor-dependent"
+      ],
+      "pending": {
+        "dead-operation-exception-flag-state-processor-dependent": "No portable oracle fixes the flag state for an exception-causing operation whose value is discarded in a sequence with no IEEE flag/status/halting calls; fixtures must make the computed value observable before asserting a flag."
+      },
+      "oracle": "Plans are pending and source-derived. IEEE effects are tested only under explicit capability probes; the TRUE branch asserts the concrete flag, mode, type, constant, or operation effect, and the FALSE branch is a skip rather than a pass. Named FLAG-ROW-PREAMBLE(flag,x): under IEEE_SUPPORT_FLAG(flag,x), if IEEE_SUPPORT_HALTING(flag) then CALL IEEE_SET_HALTING_MODE(flag,.FALSE.); else CALL IEEE_GET_HALTING_MODE(flag,h) and proceed only if h is .FALSE. (otherwise skip); CALL IEEE_SET_FLAG(IEEE_ALL,.FALSE.). Positive plans establish a non-default state first by setting distinguished sentinel values and apply FLAG-ROW-PREAMBLE before any exception operation or flag-state assertion unless the row explicitly says the preamble is not applied because it would destroy the initial-state oracle.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Fixture authors must re-derive every pending plan from the pinned source. IEEE module availability, feature-set inclusion, exact supported real kinds, initial modes, halting mechanics, NaN payloads, the identity of a NaN result not fixed by the text, signaling-NaN behavior outside a stated rule, and operations that may also signal are treated as processor latitude.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 13, and 16 for source form, type declarations, expressions, execution constructs, scoping units, I/O and format contexts, intrinsic procedures, and intrinsic module USE mechanics. Unregistered dependencies explicitly retained: later Clause 17 inquiry and mode procedures, IEEE value constructors/classification procedures, exact operation descriptions, and feature profiles such as tests/profiles/ieee_binary.f90."
+    },
+    {
+      "id": "S17.3-012",
+      "title": "Exceptions do not signal solely from operations beyond those required or permitted, while permitted evaluation may signal",
+      "source": "S17.3 p9.no-extra-operations, p9.permitted-short-circuit-latitude; J3/24-007, 18 December 2023, physical PDF480-482.",
+      "source_units": [
+        "p9.no-extra-operations",
+        "p9.permitted-short-circuit-latitude"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "An exception shall not signal solely from operations beyond those required or permitted by the standard; permitted evaluation such as the right operand of an .OR. expression may signal.",
+      "facets": [
+        "no-signal-from-unexecuted-if-branch-operation",
+        "no-signal-from-masked-where-operation",
+        "permitted-or-evaluation-may-signal-divide-by-zero"
+      ],
+      "pending": {
+        "no-signal-from-unexecuted-if-branch-operation": "Guard probe: real kind X has IEEE_SUPPORT_DATATYPE(X) and IEEE_SUPPORT_FLAG(IEEE_DIVIDE_BY_ZERO,X) true. Apply FLAG-ROW-PREAMBLE(IEEE_DIVIDE_BY_ZERO,X). TRUE branch: set Z=0.0_X and have F(X) return 0.0_X so the conditional assignment F(X)>0.0_X guarding Y=1.0_X/Z is not executed; assert IEEE_DIVIDE_BY_ZERO remains quiet. FALSE branch: skip.",
+        "no-signal-from-masked-where-operation": "Guard probe: real kind X has IEEE_SUPPORT_DATATYPE(X) and IEEE_SUPPORT_FLAG(IEEE_DIVIDE_BY_ZERO,X) true. Apply FLAG-ROW-PREAMBLE(IEEE_DIVIDE_BY_ZERO,X). TRUE branch: set A=[2.0_X,0.0_X,-4.0_X], execute WHERE(A>0.0_X) A=1.0_X/A, assert A equals [0.5_X,0.0_X,-4.0_X] so the selected element changed and the masked zero stayed untouched, then assert IEEE_DIVIDE_BY_ZERO remains quiet. FALSE branch: skip.",
+        "permitted-or-evaluation-may-signal-divide-by-zero": "Latitude: X>0.00001 .OR. X/Y>0.00001 with X=1 and Y=0 is permitted to signal IEEE_DIVIDE_BY_ZERO; FLAG-ROW-PREAMBLE is referenced but not applied because either flag state is permitted and fixtures must not require either flag state for that expression."
+      },
+      "oracle": "Plans are pending and source-derived. IEEE effects are tested only under explicit capability probes; the TRUE branch asserts the concrete flag, mode, type, constant, or operation effect, and the FALSE branch is a skip rather than a pass. Named FLAG-ROW-PREAMBLE(flag,x): under IEEE_SUPPORT_FLAG(flag,x), if IEEE_SUPPORT_HALTING(flag) then CALL IEEE_SET_HALTING_MODE(flag,.FALSE.); else CALL IEEE_GET_HALTING_MODE(flag,h) and proceed only if h is .FALSE. (otherwise skip); CALL IEEE_SET_FLAG(IEEE_ALL,.FALSE.). Positive plans establish a non-default state first by setting distinguished sentinel values and apply FLAG-ROW-PREAMBLE before any exception operation or flag-state assertion unless the row explicitly says the preamble is not applied because it would destroy the initial-state oracle.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Fixture authors must re-derive every pending plan from the pinned source. IEEE module availability, feature-set inclusion, exact supported real kinds, initial modes, halting mechanics, NaN payloads, the identity of a NaN result not fixed by the text, signaling-NaN behavior outside a stated rule, and operations that may also signal are treated as processor latitude.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 13, and 16 for source form, type declarations, expressions, execution constructs, scoping units, I/O and format contexts, intrinsic procedures, and intrinsic module USE mechanics. Unregistered dependencies explicitly retained: later Clause 17 inquiry and mode procedures, IEEE value constructors/classification procedures, exact operation descriptions, and feature profiles such as tests/profiles/ieee_binary.f90."
+    },
+    {
+      "id": "S17.3-013",
+      "title": "Unsupported invalid, underflow, and inexact exceptions have always-quiet flags",
+      "source": "S17.3 p10; J3/24-007, 18 December 2023, physical PDF480-482.",
+      "source_units": [
+        "p10"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The processor is not required to support IEEE_INVALID, IEEE_UNDERFLOW, or IEEE_INEXACT; an unsupported exception flag is always quiet.",
+      "facets": [
+        "unsupported-invalid-flag-always-quiet",
+        "unsupported-underflow-flag-always-quiet",
+        "unsupported-inexact-flag-always-quiet"
+      ],
+      "pending": {
+        "unsupported-invalid-flag-always-quiet": "Guard probe: IEEE_SUPPORT_FLAG(IEEE_INVALID,X) returns false for a profiled kind X. Apply the unsupported branch of FLAG-ROW-PREAMBLE(IEEE_INVALID,X). TRUE branch: IEEE_SET_FLAG(IEEE_INVALID,.TRUE.) followed by IEEE_GET_FLAG returns .false.; SQRT(-1.0_X) leaves IEEE_INVALID quiet. FALSE branch: skip supported branch.",
+        "unsupported-underflow-flag-always-quiet": "Guard probe: IEEE_SUPPORT_FLAG(IEEE_UNDERFLOW,X) returns false for a profiled kind X. Apply the unsupported branch of FLAG-ROW-PREAMBLE(IEEE_UNDERFLOW,X). TRUE branch: IEEE_SET_FLAG(IEEE_UNDERFLOW,.TRUE.) followed by IEEE_GET_FLAG returns .false.; TINY(X)/3.0_X leaves IEEE_UNDERFLOW quiet. FALSE branch: skip supported branch.",
+        "unsupported-inexact-flag-always-quiet": "Guard probe: IEEE_SUPPORT_FLAG(IEEE_INEXACT,X) returns false for a profiled kind X. Apply the unsupported branch of FLAG-ROW-PREAMBLE(IEEE_INEXACT,X). TRUE branch: IEEE_SET_FLAG(IEEE_INEXACT,.TRUE.) followed by IEEE_GET_FLAG returns .false.; 1.0_X/3.0_X leaves IEEE_INEXACT quiet. FALSE branch: skip supported branch."
+      },
+      "oracle": "Plans are pending and source-derived. IEEE effects are tested only under explicit capability probes; the TRUE branch asserts the concrete flag, mode, type, constant, or operation effect, and the FALSE branch is a skip rather than a pass. Named FLAG-ROW-PREAMBLE(flag,x): under IEEE_SUPPORT_FLAG(flag,x), if IEEE_SUPPORT_HALTING(flag) then CALL IEEE_SET_HALTING_MODE(flag,.FALSE.); else CALL IEEE_GET_HALTING_MODE(flag,h) and proceed only if h is .FALSE. (otherwise skip); CALL IEEE_SET_FLAG(IEEE_ALL,.FALSE.). Positive plans establish a non-default state first by setting distinguished sentinel values and apply FLAG-ROW-PREAMBLE before any exception operation or flag-state assertion unless the row explicitly says the preamble is not applied because it would destroy the initial-state oracle.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Fixture authors must re-derive every pending plan from the pinned source. IEEE module availability, feature-set inclusion, exact supported real kinds, initial modes, halting mechanics, NaN payloads, the identity of a NaN result not fixed by the text, signaling-NaN behavior outside a stated rule, and operations that may also signal are treated as processor latitude.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 13, and 16 for source form, type declarations, expressions, execution constructs, scoping units, I/O and format contexts, intrinsic procedures, and intrinsic module USE mechanics. Unregistered dependencies explicitly retained: later Clause 17 inquiry and mode procedures, IEEE value constructors/classification procedures, exact operation descriptions, and feature profiles such as tests/profiles/ieee_binary.f90."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "structural",
+      "rationale": "Exception occurrence rules mix required supported cases and processor latitude."
+    },
+    {
+      "unit": "p1.overflow-supported",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.3-001"
+      ],
+      "rationale": "Required overflow occurrence for supported operations and complex part calculations."
+    },
+    {
+      "unit": "p1.overflow-latitude",
+      "disposition": "permission",
+      "requirements": [
+        "S17.3-001"
+      ],
+      "rationale": "Overflow for unsupported operands and exponentiation is processor dependent."
+    },
+    {
+      "unit": "p1.divide-supported",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.3-002"
+      ],
+      "rationale": "Required divide-by-zero occurrence for supported division and complex part calculations."
+    },
+    {
+      "unit": "p1.divide-latitude",
+      "disposition": "permission",
+      "requirements": [
+        "S17.3-002"
+      ],
+      "rationale": "Divide-by-zero for unsupported division and negative-exponent exponentiation is processor dependent."
+    },
+    {
+      "unit": "p1.invalid",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.3-003"
+      ],
+      "rationale": "Invalid operation and assignment occurrence rule."
+    },
+    {
+      "unit": "p1.underflow",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.3-004"
+      ],
+      "rationale": "Underflow occurrence rule with processor-dependent limit."
+    },
+    {
+      "unit": "p1.inexact",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.3-004"
+      ],
+      "rationale": "Inexact occurrence rule."
+    },
+    {
+      "unit": "p2",
+      "disposition": "structural",
+      "rationale": "Flag state, initial value, exception setting, setters, and persistence are split."
+    },
+    {
+      "unit": "p2.flag-state",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.3-005"
+      ],
+      "rationale": "Flags have quiet/signaling state determined by IEEE_GET_FLAG."
+    },
+    {
+      "unit": "p2.initial-quiet",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.3-005"
+      ],
+      "rationale": "Initial flag value is quiet."
+    },
+    {
+      "unit": "p2.exception-sets-flag",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.3-005"
+      ],
+      "rationale": "Associated exception sets flag, subject to exact-underflow caveat."
+    },
+    {
+      "unit": "p2.setters",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.3-005"
+      ],
+      "rationale": "IEEE_SET_FLAG and IEEE_SET_STATUS can change status."
+    },
+    {
+      "unit": "p2.persistence",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.3-005"
+      ],
+      "rationale": "Signaling flag remains signaling within a procedure until set quiet."
+    },
+    {
+      "unit": "p3",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.3-006"
+      ],
+      "rationale": "Procedure entry/return flag quieting and restoration rules."
+    },
+    {
+      "unit": "p4",
+      "disposition": "permission",
+      "requirements": [
+        "S17.3-007"
+      ],
+      "rationale": "Specification-expression evaluation may signal."
+    },
+    {
+      "unit": "p5",
+      "disposition": "structural",
+      "rationale": "Intrinsic-procedure preservation, final-result latitude, and intermediate-calculation rule are split."
+    },
+    {
+      "unit": "p5.preserve-entry-flags",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.3-008"
+      ],
+      "rationale": "Normal intrinsic procedure execution preserves entry flag values."
+    },
+    {
+      "unit": "p5.final-result-latitude",
+      "disposition": "permission",
+      "requirements": [
+        "S17.3-008"
+      ],
+      "rationale": "Final overlarge or invalid-NaN results may signal."
+    },
+    {
+      "unit": "p5.intermediate-calculation-rule",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.3-008"
+      ],
+      "rationale": "Intermediate calculations not affecting result do not change flags."
+    },
+    {
+      "unit": "p6",
+      "disposition": "structural",
+      "rationale": "Relational table rule and conversion latitude are split."
+    },
+    {
+      "unit": "p6.relational-rule",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.3-009"
+      ],
+      "rationale": "Real-result numeric relations signal invalid according to Table 17.1."
+    },
+    {
+      "unit": "p6.conversion-latitude",
+      "disposition": "permission",
+      "requirements": [
+        "S17.3-009"
+      ],
+      "rationale": "Operand conversions may signal instead of or in addition to comparison invalid."
+    },
+    {
+      "unit": "note-unnumbered",
+      "disposition": "informative",
+      "rationale": "NOTE explains 60559 predicate behavior and is not normative."
+    },
+    {
+      "unit": "table17.1",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.3-009"
+      ],
+      "rationale": "Normative table mapping Fortran relational operators to 60559 predicates."
+    },
+    {
+      "unit": "p7",
+      "disposition": "permission",
+      "requirements": [
+        "S17.3-010"
+      ],
+      "rationale": "Complex equality/inequality invalid signaling and conversions are permissive latitude."
+    },
+    {
+      "unit": "p8",
+      "disposition": "permission",
+      "requirements": [
+        "S17.3-011"
+      ],
+      "rationale": "Dead operation exception flag result is processor dependent."
+    },
+    {
+      "unit": "p9",
+      "disposition": "structural",
+      "rationale": "No-extra-operation prohibition and permitted OR latitude are split."
+    },
+    {
+      "unit": "p9.no-extra-operations",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.3-012"
+      ],
+      "rationale": "Exceptions shall not signal solely from operations beyond those required or permitted."
+    },
+    {
+      "unit": "p9.permitted-short-circuit-latitude",
+      "disposition": "permission",
+      "requirements": [
+        "S17.3-012"
+      ],
+      "rationale": "Permitted evaluation may signal divide-by-zero."
+    },
+    {
+      "unit": "p10",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.3-013"
+      ],
+      "rationale": "Unsupported invalid, underflow, and inexact flags are always quiet."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_17_3.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "ead9e1110313cf18f087a28199d993b4a81ed1853c16eb8d50973cb2e5c2a737",
+  "review_rationale": "Source registration for the Clause 17 heading and 17.1-17.5: the IEEE overview, derived types and constants, exceptions, rounding modes and underflow mode (batch213). Every unit hash-verified by an independent reviewer across four rounds; every flag row uses a named halting-off preamble and every mode round trip observes the changed value before restoring. Source accounting only."
+}

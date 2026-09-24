@@ -1,0 +1,390 @@
+{
+  "schema_version": 1,
+  "section": "17.1",
+  "subunits": {
+    "p1": [
+      "p1.support-purpose",
+      "p1.module-availability",
+      "p1.features-contents",
+      "p1.arithmetic-reexports-exceptions"
+    ],
+    "p2": [
+      "p2.baseline-exception-support",
+      "p2.inquiries",
+      "p2.features-minimum-exception-support"
+    ],
+    "p3": [
+      "p3.no-access-support-latitude",
+      "p3.signaling-entry-preserved",
+      "p3.quiet-entry-latitude"
+    ],
+    "p4": [
+      "p4.arithmetic-facilities",
+      "p4.features-minimum-arithmetic-support",
+      "p4.rounding-minimum-modes"
+    ],
+    "p5": [
+      "p5.performance-latitude",
+      "p5.no-features-subset-latitude",
+      "p5.fullest-support-with-features"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S17.1-001",
+      "title": "IEEE module availability and IEEE_FEATURES contents are processor dependent",
+      "source": "S17.1 p1.support-purpose, p1.module-availability, p1.features-contents; J3/24-007, 18 December 2023, physical PDF479.",
+      "source_units": [
+        "p1.support-purpose",
+        "p1.module-availability",
+        "p1.features-contents"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "IEEE_EXCEPTIONS, IEEE_ARITHMETIC, and IEEE_FEATURES provide support for ISO/IEC 60559:2020 facilities; the presence of the modules and the set of IEEE_FEATURES named constants are processor dependent.",
+      "facets": [
+        "ieee-modules-provide-60559-support",
+        "ieee-module-provision-processor-dependent",
+        "ieee-features-named-constant-set-processor-dependent"
+      ],
+      "pending": {
+        "ieee-modules-provide-60559-support": "Guard probe: compile a program using USE, INTRINSIC :: IEEE_ARITHMETIC, ONLY: IEEE_SUPPORT_DATATYPE. TRUE branch: run it with default real sentinel 0.0 and assert the inquiry returns a logical scalar. FALSE branch: skip all module-dependent Clause 17 fixtures for that processor.",
+        "ieee-module-provision-processor-dependent": "No portable oracle requires any processor to provide these modules; a catalogue-level capability profile records the compile result and treats absence as unsupported, not conforming evidence.",
+        "ieee-features-named-constant-set-processor-dependent": "No portable oracle requires a particular IEEE_FEATURES named constant to be present; fixtures for a feature constant first compile a USE, INTRINSIC :: IEEE_FEATURES, ONLY: that constant probe and skip the absent branch."
+      },
+      "oracle": "Plans are pending and source-derived. IEEE effects are tested only under explicit capability probes; the TRUE branch asserts the concrete flag, mode, type, constant, or operation effect, and the FALSE branch is a skip rather than a pass. Named FLAG-ROW-PREAMBLE(flag,x): under IEEE_SUPPORT_FLAG(flag,x), if IEEE_SUPPORT_HALTING(flag) then CALL IEEE_SET_HALTING_MODE(flag,.FALSE.); else CALL IEEE_GET_HALTING_MODE(flag,h) and proceed only if h is .FALSE. (otherwise skip); CALL IEEE_SET_FLAG(IEEE_ALL,.FALSE.). Positive plans establish a non-default state first by setting distinguished sentinel values and apply FLAG-ROW-PREAMBLE before any exception operation or flag-state assertion unless the row explicitly says the preamble is not applied because it would destroy the initial-state oracle.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Fixture authors must re-derive every pending plan from the pinned source. IEEE module availability, feature-set inclusion, exact supported real kinds, initial modes, halting mechanics, NaN payloads, the identity of a NaN result not fixed by the text, signaling-NaN behavior outside a stated rule, and operations that may also signal are treated as processor latitude.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 13, and 16 for source form, type declarations, expressions, execution constructs, scoping units, I/O and format contexts, intrinsic procedures, and intrinsic module USE mechanics. Unregistered dependencies explicitly retained: later Clause 17 inquiry and mode procedures, IEEE value constructors/classification procedures, exact operation descriptions, and feature profiles such as tests/profiles/ieee_binary.f90."
+    },
+    {
+      "id": "S17.1-002",
+      "title": "IEEE_ARITHMETIC makes IEEE_EXCEPTIONS public entities public",
+      "source": "S17.1 p1.arithmetic-reexports-exceptions; J3/24-007, 18 December 2023, physical PDF479.",
+      "source_units": [
+        "p1.arithmetic-reexports-exceptions"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "IEEE_ARITHMETIC behaves as though it used IEEE_EXCEPTIONS, so every public entity of IEEE_EXCEPTIONS is public through IEEE_ARITHMETIC.",
+      "facets": [
+        "ieee-arithmetic-reexports-ieee-exceptions-publics"
+      ],
+      "pending": {
+        "ieee-arithmetic-reexports-ieee-exceptions-publics": "Guard probe: compile USE, INTRINSIC :: IEEE_ARITHMETIC, ONLY: IEEE_OVERFLOW, IEEE_GET_FLAG. TRUE branch: call IEEE_GET_FLAG(IEEE_OVERFLOW,flag_value) into a logical initialized .true. and assert the call is valid plus the result is a logical scalar; FLAG-ROW-PREAMBLE is referenced but not applied because this callability row does not assert a flag state. FALSE branch: skip module-public propagation checks."
+      },
+      "oracle": "Plans are pending and source-derived. IEEE effects are tested only under explicit capability probes; the TRUE branch asserts the concrete flag, mode, type, constant, or operation effect, and the FALSE branch is a skip rather than a pass. Named FLAG-ROW-PREAMBLE(flag,x): under IEEE_SUPPORT_FLAG(flag,x), if IEEE_SUPPORT_HALTING(flag) then CALL IEEE_SET_HALTING_MODE(flag,.FALSE.); else CALL IEEE_GET_HALTING_MODE(flag,h) and proceed only if h is .FALSE. (otherwise skip); CALL IEEE_SET_FLAG(IEEE_ALL,.FALSE.). Positive plans establish a non-default state first by setting distinguished sentinel values and apply FLAG-ROW-PREAMBLE before any exception operation or flag-state assertion unless the row explicitly says the preamble is not applied because it would destroy the initial-state oracle.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Fixture authors must re-derive every pending plan from the pinned source. IEEE module availability, feature-set inclusion, exact supported real kinds, initial modes, halting mechanics, NaN payloads, the identity of a NaN result not fixed by the text, signaling-NaN behavior outside a stated rule, and operations that may also signal are treated as processor latitude.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 13, and 16 for source form, type declarations, expressions, execution constructs, scoping units, I/O and format contexts, intrinsic procedures, and intrinsic module USE mechanics. Unregistered dependencies explicitly retained: later Clause 17 inquiry and mode procedures, IEEE value constructors/classification procedures, exact operation descriptions, and feature profiles such as tests/profiles/ieee_binary.f90."
+    },
+    {
+      "id": "S17.1-003",
+      "title": "Access to exception modules guarantees overflow and divide-by-zero support for IEEE data and exposes inquiries",
+      "source": "S17.1 p2.baseline-exception-support, p2.inquiries; J3/24-007, 18 December 2023, physical PDF479.",
+      "source_units": [
+        "p2.baseline-exception-support",
+        "p2.inquiries"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "In a scoping unit with IEEE_EXCEPTIONS or IEEE_ARITHMETIC accessible, IEEE_OVERFLOW and IEEE_DIVIDE_BY_ZERO are supported for every IEEE real and complex floating-point kind, and IEEE_SUPPORT_FLAG and IEEE_SUPPORT_HALTING inquire about other exception and halting support.",
+      "facets": [
+        "overflow-supported-for-ieee-real-kinds",
+        "divide-by-zero-supported-for-ieee-real-kinds",
+        "overflow-divide-supported-for-ieee-complex-kinds",
+        "support-flag-inquires-other-exceptions",
+        "support-halting-inquires-halting-control"
+      ],
+      "pending": {
+        "overflow-supported-for-ieee-real-kinds": "Guard probe: for each real kind X in the fixture profile with IEEE_SUPPORT_DATATYPE(X) true and IEEE_SUPPORT_FLAG(IEEE_OVERFLOW,X) true. Apply FLAG-ROW-PREAMBLE(IEEE_OVERFLOW,X). TRUE branch: compute HUGE(X)*HUGE(X) through volatile variables and assert IEEE_GET_FLAG(IEEE_OVERFLOW) returns signaling. FALSE branch: skip that kind.",
+        "divide-by-zero-supported-for-ieee-real-kinds": "Guard probe: for each profiled real kind X with IEEE_SUPPORT_DATATYPE(X) true and IEEE_SUPPORT_FLAG(IEEE_DIVIDE_BY_ZERO,X) true. Apply FLAG-ROW-PREAMBLE(IEEE_DIVIDE_BY_ZERO,X). TRUE branch: compute 1.0_X/0.0_X through volatile variables and assert IEEE_GET_FLAG(IEEE_DIVIDE_BY_ZERO) returns signaling. FALSE branch: skip that kind.",
+        "overflow-divide-supported-for-ieee-complex-kinds": "Guard probe: for each profiled real kind X with IEEE_SUPPORT_DATATYPE(X) true and IEEE_SUPPORT_FLAG true for IEEE_OVERFLOW and IEEE_DIVIDE_BY_ZERO. Apply the FLAG-ROW-PREAMBLE for IEEE_OVERFLOW before the overflow case and for IEEE_DIVIDE_BY_ZERO before the divide case: if IEEE_SUPPORT_HALTING(FLAG) then CALL IEEE_SET_HALTING_MODE(FLAG,.FALSE.); else CALL IEEE_GET_HALTING_MODE(FLAG,h) and proceed only if h is .FALSE. (otherwise skip); CALL IEEE_SET_FLAG(IEEE_ALL,.FALSE.). TRUE branch: complex multiplication causing a part overflow signals IEEE_OVERFLOW, and complex division by a zero part signals IEEE_DIVIDE_BY_ZERO. FALSE branch: skip that kind.",
+        "support-flag-inquires-other-exceptions": "Guard probe: compile USE, INTRINSIC :: IEEE_EXCEPTIONS, ONLY: IEEE_INVALID, IEEE_SUPPORT_FLAG. TRUE branch: call IEEE_SUPPORT_FLAG(IEEE_INVALID, 0.0) into a logical initialized .true. and assert only logical scalar callability. FALSE branch: skip optional-flag support effects.",
+        "support-halting-inquires-halting-control": "Guard probe: compile USE, INTRINSIC :: IEEE_EXCEPTIONS, ONLY: IEEE_OVERFLOW, IEEE_SUPPORT_HALTING. TRUE branch: call IEEE_SUPPORT_HALTING(IEEE_OVERFLOW) into a logical initialized .true. and assert logical scalar callability. FALSE branch: skip halting-control effects."
+      },
+      "oracle": "Plans are pending and source-derived. IEEE effects are tested only under explicit capability probes; the TRUE branch asserts the concrete flag, mode, type, constant, or operation effect, and the FALSE branch is a skip rather than a pass. Named FLAG-ROW-PREAMBLE(flag,x): under IEEE_SUPPORT_FLAG(flag,x), if IEEE_SUPPORT_HALTING(flag) then CALL IEEE_SET_HALTING_MODE(flag,.FALSE.); else CALL IEEE_GET_HALTING_MODE(flag,h) and proceed only if h is .FALSE. (otherwise skip); CALL IEEE_SET_FLAG(IEEE_ALL,.FALSE.). Positive plans establish a non-default state first by setting distinguished sentinel values and apply FLAG-ROW-PREAMBLE before any exception operation or flag-state assertion unless the row explicitly says the preamble is not applied because it would destroy the initial-state oracle.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Fixture authors must re-derive every pending plan from the pinned source. IEEE module availability, feature-set inclusion, exact supported real kinds, initial modes, halting mechanics, NaN payloads, the identity of a NaN result not fixed by the text, signaling-NaN behavior outside a stated rule, and operations that may also signal are treated as processor latitude.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 13, and 16 for source form, type declarations, expressions, execution constructs, scoping units, I/O and format contexts, intrinsic procedures, and intrinsic module USE mechanics. Unregistered dependencies explicitly retained: later Clause 17 inquiry and mode procedures, IEEE value constructors/classification procedures, exact operation descriptions, and feature profiles such as tests/profiles/ieee_binary.f90."
+    },
+    {
+      "id": "S17.1-004",
+      "title": "Accessible IEEE_FEATURES exception constants require minimum support",
+      "source": "S17.1 p2.features-minimum-exception-support; J3/24-007, 18 December 2023, physical PDF479.",
+      "source_units": [
+        "p2.features-minimum-exception-support"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Accessibility of IEEE_UNDERFLOW_FLAG, IEEE_INEXACT_FLAG, IEEE_INVALID_FLAG, or IEEE_HALTING requires support for the corresponding exception for at least one real kind or for halting control in the scoping unit.",
+      "facets": [
+        "accessible-underflow-flag-requires-some-real-underflow-support",
+        "accessible-inexact-flag-requires-some-real-inexact-support",
+        "accessible-invalid-flag-requires-some-real-invalid-support",
+        "accessible-ieee-halting-requires-halting-control-support"
+      ],
+      "pending": {
+        "accessible-underflow-flag-requires-some-real-underflow-support": "Guard probe: compile with USE, INTRINSIC :: IEEE_FEATURES, ONLY: IEEE_UNDERFLOW_FLAG and a generated profile containing candidate real kinds. TRUE branch: at least one profiled candidate has IEEE_SUPPORT_FLAG(IEEE_UNDERFLOW,X) true; for that candidate, apply FLAG-ROW-PREAMBLE(IEEE_UNDERFLOW,X), then guarded inexact TINY(X)/3.0_X sets IEEE_UNDERFLOW. FALSE branch: record an inconclusive profile gap rather than a pass.",
+        "accessible-inexact-flag-requires-some-real-inexact-support": "Guard probe: compile with USE, INTRINSIC :: IEEE_FEATURES, ONLY: IEEE_INEXACT_FLAG and generated candidate real kinds. TRUE branch: at least one candidate has IEEE_SUPPORT_FLAG(IEEE_INEXACT,X) true; for that candidate, apply FLAG-ROW-PREAMBLE(IEEE_INEXACT,X), then volatile 1.0_X/3.0_X sets IEEE_INEXACT. FALSE branch: record an inconclusive profile gap rather than a pass.",
+        "accessible-invalid-flag-requires-some-real-invalid-support": "Guard probe: compile with USE, INTRINSIC :: IEEE_FEATURES, ONLY: IEEE_INVALID_FLAG and generated candidate real kinds. TRUE branch: at least one candidate has IEEE_SUPPORT_FLAG(IEEE_INVALID,X) true; for that candidate, apply FLAG-ROW-PREAMBLE(IEEE_INVALID,X), then SQRT(-1.0_X) sets IEEE_INVALID. FALSE branch: record an inconclusive profile gap rather than a pass.",
+        "accessible-ieee-halting-requires-halting-control-support": "Guard probe: compile with USE, INTRINSIC :: IEEE_FEATURES, ONLY: IEEE_HALTING. TRUE branch: IEEE_SUPPORT_HALTING(IEEE_OVERFLOW) or another supported flag is true, then IEEE_SET_HALTING_MODE(flag,.FALSE.) and IEEE_GET_HALTING_MODE round-trip .FALSE.; no halting .TRUE. run is executed. FALSE branch: skip."
+      },
+      "oracle": "Plans are pending and source-derived. IEEE effects are tested only under explicit capability probes; the TRUE branch asserts the concrete flag, mode, type, constant, or operation effect, and the FALSE branch is a skip rather than a pass. Named FLAG-ROW-PREAMBLE(flag,x): under IEEE_SUPPORT_FLAG(flag,x), if IEEE_SUPPORT_HALTING(flag) then CALL IEEE_SET_HALTING_MODE(flag,.FALSE.); else CALL IEEE_GET_HALTING_MODE(flag,h) and proceed only if h is .FALSE. (otherwise skip); CALL IEEE_SET_FLAG(IEEE_ALL,.FALSE.). Positive plans establish a non-default state first by setting distinguished sentinel values and apply FLAG-ROW-PREAMBLE before any exception operation or flag-state assertion unless the row explicitly says the preamble is not applied because it would destroy the initial-state oracle.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Fixture authors must re-derive every pending plan from the pinned source. IEEE module availability, feature-set inclusion, exact supported real kinds, initial modes, halting mechanics, NaN payloads, the identity of a NaN result not fixed by the text, signaling-NaN behavior outside a stated rule, and operations that may also signal are treated as processor latitude.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 13, and 16 for source form, type declarations, expressions, execution constructs, scoping units, I/O and format contexts, intrinsic procedures, and intrinsic module USE mechanics. Unregistered dependencies explicitly retained: later Clause 17 inquiry and mode procedures, IEEE value constructors/classification procedures, exact operation descriptions, and feature profiles such as tests/profiles/ieee_binary.f90."
+    },
+    {
+      "id": "S17.1-005",
+      "title": "Scoping units without IEEE module access have processor-dependent support but preserve signaling flags",
+      "source": "S17.1 p3.no-access-support-latitude, p3.signaling-entry-preserved, p3.quiet-entry-latitude; J3/24-007, 18 December 2023, physical PDF479.",
+      "source_units": [
+        "p3.no-access-support-latitude",
+        "p3.signaling-entry-preserved",
+        "p3.quiet-entry-latitude"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A scoping unit without IEEE_FEATURES, IEEE_EXCEPTIONS, or IEEE_ARITHMETIC has a processor-dependent support level; a flag signaling on entry is signaling on exit, while a flag quiet on entry has processor-dependent exit state.",
+      "facets": [
+        "no-ieee-module-access-support-processor-dependent",
+        "no-access-signaling-flag-preserved-on-exit",
+        "no-access-quiet-flag-exit-state-processor-dependent"
+      ],
+      "pending": {
+        "no-ieee-module-access-support-processor-dependent": "No portable oracle requires exception support in a no-access scoping unit; fixtures use the caller capability profile and make no support claim inside the no-access procedure.",
+        "no-access-signaling-flag-preserved-on-exit": "Guard probe: caller with IEEE_EXCEPTIONS support and IEEE_SUPPORT_FLAG(IEEE_OVERFLOW,X) true applies FLAG-ROW-PREAMBLE(IEEE_OVERFLOW,X), then sets IEEE_OVERFLOW signaling and calls an external subroutine whose source has no IEEE USE statements and performs only integer sentinel assignment. TRUE branch: caller observes IEEE_OVERFLOW still signaling after return. FALSE branch: skip unsupported flag.",
+        "no-access-quiet-flag-exit-state-processor-dependent": "No portable oracle fixes the exit state from a no-access subroutine entered with a quiet flag; FLAG-ROW-PREAMBLE is referenced but not applied because either quiet or signaling on return is permitted and future fixtures must not fail either state."
+      },
+      "oracle": "Plans are pending and source-derived. IEEE effects are tested only under explicit capability probes; the TRUE branch asserts the concrete flag, mode, type, constant, or operation effect, and the FALSE branch is a skip rather than a pass. Named FLAG-ROW-PREAMBLE(flag,x): under IEEE_SUPPORT_FLAG(flag,x), if IEEE_SUPPORT_HALTING(flag) then CALL IEEE_SET_HALTING_MODE(flag,.FALSE.); else CALL IEEE_GET_HALTING_MODE(flag,h) and proceed only if h is .FALSE. (otherwise skip); CALL IEEE_SET_FLAG(IEEE_ALL,.FALSE.). Positive plans establish a non-default state first by setting distinguished sentinel values and apply FLAG-ROW-PREAMBLE before any exception operation or flag-state assertion unless the row explicitly says the preamble is not applied because it would destroy the initial-state oracle.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Fixture authors must re-derive every pending plan from the pinned source. IEEE module availability, feature-set inclusion, exact supported real kinds, initial modes, halting mechanics, NaN payloads, the identity of a NaN result not fixed by the text, signaling-NaN behavior outside a stated rule, and operations that may also signal are treated as processor latitude.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 13, and 16 for source form, type declarations, expressions, execution constructs, scoping units, I/O and format contexts, intrinsic procedures, and intrinsic module USE mechanics. Unregistered dependencies explicitly retained: later Clause 17 inquiry and mode procedures, IEEE value constructors/classification procedures, exact operation descriptions, and feature profiles such as tests/profiles/ieee_binary.f90."
+    },
+    {
+      "id": "S17.1-006",
+      "title": "Accessible IEEE_FEATURES arithmetic constants require minimum arithmetic feature support",
+      "source": "S17.1 p4.arithmetic-facilities, p4.features-minimum-arithmetic-support, p4.rounding-minimum-modes; J3/24-007, 18 December 2023, physical PDF479.",
+      "source_units": [
+        "p4.arithmetic-facilities",
+        "p4.features-minimum-arithmetic-support",
+        "p4.rounding-minimum-modes"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "IEEE_ARITHMETIC provides additional 60559 facilities, and accessibility of IEEE_FEATURES constants requires support for the named arithmetic feature for at least one real kind; IEEE_ROUNDING requires IEEE_NEAREST, IEEE_TO_ZERO, IEEE_UP, and IEEE_DOWN, plus IEEE_AWAY for a decimal IEEE datatype kind.",
+      "facets": [
+        "ieee-arithmetic-additional-facilities-available",
+        "accessible-ieee-datatype-requires-some-real-ieee-arithmetic",
+        "accessible-ieee-denormal-or-subnormal-requires-some-real-subnormal-support",
+        "accessible-ieee-divide-inf-nan-sqrt-require-some-real-support",
+        "accessible-ieee-rounding-requires-four-directed-modes",
+        "decimal-ieee-datatype-requires-ieee-away-rounding"
+      ],
+      "pending": {
+        "ieee-arithmetic-additional-facilities-available": "Guard probe: compile USE, INTRINSIC :: IEEE_ARITHMETIC, ONLY: IEEE_SUPPORT_NAN, IEEE_SUPPORT_INF, IEEE_SUPPORT_SQRT. TRUE branch: each inquiry is callable with default real and returns a logical scalar initialized from a sentinel. FALSE branch: skip arithmetic-facility checks.",
+        "accessible-ieee-datatype-requires-some-real-ieee-arithmetic": "Guard probe: compile with USE, INTRINSIC :: IEEE_FEATURES, ONLY: IEEE_DATATYPE and generated candidate real kinds. TRUE branch: at least one candidate has IEEE_SUPPORT_DATATYPE(X) true and exact 1.5_kind + 0.25_kind yields 1.75_kind. FALSE branch: record an inconclusive profile gap rather than a pass.",
+        "accessible-ieee-denormal-or-subnormal-requires-some-real-subnormal-support": "Guard probe: compile separately for IEEE_DENORMAL and IEEE_SUBNORMAL accessibility. TRUE branch: at least one profiled kind has IEEE_SUPPORT_DATATYPE(X) true for the IEEE_CLASS observer and IEEE_SUPPORT_DENORMAL(X) or IEEE_SUPPORT_SUBNORMAL(X) true; under IEEE_SUPPORT_UNDERFLOW_CONTROL(X) true, the fixture first sets gradual underflow and observes TINY(X)/RADIX(X) with IEEE_CLASS as subnormal; under IEEE_SUPPORT_UNDERFLOW_CONTROL(X) false, it observes only a nonzero supported-subnormal result and does not assert the mode effect. FALSE branch: record an inconclusive profile gap rather than a pass.",
+        "accessible-ieee-divide-inf-nan-sqrt-require-some-real-support": "Guard probe: compile each accessible constant IEEE_DIVIDE, IEEE_INF, IEEE_NAN, IEEE_SQRT and generated candidate real kinds. TRUE branch: at least one candidate satisfies the matching IEEE_SUPPORT_* inquiry, and any IEEE_VALUE, IEEE_CLASS, or IEEE_IS_NAN observer is invoked only in the IEEE_SUPPORT_DATATYPE(X) true branch; concrete observations are 1.0_X/2.0_X == 0.5_X, IEEE_VALUE positive infinity classified as positive infinity, IEEE_VALUE quiet NaN observed by IEEE_IS_NAN, and SQRT(4.0_X)==2.0_X. FALSE branch: record an inconclusive profile gap rather than a pass.",
+        "accessible-ieee-rounding-requires-four-directed-modes": "Guard probe: compile with IEEE_ROUNDING accessible and choose a profiled radix-two kind with IEEE_SUPPORT_ROUNDING true for IEEE_NEAREST, IEEE_TO_ZERO, IEEE_UP, and IEEE_DOWN. TRUE branch: IEEE_SET_ROUNDING_MODE plus IEEE_GET_ROUNDING_MODE round-trips each mode, then 1.0 + EPSILON(1.0)/2.0 gives the directed tie results. FALSE branch: record an inconclusive profile gap rather than a pass.",
+        "decimal-ieee-datatype-requires-ieee-away-rounding": "Guard probe: find a profiled real kind with IEEE_SUPPORT_DATATYPE(X) true and RADIX(X)==10. TRUE branch: IEEE_SUPPORT_ROUNDING(IEEE_AWAY,X) is true and set/get round-trips IEEE_AWAY. FALSE branch: skip because no decimal IEEE datatype kind is observed."
+      },
+      "oracle": "Plans are pending and source-derived. IEEE effects are tested only under explicit capability probes; the TRUE branch asserts the concrete flag, mode, type, constant, or operation effect, and the FALSE branch is a skip rather than a pass. Named FLAG-ROW-PREAMBLE(flag,x): under IEEE_SUPPORT_FLAG(flag,x), if IEEE_SUPPORT_HALTING(flag) then CALL IEEE_SET_HALTING_MODE(flag,.FALSE.); else CALL IEEE_GET_HALTING_MODE(flag,h) and proceed only if h is .FALSE. (otherwise skip); CALL IEEE_SET_FLAG(IEEE_ALL,.FALSE.). Positive plans establish a non-default state first by setting distinguished sentinel values and apply FLAG-ROW-PREAMBLE before any exception operation or flag-state assertion unless the row explicitly says the preamble is not applied because it would destroy the initial-state oracle.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Fixture authors must re-derive every pending plan from the pinned source. IEEE module availability, feature-set inclusion, exact supported real kinds, initial modes, halting mechanics, NaN payloads, the identity of a NaN result not fixed by the text, signaling-NaN behavior outside a stated rule, and operations that may also signal are treated as processor latitude.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 13, and 16 for source form, type declarations, expressions, execution constructs, scoping units, I/O and format contexts, intrinsic procedures, and intrinsic module USE mechanics. Unregistered dependencies explicitly retained: later Clause 17 inquiry and mode procedures, IEEE value constructors/classification procedures, exact operation descriptions, and feature profiles such as tests/profiles/ieee_binary.f90."
+    },
+    {
+      "id": "S17.1-007",
+      "title": "Feature subsets and maximal IEEE feature support depend on IEEE_FEATURES accessibility",
+      "source": "S17.1 p5.performance-latitude, p5.no-features-subset-latitude, p5.fullest-support-with-features; J3/24-007, 18 December 2023, physical PDF479.",
+      "source_units": [
+        "p5.performance-latitude",
+        "p5.no-features-subset-latitude",
+        "p5.fullest-support-with-features"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Support can slow execution; without IEEE_FEATURES the supported subset is processor dependent, and accessing all IEEE_FEATURES requests the processor fullest support.",
+      "facets": [
+        "ieee-feature-support-performance-latitude",
+        "no-ieee-features-supported-subset-processor-dependent",
+        "access-all-ieee-features-requests-fullest-support"
+      ],
+      "pending": {
+        "ieee-feature-support-performance-latitude": "No portable oracle constrains execution speed changes caused by IEEE feature support; future tests must not compare timings.",
+        "no-ieee-features-supported-subset-processor-dependent": "No portable oracle fixes the feature subset in a program using IEEE_ARITHMETIC without IEEE_FEATURES; fixtures record the observed capability branch and skip absent features.",
+        "access-all-ieee-features-requests-fullest-support": "Guard probe: compile a control using IEEE_ARITHMETIC alone and a companion adding USE, INTRINSIC :: IEEE_FEATURES. TRUE branch: compare only monotone inquiry facts fixed by this section, such as a feature constant accessibility enabling its minimum-support guarded branch; do not require a particular processor-dependent feature set. FALSE branch: skip absent constants."
+      },
+      "oracle": "Plans are pending and source-derived. IEEE effects are tested only under explicit capability probes; the TRUE branch asserts the concrete flag, mode, type, constant, or operation effect, and the FALSE branch is a skip rather than a pass. Named FLAG-ROW-PREAMBLE(flag,x): under IEEE_SUPPORT_FLAG(flag,x), if IEEE_SUPPORT_HALTING(flag) then CALL IEEE_SET_HALTING_MODE(flag,.FALSE.); else CALL IEEE_GET_HALTING_MODE(flag,h) and proceed only if h is .FALSE. (otherwise skip); CALL IEEE_SET_FLAG(IEEE_ALL,.FALSE.). Positive plans establish a non-default state first by setting distinguished sentinel values and apply FLAG-ROW-PREAMBLE before any exception operation or flag-state assertion unless the row explicitly says the preamble is not applied because it would destroy the initial-state oracle.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Fixture authors must re-derive every pending plan from the pinned source. IEEE module availability, feature-set inclusion, exact supported real kinds, initial modes, halting mechanics, NaN payloads, the identity of a NaN result not fixed by the text, signaling-NaN behavior outside a stated rule, and operations that may also signal are treated as processor latitude.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 13, and 16 for source form, type declarations, expressions, execution constructs, scoping units, I/O and format contexts, intrinsic procedures, and intrinsic module USE mechanics. Unregistered dependencies explicitly retained: later Clause 17 inquiry and mode procedures, IEEE value constructors/classification procedures, exact operation descriptions, and feature profiles such as tests/profiles/ieee_binary.f90."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "structural",
+      "rationale": "Mixed support definition, module/constant latitude, and reexport obligation are split."
+    },
+    {
+      "unit": "p1.support-purpose",
+      "disposition": "definition",
+      "requirements": [
+        "S17.1-001"
+      ],
+      "rationale": "Defines the support purpose of the IEEE intrinsic modules."
+    },
+    {
+      "unit": "p1.module-availability",
+      "disposition": "permission",
+      "requirements": [
+        "S17.1-001"
+      ],
+      "rationale": "Module provision is processor dependent."
+    },
+    {
+      "unit": "p1.features-contents",
+      "disposition": "permission",
+      "requirements": [
+        "S17.1-001"
+      ],
+      "rationale": "IEEE_FEATURES constant inclusion is processor dependent."
+    },
+    {
+      "unit": "p1.arithmetic-reexports-exceptions",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.1-002"
+      ],
+      "rationale": "IEEE_ARITHMETIC public propagation requirement."
+    },
+    {
+      "unit": "note1",
+      "disposition": "informative",
+      "rationale": "NOTE only explains that module entities are not themselves intrinsic."
+    },
+    {
+      "unit": "p2",
+      "disposition": "structural",
+      "rationale": "Baseline support, inquiries, and feature-constant minimum support are split."
+    },
+    {
+      "unit": "p2.baseline-exception-support",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.1-003"
+      ],
+      "rationale": "Overflow and divide-by-zero support for IEEE real/complex data."
+    },
+    {
+      "unit": "p2.inquiries",
+      "disposition": "definition",
+      "requirements": [
+        "S17.1-003"
+      ],
+      "rationale": "Names inquiries for other exception and halting support."
+    },
+    {
+      "unit": "p2.features-minimum-exception-support",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.1-004"
+      ],
+      "rationale": "Accessible exception feature constants impose minimum support."
+    },
+    {
+      "unit": "note2",
+      "disposition": "informative",
+      "rationale": "NOTE explains invalid support motivation and is not normative."
+    },
+    {
+      "unit": "p3",
+      "disposition": "structural",
+      "rationale": "No-access support latitude, signaling preservation, and quiet-exit latitude are split."
+    },
+    {
+      "unit": "p3.no-access-support-latitude",
+      "disposition": "permission",
+      "requirements": [
+        "S17.1-005"
+      ],
+      "rationale": "No-access support level is processor dependent."
+    },
+    {
+      "unit": "p3.signaling-entry-preserved",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.1-005"
+      ],
+      "rationale": "Signaling flag on no-access entry is signaling on exit."
+    },
+    {
+      "unit": "p3.quiet-entry-latitude",
+      "disposition": "permission",
+      "requirements": [
+        "S17.1-005"
+      ],
+      "rationale": "Quiet flag exit state from no-access scoping unit is processor dependent."
+    },
+    {
+      "unit": "p4",
+      "disposition": "structural",
+      "rationale": "Arithmetic availability, feature minimum support, and rounding mode minimums are split."
+    },
+    {
+      "unit": "p4.arithmetic-facilities",
+      "disposition": "definition",
+      "requirements": [
+        "S17.1-006"
+      ],
+      "rationale": "Identifies additional facilities available from IEEE_ARITHMETIC."
+    },
+    {
+      "unit": "p4.features-minimum-arithmetic-support",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.1-006"
+      ],
+      "rationale": "Accessible arithmetic feature constants impose minimum support."
+    },
+    {
+      "unit": "p4.rounding-minimum-modes",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.1-006"
+      ],
+      "rationale": "IEEE_ROUNDING imposes required rounding-mode support."
+    },
+    {
+      "unit": "p5",
+      "disposition": "structural",
+      "rationale": "Performance latitude, no-FEATURES subset latitude, and all-FEATURES support request are split."
+    },
+    {
+      "unit": "p5.performance-latitude",
+      "disposition": "permission",
+      "requirements": [
+        "S17.1-007"
+      ],
+      "rationale": "Execution slowdown is possible and processor dependent."
+    },
+    {
+      "unit": "p5.no-features-subset-latitude",
+      "disposition": "permission",
+      "requirements": [
+        "S17.1-007"
+      ],
+      "rationale": "Supported subset without IEEE_FEATURES is processor dependent."
+    },
+    {
+      "unit": "p5.fullest-support-with-features",
+      "disposition": "definition",
+      "requirements": [
+        "S17.1-007"
+      ],
+      "rationale": "Accessing all IEEE_FEATURES requests the processor fullest support."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_17_1.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "cba01eb9ec81767a2b365aa64788692cc52aa149b165c61bec108faabff02cc4",
+  "review_rationale": "Source registration for the Clause 17 heading and 17.1-17.5: the IEEE overview, derived types and constants, exceptions, rounding modes and underflow mode (batch213). Every unit hash-verified by an independent reviewer across four rounds; every flag row uses a named halting-off preamble and every mode round trip observes the changed value before restoring. Source accounting only."
+}

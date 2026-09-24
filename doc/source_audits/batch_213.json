@@ -1,0 +1,85 @@
+{
+ "schema_version": 1,
+ "review_type": "independent-clause17-ieee-overview-underflow-source-213-review",
+ "review_date": "2026-09-23",
+ "baseline_commit": "2fb792e",
+ "state": "source-registered",
+ "packet_kind": "SOURCE",
+ "scope": {
+  "sections": [
+   "17-17.5"
+  ],
+  "pdf_pages": "479-484",
+  "base_units": 34,
+  "numbered_rules_preaccounted": 0,
+  "accounted_base_units_delta": 34
+ },
+ "review_rounds": [
+  {
+   "round": 1,
+   "commit": "e83029c",
+   "decision": "BLOCKED",
+   "findings": [
+    {
+     "id": "C17AR-001",
+     "issue": "plans compared IEEE_FLAG_TYPE values with == and /=, which are defined only for IEEE_CLASS_TYPE and IEEE_ROUND_TYPE",
+     "resolution": "flag constants observed through IEEE_SET_FLAG/IEEE_GET_FLAG behaviour"
+    },
+    {
+     "id": "C17AR-002",
+     "issue": "the masked-WHERE divide-by-zero plan was vacuous (mask all false)",
+     "resolution": "A = [2.0, 0.0, -4.0] under WHERE (A > 0.0) A = 1.0/A gives [0.5, 0.0, -4.0] with IEEE_DIVIDE_BY_ZERO quiet"
+    },
+    {
+     "id": "C17AR-003",
+     "issue": "overflow plans omitted the CMPLX conversion case the text names",
+     "resolution": "guarded CMPLX(HUGE(0.0D0), 0.0D0, KIND(0.0)) overflow branch"
+    },
+    {
+     "id": "C17AR-004",
+     "issue": "underflow/inexact plans omitted assignment-caused cases",
+     "resolution": "double-to-default assignment rows for underflow and inexact, with the exact-underflow caveat"
+    }
+   ]
+  },
+  {
+   "round": 2,
+   "commit": "3bcfb73",
+   "decision": "BLOCKED",
+   "findings": [
+    {
+     "id": "C17AR-005",
+     "issue": "many flag rows said only 'halting disabled' instead of the explicit halting-off branch",
+     "resolution": "explicit branch on each flag row"
+    }
+   ]
+  },
+  {
+   "round": 3,
+   "commit": "2347c47",
+   "decision": "BLOCKED",
+   "findings": [
+    {
+     "id": "C17AR-005",
+     "issue": "reopened: two rows still lacked the branch",
+     "resolution": "a named FLAG-ROW-PREAMBLE referenced by every flag set/get/assert row"
+    },
+    {
+     "id": "C17AR-006",
+     "issue": "status, rounding and underflow set/restore round trips did not observe the changed value before restoring",
+     "resolution": "each round trip GET-confirms the changed value, then the restored original"
+    }
+   ]
+  },
+  {
+   "round": 4,
+   "commit": "ed011a0",
+   "decision": "VERIFIED",
+   "findings": []
+  }
+ ],
+ "separation": {
+  "authored_facets_unchanged": true,
+  "tests_untouched": true
+ }
+}

@@ -1,0 +1,146 @@
+{
+  "schema_version": 1,
+  "section": "17.5",
+  "subunits": {
+    "p2": [
+      "p2.control-procedures",
+      "p2.initial-latitude",
+      "p2.procedure-restore"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S17.5-001",
+      "title": "Processors may support gradual or abrupt underflow mode control with performance latitude",
+      "source": "S17.5 p1; J3/24-007, 18 December 2023, physical PDF483.",
+      "source_units": [
+        "p1"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Some processors allow execution-time control over gradual underflow, producing subnormal numbers, versus abrupt underflow, producing zero; abrupt mode may improve performance.",
+      "facets": [
+        "underflow-mode-control-processor-dependent",
+        "gradual-underflow-produces-subnormal",
+        "abrupt-underflow-produces-zero",
+        "abrupt-underflow-performance-latitude"
+      ],
+      "pending": {
+        "underflow-mode-control-processor-dependent": "No portable oracle requires underflow-mode control; fixtures first query IEEE_SUPPORT_UNDERFLOW_CONTROL and skip control effects on the false branch.",
+        "gradual-underflow-produces-subnormal": "Guard probe: kind X has IEEE_SUPPORT_DATATYPE(X) true for the IEEE_CLASS observer, IEEE_SUPPORT_UNDERFLOW_CONTROL(X) true, IEEE_SUPPORT_SUBNORMAL(X) true, and IEEE_SUPPORT_FLAG(IEEE_UNDERFLOW,X) true. Apply FLAG-ROW-PREAMBLE(IEEE_UNDERFLOW,X). TRUE branch: set gradual mode, compute TINY(X)/2.0_X, and assert IEEE_CLASS reports a positive subnormal result. FALSE branch: skip.",
+        "abrupt-underflow-produces-zero": "Guard probe: kind X supports underflow control and abrupt mode. TRUE branch: set abrupt mode, compute TINY(X)/2.0_X through volatile variables, assert result is zero and restore saved mode. FALSE branch: skip.",
+        "abrupt-underflow-performance-latitude": "No portable oracle constrains performance; fixtures must not compare timings between gradual and abrupt modes."
+      },
+      "oracle": "Plans are pending and source-derived. IEEE effects are tested only under explicit capability probes; the TRUE branch asserts the concrete flag, mode, type, constant, or operation effect, and the FALSE branch is a skip rather than a pass. Named FLAG-ROW-PREAMBLE(flag,x): under IEEE_SUPPORT_FLAG(flag,x), if IEEE_SUPPORT_HALTING(flag) then CALL IEEE_SET_HALTING_MODE(flag,.FALSE.); else CALL IEEE_GET_HALTING_MODE(flag,h) and proceed only if h is .FALSE. (otherwise skip); CALL IEEE_SET_FLAG(IEEE_ALL,.FALSE.). Positive plans establish a non-default state first by setting distinguished sentinel values and apply FLAG-ROW-PREAMBLE before any exception operation or flag-state assertion unless the row explicitly says the preamble is not applied because it would destroy the initial-state oracle.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Fixture authors must re-derive every pending plan from the pinned source. IEEE module availability, feature-set inclusion, exact supported real kinds, initial modes, halting mechanics, NaN payloads, the identity of a NaN result not fixed by the text, signaling-NaN behavior outside a stated rule, and operations that may also signal are treated as processor latitude.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 13, and 16 for source form, type declarations, expressions, execution constructs, scoping units, I/O and format contexts, intrinsic procedures, and intrinsic module USE mechanics. Unregistered dependencies explicitly retained: later Clause 17 inquiry and mode procedures, IEEE value constructors/classification procedures, exact operation descriptions, and feature profiles such as tests/profiles/ieee_binary.f90."
+    },
+    {
+      "id": "S17.5-002",
+      "title": "IEEE underflow mode procedures inquire, set, and restore supported modes",
+      "source": "S17.5 p2.control-procedures, p2.initial-latitude, p2.procedure-restore; J3/24-007, 18 December 2023, physical PDF483.",
+      "source_units": [
+        "p2.control-procedures",
+        "p2.initial-latitude",
+        "p2.procedure-restore"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "IEEE_SET_UNDERFLOW_MODE controls underflow mode, IEEE_GET_UNDERFLOW_MODE gets it, IEEE_SUPPORT_UNDERFLOW_CONTROL inquires support, the initial mode is processor dependent, and procedures other than IEEE_SET_UNDERFLOW_MODE or IEEE_SET_STATUS preserve and restore the mode.",
+      "facets": [
+        "ieee-support-underflow-control-inquires-facility",
+        "ieee-get-underflow-mode-retrieves-current-mode",
+        "ieee-set-underflow-mode-alters-current-mode",
+        "initial-underflow-mode-processor-dependent",
+        "underflow-mode-unchanged-on-procedure-entry",
+        "underflow-mode-restored-on-procedure-return"
+      ],
+      "pending": {
+        "ieee-support-underflow-control-inquires-facility": "Guard probe: compile USE, INTRINSIC :: IEEE_ARITHMETIC, ONLY: IEEE_SUPPORT_UNDERFLOW_CONTROL. TRUE branch: call with default real into a logical sentinel and branch on the result; no support result is forced. FALSE branch: skip.",
+        "ieee-get-underflow-mode-retrieves-current-mode": "Guard probe: IEEE_SUPPORT_UNDERFLOW_CONTROL(X) true. TRUE branch: set mode .true., initialize result .false., GET observes .true.; set .false., initialize result .true., GET observes .false.; restore saved mode. FALSE branch: skip.",
+        "ieee-set-underflow-mode-alters-current-mode": "Guard probe: same support. TRUE branch: SET to the opposite of saved mode and GET observes the opposite before restoration. FALSE branch: skip.",
+        "initial-underflow-mode-processor-dependent": "No portable oracle fixes the initial underflow mode; fixtures save it at start and restore it at completion.",
+        "underflow-mode-unchanged-on-procedure-entry": "Guard probe: support true; caller sets saved mode to .true. then calls helper. TRUE branch: helper first GET observes .true. before setters. FALSE branch: skip.",
+        "underflow-mode-restored-on-procedure-return": "Guard probe: same helper changes mode to .false., calls IEEE_GET_UNDERFLOW_MODE before return, and confirms .false. was the changed in-helper value. TRUE branch: caller GET observes original .true. after return, then restores the process initial mode. FALSE branch: skip."
+      },
+      "oracle": "Plans are pending and source-derived. IEEE effects are tested only under explicit capability probes; the TRUE branch asserts the concrete flag, mode, type, constant, or operation effect, and the FALSE branch is a skip rather than a pass. Named FLAG-ROW-PREAMBLE(flag,x): under IEEE_SUPPORT_FLAG(flag,x), if IEEE_SUPPORT_HALTING(flag) then CALL IEEE_SET_HALTING_MODE(flag,.FALSE.); else CALL IEEE_GET_HALTING_MODE(flag,h) and proceed only if h is .FALSE. (otherwise skip); CALL IEEE_SET_FLAG(IEEE_ALL,.FALSE.). Positive plans establish a non-default state first by setting distinguished sentinel values and apply FLAG-ROW-PREAMBLE before any exception operation or flag-state assertion unless the row explicitly says the preamble is not applied because it would destroy the initial-state oracle.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Fixture authors must re-derive every pending plan from the pinned source. IEEE module availability, feature-set inclusion, exact supported real kinds, initial modes, halting mechanics, NaN payloads, the identity of a NaN result not fixed by the text, signaling-NaN behavior outside a stated rule, and operations that may also signal are treated as processor latitude.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 13, and 16 for source form, type declarations, expressions, execution constructs, scoping units, I/O and format contexts, intrinsic procedures, and intrinsic module USE mechanics. Unregistered dependencies explicitly retained: later Clause 17 inquiry and mode procedures, IEEE value constructors/classification procedures, exact operation descriptions, and feature profiles such as tests/profiles/ieee_binary.f90."
+    },
+    {
+      "id": "S17.5-003",
+      "title": "Underflow mode affects only types whose support inquiry is true",
+      "source": "S17.5 p3; J3/24-007, 18 December 2023, physical PDF483.",
+      "source_units": [
+        "p3"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Underflow mode affects only floating-point calculations of a type corresponding to an X for which IEEE_SUPPORT_UNDERFLOW_CONTROL returns true.",
+      "facets": [
+        "underflow-mode-effects-guarded-by-support-underflow-control-true",
+        "underflow-mode-no-effect-assertion-for-support-false-types"
+      ],
+      "pending": {
+        "underflow-mode-effects-guarded-by-support-underflow-control-true": "Guard probe: for each profiled real kind X, IEEE_SUPPORT_UNDERFLOW_CONTROL(X) returns true. TRUE branch: run the gradual versus abrupt TINY(X)/2.0_X oracle for that kind only. FALSE branch: skip effect assertions for that kind.",
+        "underflow-mode-no-effect-assertion-for-support-false-types": "Guard probe: IEEE_SUPPORT_UNDERFLOW_CONTROL(Y) returns false for a profiled kind Y. TRUE branch: set/get underflow mode using a supported kind elsewhere, then perform tiny calculations of kind Y only as a smoke run; no value difference is asserted. FALSE branch: skip."
+      },
+      "oracle": "Plans are pending and source-derived. IEEE effects are tested only under explicit capability probes; the TRUE branch asserts the concrete flag, mode, type, constant, or operation effect, and the FALSE branch is a skip rather than a pass. Named FLAG-ROW-PREAMBLE(flag,x): under IEEE_SUPPORT_FLAG(flag,x), if IEEE_SUPPORT_HALTING(flag) then CALL IEEE_SET_HALTING_MODE(flag,.FALSE.); else CALL IEEE_GET_HALTING_MODE(flag,h) and proceed only if h is .FALSE. (otherwise skip); CALL IEEE_SET_FLAG(IEEE_ALL,.FALSE.). Positive plans establish a non-default state first by setting distinguished sentinel values and apply FLAG-ROW-PREAMBLE before any exception operation or flag-state assertion unless the row explicitly says the preamble is not applied because it would destroy the initial-state oracle.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Fixture authors must re-derive every pending plan from the pinned source. IEEE module availability, feature-set inclusion, exact supported real kinds, initial modes, halting mechanics, NaN payloads, the identity of a NaN result not fixed by the text, signaling-NaN behavior outside a stated rule, and operations that may also signal are treated as processor latitude.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 13, and 16 for source form, type declarations, expressions, execution constructs, scoping units, I/O and format contexts, intrinsic procedures, and intrinsic module USE mechanics. Unregistered dependencies explicitly retained: later Clause 17 inquiry and mode procedures, IEEE value constructors/classification procedures, exact operation descriptions, and feature profiles such as tests/profiles/ieee_binary.f90."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "permission",
+      "requirements": [
+        "S17.5-001"
+      ],
+      "rationale": "Underflow-mode control and performance are processor-dependent permissions, with gradual/abrupt meanings recorded."
+    },
+    {
+      "unit": "p2",
+      "disposition": "structural",
+      "rationale": "Control procedures, initial latitude, and procedure restore are split."
+    },
+    {
+      "unit": "p2.control-procedures",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.5-002"
+      ],
+      "rationale": "GET/SET/SUPPORT underflow mode procedure behavior."
+    },
+    {
+      "unit": "p2.initial-latitude",
+      "disposition": "permission",
+      "requirements": [
+        "S17.5-002"
+      ],
+      "rationale": "Initial underflow mode is processor dependent."
+    },
+    {
+      "unit": "p2.procedure-restore",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.5-002"
+      ],
+      "rationale": "Procedure entry/return underflow-mode preservation."
+    },
+    {
+      "unit": "p3",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.5-003"
+      ],
+      "rationale": "Underflow mode affects only calculations for supported types."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_17_5.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "6543debfe5bab7fbe623da6ac25a4adb98c6e017eae90ddfea333991bb8feab9",
+  "review_rationale": "Source registration for the Clause 17 heading and 17.1-17.5: the IEEE overview, derived types and constants, exceptions, rounding modes and underflow mode (batch213). Every unit hash-verified by an independent reviewer across four rounds; every flag row uses a named halting-off preamble and every mode round trip observes the changed value before restoring. Source accounting only."
+}
