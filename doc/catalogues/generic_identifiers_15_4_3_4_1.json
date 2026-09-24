@@ -1,0 +1,287 @@
+{
+  "schema_version": 1,
+  "section": "15.4.3.4.1",
+  "subunits": {
+    "p2": [
+      "p2.generic-identifier-role",
+      "p2.distinguishability-dependency",
+      "p2.function-dummy-explicit-type"
+    ],
+    "p3": [
+      "p3.generic-name-definition",
+      "p3.same-as-procedure-name-permission",
+      "p3.same-as-accessible-generic-permission"
+    ],
+    "p4": [
+      "p4.same-as-derived-type-name-permission",
+      "p4.derived-type-name-functions-only"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S15.4.3.4.1-001",
+      "title": "Generic interface blocks and GENERIC statements specify explicit generic interfaces",
+      "source": "15.4.3.4.1, J3/24-007, 18 December 2023, physical PDF328.",
+      "source_units": [
+        "p1"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A generic interface block specifies a generic interface for every procedure in the block; PROCEDURE lists nonintrinsic procedures with explicit interfaces that have the generic interface; a GENERIC statement specifies a generic interface for each listed specific procedure; every generic interface is explicit.",
+      "facets": [
+        "interface-block-generic-interface",
+        "procedure-statement-specifics",
+        "generic-statement-specifics",
+        "generic-interface-explicit"
+      ],
+      "pending": {
+        "interface-block-generic-interface": "PENDING positive source plan: module procedures swap_i and swap_r have explicit interfaces and appear in INTERFACE swap; calls swap(i,j) and swap(x,y) start from integer sentinels -7,-9 and real sentinels -3.0,-5.0, then observe the exchanged exact values, while direct calls to swap_i and swap_r provide the feature mutation baseline.",
+        "procedure-statement-specifics": "PENDING source-control plan: use an INTERFACE g containing PROCEDURE p_i,p_r for two nonintrinsic module functions with explicit interfaces; observe g(4)==40 and g(2.0)==25 using integer sentinels -11 and -13, and mutate by removing p_r from the PROCEDURE statement so the real call is no longer claimed here.",
+        "generic-statement-specifics": "PENDING source-control plan: use PUBLIC :: g plus GENERIC :: g => p_i,p_r in a module; observe exact p_i and p_r return values through g with distinct integer and real inputs, and mutate the specific-procedure-list by removing p_i to keep the claim load-bearing.",
+        "generic-interface-explicit": "PENDING source plan: every specific used in the generic has a visible explicit interface through module procedure definitions; no test may credit implicit-interface calls to this facet."
+      },
+      "oracle": "Pending plans are source-derived and discriminate the named generic-interface property from neighboring syntax, procedure characteristics, or invocation rules. Runtime plans use distinct sentinels and compare only exact scalar values fixed by the registered source text.",
+      "oracle_limitation": "Source registration only: no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim is created. Future fixtures must establish a non-default positive state before the observation; diagnostics require the numbered rule or syntax rule named by the facet and a conforming control differing only in the constrained feature. Notes and examples are not normative.",
+      "dependencies": "Dependencies retained: generic interface syntax and interface bodies in 15.4.3.2, GENERIC statements in 15.4.3.3, expression and assignment semantics in 10.1 and 10.2, defined input/output in 12.6.4.8, procedure characteristics in 15.3 and 15.5, scope and accessibility in clause 19, processor conformance diagnostics in 4.2, and intrinsic procedures in clause 16 where an intrinsic generic name is shadowed."
+    },
+    {
+      "id": "S15.4.3.4.1-002",
+      "title": "The generic-spec supplies the generic identifier and distinguishability is delegated to 15.4.3.4.5",
+      "source": "15.4.3.4.1, J3/24-007, 18 December 2023, physical PDF328.",
+      "source_units": [
+        "p2.generic-identifier-role",
+        "p2.distinguishability-dependency"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The generic-spec in an interface statement or GENERIC statement is the generic identifier for the named procedures; the same-identifier distinguishability rules are those of 15.4.3.4.5 and ensure at most one applicable specific procedure.",
+      "facets": [
+        "interface-stmt-generic-identifier",
+        "generic-stmt-generic-identifier",
+        "same-identifier-rules-delegated",
+        "at-most-one-specific-dependency"
+      ],
+      "pending": {
+        "interface-stmt-generic-identifier": "PENDING positive source plan: INTERFACE choose names module procedures choose_i and choose_r; choose(3) returns 30 and choose(1.5) returns 150 after result sentinels -101 and -103, demonstrating that the interface-stmt spelling is the generic identifier.",
+        "generic-stmt-generic-identifier": "PENDING positive source plan: GENERIC :: choose => choose_i, choose_r provides the same exact observations as the interface-block form, with separate direct-call controls.",
+        "same-identifier-rules-delegated": "PENDING source-control plan: file all ambiguity diagnostics for equal generic identifiers under C1511-C1514 in 15.4.3.4.5; this facet only records the dependency edge.",
+        "at-most-one-specific-dependency": "PENDING source-control plan: a future resolution fixture chooses exactly one registered specific by distinct type, with ambiguity rejection credited solely to the numbered restriction that creates the distinguishability obligation."
+      },
+      "oracle": "This entry records generic-identifier ownership and a dependency to the restriction section. It does not itself approve an ambiguity diagnostic.",
+      "oracle_limitation": "Source registration only: no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim is created. Future fixtures must establish a non-default positive state before the observation; diagnostics require the numbered rule or syntax rule named by the facet and a conforming control differing only in the constrained feature. Notes and examples are not normative.",
+      "dependencies": "Dependencies retained: generic interface syntax and interface bodies in 15.4.3.2, GENERIC statements in 15.4.3.3, expression and assignment semantics in 10.1 and 10.2, defined input/output in 12.6.4.8, procedure characteristics in 15.3 and 15.5, scope and accessibility in clause 19, processor conformance diagnostics in 4.2, and intrinsic procedures in clause 16 where an intrinsic generic name is shadowed."
+    },
+    {
+      "id": "S15.4.3.4.1-003",
+      "title": "Function dummy arguments in a generic interface have explicit type and type parameters",
+      "source": "15.4.3.4.1, J3/24-007, 18 December 2023, physical PDF328.",
+      "source_units": [
+        "p2.function-dummy-explicit-type"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "A specific procedure in a generic interface that has a function dummy argument gives that dummy argument an explicit type and explicit type parameters in the specific interface.",
+      "facets": [
+        "function-dummy-type-explicit",
+        "function-dummy-type-parameters-explicit",
+        "function-dummy-positive-control",
+        "function-dummy-missing-declaration-source"
+      ],
+      "pending": {
+        "function-dummy-type-explicit": "PENDING complete module source with INTERFACE apply and a specific subroutine taking a dummy function f; the interface declares INTEGER :: f and a call through apply uses f(4)==17 with result sentinel -701 before assignment.",
+        "function-dummy-type-parameters-explicit": "PENDING parallel CHARACTER(len=3) dummy-function interface with an exact LEN check and a nonblank sentinel result; the plan mutates only the LEN declaration to make the type-parameter obligation load-bearing.",
+        "function-dummy-positive-control": "PENDING conforming control retains the explicit type and type parameter but changes the generic name only, proving the declaration rather than generic spelling supplies the requirement.",
+        "function-dummy-missing-declaration-source": "PENDING negative source-control omits only the dummy function type declaration in the specific interface; no diagnostic is claimed here because this prose restriction is not a numbered constraint."
+      },
+      "oracle": "Positive plans can observe only successful calls through explicitly typed dummy functions. A missing explicit declaration remains a source-control negative with no required diagnostic claim.",
+      "oracle_limitation": "Source registration only: no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim is created. Future fixtures must establish a non-default positive state before the observation; diagnostics require the numbered rule or syntax rule named by the facet and a conforming control differing only in the constrained feature. Notes and examples are not normative.",
+      "dependencies": "Dependencies retained: generic interface syntax and interface bodies in 15.4.3.2, GENERIC statements in 15.4.3.3, expression and assignment semantics in 10.1 and 10.2, defined input/output in 12.6.4.8, procedure characteristics in 15.3 and 15.5, scope and accessibility in clause 19, processor conformance diagnostics in 4.2, and intrinsic procedures in clause 16 where an intrinsic generic name is shadowed."
+    },
+    {
+      "id": "S15.4.3.4.1-004",
+      "title": "Generic names refer to all procedures in their generic interface and may reuse procedure or accessible generic names",
+      "source": "15.4.3.4.1, J3/24-007, 18 December 2023, physical PDF328.",
+      "source_units": [
+        "p3.generic-name-definition",
+        "p3.same-as-procedure-name-permission",
+        "p3.same-as-accessible-generic-permission"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A generic name is a generic identifier referring to all procedure names in its generic interface; it may be the same as a procedure name in that interface or the same as an accessible generic name.",
+      "facets": [
+        "generic-name-refers-all-specifics",
+        "generic-name-same-as-specific-permitted",
+        "generic-name-same-as-accessible-generic-permitted"
+      ],
+      "pending": {
+        "generic-name-refers-all-specifics": "PENDING module source with generic name convert covering integer and real specifics; result sentinels -21 and -23 change to exact values 14 and 28 for convert(7) and convert(7.0), proving both specifics belong to the generic set.",
+        "generic-name-same-as-specific-permitted": "PENDING source plan where generic name scale also names one module function scale; scale(5) returns 50 and scale(2.0) returns 25 through another specific, discriminating the permission from a forbidden same-name assumption.",
+        "generic-name-same-as-accessible-generic-permitted": "PENDING two-module source plan: module parent exports generic choose for integer; module child USEs parent and adds a real specific under the same accessible generic name; exact calls choose(4)==41 and choose(4.0)==42 show the merged accessible generic, with direct-call controls."
+      },
+      "oracle": "The same-name permissions are observed only through exact generic calls with distinguishable specifics; ambiguity rules remain owned by 15.4.3.4.5.",
+      "oracle_limitation": "Source registration only: no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim is created. Future fixtures must establish a non-default positive state before the observation; diagnostics require the numbered rule or syntax rule named by the facet and a conforming control differing only in the constrained feature. Notes and examples are not normative.",
+      "dependencies": "Dependencies retained: generic interface syntax and interface bodies in 15.4.3.2, GENERIC statements in 15.4.3.3, expression and assignment semantics in 10.1 and 10.2, defined input/output in 12.6.4.8, procedure characteristics in 15.3 and 15.5, scope and accessibility in clause 19, processor conformance diagnostics in 4.2, and intrinsic procedures in clause 16 where an intrinsic generic name is shadowed."
+    },
+    {
+      "id": "S15.4.3.4.1-005",
+      "title": "A generic name may match a derived-type name only with function specifics",
+      "source": "15.4.3.4.1, J3/24-007, 18 December 2023, physical PDF329.",
+      "source_units": [
+        "p4.same-as-derived-type-name-permission",
+        "p4.derived-type-name-functions-only"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "A generic name may be the same as a derived-type name; in that case every procedure in the generic interface is a function.",
+      "facets": [
+        "generic-name-derived-type-name-permitted",
+        "derived-type-name-generic-functions-only",
+        "derived-type-name-generic-positive-control",
+        "derived-type-name-subroutine-source-negative"
+      ],
+      "pending": {
+        "generic-name-derived-type-name-permitted": "PENDING module source defining type box and generic interface box with a function make_box(i) returning type(box); box(9)%value is initialized from sentinel -404 to exact value 9, proving the generic name can equal the type name.",
+        "derived-type-name-generic-functions-only": "PENDING positive source plan keeps all specifics as functions returning type(box) or another exact result and observes exact component values; subroutine specifics are not used in the conforming control.",
+        "derived-type-name-generic-positive-control": "PENDING control renames only the generic to make_box_generic while preserving the function and exact component result, separating the same-name permission from function execution.",
+        "derived-type-name-subroutine-source-negative": "PENDING source-control negative changes one function specific to a subroutine under generic name box; no diagnostic is claimed here because the restriction is prose rather than a numbered constraint."
+      },
+      "oracle": "Pending plans are source-derived and discriminate the named generic-interface property from neighboring syntax, procedure characteristics, or invocation rules. Runtime plans use distinct sentinels and compare only exact scalar values fixed by the registered source text.",
+      "oracle_limitation": "Source registration only: no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim is created. Future fixtures must establish a non-default positive state before the observation; diagnostics require the numbered rule or syntax rule named by the facet and a conforming control differing only in the constrained feature. Notes and examples are not normative.",
+      "dependencies": "Dependencies retained: generic interface syntax and interface bodies in 15.4.3.2, GENERIC statements in 15.4.3.3, expression and assignment semantics in 10.1 and 10.2, defined input/output in 12.6.4.8, procedure characteristics in 15.3 and 15.5, scope and accessibility in clause 19, processor conformance diagnostics in 4.2, and intrinsic procedures in clause 16 where an intrinsic generic name is shadowed."
+    },
+    {
+      "id": "S15.4.3.4.1-006",
+      "title": "A defined-io generic specification supplies a defined input/output procedure interface",
+      "source": "15.4.3.4.1, J3/24-007, 18 December 2023, physical PDF329.",
+      "source_units": [
+        "p5"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "An interface statement with a defined-io-generic-spec is an interface for a defined input/output procedure.",
+      "facets": [
+        "defined-io-generic-spec-interface",
+        "defined-io-procedure-dependency"
+      ],
+      "pending": {
+        "defined-io-generic-spec-interface": "PENDING source-control plan using INTERFACE WRITE(FORMATTED) for a type with a 12.6.4.8.2-conforming subroutine; exact formatted output observations are credited to 12.6.4.8 execution, not this identifier classification.",
+        "defined-io-procedure-dependency": "PENDING dependency audit linking READ(FORMATTED), WRITE(FORMATTED), READ(UNFORMATTED), and WRITE(UNFORMATTED) generic specs to their 12.6.4.8 procedure-characteristic owners."
+      },
+      "oracle": "This entry records defined-I/O interface ownership only; actual data-transfer effects and procedure characteristics remain with 12.6.4.8.",
+      "oracle_limitation": "Source registration only: no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim is created. Future fixtures must establish a non-default positive state before the observation; diagnostics require the numbered rule or syntax rule named by the facet and a conforming control differing only in the constrained feature. Notes and examples are not normative.",
+      "dependencies": "Dependencies retained: generic interface syntax and interface bodies in 15.4.3.2, GENERIC statements in 15.4.3.3, expression and assignment semantics in 10.1 and 10.2, defined input/output in 12.6.4.8, procedure characteristics in 15.3 and 15.5, scope and accessibility in clause 19, processor conformance diagnostics in 4.2, and intrinsic procedures in clause 16 where an intrinsic generic name is shadowed."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "definition",
+      "requirements": [
+        "S15.4.3.4.1-001"
+      ],
+      "rationale": "Defines generic interface mechanisms and explicitness."
+    },
+    {
+      "unit": "p2",
+      "disposition": "structural",
+      "rationale": "Mixed generic-identifier definitions, distinguishability dependency, and a prose function-dummy restriction are split."
+    },
+    {
+      "unit": "p2.generic-identifier-role",
+      "disposition": "definition",
+      "requirements": [
+        "S15.4.3.4.1-002"
+      ],
+      "rationale": "Definition or source classification; executable or diagnostic effects are only those named by the mapped requirement."
+    },
+    {
+      "unit": "p2.distinguishability-dependency",
+      "disposition": "structural",
+      "requirements": [
+        "S15.4.3.4.1-002"
+      ],
+      "rationale": "Defers same-identifier distinguishability obligations to 15.4.3.4.5."
+    },
+    {
+      "unit": "p2.function-dummy-explicit-type",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.4.3.4.1-003"
+      ]
+    },
+    {
+      "unit": "p3",
+      "disposition": "structural",
+      "rationale": "Mixed definition and permissions are split."
+    },
+    {
+      "unit": "p3.generic-name-definition",
+      "disposition": "definition",
+      "requirements": [
+        "S15.4.3.4.1-004"
+      ],
+      "rationale": "Definition or source classification; executable or diagnostic effects are only those named by the mapped requirement."
+    },
+    {
+      "unit": "p3.same-as-procedure-name-permission",
+      "disposition": "permission",
+      "requirements": [
+        "S15.4.3.4.1-004"
+      ],
+      "rationale": "Permission or latitude split from neighboring obligations; no mandatory processor choice is asserted."
+    },
+    {
+      "unit": "p3.same-as-accessible-generic-permission",
+      "disposition": "permission",
+      "requirements": [
+        "S15.4.3.4.1-004"
+      ],
+      "rationale": "Permission or latitude split from neighboring obligations; no mandatory processor choice is asserted."
+    },
+    {
+      "unit": "p4",
+      "disposition": "structural",
+      "rationale": "Same-name permission and function-only restriction are split."
+    },
+    {
+      "unit": "p4.same-as-derived-type-name-permission",
+      "disposition": "permission",
+      "requirements": [
+        "S15.4.3.4.1-005"
+      ],
+      "rationale": "Permission or latitude split from neighboring obligations; no mandatory processor choice is asserted."
+    },
+    {
+      "unit": "p4.derived-type-name-functions-only",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.4.3.4.1-005"
+      ]
+    },
+    {
+      "unit": "p5",
+      "disposition": "definition",
+      "requirements": [
+        "S15.4.3.4.1-006"
+      ],
+      "rationale": "Defines the defined-I/O generic-spec interface role."
+    },
+    {
+      "unit": "note1",
+      "disposition": "informative",
+      "rationale": "Example only; no requirement is based on the note."
+    },
+    {
+      "unit": "note2",
+      "disposition": "informative",
+      "rationale": "Note about type-bound generic statements; normative rules are in 7.5.5."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_15_4_3_4_1.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "9bee2c2541ffbd727244e00d1f72dfb5f7c51114884a51a33d0aadda27f28681",
+  "review_rationale": "Source registration for 15.4.3.4-15.4.3.4.5 and 15.4.3.5: generic identifiers, defined operations and assignments, DTIO interfaces, restrictions on generic declarations, and the EXTERNAL statement (batch222). Every unit hash-verified by an independent reviewer across three rounds; C1511-C1513 carry diagnostic plans, C1514 is deferred to its existing tests, and EXTERNAL name resolution is observed through an exact ABS sentinel. Source accounting only."
+}

@@ -5824,6 +5824,11 @@ See `doc/source_audits/batch_214.json`.
 Forty-three units after two rounds. The subtle finding was about halting: an exception-flag row cannot simply be skipped when halting is uncontrollable, because the flag is still required — but the initial halting mode is processor dependent, so the row must first establish, or at least observe, that halting is off. That rule now applies to every Clause 17 packet.
 See `doc/source_audits/batch_217.json`.
 
+## Batch 222 — Generic interfaces through EXTERNAL (15.4.3.4-15.4.3.5)
+
+Thirty-four units after three rounds, the first Clause 15 packet. Its last finding was mine: the coordinator's suggested sentinel used SIN, and intrinsic SIN(0.0) is only an approximation, so the companion 'intrinsic is called' case was not portable. ABS is exact, and the lesson is now in the template: a name-resolution sentinel needs an exactly-specified intrinsic on the other side.
+See `doc/source_audits/batch_222.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must

@@ -1,0 +1,175 @@
+{
+  "schema_version": 1,
+  "section": "15.4.3.5",
+  "subunits": {
+    "R1511": [
+      "R1511.keyword",
+      "R1511.optional-double-colon",
+      "R1511.external-name-list"
+    ],
+    "p2": [
+      "p2.block-data-name-appearance",
+      "p2.program-membership-confirmation"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S15.4.3.5-001",
+      "title": "EXTERNAL statements specify the EXTERNAL attribute for listed names",
+      "source": "15.4.3.5, J3/24-007, 18 December 2023, physical PDF332.",
+      "source_units": [
+        "p1"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "An EXTERNAL statement specifies the EXTERNAL attribute for each name in its external-name-list.",
+      "facets": [
+        "external-statement-specifies-attribute",
+        "external-name-list-each-name",
+        "external-intrinsic-name-shadowing",
+        "external-attribute-dependency"
+      ],
+      "pending": {
+        "external-statement-specifies-attribute": "PENDING positive source plan: a main program declares EXTERNAL :: f and passes f as an actual procedure to an explicit-interface caller; exact callback result f(5)==16 is observed with result sentinel -16, while procedure-call semantics remain with 15.5.",
+        "external-name-list-each-name": "PENDING source plan: EXTERNAL :: f, g declares two external functions used as actual procedures in separate exact callbacks returning 16 and 27 from sentinels -16 and -27.",
+        "external-attribute-dependency": "PENDING source-control plan maps the attribute effect to 8.5.9 and keeps missing-attribute restrictions under their canonical owners rather than this statement overview.",
+        "external-intrinsic-name-shadowing": "PENDING positive intrinsic-shadowing plan: compile a separate external procedure REAL FUNCTION ABS(X) with REAL, INTENT(IN) :: X and result 42.0 + X, and in the caller declare REAL, EXTERNAL :: ABS before evaluating ABS(-1.0); expect exact 41.0 from a result variable initialized to sentinel -41.0, proving that the 15.4.3.5 EXTERNAL statement supplies the 8.5.9 EXTERNAL attribute and the reference resolves to the external procedure rather than the standard generic intrinsic ABS. Companion control in a separate caller omits EXTERNAL and any explicit interface for ABS, evaluates ABS(-1.0), and expects exact 1.0 from the intrinsic; cite 16.7 for ABS as a standard generic intrinsic and 16.9.2 p5 for exact integer and real absolute-value results. Do not add an INTRINSIC statement in the EXTERNAL case, because 8.5.9 C842 forbids both attributes for the same entity. 19.5.1.4 p2 is relevant only for host-associated shadowing: an external-procedure name given EXTERNAL in a scoping unit is a global identifier that makes a same-named host entity inaccessible."
+      },
+      "oracle": "Pending plans are source-derived and discriminate the named EXTERNAL-statement property from neighboring syntax, procedure characteristics, intrinsic semantics, or invocation rules. Runtime plans use distinct sentinels and compare only exact scalar values fixed by the registered source text; the intrinsic-shadowing plan distinguishes external ABS(-1.0)==41.0 from intrinsic ABS(-1.0)==1.0, with the intrinsic numeric control re-derived from 16.9.2 p5 before fixture binding.",
+      "oracle_limitation": "Source registration only: no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim is created. Future fixtures must establish a non-default positive state before the observation; diagnostics require the numbered rule or syntax rule named by the facet and a conforming control differing only in the constrained feature. Notes and examples are not normative.",
+      "dependencies": "Dependencies retained: 8.5.9 for the EXTERNAL attribute and C842 attribute conflict; 8.5.11 for INTRINSIC identity where explicitly used; 15.4.3.2/.3/.4 for interface and generic relationships; 15.5 for procedure invocation; 16.7 and 16.9.2 for ABS as a standard generic intrinsic and its exact integer and real absolute-value results; 19.5.1.4 p2 for host-associated global-identifier shadowing by EXTERNAL names where that premise is reached; processor conformance diagnostics in 4.2."
+    },
+    {
+      "id": "R1511",
+      "title": "An EXTERNAL statement has optional double colon and a required external-name list",
+      "source": "15.4.3.5, J3/24-007, 18 December 2023, physical PDF332.",
+      "source_units": [
+        "R1511",
+        "R1511.keyword",
+        "R1511.optional-double-colon",
+        "R1511.external-name-list"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "The EXTERNAL statement syntax is EXTERNAL followed by an optional double colon and a nonempty external-name-list.",
+      "facets": [
+        "external-with-double-colon",
+        "external-without-double-colon",
+        "external-multiple-names",
+        "external-required-name-list",
+        "external-single-colon-negative",
+        "external-list-separator-negative"
+      ],
+      "pending": {
+        "external-with-double-colon": "PENDING compile/positive-control: complete program with INTEGER, EXTERNAL :: f and an external integer function f; no invocation is needed for grammar admission, and a separate callback control observes f(5)==16.",
+        "external-without-double-colon": "PENDING compile/positive-control: same complete program using EXTERNAL f; all type, external function definition, and absence of duplicate attributes are unchanged.",
+        "external-multiple-names": "PENDING compile/positive-control: EXTERNAL :: f, g with two external integer functions and optional callback checks returning exact 16 and 27 from sentinels.",
+        "external-required-name-list": "PENDING diagnostic/control pair: EXTERNAL alone and EXTERNAL :: alone are repaired only by adding prior declared external name f; the program remains otherwise complete and conforming.",
+        "external-single-colon-negative": "PENDING diagnostic/control pair: EXTERNAL : f is repaired only by changing the separator to ::, with the same external function f and no attribute or type changes.",
+        "external-list-separator-negative": "PENDING diagnostic/control pair: EXTERNAL :: f g and EXTERNAL :: f, are repaired only by adding or removing the comma; both names remain valid external names in the corresponding positive control."
+      },
+      "oracle": "Grammar diagnostics are required for malformed R1511 forms, but no exact diagnostic text, code, or fatal exit status is prescribed. Positive controls isolate the syntax from procedure invocation.",
+      "oracle_limitation": "Source registration only: no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim is created. Future fixtures must establish a non-default positive state before the observation; diagnostics require the numbered rule or syntax rule named by the facet and a conforming control differing only in the constrained feature. Notes and examples are not normative.",
+      "dependencies": "Dependencies retained: generic interface syntax and interface bodies in 15.4.3.2, GENERIC statements in 15.4.3.3, expression and assignment semantics in 10.1 and 10.2, defined input/output in 12.6.4.8, procedure characteristics in 15.3 and 15.5, scope and accessibility in clause 19, processor conformance diagnostics in 4.2, and intrinsic procedures in clause 16 where an intrinsic generic name is shadowed."
+    },
+    {
+      "id": "S15.4.3.5-002",
+      "title": "An EXTERNAL statement naming block data confirms that block data program unit is part of the program",
+      "source": "15.4.3.5, J3/24-007, 18 December 2023, physical PDF332.",
+      "source_units": [
+        "p2.block-data-name-appearance",
+        "p2.program-membership-confirmation"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The appearance of a block data program unit name in an EXTERNAL statement confirms that the block data program unit is part of the program.",
+      "facets": [
+        "block-data-name-in-external",
+        "block-data-program-membership-confirmed",
+        "block-data-runtime-oracle-limited"
+      ],
+      "pending": {
+        "block-data-name-in-external": "PENDING source-control plan: complete program contains EXTERNAL :: initblk and a separate BLOCK DATA initblk with a named COMMON block initialized to exact value 37; the source relation identifies initblk as a block data name rather than a procedure.",
+        "block-data-program-membership-confirmed": "PENDING build-composition plan: a future harness may link the block data program unit as a separate program unit and observe COMMON variable value 37 after initialization, but the source packet records only the membership confirmation.",
+        "block-data-runtime-oracle-limited": "PENDING limitation record: a single self-contained source file containing the BLOCK DATA unit already makes that unit part of the submitted program, so removing EXTERNAL is not a load-bearing mutation for this facet."
+      },
+      "oracle": "The portable core is a source/program-composition relation. A future executable plan must separate program-unit membership from ordinary presence of a BLOCK DATA unit in the same submitted source.",
+      "oracle_limitation": "No portable single-source runtime oracle isolates the EXTERNAL statement's membership confirmation from the ordinary inclusion of a BLOCK DATA program unit already present in the source file. Linker retention policies and object-file selection are processor/build-system behavior, not a language result fixed by this paragraph.",
+      "dependencies": "Dependencies retained: generic interface syntax and interface bodies in 15.4.3.2, GENERIC statements in 15.4.3.3, expression and assignment semantics in 10.1 and 10.2, defined input/output in 12.6.4.8, procedure characteristics in 15.3 and 15.5, scope and accessibility in clause 19, processor conformance diagnostics in 4.2, and intrinsic procedures in clause 16 where an intrinsic generic name is shadowed."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.4.3.5-001"
+      ],
+      "rationale": "Specifies the EXTERNAL attribute for listed names."
+    },
+    {
+      "unit": "R1511",
+      "disposition": "requirements",
+      "requirements": [
+        "R1511"
+      ],
+      "rationale": "Numbered syntax rule; no existing tests were found."
+    },
+    {
+      "unit": "R1511.keyword",
+      "disposition": "requirements",
+      "requirements": [
+        "R1511"
+      ]
+    },
+    {
+      "unit": "R1511.optional-double-colon",
+      "disposition": "requirements",
+      "requirements": [
+        "R1511"
+      ]
+    },
+    {
+      "unit": "R1511.external-name-list",
+      "disposition": "requirements",
+      "requirements": [
+        "R1511"
+      ]
+    },
+    {
+      "unit": "p2",
+      "disposition": "structural",
+      "rationale": "Block-data name and membership confirmation are split for plan clarity."
+    },
+    {
+      "unit": "p2.block-data-name-appearance",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.4.3.5-002"
+      ]
+    },
+    {
+      "unit": "p2.program-membership-confirmation",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.4.3.5-002"
+      ]
+    },
+    {
+      "unit": "note1",
+      "disposition": "informative",
+      "rationale": "Explanatory portability note; no requirement is based on it."
+    },
+    {
+      "unit": "note2",
+      "disposition": "informative",
+      "rationale": "Example only; no requirement is based on the note."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_15_4_3_5.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "0f0598471ec8f5f4764177733f875c5e53d8eb92f5e1d0067830f9e5e12ec476",
+  "review_rationale": "Source registration for 15.4.3.4-15.4.3.4.5 and 15.4.3.5: generic identifiers, defined operations and assignments, DTIO interfaces, restrictions on generic declarations, and the EXTERNAL statement (batch222). Every unit hash-verified by an independent reviewer across three rounds; C1511-C1513 carry diagnostic plans, C1514 is deferred to its existing tests, and EXTERNAL name resolution is observed through an exact ABS sentinel. Source accounting only."
+}

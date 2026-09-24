@@ -1,0 +1,353 @@
+{
+  "schema_version": 1,
+  "section": "15.4.3.4.5",
+  "subunits": {
+    "p1": [
+      "p1.pairwise-same-generic-rules",
+      "p1.module-accessible-inaccessible-specifics"
+    ],
+    "p3": [
+      "p3.procedure-vs-data",
+      "p3.data-or-function-not-tkr",
+      "p3.allocatable-vs-pointer",
+      "p3.function-rank-vs-not-function"
+    ],
+    "C1514": [
+      "C1514.deferred-existing-coverage"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S15.4.3.4.5-001",
+      "title": "Same generic identifiers require pairwise distinguishability across the whole scope",
+      "source": "15.4.3.4.5, J3/24-007, 18 December 2023, physical PDF331.",
+      "source_units": [
+        "p1.pairwise-same-generic-rules",
+        "p1.module-accessible-inaccessible-specifics"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "Every pair of specific procedures with the same generic identifier within the identifier scope satisfies the rules of this subclause; module-accessed generic procedures apply those rules to all specific versions, including versions inaccessible by specific name.",
+      "facets": [
+        "same-generic-pairwise-rules",
+        "module-inaccessible-specifics-included",
+        "pairwise-rules-source-dependency"
+      ],
+      "pending": {
+        "same-generic-pairwise-rules": "PENDING source-control plan: a module generic with three distinguishable specifics records all unordered pairs and maps operator, assignment, defined-I/O, or generic-name cases to C1511, C1512, C1513, or C1514 as appropriate.",
+        "module-inaccessible-specifics-included": "PENDING source plan: a module exposes a generic name publicly while keeping one specific PRIVATE; a client can call only through the generic, and the source inventory still includes the private specific in pairwise analysis without claiming an extra runtime effect.",
+        "pairwise-rules-source-dependency": "PENDING audit plan: no fixture may pass an ambiguous generic merely because one specific name is inaccessible; diagnostics are attributed to the relevant numbered constraint, not this prose overview."
+      },
+      "oracle": "Pending plans are source-derived and discriminate the named generic-interface property from neighboring syntax, procedure characteristics, or invocation rules. Runtime plans use distinct sentinels and compare only exact scalar values fixed by the registered source text.",
+      "oracle_limitation": "Source registration only: no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim is created. Future fixtures must establish a non-default positive state before the observation; diagnostics require the numbered rule or syntax rule named by the facet and a conforming control differing only in the constrained feature. Notes and examples are not normative.",
+      "dependencies": "Dependencies retained: generic interface syntax and interface bodies in 15.4.3.2, GENERIC statements in 15.4.3.3, expression and assignment semantics in 10.1 and 10.2, defined input/output in 12.6.4.8, procedure characteristics in 15.3 and 15.5, scope and accessibility in clause 19, processor conformance diagnostics in 4.2, and intrinsic procedures in clause 16 where an intrinsic generic name is shadowed."
+    },
+    {
+      "id": "S15.4.3.4.5-002",
+      "title": "TKR compatibility requires compatible type, equal kind type parameters, and equal or assumed rank",
+      "source": "15.4.3.4.5, J3/24-007, 18 December 2023, physical PDF331.",
+      "source_units": [
+        "p2"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "One dummy argument is TKR compatible with another when it is type compatible with the other, corresponding kind type parameters have the same values, and both ranks are the same or either is assumed-rank.",
+      "facets": [
+        "tkr-type-compatibility",
+        "tkr-kind-parameter-equality",
+        "tkr-rank-same-or-assumed"
+      ],
+      "pending": {
+        "tkr-type-compatibility": "PENDING source-control plan: compare integer versus real, parent versus extension, and CLASS(*) cases through generic declarations; resulting ambiguity or admission is credited to the numbered rule that uses this definition.",
+        "tkr-kind-parameter-equality": "PENDING source-control plan: same type with different integer kind parameters is recorded as non-TKR-compatible only under a generic rule that requires the distinction; exact kind availability guards belong to fixture packets, not this source registration.",
+        "tkr-rank-same-or-assumed": "PENDING source-control plan: scalar, rank-one, and assumed-rank dummy pairs are catalogued with their TKR relation and then used by C1511-C1514 facets for the actual diagnostic or positive control."
+      },
+      "oracle": "This is a definition used by the numbered restrictions. It supplies no standalone runtime oracle.",
+      "oracle_limitation": "Source registration only: no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim is created. Future fixtures must establish a non-default positive state before the observation; diagnostics require the numbered rule or syntax rule named by the facet and a conforming control differing only in the constrained feature. Notes and examples are not normative.",
+      "dependencies": "Dependencies retained: generic interface syntax and interface bodies in 15.4.3.2, GENERIC statements in 15.4.3.3, expression and assignment semantics in 10.1 and 10.2, defined input/output in 12.6.4.8, procedure characteristics in 15.3 and 15.5, scope and accessibility in clause 19, processor conformance diagnostics in 4.2, and intrinsic procedures in clause 16 where an intrinsic generic name is shadowed."
+    },
+    {
+      "id": "S15.4.3.4.5-003",
+      "title": "Dummy arguments are distinguishable by procedure/data role, TKR difference, allocatable-pointer attributes, or function rank status",
+      "source": "15.4.3.4.5, J3/24-007, 18 December 2023, physical PDF331.",
+      "source_units": [
+        "p3",
+        "p3.procedure-vs-data",
+        "p3.data-or-function-not-tkr",
+        "p3.allocatable-vs-pointer",
+        "p3.function-rank-vs-not-function"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Two dummy arguments are distinguishable under the four listed alternatives: procedure versus data object, data objects or known functions with neither TKR-compatible with the other, allocatable versus pointer without INTENT(IN) on the pointer side, or a nonzero-rank function versus an entity not known to be a function.",
+      "facets": [
+        "distinguishable-procedure-vs-data",
+        "distinguishable-non-tkr-data-or-functions",
+        "distinguishable-allocatable-vs-pointer",
+        "distinguishable-nonzero-rank-function"
+      ],
+      "pending": {
+        "distinguishable-procedure-vs-data": "PENDING source-control plan: one generic pair uses a dummy procedure in one specific and a data object in the other, then maps the resulting valid pair to C1514 or C1511 according to the generic identifier form.",
+        "distinguishable-non-tkr-data-or-functions": "PENDING source-control plan: integer scalar versus real scalar and scalar versus rank-one data dummies provide positive distinguishability controls for the numbered generic restrictions.",
+        "distinguishable-allocatable-vs-pointer": "PENDING source-control plan: one dummy is ALLOCATABLE and the other POINTER without INTENT(IN); a parallel pointer INTENT(IN) mutation prevents this alternative from being claimed.",
+        "distinguishable-nonzero-rank-function": "PENDING source-control plan: a nonzero-rank function dummy and a data dummy provide a positive control for this bullet, with function characteristics declared explicitly as required by 15.4.3.4.1 p2."
+      },
+      "oracle": "This entry defines distinguishability alternatives for use by constraints. Executable calls are not credited until a numbered generic rule applies the definition.",
+      "oracle_limitation": "Source registration only: no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim is created. Future fixtures must establish a non-default positive state before the observation; diagnostics require the numbered rule or syntax rule named by the facet and a conforming control differing only in the constrained feature. Notes and examples are not normative.",
+      "dependencies": "Dependencies retained: generic interface syntax and interface bodies in 15.4.3.2, GENERIC statements in 15.4.3.3, expression and assignment semantics in 10.1 and 10.2, defined input/output in 12.6.4.8, procedure characteristics in 15.3 and 15.5, scope and accessibility in clause 19, processor conformance diagnostics in 4.2, and intrinsic procedures in clause 16 where an intrinsic generic name is shadowed."
+    },
+    {
+      "id": "C1511",
+      "title": "Generic operator specifics with the same arity require a distinguishable corresponding dummy",
+      "source": "15.4.3.4.5, J3/24-007, 18 December 2023, physical PDF331.",
+      "source_units": [
+        "C1511"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "Within the scope of a generic operator, two procedures with that identifier and the same number of arguments are distinguished by at least one corresponding dummy argument position.",
+      "facets": [
+        "operator-same-arity-ambiguous-negative",
+        "operator-same-arity-distinguished-control",
+        "operator-arity-difference-control"
+      ],
+      "pending": {
+        "operator-same-arity-ambiguous-negative": "PENDING diagnostic fixture: INTERFACE OPERATOR(.op.) contains two unary module functions f_int_a(x) and f_int_b(y), both with INTEGER, INTENT(IN) scalar dummy and INTEGER result; the only violation is that the corresponding dummies are not distinguishable. The repair changes only f_int_b's dummy type to REAL.",
+        "operator-same-arity-distinguished-control": "PENDING conforming control: the same .op. interface pairs INTEGER and REAL unary functions, then .op. 3 returns exact 31 and .op. 2.0 returns exact 32 from result sentinels -31 and -32.",
+        "operator-arity-difference-control": "PENDING conforming control: one unary and one binary .op. specific share the generic operator but have different argument counts; exact unary result 31 and binary result 312 prove the same-arity premise is isolated."
+      },
+      "oracle": "The negative is attributable to C1511 and has conforming controls differing only by dummy distinguishability or arity. Diagnostic evidence may not be a crash, unsupported-feature message, or another constraint.",
+      "oracle_limitation": "Source registration only: no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim is created. Future fixtures must establish a non-default positive state before the observation; diagnostics require the numbered rule or syntax rule named by the facet and a conforming control differing only in the constrained feature. Notes and examples are not normative.",
+      "dependencies": "Dependencies retained: generic interface syntax and interface bodies in 15.4.3.2, GENERIC statements in 15.4.3.3, expression and assignment semantics in 10.1 and 10.2, defined input/output in 12.6.4.8, procedure characteristics in 15.3 and 15.5, scope and accessibility in clause 19, processor conformance diagnostics in 4.2, and intrinsic procedures in clause 16 where an intrinsic generic name is shadowed."
+    },
+    {
+      "id": "C1512",
+      "title": "Generic assignment specifics require a distinguishable corresponding dummy",
+      "source": "15.4.3.4.5, J3/24-007, 18 December 2023, physical PDF331.",
+      "source_units": [
+        "C1512"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "Within the scope of generic ASSIGNMENT(=), any two procedures with that identifier are distinguished by at least one corresponding dummy argument position.",
+      "facets": [
+        "assignment-ambiguous-negative",
+        "assignment-distinguished-rhs-control",
+        "assignment-distinguished-lhs-control"
+      ],
+      "pending": {
+        "assignment-ambiguous-negative": "PENDING diagnostic fixture: INTERFACE ASSIGNMENT(=) contains two subroutines assign_a(lhs,rhs) and assign_b(lhs,rhs) with identical TYPE(box), INTENT(OUT) first dummy and INTEGER, INTENT(IN) second dummy; the repair changes only the second dummy of assign_b to REAL.",
+        "assignment-distinguished-rhs-control": "PENDING conforming control: INTEGER and REAL right-hand specifics set box%value to exact 101 and 202 from initial component sentinel -1, proving right-hand dummy distinguishability.",
+        "assignment-distinguished-lhs-control": "PENDING conforming control: two assignment specifics use distinct derived-type first dummies box and crate with the same INTEGER right-hand side; exact components 101 and 303 prove first-dummy distinguishability."
+      },
+      "oracle": "The invalid pair otherwise satisfies the defined-assignment subroutine restrictions in 15.4.3.4.3, isolating the C1512 distinguishability failure.",
+      "oracle_limitation": "Source registration only: no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim is created. Future fixtures must establish a non-default positive state before the observation; diagnostics require the numbered rule or syntax rule named by the facet and a conforming control differing only in the constrained feature. Notes and examples are not normative.",
+      "dependencies": "Dependencies retained: generic interface syntax and interface bodies in 15.4.3.2, GENERIC statements in 15.4.3.3, expression and assignment semantics in 10.1 and 10.2, defined input/output in 12.6.4.8, procedure characteristics in 15.3 and 15.5, scope and accessibility in clause 19, processor conformance diagnostics in 4.2, and intrinsic procedures in clause 16 where an intrinsic generic name is shadowed."
+    },
+    {
+      "id": "C1513",
+      "title": "Defined input/output procedures with the same generic identifier require distinguishable dtv arguments",
+      "source": "15.4.3.4.5, J3/24-007, 18 December 2023, physical PDF331.",
+      "source_units": [
+        "C1513"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "Within the scope of a defined-io-generic-spec, two procedures with that generic identifier have distinguishable dtv arguments.",
+      "facets": [
+        "defined-io-dtv-ambiguous-negative",
+        "defined-io-dtv-distinguished-control",
+        "defined-io-same-spec-source"
+      ],
+      "pending": {
+        "defined-io-dtv-ambiguous-negative": "PENDING diagnostic fixture: INTERFACE WRITE(FORMATTED) contains two 12.6.4.8.2-shaped subroutines write_a and write_b whose dtv dummy is TYPE(box) in both and whose remaining unit, iotype, v_list, iostat, and iomsg dummies are otherwise conforming; the repair changes only write_b's dtv type to TYPE(crate).",
+        "defined-io-dtv-distinguished-control": "PENDING conforming control: TYPE(box) and TYPE(crate) formatted defined-output subroutines write distinct exact records 'box=7' and 'crate=8' from nonblank output buffers, with data-transfer effects credited to 12.6.4.8.",
+        "defined-io-same-spec-source": "PENDING source-control plan: repeat the dtv distinguishability check separately for READ(FORMATTED), WRITE(FORMATTED), READ(UNFORMATTED), and WRITE(UNFORMATTED) generic specs before any fixture claims C1513 coverage."
+      },
+      "oracle": "The diagnostic fixture must have valid 12.6.4.8.2 defined-I/O procedure shapes so the C1513 dtv distinguishability predicate is reached.",
+      "oracle_limitation": "Source registration only: no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim is created. Future fixtures must establish a non-default positive state before the observation; diagnostics require the numbered rule or syntax rule named by the facet and a conforming control differing only in the constrained feature. Notes and examples are not normative.",
+      "dependencies": "Dependencies retained: generic interface syntax and interface bodies in 15.4.3.2, GENERIC statements in 15.4.3.3, expression and assignment semantics in 10.1 and 10.2, defined input/output in 12.6.4.8, procedure characteristics in 15.3 and 15.5, scope and accessibility in clause 19, processor conformance diagnostics in 4.2, and intrinsic procedures in clause 16 where an intrinsic generic name is shadowed."
+    },
+    {
+      "id": "S15.4.3.4.5-004",
+      "title": "Effective dummy-argument position removes any passed-object dummy argument",
+      "source": "15.4.3.4.5, J3/24-007, 18 December 2023, physical PDF332.",
+      "source_units": [
+        "p4"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The effective position of a dummy argument is its position in the argument list after removing any passed-object dummy argument.",
+      "facets": [
+        "effective-position-removes-passed-object",
+        "effective-position-generic-name-dependency"
+      ],
+      "pending": {
+        "effective-position-removes-passed-object": "PENDING source-control plan: type-bound generic procedures with passed-object dummy arguments record effective positions after removing the passed object, then apply C1514 alternative (4) under its owner.",
+        "effective-position-generic-name-dependency": "PENDING source-control plan: non-type-bound procedures have effective positions identical to argument-list positions; type-bound examples are delegated to the type-bound procedure packet for passed-object identification."
+      },
+      "oracle": "Definition only; ambiguity or admission is observed under C1514 or a type-bound generic rule.",
+      "oracle_limitation": "Source registration only: no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim is created. Future fixtures must establish a non-default positive state before the observation; diagnostics require the numbered rule or syntax rule named by the facet and a conforming control differing only in the constrained feature. Notes and examples are not normative.",
+      "dependencies": "Dependencies retained: generic interface syntax and interface bodies in 15.4.3.2, GENERIC statements in 15.4.3.3, expression and assignment semantics in 10.1 and 10.2, defined input/output in 12.6.4.8, procedure characteristics in 15.3 and 15.5, scope and accessibility in clause 19, processor conformance diagnostics in 4.2, and intrinsic procedures in clause 16 where an intrinsic generic name is shadowed."
+    },
+    {
+      "id": "S15.4.3.4.5-005",
+      "title": "Specific procedures override an accessible intrinsic generic on a consistent invocation",
+      "source": "15.4.3.4.5, J3/24-007, 18 December 2023, physical PDF332.",
+      "source_units": [
+        "p5"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Within the scope of a generic name that matches an intrinsic generic name, the intrinsic is not accessible by that generic name unless the interface procedures and intrinsic are all functions or all subroutines; a generic invocation consistent with both an interface specific and an accessible intrinsic references the interface specific.",
+      "facets": [
+        "intrinsic-generic-inaccessible-on-function-subroutine-mix",
+        "specific-procedure-precedes-intrinsic",
+        "intrinsic-generic-still-accessible-for-other-consistent-calls"
+      ],
+      "pending": {
+        "intrinsic-generic-inaccessible-on-function-subroutine-mix": "PENDING source-control plan: a generic name matching ABS is declared with a subroutine specific; source analysis records that the intrinsic function ABS is not accessible by that generic name in the scope, without relying on an unowned call diagnostic.",
+        "specific-procedure-precedes-intrinsic": "PENDING executable plan: define generic ABS with an INTEGER function abs_override(x) returning -1000-x; ABS(-5) yields exact -995 from sentinel 777, proving the interface specific is referenced instead of intrinsic ABS returning 5.",
+        "intrinsic-generic-still-accessible-for-other-consistent-calls": "PENDING executable plan in the same scope also calls ABS on a REAL argument not accepted by abs_override and observes the intrinsic nonnegative exact result ABS(-2.0)==2.0, keeping intrinsic accessibility separate from the overriding integer call."
+      },
+      "oracle": "Only exact integer and exactly representable real results are used. The integer override plan discriminates intrinsic result 5 from specific result -995.",
+      "oracle_limitation": "Source registration only: no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim is created. Future fixtures must establish a non-default positive state before the observation; diagnostics require the numbered rule or syntax rule named by the facet and a conforming control differing only in the constrained feature. Notes and examples are not normative.",
+      "dependencies": "Dependencies retained: generic interface syntax and interface bodies in 15.4.3.2, GENERIC statements in 15.4.3.3, expression and assignment semantics in 10.1 and 10.2, defined input/output in 12.6.4.8, procedure characteristics in 15.3 and 15.5, scope and accessibility in clause 19, processor conformance diagnostics in 4.2, and intrinsic procedures in clause 16 where an intrinsic generic name is shadowed."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "structural",
+      "rationale": "Overview of pairwise rules and module accessibility is split from numbered constraints."
+    },
+    {
+      "unit": "p1.pairwise-same-generic-rules",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.4.3.4.5-001"
+      ]
+    },
+    {
+      "unit": "p1.module-accessible-inaccessible-specifics",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.4.3.4.5-001"
+      ]
+    },
+    {
+      "unit": "note1",
+      "disposition": "informative",
+      "rationale": "Explanatory note about sources of generic identifiers; no requirement is based on it."
+    },
+    {
+      "unit": "p2",
+      "disposition": "definition",
+      "requirements": [
+        "S15.4.3.4.5-002"
+      ],
+      "rationale": "Defines TKR compatibility."
+    },
+    {
+      "unit": "p3",
+      "disposition": "definition",
+      "requirements": [
+        "S15.4.3.4.5-003"
+      ],
+      "rationale": "Defines distinguishable dummy arguments."
+    },
+    {
+      "unit": "p3.procedure-vs-data",
+      "disposition": "definition",
+      "requirements": [
+        "S15.4.3.4.5-003"
+      ],
+      "rationale": "Definition or source classification; executable or diagnostic effects are only those named by the mapped requirement."
+    },
+    {
+      "unit": "p3.data-or-function-not-tkr",
+      "disposition": "definition",
+      "requirements": [
+        "S15.4.3.4.5-003"
+      ],
+      "rationale": "Definition or source classification; executable or diagnostic effects are only those named by the mapped requirement."
+    },
+    {
+      "unit": "p3.allocatable-vs-pointer",
+      "disposition": "definition",
+      "requirements": [
+        "S15.4.3.4.5-003"
+      ],
+      "rationale": "Definition or source classification; executable or diagnostic effects are only those named by the mapped requirement."
+    },
+    {
+      "unit": "p3.function-rank-vs-not-function",
+      "disposition": "definition",
+      "requirements": [
+        "S15.4.3.4.5-003"
+      ],
+      "rationale": "Definition or source classification; executable or diagnostic effects are only those named by the mapped requirement."
+    },
+    {
+      "unit": "C1511",
+      "disposition": "requirements",
+      "requirements": [
+        "C1511"
+      ],
+      "rationale": "Numbered constraint; no existing tests were found."
+    },
+    {
+      "unit": "C1512",
+      "disposition": "requirements",
+      "requirements": [
+        "C1512"
+      ],
+      "rationale": "Numbered constraint; no existing tests were found."
+    },
+    {
+      "unit": "C1513",
+      "disposition": "requirements",
+      "requirements": [
+        "C1513"
+      ],
+      "rationale": "Numbered constraint; no existing tests were found."
+    },
+    {
+      "unit": "C1514",
+      "disposition": "unresolved",
+      "rationale": "Pre-existing C1514 fixtures and review metadata were found in tests/clause15/C1514_invalid.f90, tests/clause15/C1514_valid.f90, tests/fixtures/generic_length_only/fixture.json, tests/fixtures/generic_length_rank_control/fixture.json, tests/fixtures/derived_definition_c1514_invalid__sequence_definition_identity/fixture.json, tests/fixtures/derived_definition_c1514_valid__sequence_component_name_repair/fixture.json, tests/test_run_tests.py, tests/test_derived_definition_fixtures.py, and tests/reviews.json. Requirement registration and fixture binding are deferred to a dedicated migration batch. Audit accounting note: C1514 is a numbered base unit already counted by doc/fortran_2023_rules.txt, and this packet leaves it unresolved because existing tests require a fixture-migration batch; therefore the packet audit delta is one less than base-minus-numbered for this range (net \u22121 offset from the pre-accounted unresolved numbered rule)."
+    },
+    {
+      "unit": "C1514.deferred-existing-coverage",
+      "disposition": "unresolved",
+      "rationale": "Deferred fixture migration item for C1514; this source packet does not re-register or bind existing coverage. Audit accounting note: C1514 is a numbered base unit already counted by doc/fortran_2023_rules.txt, and this packet leaves it unresolved because existing tests require a fixture-migration batch; therefore the packet audit delta is one less than base-minus-numbered for this range (net \u22121 offset from the pre-accounted unresolved numbered rule)."
+    },
+    {
+      "unit": "p4",
+      "disposition": "definition",
+      "requirements": [
+        "S15.4.3.4.5-004"
+      ],
+      "rationale": "Defines effective position."
+    },
+    {
+      "unit": "p5",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.4.3.4.5-005"
+      ],
+      "rationale": "Defines intrinsic generic accessibility and specific-precedence effect."
+    },
+    {
+      "unit": "note2",
+      "disposition": "informative",
+      "rationale": "Explanatory cross-reference only; no requirement is based on the note."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_15_4_3_4_5.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "fd02f52a67494e21bb35205f81a6ab56ddafe8f0a841a5852ac24526929525ba",
+  "review_rationale": "Source registration for 15.4.3.4-15.4.3.4.5 and 15.4.3.5: generic identifiers, defined operations and assignments, DTIO interfaces, restrictions on generic declarations, and the EXTERNAL statement (batch222). Every unit hash-verified by an independent reviewer across three rounds; C1511-C1513 carry diagnostic plans, C1514 is deferred to its existing tests, and EXTERNAL name resolution is observed through an exact ABS sentinel. Source accounting only."
+}
