@@ -5819,6 +5819,11 @@ See `doc/source_audits/batch_212.json`.
 Thirty-three units after three rounds, and the first Clause 17 packet, so its findings became the calibration rules every later IEEE packet was sent. The pattern is the Clause 16 one with a new axis: nearly every result is exact, but only under a support inquiry, and each procedure used even as an observer carries its own. The last finding was arithmetic: the square root of an odd power of two is not a model number.
 See `doc/source_audits/batch_214.json`.
 
+## Batch 217 — IEEE_LOGB through IEEE_MIN (17.11.16-17.11.21)
+
+Forty-three units after two rounds. The subtle finding was about halting: an exception-flag row cannot simply be skipped when halting is uncontrollable, because the flag is still required — but the initial halting mode is processor dependent, so the row must first establish, or at least observe, that halting is off. That rule now applies to every Clause 17 packet.
+See `doc/source_audits/batch_217.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
