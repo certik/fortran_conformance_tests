@@ -6094,6 +6094,11 @@ See `doc/source_audits/batch_269.json`.
 Eighteen programs, thirty-seven facets, and six LFortran defects: FORALL, DO CONCURRENT and LOCAL names leak into the enclosing scope, and common-block homonyms the standard explicitly allows are rejected.
 See `doc/source_audits/batch_276.json`.
 
+## Batch 267 — Intrinsic fixtures 16.9.11-16.9.17 (AINT-ASIND)
+
+Twenty-three programs, forty-one facets of AINT through ASIND, three rounds. What survived is what the standard fixes exactly: truncation, rounding ties away from zero, the empty ALL being true and the empty ANY false.
+See `doc/source_audits/batch_267.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
