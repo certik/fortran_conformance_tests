@@ -6219,6 +6219,11 @@ See `doc/source_audits/batch_292.json`.
 37 programs, 46 facets and two LFortran defects in OPEN: reopening a connected unit without FILE= must mean the same file, and a bare unit number must come first.
 See `doc/source_audits/batch_294.json`.
 
+## Batch 295 — Level-2 to level-4 expression fixtures 10.1.2.5-10.1.2.7
+
+25 programs, 54 facets: -2**2 is -4, 2**3**2 is 512, and 1 < 2 < 3 is not Fortran, though LFortran accepts it.
+See `doc/source_audits/batch_295.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
