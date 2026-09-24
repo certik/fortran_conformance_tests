@@ -6184,6 +6184,11 @@ See `doc/source_audits/batch_290.json`.
 28 programs, 38 facets, four rounds: the first letters of Clause 16. ADJUSTL must both remove the leading blanks and put the same number back at the end, and the tests now check each half separately.
 See `doc/source_audits/batch_266.json`.
 
+## Batch 287 — Unit, connection mode and connection status fixtures 12.5.1-12.5.4
+
+24 programs, 38 facets and two LFortran defects: a vector-subscripted internal file crashes the compiler instead of being diagnosed, and BLANK='ZERO' on a READ is ignored.
+See `doc/source_audits/batch_287.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
