@@ -1,0 +1,182 @@
+{
+  "schema_version": 1,
+  "section": "18.3.1",
+  "requirements": [
+    {
+      "id": "S18.3.1-001",
+      "title": "Intrinsic Fortran type parameters interoperate with the C types named in Table 18.2",
+      "source": "S18.3.1, J3/24-007, 18 December 2023, physical PDF525.",
+      "source_units": [
+        "p1",
+        "table18.2"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A Fortran intrinsic type with a particular kind type parameter, and character length one for character, is interoperable with a listed C type exactly on the corresponding Table 18.2 row; such a combination is also interoperable with compatible unqualified C types.",
+      "facets": [
+        "table-row-type-kind-correspondence",
+        "character-length-one-correspondence",
+        "unqualified-compatible-c-type-correspondence"
+      ],
+      "pending": {
+        "table-row-type-kind-correspondence": "Table-driven mixed Fortran/C plan enumerates every standardized Table 18.2 named constant: C_INT, C_SHORT, C_LONG, C_LONG_LONG, C_SIGNED_CHAR, C_SIZE_T, C_INT8_T, C_INT16_T, C_INT32_T, C_INT64_T, C_INT_LEAST8_T, C_INT_LEAST16_T, C_INT_LEAST32_T, C_INT_LEAST64_T, C_INT_FAST8_T, C_INT_FAST16_T, C_INT_FAST32_T, C_INT_FAST64_T, C_INTMAX_T, C_INTPTR_T, C_PTRDIFF_T, C_FLOAT, C_DOUBLE, C_LONG_DOUBLE, C_FLOAT_COMPLEX, C_DOUBLE_COMPLEX, C_LONG_DOUBLE_COMPLEX, C_BOOL, C_CHAR. For each constant, first test k > 0; only the positive branch declares the corresponding Fortran kind and C companion type. C writes exact load-bearing values such as 37 for integer rows, -4.5 or 1.5 for real rows, (2.0,-3.0) for complex rows, true for C_BOOL, and Z for C_CHAR; Fortran variables start from distinct sentinels and verify the exact changed values or exact component values. Negative branches record unsupported rows and never declare or write a literal of that kind.",
+        "character-length-one-correspondence": "Mixed plan uses a C char set to Q and a Fortran CHARACTER(KIND=C_CHAR,LEN=1) BIND(C) scalar initialized to X; after the C write, Fortran expects Q. Source-control companion changes only LEN=1 to LEN=2 and records that no required diagnostic is owned here.",
+        "unqualified-compatible-c-type-correspondence": "Mixed plan declares the C companion objects without const/volatile qualification for the same positive rows and verifies the same Fortran kind receives exact values; a future qualified-C source-use variant may document compatibility without asserting extra Fortran syntax."
+      },
+      "oracle": "Source registration only. Positive plans establish load-bearing values before the observation, usually with distinct sentinels or C-written data, then assert only portable properties: successful compilation and linking, exact integer/logical/character values, exactly representable real values, required rejection of numbered constraints, or source-use restrictions fixed by the standard. Mixed Fortran/C plans build a Fortran source with a small C companion. They do not assert kind numbers, addresses, structure padding, diagnostic wording, C implementation details beyond the declared companion objects, or support for a C type whose ISO_C_BINDING named constant is negative.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Unnumbered program restrictions are retained as source-control plans and are not promoted to required diagnostic facets. Coarray-dependent observations are out of scope by user decision. NOTES and examples are informative only.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 10, 11, 12, 13, 15, and 16 for source form, types, attributes, expressions, execution, I/O, procedure calls, and ISO_C_BINDING named constants and procedures. Unregistered or separately catalogued dependencies explicitly retained: C companion semantics from ISO/IEC 9899:2018, BIND(C) data-entity rules, ENUM definitions, argument association, 18.3.7 procedure interoperability, 18.10 ISO_C_BINDING procedures, and later C descriptor rules."
+    },
+    {
+      "id": "S18.3.1-002",
+      "title": "ISO_C_BINDING named-constant signs determine intrinsic interoperable combinations",
+      "source": "S18.3.1, J3/24-007, 18 December 2023, physical PDF525.",
+      "source_units": [
+        "p2.named-constant-source",
+        "p2.sign-relation"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The second Table 18.2 column names ISO_C_BINDING constants; a negative value means no Fortran type and type-parameter combination interoperates with that C type, while positive values identify usable Fortran kind type parameter values.",
+      "facets": [
+        "iso-c-binding-kind-constant-source",
+        "negative-kind-means-no-fortran-combination",
+        "positive-kind-identifies-usable-kind"
+      ],
+      "pending": {
+        "iso-c-binding-kind-constant-source": "Compile/run plan imports ISO_C_BINDING and enumerates every Table 18.2 named constant: C_INT, C_SHORT, C_LONG, C_LONG_LONG, C_SIGNED_CHAR, C_SIZE_T, C_INT8_T, C_INT16_T, C_INT32_T, C_INT64_T, C_INT_LEAST8_T, C_INT_LEAST16_T, C_INT_LEAST32_T, C_INT_LEAST64_T, C_INT_FAST8_T, C_INT_FAST16_T, C_INT_FAST32_T, C_INT_FAST64_T, C_INTMAX_T, C_INTPTR_T, C_PTRDIFF_T, C_FLOAT, C_DOUBLE, C_LONG_DOUBLE, C_FLOAT_COMPLEX, C_DOUBLE_COMPLEX, C_LONG_DOUBLE_COMPLEX, C_BOOL, C_CHAR. Each value is copied into a nonzero sentinel slot and checked only for the sign relation that drives the guarded branches; no exact kind number is asserted.",
+        "negative-kind-means-no-fortran-combination": "Guarded source-use plan enumerates every Table 18.2 named constant as an independent negative-value branch: C_INT < 0 \u21d2 no INTEGER(C_INT) \u2194 int correspondence is claimed and no declaration or literal of that Fortran kind appears; C_SHORT < 0 \u21d2 no INTEGER(C_SHORT) \u2194 short int correspondence is claimed and no declaration or literal of that Fortran kind appears; C_LONG < 0 \u21d2 no INTEGER(C_LONG) \u2194 long int correspondence is claimed and no declaration or literal of that Fortran kind appears; C_LONG_LONG < 0 \u21d2 no INTEGER(C_LONG_LONG) \u2194 long long int correspondence is claimed and no declaration or literal of that Fortran kind appears; C_SIGNED_CHAR < 0 \u21d2 no INTEGER(C_SIGNED_CHAR) \u2194 signed char correspondence is claimed and no declaration or literal of that Fortran kind appears; C_SIZE_T < 0 \u21d2 no INTEGER(C_SIZE_T) \u2194 size_t correspondence is claimed and no declaration or literal of that Fortran kind appears; C_INT8_T < 0 \u21d2 no INTEGER(C_INT8_T) \u2194 int8_t correspondence is claimed and no declaration or literal of that Fortran kind appears; C_INT16_T < 0 \u21d2 no INTEGER(C_INT16_T) \u2194 int16_t correspondence is claimed and no declaration or literal of that Fortran kind appears; C_INT32_T < 0 \u21d2 no INTEGER(C_INT32_T) \u2194 int32_t correspondence is claimed and no declaration or literal of that Fortran kind appears; C_INT64_T < 0 \u21d2 no INTEGER(C_INT64_T) \u2194 int64_t correspondence is claimed and no declaration or literal of that Fortran kind appears; C_INT_LEAST8_T < 0 \u21d2 no INTEGER(C_INT_LEAST8_T) \u2194 int_least8_t correspondence is claimed and no declaration or literal of that Fortran kind appears; C_INT_LEAST16_T < 0 \u21d2 no INTEGER(C_INT_LEAST16_T) \u2194 int_least16_t correspondence is claimed and no declaration or literal of that Fortran kind appears; C_INT_LEAST32_T < 0 \u21d2 no INTEGER(C_INT_LEAST32_T) \u2194 int_least32_t correspondence is claimed and no declaration or literal of that Fortran kind appears; C_INT_LEAST64_T < 0 \u21d2 no INTEGER(C_INT_LEAST64_T) \u2194 int_least64_t correspondence is claimed and no declaration or literal of that Fortran kind appears; C_INT_FAST8_T < 0 \u21d2 no INTEGER(C_INT_FAST8_T) \u2194 int_fast8_t correspondence is claimed and no declaration or literal of that Fortran kind appears; C_INT_FAST16_T < 0 \u21d2 no INTEGER(C_INT_FAST16_T) \u2194 int_fast16_t correspondence is claimed and no declaration or literal of that Fortran kind appears; C_INT_FAST32_T < 0 \u21d2 no INTEGER(C_INT_FAST32_T) \u2194 int_fast32_t correspondence is claimed and no declaration or literal of that Fortran kind appears; C_INT_FAST64_T < 0 \u21d2 no INTEGER(C_INT_FAST64_T) \u2194 int_fast64_t correspondence is claimed and no declaration or literal of that Fortran kind appears; C_INTMAX_T < 0 \u21d2 no INTEGER(C_INTMAX_T) \u2194 intmax_t correspondence is claimed and no declaration or literal of that Fortran kind appears; C_INTPTR_T < 0 \u21d2 no INTEGER(C_INTPTR_T) \u2194 intptr_t correspondence is claimed and no declaration or literal of that Fortran kind appears; C_PTRDIFF_T < 0 \u21d2 no INTEGER(C_PTRDIFF_T) \u2194 ptrdiff_t correspondence is claimed and no declaration or literal of that Fortran kind appears; C_FLOAT < 0 \u21d2 no REAL(C_FLOAT) \u2194 float correspondence is claimed and no declaration or literal of that Fortran kind appears; C_DOUBLE < 0 \u21d2 no REAL(C_DOUBLE) \u2194 double correspondence is claimed and no declaration or literal of that Fortran kind appears; C_LONG_DOUBLE < 0 \u21d2 no REAL(C_LONG_DOUBLE) \u2194 long double correspondence is claimed and no declaration or literal of that Fortran kind appears; C_FLOAT_COMPLEX < 0 \u21d2 no COMPLEX(C_FLOAT_COMPLEX) \u2194 float _Complex correspondence is claimed and no declaration or literal of that Fortran kind appears; C_DOUBLE_COMPLEX < 0 \u21d2 no COMPLEX(C_DOUBLE_COMPLEX) \u2194 double _Complex correspondence is claimed and no declaration or literal of that Fortran kind appears; C_LONG_DOUBLE_COMPLEX < 0 \u21d2 no COMPLEX(C_LONG_DOUBLE_COMPLEX) \u2194 long double _Complex correspondence is claimed and no declaration or literal of that Fortran kind appears; C_BOOL < 0 \u21d2 no LOGICAL(C_BOOL) \u2194 _Bool correspondence is claimed and no declaration or literal of that Fortran kind appears; C_CHAR < 0 \u21d2 no CHARACTER(KIND=C_CHAR,LEN=1) \u2194 char correspondence is claimed and no declaration or literal of that Fortran kind appears. Positive branches are separate k > 0 branches that declare only the matching Fortran kind and run the exact C companion value checks.",
+        "positive-kind-identifies-usable-kind": "Guarded mixed plan enumerates all Table 18.2 constants and for every k > 0 declares only the matching Fortran kind row and C companion type; C writes exact row-appropriate values and Fortran verifies initialized sentinels changed to those values. Negative rows are skipped without declaring that kind."
+      },
+      "oracle": "Source registration only. Positive plans establish load-bearing values before the observation, usually with distinct sentinels or C-written data, then assert only portable properties: successful compilation and linking, exact integer/logical/character values, exactly representable real values, required rejection of numbered constraints, or source-use restrictions fixed by the standard. Mixed Fortran/C plans build a Fortran source with a small C companion. They do not assert kind numbers, addresses, structure padding, diagnostic wording, C implementation details beyond the declared companion objects, or support for a C type whose ISO_C_BINDING named constant is negative.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Unnumbered program restrictions are retained as source-control plans and are not promoted to required diagnostic facets. Coarray-dependent observations are out of scope by user decision. NOTES and examples are informative only.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 10, 11, 12, 13, 15, and 16 for source form, types, attributes, expressions, execution, I/O, procedure calls, and ISO_C_BINDING named constants and procedures. Unregistered or separately catalogued dependencies explicitly retained: C companion semantics from ISO/IEC 9899:2018, BIND(C) data-entity rules, ENUM definitions, argument association, 18.3.7 procedure interoperability, 18.10 ISO_C_BINDING procedures, and later C descriptor rules."
+    },
+    {
+      "id": "S18.3.1-003",
+      "title": "Support for Table 18.2 C rows and exact kind values is processor latitude",
+      "source": "S18.3.1, J3/24-007, 18 December 2023, physical PDF525.",
+      "source_units": [
+        "p2.c-type-support-latitude",
+        "p2.kind-number-latitude"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A processor can expose a negative ISO_C_BINDING named constant for a Table 18.2 C row, meaning that no interoperable Fortran combination exists for that C type; positive kind values are usable through the named constants without fixing their exact integer values.",
+      "facets": [
+        "c-row-support-processor-latitude",
+        "kind-value-exact-number-processor-latitude"
+      ],
+      "pending": {
+        "c-row-support-processor-latitude": "No portable oracle may require support for C_LONG_DOUBLE, C_INT128_T-like extensions, or any row whose ISO_C_BINDING constant is negative; future fixtures guard optional rows and assert only positive-row behavior.",
+        "kind-value-exact-number-processor-latitude": "No portable oracle may require C_INT, C_DOUBLE, or any other named constant to have a particular positive integer value; future fixtures compare equality of values obtained from ISO_C_BINDING and the C companion, not literal kind numbers."
+      },
+      "oracle": "Source registration only. Positive plans establish load-bearing values before the observation, usually with distinct sentinels or C-written data, then assert only portable properties: successful compilation and linking, exact integer/logical/character values, exactly representable real values, required rejection of numbered constraints, or source-use restrictions fixed by the standard. Mixed Fortran/C plans build a Fortran source with a small C companion. They do not assert kind numbers, addresses, structure padding, diagnostic wording, C implementation details beyond the declared companion objects, or support for a C type whose ISO_C_BINDING named constant is negative.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Unnumbered program restrictions are retained as source-control plans and are not promoted to required diagnostic facets. Coarray-dependent observations are out of scope by user decision. NOTES and examples are informative only.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 10, 11, 12, 13, 15, and 16 for source form, types, attributes, expressions, execution, I/O, procedure calls, and ISO_C_BINDING named constants and procedures. Unregistered or separately catalogued dependencies explicitly retained: C companion semantics from ISO/IEC 9899:2018, BIND(C) data-entity rules, ENUM definitions, argument association, 18.3.7 procedure interoperability, 18.10 ISO_C_BINDING procedures, and later C descriptor rules."
+    },
+    {
+      "id": "S18.3.1-004",
+      "title": "Intrinsic type and type-parameter combinations inherit interoperability from C-type interoperability",
+      "source": "S18.3.1, J3/24-007, 18 December 2023, physical PDF525.",
+      "source_units": [
+        "p3"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A combination of intrinsic type and type parameters is interoperable exactly by virtue of being interoperable with a C type; the C types named in Table 18.2 are the referenced ISO C types.",
+      "facets": [
+        "intrinsic-combination-interoperable-via-c-type",
+        "c-type-definitions-referenced"
+      ],
+      "pending": {
+        "intrinsic-combination-interoperable-via-c-type": "Mixed plan uses the same table-driven enumeration of every Table 18.2 named constant; each positive row demonstrates scalar assignment through the corresponding C type, with sentinels changed to exact row-appropriate values, attributing interoperability to the shared C type row. Negative rows are skipped without declaring that kind.",
+        "c-type-definitions-referenced": "Source-use inventory plan records the exact ISO C type spelling used by the companion for each Table 18.2 positive row; no Fortran execution can prove the external ISO C definitions themselves."
+      },
+      "oracle": "Source registration only. Positive plans establish load-bearing values before the observation, usually with distinct sentinels or C-written data, then assert only portable properties: successful compilation and linking, exact integer/logical/character values, exactly representable real values, required rejection of numbered constraints, or source-use restrictions fixed by the standard. Mixed Fortran/C plans build a Fortran source with a small C companion. They do not assert kind numbers, addresses, structure padding, diagnostic wording, C implementation details beyond the declared companion objects, or support for a C type whose ISO_C_BINDING named constant is negative.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Unnumbered program restrictions are retained as source-control plans and are not promoted to required diagnostic facets. Coarray-dependent observations are out of scope by user decision. NOTES and examples are informative only.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 10, 11, 12, 13, 15, and 16 for source form, types, attributes, expressions, execution, I/O, procedure calls, and ISO_C_BINDING named constants and procedures. Unregistered or separately catalogued dependencies explicitly retained: C companion semantics from ISO/IEC 9899:2018, BIND(C) data-entity rules, ENUM definitions, argument association, 18.3.7 procedure interoperability, 18.10 ISO_C_BINDING procedures, and later C descriptor rules."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "definition",
+      "requirements": [
+        "S18.3.1-001"
+      ],
+      "rationale": "Defines intrinsic type/type-parameter interoperability, including character length and compatible unqualified C types."
+    },
+    {
+      "unit": "p2",
+      "disposition": "structural",
+      "rationale": "Mixed named-constant source, sign relation, optional C-row support, and unfixed kind-number latitude are split."
+    },
+    {
+      "unit": "p2.named-constant-source",
+      "disposition": "definition",
+      "requirements": [
+        "S18.3.1-002"
+      ],
+      "rationale": "Identifies the ISO_C_BINDING named constants used by Table 18.2."
+    },
+    {
+      "unit": "p2.sign-relation",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.3.1-002"
+      ]
+    },
+    {
+      "unit": "p2.c-type-support-latitude",
+      "disposition": "permission",
+      "requirements": [
+        "S18.3.1-003"
+      ],
+      "rationale": "Processor latitude to lack an interoperable Fortran kind for a C type shown by a negative named constant."
+    },
+    {
+      "unit": "p2.kind-number-latitude",
+      "disposition": "permission",
+      "requirements": [
+        "S18.3.1-003"
+      ],
+      "rationale": "Exact positive kind numbers are not fixed by this source unit."
+    },
+    {
+      "unit": "p3",
+      "disposition": "definition",
+      "requirements": [
+        "S18.3.1-004"
+      ],
+      "rationale": "Defines intrinsic combinations by reference to C-type interoperability and ISO C clauses."
+    },
+    {
+      "unit": "table18.2",
+      "disposition": "definition",
+      "requirements": [
+        "S18.3.1-001"
+      ],
+      "rationale": "Enumerates the Fortran/C intrinsic type rows used by the row-correspondence requirement."
+    },
+    {
+      "unit": "note-unnumbered",
+      "disposition": "informative",
+      "rationale": "Explains unsigned integer interoperation consequences; it is a NOTE and adds no normative requirement."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_18_3_1.md"
+  },
+  "review_state": "reviewed",
+  "subunits": {
+    "p2": [
+      "p2.named-constant-source",
+      "p2.sign-relation",
+      "p2.c-type-support-latitude",
+      "p2.kind-number-latitude"
+    ]
+  },
+  "review_fingerprint": "6b7753bd418e2ddd724b57f648b6b84bb60f678667db3d6da99dd17576aaf57c",
+  "review_rationale": "Source registration for 18.3 and 18.3.1-18.3.6: interoperability of intrinsic types, C pointer types, derived types and C structures, and scalar and array variables (batch242). Every unit hash-verified by an independent reviewer across two rounds; C1801-C1806 had no existing tests, and every correspondence is planned as a mixed Fortran/C program with hand-derived values. 18.3.7 (already on main) is untouched. Source accounting only."
+}

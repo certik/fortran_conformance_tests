@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "section": "18.3.3",
+  "requirements": [
+    {
+      "id": "S18.3.3-001",
+      "title": "Fortran enum types interoperate with corresponding C enumerated and integer types",
+      "source": "S18.3.3, J3/24-007, 18 December 2023, physical PDF526.",
+      "source_units": [
+        "p1"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "An enum type interoperates with its corresponding C enumerated type and with the C integer type that interoperates with its enumerators.",
+      "facets": [
+        "enum-corresponding-c-enumerated-type",
+        "enum-corresponding-c-integer-type"
+      ],
+      "pending": {
+        "enum-corresponding-c-enumerated-type": "Mixed plan declares matching Fortran ENUM, BIND(C) enumerators RED=3 and BLUE=9 and a C enum with the same constants; C receives the Fortran enum value and returns exact 39 for BLUE, while Fortran sentinel starts at -1.",
+        "enum-corresponding-c-integer-type": "Mixed plan passes the enumerator value BLUE to a C function taking the interoperating C integer type and returning value+5; Fortran expects exact 14, separating integer interoperability from enumerator spelling."
+      },
+      "oracle": "Source registration only. Positive plans establish load-bearing values before the observation, usually with distinct sentinels or C-written data, then assert only portable properties: successful compilation and linking, exact integer/logical/character values, exactly representable real values, required rejection of numbered constraints, or source-use restrictions fixed by the standard. Mixed Fortran/C plans build a Fortran source with a small C companion. They do not assert kind numbers, addresses, structure padding, diagnostic wording, C implementation details beyond the declared companion objects, or support for a C type whose ISO_C_BINDING named constant is negative.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Unnumbered program restrictions are retained as source-control plans and are not promoted to required diagnostic facets. Coarray-dependent observations are out of scope by user decision. NOTES and examples are informative only.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 10, 11, 12, 13, 15, and 16 for source form, types, attributes, expressions, execution, I/O, procedure calls, and ISO_C_BINDING named constants and procedures. Unregistered or separately catalogued dependencies explicitly retained: C companion semantics from ISO/IEC 9899:2018, BIND(C) data-entity rules, ENUM definitions, argument association, 18.3.7 procedure interoperability, 18.10 ISO_C_BINDING procedures, and later C descriptor rules."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.3.3-001"
+      ]
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_18_3_3.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "413e2f1dac7f37d7adacf63e48d81f09de91e9d869b11f21633227d691164231",
+  "review_rationale": "Source registration for 18.3 and 18.3.1-18.3.6: interoperability of intrinsic types, C pointer types, derived types and C structures, and scalar and array variables (batch242). Every unit hash-verified by an independent reviewer across two rounds; C1801-C1806 had no existing tests, and every correspondence is planned as a mixed Fortran/C program with hand-derived values. 18.3.7 (already on main) is untouched. Source accounting only."
+}

@@ -1,0 +1,148 @@
+{
+  "schema_version": 1,
+  "section": "18.3.6",
+  "subunits": {
+    "p2": [
+      "p2.nonzero-size",
+      "p2.assumed-size-c-unsized",
+      "p2.explicit-last-extent",
+      "p2.rank-one-element",
+      "p2.multirank-recursive"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S18.3.6-001",
+      "title": "Named Fortran arrays are interoperable under array eligibility conditions",
+      "source": "S18.3.6, J3/24-007, 18 December 2023, physical PDF528.",
+      "source_units": [
+        "p1"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A named Fortran array is interoperable exactly with interoperable type and type parameters, non-coarray status, explicit shape or assumed size, and constant nonassumed character length for character arrays.",
+      "facets": [
+        "array-variable-type-parameters-interoperable",
+        "array-variable-not-coarray",
+        "array-variable-explicit-shape-or-assumed-size",
+        "array-character-length-constant-not-assumed"
+      ],
+      "pending": {
+        "array-variable-type-parameters-interoperable": "Positive mixed plan declares INTEGER(C_INT) :: a(3) initialized to [-7,-8,-9]; C fills three int elements with 4, 5, 6; Fortran verifies exact values after linking.",
+        "array-variable-not-coarray": "Out of scope by user decision: observing coarray exclusion requires coarray/image semantics beyond the single-image packet scope. Future single-image fixtures must not claim coarray array interoperability.",
+        "array-variable-explicit-shape-or-assumed-size": "Mixed plan uses an explicit-shape array a(3) and an assumed-size dummy a(*) in separate BIND(C) procedures, each filled by C with exact 10, 20, 30 and checked against initialized sentinels.",
+        "array-character-length-constant-not-assumed": "Positive mixed plan uses CHARACTER(KIND=C_CHAR,LEN=1) :: s(4), C fills chars A, B, C, and C_NULL_CHAR, and Fortran checks exact array elements; assumed or nonconstant length variants remain source-control only."
+      },
+      "oracle": "Source registration only. Positive plans establish load-bearing values before the observation, usually with distinct sentinels or C-written data, then assert only portable properties: successful compilation and linking, exact integer/logical/character values, exactly representable real values, required rejection of numbered constraints, or source-use restrictions fixed by the standard. Mixed Fortran/C plans build a Fortran source with a small C companion. They do not assert kind numbers, addresses, structure padding, diagnostic wording, C implementation details beyond the declared companion objects, or support for a C type whose ISO_C_BINDING named constant is negative.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Unnumbered program restrictions are retained as source-control plans and are not promoted to required diagnostic facets. Coarray-dependent observations are out of scope by user decision. NOTES and examples are informative only.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 10, 11, 12, 13, 15, and 16 for source form, types, attributes, expressions, execution, I/O, procedure calls, and ISO_C_BINDING named constants and procedures. Unregistered or separately catalogued dependencies explicitly retained: C companion semantics from ISO/IEC 9899:2018, BIND(C) data-entity rules, ENUM definitions, argument association, 18.3.7 procedure interoperability, 18.10 ISO_C_BINDING procedures, and later C descriptor rules."
+    },
+    {
+      "id": "S18.3.6-002",
+      "title": "Fortran arrays interoperate recursively with nonzero C arrays by shape and element type",
+      "source": "S18.3.6, J3/24-007, 18 December 2023, physical PDF528.",
+      "source_units": [
+        "p2.nonzero-size",
+        "p2.assumed-size-c-unsized",
+        "p2.explicit-last-extent",
+        "p2.rank-one-element",
+        "p2.multirank-recursive"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "An explicit-shape or assumed-size rank-r Fortran array with nonzero size interoperates with a C array according to matching assumed-size or last extent, rank-one element interoperability, and recursive interoperability of the leading Fortran dimensions with nested C array element types.",
+      "facets": [
+        "array-c-interoperability-nonzero-size",
+        "assumed-size-fortran-unsized-c-array",
+        "explicit-shape-last-extent-matches-c-size",
+        "rank-one-array-element-interoperability",
+        "multirank-array-recursive-c-order"
+      ],
+      "pending": {
+        "array-c-interoperability-nonzero-size": "Positive mixed plan uses nonzero arrays only, with INTEGER(C_INT) a(2) filled by C as 31 and 32. Zero-size variants are source-control only because this unit gives no required diagnostic for attempting C interoperation.",
+        "assumed-size-fortran-unsized-c-array": "Mixed plan exposes a BIND(C) subroutine with INTEGER(C_INT) :: a(*) and a C prototype using int a[]; C passes three elements 7, 8, 9 and Fortran verifies exact sentinel changes.",
+        "explicit-shape-last-extent-matches-c-size": "Guard C_INT > 0 before declaring the kind. Mixed plan uses explicit-shape Fortran INTEGER(C_INT) :: a(3,2) corresponds to C int a[2][3] with a(i,j) \u2194 a[j-1][i-1]. C fill formula a[r][c] = 100*r + c for r=0..1 and c=0..2 gives the exact Fortran table a(1,1)=0, a(2,1)=1, a(3,1)=2, a(1,2)=100, a(2,2)=101, a(3,2)=102. Fortran verifies all six exact values from initialized sentinels. Reverse direction fills Fortran a(1,1)=11, a(2,1)=12, a(3,1)=13, a(1,2)=21, a(2,2)=22, a(3,2)=23; C sees a[0][0]=11, a[0][1]=12, a[0][2]=13, a[1][0]=21, a[1][1]=22, a[1][2]=23 and returns weighted checksum 406.",
+        "rank-one-array-element-interoperability": "Mixed plan uses INTEGER(C_INT) :: a(4) with C int a[4]; C writes 1, 4, 9, 16 and Fortran verifies each initialized sentinel changed exactly.",
+        "multirank-array-recursive-c-order": "Guard C_INT > 0 before declaring the kind. Mixed rank-greater-than-one plan uses the same hand-derived recursive mapping: Fortran INTEGER(C_INT) :: a(3,2) corresponds to C int a[2][3] with a(i,j) \u2194 a[j-1][i-1]. C fill formula a[r][c] = 100*r + c for r=0..1 and c=0..2 gives the exact Fortran table a(1,1)=0, a(2,1)=1, a(3,1)=2, a(1,2)=100, a(2,2)=101, a(3,2)=102. The assertions cover every element, not just endpoints, and demonstrate that the C leftmost dimension corresponds to the Fortran last extent. Reverse direction fills Fortran a(1,1)=11, a(2,1)=12, a(3,1)=13, a(1,2)=21, a(2,2)=22, a(3,2)=23; C sees a[0][0]=11, a[0][1]=12, a[0][2]=13, a[1][0]=21, a[1][1]=22, a[1][2]=23 and returns weighted checksum 406."
+      },
+      "oracle": "Source registration only. Positive plans establish load-bearing values before the observation, usually with distinct sentinels or C-written data, then assert only portable properties: successful compilation and linking, exact integer/logical/character values, exactly representable real values, required rejection of numbered constraints, or source-use restrictions fixed by the standard. Mixed Fortran/C plans build a Fortran source with a small C companion. They do not assert kind numbers, addresses, structure padding, diagnostic wording, C implementation details beyond the declared companion objects, or support for a C type whose ISO_C_BINDING named constant is negative.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Unnumbered program restrictions are retained as source-control plans and are not promoted to required diagnostic facets. Coarray-dependent observations are out of scope by user decision. NOTES and examples are informative only.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 10, 11, 12, 13, 15, and 16 for source form, types, attributes, expressions, execution, I/O, procedure calls, and ISO_C_BINDING named constants and procedures. Unregistered or separately catalogued dependencies explicitly retained: C companion semantics from ISO/IEC 9899:2018, BIND(C) data-entity rules, ENUM definitions, argument association, 18.3.7 procedure interoperability, 18.10 ISO_C_BINDING procedures, and later C descriptor rules."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.3.6-001"
+      ]
+    },
+    {
+      "unit": "p2",
+      "disposition": "structural",
+      "rationale": "Mixed nonzero-size, assumed-size, explicit-last-extent, rank-one, and recursive rank-greater-than-one array interoperability rules split into fine units."
+    },
+    {
+      "unit": "p2.nonzero-size",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.3.6-002"
+      ]
+    },
+    {
+      "unit": "p2.assumed-size-c-unsized",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.3.6-002"
+      ]
+    },
+    {
+      "unit": "p2.explicit-last-extent",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.3.6-002"
+      ]
+    },
+    {
+      "unit": "p2.rank-one-element",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.3.6-002"
+      ]
+    },
+    {
+      "unit": "p2.multirank-recursive",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.3.6-002"
+      ]
+    },
+    {
+      "unit": "note1",
+      "disposition": "informative",
+      "rationale": "Explains why a Fortran rank-one array does not match a multidimensional C array; it is a NOTE."
+    },
+    {
+      "unit": "note2",
+      "disposition": "informative",
+      "rationale": "Explains allocatable and pointer array exclusion as a consequence of p1; it is a NOTE."
+    },
+    {
+      "unit": "note3",
+      "disposition": "informative",
+      "rationale": "Example only; no normative requirement is based on it."
+    },
+    {
+      "unit": "note4",
+      "disposition": "informative",
+      "rationale": "Explains C strings and sequence association examples; it is a NOTE."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_18_3_6.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "6f42f1da8a9e4973ae0389f025f7d0bb6de9f0bbc4a2759181c41cb6c638a85e",
+  "review_rationale": "Source registration for 18.3 and 18.3.1-18.3.6: interoperability of intrinsic types, C pointer types, derived types and C structures, and scalar and array variables (batch242). Every unit hash-verified by an independent reviewer across two rounds; C1801-C1806 had no existing tests, and every correspondence is planned as a mixed Fortran/C program with hand-derived values. 18.3.7 (already on main) is untouched. Source accounting only."
+}

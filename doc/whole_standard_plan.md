@@ -5969,6 +5969,11 @@ See `doc/source_audits/batch_241.json`.
 Forty-one units after two rounds. One finding was overruled: a rule that the C program 'shall not modify' a descriptor gives nothing to test on the processor side — checking that unmodifying C code left the descriptor unmodified would only confirm the test itself.
 See `doc/source_audits/batch_245.json`.
 
+## Batch 242 — Interoperability between Fortran and C entities (18.3-18.3.6)
+
+Thirty units after two rounds, and with them every Clause 18 section except the long-standing 18.3.7 draft is registered. The array finding is the classic one: Fortran a(3,2) and C int a[2][3] describe the same storage, but with the subscripts reversed and shifted by one.
+See `doc/source_audits/batch_242.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must

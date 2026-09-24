@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "section": "18.3.2",
+  "requirements": [
+    {
+      "id": "S18.3.2-001",
+      "title": "C_PTR and C_FUNPTR are private derived types interoperable with C pointer types",
+      "source": "S18.3.2, J3/24-007, 18 December 2023, physical PDF526.",
+      "source_units": [
+        "p1"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "C_PTR and C_FUNPTR are derived types with only private direct components, no direct allocatable or pointer components, with C_PTR interoperable with any C object pointer type and C_FUNPTR interoperable with any C function pointer type.",
+      "facets": [
+        "c-ptr-derived-private-type",
+        "c-funptr-derived-private-type",
+        "c-ptr-object-pointer-interoperability",
+        "c-funptr-function-pointer-interoperability",
+        "c-ptr-component-representation-not-observable"
+      ],
+      "pending": {
+        "c-ptr-derived-private-type": "Compile/run plan declares TYPE(C_PTR) variables initialized to C_NULL_PTR and distinct logical sentinels. The C_ASSOCIATED-style checks cover null, non-null from a C static object, same-target copies of that pointer, and a distinct-target pointer to a second static object; assertions compare association results only and never numeric addresses or private representation.",
+        "c-funptr-derived-private-type": "Compile/run plan declares TYPE(C_FUNPTR) variables initialized to C_NULL_FUNPTR and distinct logical sentinels. The association checks cover null, a non-null C function pointer, same-target copies of that function pointer, and a distinct-target pointer to a second C function; no numeric address comparison or component inspection is asserted.",
+        "c-ptr-object-pointer-interoperability": "Mixed plan has C return pointers to two static int objects, one holding 314 and one holding 271, through BIND(C) functions returning TYPE(C_PTR). Fortran observes null, non-null, same-target, and distinct-target association results without comparing addresses; after C_F_POINTER registration, it reads exact INTEGER(C_INT) value 314 into a sentinel. No malloc round trip or processor-dependent storage association is required.",
+        "c-funptr-function-pointer-interoperability": "Mixed plan has C return pointers to two functions, returning exact 271 and 314. Fortran stores TYPE(C_FUNPTR) values, observes null, non-null, same-target, and distinct-target association results without numeric address comparison, converts one via C_F_PROCPOINTER after that intrinsic is registered, invokes it, and checks sentinel 271.",
+        "c-ptr-component-representation-not-observable": "No portable oracle can name or inspect private direct components of C_PTR or C_FUNPTR, nor prove absence of allocatable or pointer representation components without nonstandard reflection; future tests assert only public pointer interoperation, association truth values, and exact pointee/function results."
+      },
+      "oracle": "Source registration only. Positive plans establish load-bearing values before the observation, usually with distinct sentinels or C-written data, then assert only portable properties: successful compilation and linking, exact integer/logical/character values, exactly representable real values, required rejection of numbered constraints, or source-use restrictions fixed by the standard. Mixed Fortran/C plans build a Fortran source with a small C companion. They do not assert kind numbers, addresses, structure padding, diagnostic wording, C implementation details beyond the declared companion objects, or support for a C type whose ISO_C_BINDING named constant is negative. Pointer association observations use null, non-null, same-target, and distinct-target cases and never numeric address comparisons; processor-dependent storage association remains latitude rather than an exact malloc-style round trip.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Unnumbered program restrictions are retained as source-control plans and are not promoted to required diagnostic facets. Coarray-dependent observations are out of scope by user decision. NOTES and examples are informative only.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 10, 11, 12, 13, 15, and 16 for source form, types, attributes, expressions, execution, I/O, procedure calls, and ISO_C_BINDING named constants and procedures. Unregistered or separately catalogued dependencies explicitly retained: C companion semantics from ISO/IEC 9899:2018, BIND(C) data-entity rules, ENUM definitions, argument association, 18.3.7 procedure interoperability, 18.10 ISO_C_BINDING procedures, and later C descriptor rules."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.3.2-001"
+      ]
+    },
+    {
+      "unit": "note1",
+      "disposition": "informative",
+      "rationale": "Explains C processor representation assumptions; it is a NOTE."
+    },
+    {
+      "unit": "note2",
+      "disposition": "informative",
+      "rationale": "Illustrates C_LOC, C_FUNLOC, C_PTR, and C_FUNPTR uses; it is a NOTE."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_18_3_2.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "1b6c055e540522e02e65dc8ec932add0bc1a8909efe09572236cbd5d305080f5",
+  "review_rationale": "Source registration for 18.3 and 18.3.1-18.3.6: interoperability of intrinsic types, C pointer types, derived types and C structures, and scalar and array variables (batch242). Every unit hash-verified by an independent reviewer across two rounds; C1801-C1806 had no existing tests, and every correspondence is planned as a mixed Fortran/C program with hand-derived values. 18.3.7 (already on main) is untouched. Source accounting only."
+}

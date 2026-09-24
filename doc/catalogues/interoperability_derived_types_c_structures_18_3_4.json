@@ -1,0 +1,314 @@
+{
+  "schema_version": 1,
+  "section": "18.3.4",
+  "subunits": {
+    "p2": [
+      "p2.bind-attribute",
+      "p2.component-count",
+      "p2.component-types",
+      "p2.relative-position"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S18.3.4-001",
+      "title": "BIND(C) derived types interoperate with matching C structure types by component order",
+      "source": "S18.3.4, J3/24-007, 18 December 2023, physical PDF526 and PDF527.",
+      "source_units": [
+        "p1",
+        "p2.bind-attribute",
+        "p2.component-count",
+        "p2.component-types",
+        "p2.relative-position"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Interoperability between a Fortran derived type and a C structure type is provided by the BIND attribute; a derived type is interoperable with a C structure type exactly with BIND(C), the same number of components, interoperable corresponding component variables, and correspondence by the same relative component position.",
+      "facets": [
+        "bind-attribute-provides-struct-interoperability",
+        "same-component-count-required",
+        "component-variable-interoperability-required",
+        "relative-position-determines-correspondence"
+      ],
+      "pending": {
+        "bind-attribute-provides-struct-interoperability": "Guard C_INT > 0 and C_DOUBLE > 0 before declaring these kinds. Mixed plan defines TYPE, BIND(C) :: pair with INTEGER(C_INT) code and REAL(C_DOUBLE) weight initialized to sentinels -777 and -9.0; C fills struct fields with 42 and exactly 1.5, and Fortran verifies both changed values. Reverse direction in the same companion has Fortran fill code=24 and weight=2.5; C reads those fields and returns exact checksum 245, proving Fortran-to-C structure transfer as well as C-to-Fortran transfer.",
+        "same-component-count-required": "Positive mixed plan uses exactly two Fortran components and exactly two C struct members; source-control companion records a one-member Fortran variant as non-interoperable without expecting a diagnostic from this unnumbered definition.",
+        "component-variable-interoperability-required": "Guard C_INT > 0, C_DOUBLE > 0, and C_CHAR > 0 before declaring these kinds. Mixed plan uses scalar, nested, and array components: TYPE, BIND(C) :: inner has INTEGER(C_INT) :: ci and REAL(C_DOUBLE) :: cd; TYPE, BIND(C) :: outer has TYPE(inner) :: nested, INTEGER(C_INT) :: v(3), and CHARACTER(KIND=C_CHAR,LEN=1) :: tag. Matching C structs use struct inner { int ci; double cd; } and struct outer { struct inner nested; int v[3]; char tag; }. C fills nested.ci=7, nested.cd=2.25, v={4,5,6}, tag=M; Fortran verifies nested%ci=7, nested%cd=2.25, v=[4,5,6], and tag=M from nonmatching sentinels. Reverse direction has Fortran fill nested%ci=8, nested%cd=3.5, v=[10,20,30], tag=R; C checks those exact members and returns exact checksum 104.",
+        "relative-position-determines-correspondence": "Guard C_INT > 0 and C_DOUBLE > 0 before declaring these kinds. Mixed plan gives different component names on the C and Fortran sides but the same relative order: C writes first integer 11 and second double 2.5, Fortran components named right and left receive exact 11 and 2.5, proving names are not the correspondence oracle. A companion with Fortran names left/right filled as 13 and 4.5 is read by C fields first/second and returns exact checksum 175, proving the Fortran-to-C direction uses the same positional correspondence."
+      },
+      "oracle": "Source registration only. Positive plans establish load-bearing values before the observation, usually with distinct sentinels or C-written data, then assert only portable properties: successful compilation and linking, exact integer/logical/character values, exactly representable real values, required rejection of numbered constraints, or source-use restrictions fixed by the standard. Mixed Fortran/C plans build a Fortran source with a small C companion. They do not assert kind numbers, addresses, structure padding, diagnostic wording, C implementation details beyond the declared companion objects, or support for a C type whose ISO_C_BINDING named constant is negative.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Unnumbered program restrictions are retained as source-control plans and are not promoted to required diagnostic facets. Coarray-dependent observations are out of scope by user decision. NOTES and examples are informative only.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 10, 11, 12, 13, 15, and 16 for source form, types, attributes, expressions, execution, I/O, procedure calls, and ISO_C_BINDING named constants and procedures. Unregistered or separately catalogued dependencies explicitly retained: C companion semantics from ISO/IEC 9899:2018, BIND(C) data-entity rules, ENUM definitions, argument association, 18.3.7 procedure interoperability, 18.10 ISO_C_BINDING procedures, and later C descriptor rules."
+    },
+    {
+      "id": "C1801",
+      "title": "BIND(C) derived types cannot also have the SEQUENCE attribute",
+      "source": "S18.3.4, J3/24-007, 18 December 2023, physical PDF526.",
+      "source_units": [
+        "C1801"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "A derived type with the BIND attribute shall not have the SEQUENCE attribute.",
+      "facets": [
+        "bind-derived-type-no-sequence-attribute"
+      ],
+      "pending": {
+        "bind-derived-type-no-sequence-attribute": "Rejected program: MODULE m uses ISO_C_BINDING and defines TYPE, BIND(C) :: record; SEQUENCE; INTEGER(C_INT) :: value; END TYPE. Positive control deletes only the SEQUENCE statement, retains BIND(C), record, value, and INTEGER(C_INT), and then declares TYPE(record) :: x."
+      },
+      "oracle": "Source registration only. Positive plans establish load-bearing values before the observation, usually with distinct sentinels or C-written data, then assert only portable properties: successful compilation and linking, exact integer/logical/character values, exactly representable real values, required rejection of numbered constraints, or source-use restrictions fixed by the standard. Mixed Fortran/C plans build a Fortran source with a small C companion. They do not assert kind numbers, addresses, structure padding, diagnostic wording, C implementation details beyond the declared companion objects, or support for a C type whose ISO_C_BINDING named constant is negative.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Unnumbered program restrictions are retained as source-control plans and are not promoted to required diagnostic facets. Coarray-dependent observations are out of scope by user decision. NOTES and examples are informative only.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 10, 11, 12, 13, 15, and 16 for source form, types, attributes, expressions, execution, I/O, procedure calls, and ISO_C_BINDING named constants and procedures. Unregistered or separately catalogued dependencies explicitly retained: C companion semantics from ISO/IEC 9899:2018, BIND(C) data-entity rules, ENUM definitions, argument association, 18.3.7 procedure interoperability, 18.10 ISO_C_BINDING procedures, and later C descriptor rules."
+    },
+    {
+      "id": "C1802",
+      "title": "BIND(C) derived types cannot have type parameters",
+      "source": "S18.3.4, J3/24-007, 18 December 2023, physical PDF526.",
+      "source_units": [
+        "C1802"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "A derived type with the BIND attribute shall not have type parameters.",
+      "facets": [
+        "bind-derived-type-no-type-parameters"
+      ],
+      "pending": {
+        "bind-derived-type-no-type-parameters": "Rejected program: MODULE m uses ISO_C_BINDING and defines TYPE, BIND(C) :: record(k); INTEGER, KIND :: k; INTEGER(C_INT) :: value; END TYPE. Positive control changes exactly the constrained property by using TYPE, BIND(C) :: record with the same INTEGER(C_INT) :: value component and no type-parameter declaration; it is checked against the other 18.3.4 rules: it has no SEQUENCE, no EXTENDS, no type-bound-procedure part, at least one component, and an interoperable nonpointer nonallocatable data component."
+      },
+      "oracle": "Source registration only. Positive plans establish load-bearing values before the observation, usually with distinct sentinels or C-written data, then assert only portable properties: successful compilation and linking, exact integer/logical/character values, exactly representable real values, required rejection of numbered constraints, or source-use restrictions fixed by the standard. Mixed Fortran/C plans build a Fortran source with a small C companion. They do not assert kind numbers, addresses, structure padding, diagnostic wording, C implementation details beyond the declared companion objects, or support for a C type whose ISO_C_BINDING named constant is negative.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Unnumbered program restrictions are retained as source-control plans and are not promoted to required diagnostic facets. Coarray-dependent observations are out of scope by user decision. NOTES and examples are informative only.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 10, 11, 12, 13, 15, and 16 for source form, types, attributes, expressions, execution, I/O, procedure calls, and ISO_C_BINDING named constants and procedures. Unregistered or separately catalogued dependencies explicitly retained: C companion semantics from ISO/IEC 9899:2018, BIND(C) data-entity rules, ENUM definitions, argument association, 18.3.7 procedure interoperability, 18.10 ISO_C_BINDING procedures, and later C descriptor rules."
+    },
+    {
+      "id": "C1803",
+      "title": "BIND(C) derived types cannot have the EXTENDS attribute",
+      "source": "S18.3.4, J3/24-007, 18 December 2023, physical PDF526.",
+      "source_units": [
+        "C1803"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "A derived type with the BIND attribute shall not have the EXTENDS attribute.",
+      "facets": [
+        "bind-derived-type-no-extends-attribute"
+      ],
+      "pending": {
+        "bind-derived-type-no-extends-attribute": "Rejected program: MODULE m uses ISO_C_BINDING, defines TYPE :: parent; INTEGER(C_INT) :: base; END TYPE, then TYPE, EXTENDS(parent), BIND(C) :: record; INTEGER(C_INT) :: value; END TYPE. Positive control removes only EXTENDS(parent), retaining BIND(C), record, value, and the unused parent definition; the control also satisfies C1801, C1802, C1804, C1805, and C1806."
+      },
+      "oracle": "Source registration only. Positive plans establish load-bearing values before the observation, usually with distinct sentinels or C-written data, then assert only portable properties: successful compilation and linking, exact integer/logical/character values, exactly representable real values, required rejection of numbered constraints, or source-use restrictions fixed by the standard. Mixed Fortran/C plans build a Fortran source with a small C companion. They do not assert kind numbers, addresses, structure padding, diagnostic wording, C implementation details beyond the declared companion objects, or support for a C type whose ISO_C_BINDING named constant is negative.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Unnumbered program restrictions are retained as source-control plans and are not promoted to required diagnostic facets. Coarray-dependent observations are out of scope by user decision. NOTES and examples are informative only.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 10, 11, 12, 13, 15, and 16 for source form, types, attributes, expressions, execution, I/O, procedure calls, and ISO_C_BINDING named constants and procedures. Unregistered or separately catalogued dependencies explicitly retained: C companion semantics from ISO/IEC 9899:2018, BIND(C) data-entity rules, ENUM definitions, argument association, 18.3.7 procedure interoperability, 18.10 ISO_C_BINDING procedures, and later C descriptor rules."
+    },
+    {
+      "id": "C1804",
+      "title": "BIND(C) derived type definitions cannot have a type-bound-procedure part",
+      "source": "S18.3.4, J3/24-007, 18 December 2023, physical PDF526.",
+      "source_units": [
+        "C1804"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "A derived-type-def that defines a derived type with the BIND attribute shall not have a type-bound-procedure-part.",
+      "facets": [
+        "bind-derived-type-no-type-bound-procedure-part"
+      ],
+      "pending": {
+        "bind-derived-type-no-type-bound-procedure-part": "Rejected program: MODULE m uses ISO_C_BINDING and defines TYPE, BIND(C) :: record; INTEGER(C_INT) :: value; CONTAINS; PROCEDURE, NOPASS :: touch; END TYPE, plus contained SUBROUTINE touch. Positive control removes only the type-bound-procedure part and keeps the same type, component, and module subroutine; the control has declarations before module procedures and satisfies C1801, C1802, C1803, C1805, and C1806."
+      },
+      "oracle": "Source registration only. Positive plans establish load-bearing values before the observation, usually with distinct sentinels or C-written data, then assert only portable properties: successful compilation and linking, exact integer/logical/character values, exactly representable real values, required rejection of numbered constraints, or source-use restrictions fixed by the standard. Mixed Fortran/C plans build a Fortran source with a small C companion. They do not assert kind numbers, addresses, structure padding, diagnostic wording, C implementation details beyond the declared companion objects, or support for a C type whose ISO_C_BINDING named constant is negative.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Unnumbered program restrictions are retained as source-control plans and are not promoted to required diagnostic facets. Coarray-dependent observations are out of scope by user decision. NOTES and examples are informative only.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 10, 11, 12, 13, 15, and 16 for source form, types, attributes, expressions, execution, I/O, procedure calls, and ISO_C_BINDING named constants and procedures. Unregistered or separately catalogued dependencies explicitly retained: C companion semantics from ISO/IEC 9899:2018, BIND(C) data-entity rules, ENUM definitions, argument association, 18.3.7 procedure interoperability, 18.10 ISO_C_BINDING procedures, and later C descriptor rules."
+    },
+    {
+      "id": "C1805",
+      "title": "BIND(C) derived types have at least one component",
+      "source": "S18.3.4, J3/24-007, 18 December 2023, physical PDF526.",
+      "source_units": [
+        "C1805"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "A derived type with the BIND attribute shall have at least one component.",
+      "facets": [
+        "bind-derived-type-at-least-one-component"
+      ],
+      "pending": {
+        "bind-derived-type-at-least-one-component": "Rejected program: MODULE m uses ISO_C_BINDING and defines TYPE, BIND(C) :: record; END TYPE record. Positive control adds exactly one INTEGER(C_INT) :: value data component and changes no other type attribute or name; the control satisfies C1801 through C1804 and C1806."
+      },
+      "oracle": "Source registration only. Positive plans establish load-bearing values before the observation, usually with distinct sentinels or C-written data, then assert only portable properties: successful compilation and linking, exact integer/logical/character values, exactly representable real values, required rejection of numbered constraints, or source-use restrictions fixed by the standard. Mixed Fortran/C plans build a Fortran source with a small C companion. They do not assert kind numbers, addresses, structure padding, diagnostic wording, C implementation details beyond the declared companion objects, or support for a C type whose ISO_C_BINDING named constant is negative.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Unnumbered program restrictions are retained as source-control plans and are not promoted to required diagnostic facets. Coarray-dependent observations are out of scope by user decision. NOTES and examples are informative only.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 10, 11, 12, 13, 15, and 16 for source form, types, attributes, expressions, execution, I/O, procedure calls, and ISO_C_BINDING named constants and procedures. Unregistered or separately catalogued dependencies explicitly retained: C companion semantics from ISO/IEC 9899:2018, BIND(C) data-entity rules, ENUM definitions, argument association, 18.3.7 procedure interoperability, 18.10 ISO_C_BINDING procedures, and later C descriptor rules."
+    },
+    {
+      "id": "C1806",
+      "title": "Every BIND(C) derived-type component is nonpointer, nonallocatable, data, and interoperable",
+      "source": "S18.3.4, J3/24-007, 18 December 2023, physical PDF526.",
+      "source_units": [
+        "C1806"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "Each component of a derived type with the BIND attribute shall be a nonpointer, nonallocatable data component with interoperable type and type parameters.",
+      "facets": [
+        "bind-component-nonpointer",
+        "bind-component-nonallocatable",
+        "bind-component-data-component",
+        "bind-component-interoperable-type-parameters"
+      ],
+      "pending": {
+        "bind-component-nonpointer": "Rejected program changes the sole INTEGER(C_INT) :: value component of a BIND(C) type to INTEGER(C_INT), POINTER :: value; positive control removes only POINTER and keeps the component name, type, and type parameter. The control has BIND(C), one component, no type parameters, no SEQUENCE, no EXTENDS, and no type-bound-procedure part.",
+        "bind-component-nonallocatable": "Rejected program changes the sole INTEGER(C_INT) :: value component of a BIND(C) type to INTEGER(C_INT), ALLOCATABLE :: value; positive control removes only ALLOCATABLE and keeps the component name, type, and type parameter. The control satisfies every other 18.3.4 constraint.",
+        "bind-component-data-component": "Positive control uses a data component INTEGER(C_INT) :: value. No isolated diagnostic source is portable for a non-data procedure component because procedure components are pointer components too, overlapping the nonpointer half of the same numbered constraint.",
+        "bind-component-interoperable-type-parameters": "Rejected program changes the sole CHARACTER(KIND=C_CHAR,LEN=1) :: value component to LEN=2; positive control changes only LEN back to 1 and keeps BIND(C), the component name, type, and kind. The control satisfies every other 18.3.4 constraint."
+      },
+      "oracle": "Source registration only. Positive plans establish load-bearing values before the observation, usually with distinct sentinels or C-written data, then assert only portable properties: successful compilation and linking, exact integer/logical/character values, exactly representable real values, required rejection of numbered constraints, or source-use restrictions fixed by the standard. Mixed Fortran/C plans build a Fortran source with a small C companion. They do not assert kind numbers, addresses, structure padding, diagnostic wording, C implementation details beyond the declared companion objects, or support for a C type whose ISO_C_BINDING named constant is negative.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Unnumbered program restrictions are retained as source-control plans and are not promoted to required diagnostic facets. Coarray-dependent observations are out of scope by user decision. NOTES and examples are informative only.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 10, 11, 12, 13, 15, and 16 for source form, types, attributes, expressions, execution, I/O, procedure calls, and ISO_C_BINDING named constants and procedures. Unregistered or separately catalogued dependencies explicitly retained: C companion semantics from ISO/IEC 9899:2018, BIND(C) data-entity rules, ENUM definitions, argument association, 18.3.7 procedure interoperability, 18.10 ISO_C_BINDING procedures, and later C descriptor rules."
+    },
+    {
+      "id": "S18.3.4-002",
+      "title": "No Fortran type interoperates with C bit-field, flexible-array, or union types",
+      "source": "S18.3.4, J3/24-007, 18 December 2023, physical PDF527.",
+      "source_units": [
+        "p3"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "There is no Fortran type interoperable with a C structure type containing a bit field or flexible array member, and no Fortran type interoperable with a C union type.",
+      "facets": [
+        "no-fortran-type-for-c-bit-field-structure",
+        "no-fortran-type-for-c-flexible-array-structure",
+        "no-fortran-type-for-c-union"
+      ],
+      "pending": {
+        "no-fortran-type-for-c-bit-field-structure": "No portable finite oracle can prove absence of every Fortran counterpart for a C bit-field structure; future source-use checks must avoid claiming interoperation with such a C struct.",
+        "no-fortran-type-for-c-flexible-array-structure": "No portable finite oracle can prove absence of every Fortran counterpart for a flexible-array-member C struct; future mixed tests use only fixed-size C struct members.",
+        "no-fortran-type-for-c-union": "No portable finite oracle can prove absence of every Fortran counterpart for a C union; future mixed tests do not treat any BIND(C) derived type as interoperable with a C union."
+      },
+      "oracle": "Source registration only. Positive plans establish load-bearing values before the observation, usually with distinct sentinels or C-written data, then assert only portable properties: successful compilation and linking, exact integer/logical/character values, exactly representable real values, required rejection of numbered constraints, or source-use restrictions fixed by the standard. Mixed Fortran/C plans build a Fortran source with a small C companion. They do not assert kind numbers, addresses, structure padding, diagnostic wording, C implementation details beyond the declared companion objects, or support for a C type whose ISO_C_BINDING named constant is negative.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Unnumbered program restrictions are retained as source-control plans and are not promoted to required diagnostic facets. Coarray-dependent observations are out of scope by user decision. NOTES and examples are informative only.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 10, 11, 12, 13, 15, and 16 for source form, types, attributes, expressions, execution, I/O, procedure calls, and ISO_C_BINDING named constants and procedures. Unregistered or separately catalogued dependencies explicitly retained: C companion semantics from ISO/IEC 9899:2018, BIND(C) data-entity rules, ENUM definitions, argument association, 18.3.7 procedure interoperability, 18.10 ISO_C_BINDING procedures, and later C descriptor rules."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "definition",
+      "requirements": [
+        "S18.3.4-001"
+      ],
+      "rationale": "Introduces BIND(C) as the source of Fortran/C structure interoperability."
+    },
+    {
+      "unit": "C1801",
+      "disposition": "requirements",
+      "requirements": [
+        "C1801"
+      ]
+    },
+    {
+      "unit": "C1802",
+      "disposition": "requirements",
+      "requirements": [
+        "C1802"
+      ]
+    },
+    {
+      "unit": "C1803",
+      "disposition": "requirements",
+      "requirements": [
+        "C1803"
+      ]
+    },
+    {
+      "unit": "C1804",
+      "disposition": "requirements",
+      "requirements": [
+        "C1804"
+      ]
+    },
+    {
+      "unit": "C1805",
+      "disposition": "requirements",
+      "requirements": [
+        "C1805"
+      ]
+    },
+    {
+      "unit": "C1806",
+      "disposition": "requirements",
+      "requirements": [
+        "C1806"
+      ]
+    },
+    {
+      "unit": "note1",
+      "disposition": "informative",
+      "rationale": "Restates syntax/constraint consequences and C_PTR/C_FUNPTR examples; it is a NOTE."
+    },
+    {
+      "unit": "p2",
+      "disposition": "structural",
+      "rationale": "Mixed BIND(C), component count, component interoperability, and positional correspondence definition split into fine units."
+    },
+    {
+      "unit": "p2.bind-attribute",
+      "disposition": "definition",
+      "requirements": [
+        "S18.3.4-001"
+      ],
+      "rationale": "Defines BIND(C) as an eligibility condition for derived-type/C-structure interoperability."
+    },
+    {
+      "unit": "p2.component-count",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.3.4-001"
+      ]
+    },
+    {
+      "unit": "p2.component-types",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.3.4-001"
+      ]
+    },
+    {
+      "unit": "p2.relative-position",
+      "disposition": "definition",
+      "requirements": [
+        "S18.3.4-001"
+      ],
+      "rationale": "Defines corresponding components by relative position."
+    },
+    {
+      "unit": "note2",
+      "disposition": "informative",
+      "rationale": "States names of corresponding components need not match; it is a NOTE."
+    },
+    {
+      "unit": "p3",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.3.4-002"
+      ]
+    },
+    {
+      "unit": "note3",
+      "disposition": "informative",
+      "rationale": "Example only; no normative requirement is based on it."
+    },
+    {
+      "unit": "note4",
+      "disposition": "informative",
+      "rationale": "Explains why C compatible-type name rules were not adopted; it is a NOTE."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_18_3_4.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "7d08a5b658789c7c8d77356ade21e26af4e4c38e59d17bf4049905fcff75695d",
+  "review_rationale": "Source registration for 18.3 and 18.3.1-18.3.6: interoperability of intrinsic types, C pointer types, derived types and C structures, and scalar and array variables (batch242). Every unit hash-verified by an independent reviewer across two rounds; C1801-C1806 had no existing tests, and every correspondence is planned as a mixed Fortran/C program with hand-derived values. 18.3.7 (already on main) is untouched. Source accounting only."
+}
