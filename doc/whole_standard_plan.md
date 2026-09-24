@@ -5779,6 +5779,11 @@ See `doc/source_audits/batch_204.json`.
 Forty units after two rounds, one of which was a plain arithmetic slip: a MINLOC plan read a 2x3 RESHAPE in row-major order. Caught by hand-recomputation, which is why reviewers recompute every expected value instead of trusting the author's. The replacement input is chosen so row and column answers differ, so the same slip could not pass again.
 See `doc/source_audits/batch_199.json`.
 
+## Batch 206 — SHAPE through SIND
+
+Forty-three units after two rounds, both findings boundary cases: a zero extent for SHAPE and a shift by the full bit size. SHIFT = BIT_SIZE(I) is explicitly admitted by the text and fully determined, so it is exactly where an implementation using a native shift instruction (which often masks the count) would go wrong.
+See `doc/source_audits/batch_206.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must

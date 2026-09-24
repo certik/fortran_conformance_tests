@@ -1,0 +1,121 @@
+{
+  "schema_version": 1,
+  "section": "16.9.188",
+  "requirements": [
+    {
+      "id": "S16.9.188-001",
+      "title": "SHIFTR argument restrictions",
+      "source": "S16.9.188, J3/24-007, 18 December 2023, physical PDF457.",
+      "source_units": [
+        "p3"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "I shall be integer; SHIFT shall be integer, nonnegative, and no greater than BIT_SIZE(I).",
+      "facets": [
+        "SHIFTR-I-integer",
+        "SHIFTR-SHIFT-integer",
+        "SHIFTR-SHIFT-nonnegative-and-at-most-bit-size"
+      ],
+      "pending": {
+        "SHIFTR-I-integer": "Positive source control calls SHIFTR with integer I containing distinguished low and high bits; source-control mutation uses noninteger I and claims no diagnostic facet.",
+        "SHIFTR-SHIFT-integer": "Positive source controls call SHIFTR with integer SHIFT values 0, 1, and BIT_SIZE(I); source-control mutation uses noninteger SHIFT and claims no diagnostic facet.",
+        "SHIFTR-SHIFT-nonnegative-and-at-most-bit-size": "Positive source controls call SHIFTR with SHIFT=0, SHIFT=1, and SHIFT=BIT_SIZE(I); source-control mutations use -1 and BIT_SIZE(I)+1 and claim no diagnostic facet."
+      },
+      "oracle": "Source registration only. Future fixtures initialize result variables to non-default or opposite sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact integer, logical, kind, shape, or bit-pattern observations, plus exactly representable real sign-copy results. Processor-dependent approximations, processor-dependent real-zero distinctions, and processor-dependent numeric interpretations of bit sequences are separated from exact result obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for SHAPE, SHIFTA, SHIFTL, SHIFTR, SIGN, SIN, and SIND found no fixture-json metadata binding for these 16.9.185-16.9.191 sections. SHAPE appears as helper coverage in unrelated clause 7, 8, 9, 10, and contiguous-property fixture sources; SIGN appears only in unrelated Python variable names or text, and no Fortran SIGN, SHIFTA, SHIFTL, SHIFTR, SIN, or SIND call match was found. Existing uses remain unbound by this source packet.",
+      "dependencies": "Registered dependencies: existing source-form, type, declaration, expression, assignment, execution, array, pointer, allocation, and I/O foundations from clauses 6 through 13 where already catalogued. Unregistered dependencies retained: 16.3 integer bit-sequence model, 16.4 numeric model terminology, 17 IEEE support for future guarded signed-zero probes, sibling 16.9 intrinsics used by pending plans such as ABS, BIT_SIZE, BTEST, IBSET, ISHFT, KIND, LBOUND, POPCNT, SELECTED_INT_KIND, and SIZE, and clauses 14, 15, 18, and 19 where future fixtures need program, procedure, processor-dependency, or scope terms."
+    },
+    {
+      "id": "S16.9.188-002",
+      "title": "SHIFTR result characteristics match I",
+      "source": "S16.9.188, J3/24-007, 18 December 2023, physical PDF457.",
+      "source_units": [
+        "p4"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The SHIFTR result has the same integer type and kind as I.",
+      "facets": [
+        "SHIFTR-result-same-type-kind-as-I"
+      ],
+      "pending": {
+        "SHIFTR-result-same-type-kind-as-I": "Call SHIFTR with default integer and SELECTED_INT_KIND(18) integer operands; assert KIND(SHIFTR(I,1)) equals KIND(I) and mutate the I kind used in the expected expression."
+      },
+      "oracle": "Source registration only. Future fixtures initialize result variables to non-default or opposite sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact integer, logical, kind, shape, or bit-pattern observations, plus exactly representable real sign-copy results. Processor-dependent approximations, processor-dependent real-zero distinctions, and processor-dependent numeric interpretations of bit sequences are separated from exact result obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for SHAPE, SHIFTA, SHIFTL, SHIFTR, SIGN, SIN, and SIND found no fixture-json metadata binding for these 16.9.185-16.9.191 sections. SHAPE appears as helper coverage in unrelated clause 7, 8, 9, 10, and contiguous-property fixture sources; SIGN appears only in unrelated Python variable names or text, and no Fortran SIGN, SHIFTA, SHIFTL, SHIFTR, SIN, or SIND call match was found. Existing uses remain unbound by this source packet.",
+      "dependencies": "Registered dependencies: existing source-form, type, declaration, expression, assignment, execution, array, pointer, allocation, and I/O foundations from clauses 6 through 13 where already catalogued. Unregistered dependencies retained: 16.3 integer bit-sequence model, 16.4 numeric model terminology, 17 IEEE support for future guarded signed-zero probes, sibling 16.9 intrinsics used by pending plans such as ABS, BIT_SIZE, BTEST, IBSET, ISHFT, KIND, LBOUND, POPCNT, SELECTED_INT_KIND, and SIZE, and clauses 14, 15, 18, and 19 where future fixtures need program, procedure, processor-dependency, or scope terms."
+    },
+    {
+      "id": "S16.9.188-003",
+      "title": "SHIFTR result value follows ISHFT(I,-SHIFT)",
+      "source": "S16.9.188, J3/24-007, 18 December 2023, physical PDF457.",
+      "source_units": [
+        "p5"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The value of SHIFTR(I,SHIFT) is ISHFT(I,-SHIFT).",
+      "facets": [
+        "SHIFTR-equals-ISHFT-formula",
+        "SHIFTR-zero-shift-preserves-bits",
+        "SHIFTR-right-shift-bits"
+      ],
+      "pending": {
+        "SHIFTR-equals-ISHFT-formula": "Use I with bits 1 and 4 set, SHIFT=2, and assert selected BTEST results equal ISHFT(I,-SHIFT); include SHIFT=BIT_SIZE(I) and assert POPCNT(SHIFTR(I,BIT_SIZE(I))) equals POPCNT(ISHFT(I,-BIT_SIZE(I))) in bit context; mutate the sign of the ISHFT comparison shift.",
+        "SHIFTR-zero-shift-preserves-bits": "Use I with bits 0, 3, and BIT_SIZE(I)-2 set, SHIFT=0, and assert selected BTEST results plus POPCNT match I exactly; companion SHIFT=1 avoids a vacuous unchanged check.",
+        "SHIFTR-right-shift-bits": "Use a bit pattern with one bit shifted out and one retained, assert only BTEST and POPCNT observations in bit context; add nonzero I with bits BIT_SIZE(I)-2 and BIT_SIZE(I)-4 set, SHIFT=BIT_SIZE(I), and assert POPCNT(SHIFTR(I,BIT_SIZE(I)))==0, then mutate SHIFT to 0."
+      },
+      "oracle": "Source registration only. Future fixtures initialize result variables to non-default or opposite sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact integer, logical, kind, shape, or bit-pattern observations, plus exactly representable real sign-copy results. Processor-dependent approximations, processor-dependent real-zero distinctions, and processor-dependent numeric interpretations of bit sequences are separated from exact result obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for SHAPE, SHIFTA, SHIFTL, SHIFTR, SIGN, SIN, and SIND found no fixture-json metadata binding for these 16.9.185-16.9.191 sections. SHAPE appears as helper coverage in unrelated clause 7, 8, 9, 10, and contiguous-property fixture sources; SIGN appears only in unrelated Python variable names or text, and no Fortran SIGN, SHIFTA, SHIFTL, SHIFTR, SIN, or SIND call match was found. Existing uses remain unbound by this source packet.",
+      "dependencies": "Registered dependencies: existing source-form, type, declaration, expression, assignment, execution, array, pointer, allocation, and I/O foundations from clauses 6 through 13 where already catalogued. Unregistered dependencies retained: 16.3 integer bit-sequence model, 16.4 numeric model terminology, 17 IEEE support for future guarded signed-zero probes, sibling 16.9 intrinsics used by pending plans such as ABS, BIT_SIZE, BTEST, IBSET, ISHFT, KIND, LBOUND, POPCNT, SELECTED_INT_KIND, and SIZE, and clauses 14, 15, 18, and 19 where future fixtures need program, procedure, processor-dependency, or scope terms."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "definition",
+      "rationale": "Description names SHIFTR as a right shift."
+    },
+    {
+      "unit": "p2",
+      "disposition": "definition",
+      "rationale": "Classifies SHIFTR as elemental."
+    },
+    {
+      "unit": "p3",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.188-001"
+      ],
+      "rationale": "Argument shall-restrictions on the program."
+    },
+    {
+      "unit": "p4",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.188-002"
+      ],
+      "rationale": "Result characteristic requirement."
+    },
+    {
+      "unit": "p5",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.188-003"
+      ],
+      "rationale": "Exact result-value requirement through ISHFT."
+    },
+    {
+      "unit": "p6",
+      "disposition": "informative",
+      "rationale": "Example paragraph is illustrative; the exact example is covered by the p5 formula."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_16_9_188.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "7821adf0ad6e191faa819a989061ddc9b9a700a9426485088e9915f7baeede0e",
+  "review_rationale": "Source registration for 16.9.185-16.9.191: SHAPE, SHIFTA, SHIFTL, SHIFTR, SIGN, SIN and SIND (batch206). Every unit hash-verified by an independent reviewer across two rounds; shift results are observed only in bit context including the full-width edge, and SIN/SIND values carry approximation latitude. Source accounting only."
+}
