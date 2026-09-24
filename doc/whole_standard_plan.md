@@ -6064,6 +6064,11 @@ See `doc/source_audits/batch_254.json`.
 Seventy-two units, two rounds. Headings that own no requirements were cited as owners four times; each was replaced by the subsection that actually tests the idea.
 See `doc/source_audits/batch_255.json`.
 
+## Batch 260 — Informative Annexes A-B.3.13
+
+Twenty-six informative units, three rounds. Annex A's list of processor dependencies is now an index into the suite: each of its 116 references lands on the catalogue where that freedom is recorded.
+See `doc/source_audits/batch_260.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
