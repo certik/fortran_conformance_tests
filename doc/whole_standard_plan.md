@@ -6054,6 +6054,11 @@ See `doc/source_audits/batch_256.json`.
 The suite's first Clause 19 tests: eighteen programs, twenty-seven facets. Each name is given a different value in every scope that could claim it, so a compiler that resolves a name to the wrong entity prints the wrong number.
 See `doc/source_audits/batch_271.json`.
 
+## Batch 254 — Terms and definitions 3-3.21
+
+Seventy-three units, two rounds, opening Clause 3 alphabetically from 'actual argument' onward; every citation was checked by script against a populated catalogue on main.
+See `doc/source_audits/batch_254.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
