@@ -1,0 +1,179 @@
+{
+  "schema_version": 1,
+  "section": "16.9.215",
+  "subunits": {
+    "p5": [
+      "p5.dim-present",
+      "p5.dim-absent"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S16.9.215-001",
+      "title": "UBOUND argument restrictions",
+      "source": "S16.9.215, J3/24-007, 18 December 2023, physical PDF469-470.",
+      "source_units": [
+        "p3"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "ARRAY shall be assumed-rank or an array, shall not be an unallocated allocatable or disassociated pointer, assumed-size ARRAY requires DIM present with a value less than rank, DIM shall be an integer scalar in the range one through rank with a present associated allocated corresponding actual, and KIND shall be a scalar integer constant expression.",
+      "facets": [
+        "UBOUND-ARRAY-assumed-rank-or-array",
+        "UBOUND-ARRAY-allocated-or-associated",
+        "UBOUND-assumed-size-requires-DIM-less-than-rank",
+        "UBOUND-DIM-integer-scalar-in-rank-range",
+        "UBOUND-DIM-corresponding-actual-present-associated-allocated",
+        "UBOUND-KIND-scalar-integer-constant-expression"
+      ],
+      "pending": {
+        "UBOUND-ARRAY-assumed-rank-or-array": "Positive controls call UBOUND on an explicit-shape array A(-3:4,7:9), an assumed-rank dummy with rank-two actual, and a scalar assumed-rank actual for the DIM-absent p5 case; source-control mutation uses a non-array non-assumed-rank actual.",
+        "UBOUND-ARRAY-allocated-or-associated": "Positive controls allocate an allocatable array with bounds -2:5 and associate a pointer with a target before UBOUND; source-control mutations leave each unallocated or disassociated and claim no diagnostic facet.",
+        "UBOUND-assumed-size-requires-DIM-less-than-rank": "Positive control uses assumed-size dummy D(2:4,5:*) and calls UBOUND(D,DIM=1); source-control mutations omit DIM or use DIM=2 and claim no diagnostic facet.",
+        "UBOUND-DIM-integer-scalar-in-rank-range": "Positive controls call UBOUND(A,DIM=1) and UBOUND(A,DIM=2) for rank-two A; source-control mutations use DIM=0, DIM=3, and rank-one DIM expressions.",
+        "UBOUND-DIM-corresponding-actual-present-associated-allocated": "Positive wrapper passes present, associated, and allocated actual DIM values before UBOUND; source-control mutations pass absent optional, disassociated pointer, and unallocated allocatable DIM actuals.",
+        "UBOUND-KIND-scalar-integer-constant-expression": "Positive control calls UBOUND(A,KIND=selected_int_kind(18)); 7.4.3.1 p2 requires an integer representation method with decimal exponent range at least 18. Assert result kind; source-control mutations use a nonconstant integer variable and a rank-one KIND expression."
+      },
+      "oracle": "Source registration only. Future fixtures use exact integer, logical, character, kind, rank, shape, and array-element-order observations. Argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets. Exact result-value plans use discriminating inputs, non-default sentinels for assigned results, non-vacuous companions for zero-size, zero, blank, or false observations, and feature mutations such as changing the intrinsic name, argument order, DIM, KIND, SIZE, BACK, MASK, FIELD, or MOLD. Processor-dependent physical representations and coarray/image-dependent effects are separated from portable exact obligations.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for TRANSFER, TRANSPOSE, TRIM, UBOUND, UCOBOUND, UNPACK, and VERIFY found no fixture-manifest binding for sections 16.9.212 through 16.9.218. Existing source mentions are ordinary helper uses or verification metadata: TRANSFER appears in 46 test files and one rounding-mode fixture manifest; TRANSPOSE in two test files and no manifests; TRIM in 29 test files and no manifests; UBOUND in 81 test files and no manifests; UCOBOUND in no test files or manifests; UNPACK in eight test files and no manifests; VERIFY appears widely as verification terminology, including 388 test files and 316 manifests, but no binding for 16.9.218. Those uses remain existing coverage and are not rebound by this source packet.",
+      "dependencies": "Registered dependencies: existing source-form, type, kind, declaration, expression, assignment, execution, array, pointer/allocation-state, character, and I/O foundations from clauses 6 through 13 where already catalogued. Unregistered dependencies retained: clause 5 image and team execution model, clause 16.3 physical representation and integer bit model, sibling 16.9 intrinsics named by pending plans such as KIND, LBOUND, LEN, RANK, SHAPE, SIZE, and SELECTED_INT_KIND, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, interoperability, deleted-feature, or scope terms."
+    },
+    {
+      "id": "S16.9.215-002",
+      "title": "UBOUND result characteristics",
+      "source": "S16.9.215, J3/24-007, 18 December 2023, physical PDF469-470.",
+      "source_units": [
+        "p4"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The result is integer with KIND-selected or default kind, scalar with DIM present, and otherwise a rank-one array of size equal to rank n of ARRAY.",
+      "facets": [
+        "UBOUND-result-integer-kind-default-or-KIND",
+        "UBOUND-result-scalar-with-DIM",
+        "UBOUND-result-rank-one-size-rank-without-DIM"
+      ],
+      "pending": {
+        "UBOUND-result-integer-kind-default-or-KIND": "Call UBOUND on A(-3:4,7:9) without KIND and with KIND=selected_int_kind(18); assert KIND of results equals default integer kind and the selected kind respectively.",
+        "UBOUND-result-scalar-with-DIM": "Initialize integer sentinel to -999, call UBOUND(A,DIM=2) for A(-3:4,7:9), and assert scalar value 9.",
+        "UBOUND-result-rank-one-size-rank-without-DIM": "Call UBOUND(A) for A(-3:4,7:9); assert SIZE(result)==2 and elements match scalar DIM inquiries. Companion assumed-rank dummy associated with scalar x=17 asserts SIZE(UBOUND(dummy))==0."
+      },
+      "oracle": "Source registration only. Future fixtures use exact integer, logical, character, kind, rank, shape, and array-element-order observations. Argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets. Exact result-value plans use discriminating inputs, non-default sentinels for assigned results, non-vacuous companions for zero-size, zero, blank, or false observations, and feature mutations such as changing the intrinsic name, argument order, DIM, KIND, SIZE, BACK, MASK, FIELD, or MOLD. Processor-dependent physical representations and coarray/image-dependent effects are separated from portable exact obligations.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for TRANSFER, TRANSPOSE, TRIM, UBOUND, UCOBOUND, UNPACK, and VERIFY found no fixture-manifest binding for sections 16.9.212 through 16.9.218. Existing source mentions are ordinary helper uses or verification metadata: TRANSFER appears in 46 test files and one rounding-mode fixture manifest; TRANSPOSE in two test files and no manifests; TRIM in 29 test files and no manifests; UBOUND in 81 test files and no manifests; UCOBOUND in no test files or manifests; UNPACK in eight test files and no manifests; VERIFY appears widely as verification terminology, including 388 test files and 316 manifests, but no binding for 16.9.218. Those uses remain existing coverage and are not rebound by this source packet.",
+      "dependencies": "Registered dependencies: existing source-form, type, kind, declaration, expression, assignment, execution, array, pointer/allocation-state, character, and I/O foundations from clauses 6 through 13 where already catalogued. Unregistered dependencies retained: clause 5 image and team execution model, clause 16.3 physical representation and integer bit model, sibling 16.9 intrinsics named by pending plans such as KIND, LBOUND, LEN, RANK, SHAPE, SIZE, and SELECTED_INT_KIND, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, interoperability, deleted-feature, or scope terms."
+    },
+    {
+      "id": "S16.9.215-003",
+      "title": "UBOUND DIM-present result value",
+      "source": "S16.9.215, J3/24-007, 18 December 2023, physical PDF469-470.",
+      "source_units": [
+        "p5.dim-present"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "With DIM present, a whole array with nonzero extent yields the upper bound for that dimension, assumed-rank uses whole-array semantics with assumed-size final extent considered -1, and other cases yield the number of elements in that dimension.",
+      "facets": [
+        "UBOUND-DIM-whole-nonzero-extent-upper-bound",
+        "UBOUND-DIM-assumed-rank-whole-array-semantics",
+        "UBOUND-DIM-otherwise-dimension-extent"
+      ],
+      "pending": {
+        "UBOUND-DIM-whole-nonzero-extent-upper-bound": "Use whole rank-two A(-3:4,7:9); assert UBOUND(A,DIM=1)==4 and UBOUND(A,DIM=2)==9, mutating expected upper bounds to extents [8,3].",
+        "UBOUND-DIM-assumed-rank-whole-array-semantics": "Pass A(-3:4,7:9) to an assumed-rank dummy and assert UBOUND(dummy,DIM=1)==4 and DIM=2 gives 9; separate chain passes assumed-size D(2:4,5:*) through assumed-rank and asserts final DIM result -1.",
+        "UBOUND-DIM-otherwise-dimension-extent": "Use section A(-3:4:2,7:9) and assert UBOUND(section,DIM=1)==4 and DIM=2==3 because extents are returned. Use whole zero-extent A(5:4,7:9); derive DIM=1 from the otherwise rule as the number of elements in that dimension, so assert UBOUND(A,DIM=1)==0, while DIM=2 has nonzero extent and asserts its upper bound 9. Pair with nonzero whole B(-2:3) asserting UBOUND(B,DIM=1)==3."
+      },
+      "oracle": "Source registration only. Future fixtures use exact integer, logical, character, kind, rank, shape, and array-element-order observations. Argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets. Exact result-value plans use discriminating inputs, non-default sentinels for assigned results, non-vacuous companions for zero-size, zero, blank, or false observations, and feature mutations such as changing the intrinsic name, argument order, DIM, KIND, SIZE, BACK, MASK, FIELD, or MOLD. Processor-dependent physical representations and coarray/image-dependent effects are separated from portable exact obligations.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for TRANSFER, TRANSPOSE, TRIM, UBOUND, UCOBOUND, UNPACK, and VERIFY found no fixture-manifest binding for sections 16.9.212 through 16.9.218. Existing source mentions are ordinary helper uses or verification metadata: TRANSFER appears in 46 test files and one rounding-mode fixture manifest; TRANSPOSE in two test files and no manifests; TRIM in 29 test files and no manifests; UBOUND in 81 test files and no manifests; UCOBOUND in no test files or manifests; UNPACK in eight test files and no manifests; VERIFY appears widely as verification terminology, including 388 test files and 316 manifests, but no binding for 16.9.218. Those uses remain existing coverage and are not rebound by this source packet.",
+      "dependencies": "Registered dependencies: existing source-form, type, kind, declaration, expression, assignment, execution, array, pointer/allocation-state, character, and I/O foundations from clauses 6 through 13 where already catalogued. Unregistered dependencies retained: clause 5 image and team execution model, clause 16.3 physical representation and integer bit model, sibling 16.9 intrinsics named by pending plans such as KIND, LBOUND, LEN, RANK, SHAPE, SIZE, and SELECTED_INT_KIND, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, interoperability, deleted-feature, or scope terms."
+    },
+    {
+      "id": "S16.9.215-004",
+      "title": "UBOUND DIM-absent vector result value",
+      "source": "S16.9.215, J3/24-007, 18 December 2023, physical PDF469-470.",
+      "source_units": [
+        "p5.dim-absent"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For rank zero ARRAY, UBOUND(ARRAY) is zero-sized; otherwise element i of UBOUND(ARRAY) equals UBOUND(ARRAY,i), and the KIND form has corresponding selected-kind elements.",
+      "facets": [
+        "UBOUND-rank-zero-result-zero-sized-array",
+        "UBOUND-vector-elements-match-DIM-inquiries",
+        "UBOUND-vector-KIND-elements-match-selected-kind-inquiries"
+      ],
+      "pending": {
+        "UBOUND-rank-zero-result-zero-sized-array": "Pass scalar integer x=17 to an assumed-rank dummy and assert SIZE(UBOUND(dummy))==0, paired with rank-one B(2:4) asserting UBOUND(B)==[4].",
+        "UBOUND-vector-elements-match-DIM-inquiries": "Use rank-three A(-3:4,7:9,0:2); assert UBOUND(A)==[4,9,2], matching UBOUND(A,1), UBOUND(A,2), and UBOUND(A,3), with non-unit lower bounds included. Use whole zero-extent Z(5:4,7:9) and assert UBOUND(Z)==[0,9], derived from scalar DIM inquiries; pair with nonzero whole B(-2:3) asserting UBOUND(B)==[3].",
+        "UBOUND-vector-KIND-elements-match-selected-kind-inquiries": "Use the same rank-three A with KIND=selected_int_kind(18); assert KIND of vector elements equals the selected kind and values [4,9,2] match scalar KIND inquiries."
+      },
+      "oracle": "Source registration only. Future fixtures use exact integer, logical, character, kind, rank, shape, and array-element-order observations. Argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets. Exact result-value plans use discriminating inputs, non-default sentinels for assigned results, non-vacuous companions for zero-size, zero, blank, or false observations, and feature mutations such as changing the intrinsic name, argument order, DIM, KIND, SIZE, BACK, MASK, FIELD, or MOLD. Processor-dependent physical representations and coarray/image-dependent effects are separated from portable exact obligations.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for TRANSFER, TRANSPOSE, TRIM, UBOUND, UCOBOUND, UNPACK, and VERIFY found no fixture-manifest binding for sections 16.9.212 through 16.9.218. Existing source mentions are ordinary helper uses or verification metadata: TRANSFER appears in 46 test files and one rounding-mode fixture manifest; TRANSPOSE in two test files and no manifests; TRIM in 29 test files and no manifests; UBOUND in 81 test files and no manifests; UCOBOUND in no test files or manifests; UNPACK in eight test files and no manifests; VERIFY appears widely as verification terminology, including 388 test files and 316 manifests, but no binding for 16.9.218. Those uses remain existing coverage and are not rebound by this source packet.",
+      "dependencies": "Registered dependencies: existing source-form, type, kind, declaration, expression, assignment, execution, array, pointer/allocation-state, character, and I/O foundations from clauses 6 through 13 where already catalogued. Unregistered dependencies retained: clause 5 image and team execution model, clause 16.3 physical representation and integer bit model, sibling 16.9 intrinsics named by pending plans such as KIND, LBOUND, LEN, RANK, SHAPE, SIZE, and SELECTED_INT_KIND, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, interoperability, deleted-feature, or scope terms."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "definition",
+      "rationale": "Description defines UBOUND as upper bound inquiries."
+    },
+    {
+      "unit": "p2",
+      "disposition": "definition",
+      "rationale": "Classifies UBOUND as inquiry."
+    },
+    {
+      "unit": "p3",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.215-001"
+      ],
+      "rationale": "Argument restrictions and admissible forms."
+    },
+    {
+      "unit": "p4",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.215-002"
+      ],
+      "rationale": "Result kind, scalar, and vector characteristics."
+    },
+    {
+      "unit": "p5",
+      "disposition": "structural",
+      "rationale": "Result Value paragraph is split into DIM-present and DIM-absent cases."
+    },
+    {
+      "unit": "p5.dim-present",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.215-003"
+      ],
+      "rationale": "Case (i) scalar upper-bound, assumed-rank, and extent results."
+    },
+    {
+      "unit": "p5.dim-absent",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.215-004"
+      ],
+      "rationale": "Case (ii) zero-sized scalar result and vector elements matching DIM inquiries."
+    },
+    {
+      "unit": "p6",
+      "disposition": "informative",
+      "rationale": "Example paragraph is illustrative."
+    },
+    {
+      "unit": "note-unnumbered",
+      "disposition": "informative",
+      "rationale": "Note explains that rank-zero assumed-rank ARRAY cannot satisfy the DIM range; the normative range restriction is registered under p3."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_16_9_215.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "010f97eb1a8f8aa2271b4bda35e4ee7b78f3ba377aac435e5cea87a901207c24",
+  "review_rationale": "Source registration for 16.9.212-16.9.218: TRANSFER, TRANSPOSE, TRIM, UBOUND, UCOBOUND, UNPACK and VERIFY (batch210), completing 16.9. Every unit hash-verified by an independent reviewer across two rounds; TRANSFER cross-type interpretation and trailing remainder are processor dependent, UCOBOUND is out of scope. Source accounting only."
+}

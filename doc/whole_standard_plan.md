@@ -5804,6 +5804,11 @@ See `doc/source_audits/batch_211.json`.
 Forty-three units after two rounds. TOKENIZE, new in Fortran 2023, has the most interesting edge: an empty string is not zero tokens but one — a zero-length token delimited by the beginning and the end of STRING, with FIRST = [1] and LAST = [0].
 See `doc/source_audits/batch_209.json`.
 
+## Batch 210 — TRANSFER through VERIFY
+
+Forty-three units after two rounds, closing 16.9: every intrinsic procedure is now registered. The UBOUND finding is a small classic — a zero-extent dimension declared 1:0 has upper bound 0 *and* UBOUND 0, so the test could not tell the rule from the declaration; 5:4 can.
+See `doc/source_audits/batch_210.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must

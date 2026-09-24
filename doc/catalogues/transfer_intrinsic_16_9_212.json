@@ -1,0 +1,203 @@
+{
+  "schema_version": 1,
+  "section": "16.9.212",
+  "subunits": {
+    "p5": [
+      "p5.exact-representation",
+      "p5.padding-latitude",
+      "p5.round-trip"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S16.9.212-001",
+      "title": "TRANSFER argument restrictions",
+      "source": "S16.9.212, J3/24-007, 18 December 2023, physical PDF468.",
+      "source_units": [
+        "p3"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "SOURCE shall be a scalar or array of any type, MOLD shall be a scalar or array of any type, an undefined variable MOLD is allowed, a positive-storage SOURCE with array MOLD requires a scalar of MOLD type and type parameters to have nonzero storage size, SIZE shall be an integer scalar, and the SIZE actual shall not be an optional dummy argument.",
+      "facets": [
+        "TRANSFER-SOURCE-scalar-or-array-any-type",
+        "TRANSFER-MOLD-scalar-or-array-any-type",
+        "TRANSFER-MOLD-variable-need-not-be-defined",
+        "TRANSFER-positive-source-array-mold-nonzero-scalar-storage",
+        "TRANSFER-SIZE-integer-scalar",
+        "TRANSFER-SIZE-actual-not-optional-dummy"
+      ],
+      "pending": {
+        "TRANSFER-SOURCE-scalar-or-array-any-type": "Positive source controls call TRANSFER with scalar integer SOURCE=-17 and rank-one integer SOURCE=[7,-3,11]; source-control mutations supply a procedure designator or non-data entity and claim no diagnostic facet.",
+        "TRANSFER-MOLD-scalar-or-array-any-type": "Positive source controls use scalar integer MOLD=0 and rank-one integer MOLD=[0,0]; source-control mutation supplies a non-data entity and claims no diagnostic facet.",
+        "TRANSFER-MOLD-variable-need-not-be-defined": "Declare integer :: mold_scalar without definition, evaluate TRANSFER([1,2], mold_scalar, SIZE=2), and assert only result type, rank, size, and same-type leading values fixed by p4 and p5.",
+        "TRANSFER-positive-source-array-mold-nonzero-scalar-storage": "Use integer SOURCE=[1,2] and integer array MOLD=[0] whose scalar storage size is nonzero; a source-control mutation uses a zero-storage derived-type MOLD array and claims no diagnostic facet.",
+        "TRANSFER-SIZE-integer-scalar": "Use SIZE=2 for integer SOURCE=[5,6,7] and scalar integer MOLD=0; assert rank-one size two and leading values [5,6]. Source-control mutations use noninteger and rank-one SIZE expressions.",
+        "TRANSFER-SIZE-actual-not-optional-dummy": "Positive wrapper passes a present nonoptional integer n=2 as SIZE; source-control mutation forwards an optional dummy as the SIZE actual and claims no diagnostic facet."
+      },
+      "oracle": "Source registration only. Future fixtures use exact integer, logical, character, kind, rank, shape, and array-element-order observations. Argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets. Exact result-value plans use discriminating inputs, non-default sentinels for assigned results, non-vacuous companions for zero-size, zero, blank, or false observations, and feature mutations such as changing the intrinsic name, argument order, DIM, KIND, SIZE, BACK, MASK, FIELD, or MOLD. Processor-dependent physical representations and coarray/image-dependent effects are separated from portable exact obligations.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for TRANSFER, TRANSPOSE, TRIM, UBOUND, UCOBOUND, UNPACK, and VERIFY found no fixture-manifest binding for sections 16.9.212 through 16.9.218. Existing source mentions are ordinary helper uses or verification metadata: TRANSFER appears in 46 test files and one rounding-mode fixture manifest; TRANSPOSE in two test files and no manifests; TRIM in 29 test files and no manifests; UBOUND in 81 test files and no manifests; UCOBOUND in no test files or manifests; UNPACK in eight test files and no manifests; VERIFY appears widely as verification terminology, including 388 test files and 316 manifests, but no binding for 16.9.218. Those uses remain existing coverage and are not rebound by this source packet. For TRANSFER, no portable oracle asserts the numeric interpretation of cross-type physical representations or the padding bits of a result longer than SOURCE.",
+      "dependencies": "Registered dependencies: existing source-form, type, kind, declaration, expression, assignment, execution, array, pointer/allocation-state, character, and I/O foundations from clauses 6 through 13 where already catalogued. Unregistered dependencies retained: clause 5 image and team execution model, clause 16.3 physical representation and integer bit model, sibling 16.9 intrinsics named by pending plans such as KIND, LBOUND, LEN, RANK, SHAPE, SIZE, and SELECTED_INT_KIND, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, interoperability, deleted-feature, or scope terms."
+    },
+    {
+      "id": "S16.9.212-002",
+      "title": "TRANSFER result characteristics",
+      "source": "S16.9.212, J3/24-007, 18 December 2023, physical PDF468.",
+      "source_units": [
+        "p4"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The TRANSFER result has the same type and type parameters as MOLD; scalar MOLD with absent SIZE gives a scalar result, array MOLD with absent SIZE gives a rank-one array whose size is the minimum not shorter than SOURCE, and present SIZE gives a rank-one array of that size.",
+      "facets": [
+        "TRANSFER-result-type-parameters-follow-MOLD",
+        "TRANSFER-scalar-MOLD-absent-SIZE-scalar-result",
+        "TRANSFER-array-MOLD-absent-SIZE-minimum-rank-one-result",
+        "TRANSFER-present-SIZE-rank-one-given-size"
+      ],
+      "pending": {
+        "TRANSFER-result-type-parameters-follow-MOLD": "Use integer SOURCE=[1,2] with character(len=3) MOLD='abc' and assert result LEN is three and rank/size follow the selected case; no character value is asserted for cross-type representation.",
+        "TRANSFER-scalar-MOLD-absent-SIZE-scalar-result": "Use integer SOURCE=42 and scalar integer MOLD=0; assign result to an integer scalar sentinel initialized to -999 and assert exact value 42 plus scalar assignment compatibility.",
+        "TRANSFER-array-MOLD-absent-SIZE-minimum-rank-one-result": "Use integer SOURCE=[4,-5,6] and integer MOLD=[0]; assert rank one, SIZE(result)==3, and values [4,-5,6]. Mutate MOLD rank or expected size.",
+        "TRANSFER-present-SIZE-rank-one-given-size": "Use integer SOURCE=[5,6,7], scalar integer MOLD=0, and SIZE=2; assert rank one, SIZE(result)==2, and values [5,6]. Mutate SIZE to three in the expected check."
+      },
+      "oracle": "Source registration only. Future fixtures use exact integer, logical, character, kind, rank, shape, and array-element-order observations. Argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets. Exact result-value plans use discriminating inputs, non-default sentinels for assigned results, non-vacuous companions for zero-size, zero, blank, or false observations, and feature mutations such as changing the intrinsic name, argument order, DIM, KIND, SIZE, BACK, MASK, FIELD, or MOLD. Processor-dependent physical representations and coarray/image-dependent effects are separated from portable exact obligations.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for TRANSFER, TRANSPOSE, TRIM, UBOUND, UCOBOUND, UNPACK, and VERIFY found no fixture-manifest binding for sections 16.9.212 through 16.9.218. Existing source mentions are ordinary helper uses or verification metadata: TRANSFER appears in 46 test files and one rounding-mode fixture manifest; TRANSPOSE in two test files and no manifests; TRIM in 29 test files and no manifests; UBOUND in 81 test files and no manifests; UCOBOUND in no test files or manifests; UNPACK in eight test files and no manifests; VERIFY appears widely as verification terminology, including 388 test files and 316 manifests, but no binding for 16.9.218. Those uses remain existing coverage and are not rebound by this source packet. For TRANSFER, no portable oracle asserts the numeric interpretation of cross-type physical representations or the padding bits of a result longer than SOURCE.",
+      "dependencies": "Registered dependencies: existing source-form, type, kind, declaration, expression, assignment, execution, array, pointer/allocation-state, character, and I/O foundations from clauses 6 through 13 where already catalogued. Unregistered dependencies retained: clause 5 image and team execution model, clause 16.3 physical representation and integer bit model, sibling 16.9 intrinsics named by pending plans such as KIND, LBOUND, LEN, RANK, SHAPE, SIZE, and SELECTED_INT_KIND, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, interoperability, deleted-feature, or scope terms."
+    },
+    {
+      "id": "S16.9.212-003",
+      "title": "TRANSFER exact physical-representation portions",
+      "source": "S16.9.212, J3/24-007, 18 December 2023, physical PDF468.",
+      "source_units": [
+        "p5.exact-representation"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Equal-length result representation equals SOURCE, a longer result has a leading part equal to SOURCE, and a shorter result equals the leading part of SOURCE.",
+      "facets": [
+        "TRANSFER-equal-length-representation-from-SOURCE",
+        "TRANSFER-longer-result-leading-part-from-SOURCE",
+        "TRANSFER-shorter-result-leading-part-from-SOURCE"
+      ],
+      "pending": {
+        "TRANSFER-equal-length-representation-from-SOURCE": "Use same-type integer SOURCE=[-9,4] and MOLD=[0,0] with absent SIZE; assert the two result elements are [-9,4] from a sentinel-filled result variable, then mutate SOURCE order.",
+        "TRANSFER-longer-result-leading-part-from-SOURCE": "Use integer SOURCE=[10,-20] and scalar integer MOLD=0 with SIZE=4; assert SIZE(result)==4 and first two elements [10,-20], paired with a shorter-result companion; do not assert elements three and four.",
+        "TRANSFER-shorter-result-leading-part-from-SOURCE": "Use integer SOURCE=[5,6,7] and scalar integer MOLD=0 with SIZE=2; assert result [5,6], paired with an equal-length companion [5,6,7]."
+      },
+      "oracle": "Source registration only. Future fixtures use exact integer, logical, character, kind, rank, shape, and array-element-order observations. Argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets. Exact result-value plans use discriminating inputs, non-default sentinels for assigned results, non-vacuous companions for zero-size, zero, blank, or false observations, and feature mutations such as changing the intrinsic name, argument order, DIM, KIND, SIZE, BACK, MASK, FIELD, or MOLD. Processor-dependent physical representations and coarray/image-dependent effects are separated from portable exact obligations.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for TRANSFER, TRANSPOSE, TRIM, UBOUND, UCOBOUND, UNPACK, and VERIFY found no fixture-manifest binding for sections 16.9.212 through 16.9.218. Existing source mentions are ordinary helper uses or verification metadata: TRANSFER appears in 46 test files and one rounding-mode fixture manifest; TRANSPOSE in two test files and no manifests; TRIM in 29 test files and no manifests; UBOUND in 81 test files and no manifests; UCOBOUND in no test files or manifests; UNPACK in eight test files and no manifests; VERIFY appears widely as verification terminology, including 388 test files and 316 manifests, but no binding for 16.9.218. Those uses remain existing coverage and are not rebound by this source packet. For TRANSFER, no portable oracle asserts the numeric interpretation of cross-type physical representations or the padding bits of a result longer than SOURCE.",
+      "dependencies": "Registered dependencies: existing source-form, type, kind, declaration, expression, assignment, execution, array, pointer/allocation-state, character, and I/O foundations from clauses 6 through 13 where already catalogued. Unregistered dependencies retained: clause 5 image and team execution model, clause 16.3 physical representation and integer bit model, sibling 16.9 intrinsics named by pending plans such as KIND, LBOUND, LEN, RANK, SHAPE, SIZE, and SELECTED_INT_KIND, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, interoperability, deleted-feature, or scope terms."
+    },
+    {
+      "id": "S16.9.212-004",
+      "title": "TRANSFER padding representation is processor dependent",
+      "source": "S16.9.212, J3/24-007, 18 December 2023, physical PDF468.",
+      "source_units": [
+        "p5.padding-latitude"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For a result representation longer than SOURCE, the representation after the leading SOURCE portion is processor dependent.",
+      "facets": [
+        "TRANSFER-longer-result-remainder-processor-dependent"
+      ],
+      "pending": {
+        "TRANSFER-longer-result-remainder-processor-dependent": "No portable oracle fixes the trailing elements or bits for TRANSFER([10,-20],0,SIZE=4); future fixtures may assert only SIZE and the leading [10,-20] portion."
+      },
+      "oracle": "Source registration only. Future fixtures use exact integer, logical, character, kind, rank, shape, and array-element-order observations. Argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets. Exact result-value plans use discriminating inputs, non-default sentinels for assigned results, non-vacuous companions for zero-size, zero, blank, or false observations, and feature mutations such as changing the intrinsic name, argument order, DIM, KIND, SIZE, BACK, MASK, FIELD, or MOLD. Processor-dependent physical representations and coarray/image-dependent effects are separated from portable exact obligations.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for TRANSFER, TRANSPOSE, TRIM, UBOUND, UCOBOUND, UNPACK, and VERIFY found no fixture-manifest binding for sections 16.9.212 through 16.9.218. Existing source mentions are ordinary helper uses or verification metadata: TRANSFER appears in 46 test files and one rounding-mode fixture manifest; TRANSPOSE in two test files and no manifests; TRIM in 29 test files and no manifests; UBOUND in 81 test files and no manifests; UCOBOUND in no test files or manifests; UNPACK in eight test files and no manifests; VERIFY appears widely as verification terminology, including 388 test files and 316 manifests, but no binding for 16.9.218. Those uses remain existing coverage and are not rebound by this source packet. For TRANSFER, no portable oracle asserts the numeric interpretation of cross-type physical representations or the padding bits of a result longer than SOURCE.",
+      "dependencies": "Registered dependencies: existing source-form, type, kind, declaration, expression, assignment, execution, array, pointer/allocation-state, character, and I/O foundations from clauses 6 through 13 where already catalogued. Unregistered dependencies retained: clause 5 image and team execution model, clause 16.3 physical representation and integer bit model, sibling 16.9 intrinsics named by pending plans such as KIND, LBOUND, LEN, RANK, SHAPE, SIZE, and SELECTED_INT_KIND, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, interoperability, deleted-feature, or scope terms."
+    },
+    {
+      "id": "S16.9.212-005",
+      "title": "TRANSFER round-trip relations preserve E",
+      "source": "S16.9.212, J3/24-007, 18 December 2023, physical PDF468.",
+      "source_units": [
+        "p5.round-trip"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For scalar D at least as long as scalar E, TRANSFER(TRANSFER(E,D),E) has value E; for array D and rank-one array E, TRANSFER(TRANSFER(E,D),E,SIZE(E)) has value E.",
+      "facets": [
+        "TRANSFER-scalar-round-trip-preserves-E",
+        "TRANSFER-array-round-trip-preserves-E"
+      ],
+      "pending": {
+        "TRANSFER-scalar-round-trip-preserves-E": "Use same-kind integer scalar variables E=-12345 and D=0; assert TRANSFER(TRANSFER(E,D),E)==E from a sentinel comparison, then mutate the outer MOLD to an array form in a source-control variant.",
+        "TRANSFER-array-round-trip-preserves-E": "Use integer rank-one E=[7,-8,9] and integer array D=[0,0,0,0]; assert TRANSFER(TRANSFER(E,D),E,SIZE(E)) equals E elementwise, with SIZE(E) mutation to SIZE(E)-1 caught by a shape/value check."
+      },
+      "oracle": "Source registration only. Future fixtures use exact integer, logical, character, kind, rank, shape, and array-element-order observations. Argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets. Exact result-value plans use discriminating inputs, non-default sentinels for assigned results, non-vacuous companions for zero-size, zero, blank, or false observations, and feature mutations such as changing the intrinsic name, argument order, DIM, KIND, SIZE, BACK, MASK, FIELD, or MOLD. Processor-dependent physical representations and coarray/image-dependent effects are separated from portable exact obligations.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for TRANSFER, TRANSPOSE, TRIM, UBOUND, UCOBOUND, UNPACK, and VERIFY found no fixture-manifest binding for sections 16.9.212 through 16.9.218. Existing source mentions are ordinary helper uses or verification metadata: TRANSFER appears in 46 test files and one rounding-mode fixture manifest; TRANSPOSE in two test files and no manifests; TRIM in 29 test files and no manifests; UBOUND in 81 test files and no manifests; UCOBOUND in no test files or manifests; UNPACK in eight test files and no manifests; VERIFY appears widely as verification terminology, including 388 test files and 316 manifests, but no binding for 16.9.218. Those uses remain existing coverage and are not rebound by this source packet. For TRANSFER, no portable oracle asserts the numeric interpretation of cross-type physical representations or the padding bits of a result longer than SOURCE.",
+      "dependencies": "Registered dependencies: existing source-form, type, kind, declaration, expression, assignment, execution, array, pointer/allocation-state, character, and I/O foundations from clauses 6 through 13 where already catalogued. Unregistered dependencies retained: clause 5 image and team execution model, clause 16.3 physical representation and integer bit model, sibling 16.9 intrinsics named by pending plans such as KIND, LBOUND, LEN, RANK, SHAPE, SIZE, and SELECTED_INT_KIND, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, interoperability, deleted-feature, or scope terms."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "definition",
+      "rationale": "Description defines the intrinsic purpose as transfer of physical representation."
+    },
+    {
+      "unit": "p2",
+      "disposition": "definition",
+      "rationale": "Classifies TRANSFER as transformational."
+    },
+    {
+      "unit": "p3",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.212-001"
+      ],
+      "rationale": "Argument shall-restrictions and the MOLD undefined-variable allowance."
+    },
+    {
+      "unit": "p4",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.212-002"
+      ],
+      "rationale": "Result type, rank, and size characteristics."
+    },
+    {
+      "unit": "p5",
+      "disposition": "structural",
+      "rationale": "Result Value mixes exact physical-representation obligations, processor-dependent padding latitude, and round-trip obligations."
+    },
+    {
+      "unit": "p5.exact-representation",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.212-003"
+      ],
+      "rationale": "Exact same-length, leading-part, and truncation effects."
+    },
+    {
+      "unit": "p5.padding-latitude",
+      "disposition": "permission",
+      "requirements": [
+        "S16.9.212-004"
+      ],
+      "rationale": "The remainder after SOURCE in a longer result is processor dependent."
+    },
+    {
+      "unit": "p5.round-trip",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.212-005"
+      ],
+      "rationale": "Normative scalar and array round-trip value preservation relations."
+    },
+    {
+      "unit": "p6",
+      "disposition": "informative",
+      "rationale": "Examples are illustrative and include processor-dependent representation assumptions."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_16_9_212.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "5a6513d4b480da7a608b214cb774080466a6f30981805122617fab2bf0257ccf",
+  "review_rationale": "Source registration for 16.9.212-16.9.218: TRANSFER, TRANSPOSE, TRIM, UBOUND, UCOBOUND, UNPACK and VERIFY (batch210), completing 16.9. Every unit hash-verified by an independent reviewer across two rounds; TRANSFER cross-type interpretation and trailing remainder are processor dependent, UCOBOUND is out of scope. Source accounting only."
+}
