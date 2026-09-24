@@ -6179,6 +6179,11 @@ See `doc/source_audits/batch_286.json`.
 6 programs, 16 facets of accessibility: a PRIVATE name is simply not there for a user of the module, and the test proves it by finding a different entity of the same name instead.
 See `doc/source_audits/batch_290.json`.
 
+## Batch 266 — Intrinsic fixtures 16.9.1-16.9.10 (ABS-AIMAG)
+
+28 programs, 38 facets, four rounds: the first letters of Clause 16. ADJUSTL must both remove the leading blanks and put the same number back at the end, and the tests now check each half separately.
+See `doc/source_audits/batch_266.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
