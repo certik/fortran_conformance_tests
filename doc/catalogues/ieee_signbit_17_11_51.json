@@ -1,0 +1,189 @@
+{
+  "schema_version": 1,
+  "section": "17.11.51",
+  "review_state": "reviewed",
+  "subunits": {
+    "p6": [
+      "p6.sign-bit-result",
+      "p6.no-exception-signaling-nan"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S17.11.51-001",
+      "title": "IEEE_SIGNBIT argument shall be real",
+      "source": "S17.11.51, J3/24-007, 18 December 2023, physical PDF507.",
+      "source_units": [
+        "p3"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "X shall be real for IEEE_SIGNBIT(X).",
+      "facets": [
+        "IEEE_SIGNBIT-X-real"
+      ],
+      "pending": {
+        "IEEE_SIGNBIT-X-real": "Support inquiry before the restricted positive-control call: IEEE_SUPPORT_DATATYPE(-1.0) for X. True branch invokes IEEE_SIGNBIT(-1.0); false branch records a skip. Source-control mutation changes X to an integer actual and claims no diagnostic facet."
+      },
+      "oracle": "Source registration only. Future Clause 17 fixtures use branch plans with concrete support inquiries: each restricted IEEE arithmetic call lists IEEE_SUPPORT_DATATYPE for every actual operand, NaN construction lists IEEE_SUPPORT_DATATYPE(1.0) and IEEE_SUPPORT_NAN(1.0), NaN observation lists IEEE_SUPPORT_DATATYPE(QNAN) and IEEE_SUPPORT_DATATYPE(SNAN) for IEEE_CLASS and IEEE_IS_NAN, and each flag assertion lists IEEE_SUPPORT_FLAG(flag,x). Flag rows reference named shared preamble FLAG_ROW_SETUP: IEEE_SUPPORT_FLAG true, IEEE_SUPPORT_HALTING true -> IEEE_SET_HALTING_MODE(flag,.FALSE.), IEEE_SUPPORT_HALTING false -> IEEE_GET_HALTING_MODE(flag,h) and continue only for h .eqv. .FALSE., then clear flags. The supported branch asserts only exact logical results, default-logical characteristics, and flag states fixed by the source; the unsupported branch records a skip and never a pass.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json found no existing binding for IEEE_SIGNALING_GT, IEEE_SIGNALING_LE, IEEE_SIGNALING_LT, IEEE_SIGNALING_NE, IEEE_SIGNBIT, IEEE_SUPPORT_DATATYPE, or S17.11.47 through S17.11.52. Unnumbered argument and invocation restrictions are source-control restrictions only and are not promoted to diagnostic facets. For signaling-comparison NaN rows the source requires IEEE_INVALID to signal; it does not separately require the other four flags to remain quiet for NaN operands. No set/restore round-trip facet occurs in 17.11.47 through 17.11.52; SET_HALTING_MODE(flag,.FALSE.) is safety setup for exception-row observation, not claimed as a round-trip result.",
+      "dependencies": "Registered dependencies: existing source-form, type, kind, declaration, expression, logical-result, array, execution, and intrinsic-module foundations from clauses 6 through 16 where already catalogued. Unregistered dependencies retained: Clause 17 IEEE_ARITHMETIC and IEEE_EXCEPTIONS module availability, 17.9 IEEE support terminology, sibling IEEE_VALUE, IEEE_SUPPORT_NAN, IEEE_SUPPORT_FLAG, IEEE_GET_FLAG, IEEE_SET_FLAG, IEEE_IS_NEGATIVE, and named IEEE constants used by pending plans, plus clauses 18 and 19 where future fixtures need interoperability or scope terms."
+    },
+    {
+      "id": "S17.11.51-002",
+      "title": "IEEE_SIGNBIT invocation requires IEEE datatype support",
+      "source": "S17.11.51, J3/24-007, 18 December 2023, physical PDF507.",
+      "source_units": [
+        "p4"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "IEEE_SIGNBIT(X) shall not be invoked while IEEE_SUPPORT_DATATYPE(X) has the value false.",
+      "facets": [
+        "IEEE_SIGNBIT-requires-IEEE_SUPPORT_DATATYPE"
+      ],
+      "pending": {
+        "IEEE_SIGNBIT-requires-IEEE_SUPPORT_DATATYPE": "Support inquiry before the restricted call: IEEE_SUPPORT_DATATYPE(-1.0) for X. True branch invokes IEEE_SIGNBIT(-1.0) and checks the exact logical result owned by p6; false branch does not invoke IEEE_SIGNBIT and records a skip. Source-control mutation removes the inquiry and claims no required diagnostic."
+      },
+      "oracle": "Source registration only. Future Clause 17 fixtures use branch plans with concrete support inquiries: each restricted IEEE arithmetic call lists IEEE_SUPPORT_DATATYPE for every actual operand, NaN construction lists IEEE_SUPPORT_DATATYPE(1.0) and IEEE_SUPPORT_NAN(1.0), NaN observation lists IEEE_SUPPORT_DATATYPE(QNAN) and IEEE_SUPPORT_DATATYPE(SNAN) for IEEE_CLASS and IEEE_IS_NAN, and each flag assertion lists IEEE_SUPPORT_FLAG(flag,x). Flag rows reference named shared preamble FLAG_ROW_SETUP: IEEE_SUPPORT_FLAG true, IEEE_SUPPORT_HALTING true -> IEEE_SET_HALTING_MODE(flag,.FALSE.), IEEE_SUPPORT_HALTING false -> IEEE_GET_HALTING_MODE(flag,h) and continue only for h .eqv. .FALSE., then clear flags. The supported branch asserts only exact logical results, default-logical characteristics, and flag states fixed by the source; the unsupported branch records a skip and never a pass.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json found no existing binding for IEEE_SIGNALING_GT, IEEE_SIGNALING_LE, IEEE_SIGNALING_LT, IEEE_SIGNALING_NE, IEEE_SIGNBIT, IEEE_SUPPORT_DATATYPE, or S17.11.47 through S17.11.52. Unnumbered argument and invocation restrictions are source-control restrictions only and are not promoted to diagnostic facets. For signaling-comparison NaN rows the source requires IEEE_INVALID to signal; it does not separately require the other four flags to remain quiet for NaN operands. No set/restore round-trip facet occurs in 17.11.47 through 17.11.52; SET_HALTING_MODE(flag,.FALSE.) is safety setup for exception-row observation, not claimed as a round-trip result.",
+      "dependencies": "Registered dependencies: existing source-form, type, kind, declaration, expression, logical-result, array, execution, and intrinsic-module foundations from clauses 6 through 16 where already catalogued. Unregistered dependencies retained: Clause 17 IEEE_ARITHMETIC and IEEE_EXCEPTIONS module availability, 17.9 IEEE support terminology, sibling IEEE_VALUE, IEEE_SUPPORT_NAN, IEEE_SUPPORT_FLAG, IEEE_GET_FLAG, IEEE_SET_FLAG, IEEE_IS_NEGATIVE, and named IEEE constants used by pending plans, plus clauses 18 and 19 where future fixtures need interoperability or scope terms."
+    },
+    {
+      "id": "S17.11.51-003",
+      "title": "IEEE_SIGNBIT returns default logical",
+      "source": "S17.11.51, J3/24-007, 18 December 2023, physical PDF507.",
+      "source_units": [
+        "p5"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The IEEE_SIGNBIT result has default logical kind for a scalar real argument.",
+      "facets": [
+        "IEEE_SIGNBIT-result-default-logical"
+      ],
+      "pending": {
+        "IEEE_SIGNBIT-result-default-logical": "Support inquiry before the restricted call: IEEE_SUPPORT_DATATYPE(-1.0) for X. True branch initializes a logical sentinel to .false., assigns IEEE_SIGNBIT(-1.0) to R, and asserts KIND(R)==KIND(.true.); false branch records a skip."
+      },
+      "oracle": "Source registration only. Future Clause 17 fixtures use branch plans with concrete support inquiries: each restricted IEEE arithmetic call lists IEEE_SUPPORT_DATATYPE for every actual operand, NaN construction lists IEEE_SUPPORT_DATATYPE(1.0) and IEEE_SUPPORT_NAN(1.0), NaN observation lists IEEE_SUPPORT_DATATYPE(QNAN) and IEEE_SUPPORT_DATATYPE(SNAN) for IEEE_CLASS and IEEE_IS_NAN, and each flag assertion lists IEEE_SUPPORT_FLAG(flag,x). Flag rows reference named shared preamble FLAG_ROW_SETUP: IEEE_SUPPORT_FLAG true, IEEE_SUPPORT_HALTING true -> IEEE_SET_HALTING_MODE(flag,.FALSE.), IEEE_SUPPORT_HALTING false -> IEEE_GET_HALTING_MODE(flag,h) and continue only for h .eqv. .FALSE., then clear flags. The supported branch asserts only exact logical results, default-logical characteristics, and flag states fixed by the source; the unsupported branch records a skip and never a pass.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json found no existing binding for IEEE_SIGNALING_GT, IEEE_SIGNALING_LE, IEEE_SIGNALING_LT, IEEE_SIGNALING_NE, IEEE_SIGNBIT, IEEE_SUPPORT_DATATYPE, or S17.11.47 through S17.11.52. Unnumbered argument and invocation restrictions are source-control restrictions only and are not promoted to diagnostic facets. For signaling-comparison NaN rows the source requires IEEE_INVALID to signal; it does not separately require the other four flags to remain quiet for NaN operands. No set/restore round-trip facet occurs in 17.11.47 through 17.11.52; SET_HALTING_MODE(flag,.FALSE.) is safety setup for exception-row observation, not claimed as a round-trip result.",
+      "dependencies": "Registered dependencies: existing source-form, type, kind, declaration, expression, logical-result, array, execution, and intrinsic-module foundations from clauses 6 through 16 where already catalogued. Unregistered dependencies retained: Clause 17 IEEE_ARITHMETIC and IEEE_EXCEPTIONS module availability, 17.9 IEEE support terminology, sibling IEEE_VALUE, IEEE_SUPPORT_NAN, IEEE_SUPPORT_FLAG, IEEE_GET_FLAG, IEEE_SET_FLAG, IEEE_IS_NEGATIVE, and named IEEE constants used by pending plans, plus clauses 18 and 19 where future fixtures need interoperability or scope terms."
+    },
+    {
+      "id": "S17.11.51-004",
+      "title": "IEEE_SIGNBIT reports a nonzero sign bit",
+      "source": "S17.11.51, J3/24-007, 18 December 2023, physical PDF507.",
+      "source_units": [
+        "p6.sign-bit-result"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "IEEE_SIGNBIT(X) is true exactly for values whose sign bit is nonzero.",
+      "facets": [
+        "IEEE_SIGNBIT-negative-finite-true",
+        "IEEE_SIGNBIT-positive-finite-false",
+        "IEEE_SIGNBIT-negative-zero-true",
+        "IEEE_SIGNBIT-positive-zero-false",
+        "IEEE_SIGNBIT-positive-infinity-false",
+        "IEEE_SIGNBIT-negative-infinity-true",
+        "IEEE_SIGNBIT-quiet-nan-copy-sign-positive-false",
+        "IEEE_SIGNBIT-quiet-nan-copy-sign-negative-true"
+      ],
+      "pending": {
+        "IEEE_SIGNBIT-negative-finite-true": "Support inquiry before the restricted call: IEEE_SUPPORT_DATATYPE(-1.0) for X. True branch initializes the result sentinel to .false. and asserts IEEE_SIGNBIT(-1.0) is true with .eqv.; false branch records a skip.",
+        "IEEE_SIGNBIT-positive-finite-false": "Support inquiry before the restricted call: IEEE_SUPPORT_DATATYPE(1.0) for X. True branch initializes the result sentinel to .true. and asserts IEEE_SIGNBIT(1.0) is false with .eqv.; false branch records a skip.",
+        "IEEE_SIGNBIT-negative-zero-true": "Support inquiries before restricted helper calls: IEEE_SUPPORT_DATATYPE(0.0) for IEEE_VALUE(0.0,IEEE_NEGATIVE_ZERO), then IEEE_SUPPORT_DATATYPE(NZ) before IEEE_IS_NEGATIVE(NZ) and IEEE_SIGNBIT(NZ). True branch constructs NZ, pre-verifies IEEE_IS_NEGATIVE(NZ), initializes the result sentinel to .false., and asserts IEEE_SIGNBIT(NZ) is true with .eqv.; false branch records a skip.",
+        "IEEE_SIGNBIT-positive-zero-false": "Support inquiry before the restricted call: IEEE_SUPPORT_DATATYPE(0.0) for X. True branch initializes the result sentinel to .true. and asserts IEEE_SIGNBIT(0.0) is false with .eqv.; false branch records a skip.",
+        "IEEE_SIGNBIT-positive-infinity-false": "Support inquiries before restricted helper calls: IEEE_SUPPORT_DATATYPE(1.0) and IEEE_SUPPORT_INF(1.0) for IEEE_VALUE(1.0,IEEE_POSITIVE_INF); IEEE_SUPPORT_DATATYPE(PINF) for IEEE_SIGNBIT(PINF). True branch constructs PINF, initializes the result sentinel to .true., and asserts IEEE_SIGNBIT(PINF) is false with .eqv.; false branch records a skip.",
+        "IEEE_SIGNBIT-negative-infinity-true": "Support inquiries before restricted helper calls: IEEE_SUPPORT_DATATYPE(1.0) and IEEE_SUPPORT_INF(1.0) for IEEE_VALUE(1.0,IEEE_NEGATIVE_INF); IEEE_SUPPORT_DATATYPE(NINF) for IEEE_SIGNBIT(NINF). True branch constructs NINF, initializes the result sentinel to .false., and asserts IEEE_SIGNBIT(NINF) is true with .eqv.; false branch records a skip.",
+        "IEEE_SIGNBIT-quiet-nan-copy-sign-positive-false": "Support inquiries before restricted helper calls: IEEE_SUPPORT_DATATYPE(1.0) and IEEE_SUPPORT_NAN(1.0) for IEEE_VALUE(1.0,IEEE_QUIET_NAN); IEEE_SUPPORT_DATATYPE(Q) and IEEE_SUPPORT_DATATYPE(1.0) for IEEE_COPY_SIGN(Q,1.0); IEEE_SUPPORT_DATATYPE(QP) for IEEE_CLASS, IEEE_IS_NAN, and IEEE_SIGNBIT observers. True branch constructs Q=IEEE_VALUE(1.0,IEEE_QUIET_NAN) and QP=IEEE_COPY_SIGN(Q,1.0), relying on 17.11.3 p6, which specifies IEEE_COPY_SIGN gives even a NaN the sign of Y; it pre-verifies IEEE_CLASS(QP)==IEEE_QUIET_NAN and IEEE_IS_NAN(QP), initializes the result sentinel to .true., and asserts IEEE_SIGNBIT(QP) is false with .eqv.; false branch records a skip.",
+        "IEEE_SIGNBIT-quiet-nan-copy-sign-negative-true": "Support inquiries before restricted helper calls: IEEE_SUPPORT_DATATYPE(1.0), IEEE_SUPPORT_DATATYPE(-1.0), and IEEE_SUPPORT_NAN(1.0) for IEEE_VALUE(1.0,IEEE_QUIET_NAN) and IEEE_COPY_SIGN(Q,-1.0); IEEE_SUPPORT_DATATYPE(QN) for IEEE_CLASS, IEEE_IS_NAN, and IEEE_SIGNBIT observers. True branch constructs Q=IEEE_VALUE(1.0,IEEE_QUIET_NAN) and QN=IEEE_COPY_SIGN(Q,-1.0), relying on 17.11.3 p6, which specifies IEEE_COPY_SIGN gives even a NaN the sign of Y; it pre-verifies IEEE_CLASS(QN)==IEEE_QUIET_NAN and IEEE_IS_NAN(QN), initializes the result sentinel to .false., and asserts IEEE_SIGNBIT(QN) is true with .eqv.; false branch records a skip."
+      },
+      "oracle": "Source registration only. Future Clause 17 fixtures use branch plans with concrete support inquiries: each restricted IEEE arithmetic call lists IEEE_SUPPORT_DATATYPE for every actual operand, NaN construction lists IEEE_SUPPORT_DATATYPE(1.0) and IEEE_SUPPORT_NAN(1.0), NaN observation lists IEEE_SUPPORT_DATATYPE(QNAN) and IEEE_SUPPORT_DATATYPE(SNAN) for IEEE_CLASS and IEEE_IS_NAN, and each flag assertion lists IEEE_SUPPORT_FLAG(flag,x). Flag rows reference named shared preamble FLAG_ROW_SETUP: IEEE_SUPPORT_FLAG true, IEEE_SUPPORT_HALTING true -> IEEE_SET_HALTING_MODE(flag,.FALSE.), IEEE_SUPPORT_HALTING false -> IEEE_GET_HALTING_MODE(flag,h) and continue only for h .eqv. .FALSE., then clear flags. The supported branch asserts only exact logical results, default-logical characteristics, and flag states fixed by the source; the unsupported branch records a skip and never a pass.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json found no existing binding for IEEE_SIGNALING_GT, IEEE_SIGNALING_LE, IEEE_SIGNALING_LT, IEEE_SIGNALING_NE, IEEE_SIGNBIT, IEEE_SUPPORT_DATATYPE, or S17.11.47 through S17.11.52. Unnumbered argument and invocation restrictions are source-control restrictions only and are not promoted to diagnostic facets. For signaling-comparison NaN rows the source requires IEEE_INVALID to signal; it does not separately require the other four flags to remain quiet for NaN operands. No set/restore round-trip facet occurs in 17.11.47 through 17.11.52; SET_HALTING_MODE(flag,.FALSE.) is safety setup for exception-row observation, not claimed as a round-trip result.",
+      "dependencies": "Registered dependencies: existing source-form, type, kind, declaration, expression, logical-result, array, execution, and intrinsic-module foundations from clauses 6 through 16 where already catalogued. Unregistered dependencies retained: Clause 17 IEEE_ARITHMETIC and IEEE_EXCEPTIONS module availability, 17.9 IEEE support terminology, sibling IEEE_VALUE, IEEE_SUPPORT_NAN, IEEE_SUPPORT_FLAG, IEEE_GET_FLAG, IEEE_SET_FLAG, IEEE_IS_NEGATIVE, and named IEEE constants used by pending plans, plus clauses 18 and 19 where future fixtures need interoperability or scope terms."
+    },
+    {
+      "id": "S17.11.51-005",
+      "title": "IEEE_SIGNBIT does not signal for signaling NaN",
+      "source": "S17.11.51, J3/24-007, 18 December 2023, physical PDF507.",
+      "source_units": [
+        "p6.no-exception-signaling-nan"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "IEEE_SIGNBIT signals no exception even for a signaling NaN argument.",
+      "facets": [
+        "IEEE_SIGNBIT-signaling-nan-quiet-flags"
+      ],
+      "pending": {
+        "IEEE_SIGNBIT-signaling-nan-quiet-flags": "Support inquiries before restricted helper calls: IEEE_SUPPORT_DATATYPE(1.0) and IEEE_SUPPORT_NAN(1.0) for IEEE_VALUE(1.0,IEEE_SIGNALING_NAN); IEEE_SUPPORT_DATATYPE(SNAN) for IEEE_CLASS, IEEE_IS_NAN, and IEEE_SIGNBIT(SNAN). True branch constructs SNAN, verifies IEEE_CLASS(SNAN)==IEEE_SIGNALING_NAN and IEEE_IS_NAN(SNAN). Before the row IEEE_SIGNBIT(SNAN), For each supported flag among IEEE_INVALID, IEEE_DIVIDE_BY_ZERO, IEEE_OVERFLOW, IEEE_UNDERFLOW, and IEEE_INEXACT, use FLAG-HALTING-OFF(flag,1.0): after IEEE_SUPPORT_FLAG(flag,1.0) is true, branch IEEE_SUPPORT_HALTING(flag)=true calls IEEE_SET_HALTING_MODE(flag,.FALSE.); branch IEEE_SUPPORT_HALTING(flag)=false calls IEEE_GET_HALTING_MODE(flag,h), continues only for h .eqv. .FALSE., and skips for h .eqv. .TRUE.; then clear every supported flag among IEEE_INVALID, IEEE_DIVIDE_BY_ZERO, IEEE_OVERFLOW, IEEE_UNDERFLOW, and IEEE_INEXACT using IEEE_SET_FLAG(clear_flag,.FALSE.). Then call IEEE_SIGNBIT(SNAN) and assert every flag with true IEEE_SUPPORT_FLAG(flag,1.0) remains false; unsupported flag branches record skips."
+      },
+      "oracle": "Source registration only. Future Clause 17 fixtures use branch plans with concrete support inquiries: each restricted IEEE arithmetic call lists IEEE_SUPPORT_DATATYPE for every actual operand, NaN construction lists IEEE_SUPPORT_DATATYPE(1.0) and IEEE_SUPPORT_NAN(1.0), NaN observation lists IEEE_SUPPORT_DATATYPE(QNAN) and IEEE_SUPPORT_DATATYPE(SNAN) for IEEE_CLASS and IEEE_IS_NAN, and each flag assertion lists IEEE_SUPPORT_FLAG(flag,x). Flag rows reference named shared preamble FLAG_ROW_SETUP: IEEE_SUPPORT_FLAG true, IEEE_SUPPORT_HALTING true -> IEEE_SET_HALTING_MODE(flag,.FALSE.), IEEE_SUPPORT_HALTING false -> IEEE_GET_HALTING_MODE(flag,h) and continue only for h .eqv. .FALSE., then clear flags. The supported branch asserts only exact logical results, default-logical characteristics, and flag states fixed by the source; the unsupported branch records a skip and never a pass.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json found no existing binding for IEEE_SIGNALING_GT, IEEE_SIGNALING_LE, IEEE_SIGNALING_LT, IEEE_SIGNALING_NE, IEEE_SIGNBIT, IEEE_SUPPORT_DATATYPE, or S17.11.47 through S17.11.52. Unnumbered argument and invocation restrictions are source-control restrictions only and are not promoted to diagnostic facets. For signaling-comparison NaN rows the source requires IEEE_INVALID to signal; it does not separately require the other four flags to remain quiet for NaN operands. No set/restore round-trip facet occurs in 17.11.47 through 17.11.52; SET_HALTING_MODE(flag,.FALSE.) is safety setup for exception-row observation, not claimed as a round-trip result.",
+      "dependencies": "Registered dependencies: existing source-form, type, kind, declaration, expression, logical-result, array, execution, and intrinsic-module foundations from clauses 6 through 16 where already catalogued. Unregistered dependencies retained: Clause 17 IEEE_ARITHMETIC and IEEE_EXCEPTIONS module availability, 17.9 IEEE support terminology, sibling IEEE_VALUE, IEEE_SUPPORT_NAN, IEEE_SUPPORT_FLAG, IEEE_GET_FLAG, IEEE_SET_FLAG, IEEE_IS_NEGATIVE, and named IEEE constants used by pending plans, plus clauses 18 and 19 where future fixtures need interoperability or scope terms."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "definition",
+      "rationale": "Description defines IEEE_SIGNBIT as the sign-bit test."
+    },
+    {
+      "unit": "p2",
+      "disposition": "definition",
+      "rationale": "Classifies IEEE_SIGNBIT as an elemental function; detailed elemental semantics are supplied by the procedure-class rules."
+    },
+    {
+      "unit": "p3",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.11.51-001"
+      ]
+    },
+    {
+      "unit": "p4",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.11.51-002"
+      ]
+    },
+    {
+      "unit": "p5",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.11.51-003"
+      ]
+    },
+    {
+      "unit": "p6",
+      "disposition": "structural",
+      "rationale": "Result value combines sign-bit truth and signaling-NaN quietness obligations split into fine units."
+    },
+    {
+      "unit": "p6.sign-bit-result",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.11.51-004"
+      ]
+    },
+    {
+      "unit": "p6.no-exception-signaling-nan",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.11.51-005"
+      ]
+    },
+    {
+      "unit": "p7",
+      "disposition": "informative",
+      "rationale": "Example paragraph is illustrative and is not normative; its negative finite result is covered by p6."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_17_11_51.md"
+  },
+  "review_fingerprint": "58b43ab27b4196b2f2e9d33cb1c9994cc6df4b3ce91c7f42bcd1f4be74720687",
+  "review_rationale": "Source registration for 17.11.47-17.11.52: IEEE_SIGNALING_GT, IEEE_SIGNALING_LE, IEEE_SIGNALING_LT, IEEE_SIGNALING_NE, IEEE_SIGNBIT and IEEE_SUPPORT_DATATYPE (batch227). Every unit hash-verified by an independent reviewer across three rounds; signaling comparisons share the quiet truth tables but raise IEEE_INVALID for any NaN, and every exact value is radix-free or radix-guarded. Source accounting only."
+}

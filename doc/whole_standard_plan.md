@@ -5894,6 +5894,11 @@ See `doc/source_audits/batch_229.json`.
 Twenty-seven units, twenty numbered, after two rounds. RECURSIVE is 'advisory only' since Fortran 2018, which makes it testable rather than untestable: a function that calls itself without the prefix must still work.
 See `doc/source_audits/batch_234.json`.
 
+## Batch 227 — IEEE_SIGNALING_GT through IEEE_SUPPORT_DATATYPE (17.11.47-17.11.52)
+
+Forty-two units after three rounds. Two subtle rules came out of it: the halting preamble has to cover the flag a row expects to raise, not just the ones it expects quiet; and an IEEE format need not be binary, so IEEE_LOGB(8.0) == 3.0 is not a portable expectation while IEEE_LOGB(1.0) == 0.0 is.
+See `doc/source_audits/batch_227.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
