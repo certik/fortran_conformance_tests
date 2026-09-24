@@ -1,0 +1,226 @@
+{
+  "schema_version": 1,
+  "section": "16.9.175",
+  "subunits": {
+    "p3": [
+      "p3.argument-restrictions",
+      "p3.order-default"
+    ],
+    "p5": [
+      "p5.source-elements",
+      "p5.pad-cycling",
+      "p5.permuted-subscript-order"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S16.9.175-001",
+      "title": "RESHAPE argument restrictions",
+      "source": "S16.9.175, J3/24-007, 18 December 2023, physical PDF451.",
+      "source_units": [
+        "p3.argument-restrictions"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "SOURCE shall be an array, source size shall be sufficient with PAD absent or size zero, SHAPE shall be a rank-one integer array of positive size less than 16 with no negative element, PAD shall match SOURCE type and type parameters, and ORDER shall be an integer array with SHAPE's shape and a permutation of 1 through n.",
+      "facets": [
+        "RESHAPE-SOURCE-array",
+        "RESHAPE-SOURCE-size-sufficient-without-PAD",
+        "RESHAPE-SHAPE-rank-one-integer-positive-size-less-than-16",
+        "RESHAPE-SHAPE-elements-nonnegative",
+        "RESHAPE-PAD-same-type-parameters",
+        "RESHAPE-ORDER-integer-same-shape-permutation"
+      ],
+      "pending": {
+        "RESHAPE-SOURCE-array": "Positive source controls use rank-one and rank-two SOURCE arrays; source-control mutation uses a scalar SOURCE without claiming a diagnostic facet.",
+        "RESHAPE-SOURCE-size-sufficient-without-PAD": "Positive controls use sufficient SOURCE size without PAD and shorter SOURCE with nonempty PAD; mutations omit PAD for an undersized SOURCE and use size-zero PAD without enough SOURCE elements, with no diagnostic facet claimed.",
+        "RESHAPE-SHAPE-rank-one-integer-positive-size-less-than-16": "Positive controls use SHAPE arrays [2,3] and [2,2,1]; mutations use scalar SHAPE, real SHAPE, zero-size SHAPE, and size 16 SHAPE without claiming diagnostic facets.",
+        "RESHAPE-SHAPE-elements-nonnegative": "Positive controls include zero extent [0,3] and positive extents [2,3]; mutation uses SHAPE [2,-1] without claiming a diagnostic facet.",
+        "RESHAPE-PAD-same-type-parameters": "Positive controls use integer PAD for integer SOURCE and character PAD matching length and kind; mutations use real PAD and mismatched character length without claiming diagnostic facets.",
+        "RESHAPE-ORDER-integer-same-shape-permutation": "Positive controls use ORDER [1,2] and [2,1]; mutations use real ORDER, wrong-shape ORDER, duplicate element [1,1], and out-of-range element [1,3] without claiming diagnostic facets."
+      },
+      "oracle": "Source registration only. Future fixtures initialize result variables to non-default or opposite sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact logical, integer, character, kind, shape, status, type-acceptance, or bit-pattern observations. Processor-dependent approximations and processor-dependent result values are separated from exact result obligations. Unnumbered Clause 16 argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for REAL, REDUCE, REPEAT, RESHAPE, RRSPACING, and SAME_TYPE_AS found no existing fixture-json binding to 16.9.172-16.9.177 in this worktree. Existing REDUCE and REPEAT hits are do-concurrent and I/O syntax fixtures, REAL hits are type/literal text or output labels, and SAME_TYPE_AS appears only in an unrelated Clause 7 diagnostic fixture; those uses remain existing coverage and are not rebound. The 16.9.175 p6 example paragraph was visually verified because its typeset matrices have known census hash drift; the registry census hash is retained and the paragraph is informative.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, and 13 where already catalogued for source form, intrinsic types and kinds, declarations, expressions, arrays, pointer and allocation state, execution, internal I/O, and exact observation helpers. Unregistered dependencies retained: clause 16.3 bit-sequence model, clause 16.4 numeric model terminology, sibling 16.9 intrinsics named by pending plans such as ABS, FRACTION, RADIX, EPSILON, PRODUCT, SHAPE, SIZE, STORAGE_SIZE, TRANSFER, and IEEE inquiry helpers, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, deleted-feature, or scope terms."
+    },
+    {
+      "id": "S16.9.175-002",
+      "title": "RESHAPE absent ORDER defaults to identity order",
+      "source": "S16.9.175, J3/24-007, 18 December 2023, physical PDF451.",
+      "source_units": [
+        "p3.order-default"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "ORDER absence is equivalent to ORDER value (1,2,...,n).",
+      "facets": [
+        "RESHAPE-ORDER-absent-identity-default"
+      ],
+      "pending": {
+        "RESHAPE-ORDER-absent-identity-default": "Use SOURCE [1,2,3,4,5,6] and SHAPE [2,3]; assert RESHAPE without ORDER equals RESHAPE with ORDER [1,2] and differs from ORDER [2,1] on the same SOURCE."
+      },
+      "oracle": "Source registration only. Future fixtures initialize result variables to non-default or opposite sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact logical, integer, character, kind, shape, status, type-acceptance, or bit-pattern observations. Processor-dependent approximations and processor-dependent result values are separated from exact result obligations. Unnumbered Clause 16 argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for REAL, REDUCE, REPEAT, RESHAPE, RRSPACING, and SAME_TYPE_AS found no existing fixture-json binding to 16.9.172-16.9.177 in this worktree. Existing REDUCE and REPEAT hits are do-concurrent and I/O syntax fixtures, REAL hits are type/literal text or output labels, and SAME_TYPE_AS appears only in an unrelated Clause 7 diagnostic fixture; those uses remain existing coverage and are not rebound. The 16.9.175 p6 example paragraph was visually verified because its typeset matrices have known census hash drift; the registry census hash is retained and the paragraph is informative.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, and 13 where already catalogued for source form, intrinsic types and kinds, declarations, expressions, arrays, pointer and allocation state, execution, internal I/O, and exact observation helpers. Unregistered dependencies retained: clause 16.3 bit-sequence model, clause 16.4 numeric model terminology, sibling 16.9 intrinsics named by pending plans such as ABS, FRACTION, RADIX, EPSILON, PRODUCT, SHAPE, SIZE, STORAGE_SIZE, TRANSFER, and IEEE inquiry helpers, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, deleted-feature, or scope terms."
+    },
+    {
+      "id": "S16.9.175-003",
+      "title": "RESHAPE result characteristics",
+      "source": "S16.9.175, J3/24-007, 18 December 2023, physical PDF452.",
+      "source_units": [
+        "p4"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The RESHAPE result has shape SHAPE and the same type and type parameters as SOURCE.",
+      "facets": [
+        "RESHAPE-result-shape-is-SHAPE",
+        "RESHAPE-result-type-parameters-match-SOURCE"
+      ],
+      "pending": {
+        "RESHAPE-result-shape-is-SHAPE": "Use SHAPE [2,3] and [0,3]; assert SHAPE(RESHAPE(...)) equals the requested shape, pairing zero extent with nonzero [2,3] to avoid a vacuous default.",
+        "RESHAPE-result-type-parameters-match-SOURCE": "Use integer SOURCE and character SOURCE of length three; assert integer assignment and character LEN/KIND of the result, then mutate expected type or length."
+      },
+      "oracle": "Source registration only. Future fixtures initialize result variables to non-default or opposite sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact logical, integer, character, kind, shape, status, type-acceptance, or bit-pattern observations. Processor-dependent approximations and processor-dependent result values are separated from exact result obligations. Unnumbered Clause 16 argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for REAL, REDUCE, REPEAT, RESHAPE, RRSPACING, and SAME_TYPE_AS found no existing fixture-json binding to 16.9.172-16.9.177 in this worktree. Existing REDUCE and REPEAT hits are do-concurrent and I/O syntax fixtures, REAL hits are type/literal text or output labels, and SAME_TYPE_AS appears only in an unrelated Clause 7 diagnostic fixture; those uses remain existing coverage and are not rebound. The 16.9.175 p6 example paragraph was visually verified because its typeset matrices have known census hash drift; the registry census hash is retained and the paragraph is informative.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, and 13 where already catalogued for source form, intrinsic types and kinds, declarations, expressions, arrays, pointer and allocation state, execution, internal I/O, and exact observation helpers. Unregistered dependencies retained: clause 16.3 bit-sequence model, clause 16.4 numeric model terminology, sibling 16.9 intrinsics named by pending plans such as ABS, FRACTION, RADIX, EPSILON, PRODUCT, SHAPE, SIZE, STORAGE_SIZE, TRANSFER, and IEEE inquiry helpers, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, deleted-feature, or scope terms."
+    },
+    {
+      "id": "S16.9.175-004",
+      "title": "RESHAPE consumes SOURCE elements in array element order",
+      "source": "S16.9.175, J3/24-007, 18 December 2023, physical PDF452.",
+      "source_units": [
+        "p5.source-elements"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Result elements in the selected subscript order begin with SOURCE elements in normal array element order.",
+      "facets": [
+        "RESHAPE-source-elements-array-element-order"
+      ],
+      "pending": {
+        "RESHAPE-source-elements-array-element-order": "Use a rank-two SOURCE with distinctive normal array element order and SHAPE [3,2]; assert the first six result elements in identity order match that source order and mutate the SOURCE constructor order."
+      },
+      "oracle": "Source registration only. Future fixtures initialize result variables to non-default or opposite sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact logical, integer, character, kind, shape, status, type-acceptance, or bit-pattern observations. Processor-dependent approximations and processor-dependent result values are separated from exact result obligations. Unnumbered Clause 16 argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for REAL, REDUCE, REPEAT, RESHAPE, RRSPACING, and SAME_TYPE_AS found no existing fixture-json binding to 16.9.172-16.9.177 in this worktree. Existing REDUCE and REPEAT hits are do-concurrent and I/O syntax fixtures, REAL hits are type/literal text or output labels, and SAME_TYPE_AS appears only in an unrelated Clause 7 diagnostic fixture; those uses remain existing coverage and are not rebound. The 16.9.175 p6 example paragraph was visually verified because its typeset matrices have known census hash drift; the registry census hash is retained and the paragraph is informative.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, and 13 where already catalogued for source form, intrinsic types and kinds, declarations, expressions, arrays, pointer and allocation state, execution, internal I/O, and exact observation helpers. Unregistered dependencies retained: clause 16.3 bit-sequence model, clause 16.4 numeric model terminology, sibling 16.9 intrinsics named by pending plans such as ABS, FRACTION, RADIX, EPSILON, PRODUCT, SHAPE, SIZE, STORAGE_SIZE, TRANSFER, and IEEE inquiry helpers, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, deleted-feature, or scope terms."
+    },
+    {
+      "id": "S16.9.175-005",
+      "title": "RESHAPE pads by cycling PAD elements",
+      "source": "S16.9.175, J3/24-007, 18 December 2023, physical PDF452.",
+      "source_units": [
+        "p5.pad-cycling"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "After SOURCE elements are exhausted, RESHAPE uses PAD elements in array element order and repeats additional copies of PAD as necessary.",
+      "facets": [
+        "RESHAPE-uses-PAD-after-SOURCE",
+        "RESHAPE-repeats-PAD-as-needed"
+      ],
+      "pending": {
+        "RESHAPE-uses-PAD-after-SOURCE": "Use SOURCE [1,2], PAD [7,8], and SHAPE [2,2]; assert trailing result positions contain 7 and 8, with a sufficient-SOURCE companion proving PAD is not always used.",
+        "RESHAPE-repeats-PAD-as-needed": "Use SOURCE [1], PAD [7,8], and SHAPE [2,3]; assert the padded tail is 7,8,7,8,7 in the selected order, then mutate PAD order."
+      },
+      "oracle": "Source registration only. Future fixtures initialize result variables to non-default or opposite sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact logical, integer, character, kind, shape, status, type-acceptance, or bit-pattern observations. Processor-dependent approximations and processor-dependent result values are separated from exact result obligations. Unnumbered Clause 16 argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for REAL, REDUCE, REPEAT, RESHAPE, RRSPACING, and SAME_TYPE_AS found no existing fixture-json binding to 16.9.172-16.9.177 in this worktree. Existing REDUCE and REPEAT hits are do-concurrent and I/O syntax fixtures, REAL hits are type/literal text or output labels, and SAME_TYPE_AS appears only in an unrelated Clause 7 diagnostic fixture; those uses remain existing coverage and are not rebound. The 16.9.175 p6 example paragraph was visually verified because its typeset matrices have known census hash drift; the registry census hash is retained and the paragraph is informative.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, and 13 where already catalogued for source form, intrinsic types and kinds, declarations, expressions, arrays, pointer and allocation state, execution, internal I/O, and exact observation helpers. Unregistered dependencies retained: clause 16.3 bit-sequence model, clause 16.4 numeric model terminology, sibling 16.9 intrinsics named by pending plans such as ABS, FRACTION, RADIX, EPSILON, PRODUCT, SHAPE, SIZE, STORAGE_SIZE, TRANSFER, and IEEE inquiry helpers, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, deleted-feature, or scope terms."
+    },
+    {
+      "id": "S16.9.175-006",
+      "title": "RESHAPE fills in permuted subscript order",
+      "source": "S16.9.175, J3/24-007, 18 December 2023, physical PDF452.",
+      "source_units": [
+        "p5.permuted-subscript-order"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The result elements are assigned in permuted subscript order ORDER(1),...,ORDER(n).",
+      "facets": [
+        "RESHAPE-ORDER-controls-subscript-fill-order"
+      ],
+      "pending": {
+        "RESHAPE-ORDER-controls-subscript-fill-order": "Use SOURCE [1,2,3,4,5,6], SHAPE [2,3], and ORDER [2,1]; assert element positions differ from identity ORDER in the documented permutation and mutate ORDER back to [1,2]."
+      },
+      "oracle": "Source registration only. Future fixtures initialize result variables to non-default or opposite sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact logical, integer, character, kind, shape, status, type-acceptance, or bit-pattern observations. Processor-dependent approximations and processor-dependent result values are separated from exact result obligations. Unnumbered Clause 16 argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for REAL, REDUCE, REPEAT, RESHAPE, RRSPACING, and SAME_TYPE_AS found no existing fixture-json binding to 16.9.172-16.9.177 in this worktree. Existing REDUCE and REPEAT hits are do-concurrent and I/O syntax fixtures, REAL hits are type/literal text or output labels, and SAME_TYPE_AS appears only in an unrelated Clause 7 diagnostic fixture; those uses remain existing coverage and are not rebound. The 16.9.175 p6 example paragraph was visually verified because its typeset matrices have known census hash drift; the registry census hash is retained and the paragraph is informative.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, and 13 where already catalogued for source form, intrinsic types and kinds, declarations, expressions, arrays, pointer and allocation state, execution, internal I/O, and exact observation helpers. Unregistered dependencies retained: clause 16.3 bit-sequence model, clause 16.4 numeric model terminology, sibling 16.9 intrinsics named by pending plans such as ABS, FRACTION, RADIX, EPSILON, PRODUCT, SHAPE, SIZE, STORAGE_SIZE, TRANSFER, and IEEE inquiry helpers, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, deleted-feature, or scope terms."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "definition",
+      "rationale": "Description names RESHAPE as arbitrary shape array construction."
+    },
+    {
+      "unit": "p2",
+      "disposition": "definition",
+      "rationale": "Classifies RESHAPE as transformational."
+    },
+    {
+      "unit": "p3",
+      "disposition": "structural",
+      "rationale": "Arguments combine source-control restrictions with the exact absent-ORDER default."
+    },
+    {
+      "unit": "p3.argument-restrictions",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.175-001"
+      ]
+    },
+    {
+      "unit": "p3.order-default",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.175-002"
+      ]
+    },
+    {
+      "unit": "p4",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.175-003"
+      ]
+    },
+    {
+      "unit": "p5",
+      "disposition": "structural",
+      "rationale": "Result Value combines SOURCE order, PAD cycling, and permuted subscript order effects."
+    },
+    {
+      "unit": "p5.source-elements",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.175-004"
+      ]
+    },
+    {
+      "unit": "p5.pad-cycling",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.175-005"
+      ]
+    },
+    {
+      "unit": "p5.permuted-subscript-order",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.175-006"
+      ]
+    },
+    {
+      "unit": "p6",
+      "disposition": "informative",
+      "rationale": "Example paragraph is illustrative; visual check accepted known matrix-glyph census hash drift while retaining the registry hash."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_16_9_175.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "d8707a1c840d9179b84c262d881c9dfdeb8f33cc29c07867a12706bce27e3c9e",
+  "review_rationale": "Source registration for 16.9.172-16.9.177: REAL, REDUCE, REPEAT, RESHAPE, RRSPACING and SAME_TYPE_AS (batch204). Every unit hash-verified by an independent reviewer across three rounds (16.9.173 and 16.9.175 typeset example drift verified visually); SAME_TYPE_AS disassociated/unallocated plans rest on the normative 7.3.2.3 dynamic-type rules, not on NOTE 1. Source accounting only."
+}

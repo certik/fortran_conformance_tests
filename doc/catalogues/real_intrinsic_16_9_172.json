@@ -1,0 +1,318 @@
+{
+  "schema_version": 1,
+  "section": "16.9.172",
+  "subunits": {
+    "p4": [
+      "p4.result-type",
+      "p4.kind-integer-real",
+      "p4.kind-complex",
+      "p4.kind-boz"
+    ],
+    "p5": [
+      "p5.integer-exact-representable",
+      "p5.integer-real-approximation-latitude",
+      "p5.complex-real-part-exact",
+      "p5.complex-real-part-approximation-latitude",
+      "p5.boz-relative-bit-sequence",
+      "p5.boz-interpretation-latitude"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S16.9.172-001",
+      "title": "REAL argument restrictions",
+      "source": "S16.9.172, J3/24-007, 18 December 2023, physical PDF449.",
+      "source_units": [
+        "p3"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "A shall be integer, real, complex, or a BOZ literal constant; optional KIND shall be a scalar integer constant expression.",
+      "facets": [
+        "REAL-A-integer-real-complex-or-BOZ",
+        "REAL-KIND-scalar-integer-constant-expression"
+      ],
+      "pending": {
+        "REAL-A-integer-real-complex-or-BOZ": "Positive source controls call REAL with integer, real, complex, and real BOZ actual arguments; source-control mutation uses a character actual and claims no diagnostic facet.",
+        "REAL-KIND-scalar-integer-constant-expression": "Positive source controls call REAL with KIND=KIND(1.0) and a named integer constant kind; source-control mutation uses a nonconstant KIND expression and claims no diagnostic facet."
+      },
+      "oracle": "Source registration only. Future fixtures initialize result variables to non-default or opposite sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact logical, integer, character, kind, shape, status, type-acceptance, or bit-pattern observations. Processor-dependent approximations and processor-dependent result values are separated from exact result obligations. Unnumbered Clause 16 argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for REAL, REDUCE, REPEAT, RESHAPE, RRSPACING, and SAME_TYPE_AS found no existing fixture-json binding to 16.9.172-16.9.177 in this worktree. Existing REDUCE and REPEAT hits are do-concurrent and I/O syntax fixtures, REAL hits are type/literal text or output labels, and SAME_TYPE_AS appears only in an unrelated Clause 7 diagnostic fixture; those uses remain existing coverage and are not rebound.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, and 13 where already catalogued for source form, intrinsic types and kinds, declarations, expressions, arrays, pointer and allocation state, execution, internal I/O, and exact observation helpers. Unregistered dependencies retained: clause 16.3 bit-sequence model, clause 16.4 numeric model terminology, sibling 16.9 intrinsics named by pending plans such as ABS, FRACTION, RADIX, EPSILON, PRODUCT, SHAPE, SIZE, STORAGE_SIZE, TRANSFER, and IEEE inquiry helpers, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, deleted-feature, or scope terms."
+    },
+    {
+      "id": "S16.9.172-002",
+      "title": "REAL result type and kind follow A and KIND cases",
+      "source": "S16.9.172, J3/24-007, 18 December 2023, physical PDF449.",
+      "source_units": [
+        "p4.result-type",
+        "p4.kind-integer-real",
+        "p4.kind-complex",
+        "p4.kind-boz"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The REAL result has real type. KIND presence selects the result kind for integer, real, complex, and BOZ A; KIND absence selects default real kind for integer, real, or BOZ A and selects A's real kind for complex A.",
+      "facets": [
+        "REAL-result-real-type",
+        "REAL-integer-real-KIND-present",
+        "REAL-integer-real-default-kind-absent",
+        "REAL-complex-KIND-present",
+        "REAL-complex-kind-from-A-absent",
+        "REAL-BOZ-KIND-present",
+        "REAL-BOZ-default-kind-absent"
+      ],
+      "pending": {
+        "REAL-result-real-type": "Compile positive controls assigning REAL(7), REAL(1.0D0), REAL(CMPLX(2.0,-5.0)), and REAL(Z'00000000') to real variables and passing them to a real dummy procedure; source-control mutation changes the receiving context to integer.",
+        "REAL-integer-real-KIND-present": "Use REAL(7,KIND=KIND(1.0D0)) and REAL(1.0,KIND=KIND(1.0D0)); assert KIND of each result equals KIND(1.0D0) and mutate KIND to default real kind.",
+        "REAL-integer-real-default-kind-absent": "Use REAL(7) and REAL(1.0D0) without KIND; assert KIND of each result equals KIND(1.0) and pair the nondefault real input with the KIND-present control.",
+        "REAL-complex-KIND-present": "Use REAL(CMPLX(2.0,-5.0),KIND=KIND(1.0D0)); assert result KIND equals KIND(1.0D0) and mutate the KIND argument to default real kind.",
+        "REAL-complex-kind-from-A-absent": "Use a complex actual with nondefault real kind selected by a named constant; assert KIND(REAL(z)) equals the kind of the real part and mutate z to default complex.",
+        "REAL-BOZ-KIND-present": "Use a real BOZ actual argument such as REAL(Z'00000000',KIND=KIND(1.0)); assert KIND of the result equals the supplied real kind and mutate the KIND argument.",
+        "REAL-BOZ-default-kind-absent": "Use REAL(Z'00000000') and assert KIND of the result equals KIND(1.0); companion REAL(Z'00000000',KIND=KIND(1.0)) guards against an absent-KIND special case."
+      },
+      "oracle": "Source registration only. Future fixtures initialize result variables to non-default or opposite sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact logical, integer, character, kind, shape, status, type-acceptance, or bit-pattern observations. Processor-dependent approximations and processor-dependent result values are separated from exact result obligations. Unnumbered Clause 16 argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for REAL, REDUCE, REPEAT, RESHAPE, RRSPACING, and SAME_TYPE_AS found no existing fixture-json binding to 16.9.172-16.9.177 in this worktree. Existing REDUCE and REPEAT hits are do-concurrent and I/O syntax fixtures, REAL hits are type/literal text or output labels, and SAME_TYPE_AS appears only in an unrelated Clause 7 diagnostic fixture; those uses remain existing coverage and are not rebound.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, and 13 where already catalogued for source form, intrinsic types and kinds, declarations, expressions, arrays, pointer and allocation state, execution, internal I/O, and exact observation helpers. Unregistered dependencies retained: clause 16.3 bit-sequence model, clause 16.4 numeric model terminology, sibling 16.9 intrinsics named by pending plans such as ABS, FRACTION, RADIX, EPSILON, PRODUCT, SHAPE, SIZE, STORAGE_SIZE, TRANSFER, and IEEE inquiry helpers, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, deleted-feature, or scope terms."
+    },
+    {
+      "id": "S16.9.172-003",
+      "title": "REAL exactly represents selected small integer conversions",
+      "source": "S16.9.172, J3/24-007, 18 December 2023, physical PDF449.",
+      "source_units": [
+        "p5.integer-exact-representable"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For small integer values that are exactly representable in the selected real kind, REAL yields the corresponding real value exactly.",
+      "facets": [
+        "REAL-small-integer-exact-default-kind",
+        "REAL-negative-integer-exact-selected-kind"
+      ],
+      "pending": {
+        "REAL-small-integer-exact-default-kind": "Initialize real sentinels to 99.0, assign REAL(-3), REAL(0), and REAL(5), and assert equality with -3.0, 0.0, and 5.0 using ==; mutation flips the sign of the negative expected value or changes one integer actual.",
+        "REAL-negative-integer-exact-selected-kind": "Use REAL(-3,KIND=KIND(0.0D0)) and REAL(5,KIND=KIND(0.0D0)); assert KIND equals KIND(0.0D0) and values compare == to -3.0D0 and 5.0D0, with a default-kind companion to make KIND selection load-bearing."
+      },
+      "oracle": "Source registration only. Future fixtures initialize result variables to non-default or opposite sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact logical, integer, character, kind, shape, status, type-acceptance, or bit-pattern observations. Processor-dependent approximations and processor-dependent result values are separated from exact result obligations. Unnumbered Clause 16 argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for REAL, REDUCE, REPEAT, RESHAPE, RRSPACING, and SAME_TYPE_AS found no existing fixture-json binding to 16.9.172-16.9.177 in this worktree. Existing REDUCE and REPEAT hits are do-concurrent and I/O syntax fixtures, REAL hits are type/literal text or output labels, and SAME_TYPE_AS appears only in an unrelated Clause 7 diagnostic fixture; those uses remain existing coverage and are not rebound.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, and 13 where already catalogued for source form, intrinsic types and kinds, declarations, expressions, arrays, pointer and allocation state, execution, internal I/O, and exact observation helpers. Unregistered dependencies retained: clause 16.3 bit-sequence model, clause 16.4 numeric model terminology, sibling 16.9 intrinsics named by pending plans such as ABS, FRACTION, RADIX, EPSILON, PRODUCT, SHAPE, SIZE, STORAGE_SIZE, TRANSFER, and IEEE inquiry helpers, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, deleted-feature, or scope terms."
+    },
+    {
+      "id": "S16.9.172-004",
+      "title": "REAL integer and real conversion has approximation latitude outside exact subcases",
+      "source": "S16.9.172, J3/24-007, 18 December 2023, physical PDF449.",
+      "source_units": [
+        "p5.integer-real-approximation-latitude"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For integer or real A outside separately justified exact subcases, the REAL result value is a processor-dependent approximation to A.",
+      "facets": [
+        "REAL-integer-real-general-processor-dependent-approximation"
+      ],
+      "pending": {
+        "REAL-integer-real-general-processor-dependent-approximation": "No portable exact-value oracle for the general conversion: p5 grants a processor-dependent approximation to integer or real A. Future fixtures may assert exact small-integer subcases, type, kind, or bounded model relations, not arbitrary rounded real values."
+      },
+      "oracle": "Source registration only. Future fixtures initialize result variables to non-default or opposite sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact logical, integer, character, kind, shape, status, type-acceptance, or bit-pattern observations. Processor-dependent approximations and processor-dependent result values are separated from exact result obligations. Unnumbered Clause 16 argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for REAL, REDUCE, REPEAT, RESHAPE, RRSPACING, and SAME_TYPE_AS found no existing fixture-json binding to 16.9.172-16.9.177 in this worktree. Existing REDUCE and REPEAT hits are do-concurrent and I/O syntax fixtures, REAL hits are type/literal text or output labels, and SAME_TYPE_AS appears only in an unrelated Clause 7 diagnostic fixture; those uses remain existing coverage and are not rebound.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, and 13 where already catalogued for source form, intrinsic types and kinds, declarations, expressions, arrays, pointer and allocation state, execution, internal I/O, and exact observation helpers. Unregistered dependencies retained: clause 16.3 bit-sequence model, clause 16.4 numeric model terminology, sibling 16.9 intrinsics named by pending plans such as ABS, FRACTION, RADIX, EPSILON, PRODUCT, SHAPE, SIZE, STORAGE_SIZE, TRANSFER, and IEEE inquiry helpers, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, deleted-feature, or scope terms."
+    },
+    {
+      "id": "S16.9.172-005",
+      "title": "REAL extracts exact real parts from selected complex constants",
+      "source": "S16.9.172, J3/24-007, 18 December 2023, physical PDF449.",
+      "source_units": [
+        "p5.complex-real-part-exact"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For selected exactly represented complex constants, REAL has the same kind type parameter and the same value as the real part of A.",
+      "facets": [
+        "REAL-complex-default-kind-real-part-exact",
+        "REAL-complex-selected-kind-real-part-exact"
+      ],
+      "pending": {
+        "REAL-complex-default-kind-real-part-exact": "Use a complex constant CMPLX(-3.0,5.0,KIND=KIND(0.0)) with distinct real and imaginary parts; initialize the result to 99.0, assert REAL(...) == -3.0 and KIND(REAL(...)) == KIND(0.0), and mutate the expected value to the imaginary part.",
+        "REAL-complex-selected-kind-real-part-exact": "Use a named real kind rk=KIND(0.0D0) and CMPLX(2.5_rk,-7.0_rk,KIND=rk) with distinct parts; assert REAL(...) == 2.5_rk and KIND(REAL(...)) == rk, and mutate the expected value to -7.0_rk."
+      },
+      "oracle": "Source registration only. Future fixtures initialize result variables to non-default or opposite sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact logical, integer, character, kind, shape, status, type-acceptance, or bit-pattern observations. Processor-dependent approximations and processor-dependent result values are separated from exact result obligations. Unnumbered Clause 16 argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for REAL, REDUCE, REPEAT, RESHAPE, RRSPACING, and SAME_TYPE_AS found no existing fixture-json binding to 16.9.172-16.9.177 in this worktree. Existing REDUCE and REPEAT hits are do-concurrent and I/O syntax fixtures, REAL hits are type/literal text or output labels, and SAME_TYPE_AS appears only in an unrelated Clause 7 diagnostic fixture; those uses remain existing coverage and are not rebound.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, and 13 where already catalogued for source form, intrinsic types and kinds, declarations, expressions, arrays, pointer and allocation state, execution, internal I/O, and exact observation helpers. Unregistered dependencies retained: clause 16.3 bit-sequence model, clause 16.4 numeric model terminology, sibling 16.9 intrinsics named by pending plans such as ABS, FRACTION, RADIX, EPSILON, PRODUCT, SHAPE, SIZE, STORAGE_SIZE, TRANSFER, and IEEE inquiry helpers, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, deleted-feature, or scope terms."
+    },
+    {
+      "id": "S16.9.172-006",
+      "title": "REAL complex conversion has approximation latitude outside exact real-part subcases",
+      "source": "S16.9.172, J3/24-007, 18 December 2023, physical PDF449.",
+      "source_units": [
+        "p5.complex-real-part-approximation-latitude"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For complex A outside separately justified exact subcases, the REAL result value is a processor-dependent approximation to the real part of A.",
+      "facets": [
+        "REAL-complex-real-part-general-processor-dependent-approximation"
+      ],
+      "pending": {
+        "REAL-complex-real-part-general-processor-dependent-approximation": "No portable exact-value oracle for arbitrary complex inputs: p5 grants a processor-dependent approximation to the real part. Future fixtures may assert selected exact real-part extraction cases and kind properties, not arbitrary rounded real values."
+      },
+      "oracle": "Source registration only. Future fixtures initialize result variables to non-default or opposite sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact logical, integer, character, kind, shape, status, type-acceptance, or bit-pattern observations. Processor-dependent approximations and processor-dependent result values are separated from exact result obligations. Unnumbered Clause 16 argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for REAL, REDUCE, REPEAT, RESHAPE, RRSPACING, and SAME_TYPE_AS found no existing fixture-json binding to 16.9.172-16.9.177 in this worktree. Existing REDUCE and REPEAT hits are do-concurrent and I/O syntax fixtures, REAL hits are type/literal text or output labels, and SAME_TYPE_AS appears only in an unrelated Clause 7 diagnostic fixture; those uses remain existing coverage and are not rebound.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, and 13 where already catalogued for source form, intrinsic types and kinds, declarations, expressions, arrays, pointer and allocation state, execution, internal I/O, and exact observation helpers. Unregistered dependencies retained: clause 16.3 bit-sequence model, clause 16.4 numeric model terminology, sibling 16.9 intrinsics named by pending plans such as ABS, FRACTION, RADIX, EPSILON, PRODUCT, SHAPE, SIZE, STORAGE_SIZE, TRANSFER, and IEEE inquiry helpers, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, deleted-feature, or scope terms."
+    },
+    {
+      "id": "S16.9.172-007",
+      "title": "REAL BOZ conversion has only relative bit-sequence or type-kind oracles",
+      "source": "S16.9.172, J3/24-007, 18 December 2023, physical PDF449.",
+      "source_units": [
+        "p5.boz-relative-bit-sequence"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For BOZ A, the result internal representation follows the same BOZ bit sequence rules as other standard real BOZ conversions, while absolute interpretation remains processor dependent.",
+      "facets": [
+        "REAL-BOZ-admitted-real-result-kind",
+        "REAL-BOZ-relative-REAL-DBLE-bit-equivalence"
+      ],
+      "pending": {
+        "REAL-BOZ-admitted-real-result-kind": "Use real BOZ actual arguments REAL(Z'00000000') and REAL(Z'00000000',KIND=KIND(0.0D0)); assert only real assignment acceptance and the default or selected result kind, not any numeric value or absolute bit pattern.",
+        "REAL-BOZ-relative-REAL-DBLE-bit-equivalence": "Use the same BOZ literal actual with REAL(Z'0000000000000000',KIND=KIND(0.0D0)) and DBLE(Z'0000000000000000'); TRANSFER both results to the same integer storage container and assert the transferred bit containers are equal. Mutation changes one BOZ literal so only relative equivalence is tested."
+      },
+      "oracle": "Source registration only. Future fixtures initialize result variables to non-default or opposite sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact logical, integer, character, kind, shape, status, type-acceptance, or bit-pattern observations. Processor-dependent approximations and processor-dependent result values are separated from exact result obligations. Unnumbered Clause 16 argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for REAL, REDUCE, REPEAT, RESHAPE, RRSPACING, and SAME_TYPE_AS found no existing fixture-json binding to 16.9.172-16.9.177 in this worktree. Existing REDUCE and REPEAT hits are do-concurrent and I/O syntax fixtures, REAL hits are type/literal text or output labels, and SAME_TYPE_AS appears only in an unrelated Clause 7 diagnostic fixture; those uses remain existing coverage and are not rebound.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, and 13 where already catalogued for source form, intrinsic types and kinds, declarations, expressions, arrays, pointer and allocation state, execution, internal I/O, and exact observation helpers. Unregistered dependencies retained: clause 16.3 bit-sequence model, clause 16.4 numeric model terminology, sibling 16.9 intrinsics named by pending plans such as ABS, FRACTION, RADIX, EPSILON, PRODUCT, SHAPE, SIZE, STORAGE_SIZE, TRANSFER, and IEEE inquiry helpers, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, deleted-feature, or scope terms."
+    },
+    {
+      "id": "S16.9.172-008",
+      "title": "REAL BOZ interpretation is processor dependent",
+      "source": "S16.9.172, J3/24-007, 18 December 2023, physical PDF449.",
+      "source_units": [
+        "p5.boz-interpretation-latitude"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For BOZ A, interpretation of the result bit sequence as a real value is processor dependent.",
+      "facets": [
+        "REAL-BOZ-real-value-processor-dependent"
+      ],
+      "pending": {
+        "REAL-BOZ-real-value-processor-dependent": "No portable absolute real-value or absolute bit-pattern oracle: p5 makes interpretation of the BOZ-derived bit sequence processor dependent. Future fixtures must restrict BOZ coverage to admission, type, kind, or relative equivalence between standard conversion forms."
+      },
+      "oracle": "Source registration only. Future fixtures initialize result variables to non-default or opposite sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact logical, integer, character, kind, shape, status, type-acceptance, or bit-pattern observations. Processor-dependent approximations and processor-dependent result values are separated from exact result obligations. Unnumbered Clause 16 argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for REAL, REDUCE, REPEAT, RESHAPE, RRSPACING, and SAME_TYPE_AS found no existing fixture-json binding to 16.9.172-16.9.177 in this worktree. Existing REDUCE and REPEAT hits are do-concurrent and I/O syntax fixtures, REAL hits are type/literal text or output labels, and SAME_TYPE_AS appears only in an unrelated Clause 7 diagnostic fixture; those uses remain existing coverage and are not rebound.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, and 13 where already catalogued for source form, intrinsic types and kinds, declarations, expressions, arrays, pointer and allocation state, execution, internal I/O, and exact observation helpers. Unregistered dependencies retained: clause 16.3 bit-sequence model, clause 16.4 numeric model terminology, sibling 16.9 intrinsics named by pending plans such as ABS, FRACTION, RADIX, EPSILON, PRODUCT, SHAPE, SIZE, STORAGE_SIZE, TRANSFER, and IEEE inquiry helpers, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, deleted-feature, or scope terms."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "definition",
+      "rationale": "Description names REAL as conversion to real type; p4 and p5 own characteristics and value semantics."
+    },
+    {
+      "unit": "p2",
+      "disposition": "definition",
+      "rationale": "Classifies REAL as elemental."
+    },
+    {
+      "unit": "p3",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.172-001"
+      ]
+    },
+    {
+      "unit": "p4",
+      "disposition": "structural",
+      "rationale": "Result Characteristics combines result type with three KIND-selection cases."
+    },
+    {
+      "unit": "p4.result-type",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.172-002"
+      ]
+    },
+    {
+      "unit": "p4.kind-integer-real",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.172-002"
+      ]
+    },
+    {
+      "unit": "p4.kind-complex",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.172-002"
+      ]
+    },
+    {
+      "unit": "p4.kind-boz",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.172-002"
+      ]
+    },
+    {
+      "unit": "p5",
+      "disposition": "structural",
+      "rationale": "Result Value mixes exact representable subcases, approximation latitude, relative BOZ conversion consistency, and processor-dependent BOZ interpretation."
+    },
+    {
+      "unit": "p5.integer-exact-representable",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.172-003"
+      ]
+    },
+    {
+      "unit": "p5.integer-real-approximation-latitude",
+      "disposition": "permission",
+      "requirements": [
+        "S16.9.172-004"
+      ],
+      "rationale": "General integer and real conversion value is processor-dependent approximation latitude outside exact subcases."
+    },
+    {
+      "unit": "p5.complex-real-part-exact",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.172-005"
+      ]
+    },
+    {
+      "unit": "p5.complex-real-part-approximation-latitude",
+      "disposition": "permission",
+      "requirements": [
+        "S16.9.172-006"
+      ],
+      "rationale": "General complex conversion value is processor-dependent approximation latitude outside exact real-part subcases."
+    },
+    {
+      "unit": "p5.boz-relative-bit-sequence",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.172-007"
+      ]
+    },
+    {
+      "unit": "p5.boz-interpretation-latitude",
+      "disposition": "permission",
+      "requirements": [
+        "S16.9.172-008"
+      ],
+      "rationale": "BOZ-derived real interpretation and absolute bit-pattern interpretation are processor dependent."
+    },
+    {
+      "unit": "p6",
+      "disposition": "informative",
+      "rationale": "Example paragraph is illustrative; exact small-integer and complex-real-part plans are recorded only where they are consistent with p5 and do not assert arbitrary rounded approximations."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_16_9_172.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "78955bf6996ba535c38e16a8c980da8a6828aa0ef4b7200cfbe51c6982b17dfb",
+  "review_rationale": "Source registration for 16.9.172-16.9.177: REAL, REDUCE, REPEAT, RESHAPE, RRSPACING and SAME_TYPE_AS (batch204). Every unit hash-verified by an independent reviewer across three rounds (16.9.173 and 16.9.175 typeset example drift verified visually); SAME_TYPE_AS disassociated/unallocated plans rest on the normative 7.3.2.3 dynamic-type rules, not on NOTE 1. Source accounting only."
+}

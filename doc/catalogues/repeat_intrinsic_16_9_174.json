@@ -1,0 +1,120 @@
+{
+  "schema_version": 1,
+  "section": "16.9.174",
+  "requirements": [
+    {
+      "id": "S16.9.174-001",
+      "title": "REPEAT argument restrictions",
+      "source": "S16.9.174, J3/24-007, 18 December 2023, physical PDF451.",
+      "source_units": [
+        "p3"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "STRING shall be a character scalar, NCOPIES shall be an integer scalar, and NCOPIES shall not be negative.",
+      "facets": [
+        "REPEAT-STRING-character-scalar",
+        "REPEAT-NCOPIES-integer-scalar",
+        "REPEAT-NCOPIES-nonnegative"
+      ],
+      "pending": {
+        "REPEAT-STRING-character-scalar": "Positive source controls call REPEAT with character scalars of length one and three; source-control mutations use integer and rank-one character actuals without claiming diagnostic facets.",
+        "REPEAT-NCOPIES-integer-scalar": "Positive source controls use NCOPIES=0, 1, and 3; source-control mutations use real and rank-one integer actuals without claiming diagnostic facets.",
+        "REPEAT-NCOPIES-nonnegative": "Positive source controls use zero and positive NCOPIES values; source-control mutation uses -1 without claiming a diagnostic facet."
+      },
+      "oracle": "Source registration only. Future fixtures initialize result variables to non-default or opposite sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact logical, integer, character, kind, shape, status, type-acceptance, or bit-pattern observations. Processor-dependent approximations and processor-dependent result values are separated from exact result obligations. Unnumbered Clause 16 argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for REAL, REDUCE, REPEAT, RESHAPE, RRSPACING, and SAME_TYPE_AS found no existing fixture-json binding to 16.9.172-16.9.177 in this worktree. Existing REDUCE and REPEAT hits are do-concurrent and I/O syntax fixtures, REAL hits are type/literal text or output labels, and SAME_TYPE_AS appears only in an unrelated Clause 7 diagnostic fixture; those uses remain existing coverage and are not rebound.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, and 13 where already catalogued for source form, intrinsic types and kinds, declarations, expressions, arrays, pointer and allocation state, execution, internal I/O, and exact observation helpers. Unregistered dependencies retained: clause 16.3 bit-sequence model, clause 16.4 numeric model terminology, sibling 16.9 intrinsics named by pending plans such as ABS, FRACTION, RADIX, EPSILON, PRODUCT, SHAPE, SIZE, STORAGE_SIZE, TRANSFER, and IEEE inquiry helpers, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, deleted-feature, or scope terms."
+    },
+    {
+      "id": "S16.9.174-002",
+      "title": "REPEAT result characteristics",
+      "source": "S16.9.174, J3/24-007, 18 December 2023, physical PDF451.",
+      "source_units": [
+        "p4"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The REPEAT result is a character scalar with STRING's kind type parameter and length NCOPIES times STRING's length.",
+      "facets": [
+        "REPEAT-result-character-scalar",
+        "REPEAT-result-kind-same-as-STRING",
+        "REPEAT-result-length-product"
+      ],
+      "pending": {
+        "REPEAT-result-character-scalar": "Assign REPEAT('ab',2) to a character scalar sentinel initialized to 'zzzz' and assert scalar LEN and value; mutation uses an array-valued expected context.",
+        "REPEAT-result-kind-same-as-STRING": "Guarded plan: probe SELECTED_CHAR_KIND('ISO_10646') for a positive nondefault kind, create a one-character string of that kind, and assert KIND(REPEAT(string,2)) equals KIND(string); companion default-kind string covers ordinary character kind.",
+        "REPEAT-result-length-product": "Assert LEN(REPEAT('abc',3))==9 and LEN(REPEAT('abc',0))==0, with the NCOPIES=3 companion preventing vacuous zero-length-only coverage."
+      },
+      "oracle": "Source registration only. Future fixtures initialize result variables to non-default or opposite sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact logical, integer, character, kind, shape, status, type-acceptance, or bit-pattern observations. Processor-dependent approximations and processor-dependent result values are separated from exact result obligations. Unnumbered Clause 16 argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for REAL, REDUCE, REPEAT, RESHAPE, RRSPACING, and SAME_TYPE_AS found no existing fixture-json binding to 16.9.172-16.9.177 in this worktree. Existing REDUCE and REPEAT hits are do-concurrent and I/O syntax fixtures, REAL hits are type/literal text or output labels, and SAME_TYPE_AS appears only in an unrelated Clause 7 diagnostic fixture; those uses remain existing coverage and are not rebound.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, and 13 where already catalogued for source form, intrinsic types and kinds, declarations, expressions, arrays, pointer and allocation state, execution, internal I/O, and exact observation helpers. Unregistered dependencies retained: clause 16.3 bit-sequence model, clause 16.4 numeric model terminology, sibling 16.9 intrinsics named by pending plans such as ABS, FRACTION, RADIX, EPSILON, PRODUCT, SHAPE, SIZE, STORAGE_SIZE, TRANSFER, and IEEE inquiry helpers, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, deleted-feature, or scope terms."
+    },
+    {
+      "id": "S16.9.174-003",
+      "title": "REPEAT result is repeated concatenation",
+      "source": "S16.9.174, J3/24-007, 18 December 2023, physical PDF451.",
+      "source_units": [
+        "p5"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The REPEAT result value is the concatenation of NCOPIES copies of STRING.",
+      "facets": [
+        "REPEAT-concatenates-copies",
+        "REPEAT-zero-copies-empty-string"
+      ],
+      "pending": {
+        "REPEAT-concatenates-copies": "Use STRING='XYZ' and NCOPIES=3; initialize result to a different nine-character sentinel and assert 'XYZXYZXYZ'. Mutation changes NCOPIES or STRING order.",
+        "REPEAT-zero-copies-empty-string": "Use NCOPIES=0 and assert LEN is zero, paired with NCOPIES=2 producing 'HH' so a blank or unmodified result cannot pass vacuously."
+      },
+      "oracle": "Source registration only. Future fixtures initialize result variables to non-default or opposite sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact logical, integer, character, kind, shape, status, type-acceptance, or bit-pattern observations. Processor-dependent approximations and processor-dependent result values are separated from exact result obligations. Unnumbered Clause 16 argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for REAL, REDUCE, REPEAT, RESHAPE, RRSPACING, and SAME_TYPE_AS found no existing fixture-json binding to 16.9.172-16.9.177 in this worktree. Existing REDUCE and REPEAT hits are do-concurrent and I/O syntax fixtures, REAL hits are type/literal text or output labels, and SAME_TYPE_AS appears only in an unrelated Clause 7 diagnostic fixture; those uses remain existing coverage and are not rebound.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, and 13 where already catalogued for source form, intrinsic types and kinds, declarations, expressions, arrays, pointer and allocation state, execution, internal I/O, and exact observation helpers. Unregistered dependencies retained: clause 16.3 bit-sequence model, clause 16.4 numeric model terminology, sibling 16.9 intrinsics named by pending plans such as ABS, FRACTION, RADIX, EPSILON, PRODUCT, SHAPE, SIZE, STORAGE_SIZE, TRANSFER, and IEEE inquiry helpers, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, deleted-feature, or scope terms."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "definition",
+      "rationale": "Description names REPEAT as repetitive string concatenation."
+    },
+    {
+      "unit": "p2",
+      "disposition": "definition",
+      "rationale": "Classifies REPEAT as transformational."
+    },
+    {
+      "unit": "p3",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.174-001"
+      ]
+    },
+    {
+      "unit": "p4",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.174-002"
+      ]
+    },
+    {
+      "unit": "p5",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.174-003"
+      ]
+    },
+    {
+      "unit": "p6",
+      "disposition": "informative",
+      "rationale": "Example paragraph is illustrative and duplicates p5 values."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_16_9_174.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "93781783facdb4475396b82575f9301e17d78255e1344204faa4e86f29164a69",
+  "review_rationale": "Source registration for 16.9.172-16.9.177: REAL, REDUCE, REPEAT, RESHAPE, RRSPACING and SAME_TYPE_AS (batch204). Every unit hash-verified by an independent reviewer across three rounds (16.9.173 and 16.9.175 typeset example drift verified visually); SAME_TYPE_AS disassociated/unallocated plans rest on the normative 7.3.2.3 dynamic-type rules, not on NOTE 1. Source accounting only."
+}

@@ -5769,6 +5769,11 @@ See `doc/source_audits/batch_205.json`.
 Forty-five units, accepted on the first round with zero findings — the first Clause 16 packet to do so since the checklist gained its model-relation and character-order rules. NEAREST shows the pattern: the adjacent value is model latitude, but NEAREST(X,-1.0) < X < NEAREST(X,1.0) holds on every processor.
 See `doc/source_audits/batch_200.json`.
 
+## Batch 204 — REAL through SAME_TYPE_AS
+
+Forty units after three rounds. The last finding is a rule worth restating: a NOTE can tell the author where the normative text is, but it can never *be* the source unit. SAME_TYPE_AS NOTE 1 restates 7.3.2.3 p5 (a disassociated pointer's dynamic type is its declared type), so the plans now cite 7.3.2.3 directly and the note stays informative.
+See `doc/source_audits/batch_204.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must

@@ -1,0 +1,363 @@
+{
+  "schema_version": 1,
+  "section": "16.9.173",
+  "subunits": {
+    "p3": [
+      "p3.argument-restrictions",
+      "p3.operation-associativity-recommendation",
+      "p3.operation-commutativity-permission"
+    ],
+    "p4": [
+      "p4.type-and-type-parameters",
+      "p4.scalar-without-DIM",
+      "p4.rank-and-shape-with-DIM"
+    ],
+    "p5": [
+      "p5.case-i-reduction-sequence",
+      "p5.case-i-unordered-pair-latitude",
+      "p5.case-i-empty-sequence",
+      "p5.case-ii-mask",
+      "p5.case-iii-DIM"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S16.9.173-001",
+      "title": "REDUCE argument restrictions",
+      "source": "S16.9.173, J3/24-007, 18 December 2023, physical PDF450.",
+      "source_units": [
+        "p3.argument-restrictions"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "ARRAY shall be an array of any type; OPERATION shall be a pure two-argument scalar function with dummy arguments and result matching ARRAY's declared type and type parameters and with the stated nonallocatable, noncoarray, nonpointer, nonpolymorphic, nonoptional dummy-object restrictions and paired ASYNCHRONOUS, TARGET, and VALUE attributes; DIM, MASK, IDENTITY, and ORDERED shall satisfy their stated type, shape, and value restrictions.",
+      "facets": [
+        "REDUCE-ARRAY-array-any-type",
+        "REDUCE-OPERATION-pure-two-argument-compatible-scalar-function",
+        "REDUCE-OPERATION-dummy-attribute-pairing",
+        "REDUCE-DIM-integer-scalar-in-rank-range",
+        "REDUCE-MASK-logical-conformable",
+        "REDUCE-IDENTITY-scalar-same-type-parameters",
+        "REDUCE-ORDERED-logical-scalar"
+      ],
+      "pending": {
+        "REDUCE-ARRAY-array-any-type": "Positive source controls use integer rank-one and rank-two ARRAY values; source-control mutation uses a scalar actual and claims no diagnostic facet.",
+        "REDUCE-OPERATION-pure-two-argument-compatible-scalar-function": "Positive source control supplies a pure integer function taking two scalar integer dummy data objects and returning integer; mutations use an impure function, rank-one dummy, mismatched real dummy, and mismatched result type without claiming diagnostic facets.",
+        "REDUCE-OPERATION-dummy-attribute-pairing": "Positive source controls use ordinary dummies and paired VALUE dummies; mutation gives VALUE to only one dummy and claims no diagnostic facet.",
+        "REDUCE-DIM-integer-scalar-in-rank-range": "Positive controls call REDUCE on rank-two arrays with DIM=1 and DIM=2; mutations use DIM=0, DIM=3, and rank-one DIM actuals without claiming diagnostic facets.",
+        "REDUCE-MASK-logical-conformable": "Positive controls use scalar-free rank-conformable logical MASK arrays with nontrivial true and false elements; mutations use integer MASK and a nonconformable logical MASK without claiming diagnostic facets.",
+        "REDUCE-IDENTITY-scalar-same-type-parameters": "Positive controls use scalar integer IDENTITY for integer ARRAY and scalar character IDENTITY matching character length; mutations use array IDENTITY and mismatched type parameters without claiming diagnostic facets.",
+        "REDUCE-ORDERED-logical-scalar": "Positive controls use ORDERED=.true. and ORDERED=.false.; mutations use integer and rank-one logical ORDERED actuals without claiming diagnostic facets."
+      },
+      "oracle": "Source registration only. Future fixtures initialize result variables to non-default or opposite sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact logical, integer, character, kind, shape, status, type-acceptance, or bit-pattern observations. Processor-dependent approximations and processor-dependent result values are separated from exact result obligations. Unnumbered Clause 16 argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for REAL, REDUCE, REPEAT, RESHAPE, RRSPACING, and SAME_TYPE_AS found no existing fixture-json binding to 16.9.172-16.9.177 in this worktree. Existing REDUCE and REPEAT hits are do-concurrent and I/O syntax fixtures, REAL hits are type/literal text or output labels, and SAME_TYPE_AS appears only in an unrelated Clause 7 diagnostic fixture; those uses remain existing coverage and are not rebound. The 16.9.173 p6 example paragraph was visually verified because its typeset matrix has known census hash drift; the registry census hash is retained and the paragraph is informative.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, and 13 where already catalogued for source form, intrinsic types and kinds, declarations, expressions, arrays, pointer and allocation state, execution, internal I/O, and exact observation helpers. Unregistered dependencies retained: clause 16.3 bit-sequence model, clause 16.4 numeric model terminology, sibling 16.9 intrinsics named by pending plans such as ABS, FRACTION, RADIX, EPSILON, PRODUCT, SHAPE, SIZE, STORAGE_SIZE, TRANSFER, and IEEE inquiry helpers, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, deleted-feature, or scope terms."
+    },
+    {
+      "id": "S16.9.173-002",
+      "title": "REDUCE operation associativity is recommended",
+      "source": "S16.9.173, J3/24-007, 18 December 2023, physical PDF450.",
+      "source_units": [
+        "p3.operation-associativity-recommendation"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "OPERATION should implement a mathematically associative operation.",
+      "facets": [
+        "REDUCE-OPERATION-associativity-recommended"
+      ],
+      "pending": {
+        "REDUCE-OPERATION-associativity-recommended": "No conformance oracle: p3 uses should, so future fixtures may document associative positive controls such as integer multiplication but must not fail a processor or program solely for a nonassociative operation."
+      },
+      "oracle": "Source registration only. Future fixtures initialize result variables to non-default or opposite sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact logical, integer, character, kind, shape, status, type-acceptance, or bit-pattern observations. Processor-dependent approximations and processor-dependent result values are separated from exact result obligations. Unnumbered Clause 16 argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for REAL, REDUCE, REPEAT, RESHAPE, RRSPACING, and SAME_TYPE_AS found no existing fixture-json binding to 16.9.172-16.9.177 in this worktree. Existing REDUCE and REPEAT hits are do-concurrent and I/O syntax fixtures, REAL hits are type/literal text or output labels, and SAME_TYPE_AS appears only in an unrelated Clause 7 diagnostic fixture; those uses remain existing coverage and are not rebound. The 16.9.173 p6 example paragraph was visually verified because its typeset matrix has known census hash drift; the registry census hash is retained and the paragraph is informative.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, and 13 where already catalogued for source form, intrinsic types and kinds, declarations, expressions, arrays, pointer and allocation state, execution, internal I/O, and exact observation helpers. Unregistered dependencies retained: clause 16.3 bit-sequence model, clause 16.4 numeric model terminology, sibling 16.9 intrinsics named by pending plans such as ABS, FRACTION, RADIX, EPSILON, PRODUCT, SHAPE, SIZE, STORAGE_SIZE, TRANSFER, and IEEE inquiry helpers, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, deleted-feature, or scope terms."
+    },
+    {
+      "id": "S16.9.173-003",
+      "title": "REDUCE operation need not be commutative",
+      "source": "S16.9.173, J3/24-007, 18 December 2023, physical PDF450.",
+      "source_units": [
+        "p3.operation-commutativity-permission"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "OPERATION is permitted to be noncommutative.",
+      "facets": [
+        "REDUCE-OPERATION-noncommutative-permitted"
+      ],
+      "pending": {
+        "REDUCE-OPERATION-noncommutative-permitted": "Use an ORDERED=.true. source control with a noncommutative integer operation f(x,y)=10*x+y over one-digit values and assert left-to-right order from p5; mutation swaps operation arguments so the ordered result changes."
+      },
+      "oracle": "Source registration only. Future fixtures initialize result variables to non-default or opposite sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact logical, integer, character, kind, shape, status, type-acceptance, or bit-pattern observations. Processor-dependent approximations and processor-dependent result values are separated from exact result obligations. Unnumbered Clause 16 argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for REAL, REDUCE, REPEAT, RESHAPE, RRSPACING, and SAME_TYPE_AS found no existing fixture-json binding to 16.9.172-16.9.177 in this worktree. Existing REDUCE and REPEAT hits are do-concurrent and I/O syntax fixtures, REAL hits are type/literal text or output labels, and SAME_TYPE_AS appears only in an unrelated Clause 7 diagnostic fixture; those uses remain existing coverage and are not rebound. The 16.9.173 p6 example paragraph was visually verified because its typeset matrix has known census hash drift; the registry census hash is retained and the paragraph is informative.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, and 13 where already catalogued for source form, intrinsic types and kinds, declarations, expressions, arrays, pointer and allocation state, execution, internal I/O, and exact observation helpers. Unregistered dependencies retained: clause 16.3 bit-sequence model, clause 16.4 numeric model terminology, sibling 16.9 intrinsics named by pending plans such as ABS, FRACTION, RADIX, EPSILON, PRODUCT, SHAPE, SIZE, STORAGE_SIZE, TRANSFER, and IEEE inquiry helpers, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, deleted-feature, or scope terms."
+    },
+    {
+      "id": "S16.9.173-004",
+      "title": "REDUCE result characteristics",
+      "source": "S16.9.173, J3/24-007, 18 December 2023, physical PDF450.",
+      "source_units": [
+        "p4.type-and-type-parameters",
+        "p4.scalar-without-DIM",
+        "p4.rank-and-shape-with-DIM"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The REDUCE result has ARRAY's declared type and type parameters, is scalar without DIM, and has rank n-1 and the shape formed by removing dimension DIM from ARRAY with DIM present.",
+      "facets": [
+        "REDUCE-result-type-parameters-match-ARRAY",
+        "REDUCE-result-scalar-without-DIM",
+        "REDUCE-result-rank-and-shape-with-DIM"
+      ],
+      "pending": {
+        "REDUCE-result-type-parameters-match-ARRAY": "Use integer and character ARRAY controls with character length greater than one; assert assignment to matching result variables succeeds and character LEN is preserved, then mutate ARRAY type or length in the expected declaration.",
+        "REDUCE-result-scalar-without-DIM": "Call REDUCE on a rank-one integer vector without DIM, initialize a scalar sentinel to -999, and assert the scalar product is stored; mutation adds DIM=1 and expects an array context.",
+        "REDUCE-result-rank-and-shape-with-DIM": "Call REDUCE on a rank-three array with shape [2,3,4] and DIM=2; assert RANK(result)==2 and SHAPE(result)==[2,4], with companion DIM=1 producing [3,4] to avoid a vacuous shape check."
+      },
+      "oracle": "Source registration only. Future fixtures initialize result variables to non-default or opposite sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact logical, integer, character, kind, shape, status, type-acceptance, or bit-pattern observations. Processor-dependent approximations and processor-dependent result values are separated from exact result obligations. Unnumbered Clause 16 argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for REAL, REDUCE, REPEAT, RESHAPE, RRSPACING, and SAME_TYPE_AS found no existing fixture-json binding to 16.9.172-16.9.177 in this worktree. Existing REDUCE and REPEAT hits are do-concurrent and I/O syntax fixtures, REAL hits are type/literal text or output labels, and SAME_TYPE_AS appears only in an unrelated Clause 7 diagnostic fixture; those uses remain existing coverage and are not rebound. The 16.9.173 p6 example paragraph was visually verified because its typeset matrix has known census hash drift; the registry census hash is retained and the paragraph is informative.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, and 13 where already catalogued for source form, intrinsic types and kinds, declarations, expressions, arrays, pointer and allocation state, execution, internal I/O, and exact observation helpers. Unregistered dependencies retained: clause 16.3 bit-sequence model, clause 16.4 numeric model terminology, sibling 16.9 intrinsics named by pending plans such as ABS, FRACTION, RADIX, EPSILON, PRODUCT, SHAPE, SIZE, STORAGE_SIZE, TRANSFER, and IEEE inquiry helpers, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, deleted-feature, or scope terms."
+    },
+    {
+      "id": "S16.9.173-005",
+      "title": "REDUCE case (i) combines adjacent sequence elements",
+      "source": "S16.9.173, J3/24-007, 18 December 2023, physical PDF450.",
+      "source_units": [
+        "p5.case-i-reduction-sequence"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For REDUCE without DIM or MASK, the initial sequence is ARRAY in array element order and iterative OPERATION calls replace adjacent pairs until one value remains; ORDERED true selects the first two sequence elements at each iteration.",
+      "facets": [
+        "REDUCE-sequence-array-element-order",
+        "REDUCE-ordered-true-left-adjacent-fold",
+        "REDUCE-associative-product-result"
+      ],
+      "pending": {
+        "REDUCE-sequence-array-element-order": "Use a rank-two integer ARRAY with distinctive array element order and an ORDERED=.true. operation that encodes pair order into decimal digits; assert the final encoded value and mutate the array constructor order.",
+        "REDUCE-ordered-true-left-adjacent-fold": "Use ORDERED=.true. with a noncommutative pure operation f(x,y)=10*x+y over [1,2,3]; assert the left-adjacent fold result differs from swapped-argument mutation.",
+        "REDUCE-associative-product-result": "Use pure integer multiplication over [1,2,3,4] and assert result 24 with the result scalar initialized to -777; mutation changes one array element so the product check fails."
+      },
+      "oracle": "Source registration only. Future fixtures initialize result variables to non-default or opposite sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact logical, integer, character, kind, shape, status, type-acceptance, or bit-pattern observations. Processor-dependent approximations and processor-dependent result values are separated from exact result obligations. Unnumbered Clause 16 argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for REAL, REDUCE, REPEAT, RESHAPE, RRSPACING, and SAME_TYPE_AS found no existing fixture-json binding to 16.9.172-16.9.177 in this worktree. Existing REDUCE and REPEAT hits are do-concurrent and I/O syntax fixtures, REAL hits are type/literal text or output labels, and SAME_TYPE_AS appears only in an unrelated Clause 7 diagnostic fixture; those uses remain existing coverage and are not rebound. The 16.9.173 p6 example paragraph was visually verified because its typeset matrix has known census hash drift; the registry census hash is retained and the paragraph is informative.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, and 13 where already catalogued for source form, intrinsic types and kinds, declarations, expressions, arrays, pointer and allocation state, execution, internal I/O, and exact observation helpers. Unregistered dependencies retained: clause 16.3 bit-sequence model, clause 16.4 numeric model terminology, sibling 16.9 intrinsics named by pending plans such as ABS, FRACTION, RADIX, EPSILON, PRODUCT, SHAPE, SIZE, STORAGE_SIZE, TRANSFER, and IEEE inquiry helpers, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, deleted-feature, or scope terms."
+    },
+    {
+      "id": "S16.9.173-006",
+      "title": "REDUCE unordered adjacent-pair choice is processor latitude",
+      "source": "S16.9.173, J3/24-007, 18 December 2023, physical PDF450.",
+      "source_units": [
+        "p5.case-i-unordered-pair-latitude"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "With ORDERED absent or false, each iteration may choose any adjacent pair in the sequence.",
+      "facets": [
+        "REDUCE-unordered-adjacent-pair-choice-latitude"
+      ],
+      "pending": {
+        "REDUCE-unordered-adjacent-pair-choice-latitude": "No portable exact-value oracle for a nonassociative OPERATION with ORDERED absent or false: p5 permits different adjacent-pair choices. Future exact-value fixtures must use ORDERED=.true. or an operation with an independently checked associative result."
+      },
+      "oracle": "Source registration only. Future fixtures initialize result variables to non-default or opposite sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact logical, integer, character, kind, shape, status, type-acceptance, or bit-pattern observations. Processor-dependent approximations and processor-dependent result values are separated from exact result obligations. Unnumbered Clause 16 argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for REAL, REDUCE, REPEAT, RESHAPE, RRSPACING, and SAME_TYPE_AS found no existing fixture-json binding to 16.9.172-16.9.177 in this worktree. Existing REDUCE and REPEAT hits are do-concurrent and I/O syntax fixtures, REAL hits are type/literal text or output labels, and SAME_TYPE_AS appears only in an unrelated Clause 7 diagnostic fixture; those uses remain existing coverage and are not rebound. The 16.9.173 p6 example paragraph was visually verified because its typeset matrix has known census hash drift; the registry census hash is retained and the paragraph is informative.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, and 13 where already catalogued for source form, intrinsic types and kinds, declarations, expressions, arrays, pointer and allocation state, execution, internal I/O, and exact observation helpers. Unregistered dependencies retained: clause 16.3 bit-sequence model, clause 16.4 numeric model terminology, sibling 16.9 intrinsics named by pending plans such as ABS, FRACTION, RADIX, EPSILON, PRODUCT, SHAPE, SIZE, STORAGE_SIZE, TRANSFER, and IEEE inquiry helpers, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, deleted-feature, or scope terms."
+    },
+    {
+      "id": "S16.9.173-007",
+      "title": "REDUCE empty initial sequence uses IDENTITY or error termination",
+      "source": "S16.9.173, J3/24-007, 18 December 2023, physical PDF450.",
+      "source_units": [
+        "p5.case-i-empty-sequence"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "An empty initial sequence yields IDENTITY with IDENTITY present and otherwise initiates error termination.",
+      "facets": [
+        "REDUCE-empty-sequence-identity-result",
+        "REDUCE-empty-sequence-without-identity-error-termination"
+      ],
+      "pending": {
+        "REDUCE-empty-sequence-identity-result": "Use a zero-size integer ARRAY, IDENTITY=37, and a nonempty companion ARRAY [2,3]; assert the empty result is 37 and the companion product is 6 so the identity case is not vacuous.",
+        "REDUCE-empty-sequence-without-identity-error-termination": "Run a separate zero-size ARRAY program omitting IDENTITY and assert error termination through nonzero exit status or processor-reported error termination, with a nonempty no-IDENTITY companion proving the operation itself is valid."
+      },
+      "oracle": "Source registration only. Future fixtures initialize result variables to non-default or opposite sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact logical, integer, character, kind, shape, status, type-acceptance, or bit-pattern observations. Processor-dependent approximations and processor-dependent result values are separated from exact result obligations. Unnumbered Clause 16 argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for REAL, REDUCE, REPEAT, RESHAPE, RRSPACING, and SAME_TYPE_AS found no existing fixture-json binding to 16.9.172-16.9.177 in this worktree. Existing REDUCE and REPEAT hits are do-concurrent and I/O syntax fixtures, REAL hits are type/literal text or output labels, and SAME_TYPE_AS appears only in an unrelated Clause 7 diagnostic fixture; those uses remain existing coverage and are not rebound. The 16.9.173 p6 example paragraph was visually verified because its typeset matrix has known census hash drift; the registry census hash is retained and the paragraph is informative.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, and 13 where already catalogued for source form, intrinsic types and kinds, declarations, expressions, arrays, pointer and allocation state, execution, internal I/O, and exact observation helpers. Unregistered dependencies retained: clause 16.3 bit-sequence model, clause 16.4 numeric model terminology, sibling 16.9 intrinsics named by pending plans such as ABS, FRACTION, RADIX, EPSILON, PRODUCT, SHAPE, SIZE, STORAGE_SIZE, TRANSFER, and IEEE inquiry helpers, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, deleted-feature, or scope terms."
+    },
+    {
+      "id": "S16.9.173-008",
+      "title": "REDUCE MASK filters the initial sequence",
+      "source": "S16.9.173, J3/24-007, 18 December 2023, physical PDF450.",
+      "source_units": [
+        "p5.case-ii-mask"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "With MASK present, the initial sequence contains only ARRAY elements whose corresponding MASK elements are true, and other case (i) rules apply.",
+      "facets": [
+        "REDUCE-MASK-selects-true-elements",
+        "REDUCE-MASK-empty-with-identity"
+      ],
+      "pending": {
+        "REDUCE-MASK-selects-true-elements": "Use ARRAY [2,3,5,7] and MASK [.true.,.false.,.true.,.false.] with multiplication; assert result 10 and mutate the MASK truth pattern.",
+        "REDUCE-MASK-empty-with-identity": "Use all-false MASK with IDENTITY=11 and a companion mixed MASK producing 10; assert the identity result and mutate IDENTITY to a different sentinel."
+      },
+      "oracle": "Source registration only. Future fixtures initialize result variables to non-default or opposite sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact logical, integer, character, kind, shape, status, type-acceptance, or bit-pattern observations. Processor-dependent approximations and processor-dependent result values are separated from exact result obligations. Unnumbered Clause 16 argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for REAL, REDUCE, REPEAT, RESHAPE, RRSPACING, and SAME_TYPE_AS found no existing fixture-json binding to 16.9.172-16.9.177 in this worktree. Existing REDUCE and REPEAT hits are do-concurrent and I/O syntax fixtures, REAL hits are type/literal text or output labels, and SAME_TYPE_AS appears only in an unrelated Clause 7 diagnostic fixture; those uses remain existing coverage and are not rebound. The 16.9.173 p6 example paragraph was visually verified because its typeset matrix has known census hash drift; the registry census hash is retained and the paragraph is informative.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, and 13 where already catalogued for source form, intrinsic types and kinds, declarations, expressions, arrays, pointer and allocation state, execution, internal I/O, and exact observation helpers. Unregistered dependencies retained: clause 16.3 bit-sequence model, clause 16.4 numeric model terminology, sibling 16.9 intrinsics named by pending plans such as ABS, FRACTION, RADIX, EPSILON, PRODUCT, SHAPE, SIZE, STORAGE_SIZE, TRANSFER, and IEEE inquiry helpers, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, deleted-feature, or scope terms."
+    },
+    {
+      "id": "S16.9.173-009",
+      "title": "REDUCE DIM applies rank-one reductions to sections",
+      "source": "S16.9.173, J3/24-007, 18 December 2023, physical PDF450.",
+      "source_units": [
+        "p5.case-iii-DIM"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "With DIM present, rank-one ARRAY reduces as the corresponding no-DIM REDUCE call, and higher-rank results contain REDUCE applied to each section along dimension DIM, with corresponding MASK sections and IDENTITY and ORDERED forwarded.",
+      "facets": [
+        "REDUCE-rank-one-DIM-equals-no-DIM",
+        "REDUCE-higher-rank-DIM-section-values",
+        "REDUCE-DIM-forwards-MASK-IDENTITY-ORDERED"
+      ],
+      "pending": {
+        "REDUCE-rank-one-DIM-equals-no-DIM": "Use rank-one ARRAY [2,3,5] with DIM=1 and without DIM; assert both results are 30 and mutate DIM handling by comparing to a wrong scalar.",
+        "REDUCE-higher-rank-DIM-section-values": "Use a 2 by 3 integer array with distinct column and row products; assert REDUCE(...,DIM=1) and DIM=2 have the expected shapes and products, then mutate DIM.",
+        "REDUCE-DIM-forwards-MASK-IDENTITY-ORDERED": "Use a rank-two ARRAY with an all-false section, a mixed true section, MASK, IDENTITY=13, and ORDERED=.true.; assert the identity section and ordered section values, then mutate MASK section selection."
+      },
+      "oracle": "Source registration only. Future fixtures initialize result variables to non-default or opposite sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact logical, integer, character, kind, shape, status, type-acceptance, or bit-pattern observations. Processor-dependent approximations and processor-dependent result values are separated from exact result obligations. Unnumbered Clause 16 argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for REAL, REDUCE, REPEAT, RESHAPE, RRSPACING, and SAME_TYPE_AS found no existing fixture-json binding to 16.9.172-16.9.177 in this worktree. Existing REDUCE and REPEAT hits are do-concurrent and I/O syntax fixtures, REAL hits are type/literal text or output labels, and SAME_TYPE_AS appears only in an unrelated Clause 7 diagnostic fixture; those uses remain existing coverage and are not rebound. The 16.9.173 p6 example paragraph was visually verified because its typeset matrix has known census hash drift; the registry census hash is retained and the paragraph is informative.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, and 13 where already catalogued for source form, intrinsic types and kinds, declarations, expressions, arrays, pointer and allocation state, execution, internal I/O, and exact observation helpers. Unregistered dependencies retained: clause 16.3 bit-sequence model, clause 16.4 numeric model terminology, sibling 16.9 intrinsics named by pending plans such as ABS, FRACTION, RADIX, EPSILON, PRODUCT, SHAPE, SIZE, STORAGE_SIZE, TRANSFER, and IEEE inquiry helpers, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, deleted-feature, or scope terms."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "body",
+      "disposition": "definition",
+      "rationale": "Unlabelled signature line identifies the REDUCE invocation forms; detailed semantics are in p3 through p5."
+    },
+    {
+      "unit": "p1",
+      "disposition": "definition",
+      "rationale": "Description names REDUCE as general reduction of array."
+    },
+    {
+      "unit": "p2",
+      "disposition": "definition",
+      "rationale": "Classifies REDUCE as transformational."
+    },
+    {
+      "unit": "p3",
+      "disposition": "structural",
+      "rationale": "Arguments mix shall-restrictions, a should recommendation, and noncommutativity permission."
+    },
+    {
+      "unit": "p3.argument-restrictions",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.173-001"
+      ]
+    },
+    {
+      "unit": "p3.operation-associativity-recommendation",
+      "disposition": "recommendation",
+      "requirements": [
+        "S16.9.173-002"
+      ],
+      "rationale": "Uses should, not shall."
+    },
+    {
+      "unit": "p3.operation-commutativity-permission",
+      "disposition": "permission",
+      "requirements": [
+        "S16.9.173-003"
+      ],
+      "rationale": "Explicitly permits noncommutative OPERATION."
+    },
+    {
+      "unit": "p4",
+      "disposition": "structural",
+      "rationale": "Result Characteristics combines type-parameter, scalar, rank, and shape rules."
+    },
+    {
+      "unit": "p4.type-and-type-parameters",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.173-004"
+      ]
+    },
+    {
+      "unit": "p4.scalar-without-DIM",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.173-004"
+      ]
+    },
+    {
+      "unit": "p4.rank-and-shape-with-DIM",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.173-004"
+      ]
+    },
+    {
+      "unit": "p5",
+      "disposition": "structural",
+      "rationale": "Result Value combines exact sequence, empty, MASK, DIM semantics with unordered adjacent-pair latitude."
+    },
+    {
+      "unit": "p5.case-i-reduction-sequence",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.173-005"
+      ]
+    },
+    {
+      "unit": "p5.case-i-unordered-pair-latitude",
+      "disposition": "permission",
+      "requirements": [
+        "S16.9.173-006"
+      ],
+      "rationale": "ORDERED absent or false permits any adjacent pair choice."
+    },
+    {
+      "unit": "p5.case-i-empty-sequence",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.173-007"
+      ]
+    },
+    {
+      "unit": "p5.case-ii-mask",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.173-008"
+      ]
+    },
+    {
+      "unit": "p5.case-iii-DIM",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.173-009"
+      ]
+    },
+    {
+      "unit": "p6",
+      "disposition": "informative",
+      "rationale": "Example paragraph is illustrative; visual check accepted the known matrix-glyph census hash drift while retaining the registry hash."
+    },
+    {
+      "unit": "note-unnumbered",
+      "disposition": "informative",
+      "rationale": "Note explains consequences of nonassociative operations and is not normative."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_16_9_173.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "ee7280cfbe50b99be3b96fb6644ca618416c2306c968f1a3fc15151a970184a2",
+  "review_rationale": "Source registration for 16.9.172-16.9.177: REAL, REDUCE, REPEAT, RESHAPE, RRSPACING and SAME_TYPE_AS (batch204). Every unit hash-verified by an independent reviewer across three rounds (16.9.173 and 16.9.175 typeset example drift verified visually); SAME_TYPE_AS disassociated/unallocated plans rest on the normative 7.3.2.3 dynamic-type rules, not on NOTE 1. Source accounting only."
+}
