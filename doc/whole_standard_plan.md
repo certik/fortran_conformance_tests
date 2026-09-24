@@ -5684,6 +5684,11 @@ See `doc/source_audits/batch_165.json`.
 Forty-three units, after two rounds. The double-width shifts are where the bit-context rule earns its keep: DSHIFTL and DSHIFTR concatenate two operands' bits, so a result can easily have its leftmost bit set, and reading it as a number would be processor dependent. Every plan now observes the result with BTEST at positions derived from the text — for I with bits {0,2}, J with bits {z-1,z-3} and SHIFT=4, DSHIFTL sets bits {1,3,4,6} — and exercises BOZ conversion with real BOZ arguments.
 See `doc/source_audits/batch_189.json`.
 
+## Batch 187 — CO_SUM through COSHAPE
+
+Forty-one units, after two rounds. Two coarray-bound intrinsics, CO_SUM and COSHAPE, had crept back into single-image plans; they are out of scope under the user's rule. The rest is ordinary: CONJG is exact, COMMAND_ARGUMENT_COUNT is zero when nothing is passed, and the cosine family's values are latitude.
+See `doc/source_audits/batch_187.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
