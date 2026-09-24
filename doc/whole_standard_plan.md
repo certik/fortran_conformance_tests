@@ -5729,6 +5729,11 @@ See `doc/source_audits/batch_197.json`.
 Forty units, after three rounds, and two techniques worth reusing. First, **guarded branch plans**: no environment variable is guaranteed to exist or not exist, but a program can probe one and then assert exactly what the standard requires for whichever branch it lands in — blank VALUE and zero LENGTH for a missing variable, STATUS -1 for a too-short buffer — without ever claiming a branch it did not observe. Second, **model decomposition**: the largest real is (1 - b^-p) * b^emax, and computing b^emax overflows, but EXPONENT(HUGE(x)) and FRACTION(HUGE(x)) recover emax and 1 - b^-p exactly.
 See `doc/source_audits/batch_192.json`.
 
+## Batch 196 — LCOBOUND through LGT
+
+Forty units, after two rounds. The same ASCII-versus-native-collation gap that blocked LLE and LLT reappeared in LGE and LGT and was closed the same way, and LEN gained a positive deferred-length case to go with its zero-length one.
+See `doc/source_audits/batch_196.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
