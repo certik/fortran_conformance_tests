@@ -6149,6 +6149,11 @@ See `doc/source_audits/batch_285.json`.
 15 programs, 18 facets, five rounds. The arctangents keep only what the standard fixes: which quadrant, which sign, and that ATAND with two arguments is ATAN2D.
 See `doc/source_audits/batch_273.json`.
 
+## Batch 278 — IEEE overview, types and exception fixtures 17.1-17.3
+
+The suite's first Clause 17 tests: 11 programs, 25 facets. Every one fails on the frozen LFortran, whose IEEE_ARITHMETIC lacks constants and flag procedures the standard requires it to provide.
+See `doc/source_audits/batch_278.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
