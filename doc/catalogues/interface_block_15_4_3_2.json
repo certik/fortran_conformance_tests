@@ -1,0 +1,1155 @@
+{
+  "schema_version": 1,
+  "section": "15.4.3.2",
+  "subunits": {
+    "C1502": [
+      "C1502.same-generic-spec",
+      "C1502.operator-spelling-equivalence"
+    ],
+    "C1504": [
+      "C1504.procedure-stmt-admission",
+      "C1504.procedure-stmt-restriction"
+    ],
+    "p4": [
+      "p4.module-procedure-interface-definition",
+      "p4.separate-module-procedure-accessibility",
+      "p4.undefined-separate-interface-permission",
+      "p4.undefined-separate-interface-restriction"
+    ],
+    "p5": [
+      "p5.interface-body-explicit-specific-interface",
+      "p5.interface-body-procedure-classification"
+    ],
+    "p6": [
+      "p6.characteristics-specified",
+      "p6.noncharacteristic-specifications-permitted",
+      "p6.noncharacteristic-specifications-no-effect"
+    ],
+    "p7": [
+      "p7.characteristics-consistency",
+      "p7.pure-simple-latitude",
+      "p7.entry-interface-permission",
+      "p7.nonexistent-external-interface-permission",
+      "p7.nonexistent-external-interface-restriction",
+      "p7.single-explicit-interface",
+      "p7.use-associated-same-procedure"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "R1501",
+      "title": "Interface block syntax encloses interface specifications",
+      "source": "S15.4.3.2, J3/24-007, 18 December 2023, physical PDF326-328.",
+      "source_units": [
+        "R1501"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "An interface-block consists of an interface-stmt, followed by zero or more interface-specifications, and an end-interface-stmt.",
+      "facets": [
+        "interface-block-delimiters",
+        "interface-specification-sequence"
+      ],
+      "pending": {
+        "interface-block-delimiters": "Valid control: a module contains INTERFACE g, MODULE PROCEDURE s, END INTERFACE g, then CONTAINS subroutine s. Negative source-control removes END INTERFACE only; expect syntax rejection.",
+        "interface-specification-sequence": "Valid control: a generic interface block lists two MODULE PROCEDURE names s and t before END INTERFACE. Negative source-control places an ordinary INTEGER declaration in the sequence; expect syntax rejection."
+      },
+      "oracle": "Source registration only. Positive plans establish a load-bearing source or runtime state first using distinct procedure results, initialized sentinels, or a conforming compile control, then observe only portable properties: successful compilation, exact scalar results, required rejection of a numbered syntax rule or constraint, or accessibility/use-association effects fixed by the source. Diagnostic plans change one constrained feature from the positive control and do not assert message wording, severity text, or processor-specific status values.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Unnumbered program restrictions are retained as source-control plans and are not promoted to required diagnostic facets. Existing incidental interface/procedure/generic uses in tests remain bound to their current catalogue owners.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 10, 11, 12, and 13 for source form, names, declarations, expressions, execution constructs, I/O syntax, and existing procedure-call foundations. Unregistered dependencies explicitly retained: later 15.4.3 specific/generic distinguishability rules, 15.5 argument association, submodules and separate module procedures, accessibility from clause 8, and defined I/O execution semantics."
+    },
+    {
+      "id": "R1502",
+      "title": "Interface specifications are interface bodies or procedure statements",
+      "source": "S15.4.3.2, J3/24-007, 18 December 2023, physical PDF326-328.",
+      "source_units": [
+        "R1502"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "An interface-specification is either an interface-body or a procedure-stmt.",
+      "facets": [
+        "interface-body-specification",
+        "procedure-stmt-specification"
+      ],
+      "pending": {
+        "interface-body-specification": "Valid control: INTERFACE contains SUBROUTINE ext(i) with an INTEGER dummy and END SUBROUTINE ext. Negative source-control replaces the body by INTEGER :: x; expect syntax rejection in the block.",
+        "procedure-stmt-specification": "Valid control: INTERFACE g contains MODULE PROCEDURE s followed by END INTERFACE g and a contained subroutine s. Negative source-control replaces PROCEDURE by MODULE :: s; expect syntax rejection."
+      },
+      "oracle": "Source registration only. Positive plans establish a load-bearing source or runtime state first using distinct procedure results, initialized sentinels, or a conforming compile control, then observe only portable properties: successful compilation, exact scalar results, required rejection of a numbered syntax rule or constraint, or accessibility/use-association effects fixed by the source. Diagnostic plans change one constrained feature from the positive control and do not assert message wording, severity text, or processor-specific status values.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Unnumbered program restrictions are retained as source-control plans and are not promoted to required diagnostic facets. Existing incidental interface/procedure/generic uses in tests remain bound to their current catalogue owners.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 10, 11, 12, and 13 for source form, names, declarations, expressions, execution constructs, I/O syntax, and existing procedure-call foundations. Unregistered dependencies explicitly retained: later 15.4.3 specific/generic distinguishability rules, 15.5 argument association, submodules and separate module procedures, accessibility from clause 8, and defined I/O execution semantics."
+    },
+    {
+      "id": "R1503",
+      "title": "Interface statements introduce ordinary or abstract interface blocks",
+      "source": "S15.4.3.2, J3/24-007, 18 December 2023, physical PDF326-328.",
+      "source_units": [
+        "R1503"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "An interface-stmt is INTERFACE with an optional generic-spec, or ABSTRACT INTERFACE.",
+      "facets": [
+        "ordinary-interface-stmt",
+        "abstract-interface-stmt"
+      ],
+      "pending": {
+        "ordinary-interface-stmt": "Valid control: INTERFACE g starts a generic interface block for MODULE PROCEDURE s. Negative source-control writes INTERFACE, g; expect syntax rejection.",
+        "abstract-interface-stmt": "Valid control: ABSTRACT INTERFACE contains SUBROUTINE proc(); END SUBROUTINE proc. Negative source-control writes INTERFACE ABSTRACT; expect syntax rejection."
+      },
+      "oracle": "Source registration only. Positive plans establish a load-bearing source or runtime state first using distinct procedure results, initialized sentinels, or a conforming compile control, then observe only portable properties: successful compilation, exact scalar results, required rejection of a numbered syntax rule or constraint, or accessibility/use-association effects fixed by the source. Diagnostic plans change one constrained feature from the positive control and do not assert message wording, severity text, or processor-specific status values.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Unnumbered program restrictions are retained as source-control plans and are not promoted to required diagnostic facets. Existing incidental interface/procedure/generic uses in tests remain bound to their current catalogue owners.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 10, 11, 12, and 13 for source form, names, declarations, expressions, execution constructs, I/O syntax, and existing procedure-call foundations. Unregistered dependencies explicitly retained: later 15.4.3 specific/generic distinguishability rules, 15.5 argument association, submodules and separate module procedures, accessibility from clause 8, and defined I/O execution semantics."
+    },
+    {
+      "id": "R1504",
+      "title": "End interface statements close interface blocks",
+      "source": "S15.4.3.2, J3/24-007, 18 December 2023, physical PDF326-328.",
+      "source_units": [
+        "R1504"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "An end-interface-stmt is END INTERFACE with an optional generic-spec.",
+      "facets": [
+        "end-interface-keywords",
+        "end-interface-generic-spec"
+      ],
+      "pending": {
+        "end-interface-keywords": "Valid control: INTERFACE g; MODULE PROCEDURE s; END INTERFACE g. Negative source-control writes END MODULE at that point; expect syntax rejection.",
+        "end-interface-generic-spec": "Valid control: INTERFACE g and END INTERFACE g match around MODULE PROCEDURE s. Negative source-control writes END INTERFACE (g); expect syntax rejection."
+      },
+      "oracle": "Source registration only. Positive plans establish a load-bearing source or runtime state first using distinct procedure results, initialized sentinels, or a conforming compile control, then observe only portable properties: successful compilation, exact scalar results, required rejection of a numbered syntax rule or constraint, or accessibility/use-association effects fixed by the source. Diagnostic plans change one constrained feature from the positive control and do not assert message wording, severity text, or processor-specific status values.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Unnumbered program restrictions are retained as source-control plans and are not promoted to required diagnostic facets. Existing incidental interface/procedure/generic uses in tests remain bound to their current catalogue owners.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 10, 11, 12, and 13 for source form, names, declarations, expressions, execution constructs, I/O syntax, and existing procedure-call foundations. Unregistered dependencies explicitly retained: later 15.4.3 specific/generic distinguishability rules, 15.5 argument association, submodules and separate module procedures, accessibility from clause 8, and defined I/O execution semantics."
+    },
+    {
+      "id": "R1505",
+      "title": "Interface bodies declare function or subroutine interfaces",
+      "source": "S15.4.3.2, J3/24-007, 18 December 2023, physical PDF326-328.",
+      "source_units": [
+        "R1505"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "An interface-body is a function-stmt or subroutine-stmt, an optional specification-part, and the matching end statement.",
+      "facets": [
+        "function-interface-body",
+        "subroutine-interface-body"
+      ],
+      "pending": {
+        "function-interface-body": "Valid control: INTERFACE contains INTEGER FUNCTION f(x), INTEGER :: x, END FUNCTION f. Negative source-control omits END FUNCTION f; expect syntax rejection.",
+        "subroutine-interface-body": "Valid control: INTERFACE contains SUBROUTINE s(x), INTEGER :: x, END SUBROUTINE s. Negative source-control ends it with END FUNCTION s; expect syntax rejection."
+      },
+      "oracle": "Source registration only. Positive plans establish a load-bearing source or runtime state first using distinct procedure results, initialized sentinels, or a conforming compile control, then observe only portable properties: successful compilation, exact scalar results, required rejection of a numbered syntax rule or constraint, or accessibility/use-association effects fixed by the source. Diagnostic plans change one constrained feature from the positive control and do not assert message wording, severity text, or processor-specific status values.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Unnumbered program restrictions are retained as source-control plans and are not promoted to required diagnostic facets. Existing incidental interface/procedure/generic uses in tests remain bound to their current catalogue owners.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 10, 11, 12, and 13 for source form, names, declarations, expressions, execution constructs, I/O syntax, and existing procedure-call foundations. Unregistered dependencies explicitly retained: later 15.4.3 specific/generic distinguishability rules, 15.5 argument association, submodules and separate module procedures, accessibility from clause 8, and defined I/O execution semantics."
+    },
+    {
+      "id": "R1506",
+      "title": "Procedure statements list specific procedures",
+      "source": "S15.4.3.2, J3/24-007, 18 December 2023, physical PDF326-328.",
+      "source_units": [
+        "R1506"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "A procedure-stmt is an optional MODULE keyword, PROCEDURE, an optional double colon, and a specific-procedure-list.",
+      "facets": [
+        "procedure-stmt-form",
+        "module-procedure-stmt-form",
+        "procedure-list-required"
+      ],
+      "pending": {
+        "procedure-stmt-form": "Valid control: INTERFACE g contains PROCEDURE :: ext with ext supplied by an explicit interface in scope. Negative source-control changes PROCEDURE to PROCEDURES; expect syntax rejection.",
+        "module-procedure-stmt-form": "Valid control: a module generic interface contains MODULE PROCEDURE s and a contained subroutine s. Negative source-control writes MODULE :: PROCEDURE s; expect syntax rejection.",
+        "procedure-list-required": "Valid control: MODULE PROCEDURE s supplies one listed procedure. Negative source-control leaves MODULE PROCEDURE with no name; expect syntax rejection."
+      },
+      "oracle": "Source registration only. Positive plans establish a load-bearing source or runtime state first using distinct procedure results, initialized sentinels, or a conforming compile control, then observe only portable properties: successful compilation, exact scalar results, required rejection of a numbered syntax rule or constraint, or accessibility/use-association effects fixed by the source. Diagnostic plans change one constrained feature from the positive control and do not assert message wording, severity text, or processor-specific status values.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Unnumbered program restrictions are retained as source-control plans and are not promoted to required diagnostic facets. Existing incidental interface/procedure/generic uses in tests remain bound to their current catalogue owners.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 10, 11, 12, and 13 for source form, names, declarations, expressions, execution constructs, I/O syntax, and existing procedure-call foundations. Unregistered dependencies explicitly retained: later 15.4.3 specific/generic distinguishability rules, 15.5 argument association, submodules and separate module procedures, accessibility from clause 8, and defined I/O execution semantics."
+    },
+    {
+      "id": "R1507",
+      "title": "Specific procedures are procedure names",
+      "source": "S15.4.3.2, J3/24-007, 18 December 2023, physical PDF326-328.",
+      "source_units": [
+        "R1507"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "A specific-procedure is a procedure-name.",
+      "facets": [
+        "specific-procedure-name"
+      ],
+      "pending": {
+        "specific-procedure-name": "Valid control: MODULE PROCEDURE s names a contained module procedure s. Negative source-control uses MODULE PROCEDURE 123; expect syntax rejection."
+      },
+      "oracle": "Source registration only. Positive plans establish a load-bearing source or runtime state first using distinct procedure results, initialized sentinels, or a conforming compile control, then observe only portable properties: successful compilation, exact scalar results, required rejection of a numbered syntax rule or constraint, or accessibility/use-association effects fixed by the source. Diagnostic plans change one constrained feature from the positive control and do not assert message wording, severity text, or processor-specific status values.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Unnumbered program restrictions are retained as source-control plans and are not promoted to required diagnostic facets. Existing incidental interface/procedure/generic uses in tests remain bound to their current catalogue owners.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 10, 11, 12, and 13 for source form, names, declarations, expressions, execution constructs, I/O syntax, and existing procedure-call foundations. Unregistered dependencies explicitly retained: later 15.4.3 specific/generic distinguishability rules, 15.5 argument association, submodules and separate module procedures, accessibility from clause 8, and defined I/O execution semantics."
+    },
+    {
+      "id": "R1508",
+      "title": "Generic specifications name generics, operators, assignment, or defined I/O",
+      "source": "S15.4.3.2, J3/24-007, 18 December 2023, physical PDF326-328.",
+      "source_units": [
+        "R1508"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "A generic-spec is a generic-name, OPERATOR with a defined operator, ASSIGNMENT(=), or a defined-io-generic-spec.",
+      "facets": [
+        "generic-name-spec",
+        "operator-generic-spec",
+        "assignment-generic-spec",
+        "defined-io-generic-spec"
+      ],
+      "pending": {
+        "generic-name-spec": "Valid control: INTERFACE gen contains MODULE PROCEDURE s. Negative source-control writes INTERFACE 123; expect syntax rejection.",
+        "operator-generic-spec": "Valid control: INTERFACE OPERATOR(.combine.) contains MODULE PROCEDURE s. Negative source-control omits the closing parenthesis; expect syntax rejection.",
+        "assignment-generic-spec": "Valid control: INTERFACE ASSIGNMENT(=) contains MODULE PROCEDURE assign_t. Negative source-control uses ASSIGNMENT(+) only; expect syntax rejection.",
+        "defined-io-generic-spec": "Valid control: INTERFACE WRITE(FORMATTED) contains a conforming defined-output procedure body. Negative source-control uses WRITE(LIST); expect syntax rejection."
+      },
+      "oracle": "Source registration only. Positive plans establish a load-bearing source or runtime state first using distinct procedure results, initialized sentinels, or a conforming compile control, then observe only portable properties: successful compilation, exact scalar results, required rejection of a numbered syntax rule or constraint, or accessibility/use-association effects fixed by the source. Diagnostic plans change one constrained feature from the positive control and do not assert message wording, severity text, or processor-specific status values.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Unnumbered program restrictions are retained as source-control plans and are not promoted to required diagnostic facets. Existing incidental interface/procedure/generic uses in tests remain bound to their current catalogue owners.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 10, 11, 12, and 13 for source form, names, declarations, expressions, execution constructs, I/O syntax, and existing procedure-call foundations. Unregistered dependencies explicitly retained: later 15.4.3 specific/generic distinguishability rules, 15.5 argument association, submodules and separate module procedures, accessibility from clause 8, and defined I/O execution semantics."
+    },
+    {
+      "id": "R1509",
+      "title": "Defined I/O generic specifications select read/write and form",
+      "source": "S15.4.3.2, J3/24-007, 18 December 2023, physical PDF326-328.",
+      "source_units": [
+        "R1509"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "A defined-io-generic-spec is READ(FORMATTED), READ(UNFORMATTED), WRITE(FORMATTED), or WRITE(UNFORMATTED).",
+      "facets": [
+        "read-formatted-generic-spec",
+        "read-unformatted-generic-spec",
+        "write-formatted-generic-spec",
+        "write-unformatted-generic-spec"
+      ],
+      "pending": {
+        "read-formatted-generic-spec": "Valid control: INTERFACE READ(FORMATTED) contains a conforming defined-input procedure body. Negative source-control changes FORMATTED to LIST; expect syntax rejection.",
+        "read-unformatted-generic-spec": "Valid control: INTERFACE READ(UNFORMATTED) contains a conforming defined-input procedure body. Negative source-control changes READ to INPUT; expect syntax rejection.",
+        "write-formatted-generic-spec": "Valid control: INTERFACE WRITE(FORMATTED) contains a conforming defined-output procedure body. Negative source-control changes FORMATTED to DEFAULT; expect syntax rejection.",
+        "write-unformatted-generic-spec": "Valid control: INTERFACE WRITE(UNFORMATTED) contains a conforming defined-output procedure body. Negative source-control changes WRITE to OUTPUT; expect syntax rejection."
+      },
+      "oracle": "Source registration only. Positive plans establish a load-bearing source or runtime state first using distinct procedure results, initialized sentinels, or a conforming compile control, then observe only portable properties: successful compilation, exact scalar results, required rejection of a numbered syntax rule or constraint, or accessibility/use-association effects fixed by the source. Diagnostic plans change one constrained feature from the positive control and do not assert message wording, severity text, or processor-specific status values.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Unnumbered program restrictions are retained as source-control plans and are not promoted to required diagnostic facets. Existing incidental interface/procedure/generic uses in tests remain bound to their current catalogue owners.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 10, 11, 12, and 13 for source form, names, declarations, expressions, execution constructs, I/O syntax, and existing procedure-call foundations. Unregistered dependencies explicitly retained: later 15.4.3 specific/generic distinguishability rules, 15.5 argument association, submodules and separate module procedures, accessibility from clause 8, and defined I/O execution semantics."
+    },
+    {
+      "id": "C1501",
+      "title": "Subprograms cannot contain interface bodies for their own procedure",
+      "source": "S15.4.3.2, J3/24-007, 18 December 2023, physical PDF326-328.",
+      "source_units": [
+        "C1501"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "An interface-block in a subprogram shall not contain an interface-body for a procedure defined by that subprogram.",
+      "facets": [
+        "no-interface-body-for-containing-subprogram"
+      ],
+      "pending": {
+        "no-interface-body-for-containing-subprogram": "Rejected program: SUBROUTINE owner contains INTERFACE with SUBROUTINE owner() body, then END INTERFACE. Positive control renames only the interface-body procedure to other; expect rejection only for the self body."
+      },
+      "oracle": "Source registration only. Positive plans establish a load-bearing source or runtime state first using distinct procedure results, initialized sentinels, or a conforming compile control, then observe only portable properties: successful compilation, exact scalar results, required rejection of a numbered syntax rule or constraint, or accessibility/use-association effects fixed by the source. Diagnostic plans change one constrained feature from the positive control and do not assert message wording, severity text, or processor-specific status values.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Unnumbered program restrictions are retained as source-control plans and are not promoted to required diagnostic facets. Existing incidental interface/procedure/generic uses in tests remain bound to their current catalogue owners.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 10, 11, 12, and 13 for source form, names, declarations, expressions, execution constructs, I/O syntax, and existing procedure-call foundations. Unregistered dependencies explicitly retained: later 15.4.3 specific/generic distinguishability rules, 15.5 argument association, submodules and separate module procedures, accessibility from clause 8, and defined I/O execution semantics."
+    },
+    {
+      "id": "C1502",
+      "title": "End interface generic specifications match the opening specification",
+      "source": "S15.4.3.2, J3/24-007, 18 December 2023, physical PDF326-328.",
+      "source_units": [
+        "C1502.same-generic-spec"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "An end-interface-stmt generic-spec shall match the interface-stmt generic-spec, apart from the defined-operator spelling equivalences registered separately.",
+      "facets": [
+        "end-interface-generic-spec-matches-opening"
+      ],
+      "pending": {
+        "end-interface-generic-spec-matches-opening": "Rejected program: INTERFACE gen contains MODULE PROCEDURE s but closes as END INTERFACE other. Positive control changes only other to gen; expect rejection for the mismatched generic specification."
+      },
+      "oracle": "Source registration only. Positive plans establish a load-bearing source or runtime state first using distinct procedure results, initialized sentinels, or a conforming compile control, then observe only portable properties: successful compilation, exact scalar results, required rejection of a numbered syntax rule or constraint, or accessibility/use-association effects fixed by the source. Diagnostic plans change one constrained feature from the positive control and do not assert message wording, severity text, or processor-specific status values.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Unnumbered program restrictions are retained as source-control plans and are not promoted to required diagnostic facets. Existing incidental interface/procedure/generic uses in tests remain bound to their current catalogue owners.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 10, 11, 12, and 13 for source form, names, declarations, expressions, execution constructs, I/O syntax, and existing procedure-call foundations. Unregistered dependencies explicitly retained: later 15.4.3 specific/generic distinguishability rules, 15.5 argument association, submodules and separate module procedures, accessibility from clause 8, and defined I/O execution semantics."
+    },
+    {
+      "id": "S15.4.3.2-001",
+      "title": "Relational operator spellings may match across generic interface delimiters",
+      "source": "S15.4.3.2, J3/24-007, 18 December 2023, physical PDF326-328.",
+      "source_units": [
+        "C1502.operator-spelling-equivalence"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For interface and end-interface generic specifications, corresponding relational defined-operator spellings .LT., .LE., .GT., .GE., .EQ., .NE. and <, <=, >, >=, ==, /= may match each other.",
+      "facets": [
+        "relational-operator-spelling-equivalence"
+      ],
+      "pending": {
+        "relational-operator-spelling-equivalence": "Positive compile controls: INTERFACE OPERATOR(.LT.) closes with END INTERFACE OPERATOR(<), and OPERATOR(>=) closes with OPERATOR(.GE.), each around a load-bearing module function returning a distinct logical value."
+      },
+      "oracle": "Source registration only. Positive plans establish a load-bearing source or runtime state first using distinct procedure results, initialized sentinels, or a conforming compile control, then observe only portable properties: successful compilation, exact scalar results, required rejection of a numbered syntax rule or constraint, or accessibility/use-association effects fixed by the source. Diagnostic plans change one constrained feature from the positive control and do not assert message wording, severity text, or processor-specific status values.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Unnumbered program restrictions are retained as source-control plans and are not promoted to required diagnostic facets. Existing incidental interface/procedure/generic uses in tests remain bound to their current catalogue owners.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 10, 11, 12, and 13 for source form, names, declarations, expressions, execution constructs, I/O syntax, and existing procedure-call foundations. Unregistered dependencies explicitly retained: later 15.4.3 specific/generic distinguishability rules, 15.5 argument association, submodules and separate module procedures, accessibility from clause 8, and defined I/O execution semantics."
+    },
+    {
+      "id": "C1503",
+      "title": "Abstract interface bodies cannot use intrinsic type keywords as procedure names",
+      "source": "S15.4.3.2, J3/24-007, 18 December 2023, physical PDF326-328.",
+      "source_units": [
+        "C1503"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "In an ABSTRACT INTERFACE block, the function-name or subroutine-name in an interface body shall not be the same as a keyword that specifies an intrinsic type.",
+      "facets": [
+        "abstract-interface-procedure-name-not-type-keyword"
+      ],
+      "pending": {
+        "abstract-interface-procedure-name-not-type-keyword": "Rejected program: ABSTRACT INTERFACE contains SUBROUTINE integer(); END SUBROUTINE integer. Positive control renames only the procedure to integer_proc; expect rejection for the intrinsic type keyword name."
+      },
+      "oracle": "Source registration only. Positive plans establish a load-bearing source or runtime state first using distinct procedure results, initialized sentinels, or a conforming compile control, then observe only portable properties: successful compilation, exact scalar results, required rejection of a numbered syntax rule or constraint, or accessibility/use-association effects fixed by the source. Diagnostic plans change one constrained feature from the positive control and do not assert message wording, severity text, or processor-specific status values.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Unnumbered program restrictions are retained as source-control plans and are not promoted to required diagnostic facets. Existing incidental interface/procedure/generic uses in tests remain bound to their current catalogue owners.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 10, 11, 12, and 13 for source form, names, declarations, expressions, execution constructs, I/O syntax, and existing procedure-call foundations. Unregistered dependencies explicitly retained: later 15.4.3 specific/generic distinguishability rules, 15.5 argument association, submodules and separate module procedures, accessibility from clause 8, and defined I/O execution semantics."
+    },
+    {
+      "id": "C1504",
+      "title": "Procedure statements are restricted to generic interface blocks",
+      "source": "S15.4.3.2, J3/24-007, 18 December 2023, physical PDF326-328.",
+      "source_units": [
+        "C1504.procedure-stmt-restriction"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "A procedure-stmt is permitted only in an interface block that has a generic-spec.",
+      "facets": [
+        "procedure-stmt-requires-generic-interface"
+      ],
+      "pending": {
+        "procedure-stmt-requires-generic-interface": "Rejected program: a module specification part has INTERFACE with no generic-spec, MODULE PROCEDURE s, END INTERFACE, plus contained s. Positive control adds only generic name g to the INTERFACE statement; expect rejection for the nongeneric block."
+      },
+      "oracle": "Source registration only. Positive plans establish a load-bearing source or runtime state first using distinct procedure results, initialized sentinels, or a conforming compile control, then observe only portable properties: successful compilation, exact scalar results, required rejection of a numbered syntax rule or constraint, or accessibility/use-association effects fixed by the source. Diagnostic plans change one constrained feature from the positive control and do not assert message wording, severity text, or processor-specific status values.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Unnumbered program restrictions are retained as source-control plans and are not promoted to required diagnostic facets. Existing incidental interface/procedure/generic uses in tests remain bound to their current catalogue owners.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 10, 11, 12, and 13 for source form, names, declarations, expressions, execution constructs, I/O syntax, and existing procedure-call foundations. Unregistered dependencies explicitly retained: later 15.4.3 specific/generic distinguishability rules, 15.5 argument association, submodules and separate module procedures, accessibility from clause 8, and defined I/O execution semantics."
+    },
+    {
+      "id": "S15.4.3.2-002",
+      "title": "Procedure statements are admitted in generic interface blocks",
+      "source": "S15.4.3.2, J3/24-007, 18 December 2023, physical PDF326-328.",
+      "source_units": [
+        "C1504.procedure-stmt-admission"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "C1504 admits a procedure-stmt in an interface block that has a generic-spec; the syntax of the procedure-stmt itself remains owned by R1506.",
+      "facets": [
+        "procedure-stmt-admitted-in-generic-interface"
+      ],
+      "pending": {
+        "procedure-stmt-admitted-in-generic-interface": "Positive compile/run control: INTERFACE g contains MODULE PROCEDURE s, then a call through g reaches contained subroutine s and changes integer sentinel -7 to 23."
+      },
+      "oracle": "Source registration only. Positive plans establish a load-bearing source or runtime state first using distinct procedure results, initialized sentinels, or a conforming compile control, then observe only portable properties: successful compilation, exact scalar results, required rejection of a numbered syntax rule or constraint, or accessibility/use-association effects fixed by the source. Diagnostic plans change one constrained feature from the positive control and do not assert message wording, severity text, or processor-specific status values.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Unnumbered program restrictions are retained as source-control plans and are not promoted to required diagnostic facets. Existing incidental interface/procedure/generic uses in tests remain bound to their current catalogue owners.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 10, 11, 12, and 13 for source form, names, declarations, expressions, execution constructs, I/O syntax, and existing procedure-call foundations. Unregistered dependencies explicitly retained: later 15.4.3 specific/generic distinguishability rules, 15.5 argument association, submodules and separate module procedures, accessibility from clause 8, and defined I/O execution semantics."
+    },
+    {
+      "id": "C1505",
+      "title": "Pure interface bodies specify intents for non-exempt dummy arguments",
+      "source": "S15.4.3.2, J3/24-007, 18 December 2023, physical PDF326-328.",
+      "source_units": [
+        "C1505"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "An interface-body of a pure procedure shall specify the intents of all dummy arguments except alternate return indicators, dummy procedures, and arguments with the POINTER or VALUE attribute.",
+      "facets": [
+        "pure-interface-body-dummy-intents"
+      ],
+      "pending": {
+        "pure-interface-body-dummy-intents": "Rejected program: INTERFACE contains PURE SUBROUTINE p(x) with INTEGER :: x and no INTENT. Positive control changes only the declaration to INTEGER, INTENT(IN) :: x; expect rejection for the missing intent."
+      },
+      "oracle": "Source registration only. Positive plans establish a load-bearing source or runtime state first using distinct procedure results, initialized sentinels, or a conforming compile control, then observe only portable properties: successful compilation, exact scalar results, required rejection of a numbered syntax rule or constraint, or accessibility/use-association effects fixed by the source. Diagnostic plans change one constrained feature from the positive control and do not assert message wording, severity text, or processor-specific status values.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Unnumbered program restrictions are retained as source-control plans and are not promoted to required diagnostic facets. Existing incidental interface/procedure/generic uses in tests remain bound to their current catalogue owners.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 10, 11, 12, and 13 for source form, names, declarations, expressions, execution constructs, I/O syntax, and existing procedure-call foundations. Unregistered dependencies explicitly retained: later 15.4.3 specific/generic distinguishability rules, 15.5 argument association, submodules and separate module procedures, accessibility from clause 8, and defined I/O execution semantics."
+    },
+    {
+      "id": "C1506",
+      "title": "Interface bodies exclude executable-data, FORMAT, ENTRY, and statement-function statements",
+      "source": "S15.4.3.2, J3/24-007, 18 December 2023, physical PDF326-328.",
+      "source_units": [
+        "C1506"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "An interface-body shall not contain a data-stmt, format-stmt, entry-stmt, or stmt-function-stmt.",
+      "facets": [
+        "interface-body-no-data-stmt",
+        "interface-body-no-format-stmt",
+        "interface-body-no-entry-stmt",
+        "interface-body-no-stmt-function-stmt"
+      ],
+      "pending": {
+        "interface-body-no-data-stmt": "Rejected program: INTERFACE contains SUBROUTINE s(), INTEGER :: x, DATA x /1/, END SUBROUTINE. Positive control removes only the DATA statement; expect rejection for DATA in the interface body.",
+        "interface-body-no-format-stmt": "Rejected program: INTERFACE contains SUBROUTINE s(), 10 FORMAT(I0), END SUBROUTINE. Positive control removes only the FORMAT statement; expect rejection for FORMAT in the interface body.",
+        "interface-body-no-entry-stmt": "Rejected program: INTERFACE contains SUBROUTINE s(), ENTRY e(), END SUBROUTINE. Positive control removes only the ENTRY statement; expect rejection for ENTRY in the interface body.",
+        "interface-body-no-stmt-function-stmt": "Rejected program: INTERFACE contains SUBROUTINE s(), INTEGER f, f() = 1, END SUBROUTINE. Positive control removes only the statement-function statement; expect rejection for the statement function."
+      },
+      "oracle": "Source registration only. Positive plans establish a load-bearing source or runtime state first using distinct procedure results, initialized sentinels, or a conforming compile control, then observe only portable properties: successful compilation, exact scalar results, required rejection of a numbered syntax rule or constraint, or accessibility/use-association effects fixed by the source. Diagnostic plans change one constrained feature from the positive control and do not assert message wording, severity text, or processor-specific status values.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Unnumbered program restrictions are retained as source-control plans and are not promoted to required diagnostic facets. Existing incidental interface/procedure/generic uses in tests remain bound to their current catalogue owners.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 10, 11, 12, and 13 for source form, names, declarations, expressions, execution constructs, I/O syntax, and existing procedure-call foundations. Unregistered dependencies explicitly retained: later 15.4.3 specific/generic distinguishability rules, 15.5 argument association, submodules and separate module procedures, accessibility from clause 8, and defined I/O execution semantics."
+    },
+    {
+      "id": "C1507",
+      "title": "MODULE procedure statements name module procedures",
+      "source": "S15.4.3.2, J3/24-007, 18 December 2023, physical PDF326-328.",
+      "source_units": [
+        "C1507"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "If MODULE appears in a procedure-stmt, each procedure-name in that statement shall denote a module procedure.",
+      "facets": [
+        "module-procedure-stmt-names-module-procedures"
+      ],
+      "pending": {
+        "module-procedure-stmt-names-module-procedures": "Rejected program: MODULE m has INTERFACE g; MODULE PROCEDURE s; END INTERFACE, no contained s, and an external function s(i) returning 42+i. Positive control keeps the name s, MODULE PROCEDURE form, generic g, and result 42+i, but changes only the denotation property by making s a contained module function; call g(-5) expects exact 37. Companion direct external call s(-5) also returns 37, making wrong external resolution observable."
+      },
+      "oracle": "Source registration only. Positive plans establish a load-bearing source or runtime state first using distinct procedure results, initialized sentinels, or a conforming compile control, then observe only portable properties: successful compilation, exact scalar results, required rejection of a numbered syntax rule or constraint, or accessibility/use-association effects fixed by the source. Diagnostic plans change one constrained feature from the positive control and do not assert message wording, severity text, or processor-specific status values.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Unnumbered program restrictions are retained as source-control plans and are not promoted to required diagnostic facets. Existing incidental interface/procedure/generic uses in tests remain bound to their current catalogue owners.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 10, 11, 12, and 13 for source form, names, declarations, expressions, execution constructs, I/O syntax, and existing procedure-call foundations. Unregistered dependencies explicitly retained: later 15.4.3 specific/generic distinguishability rules, 15.5 argument association, submodules and separate module procedures, accessibility from clause 8, and defined I/O execution semantics."
+    },
+    {
+      "id": "C1508",
+      "title": "Procedure-statement names denote nonintrinsic explicit-interface procedures",
+      "source": "S15.4.3.2, J3/24-007, 18 December 2023, physical PDF326-328.",
+      "source_units": [
+        "C1508"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "A procedure-name in a procedure-stmt shall denote a nonintrinsic procedure that has an explicit interface.",
+      "facets": [
+        "procedure-name-nonintrinsic",
+        "procedure-name-explicit-interface"
+      ],
+      "pending": {
+        "procedure-name-nonintrinsic": "Rejected program: MODULE m declares INTRINSIC :: abs then INTERFACE g; PROCEDURE :: abs; END INTERFACE, so abs denotes the intrinsic procedure. Positive control keeps the name abs and PROCEDURE :: abs form but changes only the denotation property by providing an explicit-interface nonintrinsic module function abs(i)=42+i; call g(-5) expects exact 37. Companion default intrinsic call ABS(-5) expects exact 5, making wrong intrinsic resolution observable.",
+        "procedure-name-explicit-interface": "Rejected program: MODULE m declares EXTERNAL :: ext then INTERFACE g; PROCEDURE :: ext; END INTERFACE, with external function ext(i)=42+i, so ext lacks an explicit interface. Positive control keeps the name ext, PROCEDURE :: ext form, external definition, and result 42+i, but changes only the interface property by replacing EXTERNAL :: ext with a prior specific interface body for ext; call g(-5) expects exact 37. Companion direct EXTERNAL call ext(-5) also returns 37, making wrong implicit-external resolution observable."
+      },
+      "oracle": "Source registration only. Positive plans establish a load-bearing source or runtime state first using distinct procedure results, initialized sentinels, or a conforming compile control, then observe only portable properties: successful compilation, exact scalar results, required rejection of a numbered syntax rule or constraint, or accessibility/use-association effects fixed by the source. Diagnostic plans change one constrained feature from the positive control and do not assert message wording, severity text, or processor-specific status values.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Unnumbered program restrictions are retained as source-control plans and are not promoted to required diagnostic facets. Existing incidental interface/procedure/generic uses in tests remain bound to their current catalogue owners.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 10, 11, 12, and 13 for source form, names, declarations, expressions, execution constructs, I/O syntax, and existing procedure-call foundations. Unregistered dependencies explicitly retained: later 15.4.3 specific/generic distinguishability rules, 15.5 argument association, submodules and separate module procedures, accessibility from clause 8, and defined I/O execution semantics."
+    },
+    {
+      "id": "C1509",
+      "title": "Generic interface blocks cannot repeat an accessible procedure for the same generic identifier",
+      "source": "S15.4.3.2, J3/24-007, 18 December 2023, physical PDF326-328.",
+      "source_units": [
+        "C1509"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "An interface-specification in a generic interface block shall not specify a procedure that was specified previously in any accessible interface with the same generic identifier.",
+      "facets": [
+        "generic-interface-no-duplicate-accessible-specific"
+      ],
+      "pending": {
+        "generic-interface-no-duplicate-accessible-specific": "Rejected program: MODULE m has two INTERFACE g blocks, each with MODULE PROCEDURE s, and contained distinguishable functions s(i)=42+i and t(l)=.not. l. Positive control keeps the same generic identifier g and changes only the duplicated specific in the second interface block from s to distinct specific t; calls g(-5) and g(.true.) expect exact 37 and .false., proving the legal extension of the same generic."
+      },
+      "oracle": "Source registration only. Positive plans establish a load-bearing source or runtime state first using distinct procedure results, initialized sentinels, or a conforming compile control, then observe only portable properties: successful compilation, exact scalar results, required rejection of a numbered syntax rule or constraint, or accessibility/use-association effects fixed by the source. Diagnostic plans change one constrained feature from the positive control and do not assert message wording, severity text, or processor-specific status values.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Unnumbered program restrictions are retained as source-control plans and are not promoted to required diagnostic facets. Existing incidental interface/procedure/generic uses in tests remain bound to their current catalogue owners.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 10, 11, 12, and 13 for source form, names, declarations, expressions, execution constructs, I/O syntax, and existing procedure-call foundations. Unregistered dependencies explicitly retained: later 15.4.3 specific/generic distinguishability rules, 15.5 argument association, submodules and separate module procedures, accessibility from clause 8, and defined I/O execution semantics."
+    },
+    {
+      "id": "S15.4.3.2-003",
+      "title": "External and module subprograms define specific interfaces",
+      "source": "S15.4.3.2, J3/24-007, 18 December 2023, physical PDF326-328.",
+      "source_units": [
+        "p1"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "An external or module subprogram specifies a specific interface for each procedure defined in that subprogram.",
+      "facets": [
+        "external-subprogram-specific-interface",
+        "module-subprogram-specific-interface"
+      ],
+      "pending": {
+        "external-subprogram-specific-interface": "Compile/run a program with external function plus_one(i) returning i+1 and an explicit caller declaration; call with sentinel input 40 and expect exact result 41.",
+        "module-subprogram-specific-interface": "Compile/run a module procedure set_value(x) that changes integer sentinel -7 to 19 through a USE-associated call, proving the module subprogram specific interface is usable."
+      },
+      "oracle": "Source registration only. Positive plans establish a load-bearing source or runtime state first using distinct procedure results, initialized sentinels, or a conforming compile control, then observe only portable properties: successful compilation, exact scalar results, required rejection of a numbered syntax rule or constraint, or accessibility/use-association effects fixed by the source. Diagnostic plans change one constrained feature from the positive control and do not assert message wording, severity text, or processor-specific status values.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Unnumbered program restrictions are retained as source-control plans and are not promoted to required diagnostic facets. Existing incidental interface/procedure/generic uses in tests remain bound to their current catalogue owners.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 10, 11, 12, and 13 for source form, names, declarations, expressions, execution constructs, I/O syntax, and existing procedure-call foundations. Unregistered dependencies explicitly retained: later 15.4.3 specific/generic distinguishability rules, 15.5 argument association, submodules and separate module procedures, accessibility from clause 8, and defined I/O execution semantics."
+    },
+    {
+      "id": "S15.4.3.2-004",
+      "title": "Interface block forms are abstract, generic, or specific",
+      "source": "S15.4.3.2, J3/24-007, 18 December 2023, physical PDF326-328.",
+      "source_units": [
+        "p2"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "An ABSTRACT INTERFACE block is an abstract interface block and its bodies specify abstract interfaces; a block with a generic specification is a generic interface block; a block with neither ABSTRACT nor a generic specification is a specific interface block.",
+      "facets": [
+        "abstract-interface-block-definition",
+        "generic-interface-block-definition",
+        "specific-interface-block-definition"
+      ],
+      "pending": {
+        "abstract-interface-block-definition": "Compile a type-bound deferred procedure declaration using an ABSTRACT INTERFACE body named action and a concrete override that sets sentinel -1 to 8.",
+        "generic-interface-block-definition": "Compile/run INTERFACE g with two module procedures selected by integer versus logical actual argument; integer call g(-5) returns exact 37 from int_sentinel(i)=42+i, logical call g(.true.) returns .false. from log_sentinel. Companion direct calls to int_sentinel(-5) and log_sentinel(.true.) expect the same exact values, making wrong generic dispatch observable.",
+        "specific-interface-block-definition": "Compile a specific INTERFACE body for external subroutine ext(x), call ext through keyword x=target, and expect target sentinel -4 changed to 12."
+      },
+      "oracle": "Source registration only. Positive plans establish a load-bearing source or runtime state first using distinct procedure results, initialized sentinels, or a conforming compile control, then observe only portable properties: successful compilation, exact scalar results, required rejection of a numbered syntax rule or constraint, or accessibility/use-association effects fixed by the source. Diagnostic plans change one constrained feature from the positive control and do not assert message wording, severity text, or processor-specific status values.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Unnumbered program restrictions are retained as source-control plans and are not promoted to required diagnostic facets. Existing incidental interface/procedure/generic uses in tests remain bound to their current catalogue owners.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 10, 11, 12, and 13 for source form, names, declarations, expressions, execution constructs, I/O syntax, and existing procedure-call foundations. Unregistered dependencies explicitly retained: later 15.4.3 specific/generic distinguishability rules, 15.5 argument association, submodules and separate module procedures, accessibility from clause 8, and defined I/O execution semantics."
+    },
+    {
+      "id": "S15.4.3.2-005",
+      "title": "Interface bodies declare entities named by their initial procedure statement",
+      "source": "S15.4.3.2, J3/24-007, 18 December 2023, physical PDF326-328.",
+      "source_units": [
+        "p3"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The entity declared by an interface body is named by the function-name or subroutine-name in the statement that begins the interface body.",
+      "facets": [
+        "interface-body-entity-name"
+      ],
+      "pending": {
+        "interface-body-entity-name": "Compile a specific interface body SUBROUTINE ext(arg) with dummy name arg, define external ext with matching effect, call ext(arg=sentinel), and expect sentinel -5 changed to 14."
+      },
+      "oracle": "Source registration only. Positive plans establish a load-bearing source or runtime state first using distinct procedure results, initialized sentinels, or a conforming compile control, then observe only portable properties: successful compilation, exact scalar results, required rejection of a numbered syntax rule or constraint, or accessibility/use-association effects fixed by the source. Diagnostic plans change one constrained feature from the positive control and do not assert message wording, severity text, or processor-specific status values.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Unnumbered program restrictions are retained as source-control plans and are not promoted to required diagnostic facets. Existing incidental interface/procedure/generic uses in tests remain bound to their current catalogue owners.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 10, 11, 12, and 13 for source form, names, declarations, expressions, execution constructs, I/O syntax, and existing procedure-call foundations. Unregistered dependencies explicitly retained: later 15.4.3 specific/generic distinguishability rules, 15.5 argument association, submodules and separate module procedures, accessibility from clause 8, and defined I/O execution semantics."
+    },
+    {
+      "id": "S15.4.3.2-006",
+      "title": "Module procedure interface bodies describe separate module procedures",
+      "source": "S15.4.3.2, J3/24-007, 18 December 2023, physical PDF326-328.",
+      "source_units": [
+        "p4.module-procedure-interface-definition"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A module procedure interface body starts with MODULE in its initial statement and specifies the interface for a separate module procedure.",
+      "facets": [
+        "module-procedure-interface-body-definition",
+        "separate-module-procedure-interface"
+      ],
+      "pending": {
+        "module-procedure-interface-body-definition": "Compile a module containing INTERFACE; MODULE SUBROUTINE worker(x); INTEGER, INTENT(OUT) :: x; END SUBROUTINE; END INTERFACE, plus a submodule implementation that writes 31.",
+        "separate-module-procedure-interface": "Compile/run the same module and submodule, USE the module from a program, call worker on sentinel -9, and expect exact value 31."
+      },
+      "oracle": "Source registration only. Positive plans establish a load-bearing source or runtime state first using distinct procedure results, initialized sentinels, or a conforming compile control, then observe only portable properties: successful compilation, exact scalar results, required rejection of a numbered syntax rule or constraint, or accessibility/use-association effects fixed by the source. Diagnostic plans change one constrained feature from the positive control and do not assert message wording, severity text, or processor-specific status values.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Unnumbered program restrictions are retained as source-control plans and are not promoted to required diagnostic facets. Existing incidental interface/procedure/generic uses in tests remain bound to their current catalogue owners.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 10, 11, 12, and 13 for source form, names, declarations, expressions, execution constructs, I/O syntax, and existing procedure-call foundations. Unregistered dependencies explicitly retained: later 15.4.3 specific/generic distinguishability rules, 15.5 argument association, submodules and separate module procedures, accessibility from clause 8, and defined I/O execution semantics."
+    },
+    {
+      "id": "S15.4.3.2-007",
+      "title": "Public module separate-procedure interfaces are accessible by use association",
+      "source": "S15.4.3.2, J3/24-007, 18 December 2023, physical PDF326-328.",
+      "source_units": [
+        "p4.separate-module-procedure-accessibility"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A separate module procedure is accessible by use association exactly for a public interface body declared in the specification part of a module.",
+      "facets": [
+        "separate-module-procedure-public-use-access",
+        "separate-module-procedure-private-use-nonaccess"
+      ],
+      "pending": {
+        "separate-module-procedure-public-use-access": "Positive source-control: module m declares PUBLIC worker and a MODULE SUBROUTINE worker interface in the specification part; client USE m calls worker on sentinel -2 and observes 31 by the submodule implementation. Companion provider with an unrelated local worker that writes 42 is not USE-associated; a client reaching 42 would expose wrong resolution.",
+        "separate-module-procedure-private-use-nonaccess": "Negative source-control: change only PUBLIC worker to PRIVATE worker in the provider, keep the client call unchanged, and expect rejection for inaccessible worker without asserting message wording."
+      },
+      "oracle": "Source registration only. Positive plans establish a load-bearing source or runtime state first using distinct procedure results, initialized sentinels, or a conforming compile control, then observe only portable properties: successful compilation, exact scalar results, required rejection of a numbered syntax rule or constraint, or accessibility/use-association effects fixed by the source. Diagnostic plans change one constrained feature from the positive control and do not assert message wording, severity text, or processor-specific status values.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Unnumbered program restrictions are retained as source-control plans and are not promoted to required diagnostic facets. Existing incidental interface/procedure/generic uses in tests remain bound to their current catalogue owners.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 10, 11, 12, and 13 for source form, names, declarations, expressions, execution constructs, I/O syntax, and existing procedure-call foundations. Unregistered dependencies explicitly retained: later 15.4.3 specific/generic distinguishability rules, 15.5 argument association, submodules and separate module procedures, accessibility from clause 8, and defined I/O execution semantics."
+    },
+    {
+      "id": "S15.4.3.2-008",
+      "title": "Undefined separate module procedure interfaces have limited use",
+      "source": "S15.4.3.2, J3/24-007, 18 December 2023, physical PDF326-328.",
+      "source_units": [
+        "p4.undefined-separate-interface-permission",
+        "p4.undefined-separate-interface-restriction"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "If the corresponding separate module procedure is not defined, the interface may specify an explicit specific interface but the procedure shall not be used in any other way.",
+      "facets": [
+        "undefined-separate-interface-may-specify-explicit-interface",
+        "undefined-separate-procedure-no-other-use"
+      ],
+      "pending": {
+        "undefined-separate-interface-may-specify-explicit-interface": "Compile a module with a MODULE SUBROUTINE future(x) interface body and no submodule, and use only an abstract procedure declaration that references its explicit interface; expect compile acceptance.",
+        "undefined-separate-procedure-no-other-use": "Source-control negative: the same module plus a client call to future(x) without a corresponding submodule implementation; retain as non-diagnostic pending because the restriction is unnumbered."
+      },
+      "oracle": "Source registration only. Positive plans establish a load-bearing source or runtime state first using distinct procedure results, initialized sentinels, or a conforming compile control, then observe only portable properties: successful compilation, exact scalar results, required rejection of a numbered syntax rule or constraint, or accessibility/use-association effects fixed by the source. Diagnostic plans change one constrained feature from the positive control and do not assert message wording, severity text, or processor-specific status values.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Unnumbered program restrictions are retained as source-control plans and are not promoted to required diagnostic facets. Existing incidental interface/procedure/generic uses in tests remain bound to their current catalogue owners.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 10, 11, 12, and 13 for source form, names, declarations, expressions, execution constructs, I/O syntax, and existing procedure-call foundations. Unregistered dependencies explicitly retained: later 15.4.3 specific/generic distinguishability rules, 15.5 argument association, submodules and separate module procedures, accessibility from clause 8, and defined I/O execution semantics."
+    },
+    {
+      "id": "S15.4.3.2-009",
+      "title": "Generic and specific interface bodies give external attribute and explicit interfaces",
+      "source": "S15.4.3.2, J3/24-007, 18 December 2023, physical PDF326-328.",
+      "source_units": [
+        "p5.interface-body-explicit-specific-interface"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "An interface body in a generic or specific interface block specifies the EXTERNAL attribute and an explicit specific interface for an external procedure, dummy procedure, or procedure pointer.",
+      "facets": [
+        "interface-body-specifies-external-attribute",
+        "interface-body-specifies-explicit-specific-interface"
+      ],
+      "pending": {
+        "interface-body-specifies-external-attribute": "Compile a specific interface body for external subroutine ext(x), omit an explicit EXTERNAL statement, call ext(x=sentinel), and expect external ext changes sentinel -3 to 17.",
+        "interface-body-specifies-explicit-specific-interface": "Compile/run a caller using keyword x= for an external subroutine whose interface body names dummy x; expect sentinel -3 changed to 17, showing explicit interface availability."
+      },
+      "oracle": "Source registration only. Positive plans establish a load-bearing source or runtime state first using distinct procedure results, initialized sentinels, or a conforming compile control, then observe only portable properties: successful compilation, exact scalar results, required rejection of a numbered syntax rule or constraint, or accessibility/use-association effects fixed by the source. Diagnostic plans change one constrained feature from the positive control and do not assert message wording, severity text, or processor-specific status values.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Unnumbered program restrictions are retained as source-control plans and are not promoted to required diagnostic facets. Existing incidental interface/procedure/generic uses in tests remain bound to their current catalogue owners.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 10, 11, 12, and 13 for source form, names, declarations, expressions, execution constructs, I/O syntax, and existing procedure-call foundations. Unregistered dependencies explicitly retained: later 15.4.3 specific/generic distinguishability rules, 15.5 argument association, submodules and separate module procedures, accessibility from clause 8, and defined I/O execution semantics."
+    },
+    {
+      "id": "S15.4.3.2-010",
+      "title": "Interface-body procedure names classify dummy, pointer, or external procedures",
+      "source": "S15.4.3.2, J3/24-007, 18 December 2023, physical PDF326-328.",
+      "source_units": [
+        "p5.interface-body-procedure-classification"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The declared procedure is classified as a dummy procedure for a name that is a dummy argument in the containing subprogram, as a procedure pointer for a name with POINTER, and otherwise as an external procedure.",
+      "facets": [
+        "interface-body-dummy-procedure-classification",
+        "interface-body-procedure-pointer-classification",
+        "interface-body-external-procedure-classification"
+      ],
+      "pending": {
+        "interface-body-dummy-procedure-classification": "Compile/run a host subroutine with dummy procedure apply, an interface body for apply, and a call apply(value); pass actual plus_one returning i+1 and expect sentinel input 4 changed to 5. Separate companion program has external apply(i)=42+i and no dummy apply; apply(4) returns 46, making wrong external resolution observable.",
+        "interface-body-procedure-pointer-classification": "Compile/run an interface body naming procedure pointer pp with POINTER attribute, assign pp => target where target writes 22, call pp on sentinel -6, and expect 22. Separate companion program has external pp that writes 42 and no procedure pointer pp; result 42 makes wrong external resolution observable.",
+        "interface-body-external-procedure-classification": "Compile/run a specific interface body for external ext, no dummy or POINTER attribute, call ext with sentinel -6, and expect value 22. Separate companion host procedure with dummy procedure ext calls actual alt_ext returning 42; result 42 makes wrong dummy-procedure classification observable."
+      },
+      "oracle": "Source registration only. Positive plans establish a load-bearing source or runtime state first using distinct procedure results, initialized sentinels, or a conforming compile control, then observe only portable properties: successful compilation, exact scalar results, required rejection of a numbered syntax rule or constraint, or accessibility/use-association effects fixed by the source. Diagnostic plans change one constrained feature from the positive control and do not assert message wording, severity text, or processor-specific status values.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Unnumbered program restrictions are retained as source-control plans and are not promoted to required diagnostic facets. Existing incidental interface/procedure/generic uses in tests remain bound to their current catalogue owners.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 10, 11, 12, and 13 for source form, names, declarations, expressions, execution constructs, I/O syntax, and existing procedure-call foundations. Unregistered dependencies explicitly retained: later 15.4.3 specific/generic distinguishability rules, 15.5 argument association, submodules and separate module procedures, accessibility from clause 8, and defined I/O execution semantics."
+    },
+    {
+      "id": "S15.4.3.2-011",
+      "title": "Interface bodies specify all explicit or abstract interface characteristics",
+      "source": "S15.4.3.2, J3/24-007, 18 December 2023, physical PDF326-328.",
+      "source_units": [
+        "p6.characteristics-specified"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "An interface body specifies all characteristics of the explicit specific interface or abstract interface.",
+      "facets": [
+        "interface-body-characteristics-complete"
+      ],
+      "pending": {
+        "interface-body-characteristics-complete": "Compile two procedure-pointer assignments to targets differing only in dummy argument rank, with the pointer interface body declaring rank-one integer dummy; positive target accepts rank-one array [2,5] and writes exact sum 7."
+      },
+      "oracle": "Source registration only. Positive plans establish a load-bearing source or runtime state first using distinct procedure results, initialized sentinels, or a conforming compile control, then observe only portable properties: successful compilation, exact scalar results, required rejection of a numbered syntax rule or constraint, or accessibility/use-association effects fixed by the source. Diagnostic plans change one constrained feature from the positive control and do not assert message wording, severity text, or processor-specific status values.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Unnumbered program restrictions are retained as source-control plans and are not promoted to required diagnostic facets. Existing incidental interface/procedure/generic uses in tests remain bound to their current catalogue owners.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 10, 11, 12, and 13 for source form, names, declarations, expressions, execution constructs, I/O syntax, and existing procedure-call foundations. Unregistered dependencies explicitly retained: later 15.4.3 specific/generic distinguishability rules, 15.5 argument association, submodules and separate module procedures, accessibility from clause 8, and defined I/O execution semantics."
+    },
+    {
+      "id": "S15.4.3.2-012",
+      "title": "Noncharacteristic specifications in interface bodies have no effect",
+      "source": "S15.4.3.2, J3/24-007, 18 December 2023, physical PDF326-328.",
+      "source_units": [
+        "p6.noncharacteristic-specifications-permitted",
+        "p6.noncharacteristic-specifications-no-effect"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The specification part of an interface body may specify attributes or define values for data entities that do not determine procedure characteristics, and those specifications have no effect.",
+      "facets": [
+        "interface-body-noncharacteristic-specs-permitted",
+        "interface-body-noncharacteristic-specs-no-effect"
+      ],
+      "pending": {
+        "interface-body-noncharacteristic-specs-permitted": "Compile an interface body for external subroutine ext(x) whose specification part declares INTEGER, PARAMETER :: local_tag = 4 and INTEGER :: scratch, neither used in result type, dummy type/kind/rank/shape, dummy attributes, or any other procedure characteristic; expect compile acceptance.",
+        "interface-body-noncharacteristic-specs-no-effect": "Compile/run two callers with identical external procedure definition ext(x) setting x to 26; their interface bodies differ only in unused local data entities, local_tag = 4 versus local_tag = 9 and scratch initial value -1 versus -2, none used in procedure characteristics. Both calls start x at sentinel -8 and must end with exact 26."
+      },
+      "oracle": "Source registration only. Positive plans establish a load-bearing source or runtime state first using distinct procedure results, initialized sentinels, or a conforming compile control, then observe only portable properties: successful compilation, exact scalar results, required rejection of a numbered syntax rule or constraint, or accessibility/use-association effects fixed by the source. Diagnostic plans change one constrained feature from the positive control and do not assert message wording, severity text, or processor-specific status values.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Unnumbered program restrictions are retained as source-control plans and are not promoted to required diagnostic facets. Existing incidental interface/procedure/generic uses in tests remain bound to their current catalogue owners.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 10, 11, 12, and 13 for source form, names, declarations, expressions, execution constructs, I/O syntax, and existing procedure-call foundations. Unregistered dependencies explicitly retained: later 15.4.3 specific/generic distinguishability rules, 15.5 argument association, submodules and separate module procedures, accessibility from clause 8, and defined I/O execution semantics."
+    },
+    {
+      "id": "S15.4.3.2-013",
+      "title": "External explicit interfaces are consistent with procedure definitions",
+      "source": "S15.4.3.2, J3/24-007, 18 December 2023, physical PDF326-328.",
+      "source_units": [
+        "p7.characteristics-consistency"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "An explicit specific interface for an external procedure specified by an interface body or procedure declaration statement shall have characteristics consistent with the procedure definition, except for the registered pure and simple latitude.",
+      "facets": [
+        "external-explicit-interface-characteristics-consistent"
+      ],
+      "pending": {
+        "external-explicit-interface-characteristics-consistent": "Positive control: interface body and external function agree on INTEGER argument and result, call with 6, expect 7. Negative source-control changes only the interface dummy to REAL; retain as unnumbered non-diagnostic pending."
+      },
+      "oracle": "Source registration only. Positive plans establish a load-bearing source or runtime state first using distinct procedure results, initialized sentinels, or a conforming compile control, then observe only portable properties: successful compilation, exact scalar results, required rejection of a numbered syntax rule or constraint, or accessibility/use-association effects fixed by the source. Diagnostic plans change one constrained feature from the positive control and do not assert message wording, severity text, or processor-specific status values.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Unnumbered program restrictions are retained as source-control plans and are not promoted to required diagnostic facets. Existing incidental interface/procedure/generic uses in tests remain bound to their current catalogue owners.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 10, 11, 12, and 13 for source form, names, declarations, expressions, execution constructs, I/O syntax, and existing procedure-call foundations. Unregistered dependencies explicitly retained: later 15.4.3 specific/generic distinguishability rules, 15.5 argument association, submodules and separate module procedures, accessibility from clause 8, and defined I/O execution semantics."
+    },
+    {
+      "id": "S15.4.3.2-014",
+      "title": "Explicit interfaces may underspecify pure and simple properties",
+      "source": "S15.4.3.2, J3/24-007, 18 December 2023, physical PDF326-328.",
+      "source_units": [
+        "p7.pure-simple-latitude"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "An interface may specify a procedure as not pure although the definition is pure, and may specify it as not simple although the definition is simple.",
+      "facets": [
+        "pure-definition-interface-may-be-nonpure",
+        "simple-definition-interface-may-be-nonsimple"
+      ],
+      "pending": {
+        "pure-definition-interface-may-be-nonpure": "Compile/run a pure external function inc(i) with an interface body omitting PURE, call inc(9), and expect exact result 10.",
+        "simple-definition-interface-may-be-nonsimple": "Compile a simple procedure definition with an interface body that omits SIMPLE; call with sentinel 5 and expect the same exact result as the direct simple procedure call."
+      },
+      "oracle": "Source registration only. Positive plans establish a load-bearing source or runtime state first using distinct procedure results, initialized sentinels, or a conforming compile control, then observe only portable properties: successful compilation, exact scalar results, required rejection of a numbered syntax rule or constraint, or accessibility/use-association effects fixed by the source. Diagnostic plans change one constrained feature from the positive control and do not assert message wording, severity text, or processor-specific status values.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Unnumbered program restrictions are retained as source-control plans and are not promoted to required diagnostic facets. Existing incidental interface/procedure/generic uses in tests remain bound to their current catalogue owners.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 10, 11, 12, and 13 for source form, names, declarations, expressions, execution constructs, I/O syntax, and existing procedure-call foundations. Unregistered dependencies explicitly retained: later 15.4.3 specific/generic distinguishability rules, 15.5 argument association, submodules and separate module procedures, accessibility from clause 8, and defined I/O execution semantics."
+    },
+    {
+      "id": "S15.4.3.2-015",
+      "title": "ENTRY names may be used to specify interfaces for entry-defined procedures",
+      "source": "S15.4.3.2, J3/24-007, 18 December 2023, physical PDF326-328.",
+      "source_units": [
+        "p7.entry-interface-permission"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "An interface for a procedure defined by an ENTRY statement may be specified by using the entry name as the procedure name in the interface body.",
+      "facets": [
+        "entry-name-interface-body-permitted"
+      ],
+      "pending": {
+        "entry-name-interface-body-permitted": "Compile a legacy external subroutine containing ENTRY alternate(x), provide a specific interface body for alternate, call alternate with sentinel -1, and expect the entry path writes 33."
+      },
+      "oracle": "Source registration only. Positive plans establish a load-bearing source or runtime state first using distinct procedure results, initialized sentinels, or a conforming compile control, then observe only portable properties: successful compilation, exact scalar results, required rejection of a numbered syntax rule or constraint, or accessibility/use-association effects fixed by the source. Diagnostic plans change one constrained feature from the positive control and do not assert message wording, severity text, or processor-specific status values.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Unnumbered program restrictions are retained as source-control plans and are not promoted to required diagnostic facets. Existing incidental interface/procedure/generic uses in tests remain bound to their current catalogue owners.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 10, 11, 12, and 13 for source form, names, declarations, expressions, execution constructs, I/O syntax, and existing procedure-call foundations. Unregistered dependencies explicitly retained: later 15.4.3 specific/generic distinguishability rules, 15.5 argument association, submodules and separate module procedures, accessibility from clause 8, and defined I/O execution semantics."
+    },
+    {
+      "id": "S15.4.3.2-016",
+      "title": "Nonexistent external procedure interfaces have limited use",
+      "source": "S15.4.3.2, J3/24-007, 18 December 2023, physical PDF326-328.",
+      "source_units": [
+        "p7.nonexistent-external-interface-permission",
+        "p7.nonexistent-external-interface-restriction"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "If an external procedure does not exist in the program, an interface body for it may specify an explicit specific interface, but the procedure shall not be used in any other way.",
+      "facets": [
+        "nonexistent-external-interface-may-specify-explicit-interface",
+        "nonexistent-external-procedure-no-other-use"
+      ],
+      "pending": {
+        "nonexistent-external-interface-may-specify-explicit-interface": "Compile a module with a specific interface body for external future(x) and no reference to future; expect acceptance as an explicit-interface declaration only.",
+        "nonexistent-external-procedure-no-other-use": "Source-control negative: add only a call future(sentinel) to the accepted control without providing future; retain as unnumbered non-diagnostic pending."
+      },
+      "oracle": "Source registration only. Positive plans establish a load-bearing source or runtime state first using distinct procedure results, initialized sentinels, or a conforming compile control, then observe only portable properties: successful compilation, exact scalar results, required rejection of a numbered syntax rule or constraint, or accessibility/use-association effects fixed by the source. Diagnostic plans change one constrained feature from the positive control and do not assert message wording, severity text, or processor-specific status values.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Unnumbered program restrictions are retained as source-control plans and are not promoted to required diagnostic facets. Existing incidental interface/procedure/generic uses in tests remain bound to their current catalogue owners.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 10, 11, 12, and 13 for source form, names, declarations, expressions, execution constructs, I/O syntax, and existing procedure-call foundations. Unregistered dependencies explicitly retained: later 15.4.3 specific/generic distinguishability rules, 15.5 argument association, submodules and separate module procedures, accessibility from clause 8, and defined I/O execution semantics."
+    },
+    {
+      "id": "S15.4.3.2-017",
+      "title": "Procedures have at most one local explicit specific interface",
+      "source": "S15.4.3.2, J3/24-007, 18 December 2023, physical PDF326-328.",
+      "source_units": [
+        "p7.single-explicit-interface"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "A procedure shall not have more than one explicit specific interface in a given scoping unit, except for multiple local names introduced by use association.",
+      "facets": [
+        "one-explicit-specific-interface-per-scoping-unit",
+        "use-associated-local-name-exception"
+      ],
+      "pending": {
+        "one-explicit-specific-interface-per-scoping-unit": "Positive control: one specific interface body for external ext(x) and a call ext(sentinel) changing -2 to 18. Negative source-control duplicates the interface body in the same scoping unit; retain as unnumbered non-diagnostic pending.",
+        "use-associated-local-name-exception": "Compile/run a provider module exporting procedure ext(i) with SAVE counter initialized to 0 and two client USE renames a=>ext and b=>ext; calls a(0) then b(0) return exact counter results 1 then 2. Companion with two separate local procedures a and b would return 1 then 1, making wrong local resolution observable."
+      },
+      "oracle": "Source registration only. Positive plans establish a load-bearing source or runtime state first using distinct procedure results, initialized sentinels, or a conforming compile control, then observe only portable properties: successful compilation, exact scalar results, required rejection of a numbered syntax rule or constraint, or accessibility/use-association effects fixed by the source. Diagnostic plans change one constrained feature from the positive control and do not assert message wording, severity text, or processor-specific status values.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Unnumbered program restrictions are retained as source-control plans and are not promoted to required diagnostic facets. Existing incidental interface/procedure/generic uses in tests remain bound to their current catalogue owners.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 10, 11, 12, and 13 for source form, names, declarations, expressions, execution constructs, I/O syntax, and existing procedure-call foundations. Unregistered dependencies explicitly retained: later 15.4.3 specific/generic distinguishability rules, 15.5 argument association, submodules and separate module procedures, accessibility from clause 8, and defined I/O execution semantics."
+    },
+    {
+      "id": "S15.4.3.2-018",
+      "title": "Multiple use-associated accesses identify the same procedure",
+      "source": "S15.4.3.2, J3/24-007, 18 December 2023, physical PDF326-328.",
+      "source_units": [
+        "p7.use-associated-same-procedure"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "If a procedure is accessed by use association, each access shall be to the same procedure declaration or definition.",
+      "facets": [
+        "use-associated-accesses-same-procedure"
+      ],
+      "pending": {
+        "use-associated-accesses-same-procedure": "Compile/run a provider procedure bump with SAVE counter initialized to 0 and two USE renames a and b in the client; call a then b and expect exact counter results 1 then 2 from the same procedure definition. Companion with two distinct local procedures a and b would produce 1 then 1, making wrong resolution observable."
+      },
+      "oracle": "Source registration only. Positive plans establish a load-bearing source or runtime state first using distinct procedure results, initialized sentinels, or a conforming compile control, then observe only portable properties: successful compilation, exact scalar results, required rejection of a numbered syntax rule or constraint, or accessibility/use-association effects fixed by the source. Diagnostic plans change one constrained feature from the positive control and do not assert message wording, severity text, or processor-specific status values.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Unnumbered program restrictions are retained as source-control plans and are not promoted to required diagnostic facets. Existing incidental interface/procedure/generic uses in tests remain bound to their current catalogue owners.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 10, 11, 12, and 13 for source form, names, declarations, expressions, execution constructs, I/O syntax, and existing procedure-call foundations. Unregistered dependencies explicitly retained: later 15.4.3 specific/generic distinguishability rules, 15.5 argument association, submodules and separate module procedures, accessibility from clause 8, and defined I/O execution semantics."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "R1501",
+      "disposition": "requirements",
+      "requirements": [
+        "R1501"
+      ]
+    },
+    {
+      "unit": "R1502",
+      "disposition": "requirements",
+      "requirements": [
+        "R1502"
+      ]
+    },
+    {
+      "unit": "R1503",
+      "disposition": "requirements",
+      "requirements": [
+        "R1503"
+      ]
+    },
+    {
+      "unit": "R1504",
+      "disposition": "requirements",
+      "requirements": [
+        "R1504"
+      ]
+    },
+    {
+      "unit": "R1505",
+      "disposition": "requirements",
+      "requirements": [
+        "R1505"
+      ]
+    },
+    {
+      "unit": "R1506",
+      "disposition": "requirements",
+      "requirements": [
+        "R1506"
+      ]
+    },
+    {
+      "unit": "R1507",
+      "disposition": "requirements",
+      "requirements": [
+        "R1507"
+      ]
+    },
+    {
+      "unit": "R1508",
+      "disposition": "requirements",
+      "requirements": [
+        "R1508"
+      ]
+    },
+    {
+      "unit": "R1509",
+      "disposition": "requirements",
+      "requirements": [
+        "R1509"
+      ]
+    },
+    {
+      "unit": "C1501",
+      "disposition": "requirements",
+      "requirements": [
+        "C1501"
+      ]
+    },
+    {
+      "unit": "C1502",
+      "disposition": "structural",
+      "rationale": "Mixed matching restriction and relational-operator spelling permission are split."
+    },
+    {
+      "unit": "C1502.same-generic-spec",
+      "disposition": "requirements",
+      "requirements": [
+        "C1502"
+      ]
+    },
+    {
+      "unit": "C1502.operator-spelling-equivalence",
+      "disposition": "permission",
+      "requirements": [
+        "S15.4.3.2-001"
+      ],
+      "rationale": "Permitted alternate spellings for corresponding relational defined operators."
+    },
+    {
+      "unit": "C1503",
+      "disposition": "requirements",
+      "requirements": [
+        "C1503"
+      ]
+    },
+    {
+      "unit": "C1504",
+      "disposition": "structural",
+      "rationale": "Only-in wording carries both admission in generic interface blocks and restriction outside them."
+    },
+    {
+      "unit": "C1504.procedure-stmt-admission",
+      "disposition": "permission",
+      "requirements": [
+        "S15.4.3.2-002"
+      ],
+      "rationale": "Admission half of procedure-stmt use in generic interface blocks."
+    },
+    {
+      "unit": "C1504.procedure-stmt-restriction",
+      "disposition": "requirements",
+      "requirements": [
+        "C1504"
+      ]
+    },
+    {
+      "unit": "C1505",
+      "disposition": "requirements",
+      "requirements": [
+        "C1505"
+      ]
+    },
+    {
+      "unit": "C1506",
+      "disposition": "requirements",
+      "requirements": [
+        "C1506"
+      ]
+    },
+    {
+      "unit": "C1507",
+      "disposition": "requirements",
+      "requirements": [
+        "C1507"
+      ]
+    },
+    {
+      "unit": "C1508",
+      "disposition": "requirements",
+      "requirements": [
+        "C1508"
+      ]
+    },
+    {
+      "unit": "C1509",
+      "disposition": "requirements",
+      "requirements": [
+        "C1509"
+      ]
+    },
+    {
+      "unit": "p1",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.4.3.2-003"
+      ]
+    },
+    {
+      "unit": "p2",
+      "disposition": "definition",
+      "requirements": [
+        "S15.4.3.2-004"
+      ],
+      "rationale": "Defines abstract, generic, and specific interface block forms."
+    },
+    {
+      "unit": "p3",
+      "disposition": "definition",
+      "requirements": [
+        "S15.4.3.2-005"
+      ],
+      "rationale": "Defines the entity name declared by an interface body."
+    },
+    {
+      "unit": "p4",
+      "disposition": "structural",
+      "rationale": "Module procedure interface definition, use accessibility, and undefined-procedure permission/restriction are split."
+    },
+    {
+      "unit": "p4.module-procedure-interface-definition",
+      "disposition": "definition",
+      "requirements": [
+        "S15.4.3.2-006"
+      ],
+      "rationale": "Defines module procedure interface bodies and their separate procedure interface role."
+    },
+    {
+      "unit": "p4.separate-module-procedure-accessibility",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.4.3.2-007"
+      ]
+    },
+    {
+      "unit": "p4.undefined-separate-interface-permission",
+      "disposition": "permission",
+      "requirements": [
+        "S15.4.3.2-008"
+      ],
+      "rationale": "Permits interface-only use without a corresponding separate module procedure definition."
+    },
+    {
+      "unit": "p4.undefined-separate-interface-restriction",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.4.3.2-008"
+      ]
+    },
+    {
+      "unit": "p5",
+      "disposition": "structural",
+      "rationale": "Explicit-interface effect and dummy/pointer/external classification are split."
+    },
+    {
+      "unit": "p5.interface-body-explicit-specific-interface",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.4.3.2-009"
+      ]
+    },
+    {
+      "unit": "p5.interface-body-procedure-classification",
+      "disposition": "definition",
+      "requirements": [
+        "S15.4.3.2-010"
+      ],
+      "rationale": "Defines dummy procedure, procedure pointer, and external procedure classification from the declared procedure name."
+    },
+    {
+      "unit": "p6",
+      "disposition": "structural",
+      "rationale": "Characteristic specification and noncharacteristic no-effect permission are split."
+    },
+    {
+      "unit": "p6.characteristics-specified",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.4.3.2-011"
+      ]
+    },
+    {
+      "unit": "p6.noncharacteristic-specifications-permitted",
+      "disposition": "permission",
+      "requirements": [
+        "S15.4.3.2-012"
+      ],
+      "rationale": "Permits noncharacteristic specifications in an interface body."
+    },
+    {
+      "unit": "p6.noncharacteristic-specifications-no-effect",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.4.3.2-012"
+      ]
+    },
+    {
+      "unit": "p7",
+      "disposition": "structural",
+      "rationale": "Consistency requirement, pure/simple latitude, ENTRY and nonexistent-procedure permissions, and use-association rules are split."
+    },
+    {
+      "unit": "p7.characteristics-consistency",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.4.3.2-013"
+      ]
+    },
+    {
+      "unit": "p7.pure-simple-latitude",
+      "disposition": "permission",
+      "requirements": [
+        "S15.4.3.2-014"
+      ],
+      "rationale": "Allows less-restrictive interface purity/simplicity than the procedure definition."
+    },
+    {
+      "unit": "p7.entry-interface-permission",
+      "disposition": "permission",
+      "requirements": [
+        "S15.4.3.2-015"
+      ],
+      "rationale": "Permits ENTRY names as interface-body procedure names."
+    },
+    {
+      "unit": "p7.nonexistent-external-interface-permission",
+      "disposition": "permission",
+      "requirements": [
+        "S15.4.3.2-016"
+      ],
+      "rationale": "Permits an interface body for a nonexistent external procedure solely to specify an explicit interface."
+    },
+    {
+      "unit": "p7.nonexistent-external-interface-restriction",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.4.3.2-016"
+      ]
+    },
+    {
+      "unit": "p7.single-explicit-interface",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.4.3.2-017"
+      ]
+    },
+    {
+      "unit": "p7.use-associated-same-procedure",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.4.3.2-018"
+      ]
+    },
+    {
+      "unit": "note1",
+      "disposition": "informative",
+      "rationale": "NOTE 1 is explanatory and not normative."
+    },
+    {
+      "unit": "note2",
+      "disposition": "informative",
+      "rationale": "NOTE 2 is an example and not normative."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_15_4_3_2.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "51d2f1aae40e96c0646adc9abe5230666ae7fe95fa518dd6c54ab91f6421fa82",
+  "review_rationale": "Source registration for 15.4.3.2 (interface block) and 15.4.3.3 (GENERIC statement) (batch221). Every unit hash-verified by an independent reviewer across two rounds; R1501-R1510 and C1501-C1510 had no existing tests and carry diagnostic plans whose controls differ from the rejected program in exactly the constrained feature. Source accounting only."
+}

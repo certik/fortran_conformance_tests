@@ -1,0 +1,130 @@
+{
+  "schema_version": 1,
+  "section": "15.4.3.3",
+  "requirements": [
+    {
+      "id": "S15.4.3.3-001",
+      "title": "GENERIC statements specify generic identifiers for specific procedures",
+      "source": "S15.4.3.3, J3/24-007, 18 December 2023, physical PDF328.",
+      "source_units": [
+        "p1"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A GENERIC statement specifies a generic identifier for one or more specific procedures in the same way as a generic interface block that does not contain interface bodies.",
+      "facets": [
+        "generic-stmt-specifies-generic-identifier",
+        "generic-stmt-equivalent-to-procedure-only-interface-block"
+      ],
+      "pending": {
+        "generic-stmt-specifies-generic-identifier": "Compile/run a module with GENERIC :: gen => s_int, s_logical; gen(-5) reaches s_int and returns exact 37, while gen(.true.) reaches s_logical and returns .false. Companion direct calls to s_int(-5) and s_logical(.true.) expect the same exact values, making wrong generic resolution observable.",
+        "generic-stmt-equivalent-to-procedure-only-interface-block": "Compile/run paired modules, one using GENERIC :: gen => s and one using INTERFACE gen; MODULE PROCEDURE s; END INTERFACE, with s(i)=42+i. Calls through both generic identifiers with -5 change sentinels to exact 37; companion direct specific calls also produce 37, exposing any wrong binding."
+      },
+      "oracle": "Source registration only. Positive plans establish a load-bearing source or runtime state first using distinct procedure results, initialized sentinels, or a conforming compile control, then observe only portable properties: successful compilation, exact scalar results, required rejection of a numbered syntax rule or constraint, or accessibility/use-association effects fixed by the source. Diagnostic plans change one constrained feature from the positive control and do not assert message wording, severity text, or processor-specific status values.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Unnumbered program restrictions are retained as source-control plans and are not promoted to required diagnostic facets. Existing incidental interface/procedure/generic uses in tests remain bound to their current catalogue owners.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 10, 11, 12, and 13 for source form, names, declarations, expressions, execution constructs, I/O syntax, and existing procedure-call foundations. Unregistered dependencies explicitly retained: later 15.4.3 specific/generic distinguishability rules, 15.5 argument association, submodules and separate module procedures, accessibility from clause 8, and defined I/O execution semantics."
+    },
+    {
+      "id": "R1510",
+      "title": "GENERIC statements have optional access and a specific procedure list",
+      "source": "S15.4.3.3, J3/24-007, 18 December 2023, physical PDF328.",
+      "source_units": [
+        "R1510"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "A generic-stmt is GENERIC, an optional access-spec, double colon, a generic-spec, =>, and a specific-procedure-list.",
+      "facets": [
+        "generic-stmt-basic-form",
+        "generic-stmt-access-spec",
+        "generic-stmt-specific-procedure-list"
+      ],
+      "pending": {
+        "generic-stmt-basic-form": "Valid control: module m contains GENERIC :: gen => s and a contained subroutine s. Negative source-control removes => only; expect syntax rejection.",
+        "generic-stmt-access-spec": "Valid control: module m contains GENERIC, PUBLIC :: gen => s and a contained subroutine s. Negative source-control writes GENERIC PUBLIC :: gen => s; expect syntax rejection.",
+        "generic-stmt-specific-procedure-list": "Valid control: GENERIC :: gen => s, t lists two contained procedures. Negative source-control leaves GENERIC :: gen => with no procedure name; expect syntax rejection."
+      },
+      "oracle": "Source registration only. Positive plans establish a load-bearing source or runtime state first using distinct procedure results, initialized sentinels, or a conforming compile control, then observe only portable properties: successful compilation, exact scalar results, required rejection of a numbered syntax rule or constraint, or accessibility/use-association effects fixed by the source. Diagnostic plans change one constrained feature from the positive control and do not assert message wording, severity text, or processor-specific status values.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Unnumbered program restrictions are retained as source-control plans and are not promoted to required diagnostic facets. Existing incidental interface/procedure/generic uses in tests remain bound to their current catalogue owners.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 10, 11, 12, and 13 for source form, names, declarations, expressions, execution constructs, I/O syntax, and existing procedure-call foundations. Unregistered dependencies explicitly retained: later 15.4.3 specific/generic distinguishability rules, 15.5 argument association, submodules and separate module procedures, accessibility from clause 8, and defined I/O execution semantics."
+    },
+    {
+      "id": "C1510",
+      "title": "GENERIC statements cannot repeat an accessible procedure for the same generic identifier",
+      "source": "S15.4.3.3, J3/24-007, 18 December 2023, physical PDF328.",
+      "source_units": [
+        "C1510"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "A specific-procedure in a GENERIC statement shall not specify a procedure that was specified previously in any accessible interface with the same generic identifier.",
+      "facets": [
+        "generic-stmt-no-duplicate-accessible-specific"
+      ],
+      "pending": {
+        "generic-stmt-no-duplicate-accessible-specific": "Rejected program: MODULE m contains INTERFACE gen; MODULE PROCEDURE s; END INTERFACE and later GENERIC :: gen => s, with contained distinguishable functions s(i)=42+i and t(l)=.not. l. Positive control keeps the same generic identifier gen and changes only the duplicated specific in the GENERIC statement from s to distinct specific t; calls gen(-5) and gen(.true.) expect exact 37 and .false., proving the legal extension of the same generic."
+      },
+      "oracle": "Source registration only. Positive plans establish a load-bearing source or runtime state first using distinct procedure results, initialized sentinels, or a conforming compile control, then observe only portable properties: successful compilation, exact scalar results, required rejection of a numbered syntax rule or constraint, or accessibility/use-association effects fixed by the source. Diagnostic plans change one constrained feature from the positive control and do not assert message wording, severity text, or processor-specific status values.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Unnumbered program restrictions are retained as source-control plans and are not promoted to required diagnostic facets. Existing incidental interface/procedure/generic uses in tests remain bound to their current catalogue owners.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 10, 11, 12, and 13 for source form, names, declarations, expressions, execution constructs, I/O syntax, and existing procedure-call foundations. Unregistered dependencies explicitly retained: later 15.4.3 specific/generic distinguishability rules, 15.5 argument association, submodules and separate module procedures, accessibility from clause 8, and defined I/O execution semantics."
+    },
+    {
+      "id": "S15.4.3.3-002",
+      "title": "GENERIC statement access specifications set generic accessibility",
+      "source": "S15.4.3.3, J3/24-007, 18 December 2023, physical PDF328.",
+      "source_units": [
+        "p2"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "If access-spec appears in a GENERIC statement, it specifies the accessibility of the generic-spec.",
+      "facets": [
+        "generic-stmt-public-accessibility",
+        "generic-stmt-private-accessibility"
+      ],
+      "pending": {
+        "generic-stmt-public-accessibility": "Compile/run provider module with PRIVATE default and GENERIC, PUBLIC :: gen => s where s(i)=42+i; client USEs gen and call gen(-5) changes sentinel to exact 37. Companion direct provider-internal call s(-5) also returns 37, while a hidden local gen returning 5 would expose wrong accessibility resolution.",
+        "generic-stmt-private-accessibility": "Negative source-control: change only PUBLIC to PRIVATE in that provider and keep client USE of gen; expect accessibility rejection without asserting diagnostic wording. Positive companion keeps PUBLIC and uses s(i)=42+i with gen(-5) returning exact 37 so a wrong private/local resolution is observable."
+      },
+      "oracle": "Source registration only. Positive plans establish a load-bearing source or runtime state first using distinct procedure results, initialized sentinels, or a conforming compile control, then observe only portable properties: successful compilation, exact scalar results, required rejection of a numbered syntax rule or constraint, or accessibility/use-association effects fixed by the source. Diagnostic plans change one constrained feature from the positive control and do not assert message wording, severity text, or processor-specific status values.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Unnumbered program restrictions are retained as source-control plans and are not promoted to required diagnostic facets. Existing incidental interface/procedure/generic uses in tests remain bound to their current catalogue owners.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 10, 11, 12, and 13 for source form, names, declarations, expressions, execution constructs, I/O syntax, and existing procedure-call foundations. Unregistered dependencies explicitly retained: later 15.4.3 specific/generic distinguishability rules, 15.5 argument association, submodules and separate module procedures, accessibility from clause 8, and defined I/O execution semantics."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.4.3.3-001"
+      ]
+    },
+    {
+      "unit": "R1510",
+      "disposition": "requirements",
+      "requirements": [
+        "R1510"
+      ]
+    },
+    {
+      "unit": "C1510",
+      "disposition": "requirements",
+      "requirements": [
+        "C1510"
+      ]
+    },
+    {
+      "unit": "p2",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.4.3.3-002"
+      ]
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_15_4_3_3.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "5705f856c55de7c05cee91d4fd2ed5e5937594b8907f0987a9fd2cc961bcfd5e",
+  "review_rationale": "Source registration for 15.4.3.2 (interface block) and 15.4.3.3 (GENERIC statement) (batch221). Every unit hash-verified by an independent reviewer across two rounds; R1501-R1510 and C1501-C1510 had no existing tests and carry diagnostic plans whose controls differ from the rejected program in exactly the constrained feature. Source accounting only."
+}

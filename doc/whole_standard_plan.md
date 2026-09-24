@@ -5899,6 +5899,11 @@ See `doc/source_audits/batch_234.json`.
 Forty-two units after three rounds. Two subtle rules came out of it: the halting preamble has to cover the flag a row expects to raise, not just the ones it expects quiet; and an IEEE format need not be binary, so IEEE_LOGB(8.0) == 3.0 is not a portable expectation while IEEE_LOGB(1.0) == 0.0 is.
 See `doc/source_audits/batch_227.json`.
 
+## Batch 221 — Interface block and GENERIC statement (15.4.3.2-15.4.3.3)
+
+Thirty-one units, twenty numbered, after two rounds. Its findings produced the rule now applied to every Clause 15 constraint: the positive control must be the rejected program with the one constrained feature changed — same names, same form, same generic identifier. A control that renames the generic proves the new name is fine, not that the constraint is enforced.
+See `doc/source_audits/batch_221.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
