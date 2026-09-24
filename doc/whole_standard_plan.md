@@ -6124,6 +6124,11 @@ See `doc/source_audits/batch_281.json`.
 Thirty-two programs, fifty-seven facets, four rounds. BGE(-1,1) is true: the bit model does not know about signs, and a compiler that compares signed integers gets it wrong.
 See `doc/source_audits/batch_274.json`.
 
+## Batch 283 — Use, host, linkage and construct association fixtures 19.5.1.3-19.5.1.6
+
+Thirty-one programs, forty-three facets, four LFortran defects. Every name that host association could resolve has its own value, so a compiler that reaches the wrong scope prints the wrong one.
+See `doc/source_audits/batch_283.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
