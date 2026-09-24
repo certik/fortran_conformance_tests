@@ -5924,6 +5924,11 @@ See `doc/source_audits/batch_230.json`.
 Thirty-eight units, twenty-two numbered, after two rounds. The instance-independence plan is a neat discriminator: a recursive subroutine that saves n in an unsaved local before recursing returns [1,2,3] only if every instance has its own local; a processor that shared it would give [1,1,1].
 See `doc/source_audits/batch_235.json`.
 
+## Batch 237 — Pure, simple and elemental procedures (15.7-15.9.3)
+
+Forty-seven units, thirty numbered, after two rounds. Pure and simple procedures are defined almost entirely by constraints, so the packet is mostly rejected-program/control pairs; the review found two controls that changed more than the constrained feature, and one exception control that never exercised the exception.
+See `doc/source_audits/batch_237.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must

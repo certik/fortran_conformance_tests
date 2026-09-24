@@ -1,0 +1,85 @@
+{
+  "schema_version": 1,
+  "section": "15.9.2",
+  "subunits": {
+    "p1": [
+      "p1.result-shape",
+      "p1.scalar-result",
+      "p1.elementwise-array-values"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S15.9.2-001",
+      "title": "Elemental function references have scalar or greatest-rank result shape and elementwise values",
+      "source": "15.9.2 p1.result-shape; J3/24-007, 18 December 2023 PDF p362.",
+      "source_units": [
+        "p1.result-shape",
+        "p1.scalar-result",
+        "p1.elementwise-array-values"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "An elemental function reference has result shape matching the actual argument of greatest rank, or scalar result for no actual arguments or all scalar actual arguments; in the array case, result elements have the values obtained by applying the scalar function separately in array element order to corresponding array actual elements.",
+      "facets": [
+        "elemental-function-scalar-result",
+        "elemental-function-result-shape-greatest-rank",
+        "elemental-function-array-scalar-mixing-values",
+        "elemental-function-conformable-array-values",
+        "elemental-function-empty-array-result"
+      ],
+      "pending": {
+        "elemental-function-scalar-result": "PENDING positive plan: ELEMENTAL integer function affine(x,y)=10*x+y called with scalar x=3 and y=4 initializes result sentinel -1 and expects exact scalar 34.",
+        "elemental-function-result-shape-greatest-rank": "PENDING positive plan: x(0:1,-1:1) has shape [2,3]; assert SHAPE(affine(x,7)) is exactly [2,3] before assigning to y(0:1,-1:1).",
+        "elemental-function-array-scalar-mixing-values": "PENDING positive plan: with x(0,-1)=1, x(1,-1)=2, x(0,0)=3, x(1,0)=4, x(0,1)=5, x(1,1)=6 and scalar y=7, assignment z=affine(x,7) changes z sentinels to exact values 17,27,37,47,57,67 at the corresponding non-unit-bound subscripts.",
+        "elemental-function-conformable-array-values": "PENDING positive plan: affine(a,b) with a=[1,2,3] and b=[10,20,30] returns exact [20,40,60], proving corresponding elements from both conformable arrays are used.",
+        "elemental-function-empty-array-result": "PENDING positive plan: call elemental inc on integer array x(1:0) and assert SIZE(inc(x)) == 0, with no element-value oracle claimed for absent elements."
+      },
+      "oracle": "The non-unit-bound plan is hand-computed: affine(x,7)=10*x+7, so x values 1..6 in column-major positions produce 17, 27, 37, 47, 57, and 67 at matching target subscripts. The shape oracle uses SHAPE, not lower bounds of an expression.",
+      "oracle_limitation": "This source registration creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Future fixture packets must keep diagnostic controls one-feature, use distinct sentinels before observation, and avoid processor-dependent addresses, file units, finalization order text, diagnostic wording, C symbol details, and coarray/image/team runtime observations.",
+      "dependencies": "Registered dependencies: clauses 6-11 for source form, declarations, expressions, execution constructs, arrays, pointers, allocation, and association; 15.3-15.6 for procedure characteristics, interfaces, argument association, and subprogram definition; 16 for intrinsic procedure classifications and ISO_C_BINDING procedures; 18 for C interoperability where C_LOC or C_FUNLOC is referenced; 19 for scope, host/use association, common, storage association, finalization, and variable definition contexts; 4.2 for required diagnostics."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "structural",
+      "rationale": "Result shape, scalar-result, and elementwise value semantics are split into fine units."
+    },
+    {
+      "unit": "p1.result-shape",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.9.2-001"
+      ],
+      "rationale": "Defines result shape from the actual argument of greatest rank."
+    },
+    {
+      "unit": "p1.scalar-result",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.9.2-001"
+      ],
+      "rationale": "Defines scalar result cases."
+    },
+    {
+      "unit": "p1.elementwise-array-values",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.9.2-001"
+      ],
+      "rationale": "Defines exact elementwise array result values in array element order."
+    },
+    {
+      "unit": "note-unnumbered",
+      "disposition": "informative",
+      "rationale": "The MAX example is informative; the normative p1 text owns the result-shape and elementwise semantics."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_15_9_2.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "5dff5593db1c4b53ec9aa9fff492bad8c0d51301069676c46837dae7f762f21e",
+  "review_rationale": "Source registration for 15.7 (pure procedures), 15.8 (simple procedures), 15.9 and 15.9.1-15.9.3 (elemental procedures) (batch237). Every unit hash-verified by an independent reviewer across two rounds; C1592-C15121 had no existing tests and carry conforming one-feature diagnostic plans, only their coarray alternatives are out of scope, and elemental semantics are exact. Source accounting only."
+}

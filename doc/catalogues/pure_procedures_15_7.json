@@ -1,0 +1,762 @@
+{
+  "schema_version": 1,
+  "section": "15.7",
+  "subunits": {
+    "p2": [
+      "p2.pure-subprogram-forms",
+      "p2.additional-constraints-introduction"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S15.7-001",
+      "title": "The listed procedure categories are pure procedures",
+      "source": "15.7 p1; J3/24-007, 18 December 2023 PDF p359.",
+      "source_units": [
+        "p1"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A pure procedure is a simple procedure, a specified pure intrinsic or intrinsic-module procedure, a procedure defined by a pure subprogram, a dummy procedure or procedure pointer specified PURE, a type-bound procedure bound to a pure procedure, or a statement function that references only pure functions and contains no VOLATILE variable designator.",
+      "facets": [
+        "simple-procedure-is-pure",
+        "specified-pure-intrinsic-is-pure",
+        "intrinsic-module-procedure-specified-pure-is-pure",
+        "pure-subprogram-defines-pure-procedure",
+        "dummy-procedure-specified-pure-is-pure",
+        "procedure-pointer-specified-pure-is-pure",
+        "type-bound-to-pure-procedure-is-pure",
+        "statement-function-pure-reference-no-volatile-is-pure"
+      ],
+      "pending": {
+        "simple-procedure-is-pure": "PENDING positive source-use plan: SIMPLE integer function inc(n) returns n+1 and is referenced inside PURE function caller, with result sentinel -9 changed to exact 6 for input 5.",
+        "specified-pure-intrinsic-is-pure": "PENDING positive source-use plan: PURE function caller returns ABS(-7) through sentinel -99, using ABS as a pure intrinsic with exact result 7.",
+        "intrinsic-module-procedure-specified-pure-is-pure": "PENDING source-use plan: use an intrinsic module procedure documented pure by clause 16 in a PURE wrapper and observe an exact scalar result owned by that intrinsic catalogue.",
+        "pure-subprogram-defines-pure-procedure": "PENDING positive source-use plan: PURE integer function add1(n) returns n+1 and another PURE procedure calls it, expecting exact 12 from input 11.",
+        "dummy-procedure-specified-pure-is-pure": "PENDING positive source-use plan: PURE subroutine apply has a PURE dummy procedure op; caller passes PURE inc and observes integer sentinel -4 changed to exact 4.",
+        "procedure-pointer-specified-pure-is-pure": "PENDING positive source-use plan: procedure pointer declared PURE => inc is invoked from a PURE function and returns exact 10 from input 9.",
+        "type-bound-to-pure-procedure-is-pure": "PENDING positive source-use plan: type-bound procedure value bound to PURE module function returns exact component value 23 inside a PURE wrapper.",
+        "statement-function-pure-reference-no-volatile-is-pure": "PENDING source-use plan: statement function sf(x)=abs(x)+1 inside a pure-safe host uses only pure ABS and no VOLATILE designator; sentinel -8 becomes exact 8 for x=-7."
+      },
+      "oracle": "Plans are source-derived pending evidence. Positive plans establish a non-default state first, then observe exact integer, logical, character length plus value, array shape, array bounds, or source admission. Diagnostic plans use a conforming control differing only in the constrained feature and do not compare diagnostic text or exit-status details.",
+      "oracle_limitation": "This source registration creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Future fixture packets must keep diagnostic controls one-feature, use distinct sentinels before observation, and avoid processor-dependent addresses, file units, finalization order text, diagnostic wording, C symbol details, and coarray/image/team runtime observations.",
+      "dependencies": "Registered dependencies: clauses 6-11 for source form, declarations, expressions, execution constructs, arrays, pointers, allocation, and association; 15.3-15.6 for procedure characteristics, interfaces, argument association, and subprogram definition; 16 for intrinsic procedure classifications and ISO_C_BINDING procedures; 18 for C interoperability where C_LOC or C_FUNLOC is referenced; 19 for scope, host/use association, common, storage association, finalization, and variable definition contexts; 4.2 for required diagnostics."
+    },
+    {
+      "id": "S15.7-002",
+      "title": "PURE, SIMPLE, and non-IMPURE ELEMENTAL prefixes define pure subprograms",
+      "source": "15.7 p2.pure-subprogram-forms; J3/24-007, 18 December 2023 PDF p359.",
+      "source_units": [
+        "p2.pure-subprogram-forms"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A pure subprogram is a subprogram with prefix-spec PURE or SIMPLE, or with prefix-spec ELEMENTAL and without prefix-spec IMPURE.",
+      "facets": [
+        "pure-prefix-makes-pure-subprogram",
+        "simple-prefix-makes-pure-subprogram",
+        "elemental-without-impure-makes-pure-subprogram"
+      ],
+      "pending": {
+        "pure-prefix-makes-pure-subprogram": "PENDING positive source-use plan: PURE integer function inc returns n+1 and is called inside another PURE procedure, changing sentinel -1 to exact 3 for n=2.",
+        "simple-prefix-makes-pure-subprogram": "PENDING positive source-use plan: SIMPLE integer function inc returns n+2 and is called inside a PURE procedure, changing sentinel -1 to exact 5 for n=3.",
+        "elemental-without-impure-makes-pure-subprogram": "PENDING positive source-use plan: ELEMENTAL integer function inc returns n+1 and is called from a PURE wrapper on scalar 6, expecting exact 7; companion with IMPURE is a source-control contrast credited to contexts requiring purity."
+      },
+      "oracle": "Plans are source-derived pending evidence. Positive plans establish a non-default state first, then observe exact integer, logical, character length plus value, array shape, array bounds, or source admission. Diagnostic plans use a conforming control differing only in the constrained feature and do not compare diagnostic text or exit-status details.",
+      "oracle_limitation": "This source registration creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Future fixture packets must keep diagnostic controls one-feature, use distinct sentinels before observation, and avoid processor-dependent addresses, file units, finalization order text, diagnostic wording, C symbol details, and coarray/image/team runtime observations.",
+      "dependencies": "Registered dependencies: clauses 6-11 for source form, declarations, expressions, execution constructs, arrays, pointers, allocation, and association; 15.3-15.6 for procedure characteristics, interfaces, argument association, and subprogram definition; 16 for intrinsic procedure classifications and ISO_C_BINDING procedures; 18 for C interoperability where C_LOC or C_FUNLOC is referenced; 19 for scope, host/use association, common, storage association, finalization, and variable definition contexts; 4.2 for required diagnostics."
+    },
+    {
+      "id": "C1592",
+      "title": "Pure function nonpointer dummy data objects have INTENT(IN) or VALUE",
+      "source": "15.7 C1592; J3/24-007, 18 December 2023 PDF p359.",
+      "source_units": [
+        "C1592"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "The specification part of a pure function subprogram shall specify INTENT(IN) or VALUE for every nonpointer dummy data object.",
+      "facets": [
+        "pure-function-dummy-intent-in-control",
+        "pure-function-dummy-value-control",
+        "pure-function-dummy-missing-intent-value-rejected"
+      ],
+      "pending": {
+        "pure-function-dummy-intent-in-control": "PENDING conforming control: PURE integer function f(x) has INTEGER, INTENT(IN) :: x and returns exact x+1; caller observes sentinel -9 changed to 5 for x=4.",
+        "pure-function-dummy-value-control": "PENDING conforming control: same PURE function body uses INTEGER, VALUE :: x and returns exact 5 for x=4.",
+        "pure-function-dummy-missing-intent-value-rejected": "PENDING diagnostic/control pair: rejected program is identical to the INTENT(IN) control except the INTENT(IN) attribute is removed from dummy x; control restores only INTENT(IN)."
+      },
+      "oracle": "Plans are source-derived pending evidence. Positive plans establish a non-default state first, then observe exact integer, logical, character length plus value, array shape, array bounds, or source admission. Diagnostic plans use a conforming control differing only in the constrained feature and do not compare diagnostic text or exit-status details.",
+      "oracle_limitation": "This source registration creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Future fixture packets must keep diagnostic controls one-feature, use distinct sentinels before observation, and avoid processor-dependent addresses, file units, finalization order text, diagnostic wording, C symbol details, and coarray/image/team runtime observations.",
+      "dependencies": "Registered dependencies: clauses 6-11 for source form, declarations, expressions, execution constructs, arrays, pointers, allocation, and association; 15.3-15.6 for procedure characteristics, interfaces, argument association, and subprogram definition; 16 for intrinsic procedure classifications and ISO_C_BINDING procedures; 18 for C interoperability where C_LOC or C_FUNLOC is referenced; 19 for scope, host/use association, common, storage association, finalization, and variable definition contexts; 4.2 for required diagnostics."
+    },
+    {
+      "id": "C1593",
+      "title": "Pure function results do not finalize by referencing impure procedures",
+      "source": "15.7 C1593; J3/24-007, 18 December 2023 PDF p359.",
+      "source_units": [
+        "C1593"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "The function result of a pure function shall not be such that finalization of a reference to the function would reference an impure procedure.",
+      "facets": [
+        "pure-function-result-pure-final-control",
+        "pure-function-result-impure-final-rejected"
+      ],
+      "pending": {
+        "pure-function-result-pure-final-control": "PENDING conforming control: type t has PURE FINAL subroutine finish; PURE function make() RESULT(r) returns TYPE(t); caller references make() in an assignment context.",
+        "pure-function-result-impure-final-rejected": "PENDING diagnostic/control pair: rejected program is identical except the FINAL subroutine finish lacks PURE, so finalization of make() would reference an impure procedure; control adds only PURE."
+      },
+      "oracle": "Plans are source-derived pending evidence. Positive plans establish a non-default state first, then observe exact integer, logical, character length plus value, array shape, array bounds, or source admission. Diagnostic plans use a conforming control differing only in the constrained feature and do not compare diagnostic text or exit-status details.",
+      "oracle_limitation": "This source registration creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Future fixture packets must keep diagnostic controls one-feature, use distinct sentinels before observation, and avoid processor-dependent addresses, file units, finalization order text, diagnostic wording, C symbol details, and coarray/image/team runtime observations.",
+      "dependencies": "Registered dependencies: clauses 6-11 for source form, declarations, expressions, execution constructs, arrays, pointers, allocation, and association; 15.3-15.6 for procedure characteristics, interfaces, argument association, and subprogram definition; 16 for intrinsic procedure classifications and ISO_C_BINDING procedures; 18 for C interoperability where C_LOC or C_FUNLOC is referenced; 19 for scope, host/use association, common, storage association, finalization, and variable definition contexts; 4.2 for required diagnostics."
+    },
+    {
+      "id": "C1594",
+      "title": "Pure function results exclude polymorphic allocatable results and polymorphic allocatable ultimate components",
+      "source": "15.7 C1594; J3/24-007, 18 December 2023 PDF p359.",
+      "source_units": [
+        "C1594"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "The function result of a pure function shall not be both polymorphic and allocatable and shall not have a polymorphic allocatable ultimate component.",
+      "facets": [
+        "pure-function-nonpolymorphic-allocatable-result-control",
+        "pure-function-polymorphic-allocatable-result-rejected",
+        "pure-function-nonpolymorphic-component-control",
+        "pure-function-polymorphic-allocatable-component-rejected"
+      ],
+      "pending": {
+        "pure-function-nonpolymorphic-allocatable-result-control": "PENDING conforming control: PURE function make() RESULT(r) has TYPE(t), ALLOCATABLE :: r, allocates r, and caller observes exact component value 31 after allocation status starts false.",
+        "pure-function-polymorphic-allocatable-result-rejected": "PENDING diagnostic/control pair: rejected program is identical to the result control except TYPE(t), ALLOCATABLE result r is changed to CLASS(t), ALLOCATABLE; control restores only nonpolymorphic TYPE(t).",
+        "pure-function-nonpolymorphic-component-control": "PENDING conforming control: result TYPE(box) contains TYPE(t), ALLOCATABLE component c; PURE make allocates c and sets exact component sentinel 32.",
+        "pure-function-polymorphic-allocatable-component-rejected": "PENDING diagnostic/control pair: rejected program is identical except component c is CLASS(t), ALLOCATABLE; control restores only TYPE(t)."
+      },
+      "oracle": "Plans are source-derived pending evidence. Positive plans establish a non-default state first, then observe exact integer, logical, character length plus value, array shape, array bounds, or source admission. Diagnostic plans use a conforming control differing only in the constrained feature and do not compare diagnostic text or exit-status details.",
+      "oracle_limitation": "This source registration creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Future fixture packets must keep diagnostic controls one-feature, use distinct sentinels before observation, and avoid processor-dependent addresses, file units, finalization order text, diagnostic wording, C symbol details, and coarray/image/team runtime observations.",
+      "dependencies": "Registered dependencies: clauses 6-11 for source form, declarations, expressions, execution constructs, arrays, pointers, allocation, and association; 15.3-15.6 for procedure characteristics, interfaces, argument association, and subprogram definition; 16 for intrinsic procedure classifications and ISO_C_BINDING procedures; 18 for C interoperability where C_LOC or C_FUNLOC is referenced; 19 for scope, host/use association, common, storage association, finalization, and variable definition contexts; 4.2 for required diagnostics."
+    },
+    {
+      "id": "C1595",
+      "title": "Pure subroutine nonpointer non-VALUE dummy data objects have intents",
+      "source": "15.7 C1595; J3/24-007, 18 December 2023 PDF p359.",
+      "source_units": [
+        "C1595"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "The specification part of a pure subroutine subprogram shall specify the intents of all nonpointer dummy data objects that do not have VALUE.",
+      "facets": [
+        "pure-subroutine-intent-control",
+        "pure-subroutine-value-control",
+        "pure-subroutine-missing-intent-rejected"
+      ],
+      "pending": {
+        "pure-subroutine-intent-control": "PENDING conforming control: PURE subroutine s(x) has INTEGER, INTENT(INOUT) :: x and changes caller sentinel -3 to exact 4.",
+        "pure-subroutine-value-control": "PENDING conforming control: PURE subroutine s(x,y) has INTEGER, VALUE :: x and INTEGER, INTENT(OUT) :: y; y sentinel -7 becomes exact x+1 = 5.",
+        "pure-subroutine-missing-intent-rejected": "PENDING diagnostic/control pair: rejected program is identical to the INTENT(INOUT) control except INTENT(INOUT) is removed from dummy x; control restores only that intent."
+      },
+      "oracle": "Plans are source-derived pending evidence. Positive plans establish a non-default state first, then observe exact integer, logical, character length plus value, array shape, array bounds, or source admission. Diagnostic plans use a conforming control differing only in the constrained feature and do not compare diagnostic text or exit-status details.",
+      "oracle_limitation": "This source registration creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Future fixture packets must keep diagnostic controls one-feature, use distinct sentinels before observation, and avoid processor-dependent addresses, file units, finalization order text, diagnostic wording, C symbol details, and coarray/image/team runtime observations.",
+      "dependencies": "Registered dependencies: clauses 6-11 for source form, declarations, expressions, execution constructs, arrays, pointers, allocation, and association; 15.3-15.6 for procedure characteristics, interfaces, argument association, and subprogram definition; 16 for intrinsic procedure classifications and ISO_C_BINDING procedures; 18 for C interoperability where C_LOC or C_FUNLOC is referenced; 19 for scope, host/use association, common, storage association, finalization, and variable definition contexts; 4.2 for required diagnostics."
+    },
+    {
+      "id": "C1596",
+      "title": "Pure INTENT(OUT) dummies do not finalize actual arguments through impure procedures",
+      "source": "15.7 C1596; J3/24-007, 18 December 2023 PDF p359.",
+      "source_units": [
+        "C1596"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "An INTENT(OUT) dummy argument of a pure procedure shall not be such that finalization of the actual argument would reference an impure procedure.",
+      "facets": [
+        "pure-intent-out-pure-final-control",
+        "pure-intent-out-impure-final-rejected"
+      ],
+      "pending": {
+        "pure-intent-out-pure-final-control": "PENDING conforming control: type t has PURE FINAL finish; PURE subroutine clear(x) has TYPE(t), INTENT(OUT) :: x; caller passes a defined t value.",
+        "pure-intent-out-impure-final-rejected": "PENDING diagnostic/control pair: rejected program is identical except final subroutine finish lacks PURE, so INTENT(OUT) actual finalization would reference impure finish; control adds only PURE."
+      },
+      "oracle": "Plans are source-derived pending evidence. Positive plans establish a non-default state first, then observe exact integer, logical, character length plus value, array shape, array bounds, or source admission. Diagnostic plans use a conforming control differing only in the constrained feature and do not compare diagnostic text or exit-status details.",
+      "oracle_limitation": "This source registration creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Future fixture packets must keep diagnostic controls one-feature, use distinct sentinels before observation, and avoid processor-dependent addresses, file units, finalization order text, diagnostic wording, C symbol details, and coarray/image/team runtime observations.",
+      "dependencies": "Registered dependencies: clauses 6-11 for source form, declarations, expressions, execution constructs, arrays, pointers, allocation, and association; 15.3-15.6 for procedure characteristics, interfaces, argument association, and subprogram definition; 16 for intrinsic procedure classifications and ISO_C_BINDING procedures; 18 for C interoperability where C_LOC or C_FUNLOC is referenced; 19 for scope, host/use association, common, storage association, finalization, and variable definition contexts; 4.2 for required diagnostics."
+    },
+    {
+      "id": "C1597",
+      "title": "Pure INTENT(OUT) dummies exclude polymorphism and polymorphic allocatable ultimate components",
+      "source": "15.7 C1597; J3/24-007, 18 December 2023 PDF p360.",
+      "source_units": [
+        "C1597"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "An INTENT(OUT) dummy argument of a pure procedure shall not be polymorphic and shall not have a polymorphic allocatable ultimate component.",
+      "facets": [
+        "pure-intent-out-nonpolymorphic-control",
+        "pure-intent-out-polymorphic-rejected",
+        "pure-intent-out-nonpolymorphic-component-control",
+        "pure-intent-out-polymorphic-allocatable-component-rejected"
+      ],
+      "pending": {
+        "pure-intent-out-nonpolymorphic-control": "PENDING conforming control: PURE subroutine set(x) has TYPE(t), INTENT(OUT) :: x and assigns exact component value 41.",
+        "pure-intent-out-polymorphic-rejected": "PENDING diagnostic/control pair: rejected program is identical except dummy x is CLASS(t), INTENT(OUT); control restores only TYPE(t).",
+        "pure-intent-out-nonpolymorphic-component-control": "PENDING conforming control: PURE subroutine set(x) has TYPE(box), INTENT(OUT) :: x, with TYPE(t), ALLOCATABLE component c assigned exact value 42 after allocation.",
+        "pure-intent-out-polymorphic-allocatable-component-rejected": "PENDING diagnostic/control pair: rejected program is identical except component c is CLASS(t), ALLOCATABLE; control restores only TYPE(t)."
+      },
+      "oracle": "Plans are source-derived pending evidence. Positive plans establish a non-default state first, then observe exact integer, logical, character length plus value, array shape, array bounds, or source admission. Diagnostic plans use a conforming control differing only in the constrained feature and do not compare diagnostic text or exit-status details.",
+      "oracle_limitation": "This source registration creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Future fixture packets must keep diagnostic controls one-feature, use distinct sentinels before observation, and avoid processor-dependent addresses, file units, finalization order text, diagnostic wording, C symbol details, and coarray/image/team runtime observations.",
+      "dependencies": "Registered dependencies: clauses 6-11 for source form, declarations, expressions, execution constructs, arrays, pointers, allocation, and association; 15.3-15.6 for procedure characteristics, interfaces, argument association, and subprogram definition; 16 for intrinsic procedure classifications and ISO_C_BINDING procedures; 18 for C interoperability where C_LOC or C_FUNLOC is referenced; 19 for scope, host/use association, common, storage association, finalization, and variable definition contexts; 4.2 for required diagnostics."
+    },
+    {
+      "id": "C1598",
+      "title": "Pure subprogram local and block variables do not have SAVE or VOLATILE",
+      "source": "15.7 C1598; J3/24-007, 18 December 2023 PDF p360.",
+      "source_units": [
+        "C1598"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "A local variable of a pure subprogram or of a BLOCK construct within a pure subprogram shall not have the SAVE or VOLATILE attribute.",
+      "facets": [
+        "pure-local-without-save-volatile-control",
+        "pure-local-save-rejected",
+        "pure-local-volatile-rejected",
+        "pure-block-save-rejected",
+        "pure-block-volatile-rejected"
+      ],
+      "pending": {
+        "pure-local-without-save-volatile-control": "PENDING conforming control: PURE integer function f() declares local INTEGER :: x, assigns x=52, and returns exact 52.",
+        "pure-local-save-rejected": "PENDING diagnostic/control pair: rejected program is identical except local x has SAVE; control removes only SAVE.",
+        "pure-local-volatile-rejected": "PENDING diagnostic/control pair: rejected program is identical except local x has VOLATILE; control removes only VOLATILE.",
+        "pure-block-save-rejected": "PENDING diagnostic/control pair: PURE function contains BLOCK with INTEGER, SAVE :: x; control removes only SAVE inside the BLOCK.",
+        "pure-block-volatile-rejected": "PENDING diagnostic/control pair: PURE function contains BLOCK with INTEGER, VOLATILE :: x; control removes only VOLATILE inside the BLOCK."
+      },
+      "oracle": "Plans are source-derived pending evidence. Positive plans establish a non-default state first, then observe exact integer, logical, character length plus value, array shape, array bounds, or source admission. Diagnostic plans use a conforming control differing only in the constrained feature and do not compare diagnostic text or exit-status details.",
+      "oracle_limitation": "This source registration creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Future fixture packets must keep diagnostic controls one-feature, use distinct sentinels before observation, and avoid processor-dependent addresses, file units, finalization order text, diagnostic wording, C symbol details, and coarray/image/team runtime observations.",
+      "dependencies": "Registered dependencies: clauses 6-11 for source form, declarations, expressions, execution constructs, arrays, pointers, allocation, and association; 15.3-15.6 for procedure characteristics, interfaces, argument association, and subprogram definition; 16 for intrinsic procedure classifications and ISO_C_BINDING procedures; 18 for C interoperability where C_LOC or C_FUNLOC is referenced; 19 for scope, host/use association, common, storage association, finalization, and variable definition contexts; 4.2 for required diagnostics."
+    },
+    {
+      "id": "C1599",
+      "title": "Pure subprogram named local and construct entities exclude default-initialized pointer components targeting a data target",
+      "source": "15.7 C1599; J3/24-007, 18 December 2023 PDF p360.",
+      "source_units": [
+        "C1599"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "A named local entity or construct entity of a pure subprogram shall not be of a type that has default initialization of a data pointer component to a target at any level of component selection.",
+      "facets": [
+        "pure-local-null-pointer-default-control",
+        "pure-local-pointer-default-target-rejected",
+        "pure-block-pointer-default-target-rejected",
+        "pure-nested-pointer-default-target-rejected"
+      ],
+      "pending": {
+        "pure-local-null-pointer-default-control": "PENDING conforming control: module defines type t with INTEGER, POINTER :: p => NULL(); PURE subroutine s declares local TYPE(t) :: x and never dereferences p.",
+        "pure-local-pointer-default-target-rejected": "PENDING diagnostic/control pair: rejected program is identical except component p defaults to a named SAVE TARGET integer; control changes only the pointer initialization back to NULL().",
+        "pure-block-pointer-default-target-rejected": "PENDING diagnostic/control pair: same type t with p defaulting to a target is used for a named BLOCK entity inside PURE subroutine; control changes only p => NULL().",
+        "pure-nested-pointer-default-target-rejected": "PENDING diagnostic/control pair: TYPE(outer) has component mid of TYPE(t) at one level of component selection; t%p defaults to a target. Control changes only t%p to NULL()."
+      },
+      "oracle": "Plans are source-derived pending evidence. Positive plans establish a non-default state first, then observe exact integer, logical, character length plus value, array shape, array bounds, or source admission. Diagnostic plans use a conforming control differing only in the constrained feature and do not compare diagnostic text or exit-status details.",
+      "oracle_limitation": "This source registration creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Future fixture packets must keep diagnostic controls one-feature, use distinct sentinels before observation, and avoid processor-dependent addresses, file units, finalization order text, diagnostic wording, C symbol details, and coarray/image/team runtime observations.",
+      "dependencies": "Registered dependencies: clauses 6-11 for source form, declarations, expressions, execution constructs, arrays, pointers, allocation, and association; 15.3-15.6 for procedure characteristics, interfaces, argument association, and subprogram definition; 16 for intrinsic procedure classifications and ISO_C_BINDING procedures; 18 for C interoperability where C_LOC or C_FUNLOC is referenced; 19 for scope, host/use association, common, storage association, finalization, and variable definition contexts; 4.2 for required diagnostics."
+    },
+    {
+      "id": "C15100",
+      "title": "Pure subprogram dummy procedures are specified pure",
+      "source": "15.7 C15100; J3/24-007, 18 December 2023 PDF p360.",
+      "source_units": [
+        "C15100"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "The specification part of a pure subprogram shall specify that all dummy procedures are pure.",
+      "facets": [
+        "pure-dummy-procedure-control",
+        "pure-dummy-procedure-not-specified-pure-rejected"
+      ],
+      "pending": {
+        "pure-dummy-procedure-control": "PENDING conforming control: PURE subroutine apply(op,x) has an interface declaring PURE integer function op(n); passing PURE inc changes x sentinel -6 to exact 6.",
+        "pure-dummy-procedure-not-specified-pure-rejected": "PENDING diagnostic/control pair: rejected program is identical except PURE is removed from the dummy procedure interface for op; control restores only PURE."
+      },
+      "oracle": "Plans are source-derived pending evidence. Positive plans establish a non-default state first, then observe exact integer, logical, character length plus value, array shape, array bounds, or source admission. Diagnostic plans use a conforming control differing only in the constrained feature and do not compare diagnostic text or exit-status details.",
+      "oracle_limitation": "This source registration creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Future fixture packets must keep diagnostic controls one-feature, use distinct sentinels before observation, and avoid processor-dependent addresses, file units, finalization order text, diagnostic wording, C symbol details, and coarray/image/team runtime observations.",
+      "dependencies": "Registered dependencies: clauses 6-11 for source form, declarations, expressions, execution constructs, arrays, pointers, allocation, and association; 15.3-15.6 for procedure characteristics, interfaces, argument association, and subprogram definition; 16 for intrinsic procedure classifications and ISO_C_BINDING procedures; 18 for C interoperability where C_LOC or C_FUNLOC is referenced; 19 for scope, host/use association, common, storage association, finalization, and variable definition contexts; 4.2 for required diagnostics."
+    },
+    {
+      "id": "C15101",
+      "title": "Nonintrinsic non-statement-function procedures used as pure have explicit pure interfaces",
+      "source": "15.7 C15101; J3/24-007, 18 December 2023 PDF p360.",
+      "source_units": [
+        "C15101"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "A procedure that is neither intrinsic nor a statement function and is used in a context requiring purity shall have an explicit interface in that scope, and the interface shall specify PURE.",
+      "facets": [
+        "required-pure-explicit-pure-interface-control",
+        "required-pure-missing-explicit-interface-rejected",
+        "required-pure-interface-not-pure-rejected"
+      ],
+      "pending": {
+        "required-pure-explicit-pure-interface-control": "PENDING conforming control: PURE function caller has an explicit PURE interface for integer function g(n), calls g(4), and returns exact 8.",
+        "required-pure-missing-explicit-interface-rejected": "PENDING diagnostic/control pair: rejected PURE caller invokes external g through only an EXTERNAL declaration; control adds the explicit PURE interface and keeps the call and result exact 8.",
+        "required-pure-interface-not-pure-rejected": "PENDING diagnostic/control pair: rejected program keeps the explicit interface for g but omits PURE; control adds only PURE to the interface."
+      },
+      "oracle": "Plans are source-derived pending evidence. Positive plans establish a non-default state first, then observe exact integer, logical, character length plus value, array shape, array bounds, or source admission. Diagnostic plans use a conforming control differing only in the constrained feature and do not compare diagnostic text or exit-status details.",
+      "oracle_limitation": "This source registration creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Future fixture packets must keep diagnostic controls one-feature, use distinct sentinels before observation, and avoid processor-dependent addresses, file units, finalization order text, diagnostic wording, C symbol details, and coarray/image/team runtime observations.",
+      "dependencies": "Registered dependencies: clauses 6-11 for source form, declarations, expressions, execution constructs, arrays, pointers, allocation, and association; 15.3-15.6 for procedure characteristics, interfaces, argument association, and subprogram definition; 16 for intrinsic procedure classifications and ISO_C_BINDING procedures; 18 for C interoperability where C_LOC or C_FUNLOC is referenced; 19 for scope, host/use association, common, storage association, finalization, and variable definition contexts; 4.2 for required diagnostics."
+    },
+    {
+      "id": "C15102",
+      "title": "Internal subprograms in pure subprograms are pure",
+      "source": "15.7 C15102; J3/24-007, 18 December 2023 PDF p360.",
+      "source_units": [
+        "C15102"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "All internal subprograms in a pure subprogram shall be pure.",
+      "facets": [
+        "pure-internal-subprogram-control",
+        "pure-internal-subprogram-not-pure-rejected"
+      ],
+      "pending": {
+        "pure-internal-subprogram-control": "PENDING conforming control: PURE function outer contains PURE internal function inner returning n+1; outer returns exact 10 for n=9.",
+        "pure-internal-subprogram-not-pure-rejected": "PENDING diagnostic/control pair: rejected program is identical except PURE is removed from internal function inner; control restores only PURE."
+      },
+      "oracle": "Plans are source-derived pending evidence. Positive plans establish a non-default state first, then observe exact integer, logical, character length plus value, array shape, array bounds, or source admission. Diagnostic plans use a conforming control differing only in the constrained feature and do not compare diagnostic text or exit-status details.",
+      "oracle_limitation": "This source registration creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Future fixture packets must keep diagnostic controls one-feature, use distinct sentinels before observation, and avoid processor-dependent addresses, file units, finalization order text, diagnostic wording, C symbol details, and coarray/image/team runtime observations.",
+      "dependencies": "Registered dependencies: clauses 6-11 for source form, declarations, expressions, execution constructs, arrays, pointers, allocation, and association; 15.3-15.6 for procedure characteristics, interfaces, argument association, and subprogram definition; 16 for intrinsic procedure classifications and ISO_C_BINDING procedures; 18 for C interoperability where C_LOC or C_FUNLOC is referenced; 19 for scope, host/use association, common, storage association, finalization, and variable definition contexts; 4.2 for required diagnostics."
+    },
+    {
+      "id": "C15103",
+      "title": "Pure subprograms contain no VOLATILE variable designators",
+      "source": "15.7 C15103; J3/24-007, 18 December 2023 PDF p360.",
+      "source_units": [
+        "C15103"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "A designator of a variable with the VOLATILE attribute shall not appear in a pure subprogram.",
+      "facets": [
+        "pure-no-volatile-designator-control",
+        "pure-volatile-designator-reference-rejected"
+      ],
+      "pending": {
+        "pure-no-volatile-designator-control": "PENDING conforming control: module variable v lacks VOLATILE; PURE function f reads v plus 1 and returns exact 12 after module initialization v=11.",
+        "pure-volatile-designator-reference-rejected": "PENDING diagnostic/control pair: rejected program is identical except module variable v has VOLATILE; control removes only VOLATILE."
+      },
+      "oracle": "Plans are source-derived pending evidence. Positive plans establish a non-default state first, then observe exact integer, logical, character length plus value, array shape, array bounds, or source admission. Diagnostic plans use a conforming control differing only in the constrained feature and do not compare diagnostic text or exit-status details.",
+      "oracle_limitation": "This source registration creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Future fixture packets must keep diagnostic controls one-feature, use distinct sentinels before observation, and avoid processor-dependent addresses, file units, finalization order text, diagnostic wording, C symbol details, and coarray/image/team runtime observations.",
+      "dependencies": "Registered dependencies: clauses 6-11 for source form, declarations, expressions, execution constructs, arrays, pointers, allocation, and association; 15.3-15.6 for procedure characteristics, interfaces, argument association, and subprogram definition; 16 for intrinsic procedure classifications and ISO_C_BINDING procedures; 18 for C interoperability where C_LOC or C_FUNLOC is referenced; 19 for scope, host/use association, common, storage association, finalization, and variable definition contexts; 4.2 for required diagnostics."
+    },
+    {
+      "id": "C15104",
+      "title": "Pure subprogram protected designators are excluded from definition, pointer association, pointer-target, constructor, assignment, SOURCE, POINTER-actual, and C_LOC contexts",
+      "source": "15.7 C15104; J3/24-007, 18 December 2023 PDF p360.",
+      "source_units": [
+        "C15104"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "In a pure subprogram, designators whose base object is in common, use or host associated, an INTENT(IN) dummy, a pointer dummy of a pure function, coindexed, or storage associated with such a variable shall not be used in the listed variable definition, pointer association, data-target, pointer-component constructor, pointer-component assignment, SOURCE=, POINTER actual, or C_LOC contexts.",
+      "facets": [
+        "pure-common-variable-definition-rejected",
+        "pure-host-variable-definition-rejected",
+        "pure-use-variable-definition-rejected",
+        "pure-intent-in-definition-rejected",
+        "pure-pointer-dummy-definition-rejected",
+        "pure-storage-associated-definition-rejected",
+        "pure-protected-pointer-association-rejected",
+        "pure-protected-data-target-rejected",
+        "pure-protected-constructor-pointer-expr-rejected",
+        "pure-protected-pointer-component-assignment-rejected",
+        "pure-protected-source-expr-rejected",
+        "pure-protected-pointer-actual-rejected",
+        "pure-protected-c-loc-actual-rejected",
+        "pure-coindexed-designator-out-of-scope"
+      ],
+      "pending": {
+        "pure-common-variable-definition-rejected": "PENDING diagnostic/control pair: PURE subroutine s has COMMON /blk/ c and assigns c=1; control removes only the COMMON statement so c is local, preserving the assignment.",
+        "pure-host-variable-definition-rejected": "PENDING diagnostic/control pair: host contains integer h; internal PURE subroutine assigns h=2; control adds only a local declaration INTEGER :: h inside the pure subroutine to remove host association.",
+        "pure-use-variable-definition-rejected": "PENDING diagnostic/control pair: PURE module subroutine uses module variable u and assigns u=3; control changes only the assignment target to a local variable u_local initialized distinctly.",
+        "pure-intent-in-definition-rejected": "PENDING diagnostic/control pair: PURE subroutine s(x) has INTEGER, INTENT(IN) :: x and assigns x=4; control changes only INTENT(IN) to INTENT(INOUT).",
+        "pure-pointer-dummy-definition-rejected": "PENDING diagnostic/control pair: rejected program is PURE function f(p) RESULT(r) with identical INTEGER, POINTER dummy p and local result logic in both variants; the rejected body assigns p=5 in a variable definition context, and the control changes only that assignment target to local INTEGER q before returning exact q=5.",
+        "pure-storage-associated-definition-rejected": "PENDING diagnostic/control pair: variable e is EQUIVALENCE associated with COMMON variable c inside PURE subroutine and assignment targets e; control removes only the EQUIVALENCE association.",
+        "pure-protected-pointer-association-rejected": "PENDING diagnostic/control pair: rejected internal PURE subroutine has host-associated INTEGER, POINTER :: hp as the pointer-object on the left of hp => local_target; the control declares a local INTEGER, POINTER :: hp inside the pure subroutine and keeps the same local TARGET data-target and pointer assignment.",
+        "pure-protected-data-target-rejected": "PENDING diagnostic/control pair: PURE subroutine uses host target h as data-target in pointer assignment to q; control shadows h with local TARGET h.",
+        "pure-protected-constructor-pointer-expr-rejected": "PENDING diagnostic/control pair: PURE function constructs TYPE(box) with pointer component initialized from host target h; control changes only h to a local TARGET.",
+        "pure-protected-pointer-component-assignment-rejected": "PENDING diagnostic/control pair: PURE subroutine intrinsically assigns a derived type with pointer component from host-associated source to local lhs; control uses an otherwise identical local source object.",
+        "pure-protected-source-expr-rejected": "PENDING diagnostic/control pair: PURE subroutine ALLOCATE(obj, SOURCE=host_box) where box has a pointer component; control uses local_box as the SOURCE expression.",
+        "pure-protected-pointer-actual-rejected": "PENDING diagnostic/control pair: PURE subroutine passes host target h to dummy INTEGER, POINTER :: p; control passes local pointer p_local associated with local target.",
+        "pure-protected-c-loc-actual-rejected": "PENDING diagnostic/control pair: PURE function calls C_LOC(host_target) from ISO_C_BINDING; control calls C_LOC(local_target) with only the association source changed.",
+        "pure-coindexed-designator-out-of-scope": "PENDING OUT OF SCOPE: the coindexed-object alternative is a coarray/image facet excluded by user decision; no single-image plan is registered."
+      },
+      "oracle": "Plans are source-derived pending evidence. Positive plans establish a non-default state first, then observe exact integer, logical, character length plus value, array shape, array bounds, or source admission. Diagnostic plans use a conforming control differing only in the constrained feature and do not compare diagnostic text or exit-status details.",
+      "oracle_limitation": "This source registration creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Future fixture packets must keep diagnostic controls one-feature, use distinct sentinels before observation, and avoid processor-dependent addresses, file units, finalization order text, diagnostic wording, C symbol details, and coarray/image/team runtime observations. The coindexed-object alternative of C15104 is out of scope by user decision.",
+      "dependencies": "Registered dependencies: clauses 6-11 for source form, declarations, expressions, execution constructs, arrays, pointers, allocation, and association; 15.3-15.6 for procedure characteristics, interfaces, argument association, and subprogram definition; 16 for intrinsic procedure classifications and ISO_C_BINDING procedures; 18 for C interoperability where C_LOC or C_FUNLOC is referenced; 19 for scope, host/use association, common, storage association, finalization, and variable definition contexts; 4.2 for required diagnostics."
+    },
+    {
+      "id": "C15105",
+      "title": "Procedures referenced in pure subprograms are pure",
+      "source": "15.7 C15105; J3/24-007, 18 December 2023 PDF p360.",
+      "source_units": [
+        "C15105"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "Any procedure referenced in a pure subprogram, including one referenced via defined operation, defined assignment, defined input/output, or finalization, shall be pure.",
+      "facets": [
+        "pure-direct-reference-to-pure-control",
+        "pure-direct-reference-to-impure-rejected",
+        "pure-defined-operation-impure-rejected",
+        "pure-defined-assignment-impure-rejected",
+        "pure-defined-io-impure-rejected",
+        "pure-finalization-impure-rejected"
+      ],
+      "pending": {
+        "pure-direct-reference-to-pure-control": "PENDING conforming control: PURE function caller invokes PURE function inc and returns exact 14 for input 13.",
+        "pure-direct-reference-to-impure-rejected": "PENDING diagnostic/control pair: rejected program is identical except inc lacks PURE; control adds only PURE.",
+        "pure-defined-operation-impure-rejected": "PENDING diagnostic/control pair: PURE function evaluates a defined operator implemented by impure function add_t; control adds only PURE to add_t.",
+        "pure-defined-assignment-impure-rejected": "PENDING diagnostic/control pair: PURE subroutine performs defined assignment implemented by impure subroutine assign_t; control adds only PURE to assign_t.",
+        "pure-defined-io-impure-rejected": "PENDING diagnostic/control pair: PURE subprogram contains internal WRITE of a type whose defined formatted output procedure is impure; control adds only PURE to that defined I/O procedure.",
+        "pure-finalization-impure-rejected": "PENDING diagnostic/control pair: PURE subprogram has a local finalizable object whose FINAL procedure is impure; control adds only PURE to the FINAL procedure."
+      },
+      "oracle": "Plans are source-derived pending evidence. Positive plans establish a non-default state first, then observe exact integer, logical, character length plus value, array shape, array bounds, or source admission. Diagnostic plans use a conforming control differing only in the constrained feature and do not compare diagnostic text or exit-status details.",
+      "oracle_limitation": "This source registration creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Future fixture packets must keep diagnostic controls one-feature, use distinct sentinels before observation, and avoid processor-dependent addresses, file units, finalization order text, diagnostic wording, C symbol details, and coarray/image/team runtime observations.",
+      "dependencies": "Registered dependencies: clauses 6-11 for source form, declarations, expressions, execution constructs, arrays, pointers, allocation, and association; 15.3-15.6 for procedure characteristics, interfaces, argument association, and subprogram definition; 16 for intrinsic procedure classifications and ISO_C_BINDING procedures; 18 for C interoperability where C_LOC or C_FUNLOC is referenced; 19 for scope, host/use association, common, storage association, finalization, and variable definition contexts; 4.2 for required diagnostics."
+    },
+    {
+      "id": "C15106",
+      "title": "Pure procedures contain no statement that might deallocate a polymorphic entity",
+      "source": "15.7 C15106; J3/24-007, 18 December 2023 PDF p360.",
+      "source_units": [
+        "C15106"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "A statement that might result in deallocation of a polymorphic entity is not permitted in a pure procedure.",
+      "facets": [
+        "pure-deallocate-nonpolymorphic-control",
+        "pure-deallocate-polymorphic-rejected",
+        "pure-assignment-polymorphic-allocatable-rejected"
+      ],
+      "pending": {
+        "pure-deallocate-nonpolymorphic-control": "PENDING conforming control: PURE subroutine s has TYPE(t), ALLOCATABLE :: x, allocates x, assigns exact component 1, then DEALLOCATE(x).",
+        "pure-deallocate-polymorphic-rejected": "PENDING diagnostic/control pair: rejected program is identical except x is CLASS(t), ALLOCATABLE; control restores only TYPE(t).",
+        "pure-assignment-polymorphic-allocatable-rejected": "PENDING diagnostic/control pair: PURE subroutine assigns to CLASS(t), ALLOCATABLE lhs, which might deallocate the polymorphic entity; control changes only lhs to TYPE(t), ALLOCATABLE."
+      },
+      "oracle": "Plans are source-derived pending evidence. Positive plans establish a non-default state first, then observe exact integer, logical, character length plus value, array shape, array bounds, or source admission. Diagnostic plans use a conforming control differing only in the constrained feature and do not compare diagnostic text or exit-status details.",
+      "oracle_limitation": "This source registration creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Future fixture packets must keep diagnostic controls one-feature, use distinct sentinels before observation, and avoid processor-dependent addresses, file units, finalization order text, diagnostic wording, C symbol details, and coarray/image/team runtime observations.",
+      "dependencies": "Registered dependencies: clauses 6-11 for source form, declarations, expressions, execution constructs, arrays, pointers, allocation, and association; 15.3-15.6 for procedure characteristics, interfaces, argument association, and subprogram definition; 16 for intrinsic procedure classifications and ISO_C_BINDING procedures; 18 for C interoperability where C_LOC or C_FUNLOC is referenced; 19 for scope, host/use association, common, storage association, finalization, and variable definition contexts; 4.2 for required diagnostics."
+    },
+    {
+      "id": "C15107",
+      "title": "Pure subprograms exclude external-file auxiliary and print statements",
+      "source": "15.7 C15107; J3/24-007, 18 December 2023 PDF p360.",
+      "source_units": [
+        "C15107"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "A pure subprogram shall not contain a PRINT, OPEN, CLOSE, BACKSPACE, ENDFILE, REWIND, FLUSH, WAIT, or INQUIRE statement.",
+      "facets": [
+        "pure-no-external-io-statement-control",
+        "pure-print-rejected",
+        "pure-open-rejected",
+        "pure-close-rejected",
+        "pure-backspace-rejected",
+        "pure-endfile-rejected",
+        "pure-rewind-rejected",
+        "pure-flush-rejected",
+        "pure-wait-rejected",
+        "pure-inquire-rejected"
+      ],
+      "pending": {
+        "pure-no-external-io-statement-control": "PENDING conforming control: PURE subroutine s only assigns INTENT(OUT) dummy x=61 and contains none of the listed statements.",
+        "pure-print-rejected": "PENDING diagnostic/control pair: rejected program adds only PRINT *, x to the control body.",
+        "pure-open-rejected": "PENDING diagnostic/control pair: rejected program adds only OPEN(NEWUNIT=u, STATUS=\"SCRATCH\") to the control body.",
+        "pure-close-rejected": "PENDING diagnostic/control pair: rejected program adds only CLOSE(10) to the control body.",
+        "pure-backspace-rejected": "PENDING diagnostic/control pair: rejected program adds only BACKSPACE(10) to the control body.",
+        "pure-endfile-rejected": "PENDING diagnostic/control pair: rejected program adds only ENDFILE(10) to the control body.",
+        "pure-rewind-rejected": "PENDING diagnostic/control pair: rejected program adds only REWIND(10) to the control body.",
+        "pure-flush-rejected": "PENDING diagnostic/control pair: rejected program adds only FLUSH(10) to the control body.",
+        "pure-wait-rejected": "PENDING diagnostic/control pair: rejected program adds only WAIT(10) to the control body.",
+        "pure-inquire-rejected": "PENDING diagnostic/control pair: rejected program adds only INQUIRE(UNIT=10, OPENED=opened) to the control body."
+      },
+      "oracle": "Plans are source-derived pending evidence. Positive plans establish a non-default state first, then observe exact integer, logical, character length plus value, array shape, array bounds, or source admission. Diagnostic plans use a conforming control differing only in the constrained feature and do not compare diagnostic text or exit-status details.",
+      "oracle_limitation": "This source registration creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Future fixture packets must keep diagnostic controls one-feature, use distinct sentinels before observation, and avoid processor-dependent addresses, file units, finalization order text, diagnostic wording, C symbol details, and coarray/image/team runtime observations.",
+      "dependencies": "Registered dependencies: clauses 6-11 for source form, declarations, expressions, execution constructs, arrays, pointers, allocation, and association; 15.3-15.6 for procedure characteristics, interfaces, argument association, and subprogram definition; 16 for intrinsic procedure classifications and ISO_C_BINDING procedures; 18 for C interoperability where C_LOC or C_FUNLOC is referenced; 19 for scope, host/use association, common, storage association, finalization, and variable definition contexts; 4.2 for required diagnostics."
+    },
+    {
+      "id": "C15108",
+      "title": "Pure subprogram READ and WRITE statements do not use file-unit-number or asterisk units",
+      "source": "15.7 C15108; J3/24-007, 18 December 2023 PDF p361.",
+      "source_units": [
+        "C15108"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "A pure subprogram shall not contain a READ or WRITE statement whose io-unit is a file-unit-number or *.",
+      "facets": [
+        "pure-internal-read-write-control",
+        "pure-read-star-rejected",
+        "pure-read-file-unit-number-rejected",
+        "pure-write-star-rejected",
+        "pure-write-file-unit-number-rejected"
+      ],
+      "pending": {
+        "pure-internal-read-write-control": "PENDING conforming control: PURE subroutine uses internal READ from CHARACTER buffer \"17\" into integer sentinel -1 and internal WRITE to CHARACTER buffer prefilled with \"###\".",
+        "pure-read-star-rejected": "PENDING diagnostic/control pair: rejected program changes only the internal READ unit from character buffer to *.",
+        "pure-read-file-unit-number-rejected": "PENDING diagnostic/control pair: rejected program changes only the internal READ unit from character buffer to integer unit 10.",
+        "pure-write-star-rejected": "PENDING diagnostic/control pair: rejected program changes only the internal WRITE unit from character buffer to *.",
+        "pure-write-file-unit-number-rejected": "PENDING diagnostic/control pair: rejected program changes only the internal WRITE unit from character buffer to integer unit 10."
+      },
+      "oracle": "Plans are source-derived pending evidence. Positive plans establish a non-default state first, then observe exact integer, logical, character length plus value, array shape, array bounds, or source admission. Diagnostic plans use a conforming control differing only in the constrained feature and do not compare diagnostic text or exit-status details.",
+      "oracle_limitation": "This source registration creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Future fixture packets must keep diagnostic controls one-feature, use distinct sentinels before observation, and avoid processor-dependent addresses, file units, finalization order text, diagnostic wording, C symbol details, and coarray/image/team runtime observations.",
+      "dependencies": "Registered dependencies: clauses 6-11 for source form, declarations, expressions, execution constructs, arrays, pointers, allocation, and association; 15.3-15.6 for procedure characteristics, interfaces, argument association, and subprogram definition; 16 for intrinsic procedure classifications and ISO_C_BINDING procedures; 18 for C interoperability where C_LOC or C_FUNLOC is referenced; 19 for scope, host/use association, common, storage association, finalization, and variable definition contexts; 4.2 for required diagnostics."
+    },
+    {
+      "id": "C15109",
+      "title": "Pure subprograms contain no image control statement",
+      "source": "15.7 C15109; J3/24-007, 18 December 2023 PDF p361.",
+      "source_units": [
+        "C15109"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "A pure subprogram shall not contain an image control statement.",
+      "facets": [
+        "pure-return-control",
+        "pure-stop-image-control-rejected",
+        "pure-coarray-image-control-out-of-scope"
+      ],
+      "pending": {
+        "pure-return-control": "PENDING conforming control: PURE subroutine s assigns INTENT(OUT) dummy x=71 and returns normally.",
+        "pure-stop-image-control-rejected": "PENDING diagnostic/control pair: rejected program is identical except the body contains STOP 1 after the assignment; control replaces only STOP 1 with RETURN.",
+        "pure-coarray-image-control-out-of-scope": "PENDING OUT OF SCOPE: coarray synchronization and team image-control variants are excluded by user decision; no coarray runtime plan is registered."
+      },
+      "oracle": "Plans are source-derived pending evidence. Positive plans establish a non-default state first, then observe exact integer, logical, character length plus value, array shape, array bounds, or source admission. Diagnostic plans use a conforming control differing only in the constrained feature and do not compare diagnostic text or exit-status details.",
+      "oracle_limitation": "This source registration creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Future fixture packets must keep diagnostic controls one-feature, use distinct sentinels before observation, and avoid processor-dependent addresses, file units, finalization order text, diagnostic wording, C symbol details, and coarray/image/team runtime observations. Coarray synchronization and team image-control variants are out of scope by user decision.",
+      "dependencies": "Registered dependencies: clauses 6-11 for source form, declarations, expressions, execution constructs, arrays, pointers, allocation, and association; 15.3-15.6 for procedure characteristics, interfaces, argument association, and subprogram definition; 16 for intrinsic procedure classifications and ISO_C_BINDING procedures; 18 for C interoperability where C_LOC or C_FUNLOC is referenced; 19 for scope, host/use association, common, storage association, finalization, and variable definition contexts; 4.2 for required diagnostics."
+    },
+    {
+      "id": "C15110",
+      "title": "Pure subprogram C_FUNLOC references do not take impure procedure arguments",
+      "source": "15.7 C15110; J3/24-007, 18 December 2023 PDF p361.",
+      "source_units": [
+        "C15110"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "A reference to C_FUNLOC from ISO_C_BINDING shall not appear in a pure subprogram with an impure argument.",
+      "facets": [
+        "pure-c-funloc-pure-argument-control",
+        "pure-c-funloc-impure-argument-rejected"
+      ],
+      "pending": {
+        "pure-c-funloc-pure-argument-control": "PENDING conforming control: USE ISO_C_BINDING; PURE function p() RESULT(fp) returns C_FUNLOC(target) where target is PURE SUBROUTINE target() BIND(C).",
+        "pure-c-funloc-impure-argument-rejected": "PENDING diagnostic/control pair: rejected program is identical except target lacks PURE; control adds only PURE."
+      },
+      "oracle": "Plans are source-derived pending evidence. Positive plans establish a non-default state first, then observe exact integer, logical, character length plus value, array shape, array bounds, or source admission. Diagnostic plans use a conforming control differing only in the constrained feature and do not compare diagnostic text or exit-status details.",
+      "oracle_limitation": "This source registration creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Future fixture packets must keep diagnostic controls one-feature, use distinct sentinels before observation, and avoid processor-dependent addresses, file units, finalization order text, diagnostic wording, C symbol details, and coarray/image/team runtime observations.",
+      "dependencies": "Registered dependencies: clauses 6-11 for source form, declarations, expressions, execution constructs, arrays, pointers, allocation, and association; 15.3-15.6 for procedure characteristics, interfaces, argument association, and subprogram definition; 16 for intrinsic procedure classifications and ISO_C_BINDING procedures; 18 for C interoperability where C_LOC or C_FUNLOC is referenced; 19 for scope, host/use association, common, storage association, finalization, and variable definition contexts; 4.2 for required diagnostics."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "definition",
+      "requirements": [
+        "S15.7-001"
+      ],
+      "rationale": "Defines the procedure categories that are pure procedures."
+    },
+    {
+      "unit": "p2",
+      "disposition": "structural",
+      "rationale": "Pure-subprogram classification and introduction to the following constraints are split into fine units."
+    },
+    {
+      "unit": "p2.pure-subprogram-forms",
+      "disposition": "definition",
+      "requirements": [
+        "S15.7-002"
+      ],
+      "rationale": "Defines the prefixes that make a pure subprogram."
+    },
+    {
+      "unit": "p2.additional-constraints-introduction",
+      "disposition": "structural",
+      "rationale": "Introduces the numbered constraints that follow; no independent semantic obligation beyond those constraints."
+    },
+    {
+      "unit": "C1592",
+      "disposition": "requirements",
+      "requirements": [
+        "C1592"
+      ]
+    },
+    {
+      "unit": "C1593",
+      "disposition": "requirements",
+      "requirements": [
+        "C1593"
+      ]
+    },
+    {
+      "unit": "C1594",
+      "disposition": "requirements",
+      "requirements": [
+        "C1594"
+      ]
+    },
+    {
+      "unit": "C1595",
+      "disposition": "requirements",
+      "requirements": [
+        "C1595"
+      ]
+    },
+    {
+      "unit": "C1596",
+      "disposition": "requirements",
+      "requirements": [
+        "C1596"
+      ]
+    },
+    {
+      "unit": "C1597",
+      "disposition": "requirements",
+      "requirements": [
+        "C1597"
+      ]
+    },
+    {
+      "unit": "C1598",
+      "disposition": "requirements",
+      "requirements": [
+        "C1598"
+      ]
+    },
+    {
+      "unit": "C1599",
+      "disposition": "requirements",
+      "requirements": [
+        "C1599"
+      ]
+    },
+    {
+      "unit": "C15100",
+      "disposition": "requirements",
+      "requirements": [
+        "C15100"
+      ]
+    },
+    {
+      "unit": "C15101",
+      "disposition": "requirements",
+      "requirements": [
+        "C15101"
+      ]
+    },
+    {
+      "unit": "C15102",
+      "disposition": "requirements",
+      "requirements": [
+        "C15102"
+      ]
+    },
+    {
+      "unit": "C15103",
+      "disposition": "requirements",
+      "requirements": [
+        "C15103"
+      ]
+    },
+    {
+      "unit": "C15104",
+      "disposition": "requirements",
+      "requirements": [
+        "C15104"
+      ]
+    },
+    {
+      "unit": "C15105",
+      "disposition": "requirements",
+      "requirements": [
+        "C15105"
+      ]
+    },
+    {
+      "unit": "C15106",
+      "disposition": "requirements",
+      "requirements": [
+        "C15106"
+      ]
+    },
+    {
+      "unit": "C15107",
+      "disposition": "requirements",
+      "requirements": [
+        "C15107"
+      ]
+    },
+    {
+      "unit": "C15108",
+      "disposition": "requirements",
+      "requirements": [
+        "C15108"
+      ]
+    },
+    {
+      "unit": "C15109",
+      "disposition": "requirements",
+      "requirements": [
+        "C15109"
+      ]
+    },
+    {
+      "unit": "C15110",
+      "disposition": "requirements",
+      "requirements": [
+        "C15110"
+      ]
+    },
+    {
+      "unit": "note1",
+      "disposition": "informative",
+      "rationale": "NOTE text is informative and is not registered as a normative requirement."
+    },
+    {
+      "unit": "note2",
+      "disposition": "informative",
+      "rationale": "NOTE text is informative and is not registered as a normative requirement."
+    },
+    {
+      "unit": "note3",
+      "disposition": "informative",
+      "rationale": "NOTE text is informative and is not registered as a normative requirement."
+    },
+    {
+      "unit": "note4",
+      "disposition": "informative",
+      "rationale": "NOTE text is informative and is not registered as a normative requirement."
+    },
+    {
+      "unit": "note5",
+      "disposition": "informative",
+      "rationale": "NOTE text is informative and is not registered as a normative requirement."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_15_7.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "061dd05bd421a9c5612ec2b5cf996f80866a09cecefe411e53b148de4af8e7d4",
+  "review_rationale": "Source registration for 15.7 (pure procedures), 15.8 (simple procedures), 15.9 and 15.9.1-15.9.3 (elemental procedures) (batch237). Every unit hash-verified by an independent reviewer across two rounds; C1592-C15121 had no existing tests and carry conforming one-feature diagnostic plans, only their coarray alternatives are out of scope, and elemental semantics are exact. Source accounting only."
+}

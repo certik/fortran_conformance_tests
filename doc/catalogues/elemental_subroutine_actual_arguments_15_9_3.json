@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "section": "15.9.3",
+  "requirements": [
+    {
+      "id": "S15.9.3-001",
+      "title": "Elemental subroutine references with array OUT or INOUT actuals produce elementwise result values",
+      "source": "15.9.3 p1; J3/24-007, 18 December 2023 PDF p363.",
+      "source_units": [
+        "p1"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "In an elemental subroutine reference, array actual arguments corresponding to INTENT(OUT) and INTENT(INOUT) dummy arguments receive element values as would be obtained by applying the subroutine separately in array element order to corresponding elements of each array actual argument.",
+      "facets": [
+        "elemental-subroutine-array-out-values",
+        "elemental-subroutine-array-inout-values",
+        "elemental-subroutine-array-element-order-values",
+        "elemental-subroutine-empty-array-results"
+      ],
+      "pending": {
+        "elemental-subroutine-array-out-values": "PENDING positive plan: ELEMENTAL subroutine set(x,y) with y INTENT(OUT) assigns y=3*x+1; x(0:1,-1:0) values 2,5,7,11 produce y values 7,16,22,34 at matching subscripts after y starts at -99.",
+        "elemental-subroutine-array-inout-values": "PENDING positive plan: ELEMENTAL subroutine bump(x) with INTENT(INOUT) assigns x=x+10; array actual [1,4,9] starts distinct and ends exact [11,14,19].",
+        "elemental-subroutine-array-element-order-values": "PENDING positive plan: IMPURE ELEMENTAL subroutine stamp(x,y) increments module counter from 100 by 1 and sets y=counter*10+x; for x values [1,2,3] in array element order, y becomes exact [1011,1022,1033], making order load-bearing.",
+        "elemental-subroutine-empty-array-results": "PENDING positive plan: call ELEMENTAL subroutine set on zero-size conformable arrays and assert SIZE(y)==0 plus unchanged separate scalar sentinel 123, with no element-value oracle for absent elements."
+      },
+      "oracle": "The OUT plan is hand-computed as 3*x+1: inputs 2, 5, 7, 11 give 7, 16, 22, 34. The order plan starts counter at 100, increments before storing, and computes counter*10+x, giving 1011, 1022, 1033 in array element order.",
+      "oracle_limitation": "This source registration creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Future fixture packets must keep diagnostic controls one-feature, use distinct sentinels before observation, and avoid processor-dependent addresses, file units, finalization order text, diagnostic wording, C symbol details, and coarray/image/team runtime observations.",
+      "dependencies": "Registered dependencies: clauses 6-11 for source form, declarations, expressions, execution constructs, arrays, pointers, allocation, and association; 15.3-15.6 for procedure characteristics, interfaces, argument association, and subprogram definition; 16 for intrinsic procedure classifications and ISO_C_BINDING procedures; 18 for C interoperability where C_LOC or C_FUNLOC is referenced; 19 for scope, host/use association, common, storage association, finalization, and variable definition contexts; 4.2 for required diagnostics."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.9.3-001"
+      ],
+      "rationale": "Defines elemental subroutine result values for array OUT and INOUT actuals."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_15_9_3.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "b63fa50a060f842c1666d2a9e1853ad5013e52583bb21aab802228e35ed88289",
+  "review_rationale": "Source registration for 15.7 (pure procedures), 15.8 (simple procedures), 15.9 and 15.9.1-15.9.3 (elemental procedures) (batch237). Every unit hash-verified by an independent reviewer across two rounds; C1592-C15121 had no existing tests and carry conforming one-feature diagnostic plans, only their coarray alternatives are out of scope, and elemental semantics are exact. Source accounting only."
+}
