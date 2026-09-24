@@ -6019,6 +6019,11 @@ See `doc/source_audits/batch_259.json`.
 Seventy-three units in one round. Even 'processor dependent' is only a definition here: the latitude it names is registered, and bounded, where the standard grants it.
 See `doc/source_audits/batch_257.json`.
 
+## Batch 246 — Scope, normative references, and compatibility 4.3-4.3.4
+
+Twenty-eight units after one blocked round. The compatibility subclauses mostly repeat rules the suite already owns; the review insisted they point at those owners rather than grow second copies.
+See `doc/source_audits/batch_246.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
