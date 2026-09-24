@@ -6209,6 +6209,11 @@ See `doc/source_audits/batch_291.json`.
 19 programs, 39 facets, six LFortran defects, accepted in one round: IALL with a mask crashes the compiler, and IAND refuses a BOZ constant beside a nondefault integer.
 See `doc/source_audits/batch_293.json`.
 
+## Batch 292 — Intrinsic fixtures 16.9.92-16.9.94 (GET_COMMAND-GET_ENVIRONMENT_VARIABLE)
+
+7 programs, 20 facets, three LFortran defects: GET_COMMAND reports failure while returning the command, and argument -1 is reported as found.
+See `doc/source_audits/batch_292.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
