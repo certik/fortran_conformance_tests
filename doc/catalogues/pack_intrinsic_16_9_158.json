@@ -1,0 +1,167 @@
+{
+  "schema_version": 1,
+  "section": "16.9.158",
+  "subunits": {
+    "p4": [
+      "p4.type-rank",
+      "p4.size-with-vector",
+      "p4.size-without-vector"
+    ],
+    "p5": [
+      "p5.mask-selected-elements",
+      "p5.vector-tail-fill"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S16.9.158-001",
+      "title": "PACK argument restrictions",
+      "source": "S16.9.158, J3/24-007, 18 December 2023, physical PDF443.",
+      "source_units": [
+        "p3"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "ARRAY shall be an array of any type; MASK shall be logical and conformable with ARRAY; optional VECTOR shall have the same type and type parameters as ARRAY, have rank one, and contain enough elements for the true MASK elements or scalar-true ARRAY elements.",
+      "facets": [
+        "PACK-ARRAY-array-any-type",
+        "PACK-MASK-logical-conformable",
+        "PACK-VECTOR-same-type-parameters-rank-one",
+        "PACK-VECTOR-size-covers-selected-elements"
+      ],
+      "pending": {
+        "PACK-ARRAY-array-any-type": "Positive source controls call PACK on rank-two integer and character arrays; a source-control mutation uses a scalar ARRAY and claims no diagnostic facet.",
+        "PACK-MASK-logical-conformable": "Use a rank-two logical MASK with a rank-two ARRAY and a scalar true MASK companion; mutate MASK to nonlogical and to a nonconformable shape without claiming diagnostic coverage.",
+        "PACK-VECTOR-same-type-parameters-rank-one": "Use VECTOR arrays matching ARRAY type and character length; source-control mutations change VECTOR rank and character length with no diagnostic facet.",
+        "PACK-VECTOR-size-covers-selected-elements": "Use a VECTOR with more elements than selected MASK entries and a scalar-true MASK case sized to ARRAY; source-control mutation shortens VECTOR below the required element count."
+      },
+      "oracle": "Source registration only. Future fixtures use exact integer, logical, enumeration, type/kind, rank/shape, and array-element-order observations. Argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets. Exact result-value plans use discriminating inputs, non-default sentinels where assignment is observed, non-vacuous companions for zero or false results, and feature mutations such as changing the intrinsic name, DIM, MASK, VECTOR, STAT, kind, argument order, or enumeration order.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for PACK, PARITY, POPCNT, POPPAR, PRECISION, PRESENT, and PREVIOUS found no fixture-manifest binding for these 16.9 sections. Existing source uses of PRECISION and PRESENT occur in older clause 6 and 7 tests, profiles, and test helpers; PACK and PREVIOUS appear in negative helper regexes or ordinary prose; those uses are recorded as existing coverage and are not rebound by this source packet.",
+      "dependencies": "Registered dependencies: existing source-form, type, declaration, expression, assignment, execution, array, optional-argument, enumeration, and I/O foundations from clauses 6 through 13 where already catalogued. Unregistered dependencies retained: clause 16.3 integer bit model, clause 16.4 numeric model terminology, sibling 16.9 intrinsics named by pending plans such as DIGITS, RADIX, LOG10, IBSET, POPCNT, LBOUND, SHAPE, SIZE, SELECTED_*_KIND, NEXT, and SAME_TYPE_AS, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, deleted-feature, processor-dependency, or scope terms."
+    },
+    {
+      "id": "S16.9.158-002",
+      "title": "PACK result characteristics",
+      "source": "S16.9.158, J3/24-007, 18 December 2023, physical PDF444.",
+      "source_units": [
+        "p4.type-rank",
+        "p4.size-with-vector",
+        "p4.size-without-vector"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The PACK result has rank one, the same type and type parameters as ARRAY, size equal to VECTOR size with VECTOR present, and otherwise size equal to the true MASK count or to SIZE(ARRAY) for scalar true MASK.",
+      "facets": [
+        "PACK-result-rank-one-same-type-parameters",
+        "PACK-result-size-from-VECTOR",
+        "PACK-result-size-from-MASK-or-ARRAY"
+      ],
+      "pending": {
+        "PACK-result-rank-one-same-type-parameters": "Assign PACK of a rank-two character array to a rank-one character result with distinct length and assert RANK, LEN, and element values; mutate ARRAY character length or expected rank.",
+        "PACK-result-size-from-VECTOR": "Call PACK with a VECTOR longer than the selected elements and assert SIZE(result) equals SIZE(VECTOR); mutate VECTOR length so the size check fails.",
+        "PACK-result-size-from-MASK-or-ARRAY": "Call PACK without VECTOR using a nonscalar MASK with two true elements and a scalar true MASK over a three-element array; assert result sizes two and three with companion element checks. Also use PACK with scalar false MASK and a four-element VECTOR of distinguished values; assert SIZE(result)==SIZE(VECTOR) so the t=0 VECTOR case is covered."
+      },
+      "oracle": "Source registration only. Future fixtures use exact integer, logical, enumeration, type/kind, rank/shape, and array-element-order observations. Argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets. Exact result-value plans use discriminating inputs, non-default sentinels where assignment is observed, non-vacuous companions for zero or false results, and feature mutations such as changing the intrinsic name, DIM, MASK, VECTOR, STAT, kind, argument order, or enumeration order.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for PACK, PARITY, POPCNT, POPPAR, PRECISION, PRESENT, and PREVIOUS found no fixture-manifest binding for these 16.9 sections. Existing source uses of PRECISION and PRESENT occur in older clause 6 and 7 tests, profiles, and test helpers; PACK and PREVIOUS appear in negative helper regexes or ordinary prose; those uses are recorded as existing coverage and are not rebound by this source packet.",
+      "dependencies": "Registered dependencies: existing source-form, type, declaration, expression, assignment, execution, array, optional-argument, enumeration, and I/O foundations from clauses 6 through 13 where already catalogued. Unregistered dependencies retained: clause 16.3 integer bit model, clause 16.4 numeric model terminology, sibling 16.9 intrinsics named by pending plans such as DIGITS, RADIX, LOG10, IBSET, POPCNT, LBOUND, SHAPE, SIZE, SELECTED_*_KIND, NEXT, and SAME_TYPE_AS, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, deleted-feature, processor-dependency, or scope terms."
+    },
+    {
+      "id": "S16.9.158-003",
+      "title": "PACK result value follows true MASK elements and VECTOR tail",
+      "source": "S16.9.158, J3/24-007, 18 December 2023, physical PDF444.",
+      "source_units": [
+        "p5.mask-selected-elements",
+        "p5.vector-tail-fill"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Elements selected by true MASK values are packed in array element order, and trailing result elements beyond the true count come from VECTOR.",
+      "facets": [
+        "PACK-selected-elements-array-element-order",
+        "PACK-vector-tail-elements"
+      ],
+      "pending": {
+        "PACK-selected-elements-array-element-order": "Use a rank-two integer array with distinct values and a MASK selecting nonadjacent elements; assert the packed sequence follows array element order and mutate the MASK or expected order. Also call PACK on the same distinguished rank-two ARRAY with scalar MASK=.true. and no VECTOR; assert the result contains every ARRAY element in array element order.",
+        "PACK-vector-tail-elements": "Use selected ARRAY elements 9 and 7 with a six-element VECTOR containing nondefault tail sentinels; assert tail positions come from VECTOR and mutate VECTOR order. Also call PACK with scalar MASK=.false. and a VECTOR whose elements are all distinguished from ARRAY; assert the entire result equals VECTOR, covering the tail rule with t=0."
+      },
+      "oracle": "Source registration only. Future fixtures use exact integer, logical, enumeration, type/kind, rank/shape, and array-element-order observations. Argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets. Exact result-value plans use discriminating inputs, non-default sentinels where assignment is observed, non-vacuous companions for zero or false results, and feature mutations such as changing the intrinsic name, DIM, MASK, VECTOR, STAT, kind, argument order, or enumeration order.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for PACK, PARITY, POPCNT, POPPAR, PRECISION, PRESENT, and PREVIOUS found no fixture-manifest binding for these 16.9 sections. Existing source uses of PRECISION and PRESENT occur in older clause 6 and 7 tests, profiles, and test helpers; PACK and PREVIOUS appear in negative helper regexes or ordinary prose; those uses are recorded as existing coverage and are not rebound by this source packet.",
+      "dependencies": "Registered dependencies: existing source-form, type, declaration, expression, assignment, execution, array, optional-argument, enumeration, and I/O foundations from clauses 6 through 13 where already catalogued. Unregistered dependencies retained: clause 16.3 integer bit model, clause 16.4 numeric model terminology, sibling 16.9 intrinsics named by pending plans such as DIGITS, RADIX, LOG10, IBSET, POPCNT, LBOUND, SHAPE, SIZE, SELECTED_*_KIND, NEXT, and SAME_TYPE_AS, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, deleted-feature, processor-dependency, or scope terms."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "definition",
+      "rationale": "Description names PACK as packing an array into a vector."
+    },
+    {
+      "unit": "p2",
+      "disposition": "definition",
+      "rationale": "Classifies PACK as transformational."
+    },
+    {
+      "unit": "p3",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.158-001"
+      ]
+    },
+    {
+      "unit": "p4",
+      "disposition": "structural",
+      "rationale": "Result Characteristics combines type/rank and two size rules."
+    },
+    {
+      "unit": "p4.type-rank",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.158-002"
+      ]
+    },
+    {
+      "unit": "p4.size-with-vector",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.158-002"
+      ]
+    },
+    {
+      "unit": "p4.size-without-vector",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.158-002"
+      ]
+    },
+    {
+      "unit": "p5",
+      "disposition": "structural",
+      "rationale": "Result Value combines selected ARRAY elements and VECTOR tail fill."
+    },
+    {
+      "unit": "p5.mask-selected-elements",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.158-003"
+      ]
+    },
+    {
+      "unit": "p5.vector-tail-fill",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.158-003"
+      ]
+    },
+    {
+      "unit": "p6",
+      "disposition": "informative",
+      "rationale": "Example paragraph is illustrative."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_16_9_158.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "fd5a198d16168bb8ca1376a46373170d2897851f8e5a8477c9966f0b19da5e3a",
+  "review_rationale": "Source registration for 16.9.158-16.9.164: PACK, PARITY, POPCNT, POPPAR, PRECISION, PRESENT and PREVIOUS (batch202). Every unit hash-verified by an independent reviewer across two rounds (16.9.159 typeset example drift verified visually); Source accounting only."
+}

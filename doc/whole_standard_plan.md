@@ -5744,6 +5744,11 @@ See `doc/source_audits/batch_198.json`.
 Forty-one units after two rounds. The useful rule: when the value of a conversion is processor dependent, the standard often still fixes it *relative* to another conversion. DBLE(b) must equal REAL(b, KIND(0.0D0)) for a BOZ literal b, which a program can check bitwise via TRANSFER without knowing how the processor interprets the bits — and without tripping over NaN /= NaN.
 See `doc/source_audits/batch_188.json`.
 
+## Batch 202 — PACK through PREVIOUS
+
+Forty-one units after two rounds. All three findings were edge cases the author had left without a plan: PACK under a scalar mask, PARITY of nothing (.FALSE., with a non-vacuous odd-count companion), and PRESENT passed through a second procedure — each one exactly determined by the text.
+See `doc/source_audits/batch_202.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
