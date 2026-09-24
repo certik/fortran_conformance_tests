@@ -5764,6 +5764,11 @@ See `doc/source_audits/batch_201.json`.
 Forty-five units after two rounds. SELECTED_REAL_KIND's selection rule seems unobservable without knowing the kind inventory, but half of it is not: asking for exactly the precision of default real must return a kind with *exactly* that precision, because nothing can lie strictly between. Only the final tiebreak among equal-precision kinds needs the inventory.
 See `doc/source_audits/batch_205.json`.
 
+## Batch 200 — MOD through NEXT
+
+Forty-five units, accepted on the first round with zero findings — the first Clause 16 packet to do so since the checklist gained its model-relation and character-order rules. NEAREST shows the pattern: the adjacent value is model latitude, but NEAREST(X,-1.0) < X < NEAREST(X,1.0) holds on every processor.
+See `doc/source_audits/batch_200.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must

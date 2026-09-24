@@ -1,0 +1,417 @@
+{
+  "schema_version": 1,
+  "section": "16.9.147",
+  "subunits": {
+    "p3": [
+      "p3.from-admission",
+      "p3.argument-restrictions"
+    ],
+    "p4": [
+      "p4.allocation-transfer",
+      "p4.same-variable-restriction",
+      "p4.target-pointer-transfer",
+      "p4.nontarget-pointer-undefined"
+    ],
+    "p7": [
+      "p7.error-termination",
+      "p7.stopped-image-stat",
+      "p7.failed-image-stat",
+      "p7.other-positive-stat"
+    ],
+    "p8": [
+      "p8.error-message",
+      "p8.no-error-unchanged"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S16.9.147-001",
+      "title": "MOVE_ALLOC admits broad FROM forms and optional status arguments",
+      "source": "S16.9.147, J3/24-007, 18 December 2023, physical PDF437.",
+      "source_units": [
+        "p3.from-admission"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "FROM may be of any type, rank, and corank; STAT and ERRMSG are optional arguments.",
+      "facets": [
+        "MOVE_ALLOC-FROM-any-type",
+        "MOVE_ALLOC-FROM-any-rank",
+        "MOVE_ALLOC-FROM-any-corank-out-of-scope",
+        "MOVE_ALLOC-STAT-optional",
+        "MOVE_ALLOC-ERRMSG-optional"
+      ],
+      "pending": {
+        "MOVE_ALLOC-FROM-any-type": "Use noncoarray allocatable integer, real, and derived-type FROM variables and verify the successful transfer facets. Mutate the declared type in the TO compatibility control so type admission alone is load-bearing.",
+        "MOVE_ALLOC-FROM-any-rank": "Use scalar and rank-one noncoarray allocatable FROM variables and verify allocation status, bounds, and values after transfer. Mutate a rank-one case to scalar TO so the rank control fails source review.",
+        "MOVE_ALLOC-FROM-any-corank-out-of-scope": "Out of scope for single-image fixtures by user decision: corank admission is a coarray facet, and this packet creates no local-coarray plan.",
+        "MOVE_ALLOC-STAT-optional": "Call MOVE_ALLOC once with STAT present and once absent on successful noncoarray transfers; the present case asserts zero and the absent case asserts the same allocation transfer effects.",
+        "MOVE_ALLOC-ERRMSG-optional": "Call MOVE_ALLOC once with ERRMSG present and once absent on successful noncoarray transfers; the present case asserts unchanged text and the absent case asserts the same allocation transfer effects."
+      },
+      "oracle": "Source registration only. Future fixtures initialize observed variables to non-default or opposite sentinels before invoking the intrinsic, use conforming companions for zero, blank, or .FALSE. results, and assert only properties fixed by 16.9: exact integer, logical, character, kind, shape, allocation, STAT, or bit-pattern observations. Real-result exact values are limited to separately justified exact cases; processor-dependent approximations, image-dependent behavior, explanatory message text, and undefined pointer association status are not asserted as exact values. Unnumbered intrinsic argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for MOD, MODULO, MOVE_ALLOC, MVBITS, NEAREST, NEW_LINE, and NEXT found no existing 16.9.145-16.9.151 fixture binding in this worktree. Existing source-use hits are unrelated coverage: MOD appears in older clause 7, clause 10, and S8.6.11 parameter sources; NEAREST appears in rounding-mode facet names; NEXT appears in Python helpers and unrelated component names.",
+      "dependencies": "Registered dependencies: existing source-form, type, declaration, expression, array, execution, allocation, pointer, and I/O foundations from clauses 6 through 13 where already catalogued. Unregistered dependencies retained: 7.6 enumeration types, 7.7 BOZ literal context, 15.9.3 argument association, 16.3 integer bit model, 16.4 numeric model and machine-representable terminology, sibling 16.9 intrinsics used by pending plans, ISO_FORTRAN_ENV STAT constants, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, deleted-feature, or scope terms."
+    },
+    {
+      "id": "S16.9.147-002",
+      "title": "MOVE_ALLOC argument restrictions",
+      "source": "S16.9.147, J3/24-007, 18 December 2023, physical PDF437.",
+      "source_units": [
+        "p3.argument-restrictions"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "FROM shall be allocatable and not coindexed; TO shall be type compatible with FROM, have the same rank and corank, be allocatable and not coindexed, be polymorphic for polymorphic FROM, and have matching nondeferred declared type parameters; STAT shall be a noncoindexed integer scalar with decimal exponent range at least four; ERRMSG shall be a noncoindexed default character scalar.",
+      "facets": [
+        "MOVE_ALLOC-FROM-allocatable",
+        "MOVE_ALLOC-FROM-not-coindexed-out-of-scope",
+        "MOVE_ALLOC-TO-type-compatible",
+        "MOVE_ALLOC-TO-same-rank",
+        "MOVE_ALLOC-TO-same-corank-out-of-scope",
+        "MOVE_ALLOC-TO-allocatable",
+        "MOVE_ALLOC-TO-not-coindexed-out-of-scope",
+        "MOVE_ALLOC-TO-polymorphic-for-polymorphic-FROM",
+        "MOVE_ALLOC-TO-nondeferred-parameters-match",
+        "MOVE_ALLOC-STAT-noncoindexed-integer-scalar-range",
+        "MOVE_ALLOC-ERRMSG-noncoindexed-default-character-scalar"
+      ],
+      "pending": {
+        "MOVE_ALLOC-FROM-allocatable": "Positive source controls use allocatable FROM variables. A source-control mutation uses a nonallocatable FROM and claims no diagnostic facet.",
+        "MOVE_ALLOC-FROM-not-coindexed-out-of-scope": "Out of scope for single-image fixtures by user decision: coindexed FROM is a coarray facet, and this packet creates no local-coarray plan.",
+        "MOVE_ALLOC-TO-type-compatible": "Positive source controls use same declared type and an extension-compatible polymorphic pair. A source-control mutation changes TO to an incompatible type and claims no diagnostic facet.",
+        "MOVE_ALLOC-TO-same-rank": "Positive source controls use matching scalar and rank-one FROM/TO pairs. A source-control mutation changes only TO rank and claims no diagnostic facet.",
+        "MOVE_ALLOC-TO-same-corank-out-of-scope": "Out of scope for single-image fixtures by user decision: corank matching is a coarray facet, and this packet creates no local-coarray plan.",
+        "MOVE_ALLOC-TO-allocatable": "Positive source controls use allocatable TO variables. A source-control mutation uses a nonallocatable TO and claims no diagnostic facet.",
+        "MOVE_ALLOC-TO-not-coindexed-out-of-scope": "Out of scope for single-image fixtures by user decision: coindexed TO is a coarray facet, and this packet creates no local-coarray plan.",
+        "MOVE_ALLOC-TO-polymorphic-for-polymorphic-FROM": "Positive source control uses polymorphic allocatable FROM and polymorphic TO. A source-control mutation makes TO nonpolymorphic and claims no diagnostic facet.",
+        "MOVE_ALLOC-TO-nondeferred-parameters-match": "Positive source control uses matching character LEN or PDT parameters. A source-control mutation changes a nondeferred parameter and claims no diagnostic facet.",
+        "MOVE_ALLOC-STAT-noncoindexed-integer-scalar-range": "Positive source control passes a default integer scalar STAT initialized to a sentinel. Noninteger, array, or too-small-range mutations claim no diagnostic facet.",
+        "MOVE_ALLOC-ERRMSG-noncoindexed-default-character-scalar": "Positive source control passes a default character scalar ERRMSG initialized to distinctive text. Nondefault-kind, array, or coindexed mutations claim no diagnostic facet."
+      },
+      "oracle": "Source registration only. Future fixtures initialize observed variables to non-default or opposite sentinels before invoking the intrinsic, use conforming companions for zero, blank, or .FALSE. results, and assert only properties fixed by 16.9: exact integer, logical, character, kind, shape, allocation, STAT, or bit-pattern observations. Real-result exact values are limited to separately justified exact cases; processor-dependent approximations, image-dependent behavior, explanatory message text, and undefined pointer association status are not asserted as exact values. Unnumbered intrinsic argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for MOD, MODULO, MOVE_ALLOC, MVBITS, NEAREST, NEW_LINE, and NEXT found no existing 16.9.145-16.9.151 fixture binding in this worktree. Existing source-use hits are unrelated coverage: MOD appears in older clause 7, clause 10, and S8.6.11 parameter sources; NEAREST appears in rounding-mode facet names; NEXT appears in Python helpers and unrelated component names.",
+      "dependencies": "Registered dependencies: existing source-form, type, declaration, expression, array, execution, allocation, pointer, and I/O foundations from clauses 6 through 13 where already catalogued. Unregistered dependencies retained: 7.6 enumeration types, 7.7 BOZ literal context, 15.9.3 argument association, 16.3 integer bit model, 16.4 numeric model and machine-representable terminology, sibling 16.9 intrinsics used by pending plans, ISO_FORTRAN_ENV STAT constants, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, deleted-feature, or scope terms."
+    },
+    {
+      "id": "S16.9.147-003",
+      "title": "MOVE_ALLOC successful transfer deallocates TO, moves FROM allocation, and unallocates FROM",
+      "source": "S16.9.147, J3/24-007, 18 December 2023, physical PDF437.",
+      "source_units": [
+        "p4.allocation-transfer"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "On successful invocation or STAT_FAILED_IMAGE assignment, allocated TO is deallocated, allocated FROM transfers its dynamic type, type parameters, bounds, cobounds, and value to TO, and FROM becomes unallocated.",
+      "facets": [
+        "MOVE_ALLOC-deallocates-allocated-TO-on-entry",
+        "MOVE_ALLOC-transfers-dynamic-type-parameters-bounds-value",
+        "MOVE_ALLOC-cobounds-transfer-out-of-scope",
+        "MOVE_ALLOC-unallocates-FROM"
+      ],
+      "pending": {
+        "MOVE_ALLOC-deallocates-allocated-TO-on-entry": "Initialize TO allocated with distinctive old bounds and values, FROM allocated with different bounds and values, call MOVE_ALLOC successfully, and assert TO has only FROM's bounds and values. Mutate by omitting the prior TO allocation so the deallocation facet is not credited.",
+        "MOVE_ALLOC-transfers-dynamic-type-parameters-bounds-value": "Use allocated noncoarray FROM with nondefault lower bound, distinctive values, and a derived-type extension control; assert ALLOCATED(TO), bounds, SELECT TYPE dynamic type, and values after transfer. Mutate a bound or value expectation so the transfer check fails.",
+        "MOVE_ALLOC-cobounds-transfer-out-of-scope": "Out of scope for single-image fixtures by user decision: cobounds transfer is a coarray facet, and this packet creates no local-coarray plan.",
+        "MOVE_ALLOC-unallocates-FROM": "Prefill FROM allocated, call MOVE_ALLOC successfully, and assert .NOT. ALLOCATED(FROM) paired with ALLOCATED(TO) and value checks so the unallocated result is not vacuous."
+      },
+      "oracle": "Source registration only. Future fixtures initialize observed variables to non-default or opposite sentinels before invoking the intrinsic, use conforming companions for zero, blank, or .FALSE. results, and assert only properties fixed by 16.9: exact integer, logical, character, kind, shape, allocation, STAT, or bit-pattern observations. Real-result exact values are limited to separately justified exact cases; processor-dependent approximations, image-dependent behavior, explanatory message text, and undefined pointer association status are not asserted as exact values. Unnumbered intrinsic argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for MOD, MODULO, MOVE_ALLOC, MVBITS, NEAREST, NEW_LINE, and NEXT found no existing 16.9.145-16.9.151 fixture binding in this worktree. Existing source-use hits are unrelated coverage: MOD appears in older clause 7, clause 10, and S8.6.11 parameter sources; NEAREST appears in rounding-mode facet names; NEXT appears in Python helpers and unrelated component names.",
+      "dependencies": "Registered dependencies: existing source-form, type, declaration, expression, array, execution, allocation, pointer, and I/O foundations from clauses 6 through 13 where already catalogued. Unregistered dependencies retained: 7.6 enumeration types, 7.7 BOZ literal context, 15.9.3 argument association, 16.3 integer bit model, 16.4 numeric model and machine-representable terminology, sibling 16.9 intrinsics used by pending plans, ISO_FORTRAN_ENV STAT constants, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, deleted-feature, or scope terms."
+    },
+    {
+      "id": "S16.9.147-004",
+      "title": "MOVE_ALLOC same-variable invocation restriction",
+      "source": "S16.9.147, J3/24-007, 18 December 2023, physical PDF437.",
+      "source_units": [
+        "p4.same-variable-restriction"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "If FROM and TO are the same variable, that variable shall be unallocated at MOVE_ALLOC invocation.",
+      "facets": [
+        "MOVE_ALLOC-same-variable-must-be-unallocated"
+      ],
+      "pending": {
+        "MOVE_ALLOC-same-variable-must-be-unallocated": "Positive source control calls MOVE_ALLOC with distinct variables for allocated transfers and with the same unallocated variable for the same-variable form. An allocated same-variable mutation claims no diagnostic facet."
+      },
+      "oracle": "Source registration only. Future fixtures initialize observed variables to non-default or opposite sentinels before invoking the intrinsic, use conforming companions for zero, blank, or .FALSE. results, and assert only properties fixed by 16.9: exact integer, logical, character, kind, shape, allocation, STAT, or bit-pattern observations. Real-result exact values are limited to separately justified exact cases; processor-dependent approximations, image-dependent behavior, explanatory message text, and undefined pointer association status are not asserted as exact values. Unnumbered intrinsic argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for MOD, MODULO, MOVE_ALLOC, MVBITS, NEAREST, NEW_LINE, and NEXT found no existing 16.9.145-16.9.151 fixture binding in this worktree. Existing source-use hits are unrelated coverage: MOD appears in older clause 7, clause 10, and S8.6.11 parameter sources; NEAREST appears in rounding-mode facet names; NEXT appears in Python helpers and unrelated component names.",
+      "dependencies": "Registered dependencies: existing source-form, type, declaration, expression, array, execution, allocation, pointer, and I/O foundations from clauses 6 through 13 where already catalogued. Unregistered dependencies retained: 7.6 enumeration types, 7.7 BOZ literal context, 15.9.3 argument association, 16.3 integer bit model, 16.4 numeric model and machine-representable terminology, sibling 16.9 intrinsics used by pending plans, ISO_FORTRAN_ENV STAT constants, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, deleted-feature, or scope terms."
+    },
+    {
+      "id": "S16.9.147-005",
+      "title": "MOVE_ALLOC pointer association consequences",
+      "source": "S16.9.147, J3/24-007, 18 December 2023, physical PDF437.",
+      "source_units": [
+        "p4.target-pointer-transfer",
+        "p4.nontarget-pointer-undefined"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Pointers associated with FROM on entry become correspondingly associated with TO when TO has TARGET; without TARGET, such pointer association status becomes undefined.",
+      "facets": [
+        "MOVE_ALLOC-target-pointer-corresponding-association",
+        "MOVE_ALLOC-nontarget-pointer-association-undefined-no-oracle"
+      ],
+      "pending": {
+        "MOVE_ALLOC-target-pointer-corresponding-association": "Use TARGET allocatable FROM and TO plus a pointer associated with FROM before the call; after successful MOVE_ALLOC, assert ASSOCIATED(pointer, TO) and transferred value through TO. Mutate by dropping TARGET from TO so the positive association check is not used.",
+        "MOVE_ALLOC-nontarget-pointer-association-undefined-no-oracle": "No portable oracle: the pointer association status becomes undefined, so a conforming fixture cannot inquire, dereference, or compare that pointer after the call. Future fixtures must not observe this undefined status."
+      },
+      "oracle": "Source registration only. Future fixtures initialize observed variables to non-default or opposite sentinels before invoking the intrinsic, use conforming companions for zero, blank, or .FALSE. results, and assert only properties fixed by 16.9: exact integer, logical, character, kind, shape, allocation, STAT, or bit-pattern observations. Real-result exact values are limited to separately justified exact cases; processor-dependent approximations, image-dependent behavior, explanatory message text, and undefined pointer association status are not asserted as exact values. Unnumbered intrinsic argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for MOD, MODULO, MOVE_ALLOC, MVBITS, NEAREST, NEW_LINE, and NEXT found no existing 16.9.145-16.9.151 fixture binding in this worktree. Existing source-use hits are unrelated coverage: MOD appears in older clause 7, clause 10, and S8.6.11 parameter sources; NEAREST appears in rounding-mode facet names; NEXT appears in Python helpers and unrelated component names.",
+      "dependencies": "Registered dependencies: existing source-form, type, declaration, expression, array, execution, allocation, pointer, and I/O foundations from clauses 6 through 13 where already catalogued. Unregistered dependencies retained: 7.6 enumeration types, 7.7 BOZ literal context, 15.9.3 argument association, 16.3 integer bit model, 16.4 numeric model and machine-representable terminology, sibling 16.9 intrinsics used by pending plans, ISO_FORTRAN_ENV STAT constants, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, deleted-feature, or scope terms."
+    },
+    {
+      "id": "S16.9.147-006",
+      "title": "MOVE_ALLOC coarray synchronization and failed-image behavior is image-dependent",
+      "source": "S16.9.147, J3/24-007, 18 December 2023, physical PDF438.",
+      "source_units": [
+        "p5"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A reference with coarray FROM synchronizes active images of the current team, delays following segments until matching calls occur, and creates an error condition for stopped or failed images.",
+      "facets": [
+        "MOVE_ALLOC-coarray-implicit-synchronization-out-of-scope",
+        "MOVE_ALLOC-coarray-segment-delay-out-of-scope",
+        "MOVE_ALLOC-coarray-stopped-or-failed-image-error-out-of-scope"
+      ],
+      "pending": {
+        "MOVE_ALLOC-coarray-implicit-synchronization-out-of-scope": "Out of scope for single-image fixtures by user decision: coarray synchronization requires other active images, and this packet creates no local-coarray plan.",
+        "MOVE_ALLOC-coarray-segment-delay-out-of-scope": "Out of scope for single-image fixtures by user decision: segment delay across images is image-dependent, and this packet creates no local-coarray plan.",
+        "MOVE_ALLOC-coarray-stopped-or-failed-image-error-out-of-scope": "Out of scope for single-image fixtures by user decision: stopped or failed image state cannot be produced by single-image fixtures."
+      },
+      "oracle": "Source registration only. Future fixtures initialize observed variables to non-default or opposite sentinels before invoking the intrinsic, use conforming companions for zero, blank, or .FALSE. results, and assert only properties fixed by 16.9: exact integer, logical, character, kind, shape, allocation, STAT, or bit-pattern observations. Real-result exact values are limited to separately justified exact cases; processor-dependent approximations, image-dependent behavior, explanatory message text, and undefined pointer association status are not asserted as exact values. Unnumbered intrinsic argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for MOD, MODULO, MOVE_ALLOC, MVBITS, NEAREST, NEW_LINE, and NEXT found no existing 16.9.145-16.9.151 fixture binding in this worktree. Existing source-use hits are unrelated coverage: MOD appears in older clause 7, clause 10, and S8.6.11 parameter sources; NEAREST appears in rounding-mode facet names; NEXT appears in Python helpers and unrelated component names.",
+      "dependencies": "Registered dependencies: existing source-form, type, declaration, expression, array, execution, allocation, pointer, and I/O foundations from clauses 6 through 13 where already catalogued. Unregistered dependencies retained: 7.6 enumeration types, 7.7 BOZ literal context, 15.9.3 argument association, 16.3 integer bit model, 16.4 numeric model and machine-representable terminology, sibling 16.9 intrinsics used by pending plans, ISO_FORTRAN_ENV STAT constants, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, deleted-feature, or scope terms."
+    },
+    {
+      "id": "S16.9.147-007",
+      "title": "MOVE_ALLOC successful STAT result is zero",
+      "source": "S16.9.147, J3/24-007, 18 December 2023, physical PDF438.",
+      "source_units": [
+        "p6"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "If STAT is present and execution is successful, STAT is assigned the value zero.",
+      "facets": [
+        "MOVE_ALLOC-success-STAT-zero"
+      ],
+      "pending": {
+        "MOVE_ALLOC-success-STAT-zero": "Initialize STAT to a nonzero sentinel, execute successful noncoarray MOVE_ALLOC with STAT present, and assert STAT==0 together with allocation transfer checks. Mutate by not passing STAT so the facet is not credited."
+      },
+      "oracle": "Source registration only. Future fixtures initialize observed variables to non-default or opposite sentinels before invoking the intrinsic, use conforming companions for zero, blank, or .FALSE. results, and assert only properties fixed by 16.9: exact integer, logical, character, kind, shape, allocation, STAT, or bit-pattern observations. Real-result exact values are limited to separately justified exact cases; processor-dependent approximations, image-dependent behavior, explanatory message text, and undefined pointer association status are not asserted as exact values. Unnumbered intrinsic argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for MOD, MODULO, MOVE_ALLOC, MVBITS, NEAREST, NEW_LINE, and NEXT found no existing 16.9.145-16.9.151 fixture binding in this worktree. Existing source-use hits are unrelated coverage: MOD appears in older clause 7, clause 10, and S8.6.11 parameter sources; NEAREST appears in rounding-mode facet names; NEXT appears in Python helpers and unrelated component names.",
+      "dependencies": "Registered dependencies: existing source-form, type, declaration, expression, array, execution, allocation, pointer, and I/O foundations from clauses 6 through 13 where already catalogued. Unregistered dependencies retained: 7.6 enumeration types, 7.7 BOZ literal context, 15.9.3 argument association, 16.3 integer bit model, 16.4 numeric model and machine-representable terminology, sibling 16.9 intrinsics used by pending plans, ISO_FORTRAN_ENV STAT constants, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, deleted-feature, or scope terms."
+    },
+    {
+      "id": "S16.9.147-008",
+      "title": "MOVE_ALLOC error handling uses termination, named image constants, or positive processor value",
+      "source": "S16.9.147, J3/24-007, 18 December 2023, physical PDF438.",
+      "source_units": [
+        "p7.error-termination",
+        "p7.stopped-image-stat",
+        "p7.failed-image-stat",
+        "p7.other-positive-stat"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "On an error condition, absent STAT initiates error termination; present STAT receives STAT_STOPPED_IMAGE for stopped-image coarray cases, STAT_FAILED_IMAGE for failed-image coarray cases without another error, or another processor-dependent positive value distinct from those named constants.",
+      "facets": [
+        "MOVE_ALLOC-error-without-STAT-termination-no-oracle",
+        "MOVE_ALLOC-stopped-image-STAT-out-of-scope",
+        "MOVE_ALLOC-failed-image-STAT-out-of-scope",
+        "MOVE_ALLOC-other-error-positive-STAT-no-oracle",
+        "MOVE_ALLOC-other-error-STAT-value-latitude"
+      ],
+      "pending": {
+        "MOVE_ALLOC-error-without-STAT-termination-no-oracle": "No portable single-image oracle: the only source-specified reachable errors here are image-dependent or processor conditions that cannot be induced by a conforming single-image program in this suite.",
+        "MOVE_ALLOC-stopped-image-STAT-out-of-scope": "Out of scope for single-image fixtures by user decision: STAT_STOPPED_IMAGE requires a stopped image in the current team.",
+        "MOVE_ALLOC-failed-image-STAT-out-of-scope": "Out of scope for single-image fixtures by user decision: STAT_FAILED_IMAGE requires a failed image in the current team.",
+        "MOVE_ALLOC-other-error-positive-STAT-no-oracle": "No portable trigger: a conforming single-image program cannot require an other-error MOVE_ALLOC condition distinct from stopped or failed images.",
+        "MOVE_ALLOC-other-error-STAT-value-latitude": "No portable exact-value oracle: p7 permits a processor-dependent positive STAT value for other errors, constrained only to differ from the stopped and failed image constants."
+      },
+      "oracle": "Source registration only. Future fixtures initialize observed variables to non-default or opposite sentinels before invoking the intrinsic, use conforming companions for zero, blank, or .FALSE. results, and assert only properties fixed by 16.9: exact integer, logical, character, kind, shape, allocation, STAT, or bit-pattern observations. Real-result exact values are limited to separately justified exact cases; processor-dependent approximations, image-dependent behavior, explanatory message text, and undefined pointer association status are not asserted as exact values. Unnumbered intrinsic argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for MOD, MODULO, MOVE_ALLOC, MVBITS, NEAREST, NEW_LINE, and NEXT found no existing 16.9.145-16.9.151 fixture binding in this worktree. Existing source-use hits are unrelated coverage: MOD appears in older clause 7, clause 10, and S8.6.11 parameter sources; NEAREST appears in rounding-mode facet names; NEXT appears in Python helpers and unrelated component names.",
+      "dependencies": "Registered dependencies: existing source-form, type, declaration, expression, array, execution, allocation, pointer, and I/O foundations from clauses 6 through 13 where already catalogued. Unregistered dependencies retained: 7.6 enumeration types, 7.7 BOZ literal context, 15.9.3 argument association, 16.3 integer bit model, 16.4 numeric model and machine-representable terminology, sibling 16.9 intrinsics used by pending plans, ISO_FORTRAN_ENV STAT constants, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, deleted-feature, or scope terms."
+    },
+    {
+      "id": "S16.9.147-009",
+      "title": "MOVE_ALLOC ERRMSG behavior distinguishes error and success",
+      "source": "S16.9.147, J3/24-007, 18 December 2023, physical PDF438.",
+      "source_units": [
+        "p8.error-message",
+        "p8.no-error-unchanged"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Present ERRMSG receives an explanatory message on error; without an error, ERRMSG definition status and value are unchanged.",
+      "facets": [
+        "MOVE_ALLOC-error-ERRMSG-message-no-oracle",
+        "MOVE_ALLOC-success-ERRMSG-unchanged"
+      ],
+      "pending": {
+        "MOVE_ALLOC-error-ERRMSG-message-no-oracle": "No portable oracle: explanatory message text is not comparable, and this suite has no portable single-image MOVE_ALLOC error trigger.",
+        "MOVE_ALLOC-success-ERRMSG-unchanged": "Initialize ERRMSG to distinctive nonblank text, execute successful noncoarray MOVE_ALLOC with ERRMSG present, and assert LEN and exact text remain unchanged together with allocation transfer checks. Mutate by assigning ERRMSG in a wrapper so the sentinel check fails."
+      },
+      "oracle": "Source registration only. Future fixtures initialize observed variables to non-default or opposite sentinels before invoking the intrinsic, use conforming companions for zero, blank, or .FALSE. results, and assert only properties fixed by 16.9: exact integer, logical, character, kind, shape, allocation, STAT, or bit-pattern observations. Real-result exact values are limited to separately justified exact cases; processor-dependent approximations, image-dependent behavior, explanatory message text, and undefined pointer association status are not asserted as exact values. Unnumbered intrinsic argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for MOD, MODULO, MOVE_ALLOC, MVBITS, NEAREST, NEW_LINE, and NEXT found no existing 16.9.145-16.9.151 fixture binding in this worktree. Existing source-use hits are unrelated coverage: MOD appears in older clause 7, clause 10, and S8.6.11 parameter sources; NEAREST appears in rounding-mode facet names; NEXT appears in Python helpers and unrelated component names.",
+      "dependencies": "Registered dependencies: existing source-form, type, declaration, expression, array, execution, allocation, pointer, and I/O foundations from clauses 6 through 13 where already catalogued. Unregistered dependencies retained: 7.6 enumeration types, 7.7 BOZ literal context, 15.9.3 argument association, 16.3 integer bit model, 16.4 numeric model and machine-representable terminology, sibling 16.9 intrinsics used by pending plans, ISO_FORTRAN_ENV STAT constants, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, deleted-feature, or scope terms."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "definition",
+      "rationale": "Description names MOVE_ALLOC as moving an allocation; p4 owns effects."
+    },
+    {
+      "unit": "p2",
+      "disposition": "definition",
+      "rationale": "Classifies MOVE_ALLOC as a subroutine and records the simple/noncoarray class condition."
+    },
+    {
+      "unit": "p3",
+      "disposition": "structural",
+      "rationale": "Arguments mix broad admissions, optional arguments, and shall-restrictions."
+    },
+    {
+      "unit": "p3.from-admission",
+      "disposition": "permission",
+      "requirements": [
+        "S16.9.147-001"
+      ],
+      "rationale": "FROM type/rank/corank admission and optional STAT/ERRMSG presence are permissions rather than restrictions."
+    },
+    {
+      "unit": "p3.argument-restrictions",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.147-002"
+      ]
+    },
+    {
+      "unit": "p4",
+      "disposition": "structural",
+      "rationale": "Successful effects mix allocation transfer, a same-variable restriction, pointer effects, and undefined pointer status."
+    },
+    {
+      "unit": "p4.allocation-transfer",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.147-003"
+      ]
+    },
+    {
+      "unit": "p4.same-variable-restriction",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.147-004"
+      ]
+    },
+    {
+      "unit": "p4.target-pointer-transfer",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.147-005"
+      ]
+    },
+    {
+      "unit": "p4.nontarget-pointer-undefined",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.147-005"
+      ],
+      "rationale": "Registered with an explicit no-oracle pending reason because observing undefined pointer status would be nonconforming."
+    },
+    {
+      "unit": "p5",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.147-006"
+      ],
+      "rationale": "Coarray/image-dependent runtime facets registered as out of scope for this single-image suite."
+    },
+    {
+      "unit": "p6",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.147-007"
+      ],
+      "rationale": "Exact successful STAT assignment."
+    },
+    {
+      "unit": "p7",
+      "disposition": "structural",
+      "rationale": "Error handling mixes image-dependent named constants, termination, and processor-dependent positive STAT latitude."
+    },
+    {
+      "unit": "p7.error-termination",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.147-008"
+      ]
+    },
+    {
+      "unit": "p7.stopped-image-stat",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.147-008"
+      ],
+      "rationale": "Image-dependent facet out of scope for this single-image suite."
+    },
+    {
+      "unit": "p7.failed-image-stat",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.147-008"
+      ],
+      "rationale": "Image-dependent facet out of scope for this single-image suite."
+    },
+    {
+      "unit": "p7.other-positive-stat",
+      "disposition": "permission",
+      "requirements": [
+        "S16.9.147-008"
+      ],
+      "rationale": "Processor-dependent positive STAT value for other errors."
+    },
+    {
+      "unit": "p8",
+      "disposition": "structural",
+      "rationale": "ERRMSG has no-error exact behavior and error-message text without a portable oracle."
+    },
+    {
+      "unit": "p8.error-message",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.147-009"
+      ],
+      "rationale": "Registered with explicit no-oracle pending reason."
+    },
+    {
+      "unit": "p8.no-error-unchanged",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.147-009"
+      ]
+    },
+    {
+      "unit": "p9",
+      "disposition": "informative",
+      "rationale": "Example paragraph is illustrative."
+    },
+    {
+      "unit": "note-unnumbered",
+      "disposition": "informative",
+      "rationale": "NOTE is informative implementation commentary."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_16_9_147.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "30c6a9be99e9be20bc9505f70769fae126e49bb239d7fdb8068f00505f7cedc9",
+  "review_rationale": "Source registration for 16.9.145-16.9.151: MOD, MODULO, MOVE_ALLOC, MVBITS, NEAREST, NEW_LINE and NEXT (batch200). Every unit hash-verified by an independent reviewer with zero findings; integer MOD/MODULO are exact while real results carry approximation latitude, NEAREST is planned through its bracketing relation, and MOVE_ALLOC image facets are out of scope. Source accounting only."
+}
