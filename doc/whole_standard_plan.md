@@ -6154,6 +6154,11 @@ See `doc/source_audits/batch_273.json`.
 The suite's first Clause 17 tests: 11 programs, 25 facets. Every one fails on the frozen LFortran, whose IEEE_ARITHMETIC lacks constants and flag procedures the standard requires it to provide.
 See `doc/source_audits/batch_278.json`.
 
+## Batch 279 — Intrinsic fixtures 16.9.59-16.9.66 (COMMAND_ARGUMENT_COUNT-COUNT)
+
+16 programs, 27 facets: for the cosines only their shapes and kinds are certain, for COUNT everything is.
+See `doc/source_audits/batch_279.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
