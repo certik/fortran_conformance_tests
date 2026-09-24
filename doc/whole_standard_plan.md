@@ -5999,6 +5999,11 @@ See `doc/source_audits/batch_251.json`.
 Thirty-nine units after two rounds. Becoming undefined is not observable, but the exceptions to it are: an INTENT(OUT) dummy keeps its default-initialized subcomponents, and that is an exact, portable oracle hiding inside a list of events that otherwise have none.
 See `doc/source_audits/batch_253.json`.
 
+## Batch 252 — Name, host, use and construct association (19.5-19.5.2.7)
+
+Thirty-three units after two rounds. A name-resolution plan has to make the wrong answer visible: nineteen ways to make a name local, and each needs a value the host entity could not have produced. A construct association runs both ways, so the plan must write through each side and read through the other.
+See `doc/source_audits/batch_252.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
