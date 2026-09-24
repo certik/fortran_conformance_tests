@@ -5679,6 +5679,11 @@ See `doc/source_audits/batch_185.json`.
 Sixty units of 12.10, the INQUIRE statement and its thirty-four specifiers, after three rounds — and with it **Clause 12 is fully registered**. The findings were all one idea applied carefully: most specifiers that answer YES or NO may also answer UNKNOWN "if the processor is unable to determine", so that branch is latitude, and a plan may assert only what it leaves forced. For a file connected for direct access, INQUIRE(DIRECT=) is guaranteed to be YES *or* UNKNOWN, not YES; the size of a stream file is its terminal position minus one *or* -1. INQUIRE is the observation mechanism much of Clause 12 relies on, so getting its guarantees exactly right protects every plan that cites it.
 See `doc/source_audits/batch_165.json`.
 
+## Batch 189 — DIM through EPSILON
+
+Forty-three units, after two rounds. The double-width shifts are where the bit-context rule earns its keep: DSHIFTL and DSHIFTR concatenate two operands' bits, so a result can easily have its leftmost bit set, and reading it as a number would be processor dependent. Every plan now observes the result with BTEST at positions derived from the text — for I with bits {0,2}, J with bits {z-1,z-3} and SHIFT=4, DSHIFTL sets bits {1,3,4,6} — and exercises BOZ conversion with real BOZ arguments.
+See `doc/source_audits/batch_189.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must

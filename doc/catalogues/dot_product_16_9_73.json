@@ -1,0 +1,197 @@
+{
+  "schema_version": 1,
+  "section": "16.9.73",
+  "review_state": "reviewed",
+  "subunits": {
+    "p5": [
+      "p5.numeric-case",
+      "p5.complex-case",
+      "p5.logical-case"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S16.9.73-001",
+      "title": "DOT_PRODUCT vector argument restrictions",
+      "source": "S16.9.73, J3/24-007, 18 December 2023, physical PDF404.",
+      "source_units": [
+        "p3"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "VECTOR_A shall be a rank-one numeric or logical array; VECTOR_B shall have a compatible numeric or logical type, rank one, and the same size as VECTOR_A.",
+      "facets": [
+        "DOT_PRODUCT-vector-a-type-rank",
+        "DOT_PRODUCT-vector-b-compatible-type-rank",
+        "DOT_PRODUCT-vector-b-same-size"
+      ],
+      "pending": {
+        "DOT_PRODUCT-vector-a-type-rank": "Positive plan calls DOT_PRODUCT with rank-one integer, complex, and logical VECTOR_A arrays; source-control mutation supplies a rank-two VECTOR_A and claims no diagnostic facet.",
+        "DOT_PRODUCT-vector-b-compatible-type-rank": "Positive plan uses numeric/numeric and logical/logical pairs; source-control mutation pairs logical VECTOR_A with numeric VECTOR_B and claims no diagnostic facet.",
+        "DOT_PRODUCT-vector-b-same-size": "Positive plan uses equal-size vectors; source-control mutation uses unequal extents and claims no diagnostic facet."
+      },
+      "oracle": "Source registration only. Future fixtures use exact integer, logical, character, shape, kind, and bit-pattern observations, and use real values only where the selected operation is exact or where the standard defines an inquiry-model value. Every positive plan establishes a non-default state first, uses a conforming companion where a zero or .FALSE. result could be vacuous, and includes a feature mutation such as changing the intrinsic name, argument order, KIND, DIM, SHIFT, or BOUNDARY value. Unnumbered argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Processor-dependent approximations are never given exact-value expected results; exact plans are limited to integer/logical/character/shape/kind/bit effects and exactly representable real inquiry-model properties. Grep of tests/ and tests/fixtures/*/fixture.json for DIM, DOT_PRODUCT, DPROD, DSHIFTL, DSHIFTR, EOSHIFT, and EPSILON found no existing fixture binding in this worktree.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, and 13 where already catalogued for source form, intrinsic types and kinds, declarations, expressions, arrays, execution, internal I/O, and exact formatting helpers. Unregistered dependencies retained: clause 16.3 and 16.4 model definitions for bit and real-model terminology; sibling 16.9 intrinsic procedures named by result formulas; clauses 3, 5, 14, 15, 17, 18, and 19 where future fixtures need terms, constants, programs, procedure interfaces, IEEE support, deleted features, or scope rules."
+    },
+    {
+      "id": "S16.9.73-002",
+      "title": "DOT_PRODUCT result characteristics are scalar expression characteristics",
+      "source": "S16.9.73, J3/24-007, 18 December 2023, physical PDF404.",
+      "source_units": [
+        "p4"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A numeric DOT_PRODUCT result has the type and kind of VECTOR_A*VECTOR_B; a logical result has the kind of VECTOR_A .AND. VECTOR_B; the result is scalar.",
+      "facets": [
+        "DOT_PRODUCT-numeric-result-expression-type-kind",
+        "DOT_PRODUCT-logical-result-and-kind",
+        "DOT_PRODUCT-result-scalar"
+      ],
+      "pending": {
+        "DOT_PRODUCT-numeric-result-expression-type-kind": "Use integer*real and complex*complex rank-one vectors with distinct kinds and assert the result kind matches the corresponding expression kind; mutate an operand kind to change the expected kind.",
+        "DOT_PRODUCT-logical-result-and-kind": "Use logical vectors of a nondefault logical kind where available and assert KIND(DOT_PRODUCT(A,B)) equals KIND(A .AND. B); otherwise keep kind-specific branch guarded by kind availability.",
+        "DOT_PRODUCT-result-scalar": "Assign DOT_PRODUCT of nonempty rank-one arrays to a scalar initialized to a nonzero sentinel and mutate the expression to an array operation that cannot satisfy the scalar check."
+      },
+      "oracle": "Source registration only. Future fixtures use exact integer, logical, character, shape, kind, and bit-pattern observations, and use real values only where the selected operation is exact or where the standard defines an inquiry-model value. Every positive plan establishes a non-default state first, uses a conforming companion where a zero or .FALSE. result could be vacuous, and includes a feature mutation such as changing the intrinsic name, argument order, KIND, DIM, SHIFT, or BOUNDARY value. Unnumbered argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Processor-dependent approximations are never given exact-value expected results; exact plans are limited to integer/logical/character/shape/kind/bit effects and exactly representable real inquiry-model properties. Grep of tests/ and tests/fixtures/*/fixture.json for DIM, DOT_PRODUCT, DPROD, DSHIFTL, DSHIFTR, EOSHIFT, and EPSILON found no existing fixture binding in this worktree.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, and 13 where already catalogued for source form, intrinsic types and kinds, declarations, expressions, arrays, execution, internal I/O, and exact formatting helpers. Unregistered dependencies retained: clause 16.3 and 16.4 model definitions for bit and real-model terminology; sibling 16.9 intrinsic procedures named by result formulas; clauses 3, 5, 14, 15, 17, 18, and 19 where future fixtures need terms, constants, programs, procedure interfaces, IEEE support, deleted features, or scope rules."
+    },
+    {
+      "id": "S16.9.73-003",
+      "title": "DOT_PRODUCT integer and real values are SUM(VECTOR_A*VECTOR_B) with zero-size zero",
+      "source": "S16.9.73, J3/24-007, 18 December 2023, physical PDF404.",
+      "source_units": [
+        "p5.numeric-case"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For integer or real VECTOR_A, DOT_PRODUCT has value SUM(VECTOR_A*VECTOR_B), and has value zero for size-zero vectors.",
+      "facets": [
+        "DOT_PRODUCT-integer-sum-products",
+        "DOT_PRODUCT-real-sum-products",
+        "DOT_PRODUCT-numeric-zero-size-zero"
+      ],
+      "pending": {
+        "DOT_PRODUCT-integer-sum-products": "Use DOT_PRODUCT([1,2,3],[2,3,4]) expecting exact integer 20 and mutate the feature to SUM(VECTOR_A+VECTOR_B) or omit one product term so the selected value changes.",
+        "DOT_PRODUCT-real-sum-products": "Use exactly representable real vectors [1.0,2.0] and [4.0,8.0] expecting exact 20.0; mutate one operand value to change the sum.",
+        "DOT_PRODUCT-numeric-zero-size-zero": "Use zero-size integer vectors expecting zero, paired with the nonzero integer case in the same fixture so an always-zero implementation is detected."
+      },
+      "oracle": "Source registration only. Future fixtures use exact integer, logical, character, shape, kind, and bit-pattern observations, and use real values only where the selected operation is exact or where the standard defines an inquiry-model value. Every positive plan establishes a non-default state first, uses a conforming companion where a zero or .FALSE. result could be vacuous, and includes a feature mutation such as changing the intrinsic name, argument order, KIND, DIM, SHIFT, or BOUNDARY value. Unnumbered argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Processor-dependent approximations are never given exact-value expected results; exact plans are limited to integer/logical/character/shape/kind/bit effects and exactly representable real inquiry-model properties. Grep of tests/ and tests/fixtures/*/fixture.json for DIM, DOT_PRODUCT, DPROD, DSHIFTL, DSHIFTR, EOSHIFT, and EPSILON found no existing fixture binding in this worktree.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, and 13 where already catalogued for source form, intrinsic types and kinds, declarations, expressions, arrays, execution, internal I/O, and exact formatting helpers. Unregistered dependencies retained: clause 16.3 and 16.4 model definitions for bit and real-model terminology; sibling 16.9 intrinsic procedures named by result formulas; clauses 3, 5, 14, 15, 17, 18, and 19 where future fixtures need terms, constants, programs, procedure interfaces, IEEE support, deleted features, or scope rules."
+    },
+    {
+      "id": "S16.9.73-004",
+      "title": "DOT_PRODUCT complex values conjugate VECTOR_A and zero-size gives zero",
+      "source": "S16.9.73, J3/24-007, 18 December 2023, physical PDF404.",
+      "source_units": [
+        "p5.complex-case"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For complex VECTOR_A, DOT_PRODUCT has value SUM(CONJG(VECTOR_A)*VECTOR_B), and has value zero for size-zero vectors.",
+      "facets": [
+        "DOT_PRODUCT-complex-conjugated-sum",
+        "DOT_PRODUCT-complex-zero-size-zero"
+      ],
+      "pending": {
+        "DOT_PRODUCT-complex-conjugated-sum": "Use DOT_PRODUCT([(1.0,2.0)],[(3.0,4.0)]) expecting exact (11.0,-2.0); mutating to omit CONJG changes the imaginary part to 10.0.",
+        "DOT_PRODUCT-complex-zero-size-zero": "Use zero-size complex vectors expecting exact complex zero, paired with the nonzero conjugation case to avoid vacuity."
+      },
+      "oracle": "Source registration only. Future fixtures use exact integer, logical, character, shape, kind, and bit-pattern observations, and use real values only where the selected operation is exact or where the standard defines an inquiry-model value. Every positive plan establishes a non-default state first, uses a conforming companion where a zero or .FALSE. result could be vacuous, and includes a feature mutation such as changing the intrinsic name, argument order, KIND, DIM, SHIFT, or BOUNDARY value. Unnumbered argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Processor-dependent approximations are never given exact-value expected results; exact plans are limited to integer/logical/character/shape/kind/bit effects and exactly representable real inquiry-model properties. Grep of tests/ and tests/fixtures/*/fixture.json for DIM, DOT_PRODUCT, DPROD, DSHIFTL, DSHIFTR, EOSHIFT, and EPSILON found no existing fixture binding in this worktree.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, and 13 where already catalogued for source form, intrinsic types and kinds, declarations, expressions, arrays, execution, internal I/O, and exact formatting helpers. Unregistered dependencies retained: clause 16.3 and 16.4 model definitions for bit and real-model terminology; sibling 16.9 intrinsic procedures named by result formulas; clauses 3, 5, 14, 15, 17, 18, and 19 where future fixtures need terms, constants, programs, procedure interfaces, IEEE support, deleted features, or scope rules."
+    },
+    {
+      "id": "S16.9.73-005",
+      "title": "DOT_PRODUCT logical values are ANY(VECTOR_A .AND. VECTOR_B) with zero-size false",
+      "source": "S16.9.73, J3/24-007, 18 December 2023, physical PDF404.",
+      "source_units": [
+        "p5.logical-case"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For logical VECTOR_A, DOT_PRODUCT has value ANY(VECTOR_A .AND. VECTOR_B), and has value false for size-zero vectors.",
+      "facets": [
+        "DOT_PRODUCT-logical-any-and",
+        "DOT_PRODUCT-logical-zero-size-false"
+      ],
+      "pending": {
+        "DOT_PRODUCT-logical-any-and": "Use logical vectors with one aligned .TRUE. pair expecting .TRUE. and a companion with no aligned .TRUE. pair expecting .FALSE.; mutate .AND. to .OR. to change the latter.",
+        "DOT_PRODUCT-logical-zero-size-false": "Use zero-size logical vectors expecting .FALSE., paired with the nonempty .TRUE. case so the false result is not vacuous."
+      },
+      "oracle": "Source registration only. Future fixtures use exact integer, logical, character, shape, kind, and bit-pattern observations, and use real values only where the selected operation is exact or where the standard defines an inquiry-model value. Every positive plan establishes a non-default state first, uses a conforming companion where a zero or .FALSE. result could be vacuous, and includes a feature mutation such as changing the intrinsic name, argument order, KIND, DIM, SHIFT, or BOUNDARY value. Unnumbered argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Processor-dependent approximations are never given exact-value expected results; exact plans are limited to integer/logical/character/shape/kind/bit effects and exactly representable real inquiry-model properties. Grep of tests/ and tests/fixtures/*/fixture.json for DIM, DOT_PRODUCT, DPROD, DSHIFTL, DSHIFTR, EOSHIFT, and EPSILON found no existing fixture binding in this worktree.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, and 13 where already catalogued for source form, intrinsic types and kinds, declarations, expressions, arrays, execution, internal I/O, and exact formatting helpers. Unregistered dependencies retained: clause 16.3 and 16.4 model definitions for bit and real-model terminology; sibling 16.9 intrinsic procedures named by result formulas; clauses 3, 5, 14, 15, 17, 18, and 19 where future fixtures need terms, constants, programs, procedure interfaces, IEEE support, deleted features, or scope rules."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "definition",
+      "rationale": "Description defines the intrinsic purpose."
+    },
+    {
+      "unit": "p2",
+      "disposition": "definition",
+      "rationale": "Classifies DOT_PRODUCT as transformational."
+    },
+    {
+      "unit": "p3",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.73-001"
+      ],
+      "rationale": "Argument shall-restrictions on the program."
+    },
+    {
+      "unit": "p4",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.73-002"
+      ],
+      "rationale": "Result characteristic requirements."
+    },
+    {
+      "unit": "p5",
+      "disposition": "structural",
+      "rationale": "Result Value paragraph is subdivided by its three cases."
+    },
+    {
+      "unit": "p5.numeric-case",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.73-003"
+      ],
+      "rationale": "Case (i) integer/real result value."
+    },
+    {
+      "unit": "p5.complex-case",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.73-004"
+      ],
+      "rationale": "Case (ii) complex result value."
+    },
+    {
+      "unit": "p5.logical-case",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.73-005"
+      ],
+      "rationale": "Case (iii) logical result value."
+    },
+    {
+      "unit": "p6",
+      "disposition": "informative",
+      "rationale": "Example paragraph is illustrative and not normative."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_16_9_73.md"
+  },
+  "review_fingerprint": "f49f3bd94ac486caafe2eb9943b0344c6f2130081cc0d4b082933729a5e5ae61",
+  "review_rationale": "Source registration for 16.9.72-16.9.78: DIM, DOT_PRODUCT, DPROD, DSHIFTL, DSHIFTR, EOSHIFT and EPSILON (batch189). Every unit hash-verified by an independent reviewer across two rounds; DSHIFTL and DSHIFTR results are observed only by BTEST on derived bit positions, BOZ conversion is exercised with actual BOZ arguments, EOSHIFT defaults are split from its restrictions, and DPROD's value is a processor-dependent approximation. Source accounting only."
+}
