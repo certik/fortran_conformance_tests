@@ -6034,6 +6034,11 @@ See `doc/source_audits/batch_248.json`.
 Fifty-one informative units after one blocked round. Annex prose explains; it does not legislate. The review's only demand was that each explanation point at the catalogue where the rule it explains is actually tested.
 See `doc/source_audits/batch_262.json`.
 
+## Batch 264 — Annex C notes C.12-C.13.7
+
+Fifty informative units accepted in one round, covering the annex's notes on segments, atomics, collectives and C interoperability, each pointed at the normative catalogue that owns the rule.
+See `doc/source_audits/batch_264.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
