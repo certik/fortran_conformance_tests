@@ -5874,6 +5874,11 @@ See `doc/source_audits/batch_219.json`.
 Forty-two units after four rounds, three of them on one rule: every call to a restricted IEEE procedure names the concrete inquiry that permits it. 'Guarded by the result-kind datatype check' reads fine in prose but does not say which kind, and a fixture generated from it could guard the wrong one.
 See `doc/source_audits/batch_225.json`.
 
+## Batch 224 — Procedure reference syntax (15.5-15.5.1)
+
+Forty units, thirty-two numbered, after three rounds. The instructive one: C1544 reads like a prohibition but no program can break it, because the grammar already routes a bare variable to the variable alternative, and a parenthesised (x) is an expression, not a variable. A diagnostic test for it would have tested nothing; what it *does* determine is observable — whether the actual argument is associated as a variable or as a value.
+See `doc/source_audits/batch_224.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
