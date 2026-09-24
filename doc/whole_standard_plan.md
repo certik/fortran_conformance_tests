@@ -6139,6 +6139,11 @@ See `doc/source_audits/batch_284.json`.
 Twenty-two programs, thirty-one facets, four rounds: what a record is, when an endfile record is written implicitly, and when a file exists. Each mutant now runs in a directory of its own so no test can see another's files.
 See `doc/source_audits/batch_272.json`.
 
+## Batch 285 — Intrinsic fixtures 16.9.71-16.9.77 (DIGITS-EOSHIFT)
+
+36 programs, 61 facets and thirteen LFortran defects: double-width shifts and end-off shifts, where the standard specifies every bit and every boundary value.
+See `doc/source_audits/batch_285.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
