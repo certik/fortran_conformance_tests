@@ -1,0 +1,704 @@
+{
+  "schema_version": 1,
+  "section": "19.4",
+  "subunits": {
+    "p1": [
+      "p1.statement-entity-classes",
+      "p1.statement-entity-homonym-interpretation"
+    ],
+    "p2": [
+      "p2.statement-entity-accessible-name-restriction",
+      "p2.common-block-or-scalar-exceptions",
+      "p2.statement-entity-duplicate-restriction"
+    ],
+    "p3": [
+      "p3.construct-entity-classes",
+      "p3.data-initialized-construct-before-data-restriction"
+    ],
+    "p5": [
+      "p5.implied-do-scope",
+      "p5.scalar-variable",
+      "p5.inline-integer-type-spec",
+      "p5.enclosing-implicit-type",
+      "p5.must-be-integer",
+      "p5.no-other-attributes",
+      "p5.no-containing-scope-declaration"
+    ],
+    "p6": [
+      "p6.index-scope",
+      "p6.scalar-variable",
+      "p6.inline-integer-type-spec",
+      "p6.enclosing-implicit-type",
+      "p6.must-be-integer",
+      "p6.no-other-attributes",
+      "p6.no-containing-scope-declaration"
+    ],
+    "p8": [
+      "p8.default-typed-accessible-name-restriction",
+      "p8.common-block-or-scalar-exceptions",
+      "p8.nested-index-name-reuse-restriction"
+    ],
+    "p13": [
+      "p13.statement-function-dummy-scope",
+      "p13.scalar-from-enclosing-type-rules",
+      "p13.no-other-attributes"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S19.4-001",
+      "title": "Statement entities include implied-DO variables, statement-function dummies, and FORALL statement indices, and shadow other identifiers in their statement scope",
+      "source": "S19.4, J3/24-007, 18 December 2023, physical PDF551.",
+      "source_units": [
+        "p1.statement-entity-classes",
+        "p1.statement-entity-homonym-interpretation"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A data-i-do-variable, ac-do-variable, statement-function dummy, or FORALL statement index is a statement entity. A same-spelling statement entity is interpreted as the statement entity within its scope even though another identifier with that spelling is in scope.",
+      "facets": [
+        "statement-entity-class-list",
+        "statement-entity-shadows-outer-identifier"
+      ],
+      "pending": {
+        "statement-entity-class-list": "Source-use plan links DATA implied DO, array constructor implied DO, statement functions, and FORALL statement catalogues to their statement-entity role without duplicating syntax rules.",
+        "statement-entity-shadows-outer-identifier": "Runtime plan includes both array-constructor and DATA implied-DO sentinels. Array constructor: outer INTEGER :: i is set to 99, evaluate a=[(i, i=1,3)], expect a=[1,2,3] and outer i still 99 after the statement. DATA: declare INTEGER :: i = 99 and INTEGER :: a(3); DATA (a(i), i = 1, 3) / 10, 20, 30 / initializes a before execution, so execution only observes a == [10,20,30] and i == 99; the DATA implied-DO i is the statement entity, not the initialized outer i."
+      },
+      "oracle": "Source accounting only. Future executable fixtures must establish a positive nondefault state first, use sentinels distinct from every value the exercised construct can write, and observe only portable name-resolution, scope, type, value, or source-admission properties. No diagnostic is claimed for an unnumbered program restriction. Diagnostic wording, processor-created external names, addresses, storage layout, image/team execution, and compiler agreement are not oracles.",
+      "oracle_limitation": "This source packet creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Pending plans are source-derived designs or explicit source-use boundaries. Negative source controls are retained only as future optional diagnostics unless a numbered rule or another registered owner supplies a required diagnostic obligation.",
+      "dependencies": "Existing owner catalogues on main opened and confirmed for referenced rules: doc/catalogues/names.json for name syntax; doc/catalogues/labels.json for statement labels; doc/catalogues/array_constructors.json for array-constructor implied DO syntax and values; doc/catalogues/data_statement_8_6_7.json for DATA implied DO syntax; doc/catalogues/implicit_statement_8_7.json for implicit typing; doc/catalogues/import_statement_8_8.json for IMPORT inaccessibility; doc/catalogues/common_statement_8_10_2_1.json for COMMON blocks; doc/catalogues/units_12_5_1.json for external input/output units; doc/catalogues/id_specifier_12_6_2_9.json for pending data transfer identifiers; doc/catalogues/use_statement_and_use_association_14_2_2.json for USE association and rename; doc/catalogues/submodules_14_2_3.json for submodule identifiers; doc/catalogues/bind_attribute_data_entities_8_5_5.json for BIND(C) binding labels on variables and common blocks; doc/catalogues/derived_types_7_5_4_8.json for component accessibility; doc/catalogues/derived_types_7_5_5.json for type-bound procedure bindings; doc/catalogues/derived_types_7_5_10.json for structure constructors and generic/type-name ambiguity; doc/catalogues/execution_of_the_associate_construct_11_1_3_2.json for ASSOCIATE attributes; doc/catalogues/block_construct_11_1_4.json for BLOCK construct entities; doc/catalogues/execution_of_a_change_team_construct_11_1_5_2.json for CHANGE TEAM attributes; doc/catalogues/do_concurrent_loop_control_11_1_7_4_2.json for DO CONCURRENT index values; doc/catalogues/additional_semantics_for_do_concurrent_constructs_11_1_7_5.json for DO CONCURRENT locality; doc/catalogues/attributes_of_a_select_rank_associate_name_11_1_10_3.json for SELECT RANK attributes; doc/catalogues/execution_of_the_select_type_construct_11_1_11_2.json for SELECT TYPE attributes; doc/catalogues/generic_identifiers_15_4_3_4_1.json, doc/catalogues/restrictions_on_generic_declarations_15_4_3_4_5.json, and doc/catalogues/resolving_generic_procedure_references_15_5_5_2.json for generic identifiers and resolution; doc/catalogues/function_result_characteristics_15_3_3.json for function-result characteristics; doc/catalogues/procedure_declaration_statement_15_4_3_6.json and doc/catalogues/syntax_of_a_procedure_reference_15_5_1.json for procedure declarations and references; doc/catalogues/entry_statement_15_6_2_6.json for ENTRY; doc/catalogues/statement_function_15_6_4.json for statement functions; doc/catalogues/standard_generic_intrinsic_procedures_16_7.json for standard intrinsic keywords. No existing main catalogue owns the later 19.5 association/definition rules; where a 19.1-19.4 unit needs such behavior, this catalogue gives its own concrete pending plan instead of deferring coverage."
+    },
+    {
+      "id": "S19.4-002",
+      "title": "Statement entity names avoid most accessible global and class (1) local identifiers and other statement entities",
+      "source": "S19.4, J3/24-007, 18 December 2023, physical PDF551.",
+      "source_units": [
+        "p2.statement-entity-accessible-name-restriction",
+        "p2.common-block-or-scalar-exceptions",
+        "p2.statement-entity-duplicate-restriction"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "A statement entity name shall not match an accessible global identifier or local class (1) identifier except a common block name or scalar variable name, and another statement entity in the same scope shall not have the same name.",
+      "facets": [
+        "statement-entity-not-accessible-global-or-class-one",
+        "statement-entity-common-block-name-exception",
+        "statement-entity-scalar-variable-name-exception",
+        "no-duplicate-statement-entity-in-scope"
+      ],
+      "pending": {
+        "statement-entity-not-accessible-global-or-class-one": "Source-control plan uses an ac-implied-do variable with the same spelling as a module procedure global and a control renaming only the ac-do variable; no mandatory diagnostic is claimed for this unnumbered restriction.",
+        "statement-entity-common-block-name-exception": "Positive source plan uses a DATA implied-DO variable sharing a common block name; value assertions remain under DATA and 19.4 p5.",
+        "statement-entity-scalar-variable-name-exception": "Runtime plan uses scalar variable i=99 with both statement-entity forms: [(i,i=1,3)] yields [1,2,3] with i unchanged, and DATA (a(i), i=1,3) /10,20,30/ with declaration INTEGER :: i = 99 initializes a=[10,20,30] while i remains 99.",
+        "no-duplicate-statement-entity-in-scope": "Source-control plan nests statement entities with the same name in one statement and a control renaming only the inner statement entity; no mandatory diagnostic is claimed here absent a numbered owner."
+      },
+      "oracle": "Source accounting only. Future executable fixtures must establish a positive nondefault state first, use sentinels distinct from every value the exercised construct can write, and observe only portable name-resolution, scope, type, value, or source-admission properties. No diagnostic is claimed for an unnumbered program restriction. Diagnostic wording, processor-created external names, addresses, storage layout, image/team execution, and compiler agreement are not oracles.",
+      "oracle_limitation": "This source packet creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Pending plans are source-derived designs or explicit source-use boundaries. Negative source controls are retained only as future optional diagnostics unless a numbered rule or another registered owner supplies a required diagnostic obligation.",
+      "dependencies": "Existing owner catalogues on main opened and confirmed for referenced rules: doc/catalogues/names.json for name syntax; doc/catalogues/labels.json for statement labels; doc/catalogues/array_constructors.json for array-constructor implied DO syntax and values; doc/catalogues/data_statement_8_6_7.json for DATA implied DO syntax; doc/catalogues/implicit_statement_8_7.json for implicit typing; doc/catalogues/import_statement_8_8.json for IMPORT inaccessibility; doc/catalogues/common_statement_8_10_2_1.json for COMMON blocks; doc/catalogues/units_12_5_1.json for external input/output units; doc/catalogues/id_specifier_12_6_2_9.json for pending data transfer identifiers; doc/catalogues/use_statement_and_use_association_14_2_2.json for USE association and rename; doc/catalogues/submodules_14_2_3.json for submodule identifiers; doc/catalogues/bind_attribute_data_entities_8_5_5.json for BIND(C) binding labels on variables and common blocks; doc/catalogues/derived_types_7_5_4_8.json for component accessibility; doc/catalogues/derived_types_7_5_5.json for type-bound procedure bindings; doc/catalogues/derived_types_7_5_10.json for structure constructors and generic/type-name ambiguity; doc/catalogues/execution_of_the_associate_construct_11_1_3_2.json for ASSOCIATE attributes; doc/catalogues/block_construct_11_1_4.json for BLOCK construct entities; doc/catalogues/execution_of_a_change_team_construct_11_1_5_2.json for CHANGE TEAM attributes; doc/catalogues/do_concurrent_loop_control_11_1_7_4_2.json for DO CONCURRENT index values; doc/catalogues/additional_semantics_for_do_concurrent_constructs_11_1_7_5.json for DO CONCURRENT locality; doc/catalogues/attributes_of_a_select_rank_associate_name_11_1_10_3.json for SELECT RANK attributes; doc/catalogues/execution_of_the_select_type_construct_11_1_11_2.json for SELECT TYPE attributes; doc/catalogues/generic_identifiers_15_4_3_4_1.json, doc/catalogues/restrictions_on_generic_declarations_15_4_3_4_5.json, and doc/catalogues/resolving_generic_procedure_references_15_5_5_2.json for generic identifiers and resolution; doc/catalogues/function_result_characteristics_15_3_3.json for function-result characteristics; doc/catalogues/procedure_declaration_statement_15_4_3_6.json and doc/catalogues/syntax_of_a_procedure_reference_15_5_1.json for procedure declarations and references; doc/catalogues/entry_statement_15_6_2_6.json for ENTRY; doc/catalogues/statement_function_15_6_4.json for statement functions; doc/catalogues/standard_generic_intrinsic_procedures_16_7.json for standard intrinsic keywords. No existing main catalogue owns the later 19.5 association/definition rules; where a 19.1-19.4 unit needs such behavior, this catalogue gives its own concrete pending plan instead of deferring coverage."
+    },
+    {
+      "id": "S19.4-003",
+      "title": "Construct entities include construct indices, associate names, locality variables, BLOCK entities, and BLOCK USE-associated entities",
+      "source": "S19.4, J3/24-007, 18 December 2023, physical PDF551.",
+      "source_units": [
+        "p3.construct-entity-classes"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Construct entities include DO CONCURRENT and FORALL construct index names, ASSOCIATE/SELECT RANK/SELECT TYPE associate names, CHANGE TEAM coarray names, DO CONCURRENT LOCAL or LOCAL_INIT variables, BLOCK construct declared entities, and entities accessed by USE in a BLOCK construct.",
+      "facets": [
+        "do-concurrent-forall-index-construct-entity",
+        "associate-select-rank-select-type-name-construct-entity",
+        "change-team-coarray-name-construct-entity",
+        "local-local-init-construct-entity",
+        "block-declared-entity-construct-entity",
+        "block-use-associated-entity-construct-entity"
+      ],
+      "pending": {
+        "do-concurrent-forall-index-construct-entity": "Runtime plan preloads outer i=99, executes DO CONCURRENT (i=1:3) assigning arr(i)=i, then checks arr=[1,2,3] and outer i still 99.",
+        "associate-select-rank-select-type-name-construct-entity": "Runtime/source plans name existing owners doc/catalogues/execution_of_the_associate_construct_11_1_3_2.json, doc/catalogues/attributes_of_a_select_rank_associate_name_11_1_10_3.json, and doc/catalogues/execution_of_the_select_type_construct_11_1_11_2.json; outer homonym sentinels remain distinct from construct writes.",
+        "change-team-coarray-name-construct-entity": "Out of scope by user decision for coarray/team facets; retain only source-use ownership for CHANGE TEAM.",
+        "local-local-init-construct-entity": "Runtime/source plan names existing owner doc/catalogues/additional_semantics_for_do_concurrent_constructs_11_1_7_5.json for locality attributes; no read of undefined LOCAL state is used.",
+        "block-declared-entity-construct-entity": "Runtime plan declares integer x inside BLOCK assigning 55 while outer x=99; after END BLOCK outer x remains 99.",
+        "block-use-associated-entity-construct-entity": "Source-use plan names existing owners doc/catalogues/block_construct_11_1_4.json and doc/catalogues/use_statement_and_use_association_14_2_2.json for BLOCK USE association; no duplicate USE accessibility case is created here."
+      },
+      "oracle": "Source accounting only. Future executable fixtures must establish a positive nondefault state first, use sentinels distinct from every value the exercised construct can write, and observe only portable name-resolution, scope, type, value, or source-admission properties. No diagnostic is claimed for an unnumbered program restriction. Diagnostic wording, processor-created external names, addresses, storage layout, image/team execution, and compiler agreement are not oracles.",
+      "oracle_limitation": "This source packet creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Pending plans are source-derived designs or explicit source-use boundaries. Negative source controls are retained only as future optional diagnostics unless a numbered rule or another registered owner supplies a required diagnostic obligation.",
+      "dependencies": "Existing owner catalogues on main opened and confirmed for referenced rules: doc/catalogues/names.json for name syntax; doc/catalogues/labels.json for statement labels; doc/catalogues/array_constructors.json for array-constructor implied DO syntax and values; doc/catalogues/data_statement_8_6_7.json for DATA implied DO syntax; doc/catalogues/implicit_statement_8_7.json for implicit typing; doc/catalogues/import_statement_8_8.json for IMPORT inaccessibility; doc/catalogues/common_statement_8_10_2_1.json for COMMON blocks; doc/catalogues/units_12_5_1.json for external input/output units; doc/catalogues/id_specifier_12_6_2_9.json for pending data transfer identifiers; doc/catalogues/use_statement_and_use_association_14_2_2.json for USE association and rename; doc/catalogues/submodules_14_2_3.json for submodule identifiers; doc/catalogues/bind_attribute_data_entities_8_5_5.json for BIND(C) binding labels on variables and common blocks; doc/catalogues/derived_types_7_5_4_8.json for component accessibility; doc/catalogues/derived_types_7_5_5.json for type-bound procedure bindings; doc/catalogues/derived_types_7_5_10.json for structure constructors and generic/type-name ambiguity; doc/catalogues/execution_of_the_associate_construct_11_1_3_2.json for ASSOCIATE attributes; doc/catalogues/block_construct_11_1_4.json for BLOCK construct entities; doc/catalogues/execution_of_a_change_team_construct_11_1_5_2.json for CHANGE TEAM attributes; doc/catalogues/do_concurrent_loop_control_11_1_7_4_2.json for DO CONCURRENT index values; doc/catalogues/additional_semantics_for_do_concurrent_constructs_11_1_7_5.json for DO CONCURRENT locality; doc/catalogues/attributes_of_a_select_rank_associate_name_11_1_10_3.json for SELECT RANK attributes; doc/catalogues/execution_of_the_select_type_construct_11_1_11_2.json for SELECT TYPE attributes; doc/catalogues/generic_identifiers_15_4_3_4_1.json, doc/catalogues/restrictions_on_generic_declarations_15_4_3_4_5.json, and doc/catalogues/resolving_generic_procedure_references_15_5_5_2.json for generic identifiers and resolution; doc/catalogues/function_result_characteristics_15_3_3.json for function-result characteristics; doc/catalogues/procedure_declaration_statement_15_4_3_6.json and doc/catalogues/syntax_of_a_procedure_reference_15_5_1.json for procedure declarations and references; doc/catalogues/entry_statement_15_6_2_6.json for ENTRY; doc/catalogues/statement_function_15_6_4.json for statement functions; doc/catalogues/standard_generic_intrinsic_procedures_16_7.json for standard intrinsic keywords. No existing main catalogue owns the later 19.5 association/definition rules; where a 19.1-19.4 unit needs such behavior, this catalogue gives its own concrete pending plan instead of deferring coverage."
+    },
+    {
+      "id": "S19.4-004",
+      "title": "DATA-initialized BLOCK construct entities are not used before their DATA statement",
+      "source": "S19.4, J3/24-007, 18 December 2023, physical PDF551.",
+      "source_units": [
+        "p3.data-initialized-construct-before-data-restriction"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "A construct entity that is a construct entity rather than a host entity only because it is wholly or partially initialized in a DATA statement shall not be used before the DATA statement.",
+      "facets": [
+        "data-initialized-block-entity-not-used-before-data"
+      ],
+      "pending": {
+        "data-initialized-block-entity-not-used-before-data": "Source-control plan for a BLOCK entity made local by DATA initialization uses the name before the DATA statement; the control moves only the use after DATA. No mandatory diagnostic is claimed for this unnumbered restriction."
+      },
+      "oracle": "Source accounting only. Future executable fixtures must establish a positive nondefault state first, use sentinels distinct from every value the exercised construct can write, and observe only portable name-resolution, scope, type, value, or source-admission properties. No diagnostic is claimed for an unnumbered program restriction. Diagnostic wording, processor-created external names, addresses, storage layout, image/team execution, and compiler agreement are not oracles.",
+      "oracle_limitation": "This source packet creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Pending plans are source-derived designs or explicit source-use boundaries. Negative source controls are retained only as future optional diagnostics unless a numbered rule or another registered owner supplies a required diagnostic obligation.",
+      "dependencies": "Existing owner catalogues on main opened and confirmed for referenced rules: doc/catalogues/names.json for name syntax; doc/catalogues/labels.json for statement labels; doc/catalogues/array_constructors.json for array-constructor implied DO syntax and values; doc/catalogues/data_statement_8_6_7.json for DATA implied DO syntax; doc/catalogues/implicit_statement_8_7.json for implicit typing; doc/catalogues/import_statement_8_8.json for IMPORT inaccessibility; doc/catalogues/common_statement_8_10_2_1.json for COMMON blocks; doc/catalogues/units_12_5_1.json for external input/output units; doc/catalogues/id_specifier_12_6_2_9.json for pending data transfer identifiers; doc/catalogues/use_statement_and_use_association_14_2_2.json for USE association and rename; doc/catalogues/submodules_14_2_3.json for submodule identifiers; doc/catalogues/bind_attribute_data_entities_8_5_5.json for BIND(C) binding labels on variables and common blocks; doc/catalogues/derived_types_7_5_4_8.json for component accessibility; doc/catalogues/derived_types_7_5_5.json for type-bound procedure bindings; doc/catalogues/derived_types_7_5_10.json for structure constructors and generic/type-name ambiguity; doc/catalogues/execution_of_the_associate_construct_11_1_3_2.json for ASSOCIATE attributes; doc/catalogues/block_construct_11_1_4.json for BLOCK construct entities; doc/catalogues/execution_of_a_change_team_construct_11_1_5_2.json for CHANGE TEAM attributes; doc/catalogues/do_concurrent_loop_control_11_1_7_4_2.json for DO CONCURRENT index values; doc/catalogues/additional_semantics_for_do_concurrent_constructs_11_1_7_5.json for DO CONCURRENT locality; doc/catalogues/attributes_of_a_select_rank_associate_name_11_1_10_3.json for SELECT RANK attributes; doc/catalogues/execution_of_the_select_type_construct_11_1_11_2.json for SELECT TYPE attributes; doc/catalogues/generic_identifiers_15_4_3_4_1.json, doc/catalogues/restrictions_on_generic_declarations_15_4_3_4_5.json, and doc/catalogues/resolving_generic_procedure_references_15_5_5_2.json for generic identifiers and resolution; doc/catalogues/function_result_characteristics_15_3_3.json for function-result characteristics; doc/catalogues/procedure_declaration_statement_15_4_3_6.json and doc/catalogues/syntax_of_a_procedure_reference_15_5_1.json for procedure declarations and references; doc/catalogues/entry_statement_15_6_2_6.json for ENTRY; doc/catalogues/statement_function_15_6_4.json for statement functions; doc/catalogues/standard_generic_intrinsic_procedures_16_7.json for standard intrinsic keywords. No existing main catalogue owns the later 19.5 association/definition rules; where a 19.1-19.4 unit needs such behavior, this catalogue gives its own concrete pending plan instead of deferring coverage."
+    },
+    {
+      "id": "S19.4-005",
+      "title": "Two construct entities of the same construct have distinct identifiers",
+      "source": "S19.4, J3/24-007, 18 December 2023, physical PDF551.",
+      "source_units": [
+        "p4"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "Two construct entities of the same construct shall not have the same identifier.",
+      "facets": [
+        "same-construct-entities-distinct-identifiers"
+      ],
+      "pending": {
+        "same-construct-entities-distinct-identifiers": "Source-control plan uses two construct-entity introductions with the same spelling in one construct and a control renaming exactly one; no mandatory diagnostic is claimed for this unnumbered restriction."
+      },
+      "oracle": "Source accounting only. Future executable fixtures must establish a positive nondefault state first, use sentinels distinct from every value the exercised construct can write, and observe only portable name-resolution, scope, type, value, or source-admission properties. No diagnostic is claimed for an unnumbered program restriction. Diagnostic wording, processor-created external names, addresses, storage layout, image/team execution, and compiler agreement are not oracles.",
+      "oracle_limitation": "This source packet creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Pending plans are source-derived designs or explicit source-use boundaries. Negative source controls are retained only as future optional diagnostics unless a numbered rule or another registered owner supplies a required diagnostic obligation.",
+      "dependencies": "Existing owner catalogues on main opened and confirmed for referenced rules: doc/catalogues/names.json for name syntax; doc/catalogues/labels.json for statement labels; doc/catalogues/array_constructors.json for array-constructor implied DO syntax and values; doc/catalogues/data_statement_8_6_7.json for DATA implied DO syntax; doc/catalogues/implicit_statement_8_7.json for implicit typing; doc/catalogues/import_statement_8_8.json for IMPORT inaccessibility; doc/catalogues/common_statement_8_10_2_1.json for COMMON blocks; doc/catalogues/units_12_5_1.json for external input/output units; doc/catalogues/id_specifier_12_6_2_9.json for pending data transfer identifiers; doc/catalogues/use_statement_and_use_association_14_2_2.json for USE association and rename; doc/catalogues/submodules_14_2_3.json for submodule identifiers; doc/catalogues/bind_attribute_data_entities_8_5_5.json for BIND(C) binding labels on variables and common blocks; doc/catalogues/derived_types_7_5_4_8.json for component accessibility; doc/catalogues/derived_types_7_5_5.json for type-bound procedure bindings; doc/catalogues/derived_types_7_5_10.json for structure constructors and generic/type-name ambiguity; doc/catalogues/execution_of_the_associate_construct_11_1_3_2.json for ASSOCIATE attributes; doc/catalogues/block_construct_11_1_4.json for BLOCK construct entities; doc/catalogues/execution_of_a_change_team_construct_11_1_5_2.json for CHANGE TEAM attributes; doc/catalogues/do_concurrent_loop_control_11_1_7_4_2.json for DO CONCURRENT index values; doc/catalogues/additional_semantics_for_do_concurrent_constructs_11_1_7_5.json for DO CONCURRENT locality; doc/catalogues/attributes_of_a_select_rank_associate_name_11_1_10_3.json for SELECT RANK attributes; doc/catalogues/execution_of_the_select_type_construct_11_1_11_2.json for SELECT TYPE attributes; doc/catalogues/generic_identifiers_15_4_3_4_1.json, doc/catalogues/restrictions_on_generic_declarations_15_4_3_4_5.json, and doc/catalogues/resolving_generic_procedure_references_15_5_5_2.json for generic identifiers and resolution; doc/catalogues/function_result_characteristics_15_3_3.json for function-result characteristics; doc/catalogues/procedure_declaration_statement_15_4_3_6.json and doc/catalogues/syntax_of_a_procedure_reference_15_5_1.json for procedure declarations and references; doc/catalogues/entry_statement_15_6_2_6.json for ENTRY; doc/catalogues/statement_function_15_6_4.json for statement functions; doc/catalogues/standard_generic_intrinsic_procedures_16_7.json for standard intrinsic keywords. No existing main catalogue owns the later 19.5 association/definition rules; where a 19.1-19.4 unit needs such behavior, this catalogue gives its own concrete pending plan instead of deferring coverage."
+    },
+    {
+      "id": "S19.4-006",
+      "title": "DATA and array-constructor implied-DO variables have implied-DO scope, integer scalar type, no other attributes, and no containing-scope declaration effect",
+      "source": "S19.4, J3/24-007, 18 December 2023, physical PDF551.",
+      "source_units": [
+        "p5",
+        "p5.implied-do-scope",
+        "p5.scalar-variable",
+        "p5.inline-integer-type-spec",
+        "p5.enclosing-implicit-type",
+        "p5.must-be-integer",
+        "p5.no-other-attributes",
+        "p5.no-containing-scope-declaration"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The data-i-do-variable or ac-do-variable has the scope of its implied DO, is a scalar variable, has the explicit integer type-spec type and parameters or those supplied by the enclosing implicit rules, must be integer, has no other attributes, and does not implicitly declare a containing-scope variable.",
+      "facets": [
+        "implied-do-variable-scope-only-implied-do",
+        "implied-do-variable-scalar",
+        "inline-integer-type-spec-controls-type",
+        "implicit-rules-control-implied-do-type",
+        "implied-do-variable-must-be-integer",
+        "implied-do-variable-no-other-attributes",
+        "implied-do-variable-not-host-declaration"
+      ],
+      "pending": {
+        "implied-do-variable-scope-only-implied-do": "Runtime plan uses outer INTEGER :: i=99 with a=[(i, i=1,3)] expecting a=[1,2,3] and i still 99, plus DATA (a(i), i=1,3) /10,20,30/ with i initialized in its declaration, expecting a=[10,20,30] and i still 99 after execution observes the DATA-initialized objects.",
+        "implied-do-variable-scalar": "Source-use plan keeps the ac-do-variable as a scalar name and delegates non-scalar designator rejection to array-constructor/DO-variable syntax owners.",
+        "inline-integer-type-spec-controls-type": "Capability-selected runtime plan defines module kinds_mod with INTEGER, PARAMETER :: k2=SELECTED_INT_KIND(18); 7.4.3.1 p2 guarantees that integer kind exists, so INTEGER(k2) is conforming. The discriminating row is selected only with k2 /= KIND(0), matching tests/profiles/two_integer_kinds.f90, which probes count(integer_kinds /= kind(0)) > 0; processors with k2 == KIND(0) skip this row as non-discriminating. The explicit ac-implied-do [(KIND(j), INTEGER(k2) :: j = 1, 1)] yields [k2]. An outer default INTEGER :: j = 99 remains outside the implied-DO scope with KIND(j)==KIND(0) and value 99.",
+        "implicit-rules-control-implied-do-type": "Capability-selected runtime plan defines module kinds_mod with INTEGER, PARAMETER :: k2=SELECTED_INT_KIND(18); 7.4.3.1 p2 guarantees that integer kind exists, so IMPLICIT INTEGER(KIND=k2) is conforming. The test scoping unit has USE kinds_mod, ONLY: k2 before IMPLICIT, then IMPLICIT INTEGER(KIND=k2) (i). The discriminating row is selected only with k2 /= KIND(0), matching tests/profiles/two_integer_kinds.f90, which probes count(integer_kinds /= kind(0)) > 0; processors with k2 == KIND(0) skip this row as non-discriminating. The selected row evaluates [(KIND(i), i=1,1)] expecting [k2], proving the ac-do-variable kind comes from enclosing implicit rules rather than default integer.",
+        "implied-do-variable-must-be-integer": "Source-control plan names existing owner doc/catalogues/implicit_statement_8_7.json: under IMPLICIT REAL (r) attempt [(r, r=1,3)] and use a control changing only the implicit letter rule to INTEGER; no mandatory diagnostic is claimed for this unnumbered restriction.",
+        "implied-do-variable-no-other-attributes": "Source-use plan confirms no POINTER, TARGET, SAVE, or host attributes are inferred from an outer homonym; observable value plan keeps only scalar integer behavior.",
+        "implied-do-variable-not-host-declaration": "Runtime plan declares outer INTEGER :: i=99 before [(i,i=1,3)] and asserts i remains 99. Companion DATA plan declares INTEGER :: i = 99 and INTEGER :: a(3); DATA (a(i), i=1,3) /10,20,30/ initializes a before execution, and execution observes a=[10,20,30] and i=99, showing the DATA implied-DO variable did not become the containing-scope variable."
+      },
+      "oracle": "Source accounting only. Future executable fixtures must establish a positive nondefault state first, use sentinels distinct from every value the exercised construct can write, and observe only portable name-resolution, scope, type, value, or source-admission properties. No diagnostic is claimed for an unnumbered program restriction. Diagnostic wording, processor-created external names, addresses, storage layout, image/team execution, and compiler agreement are not oracles.",
+      "oracle_limitation": "This source packet creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Pending plans are source-derived designs or explicit source-use boundaries. Negative source controls are retained only as future optional diagnostics unless a numbered rule or another registered owner supplies a required diagnostic obligation.",
+      "dependencies": "Existing owner catalogues on main opened and confirmed for referenced rules: doc/catalogues/names.json for name syntax; doc/catalogues/labels.json for statement labels; doc/catalogues/array_constructors.json for array-constructor implied DO syntax and values; doc/catalogues/data_statement_8_6_7.json for DATA implied DO syntax; doc/catalogues/implicit_statement_8_7.json for implicit typing; doc/catalogues/import_statement_8_8.json for IMPORT inaccessibility; doc/catalogues/common_statement_8_10_2_1.json for COMMON blocks; doc/catalogues/units_12_5_1.json for external input/output units; doc/catalogues/id_specifier_12_6_2_9.json for pending data transfer identifiers; doc/catalogues/use_statement_and_use_association_14_2_2.json for USE association and rename; doc/catalogues/submodules_14_2_3.json for submodule identifiers; doc/catalogues/bind_attribute_data_entities_8_5_5.json for BIND(C) binding labels on variables and common blocks; doc/catalogues/derived_types_7_5_4_8.json for component accessibility; doc/catalogues/derived_types_7_5_5.json for type-bound procedure bindings; doc/catalogues/derived_types_7_5_10.json for structure constructors and generic/type-name ambiguity; doc/catalogues/execution_of_the_associate_construct_11_1_3_2.json for ASSOCIATE attributes; doc/catalogues/block_construct_11_1_4.json for BLOCK construct entities; doc/catalogues/execution_of_a_change_team_construct_11_1_5_2.json for CHANGE TEAM attributes; doc/catalogues/do_concurrent_loop_control_11_1_7_4_2.json for DO CONCURRENT index values; doc/catalogues/additional_semantics_for_do_concurrent_constructs_11_1_7_5.json for DO CONCURRENT locality; doc/catalogues/attributes_of_a_select_rank_associate_name_11_1_10_3.json for SELECT RANK attributes; doc/catalogues/execution_of_the_select_type_construct_11_1_11_2.json for SELECT TYPE attributes; doc/catalogues/generic_identifiers_15_4_3_4_1.json, doc/catalogues/restrictions_on_generic_declarations_15_4_3_4_5.json, and doc/catalogues/resolving_generic_procedure_references_15_5_5_2.json for generic identifiers and resolution; doc/catalogues/function_result_characteristics_15_3_3.json for function-result characteristics; doc/catalogues/procedure_declaration_statement_15_4_3_6.json and doc/catalogues/syntax_of_a_procedure_reference_15_5_1.json for procedure declarations and references; doc/catalogues/entry_statement_15_6_2_6.json for ENTRY; doc/catalogues/statement_function_15_6_4.json for statement functions; doc/catalogues/standard_generic_intrinsic_procedures_16_7.json for standard intrinsic keywords. No existing main catalogue owns the later 19.5 association/definition rules; where a 19.1-19.4 unit needs such behavior, this catalogue gives its own concrete pending plan instead of deferring coverage."
+    },
+    {
+      "id": "S19.4-007",
+      "title": "DO CONCURRENT and FORALL indices have statement or construct scope, integer scalar type, no other attributes, and no containing-scope declaration effect",
+      "source": "S19.4, J3/24-007, 18 December 2023, physical PDF551.",
+      "source_units": [
+        "p6",
+        "p6.index-scope",
+        "p6.scalar-variable",
+        "p6.inline-integer-type-spec",
+        "p6.enclosing-implicit-type",
+        "p6.must-be-integer",
+        "p6.no-other-attributes",
+        "p6.no-containing-scope-declaration"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A DO CONCURRENT, FORALL statement, or FORALL construct index-name has statement or construct scope, is a scalar variable, has explicit integer-type-spec type and parameters or those supplied by enclosing implicit rules, must be integer, has no other attributes, and does not implicitly declare a containing-scope variable.",
+      "facets": [
+        "do-concurrent-forall-index-scope",
+        "index-name-scalar-variable",
+        "concurrent-header-integer-type-spec-controls-type",
+        "implicit-rules-control-index-type",
+        "index-name-must-be-integer",
+        "index-name-no-other-attributes",
+        "index-name-not-host-declaration"
+      ],
+      "pending": {
+        "do-concurrent-forall-index-scope": "Runtime plan preloads outer i=99, executes DO CONCURRENT (i=1:3) arr(i)=i, and asserts arr=[1,2,3] plus outer i=99 after END DO.",
+        "index-name-scalar-variable": "Source-use plan keeps index-name as a scalar name and delegates non-scalar designator rejection to DO/FORALL syntax owners.",
+        "concurrent-header-integer-type-spec-controls-type": "Capability-selected runtime plan defines module kinds_mod with INTEGER, PARAMETER :: k2=SELECTED_INT_KIND(18); 7.4.3.1 p2 guarantees that integer kind exists, so INTEGER(k2) is conforming. The discriminating row is selected only with k2 /= KIND(0), matching tests/profiles/two_integer_kinds.f90, which probes count(integer_kinds /= kind(0)) > 0; processors with k2 == KIND(0) skip this row as non-discriminating. With outer default INTEGER :: j = 99, execute DO CONCURRENT (INTEGER(k2) :: j=1:1) and assign observed=KIND(j) in the block; expect observed==k2, then after END DO expect KIND(j)==KIND(0) and j==99 for the outer variable.",
+        "implicit-rules-control-index-type": "Capability-selected runtime plan defines module kinds_mod with INTEGER, PARAMETER :: k2=SELECTED_INT_KIND(18); 7.4.3.1 p2 guarantees that integer kind exists, so IMPLICIT INTEGER(KIND=k2) is conforming. The test scoping unit has USE kinds_mod, ONLY: k2 before IMPLICIT, then IMPLICIT INTEGER(KIND=k2) (i). The discriminating row is selected only with k2 /= KIND(0), matching tests/profiles/two_integer_kinds.f90, which probes count(integer_kinds /= kind(0)) > 0; processors with k2 == KIND(0) skip this row as non-discriminating. The selected row executes DO CONCURRENT (i=1:1), assigns observed=KIND(i) in the block, and expects observed==k2, proving enclosing implicit rules supply the index-name kind.",
+        "index-name-must-be-integer": "Source-control plan names existing owner doc/catalogues/implicit_statement_8_7.json: under IMPLICIT REAL (r) attempt DO CONCURRENT (r=1:3) and use a control changing only the implicit letter rule to INTEGER; no mandatory diagnostic is claimed for this unnumbered restriction.",
+        "index-name-no-other-attributes": "Source-use plan confirms no POINTER, TARGET, SAVE, or host attributes are inferred from an outer homonym; value plans observe only scalar integer indexing.",
+        "index-name-not-host-declaration": "Runtime plan with outer i=99 after DO CONCURRENT (i=1:3) asserts i remains 99, proving the index did not become the containing-scope variable."
+      },
+      "oracle": "Source accounting only. Future executable fixtures must establish a positive nondefault state first, use sentinels distinct from every value the exercised construct can write, and observe only portable name-resolution, scope, type, value, or source-admission properties. No diagnostic is claimed for an unnumbered program restriction. Diagnostic wording, processor-created external names, addresses, storage layout, image/team execution, and compiler agreement are not oracles.",
+      "oracle_limitation": "This source packet creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Pending plans are source-derived designs or explicit source-use boundaries. Negative source controls are retained only as future optional diagnostics unless a numbered rule or another registered owner supplies a required diagnostic obligation.",
+      "dependencies": "Existing owner catalogues on main opened and confirmed for referenced rules: doc/catalogues/names.json for name syntax; doc/catalogues/labels.json for statement labels; doc/catalogues/array_constructors.json for array-constructor implied DO syntax and values; doc/catalogues/data_statement_8_6_7.json for DATA implied DO syntax; doc/catalogues/implicit_statement_8_7.json for implicit typing; doc/catalogues/import_statement_8_8.json for IMPORT inaccessibility; doc/catalogues/common_statement_8_10_2_1.json for COMMON blocks; doc/catalogues/units_12_5_1.json for external input/output units; doc/catalogues/id_specifier_12_6_2_9.json for pending data transfer identifiers; doc/catalogues/use_statement_and_use_association_14_2_2.json for USE association and rename; doc/catalogues/submodules_14_2_3.json for submodule identifiers; doc/catalogues/bind_attribute_data_entities_8_5_5.json for BIND(C) binding labels on variables and common blocks; doc/catalogues/derived_types_7_5_4_8.json for component accessibility; doc/catalogues/derived_types_7_5_5.json for type-bound procedure bindings; doc/catalogues/derived_types_7_5_10.json for structure constructors and generic/type-name ambiguity; doc/catalogues/execution_of_the_associate_construct_11_1_3_2.json for ASSOCIATE attributes; doc/catalogues/block_construct_11_1_4.json for BLOCK construct entities; doc/catalogues/execution_of_a_change_team_construct_11_1_5_2.json for CHANGE TEAM attributes; doc/catalogues/do_concurrent_loop_control_11_1_7_4_2.json for DO CONCURRENT index values; doc/catalogues/additional_semantics_for_do_concurrent_constructs_11_1_7_5.json for DO CONCURRENT locality; doc/catalogues/attributes_of_a_select_rank_associate_name_11_1_10_3.json for SELECT RANK attributes; doc/catalogues/execution_of_the_select_type_construct_11_1_11_2.json for SELECT TYPE attributes; doc/catalogues/generic_identifiers_15_4_3_4_1.json, doc/catalogues/restrictions_on_generic_declarations_15_4_3_4_5.json, and doc/catalogues/resolving_generic_procedure_references_15_5_5_2.json for generic identifiers and resolution; doc/catalogues/function_result_characteristics_15_3_3.json for function-result characteristics; doc/catalogues/procedure_declaration_statement_15_4_3_6.json and doc/catalogues/syntax_of_a_procedure_reference_15_5_1.json for procedure declarations and references; doc/catalogues/entry_statement_15_6_2_6.json for ENTRY; doc/catalogues/statement_function_15_6_4.json for statement functions; doc/catalogues/standard_generic_intrinsic_procedures_16_7.json for standard intrinsic keywords. No existing main catalogue owns the later 19.5 association/definition rules; where a 19.1-19.4 unit needs such behavior, this catalogue gives its own concrete pending plan instead of deferring coverage."
+    },
+    {
+      "id": "S19.4-008",
+      "title": "LOCAL and LOCAL_INIT variables in DO CONCURRENT have construct scope with attributes specified elsewhere",
+      "source": "S19.4, J3/24-007, 18 December 2023, physical PDF551.",
+      "source_units": [
+        "p7"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A variable with LOCAL or LOCAL_INIT locality in a DO CONCURRENT construct has the scope of that construct and attributes specified by 11.1.7.5.",
+      "facets": [
+        "local-local-init-scope-of-do-concurrent",
+        "local-local-init-attributes-owned-by-11-1-7-5"
+      ],
+      "pending": {
+        "local-local-init-scope-of-do-concurrent": "Runtime/source plan names existing owner doc/catalogues/additional_semantics_for_do_concurrent_constructs_11_1_7_5.json for locality cases and uses an outer homonym sentinel 99 only outside the construct.",
+        "local-local-init-attributes-owned-by-11-1-7-5": "Source-use plan names existing owner doc/catalogues/additional_semantics_for_do_concurrent_constructs_11_1_7_5.json for initialization/undefined-status effects; this section supplies scope only."
+      },
+      "oracle": "Source accounting only. Future executable fixtures must establish a positive nondefault state first, use sentinels distinct from every value the exercised construct can write, and observe only portable name-resolution, scope, type, value, or source-admission properties. No diagnostic is claimed for an unnumbered program restriction. Diagnostic wording, processor-created external names, addresses, storage layout, image/team execution, and compiler agreement are not oracles.",
+      "oracle_limitation": "This source packet creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Pending plans are source-derived designs or explicit source-use boundaries. Negative source controls are retained only as future optional diagnostics unless a numbered rule or another registered owner supplies a required diagnostic obligation.",
+      "dependencies": "Existing owner catalogues on main opened and confirmed for referenced rules: doc/catalogues/names.json for name syntax; doc/catalogues/labels.json for statement labels; doc/catalogues/array_constructors.json for array-constructor implied DO syntax and values; doc/catalogues/data_statement_8_6_7.json for DATA implied DO syntax; doc/catalogues/implicit_statement_8_7.json for implicit typing; doc/catalogues/import_statement_8_8.json for IMPORT inaccessibility; doc/catalogues/common_statement_8_10_2_1.json for COMMON blocks; doc/catalogues/units_12_5_1.json for external input/output units; doc/catalogues/id_specifier_12_6_2_9.json for pending data transfer identifiers; doc/catalogues/use_statement_and_use_association_14_2_2.json for USE association and rename; doc/catalogues/submodules_14_2_3.json for submodule identifiers; doc/catalogues/bind_attribute_data_entities_8_5_5.json for BIND(C) binding labels on variables and common blocks; doc/catalogues/derived_types_7_5_4_8.json for component accessibility; doc/catalogues/derived_types_7_5_5.json for type-bound procedure bindings; doc/catalogues/derived_types_7_5_10.json for structure constructors and generic/type-name ambiguity; doc/catalogues/execution_of_the_associate_construct_11_1_3_2.json for ASSOCIATE attributes; doc/catalogues/block_construct_11_1_4.json for BLOCK construct entities; doc/catalogues/execution_of_a_change_team_construct_11_1_5_2.json for CHANGE TEAM attributes; doc/catalogues/do_concurrent_loop_control_11_1_7_4_2.json for DO CONCURRENT index values; doc/catalogues/additional_semantics_for_do_concurrent_constructs_11_1_7_5.json for DO CONCURRENT locality; doc/catalogues/attributes_of_a_select_rank_associate_name_11_1_10_3.json for SELECT RANK attributes; doc/catalogues/execution_of_the_select_type_construct_11_1_11_2.json for SELECT TYPE attributes; doc/catalogues/generic_identifiers_15_4_3_4_1.json, doc/catalogues/restrictions_on_generic_declarations_15_4_3_4_5.json, and doc/catalogues/resolving_generic_procedure_references_15_5_5_2.json for generic identifiers and resolution; doc/catalogues/function_result_characteristics_15_3_3.json for function-result characteristics; doc/catalogues/procedure_declaration_statement_15_4_3_6.json and doc/catalogues/syntax_of_a_procedure_reference_15_5_1.json for procedure declarations and references; doc/catalogues/entry_statement_15_6_2_6.json for ENTRY; doc/catalogues/statement_function_15_6_4.json for statement functions; doc/catalogues/standard_generic_intrinsic_procedures_16_7.json for standard intrinsic keywords. No existing main catalogue owns the later 19.5 association/definition rules; where a 19.1-19.4 unit needs such behavior, this catalogue gives its own concrete pending plan instead of deferring coverage."
+    },
+    {
+      "id": "S19.4-009",
+      "title": "Default-typed nested DO CONCURRENT or FORALL index names avoid inaccessible collisions and containing index reuse",
+      "source": "S19.4, J3/24-007, 18 December 2023, physical PDF552.",
+      "source_units": [
+        "p8",
+        "p8.default-typed-accessible-name-restriction",
+        "p8.common-block-or-scalar-exceptions",
+        "p8.nested-index-name-reuse-restriction"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "With no integer-type-spec in a concurrent-header, an index-name shall not match an accessible global, local, or outer construct-entity identifier except a common block or scalar variable name; contained DO CONCURRENT/FORALL index names shall not match containing DO CONCURRENT/FORALL index names.",
+      "facets": [
+        "default-typed-index-not-accessible-global-local-outer-construct",
+        "default-typed-index-common-block-exception",
+        "default-typed-index-scalar-variable-exception",
+        "contained-index-not-containing-index"
+      ],
+      "pending": {
+        "default-typed-index-not-accessible-global-local-outer-construct": "Source-control plan uses default-typed DO CONCURRENT index matching an accessible non-scalar local entity and a control adding only an integer-type-spec or renaming the index; no mandatory diagnostic is claimed here.",
+        "default-typed-index-common-block-exception": "Positive source plan uses a common block name homonym as an index spelling with exact array writes; COMMON effects remain under 8.10.",
+        "default-typed-index-scalar-variable-exception": "Runtime plan uses scalar outer i=99 and default-typed DO CONCURRENT (i=1:3); expect array [1,2,3] and outer i still 99.",
+        "contained-index-not-containing-index": "Source-control plan nests DO CONCURRENT constructs both using i and a control renaming only the inner index to j; no mandatory diagnostic is claimed for this unnumbered restriction."
+      },
+      "oracle": "Source accounting only. Future executable fixtures must establish a positive nondefault state first, use sentinels distinct from every value the exercised construct can write, and observe only portable name-resolution, scope, type, value, or source-admission properties. No diagnostic is claimed for an unnumbered program restriction. Diagnostic wording, processor-created external names, addresses, storage layout, image/team execution, and compiler agreement are not oracles.",
+      "oracle_limitation": "This source packet creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Pending plans are source-derived designs or explicit source-use boundaries. Negative source controls are retained only as future optional diagnostics unless a numbered rule or another registered owner supplies a required diagnostic obligation.",
+      "dependencies": "Existing owner catalogues on main opened and confirmed for referenced rules: doc/catalogues/names.json for name syntax; doc/catalogues/labels.json for statement labels; doc/catalogues/array_constructors.json for array-constructor implied DO syntax and values; doc/catalogues/data_statement_8_6_7.json for DATA implied DO syntax; doc/catalogues/implicit_statement_8_7.json for implicit typing; doc/catalogues/import_statement_8_8.json for IMPORT inaccessibility; doc/catalogues/common_statement_8_10_2_1.json for COMMON blocks; doc/catalogues/units_12_5_1.json for external input/output units; doc/catalogues/id_specifier_12_6_2_9.json for pending data transfer identifiers; doc/catalogues/use_statement_and_use_association_14_2_2.json for USE association and rename; doc/catalogues/submodules_14_2_3.json for submodule identifiers; doc/catalogues/bind_attribute_data_entities_8_5_5.json for BIND(C) binding labels on variables and common blocks; doc/catalogues/derived_types_7_5_4_8.json for component accessibility; doc/catalogues/derived_types_7_5_5.json for type-bound procedure bindings; doc/catalogues/derived_types_7_5_10.json for structure constructors and generic/type-name ambiguity; doc/catalogues/execution_of_the_associate_construct_11_1_3_2.json for ASSOCIATE attributes; doc/catalogues/block_construct_11_1_4.json for BLOCK construct entities; doc/catalogues/execution_of_a_change_team_construct_11_1_5_2.json for CHANGE TEAM attributes; doc/catalogues/do_concurrent_loop_control_11_1_7_4_2.json for DO CONCURRENT index values; doc/catalogues/additional_semantics_for_do_concurrent_constructs_11_1_7_5.json for DO CONCURRENT locality; doc/catalogues/attributes_of_a_select_rank_associate_name_11_1_10_3.json for SELECT RANK attributes; doc/catalogues/execution_of_the_select_type_construct_11_1_11_2.json for SELECT TYPE attributes; doc/catalogues/generic_identifiers_15_4_3_4_1.json, doc/catalogues/restrictions_on_generic_declarations_15_4_3_4_5.json, and doc/catalogues/resolving_generic_procedure_references_15_5_5_2.json for generic identifiers and resolution; doc/catalogues/function_result_characteristics_15_3_3.json for function-result characteristics; doc/catalogues/procedure_declaration_statement_15_4_3_6.json and doc/catalogues/syntax_of_a_procedure_reference_15_5_1.json for procedure declarations and references; doc/catalogues/entry_statement_15_6_2_6.json for ENTRY; doc/catalogues/statement_function_15_6_4.json for statement functions; doc/catalogues/standard_generic_intrinsic_procedures_16_7.json for standard intrinsic keywords. No existing main catalogue owns the later 19.5 association/definition rules; where a 19.1-19.4 unit needs such behavior, this catalogue gives its own concrete pending plan instead of deferring coverage."
+    },
+    {
+      "id": "S19.4-010",
+      "title": "ASSOCIATE associate names have block scope and attributes specified by ASSOCIATE execution rules",
+      "source": "S19.4, J3/24-007, 18 December 2023, physical PDF552.",
+      "source_units": [
+        "p9"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "ASSOCIATE associate names have the scope of the block and the declared type, dynamic type, type parameters, rank, and bounds specified in 11.1.3.2.",
+      "facets": [
+        "associate-name-block-scope",
+        "associate-name-attributes-owned-by-11-1-3-2"
+      ],
+      "pending": {
+        "associate-name-block-scope": "Runtime plan preloads outer item=99, enters ASSOCIATE (item => target), assigns item=303, then checks target=303 and outer item=99 after END ASSOCIATE.",
+        "associate-name-attributes-owned-by-11-1-3-2": "Source-use plan names existing owner doc/catalogues/execution_of_the_associate_construct_11_1_3_2.json for ASSOCIATE attributes; this unit supplies the construct-entity scope boundary."
+      },
+      "oracle": "Source accounting only. Future executable fixtures must establish a positive nondefault state first, use sentinels distinct from every value the exercised construct can write, and observe only portable name-resolution, scope, type, value, or source-admission properties. No diagnostic is claimed for an unnumbered program restriction. Diagnostic wording, processor-created external names, addresses, storage layout, image/team execution, and compiler agreement are not oracles.",
+      "oracle_limitation": "This source packet creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Pending plans are source-derived designs or explicit source-use boundaries. Negative source controls are retained only as future optional diagnostics unless a numbered rule or another registered owner supplies a required diagnostic obligation.",
+      "dependencies": "Existing owner catalogues on main opened and confirmed for referenced rules: doc/catalogues/names.json for name syntax; doc/catalogues/labels.json for statement labels; doc/catalogues/array_constructors.json for array-constructor implied DO syntax and values; doc/catalogues/data_statement_8_6_7.json for DATA implied DO syntax; doc/catalogues/implicit_statement_8_7.json for implicit typing; doc/catalogues/import_statement_8_8.json for IMPORT inaccessibility; doc/catalogues/common_statement_8_10_2_1.json for COMMON blocks; doc/catalogues/units_12_5_1.json for external input/output units; doc/catalogues/id_specifier_12_6_2_9.json for pending data transfer identifiers; doc/catalogues/use_statement_and_use_association_14_2_2.json for USE association and rename; doc/catalogues/submodules_14_2_3.json for submodule identifiers; doc/catalogues/bind_attribute_data_entities_8_5_5.json for BIND(C) binding labels on variables and common blocks; doc/catalogues/derived_types_7_5_4_8.json for component accessibility; doc/catalogues/derived_types_7_5_5.json for type-bound procedure bindings; doc/catalogues/derived_types_7_5_10.json for structure constructors and generic/type-name ambiguity; doc/catalogues/execution_of_the_associate_construct_11_1_3_2.json for ASSOCIATE attributes; doc/catalogues/block_construct_11_1_4.json for BLOCK construct entities; doc/catalogues/execution_of_a_change_team_construct_11_1_5_2.json for CHANGE TEAM attributes; doc/catalogues/do_concurrent_loop_control_11_1_7_4_2.json for DO CONCURRENT index values; doc/catalogues/additional_semantics_for_do_concurrent_constructs_11_1_7_5.json for DO CONCURRENT locality; doc/catalogues/attributes_of_a_select_rank_associate_name_11_1_10_3.json for SELECT RANK attributes; doc/catalogues/execution_of_the_select_type_construct_11_1_11_2.json for SELECT TYPE attributes; doc/catalogues/generic_identifiers_15_4_3_4_1.json, doc/catalogues/restrictions_on_generic_declarations_15_4_3_4_5.json, and doc/catalogues/resolving_generic_procedure_references_15_5_5_2.json for generic identifiers and resolution; doc/catalogues/function_result_characteristics_15_3_3.json for function-result characteristics; doc/catalogues/procedure_declaration_statement_15_4_3_6.json and doc/catalogues/syntax_of_a_procedure_reference_15_5_1.json for procedure declarations and references; doc/catalogues/entry_statement_15_6_2_6.json for ENTRY; doc/catalogues/statement_function_15_6_4.json for statement functions; doc/catalogues/standard_generic_intrinsic_procedures_16_7.json for standard intrinsic keywords. No existing main catalogue owns the later 19.5 association/definition rules; where a 19.1-19.4 unit needs such behavior, this catalogue gives its own concrete pending plan instead of deferring coverage."
+    },
+    {
+      "id": "S19.4-011",
+      "title": "CHANGE TEAM associate names have block scope and CHANGE TEAM attributes",
+      "source": "S19.4, J3/24-007, 18 December 2023, physical PDF552.",
+      "source_units": [
+        "p10"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "CHANGE TEAM associate names have the scope of the block and the declared type, dynamic type, type parameters, rank, corank, bounds, and cobounds specified in 11.1.5.",
+      "facets": [
+        "change-team-associate-name-block-scope",
+        "change-team-associate-name-attributes-owned-by-11-1-5"
+      ],
+      "pending": {
+        "change-team-associate-name-block-scope": "Out of scope by user decision for coarray/team runtime facets; retain source-use ownership for CHANGE TEAM associate-name scope.",
+        "change-team-associate-name-attributes-owned-by-11-1-5": "Out of scope by user decision for coarray/team runtime facets; Existing owner doc/catalogues/execution_of_a_change_team_construct_11_1_5_2.json owns CHANGE TEAM attribute details."
+      },
+      "oracle": "Source accounting only. Future executable fixtures must establish a positive nondefault state first, use sentinels distinct from every value the exercised construct can write, and observe only portable name-resolution, scope, type, value, or source-admission properties. No diagnostic is claimed for an unnumbered program restriction. Diagnostic wording, processor-created external names, addresses, storage layout, image/team execution, and compiler agreement are not oracles.",
+      "oracle_limitation": "This source packet creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Pending plans are source-derived designs or explicit source-use boundaries. Negative source controls are retained only as future optional diagnostics unless a numbered rule or another registered owner supplies a required diagnostic obligation.",
+      "dependencies": "Existing owner catalogues on main opened and confirmed for referenced rules: doc/catalogues/names.json for name syntax; doc/catalogues/labels.json for statement labels; doc/catalogues/array_constructors.json for array-constructor implied DO syntax and values; doc/catalogues/data_statement_8_6_7.json for DATA implied DO syntax; doc/catalogues/implicit_statement_8_7.json for implicit typing; doc/catalogues/import_statement_8_8.json for IMPORT inaccessibility; doc/catalogues/common_statement_8_10_2_1.json for COMMON blocks; doc/catalogues/units_12_5_1.json for external input/output units; doc/catalogues/id_specifier_12_6_2_9.json for pending data transfer identifiers; doc/catalogues/use_statement_and_use_association_14_2_2.json for USE association and rename; doc/catalogues/submodules_14_2_3.json for submodule identifiers; doc/catalogues/bind_attribute_data_entities_8_5_5.json for BIND(C) binding labels on variables and common blocks; doc/catalogues/derived_types_7_5_4_8.json for component accessibility; doc/catalogues/derived_types_7_5_5.json for type-bound procedure bindings; doc/catalogues/derived_types_7_5_10.json for structure constructors and generic/type-name ambiguity; doc/catalogues/execution_of_the_associate_construct_11_1_3_2.json for ASSOCIATE attributes; doc/catalogues/block_construct_11_1_4.json for BLOCK construct entities; doc/catalogues/execution_of_a_change_team_construct_11_1_5_2.json for CHANGE TEAM attributes; doc/catalogues/do_concurrent_loop_control_11_1_7_4_2.json for DO CONCURRENT index values; doc/catalogues/additional_semantics_for_do_concurrent_constructs_11_1_7_5.json for DO CONCURRENT locality; doc/catalogues/attributes_of_a_select_rank_associate_name_11_1_10_3.json for SELECT RANK attributes; doc/catalogues/execution_of_the_select_type_construct_11_1_11_2.json for SELECT TYPE attributes; doc/catalogues/generic_identifiers_15_4_3_4_1.json, doc/catalogues/restrictions_on_generic_declarations_15_4_3_4_5.json, and doc/catalogues/resolving_generic_procedure_references_15_5_5_2.json for generic identifiers and resolution; doc/catalogues/function_result_characteristics_15_3_3.json for function-result characteristics; doc/catalogues/procedure_declaration_statement_15_4_3_6.json and doc/catalogues/syntax_of_a_procedure_reference_15_5_1.json for procedure declarations and references; doc/catalogues/entry_statement_15_6_2_6.json for ENTRY; doc/catalogues/statement_function_15_6_4.json for statement functions; doc/catalogues/standard_generic_intrinsic_procedures_16_7.json for standard intrinsic keywords. No existing main catalogue owns the later 19.5 association/definition rules; where a 19.1-19.4 unit needs such behavior, this catalogue gives its own concrete pending plan instead of deferring coverage."
+    },
+    {
+      "id": "S19.4-012",
+      "title": "SELECT RANK associate names have separate block scopes and attributes specified by SELECT RANK rules",
+      "source": "S19.4, J3/24-007, 18 December 2023, physical PDF552.",
+      "source_units": [
+        "p11"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A SELECT RANK associate name has a separate scope for each block and attributes specified in 11.1.10.3.",
+      "facets": [
+        "select-rank-associate-name-separate-block-scope",
+        "select-rank-associate-attributes-owned-by-11-1-10-3"
+      ],
+      "pending": {
+        "select-rank-associate-name-separate-block-scope": "Runtime/source plan uses SELECT RANK branches with same associate spelling and distinct rank-specific sentinels; each branch checks only its own block and an outer homonym remains unchanged.",
+        "select-rank-associate-attributes-owned-by-11-1-10-3": "Source-use plan names existing owner doc/catalogues/attributes_of_a_select_rank_associate_name_11_1_10_3.json; this unit supplies separate scope ownership only."
+      },
+      "oracle": "Source accounting only. Future executable fixtures must establish a positive nondefault state first, use sentinels distinct from every value the exercised construct can write, and observe only portable name-resolution, scope, type, value, or source-admission properties. No diagnostic is claimed for an unnumbered program restriction. Diagnostic wording, processor-created external names, addresses, storage layout, image/team execution, and compiler agreement are not oracles.",
+      "oracle_limitation": "This source packet creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Pending plans are source-derived designs or explicit source-use boundaries. Negative source controls are retained only as future optional diagnostics unless a numbered rule or another registered owner supplies a required diagnostic obligation.",
+      "dependencies": "Existing owner catalogues on main opened and confirmed for referenced rules: doc/catalogues/names.json for name syntax; doc/catalogues/labels.json for statement labels; doc/catalogues/array_constructors.json for array-constructor implied DO syntax and values; doc/catalogues/data_statement_8_6_7.json for DATA implied DO syntax; doc/catalogues/implicit_statement_8_7.json for implicit typing; doc/catalogues/import_statement_8_8.json for IMPORT inaccessibility; doc/catalogues/common_statement_8_10_2_1.json for COMMON blocks; doc/catalogues/units_12_5_1.json for external input/output units; doc/catalogues/id_specifier_12_6_2_9.json for pending data transfer identifiers; doc/catalogues/use_statement_and_use_association_14_2_2.json for USE association and rename; doc/catalogues/submodules_14_2_3.json for submodule identifiers; doc/catalogues/bind_attribute_data_entities_8_5_5.json for BIND(C) binding labels on variables and common blocks; doc/catalogues/derived_types_7_5_4_8.json for component accessibility; doc/catalogues/derived_types_7_5_5.json for type-bound procedure bindings; doc/catalogues/derived_types_7_5_10.json for structure constructors and generic/type-name ambiguity; doc/catalogues/execution_of_the_associate_construct_11_1_3_2.json for ASSOCIATE attributes; doc/catalogues/block_construct_11_1_4.json for BLOCK construct entities; doc/catalogues/execution_of_a_change_team_construct_11_1_5_2.json for CHANGE TEAM attributes; doc/catalogues/do_concurrent_loop_control_11_1_7_4_2.json for DO CONCURRENT index values; doc/catalogues/additional_semantics_for_do_concurrent_constructs_11_1_7_5.json for DO CONCURRENT locality; doc/catalogues/attributes_of_a_select_rank_associate_name_11_1_10_3.json for SELECT RANK attributes; doc/catalogues/execution_of_the_select_type_construct_11_1_11_2.json for SELECT TYPE attributes; doc/catalogues/generic_identifiers_15_4_3_4_1.json, doc/catalogues/restrictions_on_generic_declarations_15_4_3_4_5.json, and doc/catalogues/resolving_generic_procedure_references_15_5_5_2.json for generic identifiers and resolution; doc/catalogues/function_result_characteristics_15_3_3.json for function-result characteristics; doc/catalogues/procedure_declaration_statement_15_4_3_6.json and doc/catalogues/syntax_of_a_procedure_reference_15_5_1.json for procedure declarations and references; doc/catalogues/entry_statement_15_6_2_6.json for ENTRY; doc/catalogues/statement_function_15_6_4.json for statement functions; doc/catalogues/standard_generic_intrinsic_procedures_16_7.json for standard intrinsic keywords. No existing main catalogue owns the later 19.5 association/definition rules; where a 19.1-19.4 unit needs such behavior, this catalogue gives its own concrete pending plan instead of deferring coverage."
+    },
+    {
+      "id": "S19.4-013",
+      "title": "SELECT TYPE associate names have separate block scopes and attributes specified by SELECT TYPE rules",
+      "source": "S19.4, J3/24-007, 18 December 2023, physical PDF552.",
+      "source_units": [
+        "p12"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A SELECT TYPE associate name has a separate scope for each block and, within each block, the declared type, dynamic type, type parameters, rank, and bounds specified in 11.1.11.2.",
+      "facets": [
+        "select-type-associate-name-separate-block-scope",
+        "select-type-associate-attributes-owned-by-11-1-11-2"
+      ],
+      "pending": {
+        "select-type-associate-name-separate-block-scope": "Runtime/source plan uses SELECT TYPE branches with same associate spelling and distinct type-specific sentinels; each branch checks only its own block and an outer homonym remains unchanged.",
+        "select-type-associate-attributes-owned-by-11-1-11-2": "Source-use plan names existing owner doc/catalogues/execution_of_the_select_type_construct_11_1_11_2.json; this unit supplies separate scope ownership only."
+      },
+      "oracle": "Source accounting only. Future executable fixtures must establish a positive nondefault state first, use sentinels distinct from every value the exercised construct can write, and observe only portable name-resolution, scope, type, value, or source-admission properties. No diagnostic is claimed for an unnumbered program restriction. Diagnostic wording, processor-created external names, addresses, storage layout, image/team execution, and compiler agreement are not oracles.",
+      "oracle_limitation": "This source packet creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Pending plans are source-derived designs or explicit source-use boundaries. Negative source controls are retained only as future optional diagnostics unless a numbered rule or another registered owner supplies a required diagnostic obligation.",
+      "dependencies": "Existing owner catalogues on main opened and confirmed for referenced rules: doc/catalogues/names.json for name syntax; doc/catalogues/labels.json for statement labels; doc/catalogues/array_constructors.json for array-constructor implied DO syntax and values; doc/catalogues/data_statement_8_6_7.json for DATA implied DO syntax; doc/catalogues/implicit_statement_8_7.json for implicit typing; doc/catalogues/import_statement_8_8.json for IMPORT inaccessibility; doc/catalogues/common_statement_8_10_2_1.json for COMMON blocks; doc/catalogues/units_12_5_1.json for external input/output units; doc/catalogues/id_specifier_12_6_2_9.json for pending data transfer identifiers; doc/catalogues/use_statement_and_use_association_14_2_2.json for USE association and rename; doc/catalogues/submodules_14_2_3.json for submodule identifiers; doc/catalogues/bind_attribute_data_entities_8_5_5.json for BIND(C) binding labels on variables and common blocks; doc/catalogues/derived_types_7_5_4_8.json for component accessibility; doc/catalogues/derived_types_7_5_5.json for type-bound procedure bindings; doc/catalogues/derived_types_7_5_10.json for structure constructors and generic/type-name ambiguity; doc/catalogues/execution_of_the_associate_construct_11_1_3_2.json for ASSOCIATE attributes; doc/catalogues/block_construct_11_1_4.json for BLOCK construct entities; doc/catalogues/execution_of_a_change_team_construct_11_1_5_2.json for CHANGE TEAM attributes; doc/catalogues/do_concurrent_loop_control_11_1_7_4_2.json for DO CONCURRENT index values; doc/catalogues/additional_semantics_for_do_concurrent_constructs_11_1_7_5.json for DO CONCURRENT locality; doc/catalogues/attributes_of_a_select_rank_associate_name_11_1_10_3.json for SELECT RANK attributes; doc/catalogues/execution_of_the_select_type_construct_11_1_11_2.json for SELECT TYPE attributes; doc/catalogues/generic_identifiers_15_4_3_4_1.json, doc/catalogues/restrictions_on_generic_declarations_15_4_3_4_5.json, and doc/catalogues/resolving_generic_procedure_references_15_5_5_2.json for generic identifiers and resolution; doc/catalogues/function_result_characteristics_15_3_3.json for function-result characteristics; doc/catalogues/procedure_declaration_statement_15_4_3_6.json and doc/catalogues/syntax_of_a_procedure_reference_15_5_1.json for procedure declarations and references; doc/catalogues/entry_statement_15_6_2_6.json for ENTRY; doc/catalogues/statement_function_15_6_4.json for statement functions; doc/catalogues/standard_generic_intrinsic_procedures_16_7.json for standard intrinsic keywords. No existing main catalogue owns the later 19.5 association/definition rules; where a 19.1-19.4 unit needs such behavior, this catalogue gives its own concrete pending plan instead of deferring coverage."
+    },
+    {
+      "id": "S19.4-014",
+      "title": "Statement-function dummy arguments have statement scope, scalar type from enclosing rules, and no other attributes",
+      "source": "S19.4, J3/24-007, 18 December 2023, physical PDF552.",
+      "source_units": [
+        "p13",
+        "p13.statement-function-dummy-scope",
+        "p13.scalar-from-enclosing-type-rules",
+        "p13.no-other-attributes"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A variable that appears as a dummy argument in a statement-function statement has the scope of that statement, is a scalar with type and type parameters supplied as though it were a variable name in the containing scoping unit, and has no other attributes.",
+      "facets": [
+        "statement-function-dummy-statement-scope",
+        "statement-function-dummy-scalar-type-from-enclosing",
+        "statement-function-dummy-no-other-attributes"
+      ],
+      "pending": {
+        "statement-function-dummy-statement-scope": "Runtime plan declares outer q=99, statement function sf(q)=q+1, evaluates sf(4) expecting 5, and asserts outer q remains 99 after the statement-function statement is used.",
+        "statement-function-dummy-scalar-type-from-enclosing": "Runtime plan uses IMPLICIT INTEGER (q) with statement function sf(q)=q+1 and expects sf(4)=5, proving the dummy type follows enclosing implicit rules.",
+        "statement-function-dummy-no-other-attributes": "Source-use plan confirms no host POINTER, TARGET, or SAVE attributes are inferred for the dummy; executable plan observes only scalar integer evaluation."
+      },
+      "oracle": "Source accounting only. Future executable fixtures must establish a positive nondefault state first, use sentinels distinct from every value the exercised construct can write, and observe only portable name-resolution, scope, type, value, or source-admission properties. No diagnostic is claimed for an unnumbered program restriction. Diagnostic wording, processor-created external names, addresses, storage layout, image/team execution, and compiler agreement are not oracles.",
+      "oracle_limitation": "This source packet creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Pending plans are source-derived designs or explicit source-use boundaries. Negative source controls are retained only as future optional diagnostics unless a numbered rule or another registered owner supplies a required diagnostic obligation.",
+      "dependencies": "Existing owner catalogues on main opened and confirmed for referenced rules: doc/catalogues/names.json for name syntax; doc/catalogues/labels.json for statement labels; doc/catalogues/array_constructors.json for array-constructor implied DO syntax and values; doc/catalogues/data_statement_8_6_7.json for DATA implied DO syntax; doc/catalogues/implicit_statement_8_7.json for implicit typing; doc/catalogues/import_statement_8_8.json for IMPORT inaccessibility; doc/catalogues/common_statement_8_10_2_1.json for COMMON blocks; doc/catalogues/units_12_5_1.json for external input/output units; doc/catalogues/id_specifier_12_6_2_9.json for pending data transfer identifiers; doc/catalogues/use_statement_and_use_association_14_2_2.json for USE association and rename; doc/catalogues/submodules_14_2_3.json for submodule identifiers; doc/catalogues/bind_attribute_data_entities_8_5_5.json for BIND(C) binding labels on variables and common blocks; doc/catalogues/derived_types_7_5_4_8.json for component accessibility; doc/catalogues/derived_types_7_5_5.json for type-bound procedure bindings; doc/catalogues/derived_types_7_5_10.json for structure constructors and generic/type-name ambiguity; doc/catalogues/execution_of_the_associate_construct_11_1_3_2.json for ASSOCIATE attributes; doc/catalogues/block_construct_11_1_4.json for BLOCK construct entities; doc/catalogues/execution_of_a_change_team_construct_11_1_5_2.json for CHANGE TEAM attributes; doc/catalogues/do_concurrent_loop_control_11_1_7_4_2.json for DO CONCURRENT index values; doc/catalogues/additional_semantics_for_do_concurrent_constructs_11_1_7_5.json for DO CONCURRENT locality; doc/catalogues/attributes_of_a_select_rank_associate_name_11_1_10_3.json for SELECT RANK attributes; doc/catalogues/execution_of_the_select_type_construct_11_1_11_2.json for SELECT TYPE attributes; doc/catalogues/generic_identifiers_15_4_3_4_1.json, doc/catalogues/restrictions_on_generic_declarations_15_4_3_4_5.json, and doc/catalogues/resolving_generic_procedure_references_15_5_5_2.json for generic identifiers and resolution; doc/catalogues/function_result_characteristics_15_3_3.json for function-result characteristics; doc/catalogues/procedure_declaration_statement_15_4_3_6.json and doc/catalogues/syntax_of_a_procedure_reference_15_5_1.json for procedure declarations and references; doc/catalogues/entry_statement_15_6_2_6.json for ENTRY; doc/catalogues/statement_function_15_6_4.json for statement functions; doc/catalogues/standard_generic_intrinsic_procedures_16_7.json for standard intrinsic keywords. No existing main catalogue owns the later 19.5 association/definition rules; where a 19.1-19.4 unit needs such behavior, this catalogue gives its own concrete pending plan instead of deferring coverage."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "structural",
+      "rationale": "Statement-entity class list and homonym interpretation are split."
+    },
+    {
+      "unit": "p1.statement-entity-classes",
+      "disposition": "definition",
+      "requirements": [
+        "S19.4-001"
+      ],
+      "rationale": "Defines the source term or scope relation and maps it to the listed source-registration requirement."
+    },
+    {
+      "unit": "p1.statement-entity-homonym-interpretation",
+      "disposition": "requirements",
+      "requirements": [
+        "S19.4-001"
+      ]
+    },
+    {
+      "unit": "p2",
+      "disposition": "structural",
+      "rationale": "Statement-entity name restriction, exceptions, and duplicate rule are split."
+    },
+    {
+      "unit": "p2.statement-entity-accessible-name-restriction",
+      "disposition": "requirements",
+      "requirements": [
+        "S19.4-002"
+      ]
+    },
+    {
+      "unit": "p2.common-block-or-scalar-exceptions",
+      "disposition": "permission",
+      "requirements": [
+        "S19.4-002"
+      ],
+      "rationale": "Common block and scalar variable homonyms are admitted."
+    },
+    {
+      "unit": "p2.statement-entity-duplicate-restriction",
+      "disposition": "requirements",
+      "requirements": [
+        "S19.4-002"
+      ]
+    },
+    {
+      "unit": "p3",
+      "disposition": "structural",
+      "rationale": "Construct-entity taxonomy and DATA-before-use restriction are split."
+    },
+    {
+      "unit": "p3.construct-entity-classes",
+      "disposition": "definition",
+      "requirements": [
+        "S19.4-003"
+      ],
+      "rationale": "Defines the source term or scope relation and maps it to the listed source-registration requirement."
+    },
+    {
+      "unit": "p3.data-initialized-construct-before-data-restriction",
+      "disposition": "requirements",
+      "requirements": [
+        "S19.4-004"
+      ]
+    },
+    {
+      "unit": "p4",
+      "disposition": "requirements",
+      "requirements": [
+        "S19.4-005"
+      ]
+    },
+    {
+      "unit": "p5",
+      "disposition": "structural",
+      "rationale": "Implied-DO variable scope, type, attributes, and nondeclaration effects are split.",
+      "requirements": [
+        "S19.4-006"
+      ]
+    },
+    {
+      "unit": "p5.implied-do-scope",
+      "disposition": "requirements",
+      "requirements": [
+        "S19.4-006"
+      ]
+    },
+    {
+      "unit": "p5.scalar-variable",
+      "disposition": "requirements",
+      "requirements": [
+        "S19.4-006"
+      ]
+    },
+    {
+      "unit": "p5.inline-integer-type-spec",
+      "disposition": "requirements",
+      "requirements": [
+        "S19.4-006"
+      ]
+    },
+    {
+      "unit": "p5.enclosing-implicit-type",
+      "disposition": "requirements",
+      "requirements": [
+        "S19.4-006"
+      ]
+    },
+    {
+      "unit": "p5.must-be-integer",
+      "disposition": "requirements",
+      "requirements": [
+        "S19.4-006"
+      ]
+    },
+    {
+      "unit": "p5.no-other-attributes",
+      "disposition": "requirements",
+      "requirements": [
+        "S19.4-006"
+      ]
+    },
+    {
+      "unit": "p5.no-containing-scope-declaration",
+      "disposition": "requirements",
+      "requirements": [
+        "S19.4-006"
+      ]
+    },
+    {
+      "unit": "p6",
+      "disposition": "structural",
+      "rationale": "Index-name scope, type, attributes, and nondeclaration effects are split.",
+      "requirements": [
+        "S19.4-007"
+      ]
+    },
+    {
+      "unit": "p6.index-scope",
+      "disposition": "requirements",
+      "requirements": [
+        "S19.4-007"
+      ]
+    },
+    {
+      "unit": "p6.scalar-variable",
+      "disposition": "requirements",
+      "requirements": [
+        "S19.4-007"
+      ]
+    },
+    {
+      "unit": "p6.inline-integer-type-spec",
+      "disposition": "requirements",
+      "requirements": [
+        "S19.4-007"
+      ]
+    },
+    {
+      "unit": "p6.enclosing-implicit-type",
+      "disposition": "requirements",
+      "requirements": [
+        "S19.4-007"
+      ]
+    },
+    {
+      "unit": "p6.must-be-integer",
+      "disposition": "requirements",
+      "requirements": [
+        "S19.4-007"
+      ]
+    },
+    {
+      "unit": "p6.no-other-attributes",
+      "disposition": "requirements",
+      "requirements": [
+        "S19.4-007"
+      ]
+    },
+    {
+      "unit": "p6.no-containing-scope-declaration",
+      "disposition": "requirements",
+      "requirements": [
+        "S19.4-007"
+      ]
+    },
+    {
+      "unit": "p7",
+      "disposition": "requirements",
+      "requirements": [
+        "S19.4-008"
+      ]
+    },
+    {
+      "unit": "p8",
+      "disposition": "structural",
+      "rationale": "Default-typed index-name collisions, exceptions, and nested-index restriction are split.",
+      "requirements": [
+        "S19.4-009"
+      ]
+    },
+    {
+      "unit": "p8.default-typed-accessible-name-restriction",
+      "disposition": "requirements",
+      "requirements": [
+        "S19.4-009"
+      ]
+    },
+    {
+      "unit": "p8.common-block-or-scalar-exceptions",
+      "disposition": "permission",
+      "requirements": [
+        "S19.4-009"
+      ],
+      "rationale": "Common block and scalar variable homonyms are admitted."
+    },
+    {
+      "unit": "p8.nested-index-name-reuse-restriction",
+      "disposition": "requirements",
+      "requirements": [
+        "S19.4-009"
+      ]
+    },
+    {
+      "unit": "p9",
+      "disposition": "requirements",
+      "requirements": [
+        "S19.4-010"
+      ]
+    },
+    {
+      "unit": "p10",
+      "disposition": "requirements",
+      "requirements": [
+        "S19.4-011"
+      ]
+    },
+    {
+      "unit": "p11",
+      "disposition": "requirements",
+      "requirements": [
+        "S19.4-012"
+      ]
+    },
+    {
+      "unit": "p12",
+      "disposition": "requirements",
+      "requirements": [
+        "S19.4-013"
+      ]
+    },
+    {
+      "unit": "p13",
+      "disposition": "structural",
+      "rationale": "Statement-function dummy scope, scalar type, and absence of other attributes are split.",
+      "requirements": [
+        "S19.4-014"
+      ]
+    },
+    {
+      "unit": "p13.statement-function-dummy-scope",
+      "disposition": "requirements",
+      "requirements": [
+        "S19.4-014"
+      ]
+    },
+    {
+      "unit": "p13.scalar-from-enclosing-type-rules",
+      "disposition": "requirements",
+      "requirements": [
+        "S19.4-014"
+      ]
+    },
+    {
+      "unit": "p13.no-other-attributes",
+      "disposition": "requirements",
+      "requirements": [
+        "S19.4-014"
+      ]
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_19_4.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "6310770cc68bccf98094414431fecc86dc395e254d57175f83c5f29526a34261",
+  "review_rationale": "Source registration for the Clause 19 heading, 19.1, 19.2, 19.3, 19.3.1-19.3.5 and 19.4: scopes, global and local identifiers, and statement and construct entities (batch251). Every unit hash-verified by an independent reviewer across four rounds; construct and statement entities are observed through outer sentinels and exact kinds, with the distinct-kind cases capability-selected. Source accounting only."
+}

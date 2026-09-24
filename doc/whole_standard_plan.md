@@ -5989,6 +5989,11 @@ See `doc/source_audits/batch_226.json`.
 Thirty-three units, fourteen catalogues, two new requirement IDs — an overview almost entirely made of pointers to the rules that own each statement. The single finding was a pointer to the wrong owner; the right ones are the SHAPE, SIZE and RANK intrinsic facets, which test exactly those definitions.
 See `doc/source_audits/batch_249.json`.
 
+## Batch 251 — Scopes, identifiers and construct entities (19-19.4)
+
+Thirty-six units after four rounds, three of them on one plan. A kind parameter is a compile-time property: a declaration using a kind the processor does not support is rejected before any IF can protect it. The fix was to use a kind the standard guarantees — SELECTED_INT_KIND(18) — and to select, not guard, the fixtures that need it to differ from the default.
+See `doc/source_audits/batch_251.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
