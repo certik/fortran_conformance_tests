@@ -366,10 +366,18 @@ class C815AttributeFixturesTests(unittest.TestCase):
         first, second = self.registry.catalogues["8.5.1"], self.registry.catalogues["8.5.2"]
         self.assertEqual((len(first["requirements"]), len(second["requirements"])), (2, 5))
         self.assertEqual(sum(len(r["facets"]) for c in (first, second) for r in c["requirements"]), 55)
-        self.assertEqual(sum(len(r["pending"]) for c in (first, second) for r in c["requirements"]), 49)
+        # Union invariant: facets bound by the batch290 accessibility generator are also represented; every
+        # other facet stays pending, so an unowned binding in either catalogue is still rejected.
+        import generate_attributes_8_5_1_8_5_4_fixtures as sibling
+        sibling_bound = {}
+        for spec in sibling.build_specs().values():
+            sibling_bound.setdefault(spec["rule"], set()).update(spec["facets"])
+        self.assertEqual(sum(len(r["pending"]) for c in (first, second) for r in c["requirements"]),
+                         49 - sum(len(v) for v in sibling_bound.values()))
         for catalogue in (first, second):
             for requirement in catalogue["requirements"]:
                 selected = set(generated.FACETS) if requirement["id"] == "C815" else set()
+                selected |= sibling_bound.get(requirement["id"], set())
                 self.assertEqual(set(requirement["pending"]), set(requirement["facets"]) - selected)
         self.assertEqual(generated.synced_catalogue(first), first)
         self.assertEqual(generated.render_view((ROOT / generated.VIEW).read_text(), first, self.pairs), (ROOT / generated.VIEW).read_text())
