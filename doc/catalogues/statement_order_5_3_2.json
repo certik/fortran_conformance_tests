@@ -1,0 +1,189 @@
+{
+  "schema_version": 1,
+  "section": "5.3.2",
+  "review_state": "reviewed",
+  "subunits": {
+    "p1": [
+      "p1.syntax-rules-illustrated",
+      "p1.no-interspersing",
+      "p1.contains-before-subprograms",
+      "p1.nonexec-before-exec-general",
+      "p1.entry-format-data-permission",
+      "p1.table52-introduction"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S5.3.2-001",
+      "title": "Table 5.1 statement-order boundaries are mandatory",
+      "source": "5.3.2 Table 5.1 and p1, J3/24-007, 18 December 2023, physical PDF57-58.",
+      "source_units": [
+        "table5.1",
+        "p1.no-interspersing",
+        "p1.nonexec-before-exec-general"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "The illustrated vertical groups may be interspersed only within a group, and horizontal boundaries shall not be interspersed; nonexecutable statements generally precede executable statements between USE and CONTAINS.",
+      "facets": [
+        "use-before-import-implicit-and-declarations",
+        "declarations-before-ordinary-executables",
+        "no-late-declaration-after-executable"
+      ],
+      "pending": {
+        "use-before-import-implicit-and-declarations": "Compile PROGRAM p with USE iso_fortran_env, ONLY: int32 before IMPLICIT NONE and integer(int32) :: x; assign x=89 and check x.",
+        "declarations-before-ordinary-executables": "Compile PROGRAM p with integer :: x before x=90 and exact check x==90.",
+        "no-late-declaration-after-executable": "Diagnostic source moves integer :: y after x=90; repair moves only that declaration before x=90."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish distinct sentinels before the observed action, use exact integer or logical results, and avoid compiler-message wording or processor-dependent process status values.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Conceptual source units are not coverage claims; later clauses remain the fixture owners where this overview restates their detailed rules.",
+      "dependencies": "high_level_syntax_5_1.json R504-R511 provide the grammar being illustrated; existing owner catalogues confirmed for detailed bodies include main_program_14_1.json, module_syntax_and_semantics_14_2_1.json, function_subprogram_15_6_2_2.json, and subroutine_subprogram_15_6_2_3.json."
+    },
+    {
+      "id": "S5.3.2-002",
+      "title": "Internal and module subprograms follow CONTAINS",
+      "source": "5.3.2 p1, J3/24-007, 18 December 2023, physical PDF57-58.",
+      "source_units": [
+        "p1.contains-before-subprograms"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "Internal or module subprograms shall follow a CONTAINS statement.",
+      "facets": [
+        "internal-subprogram-after-contains",
+        "module-subprogram-after-contains",
+        "missing-contains-before-subprogram-rejected"
+      ],
+      "pending": {
+        "internal-subprogram-after-contains": "Compile PROGRAM p with CONTAINS followed by internal SUBROUTINE s assigning x=91; main calls s and checks x.",
+        "module-subprogram-after-contains": "Compile MODULE m with CONTAINS followed by function f() returning 92; main USEs m and checks f()==92.",
+        "missing-contains-before-subprogram-rejected": "Diagnostic source places SUBROUTINE s directly in PROGRAM p without CONTAINS; repair adds only CONTAINS before the subroutine."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish distinct sentinels before the observed action, use exact integer or logical results, and avoid compiler-message wording or processor-dependent process status values.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Conceptual source units are not coverage claims; later clauses remain the fixture owners where this overview restates their detailed rules.",
+      "dependencies": "Existing owner catalogues confirmed: high_level_syntax_5_1.json covers R511 and module_syntax_and_semantics_14_2_1.json covers R1407; this unit records the common CONTAINS ordering rule."
+    },
+    {
+      "id": "S5.3.2-003",
+      "title": "ENTRY, FORMAT, and DATA may appear among executable statements",
+      "source": "5.3.2 p1, J3/24-007, 18 December 2023, physical PDF57-58.",
+      "source_units": [
+        "p1.entry-format-data-permission"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Between USE and CONTAINS in a subprogram, ENTRY, FORMAT, and DATA statements may appear among executable statements.",
+      "facets": [
+        "format-among-executables",
+        "data-among-executables",
+        "entry-among-executables"
+      ],
+      "pending": {
+        "format-among-executables": "Compile PROGRAM p with executable assignment x=1, then labelled FORMAT 100, then internal WRITE using 100 expecting exact string \"93\".",
+        "data-among-executables": "Compile PROGRAM p with integer :: y, executable x=1, then DATA y /94/ and a later exact check y==94.",
+        "entry-among-executables": "Compile a procedure with ENTRY among execution-part constructs; detailed ENTRY call behavior remains with entry_statement_15_6_2_6.json and uses exact integer sentinel 95."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish distinct sentinels before the observed action, use exact integer or logical results, and avoid compiler-message wording or processor-dependent process status values.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Conceptual source units are not coverage claims; later clauses remain the fixture owners where this overview restates their detailed rules.",
+      "dependencies": "Existing owner catalogues confirmed: high_level_syntax_5_1.json covers R510 and entry_statement_15_6_2_6.json covers ENTRY details; this unit records the Table 5.1 permission."
+    },
+    {
+      "id": "S5.3.2-004",
+      "title": "Table 5.2 restricts statement types by scoping-unit kind",
+      "source": "5.3.2 Table 5.2 and p1, J3/24-007, 18 December 2023, physical PDF58.",
+      "source_units": [
+        "table5.2",
+        "p1.table52-introduction"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "Table 5.2 shows which statement types are allowed in main, module, submodule, block data, external, module, internal, and interface-body scoping units.",
+      "facets": [
+        "format-disallowed-in-module-and-interface-body",
+        "executable-disallowed-in-module-and-interface-body",
+        "import-admitted-in-submodule-internal-subprogram-and-interface-body"
+      ],
+      "pending": {
+        "format-disallowed-in-module-and-interface-body": "Diagnostic source places labelled FORMAT inside MODULE m before CONTAINS; repair moves the same FORMAT into an external subprogram.",
+        "executable-disallowed-in-module-and-interface-body": "Diagnostic source places x=96 in MODULE m before CONTAINS; repair changes only the module body to CONTAINS followed by module subroutine s containing x=96.",
+        "import-admitted-in-submodule-internal-subprogram-and-interface-body": "Compile representative sources with IMPORT in a submodule, an internal subprogram, and an interface body using an imported integer kind and exact sentinel declarations."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish distinct sentinels before the observed action, use exact integer or logical results, and avoid compiler-message wording or processor-dependent process status values.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Conceptual source units are not coverage claims; later clauses remain the fixture owners where this overview restates their detailed rules.",
+      "dependencies": "Existing owner catalogues confirmed for representative matrix entries: import_statement_8_8.json, format_statement_13_2_1.json, interface_block_15_4_3_2.json, module_syntax_and_semantics_14_2_1.json, and block_data_program_units_14_3.json. This catalogue gives Table 5.2 its own controls where no narrower owner is named."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "table5.1",
+      "disposition": "requirements",
+      "requirements": [
+        "S5.3.2-001"
+      ],
+      "rationale": "Table 5.1 illustrates mandatory statement-order boundaries."
+    },
+    {
+      "unit": "p1",
+      "disposition": "structural",
+      "rationale": "Mixed illustration, restrictions, permissions and Table 5.2 introduction are split into fine units."
+    },
+    {
+      "unit": "p1.syntax-rules-illustrated",
+      "disposition": "structural",
+      "rationale": "Cross-reference to 5.1 syntax rules."
+    },
+    {
+      "unit": "p1.no-interspersing",
+      "disposition": "requirements",
+      "requirements": [
+        "S5.3.2-001"
+      ],
+      "rationale": "Horizontal-line rule is a mandatory ordering restriction."
+    },
+    {
+      "unit": "p1.contains-before-subprograms",
+      "disposition": "requirements",
+      "requirements": [
+        "S5.3.2-002"
+      ],
+      "rationale": "Mandatory CONTAINS ordering restriction."
+    },
+    {
+      "unit": "p1.nonexec-before-exec-general",
+      "disposition": "requirements",
+      "requirements": [
+        "S5.3.2-001"
+      ],
+      "rationale": "General nonexecutable-before-executable ordering statement."
+    },
+    {
+      "unit": "p1.entry-format-data-permission",
+      "disposition": "permission",
+      "requirements": [
+        "S5.3.2-003"
+      ],
+      "rationale": "Explicit permission for ENTRY, FORMAT and DATA among executable statements."
+    },
+    {
+      "unit": "p1.table52-introduction",
+      "disposition": "structural",
+      "requirements": [
+        "S5.3.2-004"
+      ],
+      "rationale": "Introduces Table 5.2 allowance matrix."
+    },
+    {
+      "unit": "table5.2",
+      "disposition": "requirements",
+      "requirements": [
+        "S5.3.2-004"
+      ],
+      "rationale": "Table 5.2 is the statement-type allowance matrix."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_5_3_2.md"
+  },
+  "review_fingerprint": "e9531e7e527f8c271ea65135bb5dadca1011fb21379ad594e459009433c2b1c9",
+  "review_rationale": "Source registration for Clause 5 overview through 5.3.7 (batch248): high-level syntax R501-R515, program units, scoping and execution concepts. Fourteen numbered rules are registered locally and R514 is deferred to its existing tests; image-execution concepts are registered but coarray facets stay out of scope. Source accounting only."
+}

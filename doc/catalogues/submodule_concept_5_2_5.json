@@ -1,0 +1,136 @@
+{
+  "schema_version": 1,
+  "section": "5.2.5",
+  "review_state": "reviewed",
+  "subunits": {
+    "p2": [
+      "p2.procedure-definition-permission",
+      "p2.descendant-access-permission",
+      "p2.use-association-restriction",
+      "p2.cross-reference"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S5.2.5-001",
+      "title": "A submodule extends a module or another submodule",
+      "source": "5.2.5 p1, J3/24-007, 18 December 2023, physical PDF57.",
+      "source_units": [
+        "p1"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A submodule extends a module or another submodule.",
+      "facets": [
+        "extends-ancestor-module",
+        "extends-ancestor-submodule"
+      ],
+      "pending": {
+        "extends-ancestor-module": "Compile MODULE m declaring module procedure f and SUBMODULE(m) sm defining f to return 78; main checks f()==78.",
+        "extends-ancestor-submodule": "Compile MODULE m, SUBMODULE(m) parent declaring module procedure g, and SUBMODULE(parent) child defining g to return 79; main checks g()==79."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish distinct sentinels before the observed action, use exact integer or logical results, and avoid compiler-message wording or processor-dependent process status values.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Conceptual source units are not coverage claims; later clauses remain the fixture owners where this overview restates their detailed rules.",
+      "dependencies": "Existing owner catalogue confirmed: submodules_14_2_3.json covers SUBMODULE syntax and ancestry; this catalogue supplies overview extension plans."
+    },
+    {
+      "id": "S5.2.5-002",
+      "title": "A submodule may provide ancestor-declared procedure definitions and descendant-accessible entities",
+      "source": "5.2.5 p2, J3/24-007, 18 December 2023, physical PDF57.",
+      "source_units": [
+        "p2.procedure-definition-permission",
+        "p2.descendant-access-permission"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A submodule may define procedures whose interfaces are declared in an ancestor and may contain declarations and definitions accessible in descendants.",
+      "facets": [
+        "ancestor-declared-procedure-definition",
+        "descendant-accessible-submodule-entity"
+      ],
+      "pending": {
+        "ancestor-declared-procedure-definition": "Ancestor module declares module function f; submodule definition assigns result 80; main checks f()==80.",
+        "descendant-accessible-submodule-entity": "Parent submodule declares integer parameter hidden=81; descendant submodule procedure returns hidden; main calls the ancestor-declared procedure and checks 81."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish distinct sentinels before the observed action, use exact integer or logical results, and avoid compiler-message wording or processor-dependent process status values.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Conceptual source units are not coverage claims; later clauses remain the fixture owners where this overview restates their detailed rules.",
+      "dependencies": "Existing owner catalogues confirmed: submodules_14_2_3.json covers submodule ancestry and separate_module_procedures_15_6_2_5.json covers separate module procedure definitions; Clause 19 host association is now owned on main by host_association_19_5_1_4.json requirement S19.5.1.4-001 (submodule-host-access); descendant-access plans remain concrete here as Clause 5 overview source controls."
+    },
+    {
+      "id": "S5.2.5-003",
+      "title": "Submodule entities are not use-associated except ancestor-declared module procedures",
+      "source": "5.2.5 p2, J3/24-007, 18 December 2023, physical PDF57.",
+      "source_units": [
+        "p2.use-association-restriction"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "An entity declared in a submodule is not accessible by use association unless it is a module procedure whose interface is declared in the ancestor module.",
+      "facets": [
+        "submodule-local-entity-not-use-associated",
+        "ancestor-declared-module-procedure-use-associated"
+      ],
+      "pending": {
+        "submodule-local-entity-not-use-associated": "Diagnostic source declares integer hidden=82 in SUBMODULE(m) sm, then PROGRAM p uses m ONLY: hidden; repair changes only the USE target to ancestor-declared module procedure f.",
+        "ancestor-declared-module-procedure-use-associated": "Ancestor module declares module procedure f; submodule defines f returning 83; PROGRAM p USEs m ONLY: f and checks f()==83."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish distinct sentinels before the observed action, use exact integer or logical results, and avoid compiler-message wording or processor-dependent process status values.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Conceptual source units are not coverage claims; later clauses remain the fixture owners where this overview restates their detailed rules.",
+      "dependencies": "Existing owner catalogue confirmed: use_statement_and_use_association_14_2_2.json covers use association; this catalogue records the submodule exception boundary with concrete controls."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "definition",
+      "requirements": [
+        "S5.2.5-001"
+      ],
+      "rationale": "Defines the extension relationship."
+    },
+    {
+      "unit": "p2",
+      "disposition": "structural",
+      "rationale": "Mixed permissions, a use-association restriction, and a cross-reference are split into fine units."
+    },
+    {
+      "unit": "p2.procedure-definition-permission",
+      "disposition": "permission",
+      "requirements": [
+        "S5.2.5-002"
+      ],
+      "rationale": "Permission for submodule procedure definitions."
+    },
+    {
+      "unit": "p2.descendant-access-permission",
+      "disposition": "permission",
+      "requirements": [
+        "S5.2.5-002"
+      ],
+      "rationale": "Permission for descendant-accessible declarations and definitions."
+    },
+    {
+      "unit": "p2.use-association-restriction",
+      "disposition": "requirements",
+      "requirements": [
+        "S5.2.5-003"
+      ],
+      "rationale": "Restriction on use association of submodule-declared entities."
+    },
+    {
+      "unit": "p2.cross-reference",
+      "disposition": "structural",
+      "rationale": "Cross-reference to inspected owner catalogue submodules_14_2_3.json."
+    },
+    {
+      "unit": "note-unnumbered",
+      "disposition": "informative",
+      "rationale": "NOTE text; host association for submodules is owned on main by host_association_19_5_1_4.json requirement S19.5.1.4-001 (submodule-host-access)."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_5_2_5.md"
+  },
+  "review_fingerprint": "fa2f0ebdb218182a101eee6c85e93f9a6099084d72da863777148b92e9cb72b6",
+  "review_rationale": "Source registration for Clause 5 overview through 5.3.7 (batch248): high-level syntax R501-R515, program units, scoping and execution concepts. Fourteen numbered rules are registered locally and R514 is deferred to its existing tests; image-execution concepts are registered but coarray facets stay out of scope. Source accounting only."
+}

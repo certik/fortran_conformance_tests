@@ -6024,6 +6024,11 @@ See `doc/source_audits/batch_257.json`.
 Twenty-eight units after one blocked round. The compatibility subclauses mostly repeat rules the suite already owns; the review insisted they point at those owners rather than grow second copies.
 See `doc/source_audits/batch_246.json`.
 
+## Batch 248 — Fortran concepts 5-5.3.7
+
+Fifty-five units after one blocked round. The lesson was plain: a positive control that is itself non-conforming proves nothing, so every one was put through a reference compiler before it was allowed to stand.
+See `doc/source_audits/batch_248.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
