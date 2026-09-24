@@ -6159,6 +6159,11 @@ See `doc/source_audits/batch_278.json`.
 16 programs, 27 facets: for the cosines only their shapes and kinds are certain, for COUNT everything is.
 See `doc/source_audits/batch_279.json`.
 
+## Batch 280 — Intrinsic fixtures 16.9.67-16.9.70 (CPU_TIME-DBLE)
+
+21 programs, 30 facets. The clock may be absent, the time zone may be unknown; where they are present, the formats and the agreement between ZONE and VALUES(4) are not optional.
+See `doc/source_audits/batch_280.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
