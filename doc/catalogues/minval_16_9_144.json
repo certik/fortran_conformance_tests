@@ -1,0 +1,269 @@
+{
+  "schema_version": 1,
+  "section": "16.9.144",
+  "review_state": "reviewed",
+  "subunits": {
+    "p4": [
+      "p4.type-parameters",
+      "p4.dim-absent-scalar",
+      "p4.dim-present-shape"
+    ],
+    "p5": [
+      "p5.case-i-nonzero",
+      "p5.case-i-zero-numeric",
+      "p5.case-i-zero-character",
+      "p5.case-ii-mask",
+      "p5.case-iii-dim"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S16.9.144-001",
+      "title": "MINVAL argument restrictions",
+      "source": "S16.9.144, J3/24-007, 18 December 2023, physical PDF436.",
+      "source_units": [
+        "p3"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "ARRAY shall be an integer, real, or character array; DIM shall be an in-range integer scalar; MASK shall be logical and conformable.",
+      "facets": [
+        "MINVAL-ARRAY-integer-real-or-character-array",
+        "MINVAL-DIM-integer-scalar-in-range",
+        "MINVAL-MASK-logical-conformable"
+      ],
+      "pending": {
+        "MINVAL-ARRAY-integer-real-or-character-array": "Positive source controls use integer, exact real, and character arrays; source-control mutations use logical ARRAY or scalar ARRAY and claim no diagnostic facet.",
+        "MINVAL-DIM-integer-scalar-in-range": "Positive source controls use DIM=1 and DIM=2 for rank-two ARRAY; source-control mutations use nonscalar, noninteger, zero, or too-large DIM values and claim no diagnostic facet.",
+        "MINVAL-MASK-logical-conformable": "Positive source controls use a logical MASK with ARRAY shape; source-control mutations use integer MASK or mismatched shape and claim no diagnostic facet."
+      },
+      "oracle": "Source registration only. Future fixtures initialize result variables to non-default or opposite sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact logical, integer, kind, character length, rank, shape, selected argument, or bit-pattern observations. Processor-dependent model values, approximations, and character collating details outside the 7.4.4.4 guaranteed default-character order are separated from exact result obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json found no MINVAL occurrence and no S16.9.144 binding. Reader extraction for p7 has the known census-hash-drift math-glyph issue; the registry census hash is retained after visual source comparison.",
+      "dependencies": "Registered dependencies: existing source-form, type, declaration, expression, assignment, execution, array, character, and intrinsic-operation foundations from clauses 6 through 13 where already catalogued. Unregistered dependencies retained: 7.7 BOZ literal context, 16.3 integer bit model, 16.4 numeric model terminology, sibling 16.9 intrinsics used by pending plans such as IAND, IOR, NOT, INT, BTEST, POPCNT, KIND, LEN, PACK, HUGE, SHAPE, and relational operators, plus clauses 14 through 19 where future fixtures need program, procedure, IEEE, deleted-feature, or scope terms."
+    },
+    {
+      "id": "S16.9.144-002",
+      "title": "MINVAL result type, parameters, rank, and shape follow ARRAY and DIM",
+      "source": "S16.9.144, J3/24-007, 18 December 2023, physical PDF436.",
+      "source_units": [
+        "p4.type-parameters",
+        "p4.dim-absent-scalar",
+        "p4.dim-present-shape"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "MINVAL has the same type and type parameters as ARRAY; without DIM it is scalar, and with DIM it has rank n-1 and ARRAY shape with the DIM extent removed.",
+      "facets": [
+        "MINVAL-result-same-type-and-parameters",
+        "MINVAL-dim-absent-scalar",
+        "MINVAL-dim-present-rank-and-shape"
+      ],
+      "pending": {
+        "MINVAL-result-same-type-and-parameters": "Evaluate integer, exact real, and character MINVAL controls into sentinel variables and assert KIND or LEN plus exact selected values; mutate ARRAY kind or character length in source review so the characteristic checks change.",
+        "MINVAL-dim-absent-scalar": "For a 2x3 integer ARRAY, assign MINVAL without DIM to an integer scalar initialized to 777 and assert the unique minimum; companion DIM=1 call has rank one so the scalar path is distinguished.",
+        "MINVAL-dim-present-rank-and-shape": "For a 2x3 integer ARRAY, evaluate DIM=1 and DIM=2 controls and assert SHAPE results [3] and [2] with exact section minima; mutate DIM so shape and values change."
+      },
+      "oracle": "Source registration only. Future fixtures initialize result variables to non-default or opposite sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact logical, integer, kind, character length, rank, shape, selected argument, or bit-pattern observations. Processor-dependent model values, approximations, and character collating details outside the 7.4.4.4 guaranteed default-character order are separated from exact result obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json found no MINVAL occurrence and no S16.9.144 binding. Reader extraction for p7 has the known census-hash-drift math-glyph issue; the registry census hash is retained after visual source comparison.",
+      "dependencies": "Registered dependencies: existing source-form, type, declaration, expression, assignment, execution, array, character, and intrinsic-operation foundations from clauses 6 through 13 where already catalogued. Unregistered dependencies retained: 7.7 BOZ literal context, 16.3 integer bit model, 16.4 numeric model terminology, sibling 16.9 intrinsics used by pending plans such as IAND, IOR, NOT, INT, BTEST, POPCNT, KIND, LEN, PACK, HUGE, SHAPE, and relational operators, plus clauses 14 through 19 where future fixtures need program, procedure, IEEE, deleted-feature, or scope terms."
+    },
+    {
+      "id": "S16.9.144-003",
+      "title": "MINVAL without DIM returns nonempty minimum values",
+      "source": "S16.9.144, J3/24-007, 18 December 2023, physical PDF436.",
+      "source_units": [
+        "p5.case-i-nonzero"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For nonzero-size ARRAY without DIM, MINVAL returns the minimum value of all elements of ARRAY.",
+      "facets": [
+        "MINVAL-integer-nonempty-minimum",
+        "MINVAL-real-nonempty-minimum",
+        "MINVAL-character-nonempty-minimum-by-relational-operators"
+      ],
+      "pending": {
+        "MINVAL-integer-nonempty-minimum": "Evaluate MINVAL([4,-3,6]) into an integer initialized to 777 and assert -3; mutate the negative operand to 3 so the selected value changes.",
+        "MINVAL-real-nonempty-minimum": "Evaluate MINVAL([-2.0,4.0,1.0]) using exactly representable real operands and assert -2.0 after initializing the result to 99.0; mutate the first operand to 2.0 so the selected value changes.",
+        "MINVAL-character-nonempty-minimum-by-relational-operators": "Use default character array [\"Z\",\"A\",\"M\"] with equal-length elements, initialize the result to \"#\", and assert MINVAL(A)==\"A\" with LEN equality from guaranteed alphabetical default-character order; mutate MINVAL to MAXVAL so the selected value changes."
+      },
+      "oracle": "Source registration only. Future fixtures initialize result variables to non-default or opposite sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact logical, integer, kind, character length, rank, shape, selected argument, or bit-pattern observations. Processor-dependent model values, approximations, and character collating details outside the 7.4.4.4 guaranteed default-character order are separated from exact result obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json found no MINVAL occurrence and no S16.9.144 binding. Reader extraction for p7 has the known census-hash-drift math-glyph issue; the registry census hash is retained after visual source comparison.",
+      "dependencies": "Registered dependencies: existing source-form, type, declaration, expression, assignment, execution, array, character, and intrinsic-operation foundations from clauses 6 through 13 where already catalogued. Unregistered dependencies retained: 7.7 BOZ literal context, 16.3 integer bit model, 16.4 numeric model terminology, sibling 16.9 intrinsics used by pending plans such as IAND, IOR, NOT, INT, BTEST, POPCNT, KIND, LEN, PACK, HUGE, SHAPE, and relational operators, plus clauses 14 through 19 where future fixtures need program, procedure, IEEE, deleted-feature, or scope terms."
+    },
+    {
+      "id": "S16.9.144-004",
+      "title": "MINVAL zero-size ARRAY returns type-specific largest values",
+      "source": "S16.9.144, J3/24-007, 18 December 2023, physical PDF436.",
+      "source_units": [
+        "p5.case-i-zero-numeric",
+        "p5.case-i-zero-character"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For zero-size integer or real ARRAY, MINVAL returns the positive number of largest magnitude supported for that type and kind; for zero-size character ARRAY, it returns a string of LEN(ARRAY) copies of CHAR(n-1,KIND(ARRAY)).",
+      "facets": [
+        "MINVAL-zero-size-integer-HUGE",
+        "MINVAL-zero-size-real-HUGE",
+        "MINVAL-zero-size-character-last-collating-character"
+      ],
+      "pending": {
+        "MINVAL-zero-size-integer-HUGE": "Use a zero-size integer array, initialize result to -777, and assert MINVAL(array)==HUGE(0); pair with a nonempty companion [HUGE(0)-1] so the huge result is not vacuous.",
+        "MINVAL-zero-size-real-HUGE": "Use a zero-size real array, initialize result to -1.0, and assert MINVAL(array)==HUGE(0.0); pair with a nonempty companion [HUGE(0.0)/2] so the huge result is not vacuous.",
+        "MINVAL-zero-size-character-last-collating-character": "Use a zero-size default CHARACTER(LEN=3) array A and a result initialized to \"###\"; assert LEN(MINVAL(A))==3 and that characters 1, 2, and 3 of the result are all equal, without asserting which CHAR(n-1) value the processor uses. Pair with a nonempty default-character companion [\"Z\",\"A\",\"M\"] expected \"A\" from guaranteed alphabetical order so the zero-size character result is not vacuous."
+      },
+      "oracle": "Source registration only. Future fixtures initialize result variables to non-default or opposite sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact logical, integer, kind, character length, rank, shape, selected argument, or bit-pattern observations. Processor-dependent model values, approximations, and character collating details outside the 7.4.4.4 guaranteed default-character order are separated from exact result obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json found no MINVAL occurrence and no S16.9.144 binding. Reader extraction for p7 has the known census-hash-drift math-glyph issue; the registry census hash is retained after visual source comparison.",
+      "dependencies": "Registered dependencies: existing source-form, type, declaration, expression, assignment, execution, array, character, and intrinsic-operation foundations from clauses 6 through 13 where already catalogued. Unregistered dependencies retained: 7.7 BOZ literal context, 16.3 integer bit model, 16.4 numeric model terminology, sibling 16.9 intrinsics used by pending plans such as IAND, IOR, NOT, INT, BTEST, POPCNT, KIND, LEN, PACK, HUGE, SHAPE, and relational operators, plus clauses 14 through 19 where future fixtures need program, procedure, IEEE, deleted-feature, or scope terms."
+    },
+    {
+      "id": "S16.9.144-005",
+      "title": "MINVAL MASK and DIM forms reduce selected elements and sections",
+      "source": "S16.9.144, J3/24-007, 18 December 2023, physical PDF436.",
+      "source_units": [
+        "p5.case-ii-mask",
+        "p5.case-iii-dim"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "MINVAL with MASK equals MINVAL(PACK(ARRAY,MASK)); with DIM it reduces rank-one ARRAY directly or applies MINVAL to each selected rank-one section.",
+      "facets": [
+        "MINVAL-mask-equals-packed-minimum",
+        "MINVAL-mask-all-false-uses-zero-size-result",
+        "MINVAL-DIM-rank-one-scalar-value",
+        "MINVAL-DIM-higher-rank-section-values"
+      ],
+      "pending": {
+        "MINVAL-mask-equals-packed-minimum": "Use ARRAY=[-5,4,2] with MASK=[.FALSE.,.TRUE.,.TRUE.] and assert 2; mutate MASK to include the first element so the packed minimum changes.",
+        "MINVAL-mask-all-false-uses-zero-size-result": "Use integer ARRAY=[1,2,3] with all-false MASK and assert HUGE(0); pair with a one-true companion expected 2 so the huge result is not vacuous.",
+        "MINVAL-DIM-rank-one-scalar-value": "Evaluate MINVAL([5,-9,3], DIM=1) into an integer sentinel 777 and assert -9; companion no-DIM call has the same value but distinct source form for the rank-one DIM rule.",
+        "MINVAL-DIM-higher-rank-section-values": "For B=RESHAPE([1,2,3,4,5,6],[2,3]), whose rows are (1,3,5) and (2,4,6), assert MINVAL(B,DIM=1)==[1,3,5] from column minima and MINVAL(B,DIM=2)==[1,2] from row minima; mutate DIM to the other dimension so shape and values change."
+      },
+      "oracle": "Source registration only. Future fixtures initialize result variables to non-default or opposite sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact logical, integer, kind, character length, rank, shape, selected argument, or bit-pattern observations. Processor-dependent model values, approximations, and character collating details outside the 7.4.4.4 guaranteed default-character order are separated from exact result obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json found no MINVAL occurrence and no S16.9.144 binding. Reader extraction for p7 has the known census-hash-drift math-glyph issue; the registry census hash is retained after visual source comparison.",
+      "dependencies": "Registered dependencies: existing source-form, type, declaration, expression, assignment, execution, array, character, and intrinsic-operation foundations from clauses 6 through 13 where already catalogued. Unregistered dependencies retained: 7.7 BOZ literal context, 16.3 integer bit model, 16.4 numeric model terminology, sibling 16.9 intrinsics used by pending plans such as IAND, IOR, NOT, INT, BTEST, POPCNT, KIND, LEN, PACK, HUGE, SHAPE, and relational operators, plus clauses 14 through 19 where future fixtures need program, procedure, IEEE, deleted-feature, or scope terms."
+    },
+    {
+      "id": "S16.9.144-006",
+      "title": "MINVAL character values use intrinsic relational operator ordering",
+      "source": "S16.9.144, J3/24-007, 18 December 2023, physical PDF436.",
+      "source_units": [
+        "p6"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For character ARRAY, MINVAL selects the value that would be selected by intrinsic relational operators and the character collating sequence for the argument kind.",
+      "facets": [
+        "MINVAL-character-selected-by-relational-operators"
+      ],
+      "pending": {
+        "MINVAL-character-selected-by-relational-operators": "Use default character elements [\"9\",\"2\",\"7\"] and a separate [\"B\",\"A\",\"C\"] control, initialize each result to \"#\", and assert MINVAL results \"2\" and \"A\" from guaranteed numeric digit and alphabetical letter ordering; mutate MINVAL to MAXVAL so both controls change."
+      },
+      "oracle": "Source registration only. Future fixtures initialize result variables to non-default or opposite sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact logical, integer, kind, character length, rank, shape, selected argument, or bit-pattern observations. Processor-dependent model values, approximations, and character collating details outside the 7.4.4.4 guaranteed default-character order are separated from exact result obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json found no MINVAL occurrence and no S16.9.144 binding. Reader extraction for p7 has the known census-hash-drift math-glyph issue; the registry census hash is retained after visual source comparison.",
+      "dependencies": "Registered dependencies: existing source-form, type, declaration, expression, assignment, execution, array, character, and intrinsic-operation foundations from clauses 6 through 13 where already catalogued. Unregistered dependencies retained: 7.7 BOZ literal context, 16.3 integer bit model, 16.4 numeric model terminology, sibling 16.9 intrinsics used by pending plans such as IAND, IOR, NOT, INT, BTEST, POPCNT, KIND, LEN, PACK, HUGE, SHAPE, and relational operators, plus clauses 14 through 19 where future fixtures need program, procedure, IEEE, deleted-feature, or scope terms."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "definition",
+      "rationale": "Description names MINVAL as minimum value(s) of array."
+    },
+    {
+      "unit": "p2",
+      "disposition": "definition",
+      "rationale": "Classifies MINVAL as transformational."
+    },
+    {
+      "unit": "p3",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.144-001"
+      ]
+    },
+    {
+      "unit": "p4",
+      "disposition": "structural",
+      "rationale": "Result Characteristics combines type-parameter and DIM-dependent shape rules."
+    },
+    {
+      "unit": "p4.type-parameters",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.144-002"
+      ]
+    },
+    {
+      "unit": "p4.dim-absent-scalar",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.144-002"
+      ]
+    },
+    {
+      "unit": "p4.dim-present-shape",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.144-002"
+      ]
+    },
+    {
+      "unit": "p5",
+      "disposition": "structural",
+      "rationale": "Result Value combines nonempty, zero-size, MASK, and DIM cases."
+    },
+    {
+      "unit": "p5.case-i-nonzero",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.144-003"
+      ]
+    },
+    {
+      "unit": "p5.case-i-zero-numeric",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.144-004"
+      ]
+    },
+    {
+      "unit": "p5.case-i-zero-character",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.144-004"
+      ]
+    },
+    {
+      "unit": "p5.case-ii-mask",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.144-005"
+      ]
+    },
+    {
+      "unit": "p5.case-iii-dim",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.144-005"
+      ]
+    },
+    {
+      "unit": "p6",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.144-006"
+      ]
+    },
+    {
+      "unit": "p7",
+      "disposition": "informative",
+      "rationale": "Example paragraph is illustrative; known reader glyph drift is retained in the census binding."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_16_9_144.md"
+  },
+  "review_fingerprint": "98791991bb3f9cbd3a699d129389af7797e4c828869b2bae9e521b430fe0fc37",
+  "review_rationale": "Source registration for 16.9.139-16.9.144: MERGE, MERGE_BITS, MIN, MINEXPONENT, MINLOC and MINVAL (batch199). Every unit hash-verified by an independent reviewer across two rounds (16.9.139 p5-p6, 16.9.143 and 16.9.144 typeset example drift verified visually); expected values hand-derived in column-major order, MINEXPONENT planned through EXPONENT(TINY(x)) == MINEXPONENT(x). Source accounting only."
+}

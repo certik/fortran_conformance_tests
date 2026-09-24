@@ -1,0 +1,122 @@
+{
+  "schema_version": 1,
+  "section": "16.9.141",
+  "review_state": "reviewed",
+  "requirements": [
+    {
+      "id": "S16.9.141-001",
+      "title": "MIN argument restrictions",
+      "source": "S16.9.141, J3/24-007, 18 December 2023, physical PDF434.",
+      "source_units": [
+        "p3"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "All MIN arguments shall have the same type, that type shall be integer, real, or character, and all arguments shall have the same kind type parameter.",
+      "facets": [
+        "MIN-arguments-same-type",
+        "MIN-arguments-integer-real-or-character",
+        "MIN-arguments-same-kind"
+      ],
+      "pending": {
+        "MIN-arguments-same-type": "Positive source controls call MIN with all-integer, all-real, and all-character arguments; source-control mutations mix integer with real or character and claim no diagnostic facet.",
+        "MIN-arguments-integer-real-or-character": "Positive source controls cover each admitted type category; a source-control mutation uses logical arguments and claims no diagnostic facet.",
+        "MIN-arguments-same-kind": "Positive source controls use same-kind arguments; a source-control mutation mixes two integer kinds and claims no diagnostic facet."
+      },
+      "oracle": "Source registration only. Future fixtures initialize result variables to non-default or opposite sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact logical, integer, kind, character length, rank, shape, selected argument, or bit-pattern observations. Processor-dependent model values, approximations, and character collating details outside the 7.4.4.4 guaranteed default-character order are separated from exact result obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ found incidental MIN use in helper code, finalization fixtures, array-section helpers, and DO CONCURRENT reduction controls; tests/fixtures/*/fixture.json has no MIN binding and no S16.9.141 binding.",
+      "dependencies": "Registered dependencies: existing source-form, type, declaration, expression, assignment, execution, array, character, and intrinsic-operation foundations from clauses 6 through 13 where already catalogued. Unregistered dependencies retained: 7.7 BOZ literal context, 16.3 integer bit model, 16.4 numeric model terminology, sibling 16.9 intrinsics used by pending plans such as IAND, IOR, NOT, INT, BTEST, POPCNT, KIND, LEN, PACK, HUGE, SHAPE, and relational operators, plus clauses 14 through 19 where future fixtures need program, procedure, IEEE, deleted-feature, or scope terms."
+    },
+    {
+      "id": "S16.9.141-002",
+      "title": "MIN result type, kind, and character length",
+      "source": "S16.9.141, J3/24-007, 18 December 2023, physical PDF434.",
+      "source_units": [
+        "p4"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The MIN result has the same type and kind as the arguments, and for character arguments its length is the length of the longest argument.",
+      "facets": [
+        "MIN-result-same-type-and-kind",
+        "MIN-character-result-longest-length"
+      ],
+      "pending": {
+        "MIN-result-same-type-and-kind": "Evaluate MIN over integer and exact real arguments into sentinel variables and assert KIND(result)==KIND(argument) together with exact selected values; mutate one argument kind in source review so the kind check changes.",
+        "MIN-character-result-longest-length": "Evaluate MIN(\"A\",\"A  \") into a character(len=3) variable prefilled with \"###\" and assert LEN(result)==3 and value \"A  \"; mutate the longer argument length so the length check changes."
+      },
+      "oracle": "Source registration only. Future fixtures initialize result variables to non-default or opposite sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact logical, integer, kind, character length, rank, shape, selected argument, or bit-pattern observations. Processor-dependent model values, approximations, and character collating details outside the 7.4.4.4 guaranteed default-character order are separated from exact result obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ found incidental MIN use in helper code, finalization fixtures, array-section helpers, and DO CONCURRENT reduction controls; tests/fixtures/*/fixture.json has no MIN binding and no S16.9.141 binding.",
+      "dependencies": "Registered dependencies: existing source-form, type, declaration, expression, assignment, execution, array, character, and intrinsic-operation foundations from clauses 6 through 13 where already catalogued. Unregistered dependencies retained: 7.7 BOZ literal context, 16.3 integer bit model, 16.4 numeric model terminology, sibling 16.9 intrinsics used by pending plans such as IAND, IOR, NOT, INT, BTEST, POPCNT, KIND, LEN, PACK, HUGE, SHAPE, and relational operators, plus clauses 14 through 19 where future fixtures need program, procedure, IEEE, deleted-feature, or scope terms."
+    },
+    {
+      "id": "S16.9.141-003",
+      "title": "MIN returns the smallest argument and pads shorter character results",
+      "source": "S16.9.141, J3/24-007, 18 December 2023, physical PDF434.",
+      "source_units": [
+        "p5"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "MIN returns the smallest argument, using intrinsic relational operators for character arguments and right-blank extension to the longest argument length for a selected shorter character argument.",
+      "facets": [
+        "MIN-integer-smallest-exact",
+        "MIN-real-smallest-exact",
+        "MIN-character-selected-by-relational-operators",
+        "MIN-character-shorter-selected-blank-extended"
+      ],
+      "pending": {
+        "MIN-integer-smallest-exact": "Evaluate MIN(-9,7,2) into an integer initialized to 777 and assert -9; mutate the negative operand to 9 so the selected value changes.",
+        "MIN-real-smallest-exact": "Evaluate MIN(-2.0,4.0,1.0) using exactly representable real operands and assert -2.0 after initializing the result to 99.0; mutate the first operand to 2.0 so the selected value changes.",
+        "MIN-character-selected-by-relational-operators": "Use default character values \"A\", \"M\", and \"Z\" with equal length, initialize the result to \"#\", and assert MIN(\"Z\",\"M\",\"A\")==\"A\" with LEN equality; mutate the letter order or the intrinsic name to MAX so the guaranteed alphabetical default-character order is load-bearing.",
+        "MIN-character-shorter-selected-blank-extended": "Use default character arguments \"A\" and \"Z  \", initialize a length-three result to \"###\", and assert LEN(result)==3 and result==\"A  \"; mutate the shorter argument to \"Z\" so the guaranteed alphabetical order and blank extension both remain load-bearing."
+      },
+      "oracle": "Source registration only. Future fixtures initialize result variables to non-default or opposite sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact logical, integer, kind, character length, rank, shape, selected argument, or bit-pattern observations. Processor-dependent model values, approximations, and character collating details outside the 7.4.4.4 guaranteed default-character order are separated from exact result obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ found incidental MIN use in helper code, finalization fixtures, array-section helpers, and DO CONCURRENT reduction controls; tests/fixtures/*/fixture.json has no MIN binding and no S16.9.141 binding.",
+      "dependencies": "Registered dependencies: existing source-form, type, declaration, expression, assignment, execution, array, character, and intrinsic-operation foundations from clauses 6 through 13 where already catalogued. Unregistered dependencies retained: 7.7 BOZ literal context, 16.3 integer bit model, 16.4 numeric model terminology, sibling 16.9 intrinsics used by pending plans such as IAND, IOR, NOT, INT, BTEST, POPCNT, KIND, LEN, PACK, HUGE, SHAPE, and relational operators, plus clauses 14 through 19 where future fixtures need program, procedure, IEEE, deleted-feature, or scope terms."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "definition",
+      "rationale": "Description names MIN as minimum value."
+    },
+    {
+      "unit": "p2",
+      "disposition": "definition",
+      "rationale": "Classifies MIN as elemental."
+    },
+    {
+      "unit": "p3",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.141-001"
+      ]
+    },
+    {
+      "unit": "p4",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.141-002"
+      ]
+    },
+    {
+      "unit": "p5",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.141-003"
+      ]
+    },
+    {
+      "unit": "p6",
+      "disposition": "informative",
+      "rationale": "Example paragraph is illustrative; exact integer and character examples are covered by p5-derived plans."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_16_9_141.md"
+  },
+  "review_fingerprint": "bcab7c6ee904d5991f8ec848a77ba890a14373ed8d622930a71bde90f2fa86f7",
+  "review_rationale": "Source registration for 16.9.139-16.9.144: MERGE, MERGE_BITS, MIN, MINEXPONENT, MINLOC and MINVAL (batch199). Every unit hash-verified by an independent reviewer across two rounds (16.9.139 p5-p6, 16.9.143 and 16.9.144 typeset example drift verified visually); expected values hand-derived in column-major order, MINEXPONENT planned through EXPONENT(TINY(x)) == MINEXPONENT(x). Source accounting only."
+}

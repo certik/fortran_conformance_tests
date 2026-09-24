@@ -5774,6 +5774,11 @@ See `doc/source_audits/batch_200.json`.
 Forty units after three rounds. The last finding is a rule worth restating: a NOTE can tell the author where the normative text is, but it can never *be* the source unit. SAME_TYPE_AS NOTE 1 restates 7.3.2.3 p5 (a disassociated pointer's dynamic type is its declared type), so the plans now cite 7.3.2.3 directly and the note stays informative.
 See `doc/source_audits/batch_204.json`.
 
+## Batch 199 — MERGE through MINVAL
+
+Forty units after two rounds, one of which was a plain arithmetic slip: a MINLOC plan read a 2x3 RESHAPE in row-major order. Caught by hand-recomputation, which is why reviewers recompute every expected value instead of trusting the author's. The replacement input is chosen so row and column answers differ, so the same slip could not pass again.
+See `doc/source_audits/batch_199.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must

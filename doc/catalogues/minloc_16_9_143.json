@@ -1,0 +1,297 @@
+{
+  "schema_version": 1,
+  "section": "16.9.143",
+  "review_state": "reviewed",
+  "subunits": {
+    "p4": [
+      "p4.kind",
+      "p4.dim-absent-shape",
+      "p4.dim-present-shape"
+    ],
+    "p5": [
+      "p5.case-i",
+      "p5.case-i-zero",
+      "p5.case-ii",
+      "p5.case-ii-empty",
+      "p5.case-iii-rank-one",
+      "p5.case-iii-sections"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S16.9.143-001",
+      "title": "MINLOC argument restrictions",
+      "source": "S16.9.143, J3/24-007, 18 December 2023, physical PDF435.",
+      "source_units": [
+        "p3"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "ARRAY shall be an integer, real, or character array; DIM shall be an in-range integer scalar; MASK shall be logical and conformable; KIND shall be a scalar integer constant expression; BACK shall be a logical scalar.",
+      "facets": [
+        "MINLOC-ARRAY-integer-real-or-character-array",
+        "MINLOC-DIM-integer-scalar-in-range",
+        "MINLOC-MASK-logical-conformable",
+        "MINLOC-KIND-scalar-integer-constant-expression",
+        "MINLOC-BACK-logical-scalar"
+      ],
+      "pending": {
+        "MINLOC-ARRAY-integer-real-or-character-array": "Positive source controls use integer, exact real, and character arrays; source-control mutations use logical ARRAY or scalar ARRAY and claim no diagnostic facet.",
+        "MINLOC-DIM-integer-scalar-in-range": "Positive source controls use DIM=1 and DIM=2 for rank-two ARRAY; source-control mutations use nonscalar, noninteger, zero, or too-large DIM values and claim no diagnostic facet.",
+        "MINLOC-MASK-logical-conformable": "Positive source controls use a logical MASK with ARRAY shape; source-control mutations use integer MASK or mismatched shape and claim no diagnostic facet.",
+        "MINLOC-KIND-scalar-integer-constant-expression": "Positive source controls use KIND=KIND(0); source-control mutations use noninteger or nonconstant KIND expressions and claim no diagnostic facet.",
+        "MINLOC-BACK-logical-scalar": "Positive source controls use BACK=.FALSE. and BACK=.TRUE.; a source-control mutation uses nonscalar BACK and claims no diagnostic facet."
+      },
+      "oracle": "Source registration only. Future fixtures initialize result variables to non-default or opposite sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact logical, integer, kind, character length, rank, shape, selected argument, or bit-pattern observations. Processor-dependent model values, approximations, and character collating details outside the 7.4.4.4 guaranteed default-character order are separated from exact result obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json found no MINLOC occurrence and no S16.9.143 binding. Reader extraction for p8 has the known census-hash-drift math-glyph issue; the registry census hash is retained after visual source comparison.",
+      "dependencies": "Registered dependencies: existing source-form, type, declaration, expression, assignment, execution, array, character, and intrinsic-operation foundations from clauses 6 through 13 where already catalogued. Unregistered dependencies retained: 7.7 BOZ literal context, 16.3 integer bit model, 16.4 numeric model terminology, sibling 16.9 intrinsics used by pending plans such as IAND, IOR, NOT, INT, BTEST, POPCNT, KIND, LEN, PACK, HUGE, SHAPE, and relational operators, plus clauses 14 through 19 where future fixtures need program, procedure, IEEE, deleted-feature, or scope terms."
+    },
+    {
+      "id": "S16.9.143-002",
+      "title": "MINLOC result kind, rank, and shape follow KIND and DIM",
+      "source": "S16.9.143, J3/24-007, 18 December 2023, physical PDF435.",
+      "source_units": [
+        "p4.kind",
+        "p4.dim-absent-shape",
+        "p4.dim-present-shape"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "MINLOC returns integer of the KIND value or default integer; without DIM it has rank one and size equal to ARRAY rank, and with DIM it has rank n-1 and ARRAY shape with the DIM extent removed.",
+      "facets": [
+        "MINLOC-result-kind-from-KIND",
+        "MINLOC-result-default-integer-without-KIND",
+        "MINLOC-dim-absent-rank-one-size-rank",
+        "MINLOC-dim-present-rank-and-shape"
+      ],
+      "pending": {
+        "MINLOC-result-kind-from-KIND": "Guarded plan probes an available nondefault integer kind, uses KIND set to that constant, and asserts KIND(MINLOC(...)) equals it; fallback KIND(0) control covers syntax without a nondefault-kind claim.",
+        "MINLOC-result-default-integer-without-KIND": "Evaluate MINLOC([3,1,2]) without KIND and assert KIND(result)==KIND(0) together with exact location [2]; companion KIND=KIND(0) call guards the explicit path.",
+        "MINLOC-dim-absent-rank-one-size-rank": "For a 2x3 integer ARRAY, evaluate MINLOC without DIM, initialize a rank-one result to [-7,-7], and assert SIZE(result)==2 plus exact subscripts for a unique minimum.",
+        "MINLOC-dim-present-rank-and-shape": "For a 2x3 integer ARRAY, evaluate DIM=1 and DIM=2 controls and assert SHAPE results [3] and [2] with exact section locations; mutate DIM so the shape and values change."
+      },
+      "oracle": "Source registration only. Future fixtures initialize result variables to non-default or opposite sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact logical, integer, kind, character length, rank, shape, selected argument, or bit-pattern observations. Processor-dependent model values, approximations, and character collating details outside the 7.4.4.4 guaranteed default-character order are separated from exact result obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json found no MINLOC occurrence and no S16.9.143 binding. Reader extraction for p8 has the known census-hash-drift math-glyph issue; the registry census hash is retained after visual source comparison.",
+      "dependencies": "Registered dependencies: existing source-form, type, declaration, expression, assignment, execution, array, character, and intrinsic-operation foundations from clauses 6 through 13 where already catalogued. Unregistered dependencies retained: 7.7 BOZ literal context, 16.3 integer bit model, 16.4 numeric model terminology, sibling 16.9 intrinsics used by pending plans such as IAND, IOR, NOT, INT, BTEST, POPCNT, KIND, LEN, PACK, HUGE, SHAPE, and relational operators, plus clauses 14 through 19 where future fixtures need program, procedure, IEEE, deleted-feature, or scope terms."
+    },
+    {
+      "id": "S16.9.143-003",
+      "title": "MINLOC without DIM locates eligible minima and returns zeros for empty selections",
+      "source": "S16.9.143, J3/24-007, 18 December 2023, physical PDF435.",
+      "source_units": [
+        "p5.case-i",
+        "p5.case-i-zero",
+        "p5.case-ii",
+        "p5.case-ii-empty"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Without DIM, MINLOC returns subscripts of an ARRAY element equal to the eligible minimum, with zero subscripts for zero-size ARRAY or no true MASK elements.",
+      "facets": [
+        "MINLOC-no-DIM-unmasked-minimum-subscripts",
+        "MINLOC-no-DIM-subscript-ranges",
+        "MINLOC-zero-size-array-returns-zeros",
+        "MINLOC-mask-selects-true-elements",
+        "MINLOC-all-false-mask-returns-zeros"
+      ],
+      "pending": {
+        "MINLOC-no-DIM-unmasked-minimum-subscripts": "Use RESHAPE([5,4,3,2,1,6],[2,3]) with unique minimum at subscript [1,3], initialize result to [-7,-7], and assert [1,3]; mutate the minimum location so the subscript oracle changes.",
+        "MINLOC-no-DIM-subscript-ranges": "For the same nonempty rank-two control, assert each returned subscript lies within 1..extent and equals the exact expected subscript; mutate the shape arrangement so a range-only check cannot pass alone.",
+        "MINLOC-zero-size-array-returns-zeros": "Use a rank-one integer ARRAY with size zero, initialize result to [-7], and assert [0]; pair with a nonempty companion [5,1] expected [2] so the zero result is not vacuous.",
+        "MINLOC-mask-selects-true-elements": "Use ARRAY=[1,2,0] with MASK=[.FALSE.,.TRUE.,.TRUE.] and assert [3]; mutate MASK to exclude the third element so the selected subscript changes.",
+        "MINLOC-all-false-mask-returns-zeros": "Use ARRAY=[1,2,3] with all-false MASK, initialize result to [-7], and assert [0]; pair with a one-true companion expected [2] so the zero result is not vacuous."
+      },
+      "oracle": "Source registration only. Future fixtures initialize result variables to non-default or opposite sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact logical, integer, kind, character length, rank, shape, selected argument, or bit-pattern observations. Processor-dependent model values, approximations, and character collating details outside the 7.4.4.4 guaranteed default-character order are separated from exact result obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json found no MINLOC occurrence and no S16.9.143 binding. Reader extraction for p8 has the known census-hash-drift math-glyph issue; the registry census hash is retained after visual source comparison.",
+      "dependencies": "Registered dependencies: existing source-form, type, declaration, expression, assignment, execution, array, character, and intrinsic-operation foundations from clauses 6 through 13 where already catalogued. Unregistered dependencies retained: 7.7 BOZ literal context, 16.3 integer bit model, 16.4 numeric model terminology, sibling 16.9 intrinsics used by pending plans such as IAND, IOR, NOT, INT, BTEST, POPCNT, KIND, LEN, PACK, HUGE, SHAPE, and relational operators, plus clauses 14 through 19 where future fixtures need program, procedure, IEEE, deleted-feature, or scope terms."
+    },
+    {
+      "id": "S16.9.143-004",
+      "title": "MINLOC with DIM reduces each selected section",
+      "source": "S16.9.143, J3/24-007, 18 December 2023, physical PDF435.",
+      "source_units": [
+        "p5.case-iii-rank-one",
+        "p5.case-iii-sections"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "With DIM, rank-one ARRAY produces the first element of the corresponding no-DIM MINLOC result, and higher-rank ARRAY applies MINLOC to each selected rank-one section.",
+      "facets": [
+        "MINLOC-DIM-rank-one-scalar-location",
+        "MINLOC-DIM-higher-rank-section-locations"
+      ],
+      "pending": {
+        "MINLOC-DIM-rank-one-scalar-location": "Evaluate MINLOC([5,-9,3], DIM=1) into an integer sentinel 777 and assert 2; mutate DIM omission in source review so the scalar result contract is load-bearing.",
+        "MINLOC-DIM-higher-rank-section-locations": "For B=RESHAPE([2,5,1,4,3,0],[2,3]), whose rows are (2,1,3) and (5,4,0), assert MINLOC(B,DIM=1)==[1,1,2] from column minima and MINLOC(B,DIM=2)==[2,3] from row minima; mutate DIM to the other dimension so both shape and values change."
+      },
+      "oracle": "Source registration only. Future fixtures initialize result variables to non-default or opposite sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact logical, integer, kind, character length, rank, shape, selected argument, or bit-pattern observations. Processor-dependent model values, approximations, and character collating details outside the 7.4.4.4 guaranteed default-character order are separated from exact result obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json found no MINLOC occurrence and no S16.9.143 binding. Reader extraction for p8 has the known census-hash-drift math-glyph issue; the registry census hash is retained after visual source comparison.",
+      "dependencies": "Registered dependencies: existing source-form, type, declaration, expression, assignment, execution, array, character, and intrinsic-operation foundations from clauses 6 through 13 where already catalogued. Unregistered dependencies retained: 7.7 BOZ literal context, 16.3 integer bit model, 16.4 numeric model terminology, sibling 16.9 intrinsics used by pending plans such as IAND, IOR, NOT, INT, BTEST, POPCNT, KIND, LEN, PACK, HUGE, SHAPE, and relational operators, plus clauses 14 through 19 where future fixtures need program, procedure, IEEE, deleted-feature, or scope terms."
+    },
+    {
+      "id": "S16.9.143-005",
+      "title": "MINLOC tie handling follows first element order unless BACK is true",
+      "source": "S16.9.143, J3/24-007, 18 December 2023, physical PDF435.",
+      "source_units": [
+        "p6"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A unique minimum returns its subscripts; tied minima return the first in array element order unless BACK is true, and BACK true returns the last in array element order.",
+      "facets": [
+        "MINLOC-unique-minimum-returns-that-location",
+        "MINLOC-tie-first-with-BACK-absent-or-false",
+        "MINLOC-tie-last-with-BACK-true"
+      ],
+      "pending": {
+        "MINLOC-unique-minimum-returns-that-location": "Use ARRAY=[4,1,6,3], initialize result to [-7], and assert [2]; mutate the unique minimum to another position so the location changes.",
+        "MINLOC-tie-first-with-BACK-absent-or-false": "Use ARRAY=[4,3,6,3], assert MINLOC without BACK and with BACK=.FALSE. both return [2]; mutate BACK to true so the tied location changes.",
+        "MINLOC-tie-last-with-BACK-true": "Use ARRAY=[4,3,6,3] with BACK=.TRUE. and assert [4]; mutate BACK to false so the tied location changes."
+      },
+      "oracle": "Source registration only. Future fixtures initialize result variables to non-default or opposite sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact logical, integer, kind, character length, rank, shape, selected argument, or bit-pattern observations. Processor-dependent model values, approximations, and character collating details outside the 7.4.4.4 guaranteed default-character order are separated from exact result obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json found no MINLOC occurrence and no S16.9.143 binding. Reader extraction for p8 has the known census-hash-drift math-glyph issue; the registry census hash is retained after visual source comparison.",
+      "dependencies": "Registered dependencies: existing source-form, type, declaration, expression, assignment, execution, array, character, and intrinsic-operation foundations from clauses 6 through 13 where already catalogued. Unregistered dependencies retained: 7.7 BOZ literal context, 16.3 integer bit model, 16.4 numeric model terminology, sibling 16.9 intrinsics used by pending plans such as IAND, IOR, NOT, INT, BTEST, POPCNT, KIND, LEN, PACK, HUGE, SHAPE, and relational operators, plus clauses 14 through 19 where future fixtures need program, procedure, IEEE, deleted-feature, or scope terms."
+    },
+    {
+      "id": "S16.9.143-006",
+      "title": "MINLOC character arrays use intrinsic relational operator ordering",
+      "source": "S16.9.143, J3/24-007, 18 December 2023, physical PDF435.",
+      "source_units": [
+        "p7"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For character ARRAY, MINLOC selects according to intrinsic relational operators and the character collating sequence for the argument kind.",
+      "facets": [
+        "MINLOC-character-selected-by-relational-operators"
+      ],
+      "pending": {
+        "MINLOC-character-selected-by-relational-operators": "Use default character array [\"Z\",\"A\",\"M\"] with equal-length elements, initialize the result to [-7], and assert MINLOC(A)==[2] from guaranteed alphabetical default-character order; mutate MINLOC to MAXLOC so the selected subscript changes."
+      },
+      "oracle": "Source registration only. Future fixtures initialize result variables to non-default or opposite sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact logical, integer, kind, character length, rank, shape, selected argument, or bit-pattern observations. Processor-dependent model values, approximations, and character collating details outside the 7.4.4.4 guaranteed default-character order are separated from exact result obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json found no MINLOC occurrence and no S16.9.143 binding. Reader extraction for p8 has the known census-hash-drift math-glyph issue; the registry census hash is retained after visual source comparison.",
+      "dependencies": "Registered dependencies: existing source-form, type, declaration, expression, assignment, execution, array, character, and intrinsic-operation foundations from clauses 6 through 13 where already catalogued. Unregistered dependencies retained: 7.7 BOZ literal context, 16.3 integer bit model, 16.4 numeric model terminology, sibling 16.9 intrinsics used by pending plans such as IAND, IOR, NOT, INT, BTEST, POPCNT, KIND, LEN, PACK, HUGE, SHAPE, and relational operators, plus clauses 14 through 19 where future fixtures need program, procedure, IEEE, deleted-feature, or scope terms."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "body",
+      "disposition": "definition",
+      "rationale": "Unlabelled signature line identifies the MINLOC intrinsic form; argument obligations are owned by p3."
+    },
+    {
+      "unit": "p1",
+      "disposition": "definition",
+      "rationale": "Description names MINLOC as location(s) of minimum value."
+    },
+    {
+      "unit": "p2",
+      "disposition": "definition",
+      "rationale": "Classifies MINLOC as transformational."
+    },
+    {
+      "unit": "p3",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.143-001"
+      ]
+    },
+    {
+      "unit": "p4",
+      "disposition": "structural",
+      "rationale": "Result Characteristics combines kind selection with DIM-dependent rank and shape."
+    },
+    {
+      "unit": "p4.kind",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.143-002"
+      ]
+    },
+    {
+      "unit": "p4.dim-absent-shape",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.143-002"
+      ]
+    },
+    {
+      "unit": "p4.dim-present-shape",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.143-002"
+      ]
+    },
+    {
+      "unit": "p5",
+      "disposition": "structural",
+      "rationale": "Result Value combines no-DIM, MASK, empty-selection, and DIM cases."
+    },
+    {
+      "unit": "p5.case-i",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.143-003"
+      ]
+    },
+    {
+      "unit": "p5.case-i-zero",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.143-003"
+      ]
+    },
+    {
+      "unit": "p5.case-ii",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.143-003"
+      ]
+    },
+    {
+      "unit": "p5.case-ii-empty",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.143-003"
+      ]
+    },
+    {
+      "unit": "p5.case-iii-rank-one",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.143-004"
+      ]
+    },
+    {
+      "unit": "p5.case-iii-sections",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.143-004"
+      ]
+    },
+    {
+      "unit": "p6",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.143-005"
+      ]
+    },
+    {
+      "unit": "p7",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.143-006"
+      ]
+    },
+    {
+      "unit": "p8",
+      "disposition": "informative",
+      "rationale": "Example paragraph is illustrative; known reader glyph drift is retained in the census binding."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_16_9_143.md"
+  },
+  "review_fingerprint": "2889257afac9c3438d960584ab68727b9c72ff06b400f6b8f8de4f2dfc407983",
+  "review_rationale": "Source registration for 16.9.139-16.9.144: MERGE, MERGE_BITS, MIN, MINEXPONENT, MINLOC and MINVAL (batch199). Every unit hash-verified by an independent reviewer across two rounds (16.9.139 p5-p6, 16.9.143 and 16.9.144 typeset example drift verified visually); expected values hand-derived in column-major order, MINEXPONENT planned through EXPONENT(TINY(x)) == MINEXPONENT(x). Source accounting only."
+}
