@@ -1,0 +1,345 @@
+{
+  "schema_version": 1,
+  "section": "16.9.201",
+  "review_state": "reviewed",
+  "subunits": {
+    "p3": [
+      "p3.argument-restrictions"
+    ],
+    "p4": [
+      "p4.type-kind",
+      "p4.rank-shape"
+    ],
+    "p5": [
+      "p5.case-i-integer-exact",
+      "p5.case-i-real-complex-approximation",
+      "p5.case-i-zero-size",
+      "p5.case-ii-integer-selected-exact",
+      "p5.case-ii-real-complex-approximation",
+      "p5.case-ii-no-true-zero",
+      "p5.case-iii-rank-one",
+      "p5.case-iii-slice-mapping"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S16.9.201-001",
+      "title": "SUM argument restrictions",
+      "source": "S16.9.201, J3/24-007, 18 December 2023, physical PDF462-463.",
+      "source_units": [
+        "p3.argument-restrictions"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "ARRAY shall be a numeric array, DIM shall be an integer scalar in range one through rank(ARRAY), and MASK shall be logical and conformable with ARRAY.",
+      "facets": [
+        "SUM-ARRAY-numeric-array",
+        "SUM-DIM-valid",
+        "SUM-MASK-logical-conformable"
+      ],
+      "pending": {
+        "SUM-ARRAY-numeric-array": "Positive source control calls SUM with integer, real, and complex arrays; source mutation supplies a logical array and claims no diagnostic facet.",
+        "SUM-DIM-valid": "Positive source control calls SUM on a rank-two array with DIM=1 and DIM=2; source mutations use DIM=0 and DIM=3 and claim no diagnostic facet.",
+        "SUM-MASK-logical-conformable": "Positive source control uses a logical MASK with the same shape as ARRAY; source mutations use a numeric mask and a nonconformable logical mask and claim no diagnostic facet."
+      },
+      "oracle": "Source registration only. Future fixtures initialize observed variables to non-default sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact kind, rank, shape, bounds, integer/logical values, interval membership, equality between source expressions, or named constants. Processor-dependent approximations, clock values, storage sizes, and image-dependent behavior are separated from exact obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for STOPPED_IMAGES, STORAGE_SIZE, SUM, SYSTEM_CLOCK, TAN, and TAND found no existing 16.9 fixture binding in this worktree; incidental helper or unrelated source mentions of STORAGE_SIZE, SUM, and SYSTEM_CLOCK are not rebound here. The session reader reports hash drift for 16.9.201 p6 because of the typeset example matrix; the example was checked visually, the census hash is retained, and p6 remains informative.",
+      "dependencies": "Registered dependencies: existing source-form, intrinsic type, declaration, expression, assignment, execution, array, and I/O foundations from clauses 6 through 13. Unregistered dependencies retained: clause 5 image and team model for image inquiries; clauses 16.3 and 16.4 for integer, bit, and numeric model terminology; ISO_FORTRAN_ENV named constants and TEAM_TYPE; sibling 16.9 intrinsics named by pending plans such as KIND, RANK, SHAPE, SIZE, HUGE, and SELECTED_INT_KIND; clauses 14, 15, 17, 18, and 19 for future module, procedure, IEEE, deleted-feature, and scope interactions."
+    },
+    {
+      "id": "S16.9.201-002",
+      "title": "SUM result type, kind, rank, and shape",
+      "source": "S16.9.201, J3/24-007, 18 December 2023, physical PDF462-463.",
+      "source_units": [
+        "p4.type-kind",
+        "p4.rank-shape"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The result has ARRAY type and kind; absent DIM gives a scalar result, and present DIM gives rank n-1 with shape formed by removing dimension DIM from ARRAY.",
+      "facets": [
+        "SUM-result-type-kind",
+        "SUM-without-DIM-scalar",
+        "SUM-with-DIM-rank-shape"
+      ],
+      "pending": {
+        "SUM-result-type-kind": "Use integer and complex ARRAY operands; assert KIND(SUM(...)) equals KIND(ARRAY) and mutate ARRAY kind to a selected kind in the expected check.",
+        "SUM-without-DIM-scalar": "Evaluate SUM on a rank-two ARRAY without DIM and assert RANK(result)==0; mutate by adding DIM=1 so the scalar-rank check fails.",
+        "SUM-with-DIM-rank-shape": "Use ARRAY shape [2,3,4] with DIM=2 and assert RANK(result)==2 and SHAPE(result)==[2,4]; companion DIM=1 gives [3,4]."
+      },
+      "oracle": "Source registration only. Future fixtures initialize observed variables to non-default sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact kind, rank, shape, bounds, integer/logical values, interval membership, equality between source expressions, or named constants. Processor-dependent approximations, clock values, storage sizes, and image-dependent behavior are separated from exact obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for STOPPED_IMAGES, STORAGE_SIZE, SUM, SYSTEM_CLOCK, TAN, and TAND found no existing 16.9 fixture binding in this worktree; incidental helper or unrelated source mentions of STORAGE_SIZE, SUM, and SYSTEM_CLOCK are not rebound here. The session reader reports hash drift for 16.9.201 p6 because of the typeset example matrix; the example was checked visually, the census hash is retained, and p6 remains informative.",
+      "dependencies": "Registered dependencies: existing source-form, intrinsic type, declaration, expression, assignment, execution, array, and I/O foundations from clauses 6 through 13. Unregistered dependencies retained: clause 5 image and team model for image inquiries; clauses 16.3 and 16.4 for integer, bit, and numeric model terminology; ISO_FORTRAN_ENV named constants and TEAM_TYPE; sibling 16.9 intrinsics named by pending plans such as KIND, RANK, SHAPE, SIZE, HUGE, and SELECTED_INT_KIND; clauses 14, 15, 17, 18, and 19 for future module, procedure, IEEE, deleted-feature, and scope interactions."
+    },
+    {
+      "id": "S16.9.201-003",
+      "title": "SUM exact integer no-DIM value",
+      "source": "S16.9.201, J3/24-007, 18 December 2023, physical PDF462-463.",
+      "source_units": [
+        "p5.case-i-integer-exact"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For an integer ARRAY whose mathematical sum is representable in the result kind, SUM(ARRAY) has the exact integer sum.",
+      "facets": [
+        "SUM-unmasked-integer-exact-sum"
+      ],
+      "pending": {
+        "SUM-unmasked-integer-exact-sum": "Use default-integer ARRAY [4, -7, 2, -5] with result initialized to 99, assert SUM(ARRAY)==-6, and use companion ARRAY [4, 7, -2, 5] expecting 14 so signs and addition are load-bearing; mutate SUM to PRODUCT so the exact check fails."
+      },
+      "oracle": "Source registration only. Future fixtures initialize observed variables to non-default sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact kind, rank, shape, bounds, integer/logical values, interval membership, equality between source expressions, or named constants. Processor-dependent approximations, clock values, storage sizes, and image-dependent behavior are separated from exact obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for STOPPED_IMAGES, STORAGE_SIZE, SUM, SYSTEM_CLOCK, TAN, and TAND found no existing 16.9 fixture binding in this worktree; incidental helper or unrelated source mentions of STORAGE_SIZE, SUM, and SYSTEM_CLOCK are not rebound here. The session reader reports hash drift for 16.9.201 p6 because of the typeset example matrix; the example was checked visually, the census hash is retained, and p6 remains informative.",
+      "dependencies": "Registered dependencies: existing source-form, intrinsic type, declaration, expression, assignment, execution, array, and I/O foundations from clauses 6 through 13. Unregistered dependencies retained: clause 5 image and team model for image inquiries; clauses 16.3 and 16.4 for integer, bit, and numeric model terminology; ISO_FORTRAN_ENV named constants and TEAM_TYPE; sibling 16.9 intrinsics named by pending plans such as KIND, RANK, SHAPE, SIZE, HUGE, and SELECTED_INT_KIND; clauses 14, 15, 17, 18, and 19 for future module, procedure, IEEE, deleted-feature, and scope interactions."
+    },
+    {
+      "id": "S16.9.201-004",
+      "title": "SUM zero-size unmasked result is zero",
+      "source": "S16.9.201, J3/24-007, 18 December 2023, physical PDF462-463.",
+      "source_units": [
+        "p5.case-i-zero-size"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "SUM(ARRAY) has value zero for size-zero ARRAY.",
+      "facets": [
+        "SUM-size-zero-identity-zero"
+      ],
+      "pending": {
+        "SUM-size-zero-identity-zero": "Use a zero-size default-integer ARRAY with result initialized to -7, assert SUM(ARRAY)==0, and use nonempty companion ARRAY [4, -7, 2, -5] expecting -6 so zero identity is not the only exercised outcome."
+      },
+      "oracle": "Source registration only. Future fixtures initialize observed variables to non-default sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact kind, rank, shape, bounds, integer/logical values, interval membership, equality between source expressions, or named constants. Processor-dependent approximations, clock values, storage sizes, and image-dependent behavior are separated from exact obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for STOPPED_IMAGES, STORAGE_SIZE, SUM, SYSTEM_CLOCK, TAN, and TAND found no existing 16.9 fixture binding in this worktree; incidental helper or unrelated source mentions of STORAGE_SIZE, SUM, and SYSTEM_CLOCK are not rebound here. The session reader reports hash drift for 16.9.201 p6 because of the typeset example matrix; the example was checked visually, the census hash is retained, and p6 remains informative.",
+      "dependencies": "Registered dependencies: existing source-form, intrinsic type, declaration, expression, assignment, execution, array, and I/O foundations from clauses 6 through 13. Unregistered dependencies retained: clause 5 image and team model for image inquiries; clauses 16.3 and 16.4 for integer, bit, and numeric model terminology; ISO_FORTRAN_ENV named constants and TEAM_TYPE; sibling 16.9 intrinsics named by pending plans such as KIND, RANK, SHAPE, SIZE, HUGE, and SELECTED_INT_KIND; clauses 14, 15, 17, 18, and 19 for future module, procedure, IEEE, deleted-feature, and scope interactions."
+    },
+    {
+      "id": "S16.9.201-005",
+      "title": "SUM real and complex no-DIM approximation latitude",
+      "source": "S16.9.201, J3/24-007, 18 December 2023, physical PDF462-463.",
+      "source_units": [
+        "p5.case-i-real-complex-approximation"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For real or complex ARRAY values with contributing elements, SUM(ARRAY) is a processor-dependent approximation to the mathematical sum.",
+      "facets": [
+        "SUM-unmasked-real-complex-approximation-latitude"
+      ],
+      "pending": {
+        "SUM-unmasked-real-complex-approximation-latitude": "No portable oracle can require a particular rounded real or complex SUM value, evaluation order, or compiler-consensus result; exact nonempty SUM plans in this catalogue are restricted to non-overflowing integer arrays."
+      },
+      "oracle": "Source registration only. Future fixtures initialize observed variables to non-default sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact kind, rank, shape, bounds, integer/logical values, interval membership, equality between source expressions, or named constants. Processor-dependent approximations, clock values, storage sizes, and image-dependent behavior are separated from exact obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for STOPPED_IMAGES, STORAGE_SIZE, SUM, SYSTEM_CLOCK, TAN, and TAND found no existing 16.9 fixture binding in this worktree; incidental helper or unrelated source mentions of STORAGE_SIZE, SUM, and SYSTEM_CLOCK are not rebound here. The session reader reports hash drift for 16.9.201 p6 because of the typeset example matrix; the example was checked visually, the census hash is retained, and p6 remains informative.",
+      "dependencies": "Registered dependencies: existing source-form, intrinsic type, declaration, expression, assignment, execution, array, and I/O foundations from clauses 6 through 13. Unregistered dependencies retained: clause 5 image and team model for image inquiries; clauses 16.3 and 16.4 for integer, bit, and numeric model terminology; ISO_FORTRAN_ENV named constants and TEAM_TYPE; sibling 16.9 intrinsics named by pending plans such as KIND, RANK, SHAPE, SIZE, HUGE, and SELECTED_INT_KIND; clauses 14, 15, 17, 18, and 19 for future module, procedure, IEEE, deleted-feature, and scope interactions."
+    },
+    {
+      "id": "S16.9.201-006",
+      "title": "SUM exact integer MASK-selected value",
+      "source": "S16.9.201, J3/24-007, 18 December 2023, physical PDF462-463.",
+      "source_units": [
+        "p5.case-ii-integer-selected-exact"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For an integer ARRAY whose selected mathematical sum is representable in the result kind, SUM(ARRAY,MASK=MASK) has the exact sum of elements corresponding to true MASK elements.",
+      "facets": [
+        "SUM-mask-integer-exact-selected-sum"
+      ],
+      "pending": {
+        "SUM-mask-integer-exact-selected-sum": "Use default-integer ARRAY [4, -7, 2, -5] with MASK [.true., .true., .false., .true.], neither all true nor all false, initialize result to 99, and assert SUM(ARRAY,MASK)==-8; companion MASK [.false., .true., .true., .false.] expects -5 and a mutation omitting MASK yields -6."
+      },
+      "oracle": "Source registration only. Future fixtures initialize observed variables to non-default sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact kind, rank, shape, bounds, integer/logical values, interval membership, equality between source expressions, or named constants. Processor-dependent approximations, clock values, storage sizes, and image-dependent behavior are separated from exact obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for STOPPED_IMAGES, STORAGE_SIZE, SUM, SYSTEM_CLOCK, TAN, and TAND found no existing 16.9 fixture binding in this worktree; incidental helper or unrelated source mentions of STORAGE_SIZE, SUM, and SYSTEM_CLOCK are not rebound here. The session reader reports hash drift for 16.9.201 p6 because of the typeset example matrix; the example was checked visually, the census hash is retained, and p6 remains informative.",
+      "dependencies": "Registered dependencies: existing source-form, intrinsic type, declaration, expression, assignment, execution, array, and I/O foundations from clauses 6 through 13. Unregistered dependencies retained: clause 5 image and team model for image inquiries; clauses 16.3 and 16.4 for integer, bit, and numeric model terminology; ISO_FORTRAN_ENV named constants and TEAM_TYPE; sibling 16.9 intrinsics named by pending plans such as KIND, RANK, SHAPE, SIZE, HUGE, and SELECTED_INT_KIND; clauses 14, 15, 17, 18, and 19 for future module, procedure, IEEE, deleted-feature, and scope interactions."
+    },
+    {
+      "id": "S16.9.201-007",
+      "title": "SUM all-false masked result is zero",
+      "source": "S16.9.201, J3/24-007, 18 December 2023, physical PDF462-463.",
+      "source_units": [
+        "p5.case-ii-no-true-zero"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "SUM(ARRAY,MASK=MASK) has value zero with no true MASK elements.",
+      "facets": [
+        "SUM-mask-no-true-identity-zero"
+      ],
+      "pending": {
+        "SUM-mask-no-true-identity-zero": "Use integer ARRAY [4, -7, 2, -5] with MASK all false, initialize result to -7, assert SUM(ARRAY,MASK)==0, and pair with MASK [.true., .true., .false., .true.] expecting -8 so the all-false identity is non-vacuous."
+      },
+      "oracle": "Source registration only. Future fixtures initialize observed variables to non-default sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact kind, rank, shape, bounds, integer/logical values, interval membership, equality between source expressions, or named constants. Processor-dependent approximations, clock values, storage sizes, and image-dependent behavior are separated from exact obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for STOPPED_IMAGES, STORAGE_SIZE, SUM, SYSTEM_CLOCK, TAN, and TAND found no existing 16.9 fixture binding in this worktree; incidental helper or unrelated source mentions of STORAGE_SIZE, SUM, and SYSTEM_CLOCK are not rebound here. The session reader reports hash drift for 16.9.201 p6 because of the typeset example matrix; the example was checked visually, the census hash is retained, and p6 remains informative.",
+      "dependencies": "Registered dependencies: existing source-form, intrinsic type, declaration, expression, assignment, execution, array, and I/O foundations from clauses 6 through 13. Unregistered dependencies retained: clause 5 image and team model for image inquiries; clauses 16.3 and 16.4 for integer, bit, and numeric model terminology; ISO_FORTRAN_ENV named constants and TEAM_TYPE; sibling 16.9 intrinsics named by pending plans such as KIND, RANK, SHAPE, SIZE, HUGE, and SELECTED_INT_KIND; clauses 14, 15, 17, 18, and 19 for future module, procedure, IEEE, deleted-feature, and scope interactions."
+    },
+    {
+      "id": "S16.9.201-008",
+      "title": "SUM real and complex MASK-selected approximation latitude",
+      "source": "S16.9.201, J3/24-007, 18 December 2023, physical PDF462-463.",
+      "source_units": [
+        "p5.case-ii-real-complex-approximation"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For real or complex ARRAY values with true MASK elements, SUM(ARRAY,MASK=MASK) is a processor-dependent approximation to the selected mathematical sum.",
+      "facets": [
+        "SUM-mask-real-complex-approximation-latitude"
+      ],
+      "pending": {
+        "SUM-mask-real-complex-approximation-latitude": "No portable oracle can require a particular rounded real or complex masked SUM value, evaluation order, or compiler-consensus result; exact masked SUM plans in this catalogue are restricted to non-overflowing integer arrays."
+      },
+      "oracle": "Source registration only. Future fixtures initialize observed variables to non-default sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact kind, rank, shape, bounds, integer/logical values, interval membership, equality between source expressions, or named constants. Processor-dependent approximations, clock values, storage sizes, and image-dependent behavior are separated from exact obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for STOPPED_IMAGES, STORAGE_SIZE, SUM, SYSTEM_CLOCK, TAN, and TAND found no existing 16.9 fixture binding in this worktree; incidental helper or unrelated source mentions of STORAGE_SIZE, SUM, and SYSTEM_CLOCK are not rebound here. The session reader reports hash drift for 16.9.201 p6 because of the typeset example matrix; the example was checked visually, the census hash is retained, and p6 remains informative.",
+      "dependencies": "Registered dependencies: existing source-form, intrinsic type, declaration, expression, assignment, execution, array, and I/O foundations from clauses 6 through 13. Unregistered dependencies retained: clause 5 image and team model for image inquiries; clauses 16.3 and 16.4 for integer, bit, and numeric model terminology; ISO_FORTRAN_ENV named constants and TEAM_TYPE; sibling 16.9 intrinsics named by pending plans such as KIND, RANK, SHAPE, SIZE, HUGE, and SELECTED_INT_KIND; clauses 14, 15, 17, 18, and 19 for future module, procedure, IEEE, deleted-feature, and scope interactions."
+    },
+    {
+      "id": "S16.9.201-009",
+      "title": "SUM DIM rank-one equivalence and exact integer slice mapping",
+      "source": "S16.9.201, J3/24-007, 18 December 2023, physical PDF462-463.",
+      "source_units": [
+        "p5.case-iii-rank-one",
+        "p5.case-iii-slice-mapping"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For rank-one ARRAY, the DIM form has the value of the no-DIM SUM; for higher rank, each result element is the SUM of the corresponding slice, with the corresponding MASK slice.",
+      "facets": [
+        "SUM-DIM-rank-one-equivalence",
+        "SUM-DIM-integer-slice-mapping",
+        "SUM-DIM-integer-mask-slice-mapping"
+      ],
+      "pending": {
+        "SUM-DIM-rank-one-equivalence": "Use rank-one default-integer ARRAY [4, -7, 2] with DIM=1 and without DIM; initialize separate sentinels and assert both exact results are -1, then mutate the no-DIM comparison to PRODUCT.",
+        "SUM-DIM-integer-slice-mapping": "Use A=RESHAPE([1, -2, 3, 5, -7, 4], [2,3]); Fortran column-major order gives columns [1,-2], [3,5], [-7,4], so assert SUM(A,DIM=1)==[-1,8,-3] and row slices [1,3,-7], [-2,5,4] give SUM(A,DIM=2)==[-3,7]; all column and row sums are distinct, and mutating DIM or row/column mapping changes the observed values.",
+        "SUM-DIM-integer-mask-slice-mapping": "With the same A and MASK=RESHAPE([.true., .false., .true., .true., .false., .true.], [2,3]), column-major mask columns are [T,F], [T,T], [F,T]; assert SUM(A,DIM=1,MASK=MASK)==[1,8,4] and row-mask slices give SUM(A,DIM=2,MASK=MASK)==[4,9]; omitting MASK gives [-1,8,-3] and [-3,7]."
+      },
+      "oracle": "Source registration only. Future fixtures initialize observed variables to non-default sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact kind, rank, shape, bounds, integer/logical values, interval membership, equality between source expressions, or named constants. Processor-dependent approximations, clock values, storage sizes, and image-dependent behavior are separated from exact obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for STOPPED_IMAGES, STORAGE_SIZE, SUM, SYSTEM_CLOCK, TAN, and TAND found no existing 16.9 fixture binding in this worktree; incidental helper or unrelated source mentions of STORAGE_SIZE, SUM, and SYSTEM_CLOCK are not rebound here. The session reader reports hash drift for 16.9.201 p6 because of the typeset example matrix; the example was checked visually, the census hash is retained, and p6 remains informative.",
+      "dependencies": "Registered dependencies: existing source-form, intrinsic type, declaration, expression, assignment, execution, array, and I/O foundations from clauses 6 through 13. Unregistered dependencies retained: clause 5 image and team model for image inquiries; clauses 16.3 and 16.4 for integer, bit, and numeric model terminology; ISO_FORTRAN_ENV named constants and TEAM_TYPE; sibling 16.9 intrinsics named by pending plans such as KIND, RANK, SHAPE, SIZE, HUGE, and SELECTED_INT_KIND; clauses 14, 15, 17, 18, and 19 for future module, procedure, IEEE, deleted-feature, and scope interactions."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "definition",
+      "rationale": "Description defines the intrinsic purpose."
+    },
+    {
+      "unit": "p2",
+      "disposition": "definition",
+      "rationale": "Classifies SUM as transformational."
+    },
+    {
+      "unit": "p3",
+      "disposition": "structural",
+      "rationale": "Argument paragraph is split into its fine restriction unit."
+    },
+    {
+      "unit": "p3.argument-restrictions",
+      "disposition": "requirements",
+      "rationale": "Argument shall-restrictions on the program.",
+      "requirements": [
+        "S16.9.201-001"
+      ]
+    },
+    {
+      "unit": "p4",
+      "disposition": "structural",
+      "rationale": "Result characteristics split type/kind from rank/shape."
+    },
+    {
+      "unit": "p4.type-kind",
+      "disposition": "requirements",
+      "rationale": "Result type and kind follow ARRAY.",
+      "requirements": [
+        "S16.9.201-002"
+      ]
+    },
+    {
+      "unit": "p4.rank-shape",
+      "disposition": "requirements",
+      "rationale": "Scalar or DIM rank/shape result.",
+      "requirements": [
+        "S16.9.201-002"
+      ]
+    },
+    {
+      "unit": "p5",
+      "disposition": "structural",
+      "rationale": "Result Value split exact integer sums, zero identities, real/complex approximation latitude, and DIM mapping."
+    },
+    {
+      "unit": "p5.case-i-integer-exact",
+      "disposition": "requirements",
+      "rationale": "Exact non-overflowing integer no-DIM SUM.",
+      "requirements": [
+        "S16.9.201-003"
+      ]
+    },
+    {
+      "unit": "p5.case-i-real-complex-approximation",
+      "disposition": "permission",
+      "rationale": "Processor-dependent approximation for nonempty real or complex unmasked SUM.",
+      "requirements": [
+        "S16.9.201-005"
+      ]
+    },
+    {
+      "unit": "p5.case-i-zero-size",
+      "disposition": "requirements",
+      "rationale": "Exact zero identity for size-zero ARRAY.",
+      "requirements": [
+        "S16.9.201-004"
+      ]
+    },
+    {
+      "unit": "p5.case-ii-integer-selected-exact",
+      "disposition": "requirements",
+      "rationale": "Exact non-overflowing integer masked SUM.",
+      "requirements": [
+        "S16.9.201-006"
+      ]
+    },
+    {
+      "unit": "p5.case-ii-real-complex-approximation",
+      "disposition": "permission",
+      "rationale": "Processor-dependent approximation for real or complex true MASK elements.",
+      "requirements": [
+        "S16.9.201-008"
+      ]
+    },
+    {
+      "unit": "p5.case-ii-no-true-zero",
+      "disposition": "requirements",
+      "rationale": "Exact zero identity with no true MASK elements.",
+      "requirements": [
+        "S16.9.201-007"
+      ]
+    },
+    {
+      "unit": "p5.case-iii-rank-one",
+      "disposition": "requirements",
+      "rationale": "DIM rank-one equivalence.",
+      "requirements": [
+        "S16.9.201-009"
+      ]
+    },
+    {
+      "unit": "p5.case-iii-slice-mapping",
+      "disposition": "requirements",
+      "rationale": "DIM slice and mask-slice mapping.",
+      "requirements": [
+        "S16.9.201-009"
+      ]
+    },
+    {
+      "unit": "p6",
+      "disposition": "informative",
+      "rationale": "Example paragraph is illustrative; the typeset matrix causes reader hash drift and is not normative."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_16_9_201.md"
+  },
+  "review_fingerprint": "c3e1da18f589516deba3708c066e2ac25ad1c71c08da641cc43bbcfd766df612",
+  "review_rationale": "Source registration for 16.9.199-16.9.204: STOPPED_IMAGES, STORAGE_SIZE, SUM, SYSTEM_CLOCK, TAN and TAND (batch208). Every unit hash-verified by an independent reviewer across three rounds (16.9.201 typeset example drift verified visually); integer SUM is exact with distinct per-slice results, STORAGE_SIZE is planned through guarded ISO_FORTRAN_ENV relations, and STOPPED_IMAGES is out of scope. Source accounting only."
+}

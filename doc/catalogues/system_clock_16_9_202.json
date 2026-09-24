@@ -1,0 +1,435 @@
+{
+  "schema_version": 1,
+  "section": "16.9.202",
+  "review_state": "reviewed",
+  "subunits": {
+    "p3": [
+      "p3.argument-restrictions",
+      "p3.count-assignment-range",
+      "p3.count-value-latitude",
+      "p3.count-progression-reset",
+      "p3.count-rate-assignment",
+      "p3.count-rate-approximation",
+      "p3.count-max-assignment"
+    ],
+    "p6": [
+      "p6.clock-selection",
+      "p6.documentation-recommendation"
+    ],
+    "p8": [
+      "p8.integer-range-recommendation",
+      "p8.accuracy-reset-rationale"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S16.9.202-001",
+      "title": "SYSTEM_CLOCK argument restrictions",
+      "source": "S16.9.202, J3/24-007, 18 December 2023, physical PDF463-464.",
+      "source_units": [
+        "p3.argument-restrictions",
+        "p4"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "COUNT, COUNT_RATE, and COUNT_MAX have the stated scalar type, kind/range, and INTENT(OUT) restrictions, and all integer arguments in one reference shall have the same kind type parameter.",
+      "facets": [
+        "SYSTEM_CLOCK-COUNT-integer-scalar-range",
+        "SYSTEM_CLOCK-COUNT_RATE-integer-or-real-scalar",
+        "SYSTEM_CLOCK-COUNT_MAX-integer-scalar-range",
+        "SYSTEM_CLOCK-arguments-intent-out",
+        "SYSTEM_CLOCK-all-integer-arguments-same-kind"
+      ],
+      "pending": {
+        "SYSTEM_CLOCK-COUNT-integer-scalar-range": "Positive source control calls SYSTEM_CLOCK with default integer and selected_int_kind(18) COUNT variables; source mutations use real COUNT and claim no diagnostic facet.",
+        "SYSTEM_CLOCK-COUNT_RATE-integer-or-real-scalar": "Positive source control uses integer COUNT_RATE and real COUNT_RATE variants; source mutation uses complex COUNT_RATE and claims no diagnostic facet.",
+        "SYSTEM_CLOCK-COUNT_MAX-integer-scalar-range": "Positive source control calls SYSTEM_CLOCK with default integer COUNT_MAX and selected_int_kind(18) COUNT_MAX; source mutation uses real COUNT_MAX and claims no diagnostic facet.",
+        "SYSTEM_CLOCK-arguments-intent-out": "Initialize COUNT, COUNT_RATE, and COUNT_MAX to sentinels outside the allowed no-clock/clock-present disjunction, call SYSTEM_CLOCK, and assert each argument is assigned into the portable disjunction.",
+        "SYSTEM_CLOCK-all-integer-arguments-same-kind": "Positive source control uses COUNT and COUNT_MAX of selected_int_kind(18); source mutation mixes default integer COUNT with selected_int_kind(18) COUNT_MAX and claims no diagnostic facet."
+      },
+      "oracle": "Source registration only. Future fixtures initialize observed variables to non-default sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact kind, rank, shape, bounds, integer/logical values, interval membership, equality between source expressions, or named constants. Processor-dependent approximations, clock values, storage sizes, and image-dependent behavior are separated from exact obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for STOPPED_IMAGES, STORAGE_SIZE, SUM, SYSTEM_CLOCK, TAN, and TAND found no existing 16.9 fixture binding in this worktree; incidental helper or unrelated source mentions of STORAGE_SIZE, SUM, and SYSTEM_CLOCK are not rebound here. SYSTEM_CLOCK clock availability, exact count values, clock sharing, clock selection, progression, reset timing, and COUNT_RATE approximations are processor-dependent; portable plans assert only assignment effects, kind restrictions, and bounded disjunctions.",
+      "dependencies": "Registered dependencies: existing source-form, intrinsic type, declaration, expression, assignment, execution, array, and I/O foundations from clauses 6 through 13. Unregistered dependencies retained: clause 5 image and team model for image inquiries; clauses 16.3 and 16.4 for integer, bit, and numeric model terminology; ISO_FORTRAN_ENV named constants and TEAM_TYPE; sibling 16.9 intrinsics named by pending plans such as KIND, RANK, SHAPE, SIZE, HUGE, and SELECTED_INT_KIND; clauses 14, 15, 17, 18, and 19 for future module, procedure, IEEE, deleted-feature, and scope interactions."
+    },
+    {
+      "id": "S16.9.202-002",
+      "title": "SYSTEM_CLOCK COUNT assignment range and clock absence value",
+      "source": "S16.9.202, J3/24-007, 18 December 2023, physical PDF463-464.",
+      "source_units": [
+        "p3.count-assignment-range"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "COUNT is assigned either -HUGE(COUNT) with no clock or a clock value in the range 0 through COUNT_MAX.",
+      "facets": [
+        "SYSTEM_CLOCK-COUNT-assigned",
+        "SYSTEM_CLOCK-COUNT-no-clock-negative-huge",
+        "SYSTEM_CLOCK-COUNT-clock-range"
+      ],
+      "pending": {
+        "SYSTEM_CLOCK-COUNT-assigned": "Initialize COUNT to HUGE(COUNT), COUNT_RATE to -1, and COUNT_MAX to -1; call SYSTEM_CLOCK and assert the tuple satisfies no-clock values or the clock-present range disjunction.",
+        "SYSTEM_CLOCK-COUNT-no-clock-negative-huge": "The tuple oracle accepts exact no-clock COUNT value -HUGE(COUNT) together with zero COUNT_RATE and zero COUNT_MAX; mutation removes the call so assignment remains observable.",
+        "SYSTEM_CLOCK-COUNT-clock-range": "The tuple oracle accepts clock-present COUNT only in 0 <= COUNT <= COUNT_MAX; mutate by replacing COUNT_MAX in the check with COUNT_MAX-1."
+      },
+      "oracle": "Source registration only. Future fixtures initialize observed variables to non-default sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact kind, rank, shape, bounds, integer/logical values, interval membership, equality between source expressions, or named constants. Processor-dependent approximations, clock values, storage sizes, and image-dependent behavior are separated from exact obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for STOPPED_IMAGES, STORAGE_SIZE, SUM, SYSTEM_CLOCK, TAN, and TAND found no existing 16.9 fixture binding in this worktree; incidental helper or unrelated source mentions of STORAGE_SIZE, SUM, and SYSTEM_CLOCK are not rebound here. SYSTEM_CLOCK clock availability, exact count values, clock sharing, clock selection, progression, reset timing, and COUNT_RATE approximations are processor-dependent; portable plans assert only assignment effects, kind restrictions, and bounded disjunctions.",
+      "dependencies": "Registered dependencies: existing source-form, intrinsic type, declaration, expression, assignment, execution, array, and I/O foundations from clauses 6 through 13. Unregistered dependencies retained: clause 5 image and team model for image inquiries; clauses 16.3 and 16.4 for integer, bit, and numeric model terminology; ISO_FORTRAN_ENV named constants and TEAM_TYPE; sibling 16.9 intrinsics named by pending plans such as KIND, RANK, SHAPE, SIZE, HUGE, and SELECTED_INT_KIND; clauses 14, 15, 17, 18, and 19 for future module, procedure, IEEE, deleted-feature, and scope interactions."
+    },
+    {
+      "id": "S16.9.202-003",
+      "title": "SYSTEM_CLOCK COUNT clock value is processor dependent",
+      "source": "S16.9.202, J3/24-007, 18 December 2023, physical PDF463-464.",
+      "source_units": [
+        "p3.count-value-latitude"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "With a clock present, COUNT is a processor-dependent value based on a processor clock.",
+      "facets": [
+        "SYSTEM_CLOCK-COUNT-processor-dependent-value"
+      ],
+      "pending": {
+        "SYSTEM_CLOCK-COUNT-processor-dependent-value": "No portable oracle can require a particular COUNT value, starting point, epoch, tick schedule, or relation to wall-clock time; future tests use only the clock-present range disjunction."
+      },
+      "oracle": "Source registration only. Future fixtures initialize observed variables to non-default sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact kind, rank, shape, bounds, integer/logical values, interval membership, equality between source expressions, or named constants. Processor-dependent approximations, clock values, storage sizes, and image-dependent behavior are separated from exact obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for STOPPED_IMAGES, STORAGE_SIZE, SUM, SYSTEM_CLOCK, TAN, and TAND found no existing 16.9 fixture binding in this worktree; incidental helper or unrelated source mentions of STORAGE_SIZE, SUM, and SYSTEM_CLOCK are not rebound here. SYSTEM_CLOCK clock availability, exact count values, clock sharing, clock selection, progression, reset timing, and COUNT_RATE approximations are processor-dependent; portable plans assert only assignment effects, kind restrictions, and bounded disjunctions.",
+      "dependencies": "Registered dependencies: existing source-form, intrinsic type, declaration, expression, assignment, execution, array, and I/O foundations from clauses 6 through 13. Unregistered dependencies retained: clause 5 image and team model for image inquiries; clauses 16.3 and 16.4 for integer, bit, and numeric model terminology; ISO_FORTRAN_ENV named constants and TEAM_TYPE; sibling 16.9 intrinsics named by pending plans such as KIND, RANK, SHAPE, SIZE, HUGE, and SELECTED_INT_KIND; clauses 14, 15, 17, 18, and 19 for future module, procedure, IEEE, deleted-feature, and scope interactions."
+    },
+    {
+      "id": "S16.9.202-004",
+      "title": "SYSTEM_CLOCK COUNT progression and reset have no finite portable oracle",
+      "source": "S16.9.202, J3/24-007, 18 December 2023, physical PDF463-464.",
+      "source_units": [
+        "p3.count-progression-reset"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The processor-dependent COUNT value increments by one for each clock count until COUNT_MAX and resets to zero at the next count.",
+      "facets": [
+        "SYSTEM_CLOCK-COUNT-increments-by-one",
+        "SYSTEM_CLOCK-COUNT-resets-after-COUNT_MAX"
+      ],
+      "pending": {
+        "SYSTEM_CLOCK-COUNT-increments-by-one": "No portable finite-run oracle can force clock count advancement or observe every clock count; future tests avoid requiring an increment between two invocations.",
+        "SYSTEM_CLOCK-COUNT-resets-after-COUNT_MAX": "No portable finite-run oracle can drive COUNT to COUNT_MAX and the next count without processor timing assumptions; future tests assert only valid range membership."
+      },
+      "oracle": "Source registration only. Future fixtures initialize observed variables to non-default sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact kind, rank, shape, bounds, integer/logical values, interval membership, equality between source expressions, or named constants. Processor-dependent approximations, clock values, storage sizes, and image-dependent behavior are separated from exact obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for STOPPED_IMAGES, STORAGE_SIZE, SUM, SYSTEM_CLOCK, TAN, and TAND found no existing 16.9 fixture binding in this worktree; incidental helper or unrelated source mentions of STORAGE_SIZE, SUM, and SYSTEM_CLOCK are not rebound here. SYSTEM_CLOCK clock availability, exact count values, clock sharing, clock selection, progression, reset timing, and COUNT_RATE approximations are processor-dependent; portable plans assert only assignment effects, kind restrictions, and bounded disjunctions.",
+      "dependencies": "Registered dependencies: existing source-form, intrinsic type, declaration, expression, assignment, execution, array, and I/O foundations from clauses 6 through 13. Unregistered dependencies retained: clause 5 image and team model for image inquiries; clauses 16.3 and 16.4 for integer, bit, and numeric model terminology; ISO_FORTRAN_ENV named constants and TEAM_TYPE; sibling 16.9 intrinsics named by pending plans such as KIND, RANK, SHAPE, SIZE, HUGE, and SELECTED_INT_KIND; clauses 14, 15, 17, 18, and 19 for future module, procedure, IEEE, deleted-feature, and scope interactions."
+    },
+    {
+      "id": "S16.9.202-005",
+      "title": "SYSTEM_CLOCK COUNT_RATE assignment and no-clock zero",
+      "source": "S16.9.202, J3/24-007, 18 December 2023, physical PDF463-464.",
+      "source_units": [
+        "p3.count-rate-assignment"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "COUNT_RATE is assigned a clock count rate or zero with no clock.",
+      "facets": [
+        "SYSTEM_CLOCK-COUNT_RATE-assigned",
+        "SYSTEM_CLOCK-COUNT_RATE-no-clock-zero"
+      ],
+      "pending": {
+        "SYSTEM_CLOCK-COUNT_RATE-assigned": "Initialize real and integer COUNT_RATE sentinels to -1, call SYSTEM_CLOCK with COUNT and COUNT_MAX, and assert the tuple satisfies zero for no clock or a nonnegative clock-rate value for a clock-present result.",
+        "SYSTEM_CLOCK-COUNT_RATE-no-clock-zero": "The tuple oracle accepts exact zero COUNT_RATE only with the no-clock COUNT and COUNT_MAX values; mutation removes the call so the -1 sentinel remains outside the disjunction."
+      },
+      "oracle": "Source registration only. Future fixtures initialize observed variables to non-default sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact kind, rank, shape, bounds, integer/logical values, interval membership, equality between source expressions, or named constants. Processor-dependent approximations, clock values, storage sizes, and image-dependent behavior are separated from exact obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for STOPPED_IMAGES, STORAGE_SIZE, SUM, SYSTEM_CLOCK, TAN, and TAND found no existing 16.9 fixture binding in this worktree; incidental helper or unrelated source mentions of STORAGE_SIZE, SUM, and SYSTEM_CLOCK are not rebound here. SYSTEM_CLOCK clock availability, exact count values, clock sharing, clock selection, progression, reset timing, and COUNT_RATE approximations are processor-dependent; portable plans assert only assignment effects, kind restrictions, and bounded disjunctions.",
+      "dependencies": "Registered dependencies: existing source-form, intrinsic type, declaration, expression, assignment, execution, array, and I/O foundations from clauses 6 through 13. Unregistered dependencies retained: clause 5 image and team model for image inquiries; clauses 16.3 and 16.4 for integer, bit, and numeric model terminology; ISO_FORTRAN_ENV named constants and TEAM_TYPE; sibling 16.9 intrinsics named by pending plans such as KIND, RANK, SHAPE, SIZE, HUGE, and SELECTED_INT_KIND; clauses 14, 15, 17, 18, and 19 for future module, procedure, IEEE, deleted-feature, and scope interactions."
+    },
+    {
+      "id": "S16.9.202-006",
+      "title": "SYSTEM_CLOCK COUNT_RATE approximation latitude",
+      "source": "S16.9.202, J3/24-007, 18 December 2023, physical PDF463-464.",
+      "source_units": [
+        "p3.count-rate-approximation"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "With a clock present, COUNT_RATE is a processor-dependent approximation to processor clock counts per second.",
+      "facets": [
+        "SYSTEM_CLOCK-COUNT_RATE-approximation-latitude"
+      ],
+      "pending": {
+        "SYSTEM_CLOCK-COUNT_RATE-approximation-latitude": "No portable oracle can require a particular count-per-second integer, real approximation, decimal digits, or relation to wall-clock time."
+      },
+      "oracle": "Source registration only. Future fixtures initialize observed variables to non-default sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact kind, rank, shape, bounds, integer/logical values, interval membership, equality between source expressions, or named constants. Processor-dependent approximations, clock values, storage sizes, and image-dependent behavior are separated from exact obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for STOPPED_IMAGES, STORAGE_SIZE, SUM, SYSTEM_CLOCK, TAN, and TAND found no existing 16.9 fixture binding in this worktree; incidental helper or unrelated source mentions of STORAGE_SIZE, SUM, and SYSTEM_CLOCK are not rebound here. SYSTEM_CLOCK clock availability, exact count values, clock sharing, clock selection, progression, reset timing, and COUNT_RATE approximations are processor-dependent; portable plans assert only assignment effects, kind restrictions, and bounded disjunctions.",
+      "dependencies": "Registered dependencies: existing source-form, intrinsic type, declaration, expression, assignment, execution, array, and I/O foundations from clauses 6 through 13. Unregistered dependencies retained: clause 5 image and team model for image inquiries; clauses 16.3 and 16.4 for integer, bit, and numeric model terminology; ISO_FORTRAN_ENV named constants and TEAM_TYPE; sibling 16.9 intrinsics named by pending plans such as KIND, RANK, SHAPE, SIZE, HUGE, and SELECTED_INT_KIND; clauses 14, 15, 17, 18, and 19 for future module, procedure, IEEE, deleted-feature, and scope interactions."
+    },
+    {
+      "id": "S16.9.202-007",
+      "title": "SYSTEM_CLOCK COUNT_MAX assignment",
+      "source": "S16.9.202, J3/24-007, 18 December 2023, physical PDF463-464.",
+      "source_units": [
+        "p3.count-max-assignment"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "COUNT_MAX is assigned the maximum COUNT value, or zero with no clock.",
+      "facets": [
+        "SYSTEM_CLOCK-COUNT_MAX-assigned",
+        "SYSTEM_CLOCK-COUNT_MAX-no-clock-zero",
+        "SYSTEM_CLOCK-COUNT_MAX-bounds-COUNT"
+      ],
+      "pending": {
+        "SYSTEM_CLOCK-COUNT_MAX-assigned": "Initialize COUNT_MAX to -1, call SYSTEM_CLOCK with COUNT and COUNT_RATE, and assert the tuple satisfies zero for no clock or a value bounding COUNT for a clock-present result.",
+        "SYSTEM_CLOCK-COUNT_MAX-no-clock-zero": "The tuple oracle accepts exact zero COUNT_MAX only with the no-clock COUNT and COUNT_RATE values; mutation removes the call so the -1 sentinel remains outside the disjunction.",
+        "SYSTEM_CLOCK-COUNT_MAX-bounds-COUNT": "For a clock-present tuple, assert 0 <= COUNT and COUNT <= COUNT_MAX; mutate the upper-bound expression to COUNT_MAX-1."
+      },
+      "oracle": "Source registration only. Future fixtures initialize observed variables to non-default sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact kind, rank, shape, bounds, integer/logical values, interval membership, equality between source expressions, or named constants. Processor-dependent approximations, clock values, storage sizes, and image-dependent behavior are separated from exact obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for STOPPED_IMAGES, STORAGE_SIZE, SUM, SYSTEM_CLOCK, TAN, and TAND found no existing 16.9 fixture binding in this worktree; incidental helper or unrelated source mentions of STORAGE_SIZE, SUM, and SYSTEM_CLOCK are not rebound here. SYSTEM_CLOCK clock availability, exact count values, clock sharing, clock selection, progression, reset timing, and COUNT_RATE approximations are processor-dependent; portable plans assert only assignment effects, kind restrictions, and bounded disjunctions.",
+      "dependencies": "Registered dependencies: existing source-form, intrinsic type, declaration, expression, assignment, execution, array, and I/O foundations from clauses 6 through 13. Unregistered dependencies retained: clause 5 image and team model for image inquiries; clauses 16.3 and 16.4 for integer, bit, and numeric model terminology; ISO_FORTRAN_ENV named constants and TEAM_TYPE; sibling 16.9 intrinsics named by pending plans such as KIND, RANK, SHAPE, SIZE, HUGE, and SELECTED_INT_KIND; clauses 14, 15, 17, 18, and 19 for future module, procedure, IEEE, deleted-feature, and scope interactions."
+    },
+    {
+      "id": "S16.9.202-008",
+      "title": "SYSTEM_CLOCK clock availability and sharing are processor dependent",
+      "source": "S16.9.202, J3/24-007, 18 December 2023, physical PDF463-464.",
+      "source_units": [
+        "p5"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Whether an image has no clock, has one or more clocks of its own, or shares a clock with another image is processor dependent.",
+      "facets": [
+        "SYSTEM_CLOCK-clock-availability-processor-dependent",
+        "SYSTEM_CLOCK-clock-sharing-processor-dependent"
+      ],
+      "pending": {
+        "SYSTEM_CLOCK-clock-availability-processor-dependent": "No portable oracle can require a clock to exist or be absent for the invoking image; future tests accept the specified no-clock and clock-present disjunction.",
+        "SYSTEM_CLOCK-clock-sharing-processor-dependent": "OUT OF SCOPE: observing clock sharing between images is image-dependent and outside this single-image fixture suite by user decision."
+      },
+      "oracle": "Source registration only. Future fixtures initialize observed variables to non-default sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact kind, rank, shape, bounds, integer/logical values, interval membership, equality between source expressions, or named constants. Processor-dependent approximations, clock values, storage sizes, and image-dependent behavior are separated from exact obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for STOPPED_IMAGES, STORAGE_SIZE, SUM, SYSTEM_CLOCK, TAN, and TAND found no existing 16.9 fixture binding in this worktree; incidental helper or unrelated source mentions of STORAGE_SIZE, SUM, and SYSTEM_CLOCK are not rebound here. SYSTEM_CLOCK clock availability, exact count values, clock sharing, clock selection, progression, reset timing, and COUNT_RATE approximations are processor-dependent; portable plans assert only assignment effects, kind restrictions, and bounded disjunctions.",
+      "dependencies": "Registered dependencies: existing source-form, intrinsic type, declaration, expression, assignment, execution, array, and I/O foundations from clauses 6 through 13. Unregistered dependencies retained: clause 5 image and team model for image inquiries; clauses 16.3 and 16.4 for integer, bit, and numeric model terminology; ISO_FORTRAN_ENV named constants and TEAM_TYPE; sibling 16.9 intrinsics named by pending plans such as KIND, RANK, SHAPE, SIZE, HUGE, and SELECTED_INT_KIND; clauses 14, 15, 17, 18, and 19 for future module, procedure, IEEE, deleted-feature, and scope interactions."
+    },
+    {
+      "id": "S16.9.202-009",
+      "title": "SYSTEM_CLOCK argument characteristics select among multiple clocks",
+      "source": "S16.9.202, J3/24-007, 18 December 2023, physical PDF463-464.",
+      "source_units": [
+        "p6.clock-selection"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "With more than one available clock, the types and kinds of SYSTEM_CLOCK arguments determine the accessed clock.",
+      "facets": [
+        "SYSTEM_CLOCK-clock-selection-by-argument-characteristics"
+      ],
+      "pending": {
+        "SYSTEM_CLOCK-clock-selection-by-argument-characteristics": "No portable oracle can require a processor to provide multiple clocks or expose a particular mapping from argument characteristics to clocks; future source controls keep argument kinds uniform."
+      },
+      "oracle": "Source registration only. Future fixtures initialize observed variables to non-default sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact kind, rank, shape, bounds, integer/logical values, interval membership, equality between source expressions, or named constants. Processor-dependent approximations, clock values, storage sizes, and image-dependent behavior are separated from exact obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for STOPPED_IMAGES, STORAGE_SIZE, SUM, SYSTEM_CLOCK, TAN, and TAND found no existing 16.9 fixture binding in this worktree; incidental helper or unrelated source mentions of STORAGE_SIZE, SUM, and SYSTEM_CLOCK are not rebound here. SYSTEM_CLOCK clock availability, exact count values, clock sharing, clock selection, progression, reset timing, and COUNT_RATE approximations are processor-dependent; portable plans assert only assignment effects, kind restrictions, and bounded disjunctions.",
+      "dependencies": "Registered dependencies: existing source-form, intrinsic type, declaration, expression, assignment, execution, array, and I/O foundations from clauses 6 through 13. Unregistered dependencies retained: clause 5 image and team model for image inquiries; clauses 16.3 and 16.4 for integer, bit, and numeric model terminology; ISO_FORTRAN_ENV named constants and TEAM_TYPE; sibling 16.9 intrinsics named by pending plans such as KIND, RANK, SHAPE, SIZE, HUGE, and SELECTED_INT_KIND; clauses 14, 15, 17, 18, and 19 for future module, procedure, IEEE, deleted-feature, and scope interactions."
+    },
+    {
+      "id": "S16.9.202-010",
+      "title": "SYSTEM_CLOCK clock-selection documentation recommendation",
+      "source": "S16.9.202, J3/24-007, 18 December 2023, physical PDF463-464.",
+      "source_units": [
+        "p6.documentation-recommendation"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The processor should document the relationship between clock selection and argument characteristics.",
+      "facets": [
+        "SYSTEM_CLOCK-clock-selection-documentation-recommended"
+      ],
+      "pending": {
+        "SYSTEM_CLOCK-clock-selection-documentation-recommended": "Recommendation only: record as source guidance. It is not a conformance oracle and no fixture may fail a processor solely because this SHOULD recommendation is unmet."
+      },
+      "oracle": "Source registration only. Future fixtures initialize observed variables to non-default sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact kind, rank, shape, bounds, integer/logical values, interval membership, equality between source expressions, or named constants. Processor-dependent approximations, clock values, storage sizes, and image-dependent behavior are separated from exact obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for STOPPED_IMAGES, STORAGE_SIZE, SUM, SYSTEM_CLOCK, TAN, and TAND found no existing 16.9 fixture binding in this worktree; incidental helper or unrelated source mentions of STORAGE_SIZE, SUM, and SYSTEM_CLOCK are not rebound here. SYSTEM_CLOCK clock availability, exact count values, clock sharing, clock selection, progression, reset timing, and COUNT_RATE approximations are processor-dependent; portable plans assert only assignment effects, kind restrictions, and bounded disjunctions.",
+      "dependencies": "Registered dependencies: existing source-form, intrinsic type, declaration, expression, assignment, execution, array, and I/O foundations from clauses 6 through 13. Unregistered dependencies retained: clause 5 image and team model for image inquiries; clauses 16.3 and 16.4 for integer, bit, and numeric model terminology; ISO_FORTRAN_ENV named constants and TEAM_TYPE; sibling 16.9 intrinsics named by pending plans such as KIND, RANK, SHAPE, SIZE, HUGE, and SELECTED_INT_KIND; clauses 14, 15, 17, 18, and 19 for future module, procedure, IEEE, deleted-feature, and scope interactions."
+    },
+    {
+      "id": "S16.9.202-011",
+      "title": "SYSTEM_CLOCK timing calculations should use consistent argument types and kinds",
+      "source": "S16.9.202, J3/24-007, 18 December 2023, physical PDF463-464.",
+      "source_units": [
+        "p7"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Different invocations of SYSTEM_CLOCK should use the same argument types and kinds so timing calculations use the same clock.",
+      "facets": [
+        "SYSTEM_CLOCK-consistent-argument-characteristics-recommended"
+      ],
+      "pending": {
+        "SYSTEM_CLOCK-consistent-argument-characteristics-recommended": "Recommendation only: future examples keep matching argument types and kinds; no fixture may fail a processor solely because this SHOULD recommendation is unmet."
+      },
+      "oracle": "Source registration only. Future fixtures initialize observed variables to non-default sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact kind, rank, shape, bounds, integer/logical values, interval membership, equality between source expressions, or named constants. Processor-dependent approximations, clock values, storage sizes, and image-dependent behavior are separated from exact obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for STOPPED_IMAGES, STORAGE_SIZE, SUM, SYSTEM_CLOCK, TAN, and TAND found no existing 16.9 fixture binding in this worktree; incidental helper or unrelated source mentions of STORAGE_SIZE, SUM, and SYSTEM_CLOCK are not rebound here. SYSTEM_CLOCK clock availability, exact count values, clock sharing, clock selection, progression, reset timing, and COUNT_RATE approximations are processor-dependent; portable plans assert only assignment effects, kind restrictions, and bounded disjunctions.",
+      "dependencies": "Registered dependencies: existing source-form, intrinsic type, declaration, expression, assignment, execution, array, and I/O foundations from clauses 6 through 13. Unregistered dependencies retained: clause 5 image and team model for image inquiries; clauses 16.3 and 16.4 for integer, bit, and numeric model terminology; ISO_FORTRAN_ENV named constants and TEAM_TYPE; sibling 16.9 intrinsics named by pending plans such as KIND, RANK, SHAPE, SIZE, HUGE, and SELECTED_INT_KIND; clauses 14, 15, 17, 18, and 19 for future module, procedure, IEEE, deleted-feature, and scope interactions."
+    },
+    {
+      "id": "S16.9.202-012",
+      "title": "SYSTEM_CLOCK large integer argument range recommendation",
+      "source": "S16.9.202, J3/24-007, 18 December 2023, physical PDF463-464.",
+      "source_units": [
+        "p8.integer-range-recommendation"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "References to SYSTEM_CLOCK are recommended to use integer arguments with decimal exponent range at least 18.",
+      "facets": [
+        "SYSTEM_CLOCK-integer-range-at-least-18-recommended"
+      ],
+      "pending": {
+        "SYSTEM_CLOCK-integer-range-at-least-18-recommended": "Recommendation only: future source controls may use selected_int_kind(18), whose representation method is required by 7.4.3.1 p2; no fixture may fail a processor for accepting smaller integer ranges."
+      },
+      "oracle": "Source registration only. Future fixtures initialize observed variables to non-default sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact kind, rank, shape, bounds, integer/logical values, interval membership, equality between source expressions, or named constants. Processor-dependent approximations, clock values, storage sizes, and image-dependent behavior are separated from exact obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for STOPPED_IMAGES, STORAGE_SIZE, SUM, SYSTEM_CLOCK, TAN, and TAND found no existing 16.9 fixture binding in this worktree; incidental helper or unrelated source mentions of STORAGE_SIZE, SUM, and SYSTEM_CLOCK are not rebound here. SYSTEM_CLOCK clock availability, exact count values, clock sharing, clock selection, progression, reset timing, and COUNT_RATE approximations are processor-dependent; portable plans assert only assignment effects, kind restrictions, and bounded disjunctions.",
+      "dependencies": "Registered dependencies: existing source-form, intrinsic type, declaration, expression, assignment, execution, array, and I/O foundations from clauses 6 through 13. Unregistered dependencies retained: clause 5 image and team model for image inquiries; clauses 16.3 and 16.4 for integer, bit, and numeric model terminology; ISO_FORTRAN_ENV named constants and TEAM_TYPE; sibling 16.9 intrinsics named by pending plans such as KIND, RANK, SHAPE, SIZE, HUGE, and SELECTED_INT_KIND; clauses 14, 15, 17, 18, and 19 for future module, procedure, IEEE, deleted-feature, and scope interactions."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "definition",
+      "rationale": "Description defines the intrinsic purpose."
+    },
+    {
+      "unit": "p2",
+      "disposition": "definition",
+      "rationale": "Classifies SYSTEM_CLOCK as a subroutine."
+    },
+    {
+      "unit": "p3",
+      "disposition": "structural",
+      "rationale": "Argument paragraph mixes restrictions, assignments, processor-dependent latitude, progression rules, and no-clock alternatives."
+    },
+    {
+      "unit": "p3.argument-restrictions",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.202-001"
+      ],
+      "rationale": "Scalar type, range, and INTENT(OUT) restrictions."
+    },
+    {
+      "unit": "p3.count-assignment-range",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.202-002"
+      ],
+      "rationale": "COUNT assignment, no-clock value, and clock-present range."
+    },
+    {
+      "unit": "p3.count-value-latitude",
+      "disposition": "permission",
+      "requirements": [
+        "S16.9.202-003"
+      ],
+      "rationale": "Processor-dependent COUNT value latitude."
+    },
+    {
+      "unit": "p3.count-progression-reset",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.202-004"
+      ],
+      "rationale": "COUNT increment and reset semantics."
+    },
+    {
+      "unit": "p3.count-rate-assignment",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.202-005"
+      ],
+      "rationale": "COUNT_RATE assignment and no-clock zero."
+    },
+    {
+      "unit": "p3.count-rate-approximation",
+      "disposition": "permission",
+      "requirements": [
+        "S16.9.202-006"
+      ],
+      "rationale": "Processor-dependent COUNT_RATE approximation latitude."
+    },
+    {
+      "unit": "p3.count-max-assignment",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.202-007"
+      ],
+      "rationale": "COUNT_MAX assignment and no-clock zero."
+    },
+    {
+      "unit": "p4",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.202-001"
+      ],
+      "rationale": "All integer arguments in a reference have the same kind type parameter."
+    },
+    {
+      "unit": "p5",
+      "disposition": "permission",
+      "requirements": [
+        "S16.9.202-008"
+      ],
+      "rationale": "Clock availability, multiplicity, and sharing are processor dependent."
+    },
+    {
+      "unit": "p6",
+      "disposition": "structural",
+      "rationale": "Clock-selection effect and documentation recommendation are split."
+    },
+    {
+      "unit": "p6.clock-selection",
+      "disposition": "permission",
+      "requirements": [
+        "S16.9.202-009"
+      ],
+      "rationale": "Processor-specific clock selection by argument characteristics."
+    },
+    {
+      "unit": "p6.documentation-recommendation",
+      "disposition": "recommendation",
+      "requirements": [
+        "S16.9.202-010"
+      ],
+      "rationale": "Nonbinding documentation recommendation."
+    },
+    {
+      "unit": "p7",
+      "disposition": "recommendation",
+      "requirements": [
+        "S16.9.202-011"
+      ],
+      "rationale": "Nonbinding recommendation for consistent argument types and kinds."
+    },
+    {
+      "unit": "p8",
+      "disposition": "structural",
+      "rationale": "Range recommendation split from explanatory rationale."
+    },
+    {
+      "unit": "p8.integer-range-recommendation",
+      "disposition": "recommendation",
+      "requirements": [
+        "S16.9.202-012"
+      ],
+      "rationale": "Nonbinding recommendation for integer range at least 18."
+    },
+    {
+      "unit": "p8.accuracy-reset-rationale",
+      "disposition": "informative",
+      "rationale": "Explains the recommendation benefits rather than imposing a processor obligation."
+    },
+    {
+      "unit": "p9",
+      "disposition": "informative",
+      "rationale": "Example paragraph is illustrative and depends on a hypothetical processor clock."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_16_9_202.md"
+  },
+  "review_fingerprint": "065dbf6040beaf78012f1704fd7e37d800c01c1dff5af352b5e12ee83134626e",
+  "review_rationale": "Source registration for 16.9.199-16.9.204: STOPPED_IMAGES, STORAGE_SIZE, SUM, SYSTEM_CLOCK, TAN and TAND (batch208). Every unit hash-verified by an independent reviewer across three rounds (16.9.201 typeset example drift verified visually); integer SUM is exact with distinct per-slice results, STORAGE_SIZE is planned through guarded ISO_FORTRAN_ENV relations, and STOPPED_IMAGES is out of scope. Source accounting only."
+}

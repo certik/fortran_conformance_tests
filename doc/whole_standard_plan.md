@@ -5784,6 +5784,11 @@ See `doc/source_audits/batch_199.json`.
 Forty-three units after two rounds, both findings boundary cases: a zero extent for SHAPE and a shift by the full bit size. SHIFT = BIT_SIZE(I) is explicitly admitted by the text and fully determined, so it is exactly where an implementation using a native shift instruction (which often masks the count) would go wrong.
 See `doc/source_audits/batch_206.json`.
 
+## Batch 208 — STOPPED_IMAGES through TAND
+
+Forty-one units after three rounds. The second-round finding is the one to remember: an expected result whose elements are all equal cannot see a permutation. SUM(A, DIM=1) = [-1,-1,-1] was arithmetically right and still useless for checking that the i-th result element comes from the i-th column.
+See `doc/source_audits/batch_208.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must

@@ -1,0 +1,257 @@
+{
+  "schema_version": 1,
+  "section": "16.9.200",
+  "review_state": "reviewed",
+  "subunits": {
+    "p3": [
+      "p3.argument-restrictions",
+      "p3.dynamic-entity-restrictions"
+    ],
+    "p4": [
+      "p4.integer-scalar",
+      "p4.kind-selection"
+    ],
+    "p5": [
+      "p5.dynamic-type-size",
+      "p5.iso-fortran-env-consistency",
+      "p5.absolute-size-latitude"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S16.9.200-001",
+      "title": "STORAGE_SIZE argument restrictions",
+      "source": "S16.9.200, J3/24-007, 18 December 2023, physical PDF462.",
+      "source_units": [
+        "p3.argument-restrictions",
+        "p3.dynamic-entity-restrictions"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "A shall be a data object of any type; polymorphic, unlimited polymorphic, deferred-parameter, allocatable, and pointer actual arguments have the stated defined, allocated, and associated status restrictions; KIND shall be a scalar integer constant expression.",
+      "facets": [
+        "STORAGE_SIZE-A-data-object-any-type",
+        "STORAGE_SIZE-polymorphic-not-undefined-pointer",
+        "STORAGE_SIZE-unlimited-or-deferred-not-unallocated-or-disassociated",
+        "STORAGE_SIZE-KIND-scalar-integer-constant"
+      ],
+      "pending": {
+        "STORAGE_SIZE-A-data-object-any-type": "Positive source control calls STORAGE_SIZE with integer, real, character, logical, and derived-type objects; source mutation uses a procedure designator and claims no diagnostic facet.",
+        "STORAGE_SIZE-polymorphic-not-undefined-pointer": "Positive source control uses a defined polymorphic pointer target before calling STORAGE_SIZE; undefined-pointer source mutations remain non-diagnostic source controls.",
+        "STORAGE_SIZE-unlimited-or-deferred-not-unallocated-or-disassociated": "Positive source control allocates an unlimited polymorphic allocatable and associates a polymorphic pointer before calling STORAGE_SIZE; unallocated and disassociated source mutations remain non-diagnostic source controls.",
+        "STORAGE_SIZE-KIND-scalar-integer-constant": "Positive source control uses KIND=selected_int_kind(18); 7.4.3.1 p2 requires such an integer representation method. Source mutation uses a variable KIND actual and claims no diagnostic facet."
+      },
+      "oracle": "Source registration only. Future fixtures initialize observed variables to non-default sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact kind, rank, shape, bounds, integer/logical values, interval membership, equality between source expressions, or named constants. Processor-dependent approximations, clock values, storage sizes, and image-dependent behavior are separated from exact obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for STOPPED_IMAGES, STORAGE_SIZE, SUM, SYSTEM_CLOCK, TAN, and TAND found no existing 16.9 fixture binding in this worktree; incidental helper or unrelated source mentions of STORAGE_SIZE, SUM, and SYSTEM_CLOCK are not rebound here. STORAGE_SIZE values for arbitrary entities are processor storage-model facts; portable plans use result characteristics, dynamic-type equality, and ISO_FORTRAN_ENV named-constant consistency rather than absolute storage sizes.",
+      "dependencies": "Registered dependencies: existing source-form, intrinsic type, declaration, expression, assignment, execution, array, and I/O foundations from clauses 6 through 13. Unregistered dependencies retained: clause 5 image and team model for image inquiries; clauses 16.3 and 16.4 for integer, bit, and numeric model terminology; ISO_FORTRAN_ENV named constants and TEAM_TYPE; sibling 16.9 intrinsics named by pending plans such as KIND, RANK, SHAPE, SIZE, HUGE, and SELECTED_INT_KIND; clauses 14, 15, 17, 18, and 19 for future module, procedure, IEEE, deleted-feature, and scope interactions."
+    },
+    {
+      "id": "S16.9.200-002",
+      "title": "STORAGE_SIZE result is an integer scalar with selected kind",
+      "source": "S16.9.200, J3/24-007, 18 December 2023, physical PDF462.",
+      "source_units": [
+        "p4.integer-scalar",
+        "p4.kind-selection"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The result is an integer scalar; KIND present selects the kind type parameter and absent KIND uses default integer.",
+      "facets": [
+        "STORAGE_SIZE-result-integer-scalar",
+        "STORAGE_SIZE-result-default-kind",
+        "STORAGE_SIZE-result-KIND-selected"
+      ],
+      "pending": {
+        "STORAGE_SIZE-result-integer-scalar": "Assign RANK([STORAGE_SIZE(1)]) to a sentinel initialized to -777 and assert exact value 1 for the one-element wrapper, proving STORAGE_SIZE(1) is scalar; mutate to an array expression.",
+        "STORAGE_SIZE-result-default-kind": "Assign KIND(STORAGE_SIZE(1)) to a sentinel initialized to -777 and assert KIND(0); mutate by adding a selected KIND argument.",
+        "STORAGE_SIZE-result-KIND-selected": "Assign KIND(STORAGE_SIZE(1,KIND=selected_int_kind(18))) to a sentinel initialized to -777 and assert selected_int_kind(18); mutate the KIND actual to default integer."
+      },
+      "oracle": "Source registration only. Future fixtures initialize observed variables to non-default sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact kind, rank, shape, bounds, integer/logical values, interval membership, equality between source expressions, or named constants. Processor-dependent approximations, clock values, storage sizes, and image-dependent behavior are separated from exact obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for STOPPED_IMAGES, STORAGE_SIZE, SUM, SYSTEM_CLOCK, TAN, and TAND found no existing 16.9 fixture binding in this worktree; incidental helper or unrelated source mentions of STORAGE_SIZE, SUM, and SYSTEM_CLOCK are not rebound here. STORAGE_SIZE values for arbitrary entities are processor storage-model facts; portable plans use result characteristics, dynamic-type equality, and ISO_FORTRAN_ENV named-constant consistency rather than absolute storage sizes.",
+      "dependencies": "Registered dependencies: existing source-form, intrinsic type, declaration, expression, assignment, execution, array, and I/O foundations from clauses 6 through 13. Unregistered dependencies retained: clause 5 image and team model for image inquiries; clauses 16.3 and 16.4 for integer, bit, and numeric model terminology; ISO_FORTRAN_ENV named constants and TEAM_TYPE; sibling 16.9 intrinsics named by pending plans such as KIND, RANK, SHAPE, SIZE, HUGE, and SELECTED_INT_KIND; clauses 14, 15, 17, 18, and 19 for future module, procedure, IEEE, deleted-feature, and scope interactions."
+    },
+    {
+      "id": "S16.9.200-003",
+      "title": "STORAGE_SIZE uses dynamic type and type parameters",
+      "source": "S16.9.200, J3/24-007, 18 December 2023, physical PDF462.",
+      "source_units": [
+        "p5.dynamic-type-size"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The result is the storage size in bits for an array element having the dynamic type and type parameters of A.",
+      "facets": [
+        "STORAGE_SIZE-dynamic-type-used",
+        "STORAGE_SIZE-type-parameters-used",
+        "STORAGE_SIZE-array-element-size",
+        "STORAGE_SIZE-size-expressed-in-bits"
+      ],
+      "pending": {
+        "STORAGE_SIZE-dynamic-type-used": "Allocate a CLASS(parent) object with extension dynamic type, initialize a sentinel to -777, and assert STORAGE_SIZE(polymorphic)==STORAGE_SIZE(extension_probe); companion allocation with parent dynamic type asserts equality to parent_probe.",
+        "STORAGE_SIZE-type-parameters-used": "Use default character variables with lengths 1 and 5; assert the length-five case through the CHARACTER_STORAGE_SIZE relation recorded under ISO_FORTRAN_ENV consistency and keep a length-one companion for distinct type-parameter coverage.",
+        "STORAGE_SIZE-array-element-size": "Use a default-integer array A=[11, -22, 33], initialize a sentinel to -777, and assert STORAGE_SIZE(A)==STORAGE_SIZE(A(1)); mutate the expectation to SIZE(A)*STORAGE_SIZE(A(1)) so array-versus-element semantics are load-bearing.",
+        "STORAGE_SIZE-size-expressed-in-bits": "Use the guarded INT32, REAL32, and default-character named-constant plans in this catalogue; each compares STORAGE_SIZE to a bit count specified by ISO_FORTRAN_ENV rather than to bytes or storage-unit counts."
+      },
+      "oracle": "Source registration only. Future fixtures initialize observed variables to non-default sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact kind, rank, shape, bounds, integer/logical values, interval membership, equality between source expressions, or named constants. Processor-dependent approximations, clock values, storage sizes, and image-dependent behavior are separated from exact obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for STOPPED_IMAGES, STORAGE_SIZE, SUM, SYSTEM_CLOCK, TAN, and TAND found no existing 16.9 fixture binding in this worktree; incidental helper or unrelated source mentions of STORAGE_SIZE, SUM, and SYSTEM_CLOCK are not rebound here. STORAGE_SIZE values for arbitrary entities are processor storage-model facts; portable plans use result characteristics, dynamic-type equality, and ISO_FORTRAN_ENV named-constant consistency rather than absolute storage sizes.",
+      "dependencies": "Registered dependencies: existing source-form, intrinsic type, declaration, expression, assignment, execution, array, and I/O foundations from clauses 6 through 13. Unregistered dependencies retained: clause 5 image and team model for image inquiries; clauses 16.3 and 16.4 for integer, bit, and numeric model terminology; ISO_FORTRAN_ENV named constants and TEAM_TYPE; sibling 16.9 intrinsics named by pending plans such as KIND, RANK, SHAPE, SIZE, HUGE, and SELECTED_INT_KIND; clauses 14, 15, 17, 18, and 19 for future module, procedure, IEEE, deleted-feature, and scope interactions."
+    },
+    {
+      "id": "S16.9.200-004",
+      "title": "STORAGE_SIZE consistency with ISO_FORTRAN_ENV named constants",
+      "source": "S16.9.200, J3/24-007, 18 December 2023, physical PDF462.",
+      "source_units": [
+        "p5.iso-fortran-env-consistency"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For types and type parameters covered by storage association or ISO_FORTRAN_ENV sized kind constants, STORAGE_SIZE is consistent with the named bit-size constants from ISO_FORTRAN_ENV.",
+      "facets": [
+        "STORAGE_SIZE-int8-storage-size",
+        "STORAGE_SIZE-int16-storage-size",
+        "STORAGE_SIZE-int32-storage-size",
+        "STORAGE_SIZE-int64-storage-size",
+        "STORAGE_SIZE-real32-storage-size",
+        "STORAGE_SIZE-real64-storage-size",
+        "STORAGE_SIZE-default-character-length-storage-units",
+        "STORAGE_SIZE-KIND-result-kind"
+      ],
+      "pending": {
+        "STORAGE_SIZE-int8-storage-size": "Guarded branch: INT8 > 0. Branch body declares integer(INT8) :: x = 0_INT8, initializes an integer sentinel to -777, and asserts STORAGE_SIZE(x)==8, citing 16.10.2.14 for INT8 and 16.9.200 p5 for bit size.",
+        "STORAGE_SIZE-int16-storage-size": "Guarded branch: INT16 > 0. Branch body declares integer(INT16) :: x = 0_INT16, initializes an integer sentinel to -777, and asserts STORAGE_SIZE(x)==16, citing 16.10.2.14 for INT16 and 16.9.200 p5 for bit size.",
+        "STORAGE_SIZE-int32-storage-size": "Guarded branch: INT32 > 0. Branch body declares integer(INT32) :: x = 0_INT32, initializes an integer sentinel to -777, and asserts STORAGE_SIZE(x)==32, citing 16.10.2.14 for INT32 and 16.9.200 p5 for bit size.",
+        "STORAGE_SIZE-int64-storage-size": "Guarded branch: INT64 > 0. Branch body declares integer(INT64) :: x = 0_INT64, initializes an integer sentinel to -777, and asserts STORAGE_SIZE(x)==64, citing 16.10.2.14 for INT64 and 16.9.200 p5 for bit size.",
+        "STORAGE_SIZE-real32-storage-size": "Guarded branch: REAL32 > 0. Branch body declares real(REAL32) :: x = 0.0_REAL32, initializes an integer sentinel to -777, and asserts STORAGE_SIZE(x)==32, citing 16.10.2.27 for REAL32 and 16.9.200 p5 for bit size.",
+        "STORAGE_SIZE-real64-storage-size": "Guarded branch: REAL64 > 0. Branch body declares real(REAL64) :: x = 0.0_REAL64, initializes an integer sentinel to -777, and asserts STORAGE_SIZE(x)==64, citing 16.10.2.27 for REAL64 and 16.9.200 p5 for bit size.",
+        "STORAGE_SIZE-default-character-length-storage-units": "Use character(len=5) default kind :: ch = \"abcde\"; 19.5.3.2 p2 item (3) says such a scalar occupies len contiguous character storage units, 16.10.2.5 defines CHARACTER_STORAGE_SIZE as bits per character storage unit, and 16.9.200 p5 requires consistency for storage-association cases, so assert STORAGE_SIZE(ch)==5*CHARACTER_STORAGE_SIZE.",
+        "STORAGE_SIZE-KIND-result-kind": "Call STORAGE_SIZE(0_INT32,KIND=selected_int_kind(18)) inside the INT32 guarded branch, assign KIND(result) to a sentinel initialized to -777, and assert selected_int_kind(18); companion without KIND asserts KIND(STORAGE_SIZE(0_INT32))==KIND(0)."
+      },
+      "oracle": "Source registration only. Future fixtures initialize observed variables to non-default sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact kind, rank, shape, bounds, integer/logical values, interval membership, equality between source expressions, or named constants. Processor-dependent approximations, clock values, storage sizes, and image-dependent behavior are separated from exact obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for STOPPED_IMAGES, STORAGE_SIZE, SUM, SYSTEM_CLOCK, TAN, and TAND found no existing 16.9 fixture binding in this worktree; incidental helper or unrelated source mentions of STORAGE_SIZE, SUM, and SYSTEM_CLOCK are not rebound here. STORAGE_SIZE values for arbitrary entities are processor storage-model facts; portable plans use result characteristics, dynamic-type equality, and ISO_FORTRAN_ENV named-constant consistency rather than absolute storage sizes.",
+      "dependencies": "Registered dependencies: existing source-form, intrinsic type, declaration, expression, assignment, execution, array, and I/O foundations from clauses 6 through 13. Unregistered dependencies retained: clause 5 image and team model for image inquiries; clauses 16.3 and 16.4 for integer, bit, and numeric model terminology; ISO_FORTRAN_ENV named constants and TEAM_TYPE; sibling 16.9 intrinsics named by pending plans such as KIND, RANK, SHAPE, SIZE, HUGE, and SELECTED_INT_KIND; clauses 14, 15, 17, 18, and 19 for future module, procedure, IEEE, deleted-feature, and scope interactions."
+    },
+    {
+      "id": "S16.9.200-005",
+      "title": "STORAGE_SIZE absolute values are processor storage-model facts",
+      "source": "S16.9.200, J3/24-007, 18 December 2023, physical PDF462.",
+      "source_units": [
+        "p5.absolute-size-latitude"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The standard specifies the returned quantity but not a portable absolute bit count for arbitrary dynamic types, padding, alignment, or expression storage models.",
+      "facets": [
+        "STORAGE_SIZE-arbitrary-absolute-size-no-portable-oracle"
+      ],
+      "pending": {
+        "STORAGE_SIZE-arbitrary-absolute-size-no-portable-oracle": "No portable oracle can require an absolute bit count for arbitrary derived, polymorphic, padded, aligned, or processor storage-model cases; future fixtures use named-constant consistency or same-dynamic-type equality instead."
+      },
+      "oracle": "Source registration only. Future fixtures initialize observed variables to non-default sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact kind, rank, shape, bounds, integer/logical values, interval membership, equality between source expressions, or named constants. Processor-dependent approximations, clock values, storage sizes, and image-dependent behavior are separated from exact obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for STOPPED_IMAGES, STORAGE_SIZE, SUM, SYSTEM_CLOCK, TAN, and TAND found no existing 16.9 fixture binding in this worktree; incidental helper or unrelated source mentions of STORAGE_SIZE, SUM, and SYSTEM_CLOCK are not rebound here. STORAGE_SIZE values for arbitrary entities are processor storage-model facts; portable plans use result characteristics, dynamic-type equality, and ISO_FORTRAN_ENV named-constant consistency rather than absolute storage sizes.",
+      "dependencies": "Registered dependencies: existing source-form, intrinsic type, declaration, expression, assignment, execution, array, and I/O foundations from clauses 6 through 13. Unregistered dependencies retained: clause 5 image and team model for image inquiries; clauses 16.3 and 16.4 for integer, bit, and numeric model terminology; ISO_FORTRAN_ENV named constants and TEAM_TYPE; sibling 16.9 intrinsics named by pending plans such as KIND, RANK, SHAPE, SIZE, HUGE, and SELECTED_INT_KIND; clauses 14, 15, 17, 18, and 19 for future module, procedure, IEEE, deleted-feature, and scope interactions."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "definition",
+      "rationale": "Description defines the intrinsic purpose."
+    },
+    {
+      "unit": "p2",
+      "disposition": "definition",
+      "rationale": "Classifies STORAGE_SIZE as inquiry."
+    },
+    {
+      "unit": "p3",
+      "disposition": "structural",
+      "rationale": "Argument restrictions split ordinary data-object restrictions from dynamic entity status restrictions."
+    },
+    {
+      "unit": "p3.argument-restrictions",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.200-001"
+      ],
+      "rationale": "A and KIND argument restrictions."
+    },
+    {
+      "unit": "p3.dynamic-entity-restrictions",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.200-001"
+      ],
+      "rationale": "Polymorphic, allocatable, and pointer status restrictions."
+    },
+    {
+      "unit": "p4",
+      "disposition": "structural",
+      "rationale": "Result characteristics split scalar integer status from kind selection."
+    },
+    {
+      "unit": "p4.integer-scalar",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.200-002"
+      ],
+      "rationale": "Integer scalar result requirement."
+    },
+    {
+      "unit": "p4.kind-selection",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.200-002"
+      ],
+      "rationale": "Default or KIND-selected result kind."
+    },
+    {
+      "unit": "p5",
+      "disposition": "structural",
+      "rationale": "Result value split dynamic-type size, named-constant consistency, and arbitrary absolute storage-size expectations."
+    },
+    {
+      "unit": "p5.dynamic-type-size",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.200-003"
+      ],
+      "rationale": "Dynamic type, type parameters, and array-element size relation."
+    },
+    {
+      "unit": "p5.iso-fortran-env-consistency",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.200-004"
+      ],
+      "rationale": "Sized integer/real kind constants, character storage units, and KIND result relation."
+    },
+    {
+      "unit": "p5.absolute-size-latitude",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.200-005"
+      ],
+      "rationale": "Normative storage-size effect for arbitrary entities has no cross-processor absolute-value oracle."
+    },
+    {
+      "unit": "note1",
+      "disposition": "informative",
+      "rationale": "NOTE is nonnormative."
+    },
+    {
+      "unit": "note2",
+      "disposition": "informative",
+      "rationale": "NOTE is nonnormative."
+    },
+    {
+      "unit": "p6",
+      "disposition": "informative",
+      "rationale": "Example is illustrative; its numeric named-constant relation is planned from p5, not from the example alone."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_16_9_200.md"
+  },
+  "review_fingerprint": "ca8df77ea9af81b2413b667e1b686e5e0f6ef7c1fcb3c0cd26b63a1184adc3a7",
+  "review_rationale": "Source registration for 16.9.199-16.9.204: STOPPED_IMAGES, STORAGE_SIZE, SUM, SYSTEM_CLOCK, TAN and TAND (batch208). Every unit hash-verified by an independent reviewer across three rounds (16.9.201 typeset example drift verified visually); integer SUM is exact with distinct per-slice results, STORAGE_SIZE is planned through guarded ISO_FORTRAN_ENV relations, and STOPPED_IMAGES is out of scope. Source accounting only."
+}
