@@ -5939,6 +5939,11 @@ See `doc/source_audits/batch_236.json`.
 Twenty-nine units after two rounds. A header specification written as 'at least these members, in any order' is two statements: the named members must exist (checkable with offsetof and sizeof), and anything else about the layout is the processor's choice.
 See `doc/source_audits/batch_243.json`.
 
+## Batch 244 — Functions declared in ISO_Fortran_binding.h (18.5.5-18.5.5.9)
+
+Forty-four units after three rounds. Most named CFI errors are portably reachable — allocating an already-allocated descriptor, deallocating a null one — and each must leave the descriptor untouched. The one that is not: an invalid rank, because the rank type need not be signed nor hold CFI_MAX_RANK+1.
+See `doc/source_audits/batch_244.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must

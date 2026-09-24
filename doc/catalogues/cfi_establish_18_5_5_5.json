@@ -1,0 +1,293 @@
+{
+  "schema_version": 1,
+  "section": "18.5.5.5",
+  "review_state": "reviewed",
+  "subunits": {
+    "p2": [
+      "p2.dv",
+      "p2.base_addr",
+      "p2.attribute",
+      "p2.type",
+      "p2.elem_len",
+      "p2.rank",
+      "p2.extents"
+    ],
+    "p3": [
+      "p3.establish-objects",
+      "p3.pointer-lower-bound",
+      "p3.null-base-states",
+      "p3.fortran-object-consistency",
+      "p3.remaining-properties",
+      "p3.error-preserve"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S18.5.5.5-001",
+      "title": "CFI_establish has the ISO_Fortran_binding.h descriptor-establishment interface",
+      "source": "S18.5.5.5, J3/24-007, 18 December 2023, physical PDF538-539.",
+      "source_units": [
+        "p1"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "CFI_establish has the interface int CFI_establish(CFI_cdesc_t *dv, void *base_addr, CFI_attribute_t attribute, CFI_type_t type, size_t elem_len, CFI_rank_t rank, const CFI_index_t extents[]) and establishes a C descriptor.",
+      "facets": [
+        "CFI_establish-interface"
+      ],
+      "pending": {
+        "CFI_establish-interface": "C companion includes ISO_Fortran_binding.h, declares CFI_CDESC_T storage, and compiles ordinary CFI_establish calls for null and nonnull base_addr cases."
+      },
+      "oracle": "Source registration only. Future mixed Fortran/C fixtures compile a C companion with the processor ISO_Fortran_binding.h, link it with a Fortran driver through the existing C interoperability harness, and assert only portable descriptor members, pointer equality or address differences computed from descriptor storage strides, CFI_SUCCESS equal to zero, named CFI error macros by identity rather than numeric value, and exact integer/logical status results. Numeric values of error macros other than CFI_SUCCESS, C object padding, alignment choices beyond successful creation, allocation addresses, and selection among several detected errors remain processor latitude.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Caller shall-restrictions are source-control restrictions and are not promoted to diagnostic facets. Named-error plans use only isolated conditions mapped by 18.5.4 Table 18.5; conditions without an isolated named code, or calls with multiple simultaneous errors, remain no-oracle for the specific returned code.",
+      "dependencies": "Registered dependencies: existing source-form, type, kind, declaration, expression, assignment, execution, allocation, pointer, array, derived-type, interoperability, and Clause 16 intrinsic-module foundations where already catalogued. Unregistered dependencies retained: sibling Clause 18 descriptor object, descriptor member, ISO_Fortran_binding.h macro, type-code, attribute-code, and error-code sections, C companion compilation support, and C standard alignment, offsetof, pointer, and object-representation terminology reached by future fixtures."
+    },
+    {
+      "id": "S18.5.5.5-002",
+      "title": "CFI_establish actual arguments must satisfy descriptor storage, base, attribute, type, length, rank, and extent restrictions",
+      "source": "S18.5.5.5, J3/24-007, 18 December 2023, physical PDF538-539.",
+      "source_units": [
+        "p2.dv",
+        "p2.base_addr",
+        "p2.attribute",
+        "p2.type",
+        "p2.elem_len",
+        "p2.rank",
+        "p2.extents"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "The descriptor storage, base address, attribute code, type code, element length, rank, and extents arguments shall satisfy the stated validity, aliasing, alignment, allocatable, character-length, rank-range, and nonnegative-extent requirements.",
+      "facets": [
+        "CFI_establish-dv-storage-and-aliasing",
+        "CFI_establish-base-address-null-or-aligned-storage",
+        "CFI_establish-attribute-code-validity",
+        "CFI_establish-type-code-validity",
+        "CFI_establish-elem-len-validity",
+        "CFI_establish-rank-range",
+        "CFI_establish-extents-validity"
+      ],
+      "pending": {
+        "CFI_establish-dv-storage-and-aliasing": "Positive C companion declares CFI_CDESC_T(2) local storage, casts its address to CFI_cdesc_t *, and uses it only outside any active Fortran descriptor argument association.",
+        "CFI_establish-base-address-null-or-aligned-storage": "Use an int array object for the nonnull base_addr positive control and NULL for the allocatable positive control; misaligned storage remains a nonconforming source-control negative.",
+        "CFI_establish-attribute-code-validity": "Call CFI_establish separately with CFI_attribute_other over int storage, CFI_attribute_pointer over int storage, and CFI_attribute_allocatable with NULL base_addr; assert CFI_SUCCESS in all three.",
+        "CFI_establish-type-code-validity": "Use CFI_type_int for int storage and CFI_type_char for character storage; invalid type-code probes are nonconforming and compare only named CFI_INVALID_TYPE under a diagnostic profile.",
+        "CFI_establish-elem-len-validity": "For CFI_type_char pass elem_len 5 and for CFI_type_struct pass sizeof(struct pair); noncharacter CFI_type_int companion passes elem_len 0 and does not assert elem_len effects from that ignored argument.",
+        "CFI_establish-rank-range": "Use ranks 0, 1, and 2 within CFI_MAX_RANK; rank CFI_MAX_RANK plus one is a nonconforming diagnostic-profile probe comparing only CFI_INVALID_RANK after detection.",
+        "CFI_establish-extents-validity": "For nonnull rank-two base pass extents {2,3} and assert descriptor extents 2 and 3; null-base and rank-zero companions pass NULL extents and assert CFI_SUCCESS."
+      },
+      "oracle": "Source registration only. Future mixed Fortran/C fixtures compile a C companion with the processor ISO_Fortran_binding.h, link it with a Fortran driver through the existing C interoperability harness, and assert only portable descriptor members, pointer equality or address differences computed from descriptor storage strides, CFI_SUCCESS equal to zero, named CFI error macros by identity rather than numeric value, and exact integer/logical status results. Numeric values of error macros other than CFI_SUCCESS, C object padding, alignment choices beyond successful creation, allocation addresses, and selection among several detected errors remain processor latitude.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Caller shall-restrictions are source-control restrictions and are not promoted to diagnostic facets. Named-error plans use only isolated conditions mapped by 18.5.4 Table 18.5; conditions without an isolated named code, or calls with multiple simultaneous errors, remain no-oracle for the specific returned code.",
+      "dependencies": "Registered dependencies: existing source-form, type, kind, declaration, expression, assignment, execution, allocation, pointer, array, derived-type, interoperability, and Clause 16 intrinsic-module foundations where already catalogued. Unregistered dependencies retained: sibling Clause 18 descriptor object, descriptor member, ISO_Fortran_binding.h macro, type-code, attribute-code, and error-code sections, C companion compilation support, and C standard alignment, offsetof, pointer, and object-representation terminology reached by future fixtures."
+    },
+    {
+      "id": "S18.5.5.5-003",
+      "title": "Successful CFI_establish creates the descriptor state described by its arguments",
+      "source": "S18.5.5.5, J3/24-007, 18 December 2023, physical PDF538-539.",
+      "source_units": [
+        "p3.establish-objects",
+        "p3.pointer-lower-bound",
+        "p3.null-base-states",
+        "p3.fortran-object-consistency",
+        "p3.remaining-properties"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Successful CFI_establish updates dv to describe a nonallocatable nonpointer object of known shape, an unallocated allocatable object, or a data pointer; pointer lower bounds are zero for nonnull base_addr, null base_addr yields the stated unallocated, disassociated, or no-object descriptor states, Fortran-object arguments must be type-consistent, and other properties come from the remaining arguments.",
+      "facets": [
+        "CFI_establish-known-shape-or-allocatable-or-pointer",
+        "CFI_establish-pointer-lower-bounds-zero",
+        "CFI_establish-null-base-descriptor-states",
+        "CFI_establish-fortran-object-type-consistency",
+        "CFI_establish-properties-from-arguments"
+      ],
+      "pending": {
+        "CFI_establish-known-shape-or-allocatable-or-pointer": "C companion establishes CFI_attribute_other over int storage with extents {2,3}, CFI_attribute_allocatable with NULL base, and CFI_attribute_pointer over int storage; assert CFI_SUCCESS and the descriptor rank, type, attribute, base_addr, and extents expected for each.",
+        "CFI_establish-pointer-lower-bounds-zero": "Pointer companion establishes rank-one int storage with extent 4 and attribute CFI_attribute_pointer, then asserts dim[0].lower_bound equals 0 and CFI_address subscript {0} points to the first element.",
+        "CFI_establish-null-base-descriptor-states": "Allocatable NULL-base companion asserts base_addr remains NULL and attribute is CFI_attribute_allocatable; pointer NULL-base companion asserts base_addr NULL and attribute CFI_attribute_pointer; other NULL-base companion is used only as result storage for CFI_section.",
+        "CFI_establish-fortran-object-type-consistency": "Mixed Fortran/C companion passes a Fortran integer(c_int) array descriptor to C only after a BIND(C) interface declares matching integer(c_int) type; a mismatched CFI_type_double mutation is a source-control negative without required diagnosis.",
+        "CFI_establish-properties-from-arguments": "Rank-two int companion passes type CFI_type_int, attribute CFI_attribute_other, rank 2, and extents {2,3}; after CFI_SUCCESS assert descriptor members match those argument-controlled properties."
+      },
+      "oracle": "Source registration only. Future mixed Fortran/C fixtures compile a C companion with the processor ISO_Fortran_binding.h, link it with a Fortran driver through the existing C interoperability harness, and assert only portable descriptor members, pointer equality or address differences computed from descriptor storage strides, CFI_SUCCESS equal to zero, named CFI error macros by identity rather than numeric value, and exact integer/logical status results. Numeric values of error macros other than CFI_SUCCESS, C object padding, alignment choices beyond successful creation, allocation addresses, and selection among several detected errors remain processor latitude.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Caller shall-restrictions are source-control restrictions and are not promoted to diagnostic facets. Named-error plans use only isolated conditions mapped by 18.5.4 Table 18.5; conditions without an isolated named code, or calls with multiple simultaneous errors, remain no-oracle for the specific returned code.",
+      "dependencies": "Registered dependencies: existing source-form, type, kind, declaration, expression, assignment, execution, allocation, pointer, array, derived-type, interoperability, and Clause 16 intrinsic-module foundations where already catalogued. Unregistered dependencies retained: sibling Clause 18 descriptor object, descriptor member, ISO_Fortran_binding.h macro, type-code, attribute-code, and error-code sections, C companion compilation support, and C standard alignment, offsetof, pointer, and object-representation terminology reached by future fixtures."
+    },
+    {
+      "id": "S18.5.5.5-004",
+      "title": "Detected CFI_establish errors preserve the descriptor object",
+      "source": "S18.5.5.5, J3/24-007, 18 December 2023, physical PDF538-539.",
+      "source_units": [
+        "p3.error-preserve"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "After a detected CFI_establish error, the object at dv is not modified.",
+      "facets": [
+        "CFI_establish-detected-error-preserves-descriptor"
+      ],
+      "pending": {
+        "CFI_establish-detected-error-preserves-descriptor": "Invalid-rank preservation has no portable oracle: 18.5.4 p4 defines CFI_rank_t as a standard integer type capable of representing the largest supported rank, not a signed integer type, so rank -1 cannot be portably supplied; rank CFI_MAX_RANK + 1 can be unrepresentable in CFI_rank_t and 18.5.5.5 p2 also requires dv to address storage large enough for the specified rank. A future processor-profile test may snapshot descriptor storage and assert CFI_INVALID_RANK plus unchanged members only after the profile proves a representable isolated invalid rank and adequate descriptor storage."
+      },
+      "oracle": "Source registration only. Future mixed Fortran/C fixtures compile a C companion with the processor ISO_Fortran_binding.h, link it with a Fortran driver through the existing C interoperability harness, and assert only portable descriptor members, pointer equality or address differences computed from descriptor storage strides, CFI_SUCCESS equal to zero, named CFI error macros by identity rather than numeric value, and exact integer/logical status results. Numeric values of error macros other than CFI_SUCCESS, C object padding, alignment choices beyond successful creation, allocation addresses, and selection among several detected errors remain processor latitude.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Caller shall-restrictions are source-control restrictions and are not promoted to diagnostic facets. Named-error plans use only isolated conditions mapped by 18.5.4 Table 18.5; conditions without an isolated named code, or calls with multiple simultaneous errors, remain no-oracle for the specific returned code.",
+      "dependencies": "Registered dependencies: existing source-form, type, kind, declaration, expression, assignment, execution, allocation, pointer, array, derived-type, interoperability, and Clause 16 intrinsic-module foundations where already catalogued. Unregistered dependencies retained: sibling Clause 18 descriptor object, descriptor member, ISO_Fortran_binding.h macro, type-code, attribute-code, and error-code sections, C companion compilation support, and C standard alignment, offsetof, pointer, and object-representation terminology reached by future fixtures."
+    },
+    {
+      "id": "S18.5.5.5-005",
+      "title": "CFI_establish returns an error indicator",
+      "source": "S18.5.5.5, J3/24-007, 18 December 2023, physical PDF538-539.",
+      "source_units": [
+        "p4"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The result of CFI_establish is an error indicator.",
+      "facets": [
+        "CFI_establish-result-error-indicator"
+      ],
+      "pending": {
+        "CFI_establish-result-error-indicator": "Valid CFI_establish companions assert the int result equals CFI_SUCCESS and CFI_SUCCESS equals zero. The invalid-rank result case has no portable oracle because 18.5.4 p4 does not require CFI_rank_t to be signed for rank -1, and rank CFI_MAX_RANK + 1 can be unrepresentable and would also require descriptor storage large enough for that specified rank under 18.5.5.5 p2."
+      },
+      "oracle": "Source registration only. Future mixed Fortran/C fixtures compile a C companion with the processor ISO_Fortran_binding.h, link it with a Fortran driver through the existing C interoperability harness, and assert only portable descriptor members, pointer equality or address differences computed from descriptor storage strides, CFI_SUCCESS equal to zero, named CFI error macros by identity rather than numeric value, and exact integer/logical status results. Numeric values of error macros other than CFI_SUCCESS, C object padding, alignment choices beyond successful creation, allocation addresses, and selection among several detected errors remain processor latitude.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Caller shall-restrictions are source-control restrictions and are not promoted to diagnostic facets. Named-error plans use only isolated conditions mapped by 18.5.4 Table 18.5; conditions without an isolated named code, or calls with multiple simultaneous errors, remain no-oracle for the specific returned code.",
+      "dependencies": "Registered dependencies: existing source-form, type, kind, declaration, expression, assignment, execution, allocation, pointer, array, derived-type, interoperability, and Clause 16 intrinsic-module foundations where already catalogued. Unregistered dependencies retained: sibling Clause 18 descriptor object, descriptor member, ISO_Fortran_binding.h macro, type-code, attribute-code, and error-code sections, C companion compilation support, and C standard alignment, offsetof, pointer, and object-representation terminology reached by future fixtures."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.5.5.5-001"
+      ]
+    },
+    {
+      "unit": "p2",
+      "disposition": "structural",
+      "rationale": "Formal-parameter restrictions are split by argument."
+    },
+    {
+      "unit": "p2.dv",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.5.5.5-002"
+      ]
+    },
+    {
+      "unit": "p2.base_addr",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.5.5.5-002"
+      ]
+    },
+    {
+      "unit": "p2.attribute",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.5.5.5-002"
+      ]
+    },
+    {
+      "unit": "p2.type",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.5.5.5-002"
+      ]
+    },
+    {
+      "unit": "p2.elem_len",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.5.5.5-002"
+      ]
+    },
+    {
+      "unit": "p2.rank",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.5.5.5-002"
+      ]
+    },
+    {
+      "unit": "p2.extents",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.5.5.5-002"
+      ]
+    },
+    {
+      "unit": "p3",
+      "disposition": "structural",
+      "rationale": "Descriptor establishment effects, consistency restrictions, and detected-error preservation are split."
+    },
+    {
+      "unit": "p3.establish-objects",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.5.5.5-003"
+      ]
+    },
+    {
+      "unit": "p3.pointer-lower-bound",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.5.5.5-003"
+      ]
+    },
+    {
+      "unit": "p3.null-base-states",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.5.5.5-003"
+      ]
+    },
+    {
+      "unit": "p3.fortran-object-consistency",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.5.5.5-003"
+      ]
+    },
+    {
+      "unit": "p3.remaining-properties",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.5.5.5-003"
+      ]
+    },
+    {
+      "unit": "p3.error-preserve",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.5.5.5-004"
+      ]
+    },
+    {
+      "unit": "p4",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.5.5.5-005"
+      ]
+    },
+    {
+      "unit": "note1",
+      "disposition": "informative",
+      "rationale": "NOTE explains common initialization use and is not normative."
+    },
+    {
+      "unit": "note2",
+      "disposition": "informative",
+      "rationale": "NOTE explains result-descriptor use and is not normative."
+    },
+    {
+      "unit": "p5",
+      "disposition": "informative",
+      "rationale": "Examples of CFI_establish use; examples are informative."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_18_5_5_5.md"
+  },
+  "review_fingerprint": "d6dbfb76b966e360ca8a640f84ad7fb9a0874a6dd1ae8406a49a92758c6b46aa",
+  "review_rationale": "Source registration for 18.5.5 and 18.5.5.1-18.5.5.9, the functions declared in ISO_Fortran_binding.h: CFI_address, CFI_allocate, CFI_deallocate, CFI_establish, CFI_is_contiguous, CFI_section, CFI_select_part and CFI_setpointer (batch244). Every unit hash-verified by an independent reviewer across three rounds; success paths and isolated named-error conditions are planned as C companion programs with exact results. Source accounting only."
+}

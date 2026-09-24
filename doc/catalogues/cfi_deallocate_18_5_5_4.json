@@ -1,0 +1,169 @@
+{
+  "schema_version": 1,
+  "section": "18.5.5.4",
+  "review_state": "reviewed",
+  "subunits": {
+    "p3": [
+      "p3.success",
+      "p3.error-preserve"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S18.5.5.4-001",
+      "title": "CFI_deallocate has the ISO_Fortran_binding.h deallocation interface",
+      "source": "S18.5.5.4, J3/24-007, 18 December 2023, physical PDF537.",
+      "source_units": [
+        "p1"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "CFI_deallocate has the interface int CFI_deallocate(CFI_cdesc_t *dv) and deallocates memory for a descriptor-described object.",
+      "facets": [
+        "CFI_deallocate-interface"
+      ],
+      "pending": {
+        "CFI_deallocate-interface": "C companion includes ISO_Fortran_binding.h, declares a CFI_cdesc_t pointer, and compiles an ordinary CFI_deallocate call that returns int."
+      },
+      "oracle": "Source registration only. Future mixed Fortran/C fixtures compile a C companion with the processor ISO_Fortran_binding.h, link it with a Fortran driver through the existing C interoperability harness, and assert only portable descriptor members, pointer equality or address differences computed from descriptor storage strides, CFI_SUCCESS equal to zero, named CFI error macros by identity rather than numeric value, and exact integer/logical status results. Numeric values of error macros other than CFI_SUCCESS, C object padding, alignment choices beyond successful creation, allocation addresses, and selection among several detected errors remain processor latitude.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Caller shall-restrictions are source-control restrictions and are not promoted to diagnostic facets. Named-error plans use only isolated conditions mapped by 18.5.4 Table 18.5; conditions without an isolated named code, or calls with multiple simultaneous errors, remain no-oracle for the specific returned code.",
+      "dependencies": "Registered dependencies: existing source-form, type, kind, declaration, expression, assignment, execution, allocation, pointer, array, derived-type, interoperability, and Clause 16 intrinsic-module foundations where already catalogued. Unregistered dependencies retained: sibling Clause 18 descriptor object, descriptor member, ISO_Fortran_binding.h macro, type-code, attribute-code, and error-code sections, C companion compilation support, and C standard alignment, offsetof, pointer, and object-representation terminology reached by future fixtures."
+    },
+    {
+      "id": "S18.5.5.4-002",
+      "title": "CFI_deallocate actual argument must describe an object allocated by Fortran allocation mechanisms",
+      "source": "S18.5.5.4, J3/24-007, 18 December 2023, physical PDF537.",
+      "source_units": [
+        "p2"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "The descriptor address shall describe the object, the object shall have been allocated using the same mechanism as Fortran ALLOCATE, and a pointer object shall be associated with a target satisfying Fortran DEALLOCATE success conditions.",
+      "facets": [
+        "CFI_deallocate-descriptor-address",
+        "CFI_deallocate-fortran-allocation-mechanism",
+        "CFI_deallocate-pointer-target-deallocatable"
+      ],
+      "pending": {
+        "CFI_deallocate-descriptor-address": "Positive C companion passes the same descriptor pointer previously returned from CFI_establish and CFI_allocate; a null descriptor argument is a nonconforming source-control negative without required diagnosis.",
+        "CFI_deallocate-fortran-allocation-mechanism": "Allocate an allocatable descriptor only through CFI_allocate, store a nondefault value through CFI_address, then call CFI_deallocate; C malloc storage is never passed as a deallocation positive control.",
+        "CFI_deallocate-pointer-target-deallocatable": "Pointer positive control uses CFI_allocate on a pointer descriptor, writes a sentinel value through CFI_address, then CFI_deallocate; alias-to-static-storage mutation is nonconforming and carries no required diagnostic facet."
+      },
+      "oracle": "Source registration only. Future mixed Fortran/C fixtures compile a C companion with the processor ISO_Fortran_binding.h, link it with a Fortran driver through the existing C interoperability harness, and assert only portable descriptor members, pointer equality or address differences computed from descriptor storage strides, CFI_SUCCESS equal to zero, named CFI error macros by identity rather than numeric value, and exact integer/logical status results. Numeric values of error macros other than CFI_SUCCESS, C object padding, alignment choices beyond successful creation, allocation addresses, and selection among several detected errors remain processor latitude.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Caller shall-restrictions are source-control restrictions and are not promoted to diagnostic facets. Named-error plans use only isolated conditions mapped by 18.5.4 Table 18.5; conditions without an isolated named code, or calls with multiple simultaneous errors, remain no-oracle for the specific returned code.",
+      "dependencies": "Registered dependencies: existing source-form, type, kind, declaration, expression, assignment, execution, allocation, pointer, array, derived-type, interoperability, and Clause 16 intrinsic-module foundations where already catalogued. Unregistered dependencies retained: sibling Clause 18 descriptor object, descriptor member, ISO_Fortran_binding.h macro, type-code, attribute-code, and error-code sections, C companion compilation support, and C standard alignment, offsetof, pointer, and object-representation terminology reached by future fixtures."
+    },
+    {
+      "id": "S18.5.5.4-003",
+      "title": "Successful CFI_deallocate releases storage and nulls base_addr",
+      "source": "S18.5.5.4, J3/24-007, 18 December 2023, physical PDF537.",
+      "source_units": [
+        "p3.success"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Successful CFI_deallocate uses the Fortran DEALLOCATE mechanism and makes the descriptor base_addr member a null pointer.",
+      "facets": [
+        "CFI_deallocate-success-base-null"
+      ],
+      "pending": {
+        "CFI_deallocate-success-base-null": "C companion establishes and allocates a rank-one int descriptor with bounds {1}:{3}, writes 41 through CFI_address before deallocation, calls CFI_deallocate, and asserts CFI_SUCCESS plus base_addr equal to NULL."
+      },
+      "oracle": "Source registration only. Future mixed Fortran/C fixtures compile a C companion with the processor ISO_Fortran_binding.h, link it with a Fortran driver through the existing C interoperability harness, and assert only portable descriptor members, pointer equality or address differences computed from descriptor storage strides, CFI_SUCCESS equal to zero, named CFI error macros by identity rather than numeric value, and exact integer/logical status results. Numeric values of error macros other than CFI_SUCCESS, C object padding, alignment choices beyond successful creation, allocation addresses, and selection among several detected errors remain processor latitude.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Caller shall-restrictions are source-control restrictions and are not promoted to diagnostic facets. Named-error plans use only isolated conditions mapped by 18.5.4 Table 18.5; conditions without an isolated named code, or calls with multiple simultaneous errors, remain no-oracle for the specific returned code.",
+      "dependencies": "Registered dependencies: existing source-form, type, kind, declaration, expression, assignment, execution, allocation, pointer, array, derived-type, interoperability, and Clause 16 intrinsic-module foundations where already catalogued. Unregistered dependencies retained: sibling Clause 18 descriptor object, descriptor member, ISO_Fortran_binding.h macro, type-code, attribute-code, and error-code sections, C companion compilation support, and C standard alignment, offsetof, pointer, and object-representation terminology reached by future fixtures."
+    },
+    {
+      "id": "S18.5.5.4-004",
+      "title": "Detected CFI_deallocate errors preserve the descriptor",
+      "source": "S18.5.5.4, J3/24-007, 18 December 2023, physical PDF537.",
+      "source_units": [
+        "p3.error-preserve"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "After a detected CFI_deallocate error, the C descriptor is not modified.",
+      "facets": [
+        "CFI_deallocate-detected-error-preserves-descriptor"
+      ],
+      "pending": {
+        "CFI_deallocate-detected-error-preserves-descriptor": "C companion establishes a descriptor with CFI_attribute_allocatable, valid rank one, CFI_type_int, and base_addr equal to NULL, snapshots base_addr, elem_len, version, rank, attribute, type, and every dim lower_bound, extent, and sm member, calls CFI_deallocate, and asserts the returned indicator is CFI_ERROR_BASE_ADDR_NULL from the non-null base required for deallocation plus every snapshotted descriptor member is unchanged."
+      },
+      "oracle": "Source registration only. Future mixed Fortran/C fixtures compile a C companion with the processor ISO_Fortran_binding.h, link it with a Fortran driver through the existing C interoperability harness, and assert only portable descriptor members, pointer equality or address differences computed from descriptor storage strides, CFI_SUCCESS equal to zero, named CFI error macros by identity rather than numeric value, and exact integer/logical status results. Numeric values of error macros other than CFI_SUCCESS, C object padding, alignment choices beyond successful creation, allocation addresses, and selection among several detected errors remain processor latitude.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Caller shall-restrictions are source-control restrictions and are not promoted to diagnostic facets. Named-error plans use only isolated conditions mapped by 18.5.4 Table 18.5; conditions without an isolated named code, or calls with multiple simultaneous errors, remain no-oracle for the specific returned code.",
+      "dependencies": "Registered dependencies: existing source-form, type, kind, declaration, expression, assignment, execution, allocation, pointer, array, derived-type, interoperability, and Clause 16 intrinsic-module foundations where already catalogued. Unregistered dependencies retained: sibling Clause 18 descriptor object, descriptor member, ISO_Fortran_binding.h macro, type-code, attribute-code, and error-code sections, C companion compilation support, and C standard alignment, offsetof, pointer, and object-representation terminology reached by future fixtures."
+    },
+    {
+      "id": "S18.5.5.4-005",
+      "title": "CFI_deallocate returns an error indicator",
+      "source": "S18.5.5.4, J3/24-007, 18 December 2023, physical PDF537.",
+      "source_units": [
+        "p4"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The result of CFI_deallocate is an error indicator.",
+      "facets": [
+        "CFI_deallocate-result-error-indicator"
+      ],
+      "pending": {
+        "CFI_deallocate-result-error-indicator": "The allocate-then-deallocate companion asserts the int result equals CFI_SUCCESS, which equals zero; the isolated null-base negative snapshots the descriptor, asserts CFI_deallocate returns CFI_ERROR_BASE_ADDR_NULL, and compares no implementation numeric error value."
+      },
+      "oracle": "Source registration only. Future mixed Fortran/C fixtures compile a C companion with the processor ISO_Fortran_binding.h, link it with a Fortran driver through the existing C interoperability harness, and assert only portable descriptor members, pointer equality or address differences computed from descriptor storage strides, CFI_SUCCESS equal to zero, named CFI error macros by identity rather than numeric value, and exact integer/logical status results. Numeric values of error macros other than CFI_SUCCESS, C object padding, alignment choices beyond successful creation, allocation addresses, and selection among several detected errors remain processor latitude.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Caller shall-restrictions are source-control restrictions and are not promoted to diagnostic facets. Named-error plans use only isolated conditions mapped by 18.5.4 Table 18.5; conditions without an isolated named code, or calls with multiple simultaneous errors, remain no-oracle for the specific returned code.",
+      "dependencies": "Registered dependencies: existing source-form, type, kind, declaration, expression, assignment, execution, allocation, pointer, array, derived-type, interoperability, and Clause 16 intrinsic-module foundations where already catalogued. Unregistered dependencies retained: sibling Clause 18 descriptor object, descriptor member, ISO_Fortran_binding.h macro, type-code, attribute-code, and error-code sections, C companion compilation support, and C standard alignment, offsetof, pointer, and object-representation terminology reached by future fixtures."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.5.5.4-001"
+      ]
+    },
+    {
+      "unit": "p2",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.5.5.4-002"
+      ]
+    },
+    {
+      "unit": "p3",
+      "disposition": "structural",
+      "rationale": "Successful deallocation effects and detected-error preservation are separated."
+    },
+    {
+      "unit": "p3.success",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.5.5.4-003"
+      ]
+    },
+    {
+      "unit": "p3.error-preserve",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.5.5.4-004"
+      ]
+    },
+    {
+      "unit": "p4",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.5.5.4-005"
+      ]
+    },
+    {
+      "unit": "p5",
+      "disposition": "informative",
+      "rationale": "Example of CFI_deallocate use; examples are informative."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_18_5_5_4.md"
+  },
+  "review_fingerprint": "7c343006a237ead0f6dbdfb2e6220882a829cb71a3060aa1bf4fb3244781fa60",
+  "review_rationale": "Source registration for 18.5.5 and 18.5.5.1-18.5.5.9, the functions declared in ISO_Fortran_binding.h: CFI_address, CFI_allocate, CFI_deallocate, CFI_establish, CFI_is_contiguous, CFI_section, CFI_select_part and CFI_setpointer (batch244). Every unit hash-verified by an independent reviewer across three rounds; success paths and isolated named-error conditions are planned as C companion programs with exact results. Source accounting only."
+}
