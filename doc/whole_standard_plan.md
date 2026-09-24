@@ -5759,6 +5759,11 @@ See `doc/source_audits/batch_203.json`.
 Forty-three units, and the longest review so far: four rounds on a single plan. The OUT_OF_RANGE rounding boundary looks trivial — HUGE+0.25 is in range, HUGE+0.5 is not — but it is only exact if the real kind has two more binary digits than the integer kind *and both models are binary*. Each round the reviewer found the next missing hypothesis. The negative boundary was dropped altogether: the model is symmetric, but the representation may extend one further.
 See `doc/source_audits/batch_201.json`.
 
+## Batch 205 — SCALE through SET_EXPONENT
+
+Forty-five units after two rounds. SELECTED_REAL_KIND's selection rule seems unobservable without knowing the kind inventory, but half of it is not: asking for exactly the precision of default real must return a kind with *exactly* that precision, because nothing can lie strictly between. Only the final tiebreak among equal-precision kinds needs the inventory.
+See `doc/source_audits/batch_205.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
