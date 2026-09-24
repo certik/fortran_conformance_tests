@@ -1,0 +1,197 @@
+{
+  "schema_version": 1,
+  "section": "16.9.112",
+  "subunits": {
+    "p5": [
+      "p5.all-elements",
+      "p5.mask-pack-equivalence",
+      "p5.dim-reduction"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S16.9.112-001",
+      "title": "IPARITY argument restrictions",
+      "source": "S16.9.112, J3/24-007, 18 December 2023, physical PDF422-423.",
+      "source_units": [
+        "p3"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "ARRAY shall be an integer array; DIM shall be an integer scalar in the range 1 through the rank of ARRAY; MASK shall be logical and conformable with ARRAY.",
+      "facets": [
+        "IPARITY-array-integer-array",
+        "IPARITY-dim-integer-scalar-valid-range",
+        "IPARITY-mask-logical-conformable"
+      ],
+      "pending": {
+        "IPARITY-array-integer-array": "Positive plan uses rank-one and rank-two integer arrays with nonzero elements; scalar or noninteger ARRAY mutation is source-control only with no diagnostic facet.",
+        "IPARITY-dim-integer-scalar-valid-range": "Positive plan uses DIM=1 and DIM=2 on a rank-two array with distinct shapes and bit results; out-of-range DIM mutation is source-control only.",
+        "IPARITY-mask-logical-conformable": "Positive plan uses a conformable logical MASK selecting a nonempty subset and an all-false zero-result companion; wrong-shape MASK mutation is source-control only."
+      },
+      "oracle": "Source registration only. Future fixtures use exact integer, logical, character, kind, rank, shape, and bit-pattern observations; bit results are observed in bit context by BTEST, POPCNT, or equality to BOZ-derived masks rather than by processor-dependent numeric interpretation. Real inputs are used only for exactly representable truncation cases. Positive plans establish a non-default sentinel or load-bearing companion first and include feature mutations such as changing the intrinsic name, argument order, KIND, BACK, DIM, MASK, or BOZ literal. Unnumbered Clause 16 argument shall-restrictions are source-control restrictions only and are not diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Existing test grep found IEOR and IOR only as unbound helper uses in do-concurrent reduction fixtures, INT in pre-existing clause 7 and editing fixtures, and no bound IMAGE_INDEX, IMAGE_STATUS, INDEX, or IPARITY fixture. Coarray/image-dependent runtime observations for IMAGE_INDEX and failed-image or stopped-image observations for IMAGE_STATUS are OUT OF SCOPE by user decision; local single-image coarray plans are not used. Processor-dependent BOZ numeric interpretation, diagnostic wording, and specific error numbers are not asserted.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, and 13 where already catalogued for source form, intrinsic types and kind parameters, declarations, arrays, expressions, execution, internal I/O, and exact checking helpers. Unregistered dependencies retained: clause 5 image and team execution model, clause 16.2 reduction and mask/DIM rules, clause 16.3 bit model and BOZ conversion rules, ISO_FORTRAN_ENV named constants and TEAM_TYPE, sibling 16.9 intrinsic definitions named by result formulas, and clauses 14, 15, 17, 18, and 19 for future module, interface, IEEE, deleted-feature, and scope interactions."
+    },
+    {
+      "id": "S16.9.112-002",
+      "title": "IPARITY result has ARRAY type and kind and optional DIM shape",
+      "source": "S16.9.112, J3/24-007, 18 December 2023, physical PDF422-423.",
+      "source_units": [
+        "p4"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The result has the same type and kind as ARRAY; it is scalar without DIM and otherwise has rank n-1 with the shape of ARRAY excluding dimension DIM.",
+      "facets": [
+        "IPARITY-result-same-type-kind-as-array",
+        "IPARITY-result-scalar-without-dim",
+        "IPARITY-result-rank-and-shape-with-dim"
+      ],
+      "pending": {
+        "IPARITY-result-same-type-kind-as-array": "Assign IPARITY([1,2,4]) through an integer sentinel initialized to -777 and assert KIND equals KIND of ARRAY's elements.",
+        "IPARITY-result-scalar-without-dim": "Use rank-two ARRAY with DIM absent, initialize scalar sentinel to -777, and assert the scalar bit pattern differs from DIM=1 and DIM=2 companions.",
+        "IPARITY-result-rank-and-shape-with-dim": "Use shape [2,3] ARRAY; assert SHAPE(IPARITY(ARRAY,DIM=1)) is [3] and SHAPE(IPARITY(ARRAY,DIM=2)) is [2], with value checks that fail under swapped DIM."
+      },
+      "oracle": "Source registration only. Future fixtures use exact integer, logical, character, kind, rank, shape, and bit-pattern observations; bit results are observed in bit context by BTEST, POPCNT, or equality to BOZ-derived masks rather than by processor-dependent numeric interpretation. Real inputs are used only for exactly representable truncation cases. Positive plans establish a non-default sentinel or load-bearing companion first and include feature mutations such as changing the intrinsic name, argument order, KIND, BACK, DIM, MASK, or BOZ literal. Unnumbered Clause 16 argument shall-restrictions are source-control restrictions only and are not diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Existing test grep found IEOR and IOR only as unbound helper uses in do-concurrent reduction fixtures, INT in pre-existing clause 7 and editing fixtures, and no bound IMAGE_INDEX, IMAGE_STATUS, INDEX, or IPARITY fixture. Coarray/image-dependent runtime observations for IMAGE_INDEX and failed-image or stopped-image observations for IMAGE_STATUS are OUT OF SCOPE by user decision; local single-image coarray plans are not used. Processor-dependent BOZ numeric interpretation, diagnostic wording, and specific error numbers are not asserted.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, and 13 where already catalogued for source form, intrinsic types and kind parameters, declarations, arrays, expressions, execution, internal I/O, and exact checking helpers. Unregistered dependencies retained: clause 5 image and team execution model, clause 16.2 reduction and mask/DIM rules, clause 16.3 bit model and BOZ conversion rules, ISO_FORTRAN_ENV named constants and TEAM_TYPE, sibling 16.9 intrinsic definitions named by result formulas, and clauses 14, 15, 17, 18, and 19 for future module, interface, IEEE, deleted-feature, and scope interactions."
+    },
+    {
+      "id": "S16.9.112-003",
+      "title": "IPARITY without DIM returns bitwise exclusive OR of all elements and zero for size zero",
+      "source": "S16.9.112, J3/24-007, 18 December 2023, physical PDF422-423.",
+      "source_units": [
+        "p5.all-elements"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "IPARITY(ARRAY) equals the bitwise exclusive OR of all elements of ARRAY; a zero-size ARRAY produces zero.",
+      "facets": [
+        "IPARITY-all-elements-exclusive-or",
+        "IPARITY-zero-size-array-zero"
+      ],
+      "pending": {
+        "IPARITY-all-elements-exclusive-or": "Use ARRAY=[14,13,8,-1] and compute the expected bit pattern by a source-visible IEOR chain; compare IPARITY only with BTEST over all bit positions and mutate the reduction to IOR.",
+        "IPARITY-zero-size-array-zero": "Use an allocated zero-size integer array, initialize result sentinel to -777, assert POPCNT(IPARITY(array)) equals 0, and include nonempty companion [1,2,4] with nonzero POPCNT."
+      },
+      "oracle": "Source registration only. Future fixtures use exact integer, logical, character, kind, rank, shape, and bit-pattern observations; bit results are observed in bit context by BTEST, POPCNT, or equality to BOZ-derived masks rather than by processor-dependent numeric interpretation. Real inputs are used only for exactly representable truncation cases. Positive plans establish a non-default sentinel or load-bearing companion first and include feature mutations such as changing the intrinsic name, argument order, KIND, BACK, DIM, MASK, or BOZ literal. Unnumbered Clause 16 argument shall-restrictions are source-control restrictions only and are not diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Existing test grep found IEOR and IOR only as unbound helper uses in do-concurrent reduction fixtures, INT in pre-existing clause 7 and editing fixtures, and no bound IMAGE_INDEX, IMAGE_STATUS, INDEX, or IPARITY fixture. Coarray/image-dependent runtime observations for IMAGE_INDEX and failed-image or stopped-image observations for IMAGE_STATUS are OUT OF SCOPE by user decision; local single-image coarray plans are not used. Processor-dependent BOZ numeric interpretation, diagnostic wording, and specific error numbers are not asserted.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, and 13 where already catalogued for source form, intrinsic types and kind parameters, declarations, arrays, expressions, execution, internal I/O, and exact checking helpers. Unregistered dependencies retained: clause 5 image and team execution model, clause 16.2 reduction and mask/DIM rules, clause 16.3 bit model and BOZ conversion rules, ISO_FORTRAN_ENV named constants and TEAM_TYPE, sibling 16.9 intrinsic definitions named by result formulas, and clauses 14, 15, 17, 18, and 19 for future module, interface, IEEE, deleted-feature, and scope interactions."
+    },
+    {
+      "id": "S16.9.112-004",
+      "title": "IPARITY with MASK equals IPARITY of PACK selected elements",
+      "source": "S16.9.112, J3/24-007, 18 December 2023, physical PDF422-423.",
+      "source_units": [
+        "p5.mask-pack-equivalence"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "IPARITY(ARRAY, MASK=MASK) has the value IPARITY(PACK(ARRAY, MASK)).",
+      "facets": [
+        "IPARITY-mask-pack-equivalence",
+        "IPARITY-all-false-mask-zero"
+      ],
+      "pending": {
+        "IPARITY-mask-pack-equivalence": "Use ARRAY=[14,13,8] and MASK=[.TRUE.,.FALSE.,.TRUE.]; compare IPARITY(ARRAY,MASK=MASK) with IPARITY(PACK(ARRAY,MASK)) by BTEST and mutate MASK to select the middle element.",
+        "IPARITY-all-false-mask-zero": "Use the same nonzero ARRAY with an all-false MASK, initialize sentinel to -777, assert POPCNT of the result is 0, and include the nonempty MASK companion so zero is non-vacuous."
+      },
+      "oracle": "Source registration only. Future fixtures use exact integer, logical, character, kind, rank, shape, and bit-pattern observations; bit results are observed in bit context by BTEST, POPCNT, or equality to BOZ-derived masks rather than by processor-dependent numeric interpretation. Real inputs are used only for exactly representable truncation cases. Positive plans establish a non-default sentinel or load-bearing companion first and include feature mutations such as changing the intrinsic name, argument order, KIND, BACK, DIM, MASK, or BOZ literal. Unnumbered Clause 16 argument shall-restrictions are source-control restrictions only and are not diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Existing test grep found IEOR and IOR only as unbound helper uses in do-concurrent reduction fixtures, INT in pre-existing clause 7 and editing fixtures, and no bound IMAGE_INDEX, IMAGE_STATUS, INDEX, or IPARITY fixture. Coarray/image-dependent runtime observations for IMAGE_INDEX and failed-image or stopped-image observations for IMAGE_STATUS are OUT OF SCOPE by user decision; local single-image coarray plans are not used. Processor-dependent BOZ numeric interpretation, diagnostic wording, and specific error numbers are not asserted.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, and 13 where already catalogued for source form, intrinsic types and kind parameters, declarations, arrays, expressions, execution, internal I/O, and exact checking helpers. Unregistered dependencies retained: clause 5 image and team execution model, clause 16.2 reduction and mask/DIM rules, clause 16.3 bit model and BOZ conversion rules, ISO_FORTRAN_ENV named constants and TEAM_TYPE, sibling 16.9 intrinsic definitions named by result formulas, and clauses 14, 15, 17, 18, and 19 for future module, interface, IEEE, deleted-feature, and scope interactions."
+    },
+    {
+      "id": "S16.9.112-005",
+      "title": "IPARITY with DIM reduces each vector section along the selected dimension",
+      "source": "S16.9.112, J3/24-007, 18 December 2023, physical PDF422-423.",
+      "source_units": [
+        "p5.dim-reduction"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For rank-one ARRAY the DIM form equals the no-DIM form; for higher rank, each result element equals IPARITY of the corresponding vector section along DIM, with the corresponding MASK section applied when MASK is present.",
+      "facets": [
+        "IPARITY-rank-one-dim-equals-no-dim",
+        "IPARITY-dim-vector-section-reduction",
+        "IPARITY-dim-mask-section-reduction"
+      ],
+      "pending": {
+        "IPARITY-rank-one-dim-equals-no-dim": "Use rank-one ARRAY=[1,2,4] and compare IPARITY(ARRAY,DIM=1) with IPARITY(ARRAY) by BTEST after initializing separate sentinels.",
+        "IPARITY-dim-vector-section-reduction": "Use a 2 by 3 ARRAY with distinct low-bit patterns; assert DIM=1 produces three section XOR patterns and DIM=2 produces two different section XOR patterns, observed by BTEST.",
+        "IPARITY-dim-mask-section-reduction": "Use a conformable rank-two MASK that selects different elements in each vector section; compare each result element with IPARITY of the corresponding PACKed section and mutate MASK columns."
+      },
+      "oracle": "Source registration only. Future fixtures use exact integer, logical, character, kind, rank, shape, and bit-pattern observations; bit results are observed in bit context by BTEST, POPCNT, or equality to BOZ-derived masks rather than by processor-dependent numeric interpretation. Real inputs are used only for exactly representable truncation cases. Positive plans establish a non-default sentinel or load-bearing companion first and include feature mutations such as changing the intrinsic name, argument order, KIND, BACK, DIM, MASK, or BOZ literal. Unnumbered Clause 16 argument shall-restrictions are source-control restrictions only and are not diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Existing test grep found IEOR and IOR only as unbound helper uses in do-concurrent reduction fixtures, INT in pre-existing clause 7 and editing fixtures, and no bound IMAGE_INDEX, IMAGE_STATUS, INDEX, or IPARITY fixture. Coarray/image-dependent runtime observations for IMAGE_INDEX and failed-image or stopped-image observations for IMAGE_STATUS are OUT OF SCOPE by user decision; local single-image coarray plans are not used. Processor-dependent BOZ numeric interpretation, diagnostic wording, and specific error numbers are not asserted.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, and 13 where already catalogued for source form, intrinsic types and kind parameters, declarations, arrays, expressions, execution, internal I/O, and exact checking helpers. Unregistered dependencies retained: clause 5 image and team execution model, clause 16.2 reduction and mask/DIM rules, clause 16.3 bit model and BOZ conversion rules, ISO_FORTRAN_ENV named constants and TEAM_TYPE, sibling 16.9 intrinsic definitions named by result formulas, and clauses 14, 15, 17, 18, and 19 for future module, interface, IEEE, deleted-feature, and scope interactions."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "definition",
+      "rationale": "Description defines the intrinsic purpose: array reduction by IEOR."
+    },
+    {
+      "unit": "p2",
+      "disposition": "definition",
+      "rationale": "Classifies IPARITY as transformational."
+    },
+    {
+      "unit": "p3",
+      "disposition": "requirements",
+      "rationale": "Argument shall-restrictions on the program.",
+      "requirements": [
+        "S16.9.112-001"
+      ]
+    },
+    {
+      "unit": "p4",
+      "disposition": "requirements",
+      "rationale": "Result characteristic and shape requirement.",
+      "requirements": [
+        "S16.9.112-002"
+      ]
+    },
+    {
+      "unit": "p5",
+      "disposition": "structural",
+      "rationale": "Result Value cases are split into all-element, MASK, and DIM reduction obligations."
+    },
+    {
+      "unit": "p5.all-elements",
+      "disposition": "requirements",
+      "rationale": "Case (i) all-element exclusive-OR and zero-size identity.",
+      "requirements": [
+        "S16.9.112-003"
+      ]
+    },
+    {
+      "unit": "p5.mask-pack-equivalence",
+      "disposition": "requirements",
+      "rationale": "Case (ii) MASK/PACK equivalence.",
+      "requirements": [
+        "S16.9.112-004"
+      ]
+    },
+    {
+      "unit": "p5.dim-reduction",
+      "disposition": "requirements",
+      "rationale": "Case (iii) DIM vector-section reductions.",
+      "requirements": [
+        "S16.9.112-005"
+      ]
+    },
+    {
+      "unit": "p6",
+      "disposition": "informative",
+      "rationale": "Examples paragraph is illustrative; exact values are supported by the Result Value text."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_16_9_112.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "8fa155fde3281904420ff0221dd8d577fe7d3d4f617fdc7b7a090d37352edc13",
+  "review_rationale": "Source registration for 16.9.106-16.9.112: IEOR, IMAGE_INDEX, IMAGE_STATUS, INDEX, INT, IOR and IPARITY (batch194). Every unit hash-verified by an independent reviewer across two rounds; IMAGE_INDEX and the team/failed/stopped facets of IMAGE_STATUS are out of scope; INDEX covers the zero-length-substring results; the numeric value of a BOZ with its leftmost bit set under INT has no portable oracle. Source accounting only."
+}

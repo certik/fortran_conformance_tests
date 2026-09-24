@@ -1,0 +1,165 @@
+{
+  "schema_version": 1,
+  "section": "16.9.111",
+  "subunits": {
+    "p5": [
+      "p5.boz-conversion",
+      "p5.bit-result"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S16.9.111-001",
+      "title": "IOR argument restrictions",
+      "source": "S16.9.111, J3/24-007, 18 December 2023, physical PDF422.",
+      "source_units": [
+        "p3"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "I and J shall each be integer or a BOZ literal constant; same-kind integer operands are required, and both operands shall not be BOZ literals.",
+      "facets": [
+        "IOR-I-integer-or-boz",
+        "IOR-J-integer-or-boz",
+        "IOR-integer-kinds-match",
+        "IOR-not-both-boz"
+      ],
+      "pending": {
+        "IOR-I-integer-or-boz": "Positive source plan calls IOR with an integer I and with an actual BOZ literal I; mutate I to a real expression as source-control only, with no diagnostic facet.",
+        "IOR-J-integer-or-boz": "Positive source plan calls IOR with an integer J and with an actual BOZ literal J; mutate J to a real expression as source-control only, with no diagnostic facet.",
+        "IOR-integer-kinds-match": "Positive source plan uses same-kind integer operands and records a source-control mutation with mismatched integer kinds; no required diagnostic is claimed.",
+        "IOR-not-both-boz": "Positive source plan uses exactly one actual BOZ literal such as IOR(Z'05',2) and mutates both operands to BOZ literals as source-control only."
+      },
+      "oracle": "Source registration only. Future fixtures use exact integer, logical, character, kind, rank, shape, and bit-pattern observations; bit results are observed in bit context by BTEST, POPCNT, or equality to BOZ-derived masks rather than by processor-dependent numeric interpretation. Real inputs are used only for exactly representable truncation cases. Positive plans establish a non-default sentinel or load-bearing companion first and include feature mutations such as changing the intrinsic name, argument order, KIND, BACK, DIM, MASK, or BOZ literal. Unnumbered Clause 16 argument shall-restrictions are source-control restrictions only and are not diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Existing test grep found IEOR and IOR only as unbound helper uses in do-concurrent reduction fixtures, INT in pre-existing clause 7 and editing fixtures, and no bound IMAGE_INDEX, IMAGE_STATUS, INDEX, or IPARITY fixture. Coarray/image-dependent runtime observations for IMAGE_INDEX and failed-image or stopped-image observations for IMAGE_STATUS are OUT OF SCOPE by user decision; local single-image coarray plans are not used. Processor-dependent BOZ numeric interpretation, diagnostic wording, and specific error numbers are not asserted.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, and 13 where already catalogued for source form, intrinsic types and kind parameters, declarations, arrays, expressions, execution, internal I/O, and exact checking helpers. Unregistered dependencies retained: clause 5 image and team execution model, clause 16.2 reduction and mask/DIM rules, clause 16.3 bit model and BOZ conversion rules, ISO_FORTRAN_ENV named constants and TEAM_TYPE, sibling 16.9 intrinsic definitions named by result formulas, and clauses 14, 15, 17, 18, and 19 for future module, interface, IEEE, deleted-feature, and scope interactions."
+    },
+    {
+      "id": "S16.9.111-002",
+      "title": "IOR result characteristics follow the integer operand",
+      "source": "S16.9.111, J3/24-007, 18 December 2023, physical PDF422.",
+      "source_units": [
+        "p4"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The result is the same type and kind as I for integer I; otherwise it is the same type and kind as J.",
+      "facets": [
+        "IOR-result-kind-from-I-or-J"
+      ],
+      "pending": {
+        "IOR-result-kind-from-I-or-J": "Use IOR(5,3), IOR(Z'01',3), and IOR(3,Z'01') assigned through nonzero sentinels; assert KIND of each result equals the non-BOZ integer operand kind and mutate which operand is BOZ."
+      },
+      "oracle": "Source registration only. Future fixtures use exact integer, logical, character, kind, rank, shape, and bit-pattern observations; bit results are observed in bit context by BTEST, POPCNT, or equality to BOZ-derived masks rather than by processor-dependent numeric interpretation. Real inputs are used only for exactly representable truncation cases. Positive plans establish a non-default sentinel or load-bearing companion first and include feature mutations such as changing the intrinsic name, argument order, KIND, BACK, DIM, MASK, or BOZ literal. Unnumbered Clause 16 argument shall-restrictions are source-control restrictions only and are not diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Existing test grep found IEOR and IOR only as unbound helper uses in do-concurrent reduction fixtures, INT in pre-existing clause 7 and editing fixtures, and no bound IMAGE_INDEX, IMAGE_STATUS, INDEX, or IPARITY fixture. Coarray/image-dependent runtime observations for IMAGE_INDEX and failed-image or stopped-image observations for IMAGE_STATUS are OUT OF SCOPE by user decision; local single-image coarray plans are not used. Processor-dependent BOZ numeric interpretation, diagnostic wording, and specific error numbers are not asserted.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, and 13 where already catalogued for source form, intrinsic types and kind parameters, declarations, arrays, expressions, execution, internal I/O, and exact checking helpers. Unregistered dependencies retained: clause 5 image and team execution model, clause 16.2 reduction and mask/DIM rules, clause 16.3 bit model and BOZ conversion rules, ISO_FORTRAN_ENV named constants and TEAM_TYPE, sibling 16.9 intrinsic definitions named by result formulas, and clauses 14, 15, 17, 18, and 19 for future module, interface, IEEE, deleted-feature, and scope interactions."
+    },
+    {
+      "id": "S16.9.111-003",
+      "title": "IOR converts an actual BOZ operand as INT to the other integer kind",
+      "source": "S16.9.111, J3/24-007, 18 December 2023, physical PDF422.",
+      "source_units": [
+        "p5.boz-conversion"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A BOZ literal I or J is first converted as by INT to integer with the kind type parameter of the other operand.",
+      "facets": [
+        "IOR-boz-converted-as-int-to-other-kind"
+      ],
+      "pending": {
+        "IOR-boz-converted-as-int-to-other-kind": "Use actual BOZ calls IOR(Z'05',2) and IOR(2,Z'05'); observe low-bit results only with BTEST positions 0 through 2, compare with explicit INT(Z'05') companions, and mutate the BOZ literal to Z'01'."
+      },
+      "oracle": "Source registration only. Future fixtures use exact integer, logical, character, kind, rank, shape, and bit-pattern observations; bit results are observed in bit context by BTEST, POPCNT, or equality to BOZ-derived masks rather than by processor-dependent numeric interpretation. Real inputs are used only for exactly representable truncation cases. Positive plans establish a non-default sentinel or load-bearing companion first and include feature mutations such as changing the intrinsic name, argument order, KIND, BACK, DIM, MASK, or BOZ literal. Unnumbered Clause 16 argument shall-restrictions are source-control restrictions only and are not diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Existing test grep found IEOR and IOR only as unbound helper uses in do-concurrent reduction fixtures, INT in pre-existing clause 7 and editing fixtures, and no bound IMAGE_INDEX, IMAGE_STATUS, INDEX, or IPARITY fixture. Coarray/image-dependent runtime observations for IMAGE_INDEX and failed-image or stopped-image observations for IMAGE_STATUS are OUT OF SCOPE by user decision; local single-image coarray plans are not used. Processor-dependent BOZ numeric interpretation, diagnostic wording, and specific error numbers are not asserted.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, and 13 where already catalogued for source form, intrinsic types and kind parameters, declarations, arrays, expressions, execution, internal I/O, and exact checking helpers. Unregistered dependencies retained: clause 5 image and team execution model, clause 16.2 reduction and mask/DIM rules, clause 16.3 bit model and BOZ conversion rules, ISO_FORTRAN_ENV named constants and TEAM_TYPE, sibling 16.9 intrinsic definitions named by result formulas, and clauses 14, 15, 17, 18, and 19 for future module, interface, IEEE, deleted-feature, and scope interactions."
+    },
+    {
+      "id": "S16.9.111-004",
+      "title": "IOR combines operands by inclusive OR of corresponding bits",
+      "source": "S16.9.111, J3/24-007, 18 December 2023, physical PDF422.",
+      "source_units": [
+        "p5.bit-result"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The IOR result bit is 1 for operand bit pairs 1/1, 1/0, or 0/1, and 0 only for 0/0, using the 16.3 bit model.",
+      "facets": [
+        "IOR-inclusive-or-truth-table",
+        "IOR-negative-operand-bit-pattern"
+      ],
+      "pending": {
+        "IOR-inclusive-or-truth-table": "Initialize a result sentinel to zero, assign IOR(5,3), and assert by BTEST/POPCNT that bits 0, 1, and 2 are set; mutate to IEOR or IAND to change the bit pattern.",
+        "IOR-negative-operand-bit-pattern": "Use IOR(-1,0) and IOR(-1,-1); compare every position from 0 through BIT_SIZE(default integer)-1 by BTEST against -1 companions, never by numeric interpretation of a leftmost set bit."
+      },
+      "oracle": "Source registration only. Future fixtures use exact integer, logical, character, kind, rank, shape, and bit-pattern observations; bit results are observed in bit context by BTEST, POPCNT, or equality to BOZ-derived masks rather than by processor-dependent numeric interpretation. Real inputs are used only for exactly representable truncation cases. Positive plans establish a non-default sentinel or load-bearing companion first and include feature mutations such as changing the intrinsic name, argument order, KIND, BACK, DIM, MASK, or BOZ literal. Unnumbered Clause 16 argument shall-restrictions are source-control restrictions only and are not diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Existing test grep found IEOR and IOR only as unbound helper uses in do-concurrent reduction fixtures, INT in pre-existing clause 7 and editing fixtures, and no bound IMAGE_INDEX, IMAGE_STATUS, INDEX, or IPARITY fixture. Coarray/image-dependent runtime observations for IMAGE_INDEX and failed-image or stopped-image observations for IMAGE_STATUS are OUT OF SCOPE by user decision; local single-image coarray plans are not used. Processor-dependent BOZ numeric interpretation, diagnostic wording, and specific error numbers are not asserted.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, and 13 where already catalogued for source form, intrinsic types and kind parameters, declarations, arrays, expressions, execution, internal I/O, and exact checking helpers. Unregistered dependencies retained: clause 5 image and team execution model, clause 16.2 reduction and mask/DIM rules, clause 16.3 bit model and BOZ conversion rules, ISO_FORTRAN_ENV named constants and TEAM_TYPE, sibling 16.9 intrinsic definitions named by result formulas, and clauses 14, 15, 17, 18, and 19 for future module, interface, IEEE, deleted-feature, and scope interactions."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "definition",
+      "rationale": "Description defines the intrinsic purpose: bitwise inclusive OR."
+    },
+    {
+      "unit": "p2",
+      "disposition": "definition",
+      "rationale": "Classifies IOR as elemental."
+    },
+    {
+      "unit": "p3",
+      "disposition": "requirements",
+      "rationale": "Argument shall-restrictions on the program.",
+      "requirements": [
+        "S16.9.111-001"
+      ]
+    },
+    {
+      "unit": "p4",
+      "disposition": "requirements",
+      "rationale": "Result characteristic requirement.",
+      "requirements": [
+        "S16.9.111-002"
+      ]
+    },
+    {
+      "unit": "p5",
+      "disposition": "structural",
+      "rationale": "Result Value paragraph is split into BOZ conversion and exact bit-result obligations."
+    },
+    {
+      "unit": "p5.boz-conversion",
+      "disposition": "requirements",
+      "rationale": "BOZ conversion effect.",
+      "requirements": [
+        "S16.9.111-003"
+      ]
+    },
+    {
+      "unit": "p5.bit-result",
+      "disposition": "requirements",
+      "rationale": "Exact bitwise inclusive-OR result table.",
+      "requirements": [
+        "S16.9.111-004"
+      ]
+    },
+    {
+      "unit": "p6",
+      "disposition": "definition",
+      "rationale": "Cross-reference to the 16.3 integer bit-sequence model."
+    },
+    {
+      "unit": "p7",
+      "disposition": "informative",
+      "rationale": "Example paragraph is illustrative; its exact low-bit value may support a future plan but is not itself normative."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_16_9_111.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "ad14a270f2cae613fdd2310e3ff1eeeffe35a076987912f2756b728ca1e6edc4",
+  "review_rationale": "Source registration for 16.9.106-16.9.112: IEOR, IMAGE_INDEX, IMAGE_STATUS, INDEX, INT, IOR and IPARITY (batch194). Every unit hash-verified by an independent reviewer across two rounds; IMAGE_INDEX and the team/failed/stopped facets of IMAGE_STATUS are out of scope; INDEX covers the zero-length-substring results; the numeric value of a BOZ with its leftmost bit set under INT has no portable oracle. Source accounting only."
+}

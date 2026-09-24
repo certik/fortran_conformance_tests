@@ -5709,6 +5709,11 @@ See `doc/source_audits/batch_190.json`.
 Forty units, after three rounds, and a lesson in honesty about what a plan proves. CMPLX accepts BOZ arguments, but what real value a bit pattern becomes depends on the representation, so the value is not portable. The first fix checked only the result's type and kind — which would pass even if the BOZ were ignored. The facet now says exactly that: admission and type/kind are observed; conversion is not.
 See `doc/source_audits/batch_186.json`.
 
+## Batch 194 — IEOR through IPARITY
+
+Forty-five units, after two rounds. The finding was a boundary case of INDEX: a zero-length SUBSTRING matches at every position from 1 to LEN(STRING)+1, so the result is 1 forwards and LEN(STRING)+1 backwards.
+See `doc/source_audits/batch_194.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must

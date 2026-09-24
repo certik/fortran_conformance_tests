@@ -1,0 +1,224 @@
+{
+  "schema_version": 1,
+  "section": "16.9.110",
+  "subunits": {
+    "p5": [
+      "p5.integer-real-complex",
+      "p5.enum-enumeration",
+      "p5.boz-bit-sequence",
+      "p5.boz-msb-latitude"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S16.9.110-001",
+      "title": "INT argument restrictions",
+      "source": "S16.9.110, J3/24-007, 18 December 2023, physical PDF421-422.",
+      "source_units": [
+        "p3"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "A shall be integer, real, complex, enum, enumeration, or a BOZ literal constant; KIND shall be a scalar integer constant expression.",
+      "facets": [
+        "INT-a-allowed-type-or-boz",
+        "INT-kind-scalar-integer-constant"
+      ],
+      "pending": {
+        "INT-a-allowed-type-or-boz": "Positive plan covers integer, exactly representable real, complex, enum, enumeration, and actual BOZ arguments; wrong-type mutation is source-control only with no diagnostic facet.",
+        "INT-kind-scalar-integer-constant": "Positive plan supplies KIND=KIND(0) and asserts the result kind equals KIND(0); nonconstant KIND mutation is source-control only."
+      },
+      "oracle": "Source registration only. Future fixtures use exact integer, logical, character, kind, rank, shape, and bit-pattern observations; bit results are observed in bit context by BTEST, POPCNT, or equality to BOZ-derived masks rather than by processor-dependent numeric interpretation. Real inputs are used only for exactly representable truncation cases. Positive plans establish a non-default sentinel or load-bearing companion first and include feature mutations such as changing the intrinsic name, argument order, KIND, BACK, DIM, MASK, or BOZ literal. Unnumbered Clause 16 argument shall-restrictions are source-control restrictions only and are not diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Existing test grep found IEOR and IOR only as unbound helper uses in do-concurrent reduction fixtures, INT in pre-existing clause 7 and editing fixtures, and no bound IMAGE_INDEX, IMAGE_STATUS, INDEX, or IPARITY fixture. Coarray/image-dependent runtime observations for IMAGE_INDEX and failed-image or stopped-image observations for IMAGE_STATUS are OUT OF SCOPE by user decision; local single-image coarray plans are not used. Processor-dependent BOZ numeric interpretation, diagnostic wording, and specific error numbers are not asserted.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, and 13 where already catalogued for source form, intrinsic types and kind parameters, declarations, arrays, expressions, execution, internal I/O, and exact checking helpers. Unregistered dependencies retained: clause 5 image and team execution model, clause 16.2 reduction and mask/DIM rules, clause 16.3 bit model and BOZ conversion rules, ISO_FORTRAN_ENV named constants and TEAM_TYPE, sibling 16.9 intrinsic definitions named by result formulas, and clauses 14, 15, 17, 18, and 19 for future module, interface, IEEE, deleted-feature, and scope interactions."
+    },
+    {
+      "id": "S16.9.110-002",
+      "title": "INT result is integer with requested or default kind",
+      "source": "S16.9.110, J3/24-007, 18 December 2023, physical PDF421-422.",
+      "source_units": [
+        "p4"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The result is integer, with kind type parameter specified by KIND when present and default integer kind otherwise.",
+      "facets": [
+        "INT-integer-result",
+        "INT-kind-present-result-kind",
+        "INT-kind-absent-default-kind"
+      ],
+      "pending": {
+        "INT-integer-result": "Assign INT(17) to an integer sentinel initialized to -777 and assert exact value 17; mutate the intrinsic to REAL to break integer assignment compatibility.",
+        "INT-kind-present-result-kind": "Assign KIND(INT(17,KIND=KIND(0))) to a sentinel initialized to -777 and assert KIND(0).",
+        "INT-kind-absent-default-kind": "Assign KIND(INT(17)) to a sentinel initialized to -777 and assert KIND(0)."
+      },
+      "oracle": "Source registration only. Future fixtures use exact integer, logical, character, kind, rank, shape, and bit-pattern observations; bit results are observed in bit context by BTEST, POPCNT, or equality to BOZ-derived masks rather than by processor-dependent numeric interpretation. Real inputs are used only for exactly representable truncation cases. Positive plans establish a non-default sentinel or load-bearing companion first and include feature mutations such as changing the intrinsic name, argument order, KIND, BACK, DIM, MASK, or BOZ literal. Unnumbered Clause 16 argument shall-restrictions are source-control restrictions only and are not diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Existing test grep found IEOR and IOR only as unbound helper uses in do-concurrent reduction fixtures, INT in pre-existing clause 7 and editing fixtures, and no bound IMAGE_INDEX, IMAGE_STATUS, INDEX, or IPARITY fixture. Coarray/image-dependent runtime observations for IMAGE_INDEX and failed-image or stopped-image observations for IMAGE_STATUS are OUT OF SCOPE by user decision; local single-image coarray plans are not used. Processor-dependent BOZ numeric interpretation, diagnostic wording, and specific error numbers are not asserted.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, and 13 where already catalogued for source form, intrinsic types and kind parameters, declarations, arrays, expressions, execution, internal I/O, and exact checking helpers. Unregistered dependencies retained: clause 5 image and team execution model, clause 16.2 reduction and mask/DIM rules, clause 16.3 bit model and BOZ conversion rules, ISO_FORTRAN_ENV named constants and TEAM_TYPE, sibling 16.9 intrinsic definitions named by result formulas, and clauses 14, 15, 17, 18, and 19 for future module, interface, IEEE, deleted-feature, and scope interactions."
+    },
+    {
+      "id": "S16.9.110-003",
+      "title": "INT conversion for integer, real, and complex arguments",
+      "source": "S16.9.110, J3/24-007, 18 December 2023, physical PDF421-422.",
+      "source_units": [
+        "p5.integer-real-complex"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Integer A is unchanged; real A is truncated toward zero by magnitude and sign; complex A is converted as INT(REAL(A,KIND(A))).",
+      "facets": [
+        "INT-integer-identity",
+        "INT-real-magnitude-less-than-one-zero",
+        "INT-real-truncates-toward-zero",
+        "INT-complex-uses-real-part"
+      ],
+      "pending": {
+        "INT-integer-identity": "Initialize the result sentinel to -777, evaluate INT(-42), assert exact -42, and mutate A to -41.",
+        "INT-real-magnitude-less-than-one-zero": "Use exactly representable 0.5 and -0.5, initialize sentinels to -777, assert exact zero for both, and include companion INT(1.5)=1 so zero is non-vacuous.",
+        "INT-real-truncates-toward-zero": "Use exactly representable 3.75 and -3.75, assert exact 3 and -3 from nonzero sentinels, and mutate sign or fractional magnitude.",
+        "INT-complex-uses-real-part": "Use CMPLX(-3.75,99.0), assert INT result -3 from a sentinel initialized to 777, and mutate to use AIMAG so the imaginary component is load-bearing."
+      },
+      "oracle": "Source registration only. Future fixtures use exact integer, logical, character, kind, rank, shape, and bit-pattern observations; bit results are observed in bit context by BTEST, POPCNT, or equality to BOZ-derived masks rather than by processor-dependent numeric interpretation. Real inputs are used only for exactly representable truncation cases. Positive plans establish a non-default sentinel or load-bearing companion first and include feature mutations such as changing the intrinsic name, argument order, KIND, BACK, DIM, MASK, or BOZ literal. Unnumbered Clause 16 argument shall-restrictions are source-control restrictions only and are not diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Existing test grep found IEOR and IOR only as unbound helper uses in do-concurrent reduction fixtures, INT in pre-existing clause 7 and editing fixtures, and no bound IMAGE_INDEX, IMAGE_STATUS, INDEX, or IPARITY fixture. Coarray/image-dependent runtime observations for IMAGE_INDEX and failed-image or stopped-image observations for IMAGE_STATUS are OUT OF SCOPE by user decision; local single-image coarray plans are not used. Processor-dependent BOZ numeric interpretation, diagnostic wording, and specific error numbers are not asserted.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, and 13 where already catalogued for source form, intrinsic types and kind parameters, declarations, arrays, expressions, execution, internal I/O, and exact checking helpers. Unregistered dependencies retained: clause 5 image and team execution model, clause 16.2 reduction and mask/DIM rules, clause 16.3 bit model and BOZ conversion rules, ISO_FORTRAN_ENV named constants and TEAM_TYPE, sibling 16.9 intrinsic definitions named by result formulas, and clauses 14, 15, 17, 18, and 19 for future module, interface, IEEE, deleted-feature, and scope interactions."
+    },
+    {
+      "id": "S16.9.110-004",
+      "title": "INT conversion for enum and enumeration arguments",
+      "source": "S16.9.110, J3/24-007, 18 December 2023, physical PDF421-422.",
+      "source_units": [
+        "p5.enum-enumeration"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Enum A converts to the corresponding integer value; enumeration A converts to its ordinal position.",
+      "facets": [
+        "INT-enum-corresponding-integer-value",
+        "INT-enumeration-ordinal-position"
+      ],
+      "pending": {
+        "INT-enum-corresponding-integer-value": "Use a conforming enum with a negative and a positive enumerator value, initialize sentinels to -777, assert INT returns the corresponding integer values, and record existing clause 7 INT enum fixtures without rebinding them.",
+        "INT-enumeration-ordinal-position": "Use an enumeration type with at least three values, initialize sentinels to -777, assert ordinal positions 1 and 3, and record existing clause 7 enumeration INT fixtures without rebinding them."
+      },
+      "oracle": "Source registration only. Future fixtures use exact integer, logical, character, kind, rank, shape, and bit-pattern observations; bit results are observed in bit context by BTEST, POPCNT, or equality to BOZ-derived masks rather than by processor-dependent numeric interpretation. Real inputs are used only for exactly representable truncation cases. Positive plans establish a non-default sentinel or load-bearing companion first and include feature mutations such as changing the intrinsic name, argument order, KIND, BACK, DIM, MASK, or BOZ literal. Unnumbered Clause 16 argument shall-restrictions are source-control restrictions only and are not diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Existing test grep found IEOR and IOR only as unbound helper uses in do-concurrent reduction fixtures, INT in pre-existing clause 7 and editing fixtures, and no bound IMAGE_INDEX, IMAGE_STATUS, INDEX, or IPARITY fixture. Coarray/image-dependent runtime observations for IMAGE_INDEX and failed-image or stopped-image observations for IMAGE_STATUS are OUT OF SCOPE by user decision; local single-image coarray plans are not used. Processor-dependent BOZ numeric interpretation, diagnostic wording, and specific error numbers are not asserted.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, and 13 where already catalogued for source form, intrinsic types and kind parameters, declarations, arrays, expressions, execution, internal I/O, and exact checking helpers. Unregistered dependencies retained: clause 5 image and team execution model, clause 16.2 reduction and mask/DIM rules, clause 16.3 bit model and BOZ conversion rules, ISO_FORTRAN_ENV named constants and TEAM_TYPE, sibling 16.9 intrinsic definitions named by result formulas, and clauses 14, 15, 17, 18, and 19 for future module, interface, IEEE, deleted-feature, and scope interactions."
+    },
+    {
+      "id": "S16.9.110-005",
+      "title": "INT BOZ conversion preserves the modified BOZ bit sequence",
+      "source": "S16.9.110, J3/24-007, 18 December 2023, physical PDF421-422.",
+      "source_units": [
+        "p5.boz-bit-sequence"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For a BOZ literal constant, the result has the bit sequence of A after 16.3.3 padding or truncation.",
+      "facets": [
+        "INT-boz-bit-sequence-padding-truncation"
+      ],
+      "pending": {
+        "INT-boz-bit-sequence-padding-truncation": "Use actual BOZ arguments INT(B'0110') and INT(Z'000F') whose most significant result bit is clear; observe exact low bits with BTEST and POPCNT, compare against BOZ-derived masks, and mutate the BOZ digits."
+      },
+      "oracle": "Source registration only. Future fixtures use exact integer, logical, character, kind, rank, shape, and bit-pattern observations; bit results are observed in bit context by BTEST, POPCNT, or equality to BOZ-derived masks rather than by processor-dependent numeric interpretation. Real inputs are used only for exactly representable truncation cases. Positive plans establish a non-default sentinel or load-bearing companion first and include feature mutations such as changing the intrinsic name, argument order, KIND, BACK, DIM, MASK, or BOZ literal. Unnumbered Clause 16 argument shall-restrictions are source-control restrictions only and are not diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Existing test grep found IEOR and IOR only as unbound helper uses in do-concurrent reduction fixtures, INT in pre-existing clause 7 and editing fixtures, and no bound IMAGE_INDEX, IMAGE_STATUS, INDEX, or IPARITY fixture. Coarray/image-dependent runtime observations for IMAGE_INDEX and failed-image or stopped-image observations for IMAGE_STATUS are OUT OF SCOPE by user decision; local single-image coarray plans are not used. Processor-dependent BOZ numeric interpretation, diagnostic wording, and specific error numbers are not asserted.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, and 13 where already catalogued for source form, intrinsic types and kind parameters, declarations, arrays, expressions, execution, internal I/O, and exact checking helpers. Unregistered dependencies retained: clause 5 image and team execution model, clause 16.2 reduction and mask/DIM rules, clause 16.3 bit model and BOZ conversion rules, ISO_FORTRAN_ENV named constants and TEAM_TYPE, sibling 16.9 intrinsic definitions named by result formulas, and clauses 14, 15, 17, 18, and 19 for future module, interface, IEEE, deleted-feature, and scope interactions."
+    },
+    {
+      "id": "S16.9.110-006",
+      "title": "INT BOZ result with a most-significant bit of one has processor-dependent numeric interpretation",
+      "source": "S16.9.110, J3/24-007, 18 December 2023, physical PDF421-422.",
+      "source_units": [
+        "p5.boz-msb-latitude"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The numeric interpretation of a BOZ-derived bit sequence whose most significant bit is 1 is processor dependent.",
+      "facets": [
+        "INT-boz-msb-one-numeric-interpretation-processor-dependent"
+      ],
+      "pending": {
+        "INT-boz-msb-one-numeric-interpretation-processor-dependent": "No portable oracle fixes the integer numeric value for a BOZ-derived result whose most significant bit is 1; future fixtures may observe bit positions with BTEST but must not assert a numeric value."
+      },
+      "oracle": "Source registration only. Future fixtures use exact integer, logical, character, kind, rank, shape, and bit-pattern observations; bit results are observed in bit context by BTEST, POPCNT, or equality to BOZ-derived masks rather than by processor-dependent numeric interpretation. Real inputs are used only for exactly representable truncation cases. Positive plans establish a non-default sentinel or load-bearing companion first and include feature mutations such as changing the intrinsic name, argument order, KIND, BACK, DIM, MASK, or BOZ literal. Unnumbered Clause 16 argument shall-restrictions are source-control restrictions only and are not diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Existing test grep found IEOR and IOR only as unbound helper uses in do-concurrent reduction fixtures, INT in pre-existing clause 7 and editing fixtures, and no bound IMAGE_INDEX, IMAGE_STATUS, INDEX, or IPARITY fixture. Coarray/image-dependent runtime observations for IMAGE_INDEX and failed-image or stopped-image observations for IMAGE_STATUS are OUT OF SCOPE by user decision; local single-image coarray plans are not used. Processor-dependent BOZ numeric interpretation, diagnostic wording, and specific error numbers are not asserted.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, and 13 where already catalogued for source form, intrinsic types and kind parameters, declarations, arrays, expressions, execution, internal I/O, and exact checking helpers. Unregistered dependencies retained: clause 5 image and team execution model, clause 16.2 reduction and mask/DIM rules, clause 16.3 bit model and BOZ conversion rules, ISO_FORTRAN_ENV named constants and TEAM_TYPE, sibling 16.9 intrinsic definitions named by result formulas, and clauses 14, 15, 17, 18, and 19 for future module, interface, IEEE, deleted-feature, and scope interactions."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "definition",
+      "rationale": "Description defines the intrinsic purpose: conversion to integer type."
+    },
+    {
+      "unit": "p2",
+      "disposition": "definition",
+      "rationale": "Classifies INT as elemental."
+    },
+    {
+      "unit": "p3",
+      "disposition": "requirements",
+      "rationale": "Argument shall-restrictions on the program.",
+      "requirements": [
+        "S16.9.110-001"
+      ]
+    },
+    {
+      "unit": "p4",
+      "disposition": "requirements",
+      "rationale": "Result characteristic requirement.",
+      "requirements": [
+        "S16.9.110-002"
+      ]
+    },
+    {
+      "unit": "p5",
+      "disposition": "structural",
+      "rationale": "Result Value paragraph is split into exact conversion obligations and BOZ most-significant-bit latitude."
+    },
+    {
+      "unit": "p5.integer-real-complex",
+      "disposition": "requirements",
+      "rationale": "Exact integer, real, and complex conversion effects.",
+      "requirements": [
+        "S16.9.110-003"
+      ]
+    },
+    {
+      "unit": "p5.enum-enumeration",
+      "disposition": "requirements",
+      "rationale": "Exact enum and enumeration conversion effects.",
+      "requirements": [
+        "S16.9.110-004"
+      ]
+    },
+    {
+      "unit": "p5.boz-bit-sequence",
+      "disposition": "requirements",
+      "rationale": "BOZ bit-sequence preservation subject to 16.3.3.",
+      "requirements": [
+        "S16.9.110-005"
+      ]
+    },
+    {
+      "unit": "p5.boz-msb-latitude",
+      "disposition": "permission",
+      "rationale": "Processor-dependent numeric interpretation latitude for BOZ-derived leftmost-one bit sequences.",
+      "requirements": [
+        "S16.9.110-006"
+      ]
+    },
+    {
+      "unit": "p6",
+      "disposition": "informative",
+      "rationale": "Example paragraph is illustrative; the negative truncation value is already covered by Result Value case (ii)."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_16_9_110.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "c303c9a346664208a6d84e54366183efbc968269d3611c0a3d8322c25b789dcb",
+  "review_rationale": "Source registration for 16.9.106-16.9.112: IEOR, IMAGE_INDEX, IMAGE_STATUS, INDEX, INT, IOR and IPARITY (batch194). Every unit hash-verified by an independent reviewer across two rounds; IMAGE_INDEX and the team/failed/stopped facets of IMAGE_STATUS are out of scope; INDEX covers the zero-length-substring results; the numeric value of a BOZ with its leftmost bit set under INT has no portable oracle. Source accounting only."
+}
