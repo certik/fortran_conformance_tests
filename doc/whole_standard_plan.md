@@ -6074,6 +6074,11 @@ See `doc/source_audits/batch_260.json`.
 Fifty informative units, two rounds: the opening of Annex C, each note pointed at the populated catalogue that tests the feature it discusses.
 See `doc/source_audits/batch_261.json`.
 
+## Batch 263 — Annex C notes C.10.2.3-C.11.6
+
+Seventy informative units, two rounds. Where a note used three features, the review asked for three owners.
+See `doc/source_audits/batch_263.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
