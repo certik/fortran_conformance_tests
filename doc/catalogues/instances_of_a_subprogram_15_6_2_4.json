@@ -1,0 +1,369 @@
+{
+  "schema_version": 1,
+  "section": "15.6.2.4",
+  "subunits": {
+    "p1": [
+      "p1.procedure-invocation-creates-instance",
+      "p1.instance-independent-execution",
+      "p1.instance-independent-unsaved-entities",
+      "p1.saved-locals-shared"
+    ],
+    "p4": [
+      "p4.caller-and-call-sequence-definitions",
+      "p4.statement-function-host-instance",
+      "p4.internal-name-host-instance",
+      "p4.internal-associated-host-instance",
+      "p4.module-procedure-host-instance",
+      "p4.main-external-no-host-instance"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S15.6.2.4-001",
+      "title": "Procedure invocation creates a subprogram instance",
+      "source": "15.6.2.4 p1.procedure-invocation-creates-instance; J3/24-007, 18 December 2023 PDF p356.",
+      "source_units": [
+        "p1.procedure-invocation-creates-instance"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Invoking a procedure defined by a subprogram creates an instance of that subprogram.",
+      "facets": [
+        "procedure-invocation-creates-instance"
+      ],
+      "pending": {
+        "procedure-invocation-creates-instance": "PENDING positive plan: recursive INTEGER FUNCTION depth(n) RESULT(r) increments a SAVE counter on every invocation, calls depth(n-1) down to zero, and caller observes counter advanced by four for depth(3), proving four invocations created instances."
+      },
+      "oracle": "Plans are source-derived pending evidence. Positive runtime plans initialize nonmatching sentinels first and observe exact integer, logical, character length plus value, association, shape, or source-admission results. Diagnostic plans use a conforming control that changes only the constrained feature.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Future fixture packets must establish a distinguished positive state before observation, use one-property controls for numbered constraints and syntax rules, and compare only exact scalar values, source admission, required rejection, or source-use attribution. Diagnostic text, fatal severity, printed rule numbers, link-editor details, addresses, C symbol spelling, and unsupported-feature messages are not portable oracles. Numbered R/C units are already pre-accounted through doc/fortran_2023_rules.txt.",
+      "dependencies": "Registered dependencies: clauses 6-11 for lexical tokens, source form, declarations, expressions, execution constructs, array and pointer foundations, and statement-function form; 15.3 for characteristics, 15.4 for interfaces, 15.5 for procedure references and argument association, 15.6.2.1 for prefix and BIND foundations, 15.7-15.9 for PURE, SIMPLE, and ELEMENTAL constraints, 16 for standard intrinsics used only as exact helpers, 18.3 and 18.10 for interoperability, 19 for scope/host association/lifetime, and 4.2 for required diagnostics."
+    },
+    {
+      "id": "S15.6.2.4-002",
+      "title": "Each instance has an independent execution sequence",
+      "source": "15.6.2.4 p1.instance-independent-execution; J3/24-007, 18 December 2023 PDF p356.",
+      "source_units": [
+        "p1.instance-independent-execution"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Each instance of a subprogram has an independent sequence of execution.",
+      "facets": [
+        "recursive-instance-execution-resumes-after-callee"
+      ],
+      "pending": {
+        "recursive-instance-execution-resumes-after-callee": "PENDING positive plan: RECURSIVE INTEGER FUNCTION walk(n) sets local stage=10+n, calls walk(n-1), then adds 100+n after return; walk(2) expects exact ordering-derived sum 12+11+10+101+102 = 236, making caller-instance resumption load-bearing."
+      },
+      "oracle": "Plans are source-derived pending evidence. Positive runtime plans initialize nonmatching sentinels first and observe exact integer, logical, character length plus value, association, shape, or source-admission results. Diagnostic plans use a conforming control that changes only the constrained feature.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Future fixture packets must establish a distinguished positive state before observation, use one-property controls for numbered constraints and syntax rules, and compare only exact scalar values, source admission, required rejection, or source-use attribution. Diagnostic text, fatal severity, printed rule numbers, link-editor details, addresses, C symbol spelling, and unsupported-feature messages are not portable oracles. Numbered R/C units are already pre-accounted through doc/fortran_2023_rules.txt.",
+      "dependencies": "Registered dependencies: clauses 6-11 for lexical tokens, source form, declarations, expressions, execution constructs, array and pointer foundations, and statement-function form; 15.3 for characteristics, 15.4 for interfaces, 15.5 for procedure references and argument association, 15.6.2.1 for prefix and BIND foundations, 15.7-15.9 for PURE, SIMPLE, and ELEMENTAL constraints, 16 for standard intrinsics used only as exact helpers, 18.3 and 18.10 for interoperability, 19 for scope/host association/lifetime, and 4.2 for required diagnostics."
+    },
+    {
+      "id": "S15.6.2.4-003",
+      "title": "Each instance has independent dummy arguments and unsaved local entities",
+      "source": "15.6.2.4 p1.instance-independent-unsaved-entities; J3/24-007, 18 December 2023 PDF p356.",
+      "source_units": [
+        "p1.instance-independent-unsaved-entities"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Each subprogram instance has an independent set of dummy arguments, unsaved local variables, and unsaved local procedure pointers.",
+      "facets": [
+        "recursive-unsaved-local-independence",
+        "recursive-dummy-argument-independence",
+        "recursive-unsaved-procedure-pointer-independence"
+      ],
+      "pending": {
+        "recursive-unsaved-local-independence": "PENDING positive plan: RECURSIVE INTEGER FUNCTION check(n) RESULT(r) sets unsaved local marker=n, calls check(n-1), verifies marker still equals n after return, and expects check(3)==6 from sentinel -6; any shared non-SAVE local would corrupt marker.",
+        "recursive-dummy-argument-independence": "PENDING positive plan: recursive subroutine descend(n,total) copies dummy n to local before CALL descend(n-1,total), then adds n after return; initial total=-99 is set to 0 first and final exact total 1+2+3 proves each dummy value remains instance-specific.",
+        "recursive-unsaved-procedure-pointer-independence": "PENDING positive plan: recursive host assigns an unsaved procedure pointer p to one of two local internal procedures selected by n parity, calls the next instance, then invokes p; exact encoded result 121 proves each instance retained its own pointer association."
+      },
+      "oracle": "Plans are source-derived pending evidence. Positive runtime plans initialize nonmatching sentinels first and observe exact integer, logical, character length plus value, association, shape, or source-admission results. Diagnostic plans use a conforming control that changes only the constrained feature.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Future fixture packets must establish a distinguished positive state before observation, use one-property controls for numbered constraints and syntax rules, and compare only exact scalar values, source admission, required rejection, or source-use attribution. Diagnostic text, fatal severity, printed rule numbers, link-editor details, addresses, C symbol spelling, and unsupported-feature messages are not portable oracles. Numbered R/C units are already pre-accounted through doc/fortran_2023_rules.txt.",
+      "dependencies": "Registered dependencies: clauses 6-11 for lexical tokens, source form, declarations, expressions, execution constructs, array and pointer foundations, and statement-function form; 15.3 for characteristics, 15.4 for interfaces, 15.5 for procedure references and argument association, 15.6.2.1 for prefix and BIND foundations, 15.7-15.9 for PURE, SIMPLE, and ELEMENTAL constraints, 16 for standard intrinsics used only as exact helpers, 18.3 and 18.10 for interoperability, 19 for scope/host association/lifetime, and 4.2 for required diagnostics."
+    },
+    {
+      "id": "S15.6.2.4-004",
+      "title": "Saved local entities are shared by all instances",
+      "source": "15.6.2.4 p1.saved-locals-shared; J3/24-007, 18 December 2023 PDF p356.",
+      "source_units": [
+        "p1.saved-locals-shared"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Saved local entities are shared by all instances of the subprogram.",
+      "facets": [
+        "recursive-save-local-shared-across-instances"
+      ],
+      "pending": {
+        "recursive-save-local-shared-across-instances": "PENDING positive plan: RECURSIVE INTEGER FUNCTION bump(n) RESULT(r) has INTEGER, SAVE :: counter=0, increments counter in every instance, recurses from n=3 to 0, and outermost caller observes exact counter value 4; a nonshared counter would leave the outer instance at 1."
+      },
+      "oracle": "Plans are source-derived pending evidence. Positive runtime plans initialize nonmatching sentinels first and observe exact integer, logical, character length plus value, association, shape, or source-admission results. Diagnostic plans use a conforming control that changes only the constrained feature.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Future fixture packets must establish a distinguished positive state before observation, use one-property controls for numbered constraints and syntax rules, and compare only exact scalar values, source admission, required rejection, or source-use attribution. Diagnostic text, fatal severity, printed rule numbers, link-editor details, addresses, C symbol spelling, and unsupported-feature messages are not portable oracles. Numbered R/C units are already pre-accounted through doc/fortran_2023_rules.txt.",
+      "dependencies": "Registered dependencies: clauses 6-11 for lexical tokens, source form, declarations, expressions, execution constructs, array and pointer foundations, and statement-function form; 15.3 for characteristics, 15.4 for interfaces, 15.5 for procedure references and argument association, 15.6.2.1 for prefix and BIND foundations, 15.7-15.9 for PURE, SIMPLE, and ELEMENTAL constraints, 16 for standard intrinsics used only as exact helpers, 18.3 and 18.10 for interoperability, 19 for scope/host association/lifetime, and 4.2 for required diagnostics."
+    },
+    {
+      "id": "S15.6.2.4-005",
+      "title": "Statement function invocation creates a statement function instance",
+      "source": "15.6.2.4 p2; J3/24-007, 18 December 2023 PDF p356.",
+      "source_units": [
+        "p2"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Invoking a statement function creates an instance of that statement function.",
+      "facets": [
+        "statement-function-invocation-creates-instance"
+      ],
+      "pending": {
+        "statement-function-invocation-creates-instance": "PENDING positive plan: statement function sf(x)=x+2 is invoked as sf(5) and sf(7), caller initializes sentinels -7 and -9 and observes exact 7 and 9; this records invocation-created instances without local state."
+      },
+      "oracle": "Plans are source-derived pending evidence. Positive runtime plans initialize nonmatching sentinels first and observe exact integer, logical, character length plus value, association, shape, or source-admission results. Diagnostic plans use a conforming control that changes only the constrained feature.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Future fixture packets must establish a distinguished positive state before observation, use one-property controls for numbered constraints and syntax rules, and compare only exact scalar values, source admission, required rejection, or source-use attribution. Diagnostic text, fatal severity, printed rule numbers, link-editor details, addresses, C symbol spelling, and unsupported-feature messages are not portable oracles. Numbered R/C units are already pre-accounted through doc/fortran_2023_rules.txt.",
+      "dependencies": "Registered dependencies: clauses 6-11 for lexical tokens, source form, declarations, expressions, execution constructs, array and pointer foundations, and statement-function form; 15.3 for characteristics, 15.4 for interfaces, 15.5 for procedure references and argument association, 15.6.2.1 for prefix and BIND foundations, 15.7-15.9 for PURE, SIMPLE, and ELEMENTAL constraints, 16 for standard intrinsics used only as exact helpers, 18.3 and 18.10 for interoperability, 19 for scope/host association/lifetime, and 4.2 for required diagnostics."
+    },
+    {
+      "id": "S15.6.2.4-006",
+      "title": "A completed instance ceases to exist",
+      "source": "15.6.2.4 p3; J3/24-007, 18 December 2023 PDF p356.",
+      "source_units": [
+        "p3"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "An instance ceases to exist on completion of its execution.",
+      "facets": [
+        "instance-completion-finalizes-local-state",
+        "unsaved-local-not-persisted-control"
+      ],
+      "pending": {
+        "instance-completion-finalizes-local-state": "PENDING positive plan: function make() declares a local finalizable object whose final subroutine increments module counter from sentinel -5 to -4 at function completion; caller observes returned value first and final counter after the call.",
+        "unsaved-local-not-persisted-control": "PENDING positive plan: RECURSIVE SUBROUTINE s(n,out) declares local INTEGER :: k with no initializer, no SAVE, and no DATA; it sets k=n, recurses with CALL s(n-1,out) for n>1, then assigns out(n)=k. Caller preinitializes out=[-1,-2,-3], executes CALL s(3,out), and expects exact [1,2,3], proving each active instance keeps its own unsaved local across inner calls. Companion SUBROUTINE save_count(out) has INTEGER, SAVE :: counter=0, increments it on each of three calls, and records exact [1,2,3], distinguishing shared SAVE state from the unsaved recursive local."
+      },
+      "oracle": "Plans are source-derived pending evidence. Positive runtime plans initialize nonmatching sentinels first and observe exact integer, logical, character length plus value, association, shape, or source-admission results. Diagnostic plans use a conforming control that changes only the constrained feature.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Future fixture packets must establish a distinguished positive state before observation, use one-property controls for numbered constraints and syntax rules, and compare only exact scalar values, source admission, required rejection, or source-use attribution. Diagnostic text, fatal severity, printed rule numbers, link-editor details, addresses, C symbol spelling, and unsupported-feature messages are not portable oracles. Numbered R/C units are already pre-accounted through doc/fortran_2023_rules.txt.",
+      "dependencies": "Registered dependencies: clauses 6-11 for lexical tokens, source form, declarations, expressions, execution constructs, array and pointer foundations, and statement-function form; 15.3 for characteristics, 15.4 for interfaces, 15.5 for procedure references and argument association, 15.6.2.1 for prefix and BIND foundations, 15.7-15.9 for PURE, SIMPLE, and ELEMENTAL constraints, 16 for standard intrinsics used only as exact helpers, 18.3 and 18.10 for interoperability, 19 for scope/host association/lifetime, and 4.2 for required diagnostics."
+    },
+    {
+      "id": "S15.6.2.4-007",
+      "title": "Caller and call sequence are defined by the invoking instance chain",
+      "source": "15.6.2.4 p4.caller-and-call-sequence-definitions; J3/24-007, 18 December 2023 PDF p356.",
+      "source_units": [
+        "p4.caller-and-call-sequence-definitions"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The caller of a procedure instance is the main program, subprogram, or statement function instance that invoked it; a call sequence is the caller followed by its caller sequence; the main program call sequence is empty.",
+      "facets": [
+        "caller-call-sequence-source-use"
+      ],
+      "pending": {
+        "caller-call-sequence-source-use": "PENDING source-use plan: nested main -> outer -> inner calls produce exact marker 81 through ordinary calls; no direct portable intrinsic exposes the call sequence, so fixture attribution will use this definition only through host-instance rules that depend on it."
+      },
+      "oracle": "Plans are source-derived pending evidence. Positive runtime plans initialize nonmatching sentinels first and observe exact integer, logical, character length plus value, association, shape, or source-admission results. Diagnostic plans use a conforming control that changes only the constrained feature.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Future fixture packets must establish a distinguished positive state before observation, use one-property controls for numbered constraints and syntax rules, and compare only exact scalar values, source admission, required rejection, or source-use attribution. Diagnostic text, fatal severity, printed rule numbers, link-editor details, addresses, C symbol spelling, and unsupported-feature messages are not portable oracles. Numbered R/C units are already pre-accounted through doc/fortran_2023_rules.txt. No portable Fortran operation directly returns the caller chain or the emptiness of the main-program call sequence; those terms are source-use material for host-instance and scope rules.",
+      "dependencies": "Registered dependencies: clauses 6-11 for lexical tokens, source form, declarations, expressions, execution constructs, array and pointer foundations, and statement-function form; 15.3 for characteristics, 15.4 for interfaces, 15.5 for procedure references and argument association, 15.6.2.1 for prefix and BIND foundations, 15.7-15.9 for PURE, SIMPLE, and ELEMENTAL constraints, 16 for standard intrinsics used only as exact helpers, 18.3 and 18.10 for interoperability, 19 for scope/host association/lifetime, and 4.2 for required diagnostics."
+    },
+    {
+      "id": "S15.6.2.4-008",
+      "title": "Statement function and name-invoked internal procedure host instance is the first host in the call sequence",
+      "source": "15.6.2.4 p4 statement-function and name-invoked internal-procedure host-instance sentences; J3/24-007, 18 December 2023 PDF p356.",
+      "source_units": [
+        "p4.statement-function-host-instance",
+        "p4.internal-name-host-instance"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For a statement function or internal procedure invoked by name, the host instance is the first call-sequence element that is an instance of the host.",
+      "facets": [
+        "statement-function-host-instance-source-use",
+        "internal-procedure-name-host-instance"
+      ],
+      "pending": {
+        "statement-function-host-instance-source-use": "PENDING positive plan: recursive host subroutine defines statement function sf() using host local base; each recursion level calls sf() by name and checks exact base+1, proving lookup uses the active host instance.",
+        "internal-procedure-name-host-instance": "PENDING positive plan: recursive host subroutine defines internal function val() returning host local base; each level calls val() by name after returning from deeper recursion and observes its own base, not the deeper value."
+      },
+      "oracle": "Plans are source-derived pending evidence. Positive runtime plans initialize nonmatching sentinels first and observe exact integer, logical, character length plus value, association, shape, or source-admission results. Diagnostic plans use a conforming control that changes only the constrained feature.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Future fixture packets must establish a distinguished positive state before observation, use one-property controls for numbered constraints and syntax rules, and compare only exact scalar values, source admission, required rejection, or source-use attribution. Diagnostic text, fatal severity, printed rule numbers, link-editor details, addresses, C symbol spelling, and unsupported-feature messages are not portable oracles. Numbered R/C units are already pre-accounted through doc/fortran_2023_rules.txt.",
+      "dependencies": "Registered dependencies: clauses 6-11 for lexical tokens, source form, declarations, expressions, execution constructs, array and pointer foundations, and statement-function form; 15.3 for characteristics, 15.4 for interfaces, 15.5 for procedure references and argument association, 15.6.2.1 for prefix and BIND foundations, 15.7-15.9 for PURE, SIMPLE, and ELEMENTAL constraints, 16 for standard intrinsics used only as exact helpers, 18.3 and 18.10 for interoperability, 19 for scope/host association/lifetime, and 4.2 for required diagnostics."
+    },
+    {
+      "id": "S15.6.2.4-009",
+      "title": "Associated internal procedures use the host instance captured at association",
+      "source": "15.6.2.4 p4.internal-associated-host-instance; J3/24-007, 18 December 2023 PDF p356.",
+      "source_units": [
+        "p4.internal-associated-host-instance"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For an internal procedure invoked through a dummy procedure or procedure pointer, the host instance is the host instance of the associating entity from the association establishment.",
+      "facets": [
+        "dummy-procedure-captures-host-instance",
+        "procedure-pointer-captures-host-instance"
+      ],
+      "pending": {
+        "dummy-procedure-captures-host-instance": "PENDING positive plan: recursive host sets local base=n*10 and passes internal function val to consumer; consumer calls val after a deeper recursive association has returned, expecting the exact base from the association level.",
+        "procedure-pointer-captures-host-instance": "PENDING positive plan: host associates procedure pointer p=>val where val returns host local base=91, invokes a consumer before host exits, and consumer calls p expecting exact 91 rather than another active level."
+      },
+      "oracle": "Plans are source-derived pending evidence. Positive runtime plans initialize nonmatching sentinels first and observe exact integer, logical, character length plus value, association, shape, or source-admission results. Diagnostic plans use a conforming control that changes only the constrained feature.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Future fixture packets must establish a distinguished positive state before observation, use one-property controls for numbered constraints and syntax rules, and compare only exact scalar values, source admission, required rejection, or source-use attribution. Diagnostic text, fatal severity, printed rule numbers, link-editor details, addresses, C symbol spelling, and unsupported-feature messages are not portable oracles. Numbered R/C units are already pre-accounted through doc/fortran_2023_rules.txt.",
+      "dependencies": "Registered dependencies: clauses 6-11 for lexical tokens, source form, declarations, expressions, execution constructs, array and pointer foundations, and statement-function form; 15.3 for characteristics, 15.4 for interfaces, 15.5 for procedure references and argument association, 15.6.2.1 for prefix and BIND foundations, 15.7-15.9 for PURE, SIMPLE, and ELEMENTAL constraints, 16 for standard intrinsics used only as exact helpers, 18.3 and 18.10 for interoperability, 19 for scope/host association/lifetime, and 4.2 for required diagnostics."
+    },
+    {
+      "id": "S15.6.2.4-010",
+      "title": "A module procedure host instance is its defining module or submodule",
+      "source": "15.6.2.4 p4.module-procedure-host-instance; J3/24-007, 18 December 2023 PDF p356.",
+      "source_units": [
+        "p4.module-procedure-host-instance"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The host instance of a module procedure is the module or submodule in which it is defined.",
+      "facets": [
+        "module-procedure-host-instance-source-use",
+        "submodule-procedure-host-instance-source-use"
+      ],
+      "pending": {
+        "module-procedure-host-instance-source-use": "PENDING source-use plan: module procedure get() returns module variable token initialized to -92 then set to 92 before call; exact 92 observes access through its module host.",
+        "submodule-procedure-host-instance-source-use": "PENDING source-use plan: submodule procedure get() returns ancestor module variable token set to 93 and caller observes exact 93 through USE association."
+      },
+      "oracle": "Plans are source-derived pending evidence. Positive runtime plans initialize nonmatching sentinels first and observe exact integer, logical, character length plus value, association, shape, or source-admission results. Diagnostic plans use a conforming control that changes only the constrained feature.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Future fixture packets must establish a distinguished positive state before observation, use one-property controls for numbered constraints and syntax rules, and compare only exact scalar values, source admission, required rejection, or source-use attribution. Diagnostic text, fatal severity, printed rule numbers, link-editor details, addresses, C symbol spelling, and unsupported-feature messages are not portable oracles. Numbered R/C units are already pre-accounted through doc/fortran_2023_rules.txt.",
+      "dependencies": "Registered dependencies: clauses 6-11 for lexical tokens, source form, declarations, expressions, execution constructs, array and pointer foundations, and statement-function form; 15.3 for characteristics, 15.4 for interfaces, 15.5 for procedure references and argument association, 15.6.2.1 for prefix and BIND foundations, 15.7-15.9 for PURE, SIMPLE, and ELEMENTAL constraints, 16 for standard intrinsics used only as exact helpers, 18.3 and 18.10 for interoperability, 19 for scope/host association/lifetime, and 4.2 for required diagnostics."
+    },
+    {
+      "id": "S15.6.2.4-011",
+      "title": "Main programs and external subprograms have no host instance",
+      "source": "15.6.2.4 p4.main-external-no-host-instance; J3/24-007, 18 December 2023 PDF p356.",
+      "source_units": [
+        "p4.main-external-no-host-instance"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A main program or external subprogram has no host instance.",
+      "facets": [
+        "main-program-no-host-instance-source-use",
+        "external-subprogram-no-host-instance-source-use"
+      ],
+      "pending": {
+        "main-program-no-host-instance-source-use": "PENDING source-use inventory: no portable Fortran expression queries a main program host instance; future fixtures use this as a negative source fact for host association rules.",
+        "external-subprogram-no-host-instance-source-use": "PENDING source-use inventory: external subprogram ext() references only its own local declarations and explicit arguments; no host variable can be observed because no host instance exists."
+      },
+      "oracle": "Plans are source-derived pending evidence. Positive runtime plans initialize nonmatching sentinels first and observe exact integer, logical, character length plus value, association, shape, or source-admission results. Diagnostic plans use a conforming control that changes only the constrained feature.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Future fixture packets must establish a distinguished positive state before observation, use one-property controls for numbered constraints and syntax rules, and compare only exact scalar values, source admission, required rejection, or source-use attribution. Diagnostic text, fatal severity, printed rule numbers, link-editor details, addresses, C symbol spelling, and unsupported-feature messages are not portable oracles. Numbered R/C units are already pre-accounted through doc/fortran_2023_rules.txt. No portable Fortran query exposes an absent host instance for the main program or an external subprogram; these facets are source-use facts for name-resolution and host-association owners.",
+      "dependencies": "Registered dependencies: clauses 6-11 for lexical tokens, source form, declarations, expressions, execution constructs, array and pointer foundations, and statement-function form; 15.3 for characteristics, 15.4 for interfaces, 15.5 for procedure references and argument association, 15.6.2.1 for prefix and BIND foundations, 15.7-15.9 for PURE, SIMPLE, and ELEMENTAL constraints, 16 for standard intrinsics used only as exact helpers, 18.3 and 18.10 for interoperability, 19 for scope/host association/lifetime, and 4.2 for required diagnostics."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "structural",
+      "rationale": "Mixed instance creation, independent instance state, and SAVE sharing split into fine units."
+    },
+    {
+      "unit": "p1.procedure-invocation-creates-instance",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.6.2.4-001"
+      ],
+      "rationale": "Fine split from p1."
+    },
+    {
+      "unit": "p1.instance-independent-execution",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.6.2.4-002"
+      ],
+      "rationale": "Fine split from p1."
+    },
+    {
+      "unit": "p1.instance-independent-unsaved-entities",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.6.2.4-003"
+      ],
+      "rationale": "Fine split from p1."
+    },
+    {
+      "unit": "p1.saved-locals-shared",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.6.2.4-004"
+      ],
+      "rationale": "Fine split from p1."
+    },
+    {
+      "unit": "p2",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.6.2.4-005"
+      ]
+    },
+    {
+      "unit": "p3",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.6.2.4-006"
+      ]
+    },
+    {
+      "unit": "p4",
+      "disposition": "structural",
+      "rationale": "Caller, call sequence, and host-instance definitions split into fine units."
+    },
+    {
+      "unit": "p4.caller-and-call-sequence-definitions",
+      "disposition": "definition",
+      "requirements": [
+        "S15.6.2.4-007"
+      ],
+      "rationale": "Fine split from p4."
+    },
+    {
+      "unit": "p4.statement-function-host-instance",
+      "disposition": "definition",
+      "requirements": [
+        "S15.6.2.4-008"
+      ],
+      "rationale": "Fine split from p4."
+    },
+    {
+      "unit": "p4.internal-name-host-instance",
+      "disposition": "definition",
+      "requirements": [
+        "S15.6.2.4-008"
+      ],
+      "rationale": "Fine split from p4."
+    },
+    {
+      "unit": "p4.internal-associated-host-instance",
+      "disposition": "definition",
+      "requirements": [
+        "S15.6.2.4-009"
+      ],
+      "rationale": "Fine split from p4."
+    },
+    {
+      "unit": "p4.module-procedure-host-instance",
+      "disposition": "definition",
+      "requirements": [
+        "S15.6.2.4-010"
+      ],
+      "rationale": "Fine split from p4."
+    },
+    {
+      "unit": "p4.main-external-no-host-instance",
+      "disposition": "definition",
+      "requirements": [
+        "S15.6.2.4-011"
+      ],
+      "rationale": "Fine split from p4."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_15_6_2_4.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "b609fc8323f1f94daaa0971ee8e8bf386ddee3d678bf420784e3a4561f8a920c",
+  "review_rationale": "Source registration for 15.6.2.2-15.6.2.5: function and subroutine subprograms, instances of a subprogram, and separate module procedures (batch235). Every unit hash-verified by an independent reviewer across two rounds; R1532-R1543 and C1569-C1578 had no existing tests and carry conforming one-feature controls, and instance independence is observed through recursion. Source accounting only."
+}

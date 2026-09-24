@@ -5919,6 +5919,11 @@ See `doc/source_audits/batch_233.json`.
 Twenty-eight units after two rounds. The underflow mode finally becomes visible: TINY(x)/4 must be a subnormal under gradual underflow and exactly zero under abrupt underflow, which is the entire point of the control.
 See `doc/source_audits/batch_230.json`.
 
+## Batch 235 — Function, subroutine and separate module subprograms (15.6.2.2-15.6.2.5)
+
+Thirty-eight units, twenty-two numbered, after two rounds. The instance-independence plan is a neat discriminator: a recursive subroutine that saves n in an unsaved local before recursing returns [1,2,3] only if every instance has its own local; a processor that shared it would give [1,1,1].
+See `doc/source_audits/batch_235.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must

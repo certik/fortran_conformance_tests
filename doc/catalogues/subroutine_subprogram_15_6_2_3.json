@@ -1,0 +1,289 @@
+{
+  "schema_version": 1,
+  "section": "15.6.2.3",
+  "requirements": [
+    {
+      "id": "S15.6.2.3-001",
+      "title": "SUBROUTINE first statement makes a subroutine subprogram",
+      "source": "15.6.2.3 p1; J3/24-007, 18 December 2023 PDF p355.",
+      "source_units": [
+        "p1"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A subroutine subprogram is a subprogram whose first statement is a SUBROUTINE statement.",
+      "facets": [
+        "subroutine-first-statement-defines-subroutine-subprogram"
+      ],
+      "pending": {
+        "subroutine-first-statement-defines-subroutine-subprogram": "PENDING positive plan: complete SUBROUTINE set_value(x) assigns x=61; caller initializes x=-61, CALL set_value(x), and observes exact 61."
+      },
+      "oracle": "Plans are source-derived pending evidence. Positive runtime plans initialize nonmatching sentinels first and observe exact integer, logical, character length plus value, association, shape, or source-admission results. Diagnostic plans use a conforming control that changes only the constrained feature.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Future fixture packets must establish a distinguished positive state before observation, use one-property controls for numbered constraints and syntax rules, and compare only exact scalar values, source admission, required rejection, or source-use attribution. Diagnostic text, fatal severity, printed rule numbers, link-editor details, addresses, C symbol spelling, and unsupported-feature messages are not portable oracles. Numbered R/C units are already pre-accounted through doc/fortran_2023_rules.txt.",
+      "dependencies": "Registered dependencies: clauses 6-11 for lexical tokens, source form, declarations, expressions, execution constructs, array and pointer foundations, and statement-function form; 15.3 for characteristics, 15.4 for interfaces, 15.5 for procedure references and argument association, 15.6.2.1 for prefix and BIND foundations, 15.7-15.9 for PURE, SIMPLE, and ELEMENTAL constraints, 16 for standard intrinsics used only as exact helpers, 18.3 and 18.10 for interoperability, 19 for scope/host association/lifetime, and 4.2 for required diagnostics."
+    },
+    {
+      "id": "R1537",
+      "title": "A subroutine subprogram consists of a subroutine statement, optional parts, and an end subroutine statement",
+      "source": "15.6.2.3 R1537; J3/24-007, 18 December 2023 PDF p355.",
+      "source_units": [
+        "R1537"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "The subroutine-subprogram syntax is subroutine-stmt, optional specification, execution, and internal-subprogram parts, followed by end-subroutine-stmt.",
+      "facets": [
+        "minimal-subroutine-subprogram-form",
+        "subroutine-with-specification-and-execution-parts",
+        "subroutine-with-internal-subprogram-part",
+        "malformed-subroutine-subprogram-rejected"
+      ],
+      "pending": {
+        "minimal-subroutine-subprogram-form": "PENDING positive parse/control: SUBROUTINE s(); END SUBROUTINE s.",
+        "subroutine-with-specification-and-execution-parts": "PENDING positive parse/control: SUBROUTINE s(x) declares INTEGER, INTENT(OUT) :: x and assigns x=62.",
+        "subroutine-with-internal-subprogram-part": "PENDING positive parse/control: SUBROUTINE s(x) contains internal SUBROUTINE helper(y) and returns x=63 through helper.",
+        "malformed-subroutine-subprogram-rejected": "PENDING diagnostic/control pair: negative omits END SUBROUTINE from a complete subroutine; control adds only END SUBROUTINE s."
+      },
+      "oracle": "Plans are source-derived pending evidence. Positive runtime plans initialize nonmatching sentinels first and observe exact integer, logical, character length plus value, association, shape, or source-admission results. Diagnostic plans use a conforming control that changes only the constrained feature.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Future fixture packets must establish a distinguished positive state before observation, use one-property controls for numbered constraints and syntax rules, and compare only exact scalar values, source admission, required rejection, or source-use attribution. Diagnostic text, fatal severity, printed rule numbers, link-editor details, addresses, C symbol spelling, and unsupported-feature messages are not portable oracles. Numbered R/C units are already pre-accounted through doc/fortran_2023_rules.txt.",
+      "dependencies": "Registered dependencies: clauses 6-11 for lexical tokens, source form, declarations, expressions, execution constructs, array and pointer foundations, and statement-function form; 15.3 for characteristics, 15.4 for interfaces, 15.5 for procedure references and argument association, 15.6.2.1 for prefix and BIND foundations, 15.7-15.9 for PURE, SIMPLE, and ELEMENTAL constraints, 16 for standard intrinsics used only as exact helpers, 18.3 and 18.10 for interoperability, 19 for scope/host association/lifetime, and 4.2 for required diagnostics."
+    },
+    {
+      "id": "R1538",
+      "title": "A subroutine statement has optional prefix, SUBROUTINE name, optional dummy list, and optional BIND spec",
+      "source": "15.6.2.3 R1538; J3/24-007, 18 December 2023 PDF p355.",
+      "source_units": [
+        "R1538"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "The subroutine-stmt syntax admits an optional prefix, SUBROUTINE keyword, subroutine-name, optional parenthesized dummy-arg list, and optional proc-language-binding-spec.",
+      "facets": [
+        "subroutine-stmt-no-dummy-list",
+        "subroutine-stmt-with-empty-dummy-list",
+        "subroutine-stmt-with-dummies",
+        "subroutine-stmt-with-bind",
+        "malformed-subroutine-stmt-rejected"
+      ],
+      "pending": {
+        "subroutine-stmt-no-dummy-list": "PENDING positive parse/control: SUBROUTINE s with no parentheses assigns module variable marker=64.",
+        "subroutine-stmt-with-empty-dummy-list": "PENDING positive parse/control: SUBROUTINE s() assigns module variable marker=65.",
+        "subroutine-stmt-with-dummies": "PENDING positive parse/control: SUBROUTINE s(x,y) assigns x=y+1 and caller observes exact 66 from y=65.",
+        "subroutine-stmt-with-bind": "PENDING positive parse/control: SUBROUTINE s(x) BIND(C) uses INTEGER(C_INT) dummy x and no C-linkage assertion.",
+        "malformed-subroutine-stmt-rejected": "PENDING diagnostic/control pair: negative spells SUBROUTINE with a RESULT suffix; control deletes only RESULT(r)."
+      },
+      "oracle": "Plans are source-derived pending evidence. Positive runtime plans initialize nonmatching sentinels first and observe exact integer, logical, character length plus value, association, shape, or source-admission results. Diagnostic plans use a conforming control that changes only the constrained feature.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Future fixture packets must establish a distinguished positive state before observation, use one-property controls for numbered constraints and syntax rules, and compare only exact scalar values, source admission, required rejection, or source-use attribution. Diagnostic text, fatal severity, printed rule numbers, link-editor details, addresses, C symbol spelling, and unsupported-feature messages are not portable oracles. Numbered R/C units are already pre-accounted through doc/fortran_2023_rules.txt.",
+      "dependencies": "Registered dependencies: clauses 6-11 for lexical tokens, source form, declarations, expressions, execution constructs, array and pointer foundations, and statement-function form; 15.3 for characteristics, 15.4 for interfaces, 15.5 for procedure references and argument association, 15.6.2.1 for prefix and BIND foundations, 15.7-15.9 for PURE, SIMPLE, and ELEMENTAL constraints, 16 for standard intrinsics used only as exact helpers, 18.3 and 18.10 for interoperability, 19 for scope/host association/lifetime, and 4.2 for required diagnostics."
+    },
+    {
+      "id": "C1574",
+      "title": "A subroutine prefix contains no declaration-type-spec",
+      "source": "15.6.2.3 C1574; J3/24-007, 18 December 2023 PDF p355.",
+      "source_units": [
+        "C1574"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "The prefix of a subroutine-stmt shall not contain a declaration-type-spec.",
+      "facets": [
+        "declaration-type-spec-subroutine-prefix-rejected",
+        "non-type-prefix-subroutine-control",
+        "no-prefix-subroutine-control"
+      ],
+      "pending": {
+        "declaration-type-spec-subroutine-prefix-rejected": "PENDING diagnostic/control pair: negative INTEGER SUBROUTINE s(); control deletes only INTEGER.",
+        "non-type-prefix-subroutine-control": "PENDING conforming control: PURE SUBROUTINE s(x) assigns x=67 through INTENT(OUT) dummy.",
+        "no-prefix-subroutine-control": "PENDING conforming control: SUBROUTINE s(x) assigns x=68."
+      },
+      "oracle": "Plans are source-derived pending evidence. Positive runtime plans initialize nonmatching sentinels first and observe exact integer, logical, character length plus value, association, shape, or source-admission results. Diagnostic plans use a conforming control that changes only the constrained feature.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Future fixture packets must establish a distinguished positive state before observation, use one-property controls for numbered constraints and syntax rules, and compare only exact scalar values, source admission, required rejection, or source-use attribution. Diagnostic text, fatal severity, printed rule numbers, link-editor details, addresses, C symbol spelling, and unsupported-feature messages are not portable oracles. Numbered R/C units are already pre-accounted through doc/fortran_2023_rules.txt.",
+      "dependencies": "Registered dependencies: clauses 6-11 for lexical tokens, source form, declarations, expressions, execution constructs, array and pointer foundations, and statement-function form; 15.3 for characteristics, 15.4 for interfaces, 15.5 for procedure references and argument association, 15.6.2.1 for prefix and BIND foundations, 15.7-15.9 for PURE, SIMPLE, and ELEMENTAL constraints, 16 for standard intrinsics used only as exact helpers, 18.3 and 18.10 for interoperability, 19 for scope/host association/lifetime, and 4.2 for required diagnostics."
+    },
+    {
+      "id": "R1539",
+      "title": "A subroutine dummy argument is a dummy-arg-name or alternate return indicator",
+      "source": "15.6.2.3 R1539; J3/24-007, 18 December 2023 PDF p355.",
+      "source_units": [
+        "R1539"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "The dummy-arg syntax is either dummy-arg-name or an asterisk alternate return indicator.",
+      "facets": [
+        "subroutine-dummy-name-form",
+        "alternate-return-dummy-form",
+        "malformed-subroutine-dummy-rejected"
+      ],
+      "pending": {
+        "subroutine-dummy-name-form": "PENDING positive parse/control: SUBROUTINE s(x) declares INTEGER, INTENT(OUT) :: x and assigns x=69.",
+        "alternate-return-dummy-form": "PENDING positive parse/control: SUBROUTINE s(*) immediately RETURN 1 to a labeled caller block that stores exact marker 70.",
+        "malformed-subroutine-dummy-rejected": "PENDING diagnostic/control pair: negative uses SUBROUTINE s(1); control changes only 1 to x and declares x."
+      },
+      "oracle": "Plans are source-derived pending evidence. Positive runtime plans initialize nonmatching sentinels first and observe exact integer, logical, character length plus value, association, shape, or source-admission results. Diagnostic plans use a conforming control that changes only the constrained feature.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Future fixture packets must establish a distinguished positive state before observation, use one-property controls for numbered constraints and syntax rules, and compare only exact scalar values, source admission, required rejection, or source-use attribution. Diagnostic text, fatal severity, printed rule numbers, link-editor details, addresses, C symbol spelling, and unsupported-feature messages are not portable oracles. Numbered R/C units are already pre-accounted through doc/fortran_2023_rules.txt.",
+      "dependencies": "Registered dependencies: clauses 6-11 for lexical tokens, source form, declarations, expressions, execution constructs, array and pointer foundations, and statement-function form; 15.3 for characteristics, 15.4 for interfaces, 15.5 for procedure references and argument association, 15.6.2.1 for prefix and BIND foundations, 15.7-15.9 for PURE, SIMPLE, and ELEMENTAL constraints, 16 for standard intrinsics used only as exact helpers, 18.3 and 18.10 for interoperability, 19 for scope/host association/lifetime, and 4.2 for required diagnostics."
+    },
+    {
+      "id": "R1540",
+      "title": "An end subroutine statement has optional SUBROUTINE and name",
+      "source": "15.6.2.3 R1540; J3/24-007, 18 December 2023 PDF p355.",
+      "source_units": [
+        "R1540"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "The end-subroutine-stmt syntax is END with optional SUBROUTINE and optional subroutine-name.",
+      "facets": [
+        "bare-end-subroutine-stmt",
+        "keyword-end-subroutine-stmt",
+        "named-end-subroutine-stmt",
+        "malformed-end-subroutine-stmt-rejected"
+      ],
+      "pending": {
+        "bare-end-subroutine-stmt": "PENDING positive parse/control: SUBROUTINE s(); END.",
+        "keyword-end-subroutine-stmt": "PENDING positive parse/control: SUBROUTINE s(); END SUBROUTINE.",
+        "named-end-subroutine-stmt": "PENDING positive parse/control: SUBROUTINE s(); END SUBROUTINE s.",
+        "malformed-end-subroutine-stmt-rejected": "PENDING diagnostic/control pair: negative closes a subroutine with END FUNCTION s; control changes only FUNCTION to SUBROUTINE."
+      },
+      "oracle": "Plans are source-derived pending evidence. Positive runtime plans initialize nonmatching sentinels first and observe exact integer, logical, character length plus value, association, shape, or source-admission results. Diagnostic plans use a conforming control that changes only the constrained feature.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Future fixture packets must establish a distinguished positive state before observation, use one-property controls for numbered constraints and syntax rules, and compare only exact scalar values, source admission, required rejection, or source-use attribution. Diagnostic text, fatal severity, printed rule numbers, link-editor details, addresses, C symbol spelling, and unsupported-feature messages are not portable oracles. Numbered R/C units are already pre-accounted through doc/fortran_2023_rules.txt.",
+      "dependencies": "Registered dependencies: clauses 6-11 for lexical tokens, source form, declarations, expressions, execution constructs, array and pointer foundations, and statement-function form; 15.3 for characteristics, 15.4 for interfaces, 15.5 for procedure references and argument association, 15.6.2.1 for prefix and BIND foundations, 15.7-15.9 for PURE, SIMPLE, and ELEMENTAL constraints, 16 for standard intrinsics used only as exact helpers, 18.3 and 18.10 for interoperability, 19 for scope/host association/lifetime, and 4.2 for required diagnostics."
+    },
+    {
+      "id": "C1575",
+      "title": "An internal subroutine does not contain an internal-subprogram part",
+      "source": "15.6.2.3 C1575; J3/24-007, 18 December 2023 PDF p355.",
+      "source_units": [
+        "C1575"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "An internal subroutine subprogram shall not contain an internal-subprogram-part.",
+      "facets": [
+        "nested-internal-subroutine-part-rejected",
+        "internal-subroutine-without-internal-part-control"
+      ],
+      "pending": {
+        "nested-internal-subroutine-part-rejected": "PENDING diagnostic/control pair: negative main program contains internal subroutine s, and s contains an unused CONTAINS plus internal subroutine helper; control deletes only that internal-subprogram-part from s.",
+        "internal-subroutine-without-internal-part-control": "PENDING conforming control: main program internal SUBROUTINE s(x) has a specification part and execution part only, assigning exact 71."
+      },
+      "oracle": "Plans are source-derived pending evidence. Positive runtime plans initialize nonmatching sentinels first and observe exact integer, logical, character length plus value, association, shape, or source-admission results. Diagnostic plans use a conforming control that changes only the constrained feature.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Future fixture packets must establish a distinguished positive state before observation, use one-property controls for numbered constraints and syntax rules, and compare only exact scalar values, source admission, required rejection, or source-use attribution. Diagnostic text, fatal severity, printed rule numbers, link-editor details, addresses, C symbol spelling, and unsupported-feature messages are not portable oracles. Numbered R/C units are already pre-accounted through doc/fortran_2023_rules.txt.",
+      "dependencies": "Registered dependencies: clauses 6-11 for lexical tokens, source form, declarations, expressions, execution constructs, array and pointer foundations, and statement-function form; 15.3 for characteristics, 15.4 for interfaces, 15.5 for procedure references and argument association, 15.6.2.1 for prefix and BIND foundations, 15.7-15.9 for PURE, SIMPLE, and ELEMENTAL constraints, 16 for standard intrinsics used only as exact helpers, 18.3 and 18.10 for interoperability, 19 for scope/host association/lifetime, and 4.2 for required diagnostics."
+    },
+    {
+      "id": "C1576",
+      "title": "A named END SUBROUTINE matches the subroutine statement name",
+      "source": "15.6.2.3 C1576; J3/24-007, 18 December 2023 PDF p355.",
+      "source_units": [
+        "C1576"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "A subroutine-name that appears in the end-subroutine-stmt shall be identical to the subroutine-name in the subroutine-stmt.",
+      "facets": [
+        "end-subroutine-name-mismatch-rejected",
+        "end-subroutine-name-match-control"
+      ],
+      "pending": {
+        "end-subroutine-name-mismatch-rejected": "PENDING diagnostic/control pair: negative SUBROUTINE s() ends with END SUBROUTINE t; control changes only t to s.",
+        "end-subroutine-name-match-control": "PENDING conforming control: SUBROUTINE s(x) ends with END SUBROUTINE s and assigns exact 72."
+      },
+      "oracle": "Plans are source-derived pending evidence. Positive runtime plans initialize nonmatching sentinels first and observe exact integer, logical, character length plus value, association, shape, or source-admission results. Diagnostic plans use a conforming control that changes only the constrained feature.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Future fixture packets must establish a distinguished positive state before observation, use one-property controls for numbered constraints and syntax rules, and compare only exact scalar values, source admission, required rejection, or source-use attribution. Diagnostic text, fatal severity, printed rule numbers, link-editor details, addresses, C symbol spelling, and unsupported-feature messages are not portable oracles. Numbered R/C units are already pre-accounted through doc/fortran_2023_rules.txt.",
+      "dependencies": "Registered dependencies: clauses 6-11 for lexical tokens, source form, declarations, expressions, execution constructs, array and pointer foundations, and statement-function form; 15.3 for characteristics, 15.4 for interfaces, 15.5 for procedure references and argument association, 15.6.2.1 for prefix and BIND foundations, 15.7-15.9 for PURE, SIMPLE, and ELEMENTAL constraints, 16 for standard intrinsics used only as exact helpers, 18.3 and 18.10 for interoperability, 19 for scope/host association/lifetime, and 4.2 for required diagnostics."
+    },
+    {
+      "id": "S15.6.2.3-002",
+      "title": "The subroutine name is the subroutine-name in the SUBROUTINE statement",
+      "source": "15.6.2.3 p2; J3/24-007, 18 December 2023 PDF p355.",
+      "source_units": [
+        "p2"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The name of the subroutine is subroutine-name.",
+      "facets": [
+        "subroutine-name-identifies-callable-subroutine"
+      ],
+      "pending": {
+        "subroutine-name-identifies-callable-subroutine": "PENDING positive plan: module subroutine fill(x) assigns x=73; caller initializes x=-73, CALL fill(x), and observes exact 73, proving subroutine-name is the callable name."
+      },
+      "oracle": "Plans are source-derived pending evidence. Positive runtime plans initialize nonmatching sentinels first and observe exact integer, logical, character length plus value, association, shape, or source-admission results. Diagnostic plans use a conforming control that changes only the constrained feature.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Future fixture packets must establish a distinguished positive state before observation, use one-property controls for numbered constraints and syntax rules, and compare only exact scalar values, source admission, required rejection, or source-use attribution. Diagnostic text, fatal severity, printed rule numbers, link-editor details, addresses, C symbol spelling, and unsupported-feature messages are not portable oracles. Numbered R/C units are already pre-accounted through doc/fortran_2023_rules.txt.",
+      "dependencies": "Registered dependencies: clauses 6-11 for lexical tokens, source form, declarations, expressions, execution constructs, array and pointer foundations, and statement-function form; 15.3 for characteristics, 15.4 for interfaces, 15.5 for procedure references and argument association, 15.6.2.1 for prefix and BIND foundations, 15.7-15.9 for PURE, SIMPLE, and ELEMENTAL constraints, 16 for standard intrinsics used only as exact helpers, 18.3 and 18.10 for interoperability, 19 for scope/host association/lifetime, and 4.2 for required diagnostics."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.6.2.3-001"
+      ]
+    },
+    {
+      "unit": "R1537",
+      "disposition": "requirements",
+      "requirements": [
+        "R1537"
+      ]
+    },
+    {
+      "unit": "R1538",
+      "disposition": "requirements",
+      "requirements": [
+        "R1538"
+      ]
+    },
+    {
+      "unit": "C1574",
+      "disposition": "requirements",
+      "requirements": [
+        "C1574"
+      ]
+    },
+    {
+      "unit": "R1539",
+      "disposition": "requirements",
+      "requirements": [
+        "R1539"
+      ]
+    },
+    {
+      "unit": "R1540",
+      "disposition": "requirements",
+      "requirements": [
+        "R1540"
+      ]
+    },
+    {
+      "unit": "C1575",
+      "disposition": "requirements",
+      "requirements": [
+        "C1575"
+      ]
+    },
+    {
+      "unit": "C1576",
+      "disposition": "requirements",
+      "requirements": [
+        "C1576"
+      ]
+    },
+    {
+      "unit": "p2",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.6.2.3-002"
+      ]
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_15_6_2_3.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "75ee22c0dd7097a3c8ab5fb2e46d6b6e615e7b4d55ddc864bbbd3dfcc8363f39",
+  "review_rationale": "Source registration for 15.6.2.2-15.6.2.5: function and subroutine subprograms, instances of a subprogram, and separate module procedures (batch235). Every unit hash-verified by an independent reviewer across two rounds; R1532-R1543 and C1569-C1578 had no existing tests and carry conforming one-feature controls, and instance independence is observed through recursion. Source accounting only."
+}

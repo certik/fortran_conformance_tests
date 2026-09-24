@@ -1,0 +1,778 @@
+{
+  "schema_version": 1,
+  "section": "15.6.2.2",
+  "subunits": {
+    "p3": [
+      "p3.result-type-specification-routes",
+      "p3.no-double-result-type-specification",
+      "p3.implicit-result-typing",
+      "p3.result-attribute-specification",
+      "p3.function-characteristics-definition"
+    ],
+    "p4": [
+      "p4.result-clause-names-result",
+      "p4.result-clause-function-name-resolution",
+      "p4.no-result-clause-result-name",
+      "p4.no-result-clause-function-name-resolution",
+      "p4.returned-value-is-function-result",
+      "p4.pointer-result-return-properties",
+      "p4.defined-result-restrictions"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S15.6.2.2-001",
+      "title": "FUNCTION first statement makes a function subprogram",
+      "source": "15.6.2.2 p1; J3/24-007, 18 December 2023 PDF p354.",
+      "source_units": [
+        "p1"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A function subprogram is a subprogram whose first statement is a FUNCTION statement.",
+      "facets": [
+        "function-first-statement-defines-function-subprogram"
+      ],
+      "pending": {
+        "function-first-statement-defines-function-subprogram": "PENDING positive plan: complete integer FUNCTION f() RESULT(r) assigns r=17, caller starts result sentinel -17 and stores f(), expecting exact 17; companion source changes the first statement to SUBROUTINE and is credited to subroutine syntax rather than this facet."
+      },
+      "oracle": "Plans are source-derived pending evidence. Positive runtime plans initialize nonmatching sentinels first and observe exact integer, logical, character length plus value, association, shape, or source-admission results. Diagnostic plans use a conforming control that changes only the constrained feature.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Future fixture packets must establish a distinguished positive state before observation, use one-property controls for numbered constraints and syntax rules, and compare only exact scalar values, source admission, required rejection, or source-use attribution. Diagnostic text, fatal severity, printed rule numbers, link-editor details, addresses, C symbol spelling, and unsupported-feature messages are not portable oracles. Numbered R/C units are already pre-accounted through doc/fortran_2023_rules.txt.",
+      "dependencies": "Registered dependencies: clauses 6-11 for lexical tokens, source form, declarations, expressions, execution constructs, array and pointer foundations, and statement-function form; 15.3 for characteristics, 15.4 for interfaces, 15.5 for procedure references and argument association, 15.6.2.1 for prefix and BIND foundations, 15.7-15.9 for PURE, SIMPLE, and ELEMENTAL constraints, 16 for standard intrinsics used only as exact helpers, 18.3 and 18.10 for interoperability, 19 for scope/host association/lifetime, and 4.2 for required diagnostics."
+    },
+    {
+      "id": "R1532",
+      "title": "A function subprogram consists of a function statement, optional parts, and an end function statement",
+      "source": "15.6.2.2 R1532; J3/24-007, 18 December 2023 PDF p354.",
+      "source_units": [
+        "R1532"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "The function-subprogram syntax is function-stmt, optional specification, execution, and internal-subprogram parts, followed by end-function-stmt.",
+      "facets": [
+        "minimal-function-subprogram-form",
+        "function-with-specification-and-execution-parts",
+        "function-with-internal-subprogram-part",
+        "malformed-function-subprogram-rejected"
+      ],
+      "pending": {
+        "minimal-function-subprogram-form": "PENDING positive parse/control: INTEGER FUNCTION f() assigns f=1 and caller observes exact 1.",
+        "function-with-specification-and-execution-parts": "PENDING positive parse/control: INTEGER FUNCTION f(n) declares INTEGER, INTENT(IN) :: n, assigns f=n+2, and caller observes f(5)==7 from sentinel -7.",
+        "function-with-internal-subprogram-part": "PENDING positive parse/control: INTEGER FUNCTION f() CONTAINS internal INTEGER FUNCTION g(); f calls g() and returns exact 23.",
+        "malformed-function-subprogram-rejected": "PENDING diagnostic/control pair: negative omits END FUNCTION from the complete function subprogram; control adds only END FUNCTION f."
+      },
+      "oracle": "Plans are source-derived pending evidence. Positive runtime plans initialize nonmatching sentinels first and observe exact integer, logical, character length plus value, association, shape, or source-admission results. Diagnostic plans use a conforming control that changes only the constrained feature.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Future fixture packets must establish a distinguished positive state before observation, use one-property controls for numbered constraints and syntax rules, and compare only exact scalar values, source admission, required rejection, or source-use attribution. Diagnostic text, fatal severity, printed rule numbers, link-editor details, addresses, C symbol spelling, and unsupported-feature messages are not portable oracles. Numbered R/C units are already pre-accounted through doc/fortran_2023_rules.txt.",
+      "dependencies": "Registered dependencies: clauses 6-11 for lexical tokens, source form, declarations, expressions, execution constructs, array and pointer foundations, and statement-function form; 15.3 for characteristics, 15.4 for interfaces, 15.5 for procedure references and argument association, 15.6.2.1 for prefix and BIND foundations, 15.7-15.9 for PURE, SIMPLE, and ELEMENTAL constraints, 16 for standard intrinsics used only as exact helpers, 18.3 and 18.10 for interoperability, 19 for scope/host association/lifetime, and 4.2 for required diagnostics."
+    },
+    {
+      "id": "R1533",
+      "title": "A function statement has optional prefix, FUNCTION name, dummy argument list, and optional suffix",
+      "source": "15.6.2.2 R1533; J3/24-007, 18 December 2023 PDF p354.",
+      "source_units": [
+        "R1533"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "The function-stmt syntax admits an optional prefix, FUNCTION keyword, function-name, parenthesized optional dummy-arg-name list, and optional suffix.",
+      "facets": [
+        "function-stmt-no-prefix-no-suffix",
+        "function-stmt-with-prefix",
+        "function-stmt-with-dummy-arguments",
+        "function-stmt-with-suffix",
+        "malformed-function-stmt-rejected"
+      ],
+      "pending": {
+        "function-stmt-no-prefix-no-suffix": "PENDING positive parse/control: FUNCTION f() uses implicit integer result and assigns f=3.",
+        "function-stmt-with-prefix": "PENDING positive parse/control: INTEGER FUNCTION f() assigns f=4 and caller observes exact 4.",
+        "function-stmt-with-dummy-arguments": "PENDING positive parse/control: INTEGER FUNCTION f(x,y) declares integer dummies and returns x+y, with f(2,5)==7.",
+        "function-stmt-with-suffix": "PENDING positive parse/control: INTEGER FUNCTION f() RESULT(r) assigns r=8 and caller observes exact 8.",
+        "malformed-function-stmt-rejected": "PENDING diagnostic/control pair: negative removes the required parenthesized dummy argument list from FUNCTION f; control restores ()."
+      },
+      "oracle": "Plans are source-derived pending evidence. Positive runtime plans initialize nonmatching sentinels first and observe exact integer, logical, character length plus value, association, shape, or source-admission results. Diagnostic plans use a conforming control that changes only the constrained feature.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Future fixture packets must establish a distinguished positive state before observation, use one-property controls for numbered constraints and syntax rules, and compare only exact scalar values, source admission, required rejection, or source-use attribution. Diagnostic text, fatal severity, printed rule numbers, link-editor details, addresses, C symbol spelling, and unsupported-feature messages are not portable oracles. Numbered R/C units are already pre-accounted through doc/fortran_2023_rules.txt.",
+      "dependencies": "Registered dependencies: clauses 6-11 for lexical tokens, source form, declarations, expressions, execution constructs, array and pointer foundations, and statement-function form; 15.3 for characteristics, 15.4 for interfaces, 15.5 for procedure references and argument association, 15.6.2.1 for prefix and BIND foundations, 15.7-15.9 for PURE, SIMPLE, and ELEMENTAL constraints, 16 for standard intrinsics used only as exact helpers, 18.3 and 18.10 for interoperability, 19 for scope/host association/lifetime, and 4.2 for required diagnostics."
+    },
+    {
+      "id": "C1569",
+      "title": "RESULT names differ from the function name and all entry names",
+      "source": "15.6.2.2 C1569; J3/24-007, 18 December 2023 PDF p354.",
+      "source_units": [
+        "C1569"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "In a function-stmt with RESULT, the result-name shall differ from the function-name and from every entry-name in the subprogram.",
+      "facets": [
+        "result-name-matches-function-name-rejected",
+        "result-name-matches-entry-name-rejected",
+        "distinct-result-name-control"
+      ],
+      "pending": {
+        "result-name-matches-function-name-rejected": "PENDING diagnostic/control pair: negative INTEGER FUNCTION f() RESULT(f) assigns f=1; control changes only RESULT(f) to RESULT(r) and assigns r=1.",
+        "result-name-matches-entry-name-rejected": "PENDING diagnostic/control pair: negative INTEGER FUNCTION f() RESULT(e) has ENTRY e(); control changes only RESULT(e) to RESULT(r) while keeping ENTRY e().",
+        "distinct-result-name-control": "PENDING conforming control: INTEGER FUNCTION f() RESULT(r) assigns r=9 and caller observes exact 9."
+      },
+      "oracle": "Plans are source-derived pending evidence. Positive runtime plans initialize nonmatching sentinels first and observe exact integer, logical, character length plus value, association, shape, or source-admission results. Diagnostic plans use a conforming control that changes only the constrained feature.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Future fixture packets must establish a distinguished positive state before observation, use one-property controls for numbered constraints and syntax rules, and compare only exact scalar values, source admission, required rejection, or source-use attribution. Diagnostic text, fatal severity, printed rule numbers, link-editor details, addresses, C symbol spelling, and unsupported-feature messages are not portable oracles. Numbered R/C units are already pre-accounted through doc/fortran_2023_rules.txt.",
+      "dependencies": "Registered dependencies: clauses 6-11 for lexical tokens, source form, declarations, expressions, execution constructs, array and pointer foundations, and statement-function form; 15.3 for characteristics, 15.4 for interfaces, 15.5 for procedure references and argument association, 15.6.2.1 for prefix and BIND foundations, 15.7-15.9 for PURE, SIMPLE, and ELEMENTAL constraints, 16 for standard intrinsics used only as exact helpers, 18.3 and 18.10 for interoperability, 19 for scope/host association/lifetime, and 4.2 for required diagnostics."
+    },
+    {
+      "id": "C1570",
+      "title": "A RESULT function name is not declared in a specification statement",
+      "source": "15.6.2.2 C1570; J3/24-007, 18 December 2023 PDF p354.",
+      "source_units": [
+        "C1570"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "In a function-stmt with RESULT, the function-name shall not appear in any specification statement in the function subprogram scoping unit.",
+      "facets": [
+        "function-name-specification-with-result-rejected",
+        "result-function-name-undeclared-control"
+      ],
+      "pending": {
+        "function-name-specification-with-result-rejected": "PENDING diagnostic/control pair: negative FUNCTION f() RESULT(r) declares INTEGER :: f and INTEGER :: r in the specification part; control deletes only INTEGER :: f, preserving FUNCTION f() RESULT(r), INTEGER :: r, procedure name f, result name r, and assignment r=10.",
+        "result-function-name-undeclared-control": "PENDING conforming control: FUNCTION f() RESULT(r) declares INTEGER :: r, assigns r=10, and caller observes exact 10."
+      },
+      "oracle": "Plans are source-derived pending evidence. Positive runtime plans initialize nonmatching sentinels first and observe exact integer, logical, character length plus value, association, shape, or source-admission results. Diagnostic plans use a conforming control that changes only the constrained feature.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Future fixture packets must establish a distinguished positive state before observation, use one-property controls for numbered constraints and syntax rules, and compare only exact scalar values, source admission, required rejection, or source-use attribution. Diagnostic text, fatal severity, printed rule numbers, link-editor details, addresses, C symbol spelling, and unsupported-feature messages are not portable oracles. Numbered R/C units are already pre-accounted through doc/fortran_2023_rules.txt.",
+      "dependencies": "Registered dependencies: clauses 6-11 for lexical tokens, source form, declarations, expressions, execution constructs, array and pointer foundations, and statement-function form; 15.3 for characteristics, 15.4 for interfaces, 15.5 for procedure references and argument association, 15.6.2.1 for prefix and BIND foundations, 15.7-15.9 for PURE, SIMPLE, and ELEMENTAL constraints, 16 for standard intrinsics used only as exact helpers, 18.3 and 18.10 for interoperability, 19 for scope/host association/lifetime, and 4.2 for required diagnostics."
+    },
+    {
+      "id": "R1534",
+      "title": "A dummy argument name is a name token",
+      "source": "15.6.2.2 R1534; J3/24-007, 18 December 2023 PDF p354.",
+      "source_units": [
+        "R1534"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "The dummy-arg-name syntax is name.",
+      "facets": [
+        "dummy-arg-name-token-form",
+        "malformed-dummy-arg-name-rejected"
+      ],
+      "pending": {
+        "dummy-arg-name-token-form": "PENDING positive parse/control: INTEGER FUNCTION f(arg_one) declares INTEGER :: arg_one and returns arg_one+1.",
+        "malformed-dummy-arg-name-rejected": "PENDING diagnostic/control pair: negative uses INTEGER FUNCTION f(1); control changes only 1 to arg_one and declares arg_one."
+      },
+      "oracle": "Plans are source-derived pending evidence. Positive runtime plans initialize nonmatching sentinels first and observe exact integer, logical, character length plus value, association, shape, or source-admission results. Diagnostic plans use a conforming control that changes only the constrained feature.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Future fixture packets must establish a distinguished positive state before observation, use one-property controls for numbered constraints and syntax rules, and compare only exact scalar values, source admission, required rejection, or source-use attribution. Diagnostic text, fatal severity, printed rule numbers, link-editor details, addresses, C symbol spelling, and unsupported-feature messages are not portable oracles. Numbered R/C units are already pre-accounted through doc/fortran_2023_rules.txt.",
+      "dependencies": "Registered dependencies: clauses 6-11 for lexical tokens, source form, declarations, expressions, execution constructs, array and pointer foundations, and statement-function form; 15.3 for characteristics, 15.4 for interfaces, 15.5 for procedure references and argument association, 15.6.2.1 for prefix and BIND foundations, 15.7-15.9 for PURE, SIMPLE, and ELEMENTAL constraints, 16 for standard intrinsics used only as exact helpers, 18.3 and 18.10 for interoperability, 19 for scope/host association/lifetime, and 4.2 for required diagnostics."
+    },
+    {
+      "id": "C1571",
+      "title": "A dummy-arg-name denotes a dummy argument",
+      "source": "15.6.2.2 C1571; J3/24-007, 18 December 2023 PDF p354.",
+      "source_units": [
+        "C1571"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A dummy-arg-name in the function-stmt is the name of a dummy argument.",
+      "facets": [
+        "function-dummy-name-declares-dummy-argument"
+      ],
+      "pending": {
+        "function-dummy-name-declares-dummy-argument": "PENDING semantic plan: INTEGER FUNCTION f(x) declares INTEGER, INTENT(IN) :: x, returns x+6, and caller observes f(4)==10; this records the semantic consequence of the constraint, with no separate diagnostic facet because a dummy-arg-name occurrence already supplies the dummy argument role."
+      },
+      "oracle": "C1571 is a numbered constraint with no separately writable negative beyond malformed syntax or other declaration rules; the pending plan records its semantic consequence rather than a diagnostic.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Future fixture packets must establish a distinguished positive state before observation, use one-property controls for numbered constraints and syntax rules, and compare only exact scalar values, source admission, required rejection, or source-use attribution. Diagnostic text, fatal severity, printed rule numbers, link-editor details, addresses, C symbol spelling, and unsupported-feature messages are not portable oracles. Numbered R/C units are already pre-accounted through doc/fortran_2023_rules.txt.",
+      "dependencies": "Registered dependencies: clauses 6-11 for lexical tokens, source form, declarations, expressions, execution constructs, array and pointer foundations, and statement-function form; 15.3 for characteristics, 15.4 for interfaces, 15.5 for procedure references and argument association, 15.6.2.1 for prefix and BIND foundations, 15.7-15.9 for PURE, SIMPLE, and ELEMENTAL constraints, 16 for standard intrinsics used only as exact helpers, 18.3 and 18.10 for interoperability, 19 for scope/host association/lifetime, and 4.2 for required diagnostics."
+    },
+    {
+      "id": "R1535",
+      "title": "A function suffix orders BIND and RESULT clauses",
+      "source": "15.6.2.2 R1535; J3/24-007, 18 December 2023 PDF p354.",
+      "source_units": [
+        "R1535"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "The suffix syntax is either proc-language-binding-spec followed by optional RESULT, or RESULT followed by optional proc-language-binding-spec.",
+      "facets": [
+        "bind-then-result-suffix",
+        "result-then-bind-suffix",
+        "result-only-suffix",
+        "bind-only-suffix",
+        "malformed-suffix-rejected"
+      ],
+      "pending": {
+        "bind-then-result-suffix": "PENDING positive parse/control: INTEGER(C_INT) FUNCTION f() BIND(C) RESULT(r) uses ISO_C_BINDING and returns exact 11_C_INT.",
+        "result-then-bind-suffix": "PENDING positive parse/control: INTEGER(C_INT) FUNCTION f() RESULT(r) BIND(C) returns exact 12_C_INT.",
+        "result-only-suffix": "PENDING positive parse/control: INTEGER FUNCTION f() RESULT(r) returns exact 13.",
+        "bind-only-suffix": "PENDING positive parse/control: INTEGER(C_INT) FUNCTION f() BIND(C) returns exact 14_C_INT.",
+        "malformed-suffix-rejected": "PENDING diagnostic/control pair: negative duplicates RESULT as RESULT(r) RESULT(q); control deletes only the second RESULT(q)."
+      },
+      "oracle": "Plans are source-derived pending evidence. Positive runtime plans initialize nonmatching sentinels first and observe exact integer, logical, character length plus value, association, shape, or source-admission results. Diagnostic plans use a conforming control that changes only the constrained feature.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Future fixture packets must establish a distinguished positive state before observation, use one-property controls for numbered constraints and syntax rules, and compare only exact scalar values, source admission, required rejection, or source-use attribution. Diagnostic text, fatal severity, printed rule numbers, link-editor details, addresses, C symbol spelling, and unsupported-feature messages are not portable oracles. Numbered R/C units are already pre-accounted through doc/fortran_2023_rules.txt.",
+      "dependencies": "Registered dependencies: clauses 6-11 for lexical tokens, source form, declarations, expressions, execution constructs, array and pointer foundations, and statement-function form; 15.3 for characteristics, 15.4 for interfaces, 15.5 for procedure references and argument association, 15.6.2.1 for prefix and BIND foundations, 15.7-15.9 for PURE, SIMPLE, and ELEMENTAL constraints, 16 for standard intrinsics used only as exact helpers, 18.3 and 18.10 for interoperability, 19 for scope/host association/lifetime, and 4.2 for required diagnostics."
+    },
+    {
+      "id": "R1536",
+      "title": "An end function statement has optional FUNCTION and name",
+      "source": "15.6.2.2 R1536; J3/24-007, 18 December 2023 PDF p354.",
+      "source_units": [
+        "R1536"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "The end-function-stmt syntax is END with optional FUNCTION and optional function-name.",
+      "facets": [
+        "bare-end-function-stmt",
+        "keyword-end-function-stmt",
+        "named-end-function-stmt",
+        "malformed-end-function-stmt-rejected"
+      ],
+      "pending": {
+        "bare-end-function-stmt": "PENDING positive parse/control: INTEGER FUNCTION f(); f=1; END.",
+        "keyword-end-function-stmt": "PENDING positive parse/control: INTEGER FUNCTION f(); f=2; END FUNCTION.",
+        "named-end-function-stmt": "PENDING positive parse/control: INTEGER FUNCTION f(); f=3; END FUNCTION f.",
+        "malformed-end-function-stmt-rejected": "PENDING diagnostic/control pair: negative closes a function with END SUBROUTINE f; control changes only SUBROUTINE to FUNCTION."
+      },
+      "oracle": "Plans are source-derived pending evidence. Positive runtime plans initialize nonmatching sentinels first and observe exact integer, logical, character length plus value, association, shape, or source-admission results. Diagnostic plans use a conforming control that changes only the constrained feature.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Future fixture packets must establish a distinguished positive state before observation, use one-property controls for numbered constraints and syntax rules, and compare only exact scalar values, source admission, required rejection, or source-use attribution. Diagnostic text, fatal severity, printed rule numbers, link-editor details, addresses, C symbol spelling, and unsupported-feature messages are not portable oracles. Numbered R/C units are already pre-accounted through doc/fortran_2023_rules.txt.",
+      "dependencies": "Registered dependencies: clauses 6-11 for lexical tokens, source form, declarations, expressions, execution constructs, array and pointer foundations, and statement-function form; 15.3 for characteristics, 15.4 for interfaces, 15.5 for procedure references and argument association, 15.6.2.1 for prefix and BIND foundations, 15.7-15.9 for PURE, SIMPLE, and ELEMENTAL constraints, 16 for standard intrinsics used only as exact helpers, 18.3 and 18.10 for interoperability, 19 for scope/host association/lifetime, and 4.2 for required diagnostics."
+    },
+    {
+      "id": "C1572",
+      "title": "An internal function does not contain an internal-subprogram part",
+      "source": "15.6.2.2 C1572; J3/24-007, 18 December 2023 PDF p354.",
+      "source_units": [
+        "C1572"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "An internal function subprogram shall not contain an internal-subprogram-part.",
+      "facets": [
+        "nested-internal-function-part-rejected",
+        "internal-function-without-internal-part-control"
+      ],
+      "pending": {
+        "nested-internal-function-part-rejected": "PENDING diagnostic/control pair: negative main program contains internal function f, and f contains an unused CONTAINS plus internal function g; control deletes only that internal-subprogram-part from f.",
+        "internal-function-without-internal-part-control": "PENDING conforming control: main program internal INTEGER FUNCTION f() has a specification part and execution part only, returning exact 15."
+      },
+      "oracle": "Plans are source-derived pending evidence. Positive runtime plans initialize nonmatching sentinels first and observe exact integer, logical, character length plus value, association, shape, or source-admission results. Diagnostic plans use a conforming control that changes only the constrained feature.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Future fixture packets must establish a distinguished positive state before observation, use one-property controls for numbered constraints and syntax rules, and compare only exact scalar values, source admission, required rejection, or source-use attribution. Diagnostic text, fatal severity, printed rule numbers, link-editor details, addresses, C symbol spelling, and unsupported-feature messages are not portable oracles. Numbered R/C units are already pre-accounted through doc/fortran_2023_rules.txt.",
+      "dependencies": "Registered dependencies: clauses 6-11 for lexical tokens, source form, declarations, expressions, execution constructs, array and pointer foundations, and statement-function form; 15.3 for characteristics, 15.4 for interfaces, 15.5 for procedure references and argument association, 15.6.2.1 for prefix and BIND foundations, 15.7-15.9 for PURE, SIMPLE, and ELEMENTAL constraints, 16 for standard intrinsics used only as exact helpers, 18.3 and 18.10 for interoperability, 19 for scope/host association/lifetime, and 4.2 for required diagnostics."
+    },
+    {
+      "id": "C1573",
+      "title": "A named END FUNCTION matches the function statement name",
+      "source": "15.6.2.2 C1573; J3/24-007, 18 December 2023 PDF p354.",
+      "source_units": [
+        "C1573"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "A function-name that appears in the end-function-stmt shall be identical to the function-name in the function-stmt.",
+      "facets": [
+        "end-function-name-mismatch-rejected",
+        "end-function-name-match-control"
+      ],
+      "pending": {
+        "end-function-name-mismatch-rejected": "PENDING diagnostic/control pair: negative INTEGER FUNCTION f() ends with END FUNCTION g; control changes only g to f.",
+        "end-function-name-match-control": "PENDING conforming control: INTEGER FUNCTION f() ends with END FUNCTION f and returns exact 16."
+      },
+      "oracle": "Plans are source-derived pending evidence. Positive runtime plans initialize nonmatching sentinels first and observe exact integer, logical, character length plus value, association, shape, or source-admission results. Diagnostic plans use a conforming control that changes only the constrained feature.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Future fixture packets must establish a distinguished positive state before observation, use one-property controls for numbered constraints and syntax rules, and compare only exact scalar values, source admission, required rejection, or source-use attribution. Diagnostic text, fatal severity, printed rule numbers, link-editor details, addresses, C symbol spelling, and unsupported-feature messages are not portable oracles. Numbered R/C units are already pre-accounted through doc/fortran_2023_rules.txt.",
+      "dependencies": "Registered dependencies: clauses 6-11 for lexical tokens, source form, declarations, expressions, execution constructs, array and pointer foundations, and statement-function form; 15.3 for characteristics, 15.4 for interfaces, 15.5 for procedure references and argument association, 15.6.2.1 for prefix and BIND foundations, 15.7-15.9 for PURE, SIMPLE, and ELEMENTAL constraints, 16 for standard intrinsics used only as exact helpers, 18.3 and 18.10 for interoperability, 19 for scope/host association/lifetime, and 4.2 for required diagnostics."
+    },
+    {
+      "id": "S15.6.2.2-002",
+      "title": "The function name is the function-name in the FUNCTION statement",
+      "source": "15.6.2.2 p2; J3/24-007, 18 December 2023 PDF p354.",
+      "source_units": [
+        "p2"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The name of the function is function-name.",
+      "facets": [
+        "function-name-identifies-callable-function"
+      ],
+      "pending": {
+        "function-name-identifies-callable-function": "PENDING positive plan: module function named pick returns exact 21; caller initializes sentinel -21, evaluates pick(), and expects sentinel 21, proving function-name is the callable function name."
+      },
+      "oracle": "Plans are source-derived pending evidence. Positive runtime plans initialize nonmatching sentinels first and observe exact integer, logical, character length plus value, association, shape, or source-admission results. Diagnostic plans use a conforming control that changes only the constrained feature.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Future fixture packets must establish a distinguished positive state before observation, use one-property controls for numbered constraints and syntax rules, and compare only exact scalar values, source admission, required rejection, or source-use attribution. Diagnostic text, fatal severity, printed rule numbers, link-editor details, addresses, C symbol spelling, and unsupported-feature messages are not portable oracles. Numbered R/C units are already pre-accounted through doc/fortran_2023_rules.txt.",
+      "dependencies": "Registered dependencies: clauses 6-11 for lexical tokens, source form, declarations, expressions, execution constructs, array and pointer foundations, and statement-function form; 15.3 for characteristics, 15.4 for interfaces, 15.5 for procedure references and argument association, 15.6.2.1 for prefix and BIND foundations, 15.7-15.9 for PURE, SIMPLE, and ELEMENTAL constraints, 16 for standard intrinsics used only as exact helpers, 18.3 and 18.10 for interoperability, 19 for scope/host association/lifetime, and 4.2 for required diagnostics."
+    },
+    {
+      "id": "S15.6.2.2-003",
+      "title": "Function result type parameters may be specified in the FUNCTION statement or by result declaration",
+      "source": "15.6.2.2 p3.result-type-specification-routes; J3/24-007, 18 December 2023 PDF p354.",
+      "source_units": [
+        "p3.result-type-specification-routes"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The type and type parameters of a function result may be specified either by a type specification in the FUNCTION statement or by a type declaration of the function result in the specification part.",
+      "facets": [
+        "function-stmt-result-type-route",
+        "result-declaration-type-route"
+      ],
+      "pending": {
+        "function-stmt-result-type-route": "PENDING positive plan: INTEGER FUNCTION f() assigns f=22; caller observes exact integer 22 from sentinel -22.",
+        "result-declaration-type-route": "PENDING positive plan: FUNCTION g() RESULT(r) declares INTEGER :: r in the specification part, assigns r=23, and caller observes exact 23 from sentinel -23."
+      },
+      "oracle": "Plans are source-derived pending evidence. Positive runtime plans initialize nonmatching sentinels first and observe exact integer, logical, character length plus value, association, shape, or source-admission results. Diagnostic plans use a conforming control that changes only the constrained feature.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Future fixture packets must establish a distinguished positive state before observation, use one-property controls for numbered constraints and syntax rules, and compare only exact scalar values, source admission, required rejection, or source-use attribution. Diagnostic text, fatal severity, printed rule numbers, link-editor details, addresses, C symbol spelling, and unsupported-feature messages are not portable oracles. Numbered R/C units are already pre-accounted through doc/fortran_2023_rules.txt.",
+      "dependencies": "Registered dependencies: clauses 6-11 for lexical tokens, source form, declarations, expressions, execution constructs, array and pointer foundations, and statement-function form; 15.3 for characteristics, 15.4 for interfaces, 15.5 for procedure references and argument association, 15.6.2.1 for prefix and BIND foundations, 15.7-15.9 for PURE, SIMPLE, and ELEMENTAL constraints, 16 for standard intrinsics used only as exact helpers, 18.3 and 18.10 for interoperability, 19 for scope/host association/lifetime, and 4.2 for required diagnostics."
+    },
+    {
+      "id": "S15.6.2.2-004",
+      "title": "Function result type is not specified by both routes",
+      "source": "15.6.2.2 p3.no-double-result-type-specification; J3/24-007, 18 December 2023 PDF p354.",
+      "source_units": [
+        "p3.no-double-result-type-specification"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "The function result type and type parameters shall not be specified both by a FUNCTION statement type specification and by a type declaration of the function result.",
+      "facets": [
+        "double-result-type-specification-source-restriction",
+        "single-result-type-specification-control"
+      ],
+      "pending": {
+        "double-result-type-specification-source-restriction": "PENDING source-control negative: INTEGER FUNCTION f() RESULT(r) also declares INTEGER :: r; control removes only the declaration of r. No diagnostic facet is claimed for this unnumbered program restriction.",
+        "single-result-type-specification-control": "PENDING conforming control: INTEGER FUNCTION f() RESULT(r) assigns r=24 and caller observes exact 24."
+      },
+      "oracle": "Plans are source-derived pending evidence. Positive runtime plans initialize nonmatching sentinels first and observe exact integer, logical, character length plus value, association, shape, or source-admission results. Diagnostic plans use a conforming control that changes only the constrained feature.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Future fixture packets must establish a distinguished positive state before observation, use one-property controls for numbered constraints and syntax rules, and compare only exact scalar values, source admission, required rejection, or source-use attribution. Diagnostic text, fatal severity, printed rule numbers, link-editor details, addresses, C symbol spelling, and unsupported-feature messages are not portable oracles. Numbered R/C units are already pre-accounted through doc/fortran_2023_rules.txt.",
+      "dependencies": "Registered dependencies: clauses 6-11 for lexical tokens, source form, declarations, expressions, execution constructs, array and pointer foundations, and statement-function form; 15.3 for characteristics, 15.4 for interfaces, 15.5 for procedure references and argument association, 15.6.2.1 for prefix and BIND foundations, 15.7-15.9 for PURE, SIMPLE, and ELEMENTAL constraints, 16 for standard intrinsics used only as exact helpers, 18.3 and 18.10 for interoperability, 19 for scope/host association/lifetime, and 4.2 for required diagnostics."
+    },
+    {
+      "id": "S15.6.2.2-005",
+      "title": "Implicit typing determines an otherwise unspecified function result type",
+      "source": "15.6.2.2 p3.implicit-result-typing; J3/24-007, 18 December 2023 PDF p354.",
+      "source_units": [
+        "p3.implicit-result-typing"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Absent both explicit result type routes, the function result type and type parameters are determined by the implicit typing rules in effect within the function subprogram.",
+      "facets": [
+        "implicit-result-typing-default-integer",
+        "implicit-result-typing-default-real"
+      ],
+      "pending": {
+        "implicit-result-typing-default-integer": "PENDING positive plan: FUNCTION ires() assigns ires=25 under default implicit typing, caller stores in INTEGER sentinel -25 and observes exact 25.",
+        "implicit-result-typing-default-real": "PENDING positive plan: FUNCTION xres() assigns xres=4.0, caller stores in REAL sentinel -4.0 and verifies exact equality to 4.0, using an exactly representable value."
+      },
+      "oracle": "Plans are source-derived pending evidence. Positive runtime plans initialize nonmatching sentinels first and observe exact integer, logical, character length plus value, association, shape, or source-admission results. Diagnostic plans use a conforming control that changes only the constrained feature.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Future fixture packets must establish a distinguished positive state before observation, use one-property controls for numbered constraints and syntax rules, and compare only exact scalar values, source admission, required rejection, or source-use attribution. Diagnostic text, fatal severity, printed rule numbers, link-editor details, addresses, C symbol spelling, and unsupported-feature messages are not portable oracles. Numbered R/C units are already pre-accounted through doc/fortran_2023_rules.txt.",
+      "dependencies": "Registered dependencies: clauses 6-11 for lexical tokens, source form, declarations, expressions, execution constructs, array and pointer foundations, and statement-function form; 15.3 for characteristics, 15.4 for interfaces, 15.5 for procedure references and argument association, 15.6.2.1 for prefix and BIND foundations, 15.7-15.9 for PURE, SIMPLE, and ELEMENTAL constraints, 16 for standard intrinsics used only as exact helpers, 18.3 and 18.10 for interoperability, 19 for scope/host association/lifetime, and 4.2 for required diagnostics."
+    },
+    {
+      "id": "S15.6.2.2-006",
+      "title": "Function result array, allocatable, and pointer attributes are specified in the function body",
+      "source": "15.6.2.2 p3.result-attribute-specification; J3/24-007, 18 December 2023 PDF p354.",
+      "source_units": [
+        "p3.result-attribute-specification"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Array, ALLOCATABLE, or POINTER status of a function result is specified by specifications of the function result name within the function body.",
+      "facets": [
+        "array-result-specified-in-body",
+        "allocatable-result-specified-in-body",
+        "pointer-result-specified-in-body"
+      ],
+      "pending": {
+        "array-result-specified-in-body": "PENDING positive plan: FUNCTION pair() RESULT(r) declares INTEGER :: r(2), assigns [31,32], and caller initializes array sentinel [-1,-2] then observes [31,32].",
+        "allocatable-result-specified-in-body": "PENDING positive plan: FUNCTION make() RESULT(r) declares INTEGER, ALLOCATABLE :: r(:), allocates length 2, assigns [33,34], and caller checks allocated status, size 2, and exact values.",
+        "pointer-result-specified-in-body": "PENDING positive plan: FUNCTION ptr() RESULT(r) declares INTEGER, POINTER :: r(:), associates r with a TARGET array [35,36] of SAVE lifetime, and caller checks ASSOCIATED, size 2, and exact values."
+      },
+      "oracle": "Plans are source-derived pending evidence. Positive runtime plans initialize nonmatching sentinels first and observe exact integer, logical, character length plus value, association, shape, or source-admission results. Diagnostic plans use a conforming control that changes only the constrained feature.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Future fixture packets must establish a distinguished positive state before observation, use one-property controls for numbered constraints and syntax rules, and compare only exact scalar values, source admission, required rejection, or source-use attribution. Diagnostic text, fatal severity, printed rule numbers, link-editor details, addresses, C symbol spelling, and unsupported-feature messages are not portable oracles. Numbered R/C units are already pre-accounted through doc/fortran_2023_rules.txt.",
+      "dependencies": "Registered dependencies: clauses 6-11 for lexical tokens, source form, declarations, expressions, execution constructs, array and pointer foundations, and statement-function form; 15.3 for characteristics, 15.4 for interfaces, 15.5 for procedure references and argument association, 15.6.2.1 for prefix and BIND foundations, 15.7-15.9 for PURE, SIMPLE, and ELEMENTAL constraints, 16 for standard intrinsics used only as exact helpers, 18.3 and 18.10 for interoperability, 19 for scope/host association/lifetime, and 4.2 for required diagnostics."
+    },
+    {
+      "id": "S15.6.2.2-007",
+      "title": "Function result specifications, dummy attributes, and FUNCTION information define function characteristics",
+      "source": "15.6.2.2 p3.function-characteristics-definition; J3/24-007, 18 December 2023 PDF p354.",
+      "source_units": [
+        "p3.function-characteristics-definition"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Specifications of result attributes, dummy argument attributes, and information in the FUNCTION statement collectively define the function characteristics described by 15.3.1.",
+      "facets": [
+        "function-result-characteristics-from-body-specs",
+        "dummy-argument-characteristics-from-specs",
+        "function-stmt-information-characteristics"
+      ],
+      "pending": {
+        "function-result-characteristics-from-body-specs": "PENDING positive source-use plan: explicit interface for FUNCTION f(n) RESULT(r) declares INTEGER :: r(2); caller initializes array sentinel [-7,-8], evaluates f(5), and observes size 2 with exact [5,6], making result rank and type load-bearing.",
+        "dummy-argument-characteristics-from-specs": "PENDING positive source-use plan: explicit interface for FUNCTION f(n) RESULT(r) declares INTEGER, INTENT(IN) :: n; call f(6) returns exact 7 from sentinel -7, while a source-control companion changes only dummy rank to n(1) for an interface-match owner.",
+        "function-stmt-information-characteristics": "PENDING positive source-use plan: INTEGER FUNCTION f(n) uses the FUNCTION statement result type and dummy list; caller observes f(8)==9, with companion using RESULT(r) proving the same characteristic set through a distinct result name."
+      },
+      "oracle": "Plans are source-derived pending evidence. Positive runtime plans initialize nonmatching sentinels first and observe exact integer, logical, character length plus value, association, shape, or source-admission results. Diagnostic plans use a conforming control that changes only the constrained feature.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Future fixture packets must establish a distinguished positive state before observation, use one-property controls for numbered constraints and syntax rules, and compare only exact scalar values, source admission, required rejection, or source-use attribution. Diagnostic text, fatal severity, printed rule numbers, link-editor details, addresses, C symbol spelling, and unsupported-feature messages are not portable oracles. Numbered R/C units are already pre-accounted through doc/fortran_2023_rules.txt.",
+      "dependencies": "Registered dependencies: clauses 6-11 for lexical tokens, source form, declarations, expressions, execution constructs, array and pointer foundations, and statement-function form; 15.3 for characteristics, 15.4 for interfaces, 15.5 for procedure references and argument association, 15.6.2.1 for prefix and BIND foundations, 15.7-15.9 for PURE, SIMPLE, and ELEMENTAL constraints, 16 for standard intrinsics used only as exact helpers, 18.3 and 18.10 for interoperability, 19 for scope/host association/lifetime, and 4.2 for required diagnostics."
+    },
+    {
+      "id": "S15.6.2.2-008",
+      "title": "RESULT makes result-name the function result name",
+      "source": "15.6.2.2 p4.result-clause-names-result; J3/24-007, 18 December 2023 PDF p354.",
+      "source_units": [
+        "p4.result-clause-names-result"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "With a RESULT clause, the name of the function result is result-name.",
+      "facets": [
+        "result-clause-result-variable-name"
+      ],
+      "pending": {
+        "result-clause-result-variable-name": "PENDING positive plan: INTEGER FUNCTION f() RESULT(r) initializes local sentinel r=-99 then assigns r=41; caller stores f() into sentinel -41 and expects exact 41, proving r is the result variable."
+      },
+      "oracle": "Plans are source-derived pending evidence. Positive runtime plans initialize nonmatching sentinels first and observe exact integer, logical, character length plus value, association, shape, or source-admission results. Diagnostic plans use a conforming control that changes only the constrained feature.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Future fixture packets must establish a distinguished positive state before observation, use one-property controls for numbered constraints and syntax rules, and compare only exact scalar values, source admission, required rejection, or source-use attribution. Diagnostic text, fatal severity, printed rule numbers, link-editor details, addresses, C symbol spelling, and unsupported-feature messages are not portable oracles. Numbered R/C units are already pre-accounted through doc/fortran_2023_rules.txt.",
+      "dependencies": "Registered dependencies: clauses 6-11 for lexical tokens, source form, declarations, expressions, execution constructs, array and pointer foundations, and statement-function form; 15.3 for characteristics, 15.4 for interfaces, 15.5 for procedure references and argument association, 15.6.2.1 for prefix and BIND foundations, 15.7-15.9 for PURE, SIMPLE, and ELEMENTAL constraints, 16 for standard intrinsics used only as exact helpers, 18.3 and 18.10 for interoperability, 19 for scope/host association/lifetime, and 4.2 for required diagnostics."
+    },
+    {
+      "id": "S15.6.2.2-009",
+      "title": "With RESULT, execution-part function-name occurrences refer to the function itself",
+      "source": "15.6.2.2 p4.result-clause-function-name-resolution; J3/24-007, 18 December 2023 PDF p354.",
+      "source_units": [
+        "p4.result-clause-function-name-resolution"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "With a RESULT clause, all occurrences of the function name in execution-part statements in its scope refer to the function itself.",
+      "facets": [
+        "result-clause-function-name-recursive-reference"
+      ],
+      "pending": {
+        "result-clause-function-name-recursive-reference": "PENDING positive plan: RECURSIVE INTEGER FUNCTION fact(n) RESULT(r) sets r=1 for n<=1 and otherwise r=n*fact(n-1); caller initializes sentinel -120 and expects exact fact(5)==120, proving f-name occurrences invoke the function rather than naming r."
+      },
+      "oracle": "Plans are source-derived pending evidence. Positive runtime plans initialize nonmatching sentinels first and observe exact integer, logical, character length plus value, association, shape, or source-admission results. Diagnostic plans use a conforming control that changes only the constrained feature.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Future fixture packets must establish a distinguished positive state before observation, use one-property controls for numbered constraints and syntax rules, and compare only exact scalar values, source admission, required rejection, or source-use attribution. Diagnostic text, fatal severity, printed rule numbers, link-editor details, addresses, C symbol spelling, and unsupported-feature messages are not portable oracles. Numbered R/C units are already pre-accounted through doc/fortran_2023_rules.txt.",
+      "dependencies": "Registered dependencies: clauses 6-11 for lexical tokens, source form, declarations, expressions, execution constructs, array and pointer foundations, and statement-function form; 15.3 for characteristics, 15.4 for interfaces, 15.5 for procedure references and argument association, 15.6.2.1 for prefix and BIND foundations, 15.7-15.9 for PURE, SIMPLE, and ELEMENTAL constraints, 16 for standard intrinsics used only as exact helpers, 18.3 and 18.10 for interoperability, 19 for scope/host association/lifetime, and 4.2 for required diagnostics."
+    },
+    {
+      "id": "S15.6.2.2-010",
+      "title": "Without RESULT, function-name is the result name",
+      "source": "15.6.2.2 p4.no-result-clause-result-name; J3/24-007, 18 December 2023 PDF p354.",
+      "source_units": [
+        "p4.no-result-clause-result-name"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Without a RESULT clause, the name of the function result is function-name.",
+      "facets": [
+        "function-name-is-result-variable-without-result"
+      ],
+      "pending": {
+        "function-name-is-result-variable-without-result": "PENDING positive plan: INTEGER FUNCTION f() assigns f=42 in the execution part; caller initializes sentinel -42, evaluates f(), and expects exact 42."
+      },
+      "oracle": "Plans are source-derived pending evidence. Positive runtime plans initialize nonmatching sentinels first and observe exact integer, logical, character length plus value, association, shape, or source-admission results. Diagnostic plans use a conforming control that changes only the constrained feature.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Future fixture packets must establish a distinguished positive state before observation, use one-property controls for numbered constraints and syntax rules, and compare only exact scalar values, source admission, required rejection, or source-use attribution. Diagnostic text, fatal severity, printed rule numbers, link-editor details, addresses, C symbol spelling, and unsupported-feature messages are not portable oracles. Numbered R/C units are already pre-accounted through doc/fortran_2023_rules.txt.",
+      "dependencies": "Registered dependencies: clauses 6-11 for lexical tokens, source form, declarations, expressions, execution constructs, array and pointer foundations, and statement-function form; 15.3 for characteristics, 15.4 for interfaces, 15.5 for procedure references and argument association, 15.6.2.1 for prefix and BIND foundations, 15.7-15.9 for PURE, SIMPLE, and ELEMENTAL constraints, 16 for standard intrinsics used only as exact helpers, 18.3 and 18.10 for interoperability, 19 for scope/host association/lifetime, and 4.2 for required diagnostics."
+    },
+    {
+      "id": "S15.6.2.2-011",
+      "title": "Without RESULT, execution-part function-name occurrences are result references",
+      "source": "15.6.2.2 p4.no-result-clause-function-name-resolution; J3/24-007, 18 December 2023 PDF p354.",
+      "source_units": [
+        "p4.no-result-clause-function-name-resolution"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Without a RESULT clause, all occurrences of the function name in execution-part statements in its scope are references to the function result.",
+      "facets": [
+        "function-name-execution-occurrences-are-result-references"
+      ],
+      "pending": {
+        "function-name-execution-occurrences-are-result-references": "PENDING positive plan: INTEGER FUNCTION f() assigns f=5, then f=f+38; caller observes exact 43, proving both left and right execution-part occurrences name the result variable."
+      },
+      "oracle": "Plans are source-derived pending evidence. Positive runtime plans initialize nonmatching sentinels first and observe exact integer, logical, character length plus value, association, shape, or source-admission results. Diagnostic plans use a conforming control that changes only the constrained feature.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Future fixture packets must establish a distinguished positive state before observation, use one-property controls for numbered constraints and syntax rules, and compare only exact scalar values, source admission, required rejection, or source-use attribution. Diagnostic text, fatal severity, printed rule numbers, link-editor details, addresses, C symbol spelling, and unsupported-feature messages are not portable oracles. Numbered R/C units are already pre-accounted through doc/fortran_2023_rules.txt.",
+      "dependencies": "Registered dependencies: clauses 6-11 for lexical tokens, source form, declarations, expressions, execution constructs, array and pointer foundations, and statement-function form; 15.3 for characteristics, 15.4 for interfaces, 15.5 for procedure references and argument association, 15.6.2.1 for prefix and BIND foundations, 15.7-15.9 for PURE, SIMPLE, and ELEMENTAL constraints, 16 for standard intrinsics used only as exact helpers, 18.3 and 18.10 for interoperability, 19 for scope/host association/lifetime, and 4.2 for required diagnostics."
+    },
+    {
+      "id": "S15.6.2.2-012",
+      "title": "Function return value is the function result value on completion",
+      "source": "15.6.2.2 p4.returned-value-is-function-result; J3/24-007, 18 December 2023 PDF p354.",
+      "source_units": [
+        "p4.returned-value-is-function-result"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "On completion of execution of a function, the value returned is the value of its function result.",
+      "facets": [
+        "nonpointer-result-value-returned",
+        "result-value-mutation-discriminator"
+      ],
+      "pending": {
+        "nonpointer-result-value-returned": "PENDING positive plan: INTEGER FUNCTION f() RESULT(r) sets r=-3 then r=44; caller initializes sentinel -44 and expects exact 44, not the initial -3.",
+        "result-value-mutation-discriminator": "PENDING mutation plan: deleting the final assignment r=44 leaves r=-3 and must fail the exact caller assertion, making the return-value observation load-bearing."
+      },
+      "oracle": "Plans are source-derived pending evidence. Positive runtime plans initialize nonmatching sentinels first and observe exact integer, logical, character length plus value, association, shape, or source-admission results. Diagnostic plans use a conforming control that changes only the constrained feature.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Future fixture packets must establish a distinguished positive state before observation, use one-property controls for numbered constraints and syntax rules, and compare only exact scalar values, source admission, required rejection, or source-use attribution. Diagnostic text, fatal severity, printed rule numbers, link-editor details, addresses, C symbol spelling, and unsupported-feature messages are not portable oracles. Numbered R/C units are already pre-accounted through doc/fortran_2023_rules.txt.",
+      "dependencies": "Registered dependencies: clauses 6-11 for lexical tokens, source form, declarations, expressions, execution constructs, array and pointer foundations, and statement-function form; 15.3 for characteristics, 15.4 for interfaces, 15.5 for procedure references and argument association, 15.6.2.1 for prefix and BIND foundations, 15.7-15.9 for PURE, SIMPLE, and ELEMENTAL constraints, 16 for standard intrinsics used only as exact helpers, 18.3 and 18.10 for interoperability, 19 for scope/host association/lifetime, and 4.2 for required diagnostics."
+    },
+    {
+      "id": "S15.6.2.2-013",
+      "title": "Pointer function return shape and association status come from the function result on completion",
+      "source": "15.6.2.2 p4.pointer-result-return-properties; J3/24-007, 18 December 2023 PDF p354.",
+      "source_units": [
+        "p4.pointer-result-return-properties"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For a pointer function result, the returned value shape is determined by the function result shape at completion, and the pointer association status on return shall not be undefined.",
+      "facets": [
+        "pointer-result-shape-on-return",
+        "pointer-result-associated-on-return",
+        "pointer-result-null-on-return-control"
+      ],
+      "pending": {
+        "pointer-result-shape-on-return": "PENDING positive plan: pointer function p(n) RESULT(r) associates r with a SAVE TARGET array of length n=3 containing [45,46,47]; caller checks ASSOCIATED(r), SIZE(r)==3, and exact values.",
+        "pointer-result-associated-on-return": "PENDING positive plan: pointer function p() RESULT(r) associates r with a SAVE TARGET scalar value 48; caller checks ASSOCIATED and exact target value 48.",
+        "pointer-result-null-on-return-control": "PENDING conforming control: pointer function p() RESULT(r) executes NULLIFY(r); caller checks .NOT. ASSOCIATED(r), proving defined disassociated status is permitted."
+      },
+      "oracle": "Plans are source-derived pending evidence. Positive runtime plans initialize nonmatching sentinels first and observe exact integer, logical, character length plus value, association, shape, or source-admission results. Diagnostic plans use a conforming control that changes only the constrained feature.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Future fixture packets must establish a distinguished positive state before observation, use one-property controls for numbered constraints and syntax rules, and compare only exact scalar values, source admission, required rejection, or source-use attribution. Diagnostic text, fatal severity, printed rule numbers, link-editor details, addresses, C symbol spelling, and unsupported-feature messages are not portable oracles. Numbered R/C units are already pre-accounted through doc/fortran_2023_rules.txt.",
+      "dependencies": "Registered dependencies: clauses 6-11 for lexical tokens, source form, declarations, expressions, execution constructs, array and pointer foundations, and statement-function form; 15.3 for characteristics, 15.4 for interfaces, 15.5 for procedure references and argument association, 15.6.2.1 for prefix and BIND foundations, 15.7-15.9 for PURE, SIMPLE, and ELEMENTAL constraints, 16 for standard intrinsics used only as exact helpers, 18.3 and 18.10 for interoperability, 19 for scope/host association/lifetime, and 4.2 for required diagnostics."
+    },
+    {
+      "id": "S15.6.2.2-014",
+      "title": "Nonpointer function results are defined before return and pointer result status is defined",
+      "source": "15.6.2.2 p4.defined-result-restrictions; J3/24-007, 18 December 2023 PDF p354.",
+      "source_units": [
+        "p4.defined-result-restrictions"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "A nonpointer function result value shall be defined by the function, and a pointer function result shall not have undefined association status on return.",
+      "facets": [
+        "nonpointer-defined-result-control",
+        "undefined-nonpointer-result-source-restriction",
+        "defined-pointer-status-control",
+        "undefined-pointer-status-source-restriction"
+      ],
+      "pending": {
+        "nonpointer-defined-result-control": "PENDING conforming control: INTEGER FUNCTION f() RESULT(r) assigns r=49 and caller observes exact 49.",
+        "undefined-nonpointer-result-source-restriction": "PENDING source-control negative: INTEGER FUNCTION f() RESULT(r) returns without assigning r; no runtime oracle or diagnostic facet is claimed because reading an undefined result is nonconforming.",
+        "defined-pointer-status-control": "PENDING conforming control: pointer function returns either associated target 50 or NULL() status through NULLIFY, with caller checking status only after defined action.",
+        "undefined-pointer-status-source-restriction": "PENDING source-control negative: pointer function returns without pointer assignment or NULLIFY; no runtime oracle or diagnostic facet is claimed because the status is undefined."
+      },
+      "oracle": "Plans are source-derived pending evidence. Positive runtime plans initialize nonmatching sentinels first and observe exact integer, logical, character length plus value, association, shape, or source-admission results. Diagnostic plans use a conforming control that changes only the constrained feature.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Future fixture packets must establish a distinguished positive state before observation, use one-property controls for numbered constraints and syntax rules, and compare only exact scalar values, source admission, required rejection, or source-use attribution. Diagnostic text, fatal severity, printed rule numbers, link-editor details, addresses, C symbol spelling, and unsupported-feature messages are not portable oracles. Numbered R/C units are already pre-accounted through doc/fortran_2023_rules.txt. Undefined nonpointer results and undefined pointer association status are source-control restrictions only; executing a program that observes them is not a portable oracle.",
+      "dependencies": "Registered dependencies: clauses 6-11 for lexical tokens, source form, declarations, expressions, execution constructs, array and pointer foundations, and statement-function form; 15.3 for characteristics, 15.4 for interfaces, 15.5 for procedure references and argument association, 15.6.2.1 for prefix and BIND foundations, 15.7-15.9 for PURE, SIMPLE, and ELEMENTAL constraints, 16 for standard intrinsics used only as exact helpers, 18.3 and 18.10 for interoperability, 19 for scope/host association/lifetime, and 4.2 for required diagnostics."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.6.2.2-001"
+      ]
+    },
+    {
+      "unit": "R1532",
+      "disposition": "requirements",
+      "requirements": [
+        "R1532"
+      ]
+    },
+    {
+      "unit": "R1533",
+      "disposition": "requirements",
+      "requirements": [
+        "R1533"
+      ]
+    },
+    {
+      "unit": "C1569",
+      "disposition": "requirements",
+      "requirements": [
+        "C1569"
+      ]
+    },
+    {
+      "unit": "C1570",
+      "disposition": "requirements",
+      "requirements": [
+        "C1570"
+      ]
+    },
+    {
+      "unit": "R1534",
+      "disposition": "requirements",
+      "requirements": [
+        "R1534"
+      ]
+    },
+    {
+      "unit": "C1571",
+      "disposition": "requirements",
+      "requirements": [
+        "C1571"
+      ]
+    },
+    {
+      "unit": "R1535",
+      "disposition": "requirements",
+      "requirements": [
+        "R1535"
+      ]
+    },
+    {
+      "unit": "R1536",
+      "disposition": "requirements",
+      "requirements": [
+        "R1536"
+      ]
+    },
+    {
+      "unit": "C1572",
+      "disposition": "requirements",
+      "requirements": [
+        "C1572"
+      ]
+    },
+    {
+      "unit": "C1573",
+      "disposition": "requirements",
+      "requirements": [
+        "C1573"
+      ]
+    },
+    {
+      "unit": "p2",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.6.2.2-002"
+      ]
+    },
+    {
+      "unit": "p3",
+      "disposition": "structural",
+      "rationale": "Mixed permission, unnumbered restriction, implicit typing, attribute-specification, and characteristics text split into fine units."
+    },
+    {
+      "unit": "p3.result-type-specification-routes",
+      "disposition": "permission",
+      "requirements": [
+        "S15.6.2.2-003"
+      ],
+      "rationale": "Fine split from p3."
+    },
+    {
+      "unit": "p3.no-double-result-type-specification",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.6.2.2-004"
+      ],
+      "rationale": "Fine split from p3."
+    },
+    {
+      "unit": "p3.implicit-result-typing",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.6.2.2-005"
+      ],
+      "rationale": "Fine split from p3."
+    },
+    {
+      "unit": "p3.result-attribute-specification",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.6.2.2-006"
+      ],
+      "rationale": "Fine split from p3."
+    },
+    {
+      "unit": "p3.function-characteristics-definition",
+      "disposition": "definition",
+      "requirements": [
+        "S15.6.2.2-007"
+      ],
+      "rationale": "Fine split from p3."
+    },
+    {
+      "unit": "p4",
+      "disposition": "structural",
+      "rationale": "Mixed RESULT naming, name resolution, returned value, pointer shape/status, and unnumbered definition restrictions split into fine units."
+    },
+    {
+      "unit": "p4.result-clause-names-result",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.6.2.2-008"
+      ],
+      "rationale": "Fine split from p4."
+    },
+    {
+      "unit": "p4.result-clause-function-name-resolution",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.6.2.2-009"
+      ],
+      "rationale": "Fine split from p4."
+    },
+    {
+      "unit": "p4.no-result-clause-result-name",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.6.2.2-010"
+      ],
+      "rationale": "Fine split from p4."
+    },
+    {
+      "unit": "p4.no-result-clause-function-name-resolution",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.6.2.2-011"
+      ],
+      "rationale": "Fine split from p4."
+    },
+    {
+      "unit": "p4.returned-value-is-function-result",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.6.2.2-012"
+      ],
+      "rationale": "Fine split from p4."
+    },
+    {
+      "unit": "p4.pointer-result-return-properties",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.6.2.2-013"
+      ],
+      "rationale": "Fine split from p4."
+    },
+    {
+      "unit": "p4.defined-result-restrictions",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.6.2.2-014"
+      ],
+      "rationale": "Fine split from p4."
+    },
+    {
+      "unit": "note1",
+      "disposition": "informative",
+      "rationale": "NOTE 1 is explanatory implementation guidance about result entity lifetime and storage release; it is not normative."
+    },
+    {
+      "unit": "note2",
+      "disposition": "informative",
+      "rationale": "NOTE 2 gives an interoperability example and C prototype analogy; it is not normative."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_15_6_2_2.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "ec366030c1f05304134cde074da0039ddb7b626cd2a0c2a34c21b146fad78cd1",
+  "review_rationale": "Source registration for 15.6.2.2-15.6.2.5: function and subroutine subprograms, instances of a subprogram, and separate module procedures (batch235). Every unit hash-verified by an independent reviewer across two rounds; R1532-R1543 and C1569-C1578 had no existing tests and carry conforming one-feature controls, and instance independence is observed through recursion. Source accounting only."
+}
