@@ -6119,6 +6119,11 @@ See `doc/source_audits/batch_277.json`.
 Twenty-five programs, fifteen facets: the grammar of main programs and modules, tested chiefly by what a processor must refuse, each refusal paired with a program that differs by one token and must compile.
 See `doc/source_audits/batch_281.json`.
 
+## Batch 274 — Intrinsic fixtures 16.9.45-16.9.53 (BGE-CMPLX)
+
+Thirty-two programs, fifty-seven facets, four rounds. BGE(-1,1) is true: the bit model does not know about signs, and a compiler that compares signed integers gets it wrong.
+See `doc/source_audits/batch_274.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
