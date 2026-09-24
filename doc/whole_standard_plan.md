@@ -6084,6 +6084,11 @@ See `doc/source_audits/batch_263.json`.
 Thirty-two informative units, two rounds, closing Annex C and with it the registration of the whole document.
 See `doc/source_audits/batch_265.json`.
 
+## Batch 269 — Procedure concept and class fixtures 15.1-15.3.2.2
+
+The suite's first Clause 15 tests: sixteen programs, thirty facets, covering how procedures are defined, referenced, hosted and pointed at. The review struck every claim that a characteristic had been observed merely because a call returned the right number.
+See `doc/source_audits/batch_269.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
