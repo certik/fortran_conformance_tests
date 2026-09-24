@@ -5739,6 +5739,11 @@ See `doc/source_audits/batch_196.json`.
 Forty units, after two rounds, and the origin of two rules now in the Clause 16 checklist. The processor's collating sequence is its own, but 7.4.4.4 still guarantees a *partial* order — letters alphabetically, digits numerically, blank first — so MAX('A','B') is portable even though MAX('a','B') is not. And a model parameter like emax has no portable value, yet EXPONENT(HUGE(x)) == MAXEXPONENT(x) holds exactly on every processor.
 See `doc/source_audits/batch_198.json`.
 
+## Batch 188 — COSPI through DIGITS
+
+Forty-one units after two rounds. The useful rule: when the value of a conversion is processor dependent, the standard often still fixes it *relative* to another conversion. DBLE(b) must equal REAL(b, KIND(0.0D0)) for a BOZ literal b, which a program can check bitwise via TRANSFER without knowing how the processor interprets the bits — and without tripping over NaN /= NaN.
+See `doc/source_audits/batch_188.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
