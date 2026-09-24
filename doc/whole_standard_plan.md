@@ -5914,6 +5914,11 @@ See `doc/source_audits/batch_232.json`.
 Forty-two units after two rounds, the heart of how Fortran decides what a name means. Each resolution rule becomes a pair of sentinel procedures that return different numbers, so the result shows which one the processor chose. KIND(x) on an absent optional argument is legal because the kind is a compile-time property of the declaration, not of the actual argument.
 See `doc/source_audits/batch_233.json`.
 
+## Batch 230 — IEEE_SUPPORT_UNDERFLOW_CONTROL through the IEEE examples (17.11.64-17.12)
+
+Twenty-eight units after two rounds. The underflow mode finally becomes visible: TINY(x)/4 must be a subnormal under gradual underflow and exactly zero under abrupt underflow, which is the entire point of the control.
+See `doc/source_audits/batch_230.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
