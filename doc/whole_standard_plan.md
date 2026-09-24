@@ -5724,6 +5724,11 @@ See `doc/source_audits/batch_191.json`.
 Forty-four units, after two rounds. LLE and LLT compare in *ASCII* order whatever the processor's own collating sequence is, and the first plans used pairs like A/B whose order is the same everywhere. They now use pairs such as '9' and 'A', or 'Z' and 'a', which an EBCDIC-like native order would reverse.
 See `doc/source_audits/batch_197.json`.
 
+## Batch 192 — GET_COMMAND through IACHAR
+
+Forty units, after three rounds, and two techniques worth reusing. First, **guarded branch plans**: no environment variable is guaranteed to exist or not exist, but a program can probe one and then assert exactly what the standard requires for whichever branch it lands in — blank VALUE and zero LENGTH for a missing variable, STATUS -1 for a too-short buffer — without ever claiming a branch it did not observe. Second, **model decomposition**: the largest real is (1 - b^-p) * b^emax, and computing b^emax overflows, but EXPONENT(HUGE(x)) and FRACTION(HUGE(x)) recover emax and 1 - b^-p exactly.
+See `doc/source_audits/batch_192.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
