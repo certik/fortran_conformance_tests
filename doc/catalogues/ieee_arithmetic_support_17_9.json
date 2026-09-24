@@ -1,0 +1,349 @@
+{
+  "schema_version": 1,
+  "section": "17.9",
+  "subunits": {
+    "p1": [
+      "p1.datatype-inquiry",
+      "p1.datatype-conformance",
+      "p1.complete-conformance-latitude"
+    ],
+    "p5": [
+      "p5.normal-division",
+      "p5.nan-division",
+      "p5.inf-division",
+      "p5.subnormal-division"
+    ],
+    "p6": [
+      "p6.sqrt-definition",
+      "p6.sqrt-nan",
+      "p6.sqrt-inf",
+      "p6.sqrt-subnormal"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S17.9-001",
+      "title": "IEEE_SUPPORT_DATATYPE true entails the listed IEEE arithmetic facilities",
+      "source": "S17.9, J3/24-007, 18 December 2023, physical PDF484.",
+      "source_units": [
+        "p1.datatype-inquiry",
+        "p1.datatype-conformance"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "IEEE_SUPPORT_DATATYPE inquires support for IEEE arithmetic for a real kind; for a supported kind, normal numbers match an ISO/IEC/IEEE 60559 format, exact normal addition, subtraction, and multiplication conform for at least one rounding mode, ABS provides abs, IEEE_REM provides remainder, and IEEE_COPY_SIGN, IEEE_LOGB, and IEEE_UNORDERED provide copySign, logB, and compareQuietUnordered.",
+      "facets": [
+        "support-datatype-inquiry-logical",
+        "datatype-normal-add-subtract-multiply",
+        "datatype-abs-rem-copy-logb-unordered"
+      ],
+      "pending": {
+        "support-datatype-inquiry-logical": "Compile-time plan: call IEEE_SUPPORT_DATATYPE(0.0) and IEEE_SUPPORT_DATATYPE() and assert scalar logical results; no support value is assumed.",
+        "datatype-normal-add-subtract-multiply": "Guarded branch plan: probe IEEE_SUPPORT_DATATYPE(0.0); supported branch evaluates 1.5+0.25, 1.5-0.25, and 1.5*0.5 and asserts exact 1.75, 1.25, and 0.75 normal results; unsupported branch records skip.",
+        "datatype-abs-rem-copy-logb-unordered": "Guarded branch plan: probe IEEE_SUPPORT_DATATYPE(0.0); supported branch asserts ABS(-1.5)==1.5, IEEE_REM(5.0,2.0)==1.0, IEEE_COPY_SIGN(2.0,-1.0) has magnitude 2.0 and IEEE_IS_NEGATIVE true, IEEE_LOGB(8.0)==3.0, and IEEE_UNORDERED(1.0,2.0) is false; unsupported branch records skip."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first, use conforming single-image programs, and assert only portable Clause 17 properties: named derived-type values, exact logical results, exact type/kind/rank characteristics, supported IEEE special-value classifications, exact representable arithmetic under the named support inquiry, or get/set round trips. Unsupported guarded branches are skips, not passes. Processor-dependent support availability, NaN payloads, exact halting mechanics, initial modes, approximation latitude, and IOMSG text are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Unnumbered argument and Restriction paragraphs do not create diagnostic obligations. Negative source mutations are non-diagnostic unless a future numbered rule requires rejection and the rejection is portably observable. Existing IEEE profile and formatting fixtures are recorded as nearby coverage only and are not rebound here.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 13, and 16 for source form, declarations, expressions, execution, modules, intrinsic assignment, I/O harnesses, formatting references, and generic intrinsic foundations. Unregistered dependencies explicitly retained: the remaining Clause 17 procedure descriptions, IEEE derived types and named constants, processor support inquiries, exception-flag semantics, rounding-mode semantics, and ISO/IEC 60559 terminology."
+    },
+    {
+      "id": "S17.9-002",
+      "title": "Complete ISO/IEC 60559 conformance is not required",
+      "source": "S17.9, J3/24-007, 18 December 2023, physical PDF484.",
+      "source_units": [
+        "p1.complete-conformance-latitude"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Complete conformance with ISO/IEC 60559:2020 is processor latitude beyond the listed Fortran requirements.",
+      "facets": [
+        "complete-60559-conformance-not-required"
+      ],
+      "pending": {
+        "complete-60559-conformance-not-required": "No portable oracle may require ISO/IEC 60559 facilities beyond the listed Fortran obligations and positive support inquiries; future fixtures must assert only the supported branch named by the relevant inquiry."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first, use conforming single-image programs, and assert only portable Clause 17 properties: named derived-type values, exact logical results, exact type/kind/rank characteristics, supported IEEE special-value classifications, exact representable arithmetic under the named support inquiry, or get/set round trips. Unsupported guarded branches are skips, not passes. Processor-dependent support availability, NaN payloads, exact halting mechanics, initial modes, approximation latitude, and IOMSG text are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Unnumbered argument and Restriction paragraphs do not create diagnostic obligations. Negative source mutations are non-diagnostic unless a future numbered rule requires rejection and the rejection is portably observable. Existing IEEE profile and formatting fixtures are recorded as nearby coverage only and are not rebound here.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 13, and 16 for source form, declarations, expressions, execution, modules, intrinsic assignment, I/O harnesses, formatting references, and generic intrinsic foundations. Unregistered dependencies explicitly retained: the remaining Clause 17 procedure descriptions, IEEE derived types and named constants, processor support inquiries, exception-flag semantics, rounding-mode semantics, and ISO/IEC 60559 terminology."
+    },
+    {
+      "id": "S17.9-003",
+      "title": "IEEE_SUPPORT_NAN true entails NaN results for listed operations",
+      "source": "S17.9, J3/24-007, 18 December 2023, physical PDF484.",
+      "source_units": [
+        "p2"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Where IEEE NaNs are supported, +, -, *, IEEE_REM, and IEEE_RINT conform to ISO/IEC 60559 for results that are IEEE NaNs.",
+      "facets": [
+        "nan-support-inquiry",
+        "nan-results-for-operations"
+      ],
+      "pending": {
+        "nan-support-inquiry": "Compile-time plan: call IEEE_SUPPORT_NAN(0.0) and IEEE_SUPPORT_NAN() and assert scalar logical results; no support value is assumed.",
+        "nan-results-for-operations": "Guarded branch plan: probe IEEE_SUPPORT_DATATYPE(0.0) and IEEE_SUPPORT_NAN(0.0); supported branch constructs qNaN with IEEE_VALUE and enumerates each named operation: qNaN+1.0, qNaN-1.0, qNaN*1.0, IEEE_REM(qNaN,1.0), and IEEE_RINT(qNaN); each result is asserted NaN through IEEE_IS_NAN after the datatype guard; unsupported branch records skip."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first, use conforming single-image programs, and assert only portable Clause 17 properties: named derived-type values, exact logical results, exact type/kind/rank characteristics, supported IEEE special-value classifications, exact representable arithmetic under the named support inquiry, or get/set round trips. Unsupported guarded branches are skips, not passes. Processor-dependent support availability, NaN payloads, exact halting mechanics, initial modes, approximation latitude, and IOMSG text are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Unnumbered argument and Restriction paragraphs do not create diagnostic obligations. Negative source mutations are non-diagnostic unless a future numbered rule requires rejection and the rejection is portably observable. Existing IEEE profile and formatting fixtures are recorded as nearby coverage only and are not rebound here.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 13, and 16 for source form, declarations, expressions, execution, modules, intrinsic assignment, I/O harnesses, formatting references, and generic intrinsic foundations. Unregistered dependencies explicitly retained: the remaining Clause 17 procedure descriptions, IEEE derived types and named constants, processor support inquiries, exception-flag semantics, rounding-mode semantics, and ISO/IEC 60559 terminology."
+    },
+    {
+      "id": "S17.9-004",
+      "title": "IEEE_SUPPORT_INF true entails infinity results for listed operations",
+      "source": "S17.9, J3/24-007, 18 December 2023, physical PDF484.",
+      "source_units": [
+        "p3"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Where IEEE infinities are supported, +, -, *, IEEE_REM, and IEEE_RINT conform to ISO/IEC 60559 for one infinity operand or an infinity result.",
+      "facets": [
+        "inf-support-inquiry",
+        "inf-results-for-operations"
+      ],
+      "pending": {
+        "inf-support-inquiry": "Compile-time plan: call IEEE_SUPPORT_INF(0.0) and IEEE_SUPPORT_INF() and assert scalar logical results; no support value is assumed.",
+        "inf-results-for-operations": "Guarded branch plan: probe IEEE_SUPPORT_DATATYPE(0.0) and IEEE_SUPPORT_INF(0.0); supported branch constructs inf=IEEE_VALUE(0.0,IEEE_POSITIVE_INF) and ninf=IEEE_VALUE(0.0,IEEE_NEGATIVE_INF), then enumerates each named operation: inf+1.0 and 1.0+inf classify IEEE_POSITIVE_INF, inf-1.0 classifies IEEE_POSITIVE_INF, 1.0-inf classifies IEEE_NEGATIVE_INF, inf*2.0 classifies IEEE_POSITIVE_INF, (-2.0)*inf classifies IEEE_NEGATIVE_INF, IEEE_REM(1.5,inf)==1.5, and IEEE_RINT(inf) classifies IEEE_POSITIVE_INF. A nested IEEE_SUPPORT_NAN(0.0) branch asserts IEEE_REM(inf,1.0) is NaN through IEEE_IS_NAN; unsupported branches record skip."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first, use conforming single-image programs, and assert only portable Clause 17 properties: named derived-type values, exact logical results, exact type/kind/rank characteristics, supported IEEE special-value classifications, exact representable arithmetic under the named support inquiry, or get/set round trips. Unsupported guarded branches are skips, not passes. Processor-dependent support availability, NaN payloads, exact halting mechanics, initial modes, approximation latitude, and IOMSG text are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Unnumbered argument and Restriction paragraphs do not create diagnostic obligations. Negative source mutations are non-diagnostic unless a future numbered rule requires rejection and the rejection is portably observable. Existing IEEE profile and formatting fixtures are recorded as nearby coverage only and are not rebound here.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 13, and 16 for source form, declarations, expressions, execution, modules, intrinsic assignment, I/O harnesses, formatting references, and generic intrinsic foundations. Unregistered dependencies explicitly retained: the remaining Clause 17 procedure descriptions, IEEE derived types and named constants, processor support inquiries, exception-flag semantics, rounding-mode semantics, and ISO/IEC 60559 terminology."
+    },
+    {
+      "id": "S17.9-005",
+      "title": "IEEE_SUPPORT_SUBNORMAL true entails subnormal-operation conformance",
+      "source": "S17.9, J3/24-007, 18 December 2023, physical PDF484.",
+      "source_units": [
+        "p4"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Where subnormal numbers are supported, +, -, *, IEEE_REM, and IEEE_RINT conform for subnormal results and for subnormal operands except the infinity case lacking infinity support.",
+      "facets": [
+        "subnormal-support-inquiry",
+        "subnormal-results-and-operands"
+      ],
+      "pending": {
+        "subnormal-support-inquiry": "Compile-time plan: call IEEE_SUPPORT_SUBNORMAL(0.0) and IEEE_SUPPORT_SUBNORMAL() and assert scalar logical results; no support value is assumed.",
+        "subnormal-results-and-operands": "Guarded branch plan: probe IEEE_SUPPORT_DATATYPE(0.0), IEEE_SUPPORT_SUBNORMAL(0.0), and RADIX(0.0)==2; supported branch forms s=TINY(0.0)*0.5, prechecks IEEE_CLASS(s)==IEEE_POSITIVE_SUBNORMAL, then enumerates each named operation with exact binary results: s+0.0==s and classifies positive subnormal, TINY(0.0)-s==s and classifies positive subnormal, s*1.0==s and classifies positive subnormal, IEEE_REM(s,2.0*TINY(0.0))==s and classifies positive subnormal, and after an IEEE_SUPPORT_ROUNDING(IEEE_TO_ZERO,0.0) nested branch sets rounding to IEEE_TO_ZERO and asserts IEEE_RINT(s) is positive zero with IEEE_IS_NEGATIVE false; unsupported branches record skip."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first, use conforming single-image programs, and assert only portable Clause 17 properties: named derived-type values, exact logical results, exact type/kind/rank characteristics, supported IEEE special-value classifications, exact representable arithmetic under the named support inquiry, or get/set round trips. Unsupported guarded branches are skips, not passes. Processor-dependent support availability, NaN payloads, exact halting mechanics, initial modes, approximation latitude, and IOMSG text are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Unnumbered argument and Restriction paragraphs do not create diagnostic obligations. Negative source mutations are non-diagnostic unless a future numbered rule requires rejection and the rejection is portably observable. Existing IEEE profile and formatting fixtures are recorded as nearby coverage only and are not rebound here.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 13, and 16 for source form, declarations, expressions, execution, modules, intrinsic assignment, I/O harnesses, formatting references, and generic intrinsic foundations. Unregistered dependencies explicitly retained: the remaining Clause 17 procedure descriptions, IEEE derived types and named constants, processor support inquiries, exception-flag semantics, rounding-mode semantics, and ISO/IEC 60559 terminology."
+    },
+    {
+      "id": "S17.9-006",
+      "title": "IEEE_SUPPORT_DIVIDE true entails division conformance in supported classes",
+      "source": "S17.9, J3/24-007, 18 December 2023, physical PDF484.",
+      "source_units": [
+        "p5.normal-division",
+        "p5.nan-division",
+        "p5.inf-division",
+        "p5.subnormal-division"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For a kind with IEEE_SUPPORT_DATATYPE true, IEEE_SUPPORT_DIVIDE inquires whether division conforms for normal operands and results; with the corresponding special-value support, division also conforms for NaN, infinity, and subnormal cases described by the source.",
+      "facets": [
+        "divide-support-inquiry",
+        "divide-normal-conformance",
+        "divide-nan-conformance",
+        "divide-inf-conformance",
+        "divide-subnormal-conformance"
+      ],
+      "pending": {
+        "divide-support-inquiry": "Compile-time plan: call IEEE_SUPPORT_DIVIDE(0.0) and IEEE_SUPPORT_DIVIDE() and assert scalar logical results; no support value is assumed.",
+        "divide-normal-conformance": "Guarded branch plan: probe IEEE_SUPPORT_DATATYPE(0.0) and IEEE_SUPPORT_DIVIDE(0.0); supported branch asserts 1.5/0.5 == 3.0 and 1.0/4.0 == 0.25; unsupported branch records skip.",
+        "divide-nan-conformance": "Guarded branch plan: probe IEEE_SUPPORT_DATATYPE(0.0), IEEE_SUPPORT_DIVIDE(0.0), and IEEE_SUPPORT_NAN(0.0); supported branch asserts IEEE_VALUE(0.0,IEEE_QUIET_NAN)/1.0 is NaN through IEEE_IS_NAN; unsupported branch records skip.",
+        "divide-inf-conformance": "Guarded branch plan: probe IEEE_SUPPORT_DATATYPE(0.0), IEEE_SUPPORT_DIVIDE(0.0), and IEEE_SUPPORT_INF(0.0); supported branch asserts IEEE_VALUE(0.0,IEEE_POSITIVE_INF)/2.0 classifies IEEE_POSITIVE_INF, and 1.0/IEEE_VALUE(0.0,IEEE_POSITIVE_INF) is positive zero observed with equality to 0.0 and IEEE_IS_NEGATIVE false; unsupported branch records skip.",
+        "divide-subnormal-conformance": "Guarded branch plan: probe IEEE_SUPPORT_DATATYPE(0.0), IEEE_SUPPORT_DIVIDE(0.0), IEEE_SUPPORT_SUBNORMAL(0.0), and RADIX(0.0)==2; supported branch forms s=TINY(0.0)*0.5, then asserts TINY(0.0)/2.0==s and classifies positive subnormal, and s/1.0==s and classifies positive subnormal; unsupported branch records skip."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first, use conforming single-image programs, and assert only portable Clause 17 properties: named derived-type values, exact logical results, exact type/kind/rank characteristics, supported IEEE special-value classifications, exact representable arithmetic under the named support inquiry, or get/set round trips. Unsupported guarded branches are skips, not passes. Processor-dependent support availability, NaN payloads, exact halting mechanics, initial modes, approximation latitude, and IOMSG text are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Unnumbered argument and Restriction paragraphs do not create diagnostic obligations. Negative source mutations are non-diagnostic unless a future numbered rule requires rejection and the rejection is portably observable. Existing IEEE profile and formatting fixtures are recorded as nearby coverage only and are not rebound here.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 13, and 16 for source form, declarations, expressions, execution, modules, intrinsic assignment, I/O harnesses, formatting references, and generic intrinsic foundations. Unregistered dependencies explicitly retained: the remaining Clause 17 procedure descriptions, IEEE derived types and named constants, processor support inquiries, exception-flag semantics, rounding-mode semantics, and ISO/IEC 60559 terminology."
+    },
+    {
+      "id": "S17.9-007",
+      "title": "IEEE_SUPPORT_SQRT true entails SQRT conformance in supported classes",
+      "source": "S17.9, J3/24-007, 18 December 2023, physical PDF484.",
+      "source_units": [
+        "p6.sqrt-definition",
+        "p6.sqrt-nan",
+        "p6.sqrt-inf",
+        "p6.sqrt-subnormal"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "IEEE_SUPPORT_SQRT inquires whether SQRT conforms to ISO/IEC 60559 for a real kind, including negative zero and accuracy requirements, with NaN, infinity, and subnormal cases covered under the corresponding support inquiries.",
+      "facets": [
+        "sqrt-support-inquiry",
+        "sqrt-negative-zero",
+        "sqrt-nan-conformance",
+        "sqrt-inf-conformance",
+        "sqrt-subnormal-conformance"
+      ],
+      "pending": {
+        "sqrt-support-inquiry": "Compile-time plan: call IEEE_SUPPORT_SQRT(0.0) and IEEE_SUPPORT_SQRT() and assert scalar logical results; no support value is assumed.",
+        "sqrt-negative-zero": "Guarded branch plan: probe IEEE_SUPPORT_DATATYPE(0.0) and IEEE_SUPPORT_SQRT(0.0); supported branch constructs nz=IEEE_COPY_SIGN(0.0,-1.0), pre-verifies IEEE_IS_NEGATIVE(nz), computes r=SQRT(nz), and asserts r==0.0 and IEEE_IS_NEGATIVE(r); unsupported branch records skip.",
+        "sqrt-nan-conformance": "Guarded branch plan: probe IEEE_SUPPORT_DATATYPE(0.0), IEEE_SUPPORT_SQRT(0.0), and IEEE_SUPPORT_NAN(0.0); supported branch asserts SQRT(IEEE_VALUE(0.0,IEEE_QUIET_NAN)) is NaN through IEEE_IS_NAN; unsupported branch records skip.",
+        "sqrt-inf-conformance": "Guarded branch plan: probe IEEE_SUPPORT_DATATYPE(0.0), IEEE_SUPPORT_SQRT(0.0), and IEEE_SUPPORT_INF(0.0); supported branch asserts SQRT(IEEE_VALUE(0.0,IEEE_POSITIVE_INF)) classifies IEEE_POSITIVE_INF; unsupported branch records skip.",
+        "sqrt-subnormal-conformance": "Guarded branch plan: probe IEEE_SUPPORT_DATATYPE(0.0), IEEE_SUPPORT_SQRT(0.0), IEEE_SUPPORT_SUBNORMAL(0.0), and RADIX(0.0)==2; supported branch computes m=MINEXPONENT(0.0)-1, e=(m-2)-MODULO(m-2,2), and additionally guards e >= MINEXPONENT(0.0)-DIGITS(0.0) so x=SCALE(1.0,e) is representable subnormal. It sets x=SCALE(1.0,e), prechecks IEEE_CLASS(x)==IEEE_POSITIVE_SUBNORMAL, and asserts SQRT(x)==SCALE(1.0,e/2) exactly; default real instance: m=-126, e=-128, x=2^-128, SQRT(x)=2^-64; double precision instance: m=-1022, e=-1024, x=2^-1024, SQRT(x)=2^-512. Unsupported branches record skip."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first, use conforming single-image programs, and assert only portable Clause 17 properties: named derived-type values, exact logical results, exact type/kind/rank characteristics, supported IEEE special-value classifications, exact representable arithmetic under the named support inquiry, or get/set round trips. Unsupported guarded branches are skips, not passes. Processor-dependent support availability, NaN payloads, exact halting mechanics, initial modes, approximation latitude, and IOMSG text are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Unnumbered argument and Restriction paragraphs do not create diagnostic obligations. Negative source mutations are non-diagnostic unless a future numbered rule requires rejection and the rejection is portably observable. Existing IEEE profile and formatting fixtures are recorded as nearby coverage only and are not rebound here.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 13, and 16 for source form, declarations, expressions, execution, modules, intrinsic assignment, I/O harnesses, formatting references, and generic intrinsic foundations. Unregistered dependencies explicitly retained: the remaining Clause 17 procedure descriptions, IEEE derived types and named constants, processor support inquiries, exception-flag semantics, rounding-mode semantics, and ISO/IEC 60559 terminology."
+    },
+    {
+      "id": "S17.9-008",
+      "title": "IEEE_SUPPORT_STANDARD true entails all Clause 17 facilities for the kind",
+      "source": "S17.9, J3/24-007, 18 December 2023, physical PDF484.",
+      "source_units": [
+        "p7"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "IEEE_SUPPORT_STANDARD inquires whether all ISO/IEC/IEEE 60559 facilities defined in this document are supported for a real kind.",
+      "facets": [
+        "standard-support-inquiry",
+        "standard-support-implies-facility-support"
+      ],
+      "pending": {
+        "standard-support-inquiry": "Compile-time plan: call IEEE_SUPPORT_STANDARD(0.0) and IEEE_SUPPORT_STANDARD() and assert scalar logical results; no support value is assumed.",
+        "standard-support-implies-facility-support": "Guarded branch plan: probe IEEE_SUPPORT_STANDARD(0.0); supported branch asserts the real-kind inquiries for datatype, NaN, infinity, subnormal or denormal, divide, sqrt, I/O, underflow control, and at least one rounding mode report support as applicable to the default real kind; unsupported branch records skip."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish a non-default state first, use conforming single-image programs, and assert only portable Clause 17 properties: named derived-type values, exact logical results, exact type/kind/rank characteristics, supported IEEE special-value classifications, exact representable arithmetic under the named support inquiry, or get/set round trips. Unsupported guarded branches are skips, not passes. Processor-dependent support availability, NaN payloads, exact halting mechanics, initial modes, approximation latitude, and IOMSG text are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Unnumbered argument and Restriction paragraphs do not create diagnostic obligations. Negative source mutations are non-diagnostic unless a future numbered rule requires rejection and the rejection is portably observable. Existing IEEE profile and formatting fixtures are recorded as nearby coverage only and are not rebound here.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 13, and 16 for source form, declarations, expressions, execution, modules, intrinsic assignment, I/O harnesses, formatting references, and generic intrinsic foundations. Unregistered dependencies explicitly retained: the remaining Clause 17 procedure descriptions, IEEE derived types and named constants, processor support inquiries, exception-flag semantics, rounding-mode semantics, and ISO/IEC 60559 terminology."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "structural",
+      "rationale": "Mixed inquiry provision, conformance obligations, and complete-conformance latitude are split."
+    },
+    {
+      "unit": "p1.datatype-inquiry",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.9-001"
+      ]
+    },
+    {
+      "unit": "p1.datatype-conformance",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.9-001"
+      ]
+    },
+    {
+      "unit": "p1.complete-conformance-latitude",
+      "disposition": "permission",
+      "requirements": [
+        "S17.9-002"
+      ],
+      "rationale": "Complete ISO/IEC 60559 conformance is expressly not required."
+    },
+    {
+      "unit": "p2",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.9-003"
+      ]
+    },
+    {
+      "unit": "p3",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.9-004"
+      ]
+    },
+    {
+      "unit": "p4",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.9-005"
+      ]
+    },
+    {
+      "unit": "p5",
+      "disposition": "structural",
+      "rationale": "Normal, NaN, infinity, and subnormal division support cases are split."
+    },
+    {
+      "unit": "p5.normal-division",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.9-006"
+      ]
+    },
+    {
+      "unit": "p5.nan-division",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.9-006"
+      ]
+    },
+    {
+      "unit": "p5.inf-division",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.9-006"
+      ]
+    },
+    {
+      "unit": "p5.subnormal-division",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.9-006"
+      ]
+    },
+    {
+      "unit": "p6",
+      "disposition": "structural",
+      "rationale": "General SQRT, NaN, infinity, and subnormal cases are split."
+    },
+    {
+      "unit": "p6.sqrt-definition",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.9-007"
+      ]
+    },
+    {
+      "unit": "p6.sqrt-nan",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.9-007"
+      ]
+    },
+    {
+      "unit": "p6.sqrt-inf",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.9-007"
+      ]
+    },
+    {
+      "unit": "p6.sqrt-subnormal",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.9-007"
+      ]
+    },
+    {
+      "unit": "p7",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.9-008"
+      ]
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_17_9.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "f9968bbb5d5f2ad39d860172f38f3679ece6d607e3c041fe1fc2154753e85758",
+  "review_rationale": "Source registration for 17.6-17.10, 17.11, 17.11.1 and 17.11.2: halting, floating-point modes and status, exceptional values, IEEE arithmetic, the procedure summary and general rules, and IEEE_CLASS (batch214). Every unit hash-verified by an independent reviewer across three rounds; every IEEE effect is a guarded branch plan keyed to its own support inquiry, with exact 60559 results for infinity and subnormal operands. Source accounting only."
+}

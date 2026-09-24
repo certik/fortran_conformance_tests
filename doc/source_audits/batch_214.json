@@ -1,0 +1,68 @@
+{
+ "schema_version": 1,
+ "review_type": "independent-clause17-halting-ieee-class-source-214-review",
+ "review_date": "2026-09-23",
+ "baseline_commit": "2fb792e",
+ "state": "source-registered",
+ "packet_kind": "SOURCE",
+ "scope": {
+  "sections": [
+   "17.6-17.11.2"
+  ],
+  "pdf_pages": "484-488",
+  "base_units": 33,
+  "numbered_rules_preaccounted": 0,
+  "accounted_base_units_delta": 33
+ },
+ "review_rounds": [
+  {
+   "round": 1,
+   "commit": "174dafe",
+   "decision": "BLOCKED",
+   "findings": [
+    {
+     "id": "C17BR-001",
+     "issue": "IEEE_CLASS invoked without its own IEEE_SUPPORT_DATATYPE guard (17.11.2 p4)",
+     "resolution": "every plan invoking a restricted IEEE procedure, including as an observer, carries that procedure's guard"
+    },
+    {
+     "id": "C17BR-002",
+     "issue": "17.9 conformance plans under-covered the named operations and weakened subnormal SQRT to finite and positive",
+     "resolution": "infinity and subnormal cases for +, -, *, /, IEEE_REM, IEEE_RINT and SQRT, each exact under guards"
+    },
+    {
+     "id": "C17BR-003",
+     "issue": "modes/status round trips required every support at once and observed only an exception flag",
+     "resolution": "one guarded branch per mode component; IEEE_SET_STATUS restores a flag and a mode together"
+    },
+    {
+     "id": "C17BR-004",
+     "issue": "signed-zero plans relied on a bare -0.0 literal",
+     "resolution": "negative zero built with IEEE_COPY_SIGN, pre-verified with IEEE_IS_NEGATIVE"
+    }
+   ]
+  },
+  {
+   "round": 2,
+   "commit": "af2308c",
+   "decision": "BLOCKED",
+   "findings": [
+    {
+     "id": "C17BR-002",
+     "issue": "reopened: the subnormal SQRT input 2^-127 is an odd power of two, and the stated expected value squared to 2^-126",
+     "resolution": "an even exponent e = (m-2) - MODULO(m-2,2) with m = MINEXPONENT-1, guarded to stay subnormal: SQRT(2^e) == 2^(e/2) (2^-128 -> 2^-64; 2^-1024 -> 2^-512)"
+    }
+   ]
+  },
+  {
+   "round": 3,
+   "commit": "3499892",
+   "decision": "VERIFIED",
+   "findings": []
+  }
+ ],
+ "separation": {
+  "authored_facets_unchanged": true,
+  "tests_untouched": true
+ }
+}

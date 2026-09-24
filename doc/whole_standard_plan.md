@@ -5814,6 +5814,11 @@ See `doc/source_audits/batch_210.json`.
 Thirty-three units after two rounds, and with them **Clause 16 is fully registered** — all 1,476 base units, 16 through 16.10.2.35, in 35 batches (178-212). One finding was overruled: the numbered LOCK_TYPE/NOTIFY_TYPE constraints do require diagnostics, but they are constraints on coarray variables, which the user placed out of scope; the reason is now recorded on each so the decision is reversible.
 See `doc/source_audits/batch_212.json`.
 
+## Batch 214 — IEEE halting through IEEE_CLASS (17.6-17.11.2)
+
+Thirty-three units after three rounds, and the first Clause 17 packet, so its findings became the calibration rules every later IEEE packet was sent. The pattern is the Clause 16 one with a new axis: nearly every result is exact, but only under a support inquiry, and each procedure used even as an observer carries its own. The last finding was arithmetic: the square root of an odd power of two is not a model number.
+See `doc/source_audits/batch_214.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
