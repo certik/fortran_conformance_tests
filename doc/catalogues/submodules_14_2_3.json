@@ -1,0 +1,368 @@
+{
+  "schema_version": 1,
+  "section": "14.2.3",
+  "subunits": {
+    "p3": [
+      "p3.separate-module-procedure-implementations",
+      "p3.descendant-host-association"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S14.2.3-001",
+      "title": "A submodule extends a module or another submodule and has a host named by its parent identifier",
+      "source": "14.2.3 p1; J3/24-007, 18 December 2023 PDF p321.",
+      "source_units": [
+        "p1"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A submodule is a program unit extending a module or another submodule; the extended program unit is its host and is specified by the submodule statement parent identifier.",
+      "facets": [
+        "submodule-host-is-parent-identifier",
+        "submodule-can-extend-module-or-submodule"
+      ],
+      "pending": {
+        "submodule-host-is-parent-identifier": "PENDING positive source plan: module m declares MODULE SUBROUTINE fill(x); submodule (m) sm implements it using host parameter base=17 and assigns x=22 to a caller variable initialized to -99, proving the parent identifier selects m as host rather than leaving the sentinel unchanged.",
+        "submodule-can-extend-module-or-submodule": "PENDING positive source plan: module m declares MODULE SUBROUTINE child_value(x); parent submodule (m) parent supplies a specification declaration parent_base=30; child submodule (m:parent) child implements child_value assigning x=31 from caller sentinel -31, proving the child host chain is usable."
+      },
+      "oracle": "Plans are source-derived and pending. Positive runtime plans establish a distinct non-default observation using exact integer values or source admission before checking the stated effect. Diagnostic plans use a conforming control that changes only the constrained feature and do not rely on diagnostic wording, exit-status details, link-editor behavior, statement counts, addresses, storage layout, undefined values, or processor-dependent values.",
+      "oracle_limitation": "This SOURCE registration creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Future fixture packets must re-derive each expected value from J3/24-007 and keep syntax, constraint, host-association, and common-block owners separated.",
+      "dependencies": "Registered dependencies: clauses 6-11 for source form, declarations, expressions, execution constructs, assignment, DATA/COMMON foundations where already catalogued, and prior source-use catalogues. Additional source dependencies retained for future fixtures: 14.2.1-14.2.2 module program units and use association, 15.4.3.2 explicit interfaces, 15.6.2.5 separate module procedures, 15.6.2 procedure execution and invocation, 19 host association and scoping, and 4.2 for required diagnostics."
+    },
+    {
+      "id": "S14.2.3-002",
+      "title": "Ancestor, descendant, and submodule identifier relationships are defined by the module-rooted tree",
+      "source": "14.2.3 p2; J3/24-007, 18 December 2023 PDF p321.",
+      "source_units": [
+        "p2"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A module or submodule is an ancestor program unit of its descendant submodules; a submodule identifier is the ordered pair of ancestor module name and submodule name, and the submodule name alone is not a local or global identifier.",
+      "facets": [
+        "ancestor-descendant-chain",
+        "ordered-pair-submodule-identifier",
+        "submodule-name-not-local-or-global-identifier"
+      ],
+      "pending": {
+        "ancestor-descendant-chain": "PENDING positive source plan: compile module m, submodule (m) parent, and submodule (m:parent) child; a module procedure implemented in child returns exact 41 from a sentinel -41, demonstrating the module and parent submodule ancestry used by the child.",
+        "ordered-pair-submodule-identifier": "PENDING positive source plan: modules a and b each declare a distinct separate module procedure and each has a submodule named impl; calls return exact 14 and 23 respectively, demonstrating that (a,impl) and (b,impl) are distinct identifiers.",
+        "submodule-name-not-local-or-global-identifier": "PENDING source-admission plan: use identical submodule-name impl under two different ancestor modules with exact procedure results 14 and 23; no test treats impl alone as callable or externally linkable."
+      },
+      "oracle": "Plans are source-derived and pending. Positive runtime plans establish a distinct non-default observation using exact integer values or source admission before checking the stated effect. Diagnostic plans use a conforming control that changes only the constrained feature and do not rely on diagnostic wording, exit-status details, link-editor behavior, statement counts, addresses, storage layout, undefined values, or processor-dependent values.",
+      "oracle_limitation": "This SOURCE registration creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Future fixture packets must re-derive each expected value from J3/24-007 and keep syntax, constraint, host-association, and common-block owners separated.",
+      "dependencies": "Registered dependencies: clauses 6-11 for source form, declarations, expressions, execution constructs, assignment, DATA/COMMON foundations where already catalogued, and prior source-use catalogues. Additional source dependencies retained for future fixtures: 14.2.1-14.2.2 module program units and use association, 15.4.3.2 explicit interfaces, 15.6.2.5 separate module procedures, 15.6.2 procedure execution and invocation, 19 host association and scoping, and 4.2 for required diagnostics."
+    },
+    {
+      "id": "S14.2.3-003",
+      "title": "A submodule may implement separate module procedures declared in itself or an ancestor",
+      "source": "14.2.3 p3 separate module procedure permission; J3/24-007, 18 December 2023 PDF p321.",
+      "source_units": [
+        "p3.separate-module-procedure-implementations"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A submodule is permitted to provide implementations for separate module procedures declared within that submodule or within one of its ancestors.",
+      "facets": [
+        "ancestor-declared-procedure-implemented-in-submodule",
+        "submodule-declared-procedure-implemented-in-descendant"
+      ],
+      "pending": {
+        "ancestor-declared-procedure-implemented-in-submodule": "PENDING positive runtime plan: ancestor module m declares MODULE SUBROUTINE set_value(x); submodule (m) impl supplies MODULE PROCEDURE set_value assigning x=42; caller initializes x=-7 and expects exact 42 after CALL set_value(x).",
+        "submodule-declared-procedure-implemented-in-descendant": "PENDING positive runtime plan: parent submodule (m) parent declares MODULE SUBROUTINE child_value(x) in an interface block; child submodule (m:parent) child implements it assigning x=64 from caller sentinel -64; invocation observes exact 64 through the declared interface."
+      },
+      "oracle": "Plans are source-derived and pending. Positive runtime plans establish a distinct non-default observation using exact integer values or source admission before checking the stated effect. Diagnostic plans use a conforming control that changes only the constrained feature and do not rely on diagnostic wording, exit-status details, link-editor behavior, statement counts, addresses, storage layout, undefined values, or processor-dependent values.",
+      "oracle_limitation": "This SOURCE registration creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Future fixture packets must re-derive each expected value from J3/24-007 and keep syntax, constraint, host-association, and common-block owners separated.",
+      "dependencies": "Registered dependencies: clauses 6-11 for source form, declarations, expressions, execution constructs, assignment, DATA/COMMON foundations where already catalogued, and prior source-use catalogues. Additional source dependencies retained for future fixtures: 14.2.1-14.2.2 module program units and use association, 15.4.3.2 explicit interfaces, 15.6.2.5 separate module procedures, 15.6.2 procedure execution and invocation, 19 host association and scoping, and 4.2 for required diagnostics."
+    },
+    {
+      "id": "S14.2.3-004",
+      "title": "Submodule declarations and definitions can be host associated into descendant submodules",
+      "source": "14.2.3 p3 descendant host-association effect; J3/24-007, 18 December 2023 PDF p321.",
+      "source_units": [
+        "p3.descendant-host-association"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A submodule can contain declarations and definitions of entities that are accessible by host association in its descendant submodules.",
+      "facets": [
+        "ancestor-module-entity-host-associated-in-submodule",
+        "parent-submodule-entity-host-associated-in-child"
+      ],
+      "pending": {
+        "ancestor-module-entity-host-associated-in-submodule": "PENDING positive runtime plan: module m declares integer parameter base=17 and a separate module subroutine; submodule implementation assigns x=base+5 to a caller variable initialized to -99, expecting exact 22 and proving host association reaches the module entity.",
+        "parent-submodule-entity-host-associated-in-child": "PENDING positive runtime plan: parent submodule declares integer parameter parent_base=30; child submodule implementation computes parent_base+11 into sentinel -11, expecting exact 41 and proving host association from parent submodule to descendant."
+      },
+      "oracle": "Plans are source-derived and pending. Positive runtime plans establish a distinct non-default observation using exact integer values or source admission before checking the stated effect. Diagnostic plans use a conforming control that changes only the constrained feature and do not rely on diagnostic wording, exit-status details, link-editor behavior, statement counts, addresses, storage layout, undefined values, or processor-dependent values.",
+      "oracle_limitation": "This SOURCE registration creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Future fixture packets must re-derive each expected value from J3/24-007 and keep syntax, constraint, host-association, and common-block owners separated.",
+      "dependencies": "Registered dependencies: clauses 6-11 for source form, declarations, expressions, execution constructs, assignment, DATA/COMMON foundations where already catalogued, and prior source-use catalogues. Additional source dependencies retained for future fixtures: 14.2.1-14.2.2 module program units and use association, 15.4.3.2 explicit interfaces, 15.6.2.5 separate module procedures, 15.6.2 procedure execution and invocation, 19 host association and scoping, and 4.2 for required diagnostics."
+    },
+    {
+      "id": "R1416",
+      "title": "A submodule consists of a submodule statement, optional specification part, optional module subprogram part, and end-submodule statement",
+      "source": "14.2.3 R1416; J3/24-007, 18 December 2023 PDF p321.",
+      "source_units": [
+        "R1416"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "The submodule grammar is a submodule-stmt followed by an optional specification-part, an optional module-subprogram-part, and an end-submodule-stmt.",
+      "facets": [
+        "minimal-submodule-form",
+        "submodule-specification-part-form",
+        "submodule-module-subprogram-part-form",
+        "malformed-submodule-order-rejected"
+      ],
+      "pending": {
+        "minimal-submodule-form": "PENDING positive parse plan: module m declares a separate module procedure p; empty submodule (m) sm ends with END SUBMODULE sm and compiles as the minimal R1416 shape.",
+        "submodule-specification-part-form": "PENDING positive parse plan: submodule (m) sm has IMPLICIT NONE and integer parameter k=8 in its specification part; a contained module procedure assigns exact 8 to sentinel -8.",
+        "submodule-module-subprogram-part-form": "PENDING positive runtime plan: submodule (m) sm contains MODULE PROCEDURE p assigning x=15 to caller sentinel -15, proving the module-subprogram-part is accepted and reached.",
+        "malformed-submodule-order-rejected": "PENDING diagnostic/control pair: negative places a specification declaration after CONTAINS in a submodule; control moves the same declaration before CONTAINS with the same parent module and exact call result."
+      },
+      "oracle": "Plans are source-derived and pending. Positive runtime plans establish a distinct non-default observation using exact integer values or source admission before checking the stated effect. Diagnostic plans use a conforming control that changes only the constrained feature and do not rely on diagnostic wording, exit-status details, link-editor behavior, statement counts, addresses, storage layout, undefined values, or processor-dependent values.",
+      "oracle_limitation": "This SOURCE registration creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Future fixture packets must re-derive each expected value from J3/24-007 and keep syntax, constraint, host-association, and common-block owners separated.",
+      "dependencies": "Registered dependencies: clauses 6-11 for source form, declarations, expressions, execution constructs, assignment, DATA/COMMON foundations where already catalogued, and prior source-use catalogues. Additional source dependencies retained for future fixtures: 14.2.1-14.2.2 module program units and use association, 15.4.3.2 explicit interfaces, 15.6.2.5 separate module procedures, 15.6.2 procedure execution and invocation, 19 host association and scoping, and 4.2 for required diagnostics."
+    },
+    {
+      "id": "R1417",
+      "title": "A submodule statement spells SUBMODULE with parent identifier and submodule name",
+      "source": "14.2.3 R1417; J3/24-007, 18 December 2023 PDF p321.",
+      "source_units": [
+        "R1417"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "The submodule statement is SUBMODULE, a parent identifier enclosed in parentheses, and a submodule name.",
+      "facets": [
+        "submodule-statement-module-parent",
+        "submodule-statement-submodule-parent",
+        "malformed-submodule-statement-rejected"
+      ],
+      "pending": {
+        "submodule-statement-module-parent": "PENDING positive parse/runtime plan: SUBMODULE (m) sm implements a module procedure assigning exact 18 to sentinel -18.",
+        "submodule-statement-submodule-parent": "PENDING positive parse/runtime plan: SUBMODULE (m:parent) child implements a separate module procedure assigning exact 28 to sentinel -28.",
+        "malformed-submodule-statement-rejected": "PENDING diagnostic/control pair: negative removes the parentheses around the parent identifier in SUBMODULE m sm; control restores SUBMODULE (m) sm with unchanged module interface and exact result."
+      },
+      "oracle": "Plans are source-derived and pending. Positive runtime plans establish a distinct non-default observation using exact integer values or source admission before checking the stated effect. Diagnostic plans use a conforming control that changes only the constrained feature and do not rely on diagnostic wording, exit-status details, link-editor behavior, statement counts, addresses, storage layout, undefined values, or processor-dependent values.",
+      "oracle_limitation": "This SOURCE registration creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Future fixture packets must re-derive each expected value from J3/24-007 and keep syntax, constraint, host-association, and common-block owners separated.",
+      "dependencies": "Registered dependencies: clauses 6-11 for source form, declarations, expressions, execution constructs, assignment, DATA/COMMON foundations where already catalogued, and prior source-use catalogues. Additional source dependencies retained for future fixtures: 14.2.1-14.2.2 module program units and use association, 15.4.3.2 explicit interfaces, 15.6.2.5 separate module procedures, 15.6.2 procedure execution and invocation, 19 host association and scoping, and 4.2 for required diagnostics."
+    },
+    {
+      "id": "R1418",
+      "title": "A parent identifier names an ancestor module and optional parent submodule",
+      "source": "14.2.3 R1418; J3/24-007, 18 December 2023 PDF p321.",
+      "source_units": [
+        "R1418"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "A parent identifier is an ancestor module name optionally followed by a colon and parent submodule name.",
+      "facets": [
+        "ancestor-module-parent-identifier",
+        "ancestor-module-colon-parent-submodule-identifier",
+        "malformed-parent-identifier-rejected"
+      ],
+      "pending": {
+        "ancestor-module-parent-identifier": "PENDING positive parse/runtime plan: SUBMODULE (m) sm uses the ancestor-module-only parent identifier and assigns exact 12 to sentinel -12 through a module procedure.",
+        "ancestor-module-colon-parent-submodule-identifier": "PENDING positive parse/runtime plan: SUBMODULE (m:parent) child uses the two-name parent identifier and assigns exact 32 to sentinel -32 through a separate module procedure.",
+        "malformed-parent-identifier-rejected": "PENDING diagnostic/control pair: negative writes SUBMODULE (:parent) child; control supplies the same ancestor module name m before the colon and preserves the exact result-producing body."
+      },
+      "oracle": "Plans are source-derived and pending. Positive runtime plans establish a distinct non-default observation using exact integer values or source admission before checking the stated effect. Diagnostic plans use a conforming control that changes only the constrained feature and do not rely on diagnostic wording, exit-status details, link-editor behavior, statement counts, addresses, storage layout, undefined values, or processor-dependent values.",
+      "oracle_limitation": "This SOURCE registration creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Future fixture packets must re-derive each expected value from J3/24-007 and keep syntax, constraint, host-association, and common-block owners separated.",
+      "dependencies": "Registered dependencies: clauses 6-11 for source form, declarations, expressions, execution constructs, assignment, DATA/COMMON foundations where already catalogued, and prior source-use catalogues. Additional source dependencies retained for future fixtures: 14.2.1-14.2.2 module program units and use association, 15.4.3.2 explicit interfaces, 15.6.2.5 separate module procedures, 15.6.2 procedure execution and invocation, 19 host association and scoping, and 4.2 for required diagnostics."
+    },
+    {
+      "id": "R1419",
+      "title": "An end-submodule statement is END with optional SUBMODULE keyword and optional submodule name",
+      "source": "14.2.3 R1419; J3/24-007, 18 December 2023 PDF p321.",
+      "source_units": [
+        "R1419"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "The end-submodule statement is END, optionally followed by SUBMODULE and optionally by the submodule name.",
+      "facets": [
+        "bare-end-submodule-form",
+        "end-submodule-keyword-form",
+        "end-submodule-name-form",
+        "malformed-end-submodule-rejected"
+      ],
+      "pending": {
+        "bare-end-submodule-form": "PENDING positive parse plan: submodule (m) sm terminates with bare END and a caller still observes exact 9 from its implemented module procedure.",
+        "end-submodule-keyword-form": "PENDING positive parse plan: submodule (m) sm terminates with END SUBMODULE and a caller observes exact 10.",
+        "end-submodule-name-form": "PENDING positive parse plan: submodule (m) sm terminates with END SUBMODULE sm and a caller observes exact 11.",
+        "malformed-end-submodule-rejected": "PENDING diagnostic/control pair: negative terminates a submodule with END MODULE sm; control changes only MODULE to SUBMODULE and preserves the exact procedure body."
+      },
+      "oracle": "Plans are source-derived and pending. Positive runtime plans establish a distinct non-default observation using exact integer values or source admission before checking the stated effect. Diagnostic plans use a conforming control that changes only the constrained feature and do not rely on diagnostic wording, exit-status details, link-editor behavior, statement counts, addresses, storage layout, undefined values, or processor-dependent values.",
+      "oracle_limitation": "This SOURCE registration creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Future fixture packets must re-derive each expected value from J3/24-007 and keep syntax, constraint, host-association, and common-block owners separated.",
+      "dependencies": "Registered dependencies: clauses 6-11 for source form, declarations, expressions, execution constructs, assignment, DATA/COMMON foundations where already catalogued, and prior source-use catalogues. Additional source dependencies retained for future fixtures: 14.2.1-14.2.2 module program units and use association, 15.4.3.2 explicit interfaces, 15.6.2.5 separate module procedures, 15.6.2 procedure execution and invocation, 19 host association and scoping, and 4.2 for required diagnostics."
+    },
+    {
+      "id": "C1411",
+      "title": "Submodule specification parts cannot contain FORMAT, ENTRY, or statement-function statements",
+      "source": "14.2.3 C1411; J3/24-007, 18 December 2023 PDF p321.",
+      "source_units": [
+        "C1411"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "A submodule specification part shall not contain a format statement, entry statement, or statement-function statement.",
+      "facets": [
+        "format-stmt-forbidden-in-submodule-spec",
+        "entry-stmt-forbidden-in-submodule-spec",
+        "stmt-function-stmt-forbidden-in-submodule-spec"
+      ],
+      "pending": {
+        "format-stmt-forbidden-in-submodule-spec": "PENDING diagnostic/control pair: negative places `100 FORMAT(I0)` in the submodule specification part; control moves the same FORMAT statement into the contained MODULE PROCEDURE body and keeps the same interface and exact result.",
+        "entry-stmt-forbidden-in-submodule-spec": "PENDING diagnostic/control pair: negative places `ENTRY alternate()` in the submodule specification part; control removes only that ENTRY statement, leaving the same parent module, submodule name, declarations, and module procedure body with exact result 13. The control is checked to keep all declarations before executable statements and not rely on ENTRY being valid in a module procedure.",
+        "stmt-function-stmt-forbidden-in-submodule-spec": "PENDING diagnostic/control pair: negative places `sf(i)=i+1` in the submodule specification part; control places the same statement-function statement in a contained module procedure specification part after `integer :: i, sf` declarations and before executable statements, then returns exact sf(4)=5 through a caller sentinel."
+      },
+      "oracle": "Plans are source-derived and pending. Positive runtime plans establish a distinct non-default observation using exact integer values or source admission before checking the stated effect. Diagnostic plans use a conforming control that changes only the constrained feature and do not rely on diagnostic wording, exit-status details, link-editor behavior, statement counts, addresses, storage layout, undefined values, or processor-dependent values.",
+      "oracle_limitation": "This SOURCE registration creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Future fixture packets must re-derive each expected value from J3/24-007 and keep syntax, constraint, host-association, and common-block owners separated.",
+      "dependencies": "Registered dependencies: clauses 6-11 for source form, declarations, expressions, execution constructs, assignment, DATA/COMMON foundations where already catalogued, and prior source-use catalogues. Additional source dependencies retained for future fixtures: 14.2.1-14.2.2 module program units and use association, 15.4.3.2 explicit interfaces, 15.6.2.5 separate module procedures, 15.6.2 procedure execution and invocation, 19 host association and scoping, and 4.2 for required diagnostics."
+    },
+    {
+      "id": "C1412",
+      "title": "Submodule parent identifiers must name a nonintrinsic ancestor module with a separate module procedure and a descendant parent submodule",
+      "source": "14.2.3 C1412; J3/24-007, 18 December 2023 PDF p321.",
+      "source_units": [
+        "C1412"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "The ancestor module name in a parent identifier shall name a nonintrinsic module that declares a separate module procedure; the parent submodule name shall name a descendant of that module.",
+      "facets": [
+        "ancestor-module-declares-separate-module-procedure",
+        "parent-submodule-is-descendant"
+      ],
+      "pending": {
+        "ancestor-module-declares-separate-module-procedure": "PENDING diagnostic/control pair: negative uses a nonintrinsic local module m with no separate module procedure declaration as the ancestor in SUBMODULE (m) s; control adds only one matching MODULE SUBROUTINE interface in the same module m and keeps the submodule implementing it with the same exact result. The nonintrinsic wording is subsumed here: an intrinsic module cannot declare a separate module procedure, so an intrinsic-module negative would also change this feature and is not isolated.",
+        "parent-submodule-is-descendant": "PENDING diagnostic/control pair: negative names a sibling or absent parent submodule in SUBMODULE (m:wrong_parent) child; control changes only the parent-submodule-name to the actual descendant parent and preserves exact result 36."
+      },
+      "oracle": "Plans are source-derived and pending. Positive runtime plans establish a distinct non-default observation using exact integer values or source admission before checking the stated effect. Diagnostic plans use a conforming control that changes only the constrained feature and do not rely on diagnostic wording, exit-status details, link-editor behavior, statement counts, addresses, storage layout, undefined values, or processor-dependent values.",
+      "oracle_limitation": "This SOURCE registration creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Future fixture packets must re-derive each expected value from J3/24-007 and keep syntax, constraint, host-association, and common-block owners separated.",
+      "dependencies": "Registered dependencies: clauses 6-11 for source form, declarations, expressions, execution constructs, assignment, DATA/COMMON foundations where already catalogued, and prior source-use catalogues. Additional source dependencies retained for future fixtures: 14.2.1-14.2.2 module program units and use association, 15.4.3.2 explicit interfaces, 15.6.2.5 separate module procedures, 15.6.2 procedure execution and invocation, 19 host association and scoping, and 4.2 for required diagnostics."
+    },
+    {
+      "id": "C1413",
+      "title": "A named end-submodule statement must repeat the submodule statement name",
+      "source": "14.2.3 C1413; J3/24-007, 18 December 2023 PDF p321.",
+      "source_units": [
+        "C1413"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "A submodule name appearing in the end-submodule statement shall be identical to the one in the submodule statement.",
+      "facets": [
+        "matching-end-submodule-name",
+        "mismatched-end-submodule-name-rejected"
+      ],
+      "pending": {
+        "matching-end-submodule-name": "PENDING positive control: SUBMODULE (m) sm ends with END SUBMODULE sm and its module procedure assigns exact 44 to caller sentinel -44.",
+        "mismatched-end-submodule-name-rejected": "PENDING diagnostic/control pair: negative starts SUBMODULE (m) sm and ends END SUBMODULE other; control changes only other to sm with unchanged body and exact result."
+      },
+      "oracle": "Plans are source-derived and pending. Positive runtime plans establish a distinct non-default observation using exact integer values or source admission before checking the stated effect. Diagnostic plans use a conforming control that changes only the constrained feature and do not rely on diagnostic wording, exit-status details, link-editor behavior, statement counts, addresses, storage layout, undefined values, or processor-dependent values.",
+      "oracle_limitation": "This SOURCE registration creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Future fixture packets must re-derive each expected value from J3/24-007 and keep syntax, constraint, host-association, and common-block owners separated.",
+      "dependencies": "Registered dependencies: clauses 6-11 for source form, declarations, expressions, execution constructs, assignment, DATA/COMMON foundations where already catalogued, and prior source-use catalogues. Additional source dependencies retained for future fixtures: 14.2.1-14.2.2 module program units and use association, 15.4.3.2 explicit interfaces, 15.6.2.5 separate module procedures, 15.6.2 procedure execution and invocation, 19 host association and scoping, and 4.2 for required diagnostics."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "definition",
+      "requirements": [
+        "S14.2.3-001"
+      ],
+      "rationale": "Defines submodule extension and host selection through parent-identifier."
+    },
+    {
+      "unit": "p2",
+      "disposition": "definition",
+      "requirements": [
+        "S14.2.3-002"
+      ],
+      "rationale": "Defines ancestor/descendant relationships and submodule identifier identity."
+    },
+    {
+      "unit": "note-unnumbered",
+      "disposition": "informative",
+      "rationale": "NOTE gives an explanatory tree analogy and is not normative."
+    },
+    {
+      "unit": "p3",
+      "disposition": "structural",
+      "rationale": "Mixed permission to implement separate module procedures and descendant host-association effect are split into fine units."
+    },
+    {
+      "unit": "p3.separate-module-procedure-implementations",
+      "disposition": "permission",
+      "requirements": [
+        "S14.2.3-003"
+      ],
+      "rationale": "Records the permission for submodules to provide separate module procedure implementations."
+    },
+    {
+      "unit": "p3.descendant-host-association",
+      "disposition": "requirements",
+      "requirements": [
+        "S14.2.3-004"
+      ]
+    },
+    {
+      "unit": "R1416",
+      "disposition": "requirements",
+      "requirements": [
+        "R1416"
+      ]
+    },
+    {
+      "unit": "R1417",
+      "disposition": "requirements",
+      "requirements": [
+        "R1417"
+      ]
+    },
+    {
+      "unit": "R1418",
+      "disposition": "requirements",
+      "requirements": [
+        "R1418"
+      ]
+    },
+    {
+      "unit": "R1419",
+      "disposition": "requirements",
+      "requirements": [
+        "R1419"
+      ]
+    },
+    {
+      "unit": "C1411",
+      "disposition": "requirements",
+      "requirements": [
+        "C1411"
+      ]
+    },
+    {
+      "unit": "C1412",
+      "disposition": "requirements",
+      "requirements": [
+        "C1412"
+      ]
+    },
+    {
+      "unit": "C1413",
+      "disposition": "requirements",
+      "requirements": [
+        "C1413"
+      ]
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_14_2_3.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "845e25b97646a4bf4b5bbbda2cefa60b44be6a7c63bdb4f78599191c6abca8d5",
+  "review_rationale": "Source registration for 14.2.3 (submodules) and 14.3 (block data program units) (batch239). Every unit hash-verified by an independent reviewer across two rounds; R1416-R1422 and C1411-C1416 had no existing tests and carry one-feature diagnostic plans. Source accounting only."
+}

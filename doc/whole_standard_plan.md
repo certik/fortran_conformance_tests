@@ -5944,6 +5944,11 @@ See `doc/source_audits/batch_243.json`.
 Forty-four units after three rounds. Most named CFI errors are portably reachable — allocating an already-allocated descriptor, deallocating a null one — and each must leave the descriptor untouched. The one that is not: an invalid rank, because the rank type need not be signed nor hold CFI_MAX_RANK+1.
 See `doc/source_audits/batch_244.json`.
 
+## Batch 239 — Submodules and block data program units (14.2.3-14.3)
+
+Twenty-two units, thirteen numbered, after two rounds. C1412 shows a limit of one-feature controls: 'a nonintrinsic module that declares a separate module procedure' cannot be split, because no intrinsic module declares one; the pair that remains changes only the declaration.
+See `doc/source_audits/batch_239.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
