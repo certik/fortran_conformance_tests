@@ -1,0 +1,166 @@
+{
+  "schema_version": 1,
+  "section": "16.9.133",
+  "subunits": {
+    "p4": [
+      "p4.integer-type",
+      "p4.kind-present",
+      "p4.kind-absent"
+    ],
+    "p5": [
+      "p5.bit-result",
+      "p5.model-cross-reference"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S16.9.133-001",
+      "title": "MASKR argument restrictions",
+      "source": "S16.9.133, J3/24-007, 18 December 2023, physical PDF430.",
+      "source_units": [
+        "p3"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "I shall be integer, nonnegative, and no greater than the number of bits z of the integer bit model for the result kind; optional KIND shall be a scalar integer constant expression.",
+      "facets": [
+        "MASKR-I-integer",
+        "MASKR-I-nonnegative-and-at-most-z",
+        "MASKR-KIND-scalar-integer-constant-expression"
+      ],
+      "pending": {
+        "MASKR-I-integer": "Positive source controls call MASKR with integer I values 0, 1, 3, and BIT_SIZE(0); a source-control mutation uses a noninteger I and claims no diagnostic facet.",
+        "MASKR-I-nonnegative-and-at-most-z": "Positive source controls call MASKR with I=0, I=1, and I=BIT_SIZE(0); source-control mutations use I=-1 and I=BIT_SIZE(0)+1 and claim no diagnostic facet.",
+        "MASKR-KIND-scalar-integer-constant-expression": "Positive source control calls MASKR with KIND=KIND(0); source-control mutations use a noninteger or nonconstant KIND expression and claim no diagnostic facet."
+      },
+      "oracle": "Source registration only. Future fixtures initialize result variables to non-default or opposite sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact logical, integer, kind, character, shape, or bit-pattern observations. Processor-dependent approximations and processor-dependent models are separated from exact result obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for MASKR, MATMUL, MAX, MAXEXPONENT, MAXLOC, and MAXVAL found no existing fixture metadata binding for these 16.9.133-16.9.138 sections in this worktree. Existing uses of MAX and MAXVAL are unrelated clause 7/10 tests or clause 11 fixture sources; MASKR, MATMUL, MAXEXPONENT, and MAXLOC had no test or fixture matches.",
+      "dependencies": "Registered dependencies: existing source-form, type, declaration, expression, assignment, execution, array, and I/O foundations from clauses 6 through 13 where already catalogued. Unregistered dependencies retained: 7.7 BOZ literal context for future bit helpers, 10.1.9.3 intrinsic operation result rules, 16.3 integer bit model and bit manipulation context, 16.4 numeric model terminology, sibling 16.9 intrinsics used by pending plans such as ANY, BIT_SIZE, BTEST, CHAR, HUGE, KIND, PACK, POPCNT, SUM, and SELECTED_*_KIND, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, deleted-feature, or scope terms."
+    },
+    {
+      "id": "S16.9.133-002",
+      "title": "MASKR result type and kind follow KIND presence or default integer",
+      "source": "S16.9.133, J3/24-007, 18 December 2023, physical PDF430.",
+      "source_units": [
+        "p4.integer-type",
+        "p4.kind-present",
+        "p4.kind-absent"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The MASKR result is integer; with KIND present its kind type parameter is the value of KIND, and with KIND absent its kind type parameter is default integer.",
+      "facets": [
+        "MASKR-result-integer-type",
+        "MASKR-result-kind-from-KIND",
+        "MASKR-result-default-kind-absent"
+      ],
+      "pending": {
+        "MASKR-result-integer-type": "Assign MASKR(1) to an integer variable and assert POPCNT plus BTEST bit observations from the bit-result facet; mutate the intrinsic to a logical-valued control in source review, not as a diagnostic facet.",
+        "MASKR-result-kind-from-KIND": "Probe for a nondefault integer kind via SELECTED_INT_KIND; upon a positive kind value, evaluate MASKR(1,KIND=that_kind), assert KIND(...) equals that kind, and mutate KIND to KIND(0) so the kind check fails. The default-kind control exercises KIND presence on processors lacking another kind.",
+        "MASKR-result-default-kind-absent": "Evaluate MASKR(1) and assert KIND(...) equals KIND(0); companion MASKR(1,KIND=KIND(0)) guards against an absent-call parser special case."
+      },
+      "oracle": "Source registration only. Future fixtures initialize result variables to non-default or opposite sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact logical, integer, kind, character, shape, or bit-pattern observations. Processor-dependent approximations and processor-dependent models are separated from exact result obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for MASKR, MATMUL, MAX, MAXEXPONENT, MAXLOC, and MAXVAL found no existing fixture metadata binding for these 16.9.133-16.9.138 sections in this worktree. Existing uses of MAX and MAXVAL are unrelated clause 7/10 tests or clause 11 fixture sources; MASKR, MATMUL, MAXEXPONENT, and MAXLOC had no test or fixture matches.",
+      "dependencies": "Registered dependencies: existing source-form, type, declaration, expression, assignment, execution, array, and I/O foundations from clauses 6 through 13 where already catalogued. Unregistered dependencies retained: 7.7 BOZ literal context for future bit helpers, 10.1.9.3 intrinsic operation result rules, 16.3 integer bit model and bit manipulation context, 16.4 numeric model terminology, sibling 16.9 intrinsics used by pending plans such as ANY, BIT_SIZE, BTEST, CHAR, HUGE, KIND, PACK, POPCNT, SUM, and SELECTED_*_KIND, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, deleted-feature, or scope terms."
+    },
+    {
+      "id": "S16.9.133-003",
+      "title": "MASKR sets the rightmost I bits in bit context",
+      "source": "S16.9.133, J3/24-007, 18 December 2023, physical PDF430.",
+      "source_units": [
+        "p5.bit-result"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The MASKR result has its rightmost I bits set to 1 and all remaining bits set to 0 under the 16.3 integer bit model.",
+      "facets": [
+        "MASKR-zero-right-bits-all-zero",
+        "MASKR-rightmost-I-bits-set",
+        "MASKR-remaining-bits-zero",
+        "MASKR-full-width-all-bits-set"
+      ],
+      "pending": {
+        "MASKR-zero-right-bits-all-zero": "Use I=0 with a nonvacuous I=1 companion; assert POPCNT(MASKR(0))==0 and POPCNT(MASKR(1))==1, never the numeric value of a sign-bit result. Mutate I=0 to I=1 so the zero-width case fails.",
+        "MASKR-rightmost-I-bits-set": "For z=BIT_SIZE(0), compute R=MASKR(3), assert BTEST(R,0), BTEST(R,1), and BTEST(R,2) are true and POPCNT(R)==3; mutate MASKR to MASKL so the rightmost-bit checks fail.",
+        "MASKR-remaining-bits-zero": "For R=MASKR(3), assert BTEST(R,3) and BTEST(R,z-1) are false for z greater than 3, paired with the three true rightmost checks; mutate I to z so the remaining-bit checks fail.",
+        "MASKR-full-width-all-bits-set": "Use I=BIT_SIZE(0), assert POPCNT(MASKR(I))==I plus BTEST at positions 0 and I-1 are true, and compare only bit-context observations; mutate I to I-1 so one selected bit or count check fails."
+      },
+      "oracle": "Source registration only. Future fixtures initialize result variables to non-default or opposite sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact logical, integer, kind, character, shape, or bit-pattern observations. Processor-dependent approximations and processor-dependent models are separated from exact result obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for MASKR, MATMUL, MAX, MAXEXPONENT, MAXLOC, and MAXVAL found no existing fixture metadata binding for these 16.9.133-16.9.138 sections in this worktree. Existing uses of MAX and MAXVAL are unrelated clause 7/10 tests or clause 11 fixture sources; MASKR, MATMUL, MAXEXPONENT, and MAXLOC had no test or fixture matches.",
+      "dependencies": "Registered dependencies: existing source-form, type, declaration, expression, assignment, execution, array, and I/O foundations from clauses 6 through 13 where already catalogued. Unregistered dependencies retained: 7.7 BOZ literal context for future bit helpers, 10.1.9.3 intrinsic operation result rules, 16.3 integer bit model and bit manipulation context, 16.4 numeric model terminology, sibling 16.9 intrinsics used by pending plans such as ANY, BIT_SIZE, BTEST, CHAR, HUGE, KIND, PACK, POPCNT, SUM, and SELECTED_*_KIND, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, deleted-feature, or scope terms."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "definition",
+      "rationale": "Description names MASKR as a right justified mask; p5 owns bit result semantics."
+    },
+    {
+      "unit": "p2",
+      "disposition": "definition",
+      "rationale": "Classifies MASKR as elemental."
+    },
+    {
+      "unit": "p3",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.133-001"
+      ]
+    },
+    {
+      "unit": "p4",
+      "disposition": "structural",
+      "rationale": "Result Characteristics combines integer result type with present-KIND and absent-KIND kind rules."
+    },
+    {
+      "unit": "p4.integer-type",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.133-002"
+      ]
+    },
+    {
+      "unit": "p4.kind-present",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.133-002"
+      ]
+    },
+    {
+      "unit": "p4.kind-absent",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.133-002"
+      ]
+    },
+    {
+      "unit": "p5",
+      "disposition": "structural",
+      "rationale": "Result Value combines exact bit-result semantics with a cross-reference to the 16.3 model."
+    },
+    {
+      "unit": "p5.bit-result",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.133-003"
+      ]
+    },
+    {
+      "unit": "p5.model-cross-reference",
+      "disposition": "definition",
+      "rationale": "Cross-reference to 16.3 integer bit-sequence interpretation; 16.3 owns the model definition."
+    },
+    {
+      "unit": "p6",
+      "disposition": "informative",
+      "rationale": "Example paragraph is illustrative."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_16_9_133.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "94f8d4a638240ecc9f5cab9f70d8839951d912355ee727a7f729463ed7875736",
+  "review_rationale": "Source registration for 16.9.133-16.9.138: MASKR, MATMUL, MAX, MAXEXPONENT, MAXLOC and MAXVAL (batch198). Every unit hash-verified by an independent reviewer across two rounds; character results use only the orderings 7.4.4.4 guarantees for default characters, and MAXEXPONENT is checked through its exact relation to EXPONENT(HUGE(x)). Source accounting only."
+}

@@ -1,0 +1,254 @@
+{
+  "schema_version": 1,
+  "section": "16.9.134",
+  "subunits": {
+    "p4": [
+      "p4.numeric-type-kind",
+      "p4.logical-type-kind",
+      "p4.shape-case-i",
+      "p4.shape-case-ii",
+      "p4.shape-case-iii"
+    ],
+    "p5": [
+      "p5.case-i-numeric",
+      "p5.case-i-logical",
+      "p5.case-ii-numeric",
+      "p5.case-ii-logical",
+      "p5.case-iii-numeric",
+      "p5.case-iii-logical"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S16.9.134-001",
+      "title": "MATMUL argument restrictions",
+      "source": "S16.9.134, J3/24-007, 18 December 2023, physical PDF430-431.",
+      "source_units": [
+        "p3"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "MATRIX_A shall be rank one or rank two and numeric or logical; MATRIX_B shall have the corresponding numeric or logical type, rank one or two, not form a rank-one/rank-one pair with MATRIX_A, and have its first or only dimension size equal to the last or only dimension size of MATRIX_A.",
+      "facets": [
+        "MATMUL-MATRIX_A-rank-one-or-two",
+        "MATMUL-MATRIX_A-numeric-or-logical",
+        "MATMUL-MATRIX_B-type-corresponds-to-MATRIX_A",
+        "MATMUL-MATRIX_B-rank-one-or-two",
+        "MATMUL-not-both-rank-one",
+        "MATMUL-inner-dimensions-conform"
+      ],
+      "pending": {
+        "MATMUL-MATRIX_A-rank-one-or-two": "Positive source controls call MATMUL with rank-one and rank-two MATRIX_A arrays; source-control mutations use a scalar and rank-three MATRIX_A and claim no diagnostic facet.",
+        "MATMUL-MATRIX_A-numeric-or-logical": "Positive source controls use integer, real, complex, and logical MATRIX_A arrays; a source-control mutation uses a character MATRIX_A and claims no diagnostic facet.",
+        "MATMUL-MATRIX_B-type-corresponds-to-MATRIX_A": "Positive source controls pair numeric with numeric and logical with logical arrays; source-control mutations pair numeric with logical and logical with numeric arrays and claim no diagnostic facet.",
+        "MATMUL-MATRIX_B-rank-one-or-two": "Positive source controls call MATMUL with rank-one and rank-two MATRIX_B arrays; source-control mutations use scalar and rank-three MATRIX_B values and claim no diagnostic facet.",
+        "MATMUL-not-both-rank-one": "Positive source controls exercise vector-matrix and matrix-vector forms; a source-control mutation uses two rank-one vectors and claims no diagnostic facet.",
+        "MATMUL-inner-dimensions-conform": "Positive source controls use 2x3 by 3x2, length-2 by 2x3, and 2x3 by length-3 arguments; source-control mutations alter one extent to break the inner-dimension equality and claim no diagnostic facet."
+      },
+      "oracle": "Source registration only. Future fixtures initialize result variables to non-default or opposite sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact logical, integer, kind, character, shape, or bit-pattern observations. Processor-dependent approximations and processor-dependent models are separated from exact result obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for MASKR, MATMUL, MAX, MAXEXPONENT, MAXLOC, and MAXVAL found no existing fixture metadata binding for these 16.9.133-16.9.138 sections in this worktree. Existing uses of MAX and MAXVAL are unrelated clause 7/10 tests or clause 11 fixture sources; MASKR, MATMUL, MAXEXPONENT, and MAXLOC had no test or fixture matches. Census hash drift was visually checked for p5-p6 matrix/formula glyph extraction; catalogue source units retain the inventory hashes.",
+      "dependencies": "Registered dependencies: existing source-form, type, declaration, expression, assignment, execution, array, and I/O foundations from clauses 6 through 13 where already catalogued. Unregistered dependencies retained: 7.7 BOZ literal context for future bit helpers, 10.1.9.3 intrinsic operation result rules, 16.3 integer bit model and bit manipulation context, 16.4 numeric model terminology, sibling 16.9 intrinsics used by pending plans such as ANY, BIT_SIZE, BTEST, CHAR, HUGE, KIND, PACK, POPCNT, SUM, and SELECTED_*_KIND, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, deleted-feature, or scope terms."
+    },
+    {
+      "id": "S16.9.134-002",
+      "title": "MATMUL result type and kind follow intrinsic operator result rules",
+      "source": "S16.9.134, J3/24-007, 18 December 2023, physical PDF430-431.",
+      "source_units": [
+        "p4.numeric-type-kind",
+        "p4.logical-type-kind"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For numeric arguments, MATMUL result type and kind are determined as for the * operator; for logical arguments, the result is logical with the kind determined as for the .AND. operator.",
+      "facets": [
+        "MATMUL-numeric-result-type-kind",
+        "MATMUL-logical-result-type-kind"
+      ],
+      "pending": {
+        "MATMUL-numeric-result-type-kind": "Use integer and exact real matrices with distinct operand kinds available from guarded SELECTED_*_KIND probes; assert KIND(MATMUL(A,B)) matches the 10.1.9.3 operator result kind and mutate one operand kind so the kind check fails.",
+        "MATMUL-logical-result-type-kind": "Use logical arrays of default kind and a probed nondefault logical kind; assert the result is assignable to logical variables and KIND(MATMUL(A,B)) matches the .AND. result kind, then mutate one operand kind so the kind check fails."
+      },
+      "oracle": "Source registration only. Future fixtures initialize result variables to non-default or opposite sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact logical, integer, kind, character, shape, or bit-pattern observations. Processor-dependent approximations and processor-dependent models are separated from exact result obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for MASKR, MATMUL, MAX, MAXEXPONENT, MAXLOC, and MAXVAL found no existing fixture metadata binding for these 16.9.133-16.9.138 sections in this worktree. Existing uses of MAX and MAXVAL are unrelated clause 7/10 tests or clause 11 fixture sources; MASKR, MATMUL, MAXEXPONENT, and MAXLOC had no test or fixture matches. Census hash drift was visually checked for p5-p6 matrix/formula glyph extraction; catalogue source units retain the inventory hashes.",
+      "dependencies": "Registered dependencies: existing source-form, type, declaration, expression, assignment, execution, array, and I/O foundations from clauses 6 through 13 where already catalogued. Unregistered dependencies retained: 7.7 BOZ literal context for future bit helpers, 10.1.9.3 intrinsic operation result rules, 16.3 integer bit model and bit manipulation context, 16.4 numeric model terminology, sibling 16.9 intrinsics used by pending plans such as ANY, BIT_SIZE, BTEST, CHAR, HUGE, KIND, PACK, POPCNT, SUM, and SELECTED_*_KIND, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, deleted-feature, or scope terms."
+    },
+    {
+      "id": "S16.9.134-003",
+      "title": "MATMUL result shape follows the three rank cases",
+      "source": "S16.9.134, J3/24-007, 18 December 2023, physical PDF430-431.",
+      "source_units": [
+        "p4.shape-case-i",
+        "p4.shape-case-ii",
+        "p4.shape-case-iii"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "MATMUL returns shape [n,k] for matrix-matrix arguments, shape [k] for vector-matrix arguments, and shape [n] for matrix-vector arguments.",
+      "facets": [
+        "MATMUL-matrix-matrix-shape",
+        "MATMUL-vector-matrix-shape",
+        "MATMUL-matrix-vector-shape"
+      ],
+      "pending": {
+        "MATMUL-matrix-matrix-shape": "Evaluate MATMUL on integer arrays with shapes [2,3] and [3,4], assert SHAPE(result)==[2,4], and mutate MATRIX_B to shape [3,5] so the shape check fails.",
+        "MATMUL-vector-matrix-shape": "Evaluate MATMUL on a length-3 integer vector and a [3,4] integer matrix, assert SHAPE(result)==[4], and mutate MATRIX_B to [3,5] so the shape check fails.",
+        "MATMUL-matrix-vector-shape": "Evaluate MATMUL on a [2,3] integer matrix and a length-3 integer vector, assert SHAPE(result)==[2], and mutate MATRIX_A to [4,3] so the shape check fails."
+      },
+      "oracle": "Source registration only. Future fixtures initialize result variables to non-default or opposite sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact logical, integer, kind, character, shape, or bit-pattern observations. Processor-dependent approximations and processor-dependent models are separated from exact result obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for MASKR, MATMUL, MAX, MAXEXPONENT, MAXLOC, and MAXVAL found no existing fixture metadata binding for these 16.9.133-16.9.138 sections in this worktree. Existing uses of MAX and MAXVAL are unrelated clause 7/10 tests or clause 11 fixture sources; MASKR, MATMUL, MAXEXPONENT, and MAXLOC had no test or fixture matches. Census hash drift was visually checked for p5-p6 matrix/formula glyph extraction; catalogue source units retain the inventory hashes.",
+      "dependencies": "Registered dependencies: existing source-form, type, declaration, expression, assignment, execution, array, and I/O foundations from clauses 6 through 13 where already catalogued. Unregistered dependencies retained: 7.7 BOZ literal context for future bit helpers, 10.1.9.3 intrinsic operation result rules, 16.3 integer bit model and bit manipulation context, 16.4 numeric model terminology, sibling 16.9 intrinsics used by pending plans such as ANY, BIT_SIZE, BTEST, CHAR, HUGE, KIND, PACK, POPCNT, SUM, and SELECTED_*_KIND, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, deleted-feature, or scope terms."
+    },
+    {
+      "id": "S16.9.134-004",
+      "title": "MATMUL result values are SUM of products or ANY of conjunctions",
+      "source": "S16.9.134, J3/24-007, 18 December 2023, physical PDF430-431.",
+      "source_units": [
+        "p5.case-i-numeric",
+        "p5.case-i-logical",
+        "p5.case-ii-numeric",
+        "p5.case-ii-logical",
+        "p5.case-iii-numeric",
+        "p5.case-iii-logical"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "MATMUL elements are SUM of elementwise products for numeric arguments and ANY of elementwise logical conjunctions for logical arguments in each matrix-matrix, vector-matrix, and matrix-vector rank case.",
+      "facets": [
+        "MATMUL-matrix-matrix-numeric-values",
+        "MATMUL-matrix-matrix-logical-values",
+        "MATMUL-vector-matrix-numeric-values",
+        "MATMUL-vector-matrix-logical-values",
+        "MATMUL-matrix-vector-numeric-values",
+        "MATMUL-matrix-vector-logical-values"
+      ],
+      "pending": {
+        "MATMUL-matrix-matrix-numeric-values": "Use small integer matrices with mixed positive, zero, and negative entries; assert every element equals an independently written SUM of products for the corresponding row and column, and mutate the row/column pairing so at least one element fails.",
+        "MATMUL-matrix-matrix-logical-values": "Use logical matrices whose rows and columns distinguish ANY(.AND.) from ALL, OR, and positional pairing; assert every result element exactly and mutate .AND. to .OR. in the oracle-control expression so the check fails.",
+        "MATMUL-vector-matrix-numeric-values": "Use an integer vector and matrix with a zero entry and a negative entry; assert each result element equals an independently written SUM of products and mutate the vector order so the check fails.",
+        "MATMUL-vector-matrix-logical-values": "Use a logical vector and matrix with one true conjunction per selected column plus an all-false column; assert exact logical results and mutate ANY to ALL so the all-false or single-true column check fails.",
+        "MATMUL-matrix-vector-numeric-values": "Use an integer matrix and vector with signs chosen so rows produce distinct results; assert each result element equals an independently written SUM of products and mutate the vector order so the check fails.",
+        "MATMUL-matrix-vector-logical-values": "Use a logical matrix and vector with rows covering true, false, and single-match cases; assert exact logical results and mutate .AND. to .OR. so at least one row fails."
+      },
+      "oracle": "Source registration only. Future fixtures initialize result variables to non-default or opposite sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact logical, integer, kind, character, shape, or bit-pattern observations. Processor-dependent approximations and processor-dependent models are separated from exact result obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for MASKR, MATMUL, MAX, MAXEXPONENT, MAXLOC, and MAXVAL found no existing fixture metadata binding for these 16.9.133-16.9.138 sections in this worktree. Existing uses of MAX and MAXVAL are unrelated clause 7/10 tests or clause 11 fixture sources; MASKR, MATMUL, MAXEXPONENT, and MAXLOC had no test or fixture matches. Census hash drift was visually checked for p5-p6 matrix/formula glyph extraction; catalogue source units retain the inventory hashes.",
+      "dependencies": "Registered dependencies: existing source-form, type, declaration, expression, assignment, execution, array, and I/O foundations from clauses 6 through 13 where already catalogued. Unregistered dependencies retained: 7.7 BOZ literal context for future bit helpers, 10.1.9.3 intrinsic operation result rules, 16.3 integer bit model and bit manipulation context, 16.4 numeric model terminology, sibling 16.9 intrinsics used by pending plans such as ANY, BIT_SIZE, BTEST, CHAR, HUGE, KIND, PACK, POPCNT, SUM, and SELECTED_*_KIND, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, deleted-feature, or scope terms."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "definition",
+      "rationale": "Description names MATMUL as matrix multiplication."
+    },
+    {
+      "unit": "p2",
+      "disposition": "definition",
+      "rationale": "Classifies MATMUL as transformational."
+    },
+    {
+      "unit": "p3",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.134-001"
+      ]
+    },
+    {
+      "unit": "p4",
+      "disposition": "structural",
+      "rationale": "Result Characteristics combines type/kind rules and three shape cases."
+    },
+    {
+      "unit": "p4.numeric-type-kind",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.134-002"
+      ]
+    },
+    {
+      "unit": "p4.logical-type-kind",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.134-002"
+      ]
+    },
+    {
+      "unit": "p4.shape-case-i",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.134-003"
+      ]
+    },
+    {
+      "unit": "p4.shape-case-ii",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.134-003"
+      ]
+    },
+    {
+      "unit": "p4.shape-case-iii",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.134-003"
+      ]
+    },
+    {
+      "unit": "p5",
+      "disposition": "structural",
+      "rationale": "Result Value combines numeric and logical formulas for three rank cases; p5 has known census hash drift from matrix/formula glyph extraction."
+    },
+    {
+      "unit": "p5.case-i-numeric",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.134-004"
+      ]
+    },
+    {
+      "unit": "p5.case-i-logical",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.134-004"
+      ]
+    },
+    {
+      "unit": "p5.case-ii-numeric",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.134-004"
+      ]
+    },
+    {
+      "unit": "p5.case-ii-logical",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.134-004"
+      ]
+    },
+    {
+      "unit": "p5.case-iii-numeric",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.134-004"
+      ]
+    },
+    {
+      "unit": "p5.case-iii-logical",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.134-004"
+      ]
+    },
+    {
+      "unit": "p6",
+      "disposition": "informative",
+      "rationale": "Examples paragraph is illustrative; p6 has known census hash drift from matrix glyph extraction."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_16_9_134.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "4712b5690efd8776a9b3872177ef5fb98c4ed218f45f8e921e0401f280514748",
+  "review_rationale": "Source registration for 16.9.133-16.9.138: MASKR, MATMUL, MAX, MAXEXPONENT, MAXLOC and MAXVAL (batch198). Every unit hash-verified by an independent reviewer across two rounds; character results use only the orderings 7.4.4.4 guarantees for default characters, and MAXEXPONENT is checked through its exact relation to EXPONENT(HUGE(x)). Source accounting only."
+}

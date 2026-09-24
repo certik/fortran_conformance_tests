@@ -5734,6 +5734,11 @@ See `doc/source_audits/batch_192.json`.
 Forty units, after two rounds. The same ASCII-versus-native-collation gap that blocked LLE and LLT reappeared in LGE and LGT and was closed the same way, and LEN gained a positive deferred-length case to go with its zero-length one.
 See `doc/source_audits/batch_196.json`.
 
+## Batch 198 — MASKR through MAXVAL
+
+Forty units, after two rounds, and the origin of two rules now in the Clause 16 checklist. The processor's collating sequence is its own, but 7.4.4.4 still guarantees a *partial* order — letters alphabetically, digits numerically, blank first — so MAX('A','B') is portable even though MAX('a','B') is not. And a model parameter like emax has no portable value, yet EXPONENT(HUGE(x)) == MAXEXPONENT(x) holds exactly on every processor.
+See `doc/source_audits/batch_198.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
