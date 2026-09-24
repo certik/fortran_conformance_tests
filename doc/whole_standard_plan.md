@@ -6099,6 +6099,11 @@ See `doc/source_audits/batch_276.json`.
 Twenty-three programs, forty-one facets of AINT through ASIND, three rounds. What survived is what the standard fixes exactly: truncation, rounding ties away from zero, the empty ALL being true and the empty ANY false.
 See `doc/source_audits/batch_267.json`.
 
+## Batch 268 — Intrinsic fixtures 16.9.18-16.9.21 (ASINH-ATAN, ASSOCIATED)
+
+Twenty-two programs, forty-five facets, six LFortran defects. ASSOCIATED is where the detail lives: zero-sized targets are never associated, and a pointer shifted by one element is not associated with the section it no longer matches.
+See `doc/source_audits/batch_268.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
