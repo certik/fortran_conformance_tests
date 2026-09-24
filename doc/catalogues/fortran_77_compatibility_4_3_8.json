@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "section": "4.3.8",
+  "review_state": "reviewed",
+  "requirements": [
+    {
+      "id": "S4.3.8-001",
+      "title": "DATA initialization from a default real constant does not use extra default-real precision",
+      "source": "4.3.8 p1 first list item; J3/24-007, 18 December 2023, physical PDF 51.",
+      "source_units": [
+        "p1.default-real-data-init-no-extra-precision"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "When a default real constant is used to initialize a double precision real data object in a DATA statement, the processor does not use more precision from that default real constant than can be represented in a default real datum.",
+      "facets": [
+        "default-real-data-initialization-rounded-before-double"
+      ],
+      "pending": {
+        "default-real-data-initialization-rounded-before-double": "PENDING guarded plan: use preselected decimal literals with more significant digits than default real, including 1.00000011920928955078125 and 1.0000000000000002220446049250313081. The model-probe branch selects a literal whose default-real value promoted to DOUBLE PRECISION differs from the corresponding explicit double-precision literal. DATA-initialize DOUBLE PRECISION d with the selected literal written without a kind marker, assign REAL r from the same unsuffixed literal, and assert d == DBLE(r), not the explicit double literal. The no-selected-literal branch records no assertion for that processor model."
+      },
+      "oracle": "The plan compares the DATA-initialized double value only with the value obtained by first forming a default real datum, using a model guard to avoid vacuity on processors where the chosen decimal spellings do not distinguish default and double precision. The explicit double literal is a mutation sentinel, not the expected value.",
+      "oracle_limitation": "No existing main catalogue was found that specifically owns this historical DATA-initialization precision rule; doc/catalogues/data_statement_8_6_7.json covers DATA syntax and many DATA effects but not this extra-precision prohibition. The guarded plan avoids requiring a particular real model or decimal conversion beyond a proven distinguishing branch.",
+      "dependencies": "Confirmed existing related catalogue opened: doc/catalogues/data_statement_8_6_7.json. Numeric model inquiries from clause 16 may be used only to select a nonvacuous guarded branch."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "structural",
+      "rationale": "J3/24-007, 18 December 2023, physical PDF 51: compatibility-scope and difference list subdivided below. The source-owned default-real DATA precision rule has its own pending plan because no existing main catalogue directly covers it."
+    },
+    {
+      "unit": "p1.default-real-data-init-no-extra-precision",
+      "disposition": "requirements",
+      "requirements": [
+        "S4.3.8-001"
+      ]
+    },
+    {
+      "unit": "p1.data-initialized-variable-save",
+      "disposition": "structural",
+      "rationale": "SAVE implication for DATA-initialized named variables is owned by existing catalogues doc/catalogues/data_statement_8_6_7.json and doc/catalogues/save_attribute_8_5_16.json."
+    },
+    {
+      "unit": "p1.formatted-input-padding",
+      "disposition": "structural",
+      "rationale": "Formatted input padding is owned by existing catalogue doc/catalogues/formatted_data_transfer_12_6_4_5_3.json, S12.6.4.5.3-005, together with PAD specifier catalogues."
+    },
+    {
+      "unit": "p1.G-editing-rounding-differences",
+      "disposition": "structural",
+      "rationale": "G editing and rounding behavior is owned by existing catalogues doc/catalogues/generalized_real_and_complex_editing_13_7_5_2_3.json and doc/catalogues/input_output_rounding_mode_13_7_2_3_8.json."
+    },
+    {
+      "unit": "p1.negative-zero-effects",
+      "disposition": "structural",
+      "rationale": "J3/24-007, 18 December 2023, physical PDF 51: compatibility-difference list. Existing owners confirmed on main: doc/catalogues/sign_intrinsic_16_9_189.json for SIGN negative-zero behavior; doc/catalogues/numeric_editing_general_rules_13_7_2_1.json S13.7.2.1-004 for the sentence that the representation of a negative internal value in I, F, E, EN, ES, EX, D, and G output shall be prefixed with a minus sign; doc/catalogues/f_editing_13_7_2_3_2.json S13.7.2.3.2-012 for finite F output; doc/catalogues/e_and_d_editing_13_7_2_3_3.json S13.7.2.3.3-004 for finite E and D output; doc/catalogues/en_editing_13_7_2_3_4.json S13.7.2.3.4-005 for finite EN output; doc/catalogues/es_editing_13_7_2_3_5.json S13.7.2.3.5-005 for finite ES output; and doc/catalogues/generalized_real_and_complex_editing_13_7_5_2_3.json S13.7.5.2.3-005 for finite G output. The formatted-output negative-zero plan is guarded: use IEEE_ARITHMETIC, proceed only when `IEEE_SUPPORT_DATATYPE(0.0)` is true and `IEEE_IS_NEGATIVE(IEEE_COPY_SIGN(0.0, -1.0))` confirms that the constructed zero is negative, write that value with `(LZP,F5.1)`, and expect exactly `' -0.0'`. The field has width five: 13.7.2.1 p1 item (3) and 13.7.2.3.2 p11 require the minus sign for a negative internal value; 13.7.2.3.2 p11 permits an optional zero immediately to the left of the decimal symbol for a magnitude less than one, and 13.8.5 p1-p2 says LZP sets leading-zero mode PRINT so the processor shall produce that leading zero; 13.7.2.1 p1 item (4) right-justifies those four nonblank characters with one leading blank. Unsupported or non-distinguishing branches record no assertion."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_4_3_8.md"
+  },
+  "subunits": {
+    "p1": [
+      "p1.default-real-data-init-no-extra-precision",
+      "p1.data-initialized-variable-save",
+      "p1.formatted-input-padding",
+      "p1.G-editing-rounding-differences",
+      "p1.negative-zero-effects"
+    ]
+  },
+  "review_fingerprint": "cdf8fd922dd467ce04379f8f2e07b67cf394d0904c50f1369695ed505cca7e54",
+  "review_rationale": "Source registration for compatibility subclauses 4.3.5-4.4.3 and the 7.5.6.4 and 7.5.11 leftovers (batch247). Compatibility statements cross-reference their exact normative owners; the portable residue (deferred-length internal files, LZP negative-zero output, finalization on error termination) carries concrete plans. Source accounting only."
+}

@@ -1,0 +1,115 @@
+{
+  "schema_version": 1,
+  "section": "7.5.6.4",
+  "review_state": "reviewed",
+  "subunits": {
+    "p1": [
+      "p1.termination-condition",
+      "p1.error-termination",
+      "p1.stop-stmt-termination",
+      "p1.error-stop-stmt-termination",
+      "p1.end-program-stmt-termination",
+      "p1.existing-entities-not-finalized"
+    ],
+    "note-unnumbered": [
+      "note-unnumbered.saved-object-return-end-illustration"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S7.5.6.4-001",
+      "title": "Image termination does not finalize entities that already exist",
+      "source": "7.5.6.4 p1; J3/24-007, 18 December 2023, physical PDF 103.",
+      "source_units": [
+        "p1.termination-condition",
+        "p1.error-termination",
+        "p1.stop-stmt-termination",
+        "p1.error-stop-stmt-termination",
+        "p1.end-program-stmt-termination",
+        "p1.existing-entities-not-finalized"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "On image execution termination by an error, STOP statement, ERROR STOP statement, or END PROGRAM statement, entities existing immediately before termination are not finalized.",
+      "facets": [
+        "end-program-suppresses-existing-entity-finalization",
+        "stop-stmt-suppresses-existing-entity-finalization",
+        "error-stop-stmt-suppresses-existing-entity-finalization",
+        "error-termination-suppresses-existing-entity-finalization"
+      ],
+      "pending": {
+        "end-program-suppresses-existing-entity-finalization": "PENDING plan: main program creates a nonsaved local finalizable object with token 17. Its FINAL subroutine writes `FINAL-17` to OUTPUT_UNIT and calls FLUSH(OUTPUT_UNIT). The program writes and flushes `BEFORE-END-17`, then reaches END PROGRAM. Assert stdout contains `BEFORE-END-17` and does not contain `FINAL-17`. A separate companion program calls a subroutine with the same nonsaved local type and returns normally; 7.5.6.3 S7.5.6.3-003 requires that companion to print and flush `FINAL-17`, proving the finalizer path is live.",
+        "stop-stmt-suppresses-existing-entity-finalization": "PENDING plan: main program creates a nonsaved local finalizable object with token 23. Its FINAL subroutine writes `FINAL-23` to OUTPUT_UNIT and calls FLUSH(OUTPUT_UNIT). The program writes and flushes `BEFORE-STOP-23`, then executes STOP. Assert stdout contains `BEFORE-STOP-23` and does not contain `FINAL-23`; ignore any processor STOP banner and status wording. A separate normal-return companion using the same type prints and flushes `FINAL-23` under 7.5.6.3 S7.5.6.3-003.",
+        "error-stop-stmt-suppresses-existing-entity-finalization": "PENDING separate-program plan: module defines type t with a FINAL subroutine that writes `FINAL` to OUTPUT_UNIT and calls FLUSH(OUTPUT_UNIT). A subroutine declares a NONSAVED local `type(t) :: x`, writes `BEFORE`, calls FLUSH(OUTPUT_UNIT), then executes ERROR STOP. The oracle checks only stdout: it contains `BEFORE` and does not contain `FINAL`. Exit status, stop code, and processor banner text are not compared. The anti-vacuity companion is the same subroutine body with the ERROR STOP replaced by normal RETURN; under 7.5.6.3 S7.5.6.3-003 that companion does print and flush `FINAL`.",
+        "error-termination-suppresses-existing-entity-finalization": "PENDING separate-program plan: module defines type t with a FINAL subroutine that writes `FINAL` to OUTPUT_UNIT and calls FLUSH(OUTPUT_UNIT). A subroutine declares a NONSAVED local `type(t) :: x` and an allocatable scalar `integer, allocatable :: a`, executes `allocate(a)`, writes `BEFORE`, calls FLUSH(OUTPUT_UNIT), then executes a second `allocate(a)` without STAT=. Because allocating an already allocated allocatable is an ALLOCATE error condition (9.7.1.3 S9.7.1.3-001) and 9.7.1.2 S9.7.1.2-013 says a no-STAT ALLOCATE error initiates error termination, the oracle checks only stdout: it contains `BEFORE` and does not contain `FINAL`. Exit status and processor diagnostic text are not compared. The anti-vacuity companion replaces the second ALLOCATE with normal RETURN and must print and flush `FINAL` under 7.5.6.3 S7.5.6.3-003."
+      },
+      "oracle": "Each plan observes only explicitly flushed stdout markers: the route-specific BEFORE marker must appear and the FINAL marker must not. Exit status, STOP/ERROR STOP codes, processor banners, allocation diagnostic text, finalization order among multiple entities, file closure timing, and multi-image behavior are not compared. Anti-vacuity comes from a companion ordinary subroutine-return program using the same type and FINAL subroutine; 7.5.6.3 S7.5.6.3-003 requires that companion to print the FINAL marker.",
+      "oracle_limitation": "This source-only packet records pending plans and creates no fixture approval. Error-termination plans compare only flushed stdout marker presence/absence, never process status, stop-code values, traceback text, banner wording, allocation status after termination, or resource-exhaustion behavior. The note is informative. Coarray, team, and multi-image termination behavior is outside this packet.",
+      "dependencies": "Confirmed existing owner catalogues opened on main: doc/catalogues/derived_types_7_5_6_3.json S7.5.6.3-003 for ordinary nonsaved local finalization on normal RETURN/END; doc/catalogues/allocation_of_allocatable_variables_9_7_1_3.json S9.7.1.3-001 for allocating an already allocated allocatable as an ALLOCATE error condition; doc/catalogues/execution_of_allocate_statement_9_7_1_2.json S9.7.1.2-013 for no-STAT ALLOCATE error termination; doc/catalogues/save_attribute_8_5_16.json for SAVE. STOP/ERROR STOP and program termination catalogues are dependencies not re-owned here; 19.6 definition status remains a dependency."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "structural",
+      "rationale": "J3/24-007 PDF 103: paragraph subdivided into termination routes and the shared nonfinalization effect."
+    },
+    {
+      "unit": "p1.termination-condition",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.6.4-001"
+      ]
+    },
+    {
+      "unit": "p1.error-termination",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.6.4-001"
+      ]
+    },
+    {
+      "unit": "p1.stop-stmt-termination",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.6.4-001"
+      ]
+    },
+    {
+      "unit": "p1.error-stop-stmt-termination",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.6.4-001"
+      ]
+    },
+    {
+      "unit": "p1.end-program-stmt-termination",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.6.4-001"
+      ]
+    },
+    {
+      "unit": "p1.existing-entities-not-finalized",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.6.4-001"
+      ]
+    },
+    {
+      "unit": "note-unnumbered",
+      "disposition": "informative",
+      "rationale": "J3/24-007 PDF 103: note illustrates that a saved nonpointer nonallocatable object is not finalized solely because RETURN or END executes; the operative SAVE exclusion is owned by 7.5.6.3 p3 and 8.5.16."
+    },
+    {
+      "unit": "note-unnumbered.saved-object-return-end-illustration",
+      "disposition": "informative",
+      "rationale": "Illustrative note text only; notes are not normative source units."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_7_5_6_4.md"
+  },
+  "review_fingerprint": "bf9a5e9e5244971187c44b271e9c426387bff5d40fea16a5f33e3876d0c33a6f",
+  "review_rationale": "Source registration for compatibility subclauses 4.3.5-4.4.3 and the 7.5.6.4 and 7.5.11 leftovers (batch247). Compatibility statements cross-reference their exact normative owners; the portable residue (deferred-length internal files, LZP negative-zero output, finalization on error termination) carries concrete plans. Source accounting only."
+}

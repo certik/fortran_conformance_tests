@@ -1,0 +1,119 @@
+{
+  "schema_version": 1,
+  "section": "4.3.5",
+  "review_state": "reviewed",
+  "requirements": [
+    {
+      "id": "S4.3.5-001",
+      "title": "Finalizable structure and array constructors are not finalized",
+      "source": "4.3.5 p3; J3/24-007, 18 December 2023, physical PDF 49.",
+      "source_units": [
+        "p3"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Structure constructors and array constructors of finalizable type are not finalized by virtue of being constructors.",
+      "facets": [
+        "structure-constructor-not-finalized",
+        "array-constructor-not-finalized"
+      ],
+      "pending": {
+        "structure-constructor-not-finalized": "PENDING plan: define type t with integer tag and final subroutine that appends FINAL-tag to a saved log. Call consume_scalar(t(7)) where consume_scalar has TYPE(t), INTENT(IN) dummy and checks tag 7. After the call, assert the log is still empty. A separate subroutine creates an ordinary local TYPE(t) with tag 99 and returns, proving the same final subroutine appends FINAL-99 on an event owned by 7.5.6.3.",
+        "array-constructor-not-finalized": "PENDING plan: with the same type and finalizer, call consume_array([t(3),t(5)]) where consume_array has TYPE(t), INTENT(IN) dummy array and checks the exact tags [3,5]. After the call, assert the log is still empty. The ordinary-local companion finalization with tag 99 is the anti-vacuity control."
+      },
+      "oracle": "The plans use INTENT(IN) dummy consumers so no local dummy finalization is expected, distinct nonzero tags, and a separately executed ordinary local finalization companion to prove the finalizer and log are live. The oracle asserts absence of constructor-finalizer records only after the constructor value has been consumed and checked.",
+      "oracle_limitation": "This compatibility unit supplies a direct plan because no existing main catalogue owns the constructor-not-finalized effect as a source unit. The ordinary finalization companion remains owned by doc/catalogues/derived_types_7_5_6_3.json; constructor syntax and value formation remain owned by doc/catalogues/derived_types_7_5_10.json and doc/catalogues/array_constructors.json.",
+      "dependencies": "Confirmed existing owner catalogues opened: doc/catalogues/derived_types_7_5_6_3.json for ordinary finalization events, doc/catalogues/derived_types_7_5_10.json for structure constructors, and doc/catalogues/array_constructors.json for array constructors."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "structural",
+      "rationale": "J3/24-007, 18 December 2023, physical PDF 49: Compatibility-scope summary for Fortran 2003 programs, qualified by the listed exceptions. This cross-standard assertion is structural source context, not an independently finite F2023 fixture plan."
+    },
+    {
+      "unit": "p2",
+      "disposition": "structural",
+      "rationale": "J3/24-007, 18 December 2023, physical PDF 49: Compatibility difference for sequence types with type parameters. Existing owner confirmed: doc/catalogues/derived_types_7_5_2_3.json, S7.5.2.3-002, covers that a SEQUENCE type has no type parameters."
+    },
+    {
+      "unit": "p3",
+      "disposition": "requirements",
+      "requirements": [
+        "S4.3.5-001"
+      ]
+    },
+    {
+      "unit": "p4",
+      "disposition": "structural",
+      "rationale": "J3/24-007, 18 December 2023, physical PDF 49: Compatibility difference for G editing and rounding modes. Existing owners confirmed: doc/catalogues/generalized_real_and_complex_editing_13_7_5_2_3.json and doc/catalogues/input_output_rounding_mode_13_7_2_3_8.json."
+    },
+    {
+      "unit": "p5",
+      "disposition": "structural",
+      "rationale": "J3/24-007, 18 December 2023, physical PDF 49: Compatibility difference for explicit interfaces. Existing owner confirmed: doc/catalogues/explicit_interface_requirements_15_4_2_2.json, S15.4.2.2-001."
+    },
+    {
+      "unit": "p6",
+      "disposition": "structural",
+      "rationale": "J3/24-007, 18 December 2023, physical PDF 49: Compatibility difference for pure-function result cases. Existing owner confirmed: doc/catalogues/pure_procedures_15_7.json covers C1593 and C1594 for impure finalization and polymorphic allocatable result/component exclusions."
+    },
+    {
+      "unit": "p7",
+      "disposition": "structural",
+      "rationale": "J3/24-007, 18 December 2023, physical PDF 49: Compatibility difference for polymorphic INTENT(OUT) dummy arguments of pure subroutines. Existing owner confirmed: doc/catalogues/pure_procedures_15_7.json, C1597."
+    },
+    {
+      "unit": "p8",
+      "disposition": "structural",
+      "rationale": "J3/24-007, 18 December 2023, physical PDF 49: Compatibility difference for nonconformable allocatable assignment with elemental defined assignment in scope. Existing owners confirmed: doc/catalogues/intrinsic_assignment_statement_10_2_1_2.json and doc/catalogues/defined_assignment_statement_10_2_1_4.json cover assignment classification, conformance, and elemental defined-assignment conditions."
+    },
+    {
+      "unit": "p9",
+      "disposition": "structural",
+      "rationale": "J3/24-007, 18 December 2023, physical PDF 49: Compatibility difference for statement functions of parameterized derived type. Existing owner confirmed: doc/catalogues/statement_function_15_6_4.json, S15.6.4-004."
+    },
+    {
+      "unit": "p10",
+      "disposition": "structural",
+      "rationale": "J3/24-007, 18 December 2023, physical PDF 49: Compatibility difference for volatile entities in pure contexts. Existing owners confirmed: doc/catalogues/pure_procedures_15_7.json, S15.7-001, C1598, and S15.7-008, plus VOLATILE source catalogues doc/catalogues/volatile_attribute_8_5_20.json and doc/catalogues/volatile_statement_8_6_17.json."
+    },
+    {
+      "unit": "p11",
+      "disposition": "structural",
+      "rationale": "J3/24-007, 18 December 2023, physical PDF 49: Compatibility difference for SYSTEM_CLOCK integer argument kind and consistency requirements. Existing owner confirmed: doc/catalogues/system_clock_16_9_202.json, S16.9.202-001."
+    },
+    {
+      "unit": "p12",
+      "disposition": "structural",
+      "rationale": "J3/24-007, 18 December 2023, physical PDF 50: Compatibility difference for ASSOCIATED argument rank. Existing owner confirmed: doc/catalogues/associated_intrinsic_16_9_20.json covers POINTER/TARGET argument restrictions."
+    },
+    {
+      "unit": "p13",
+      "disposition": "structural",
+      "rationale": "J3/24-007, 18 December 2023, physical PDF 50: compatibility-difference list subdivided into assignment-effect cross-references and SYSTEM_CLOCK processor latitude."
+    },
+    {
+      "unit": "p13.deferred-length-assignment-effects",
+      "disposition": "structural",
+      "rationale": "J3/24-007, 18 December 2023, physical PDF 50: the deferred-length character compatibility item lists the IOMSG= assignment, ERRMSG= assignment, internal WRITE unit assignment, and intrinsic-subroutine INTENT(OUT) argument assignment routes for which this document specifies intrinsic-assignment semantics. Existing owners confirmed on main: doc/catalogues/iomsg_specifier_12_11_6.json for IOMSG= assignment, doc/catalogues/errmsg_specifier_9_7_5.json for ERRMSG= assignment, doc/catalogues/internal_files_12_4.json S12.4-007 for an allocatable deferred-length character scalar that is the internal WRITE unit, and doc/catalogues/intrinsic_procedure_specifications_16_9_1.json S16.9.1-002 for allocatable deferred-length character scalars corresponding to intrinsic-subroutine INTENT(INOUT) or INTENT(OUT) arguments. S12.4-007 covers the internal-WRITE unit case; its concrete already-allocated plan is `character(:), allocatable :: s; s = 'abcdefgh'; write(s,'(A)') 'xy'`, then assert `LEN(s) == 2` and `s == 'xy'`, because 12.4 p2 says an allocatable deferred-length character scalar internal file is assigned the characters written by intrinsic assignment and allocated or reallocated to have length equal to the number of characters written if necessary; blank-filling any unwritten portion applies only otherwise. S16.9.1-002 covers the intrinsic-subroutine argument case with both value and length assertions."
+    },
+    {
+      "unit": "p13.system-clock-multiple-clocks-latitude",
+      "disposition": "permission",
+      "rationale": "The sentence says this document permits SYSTEM_CLOCK to use two or more clocks with characteristics based on argument type and kind. Existing owner confirmed: doc/catalogues/system_clock_16_9_202.json, S16.9.202-009 (argument characteristics select among multiple clocks) and S16.9.202-010 (clock-selection documentation recommendation)."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_4_3_5.md"
+  },
+  "subunits": {
+    "p13": [
+      "p13.deferred-length-assignment-effects",
+      "p13.system-clock-multiple-clocks-latitude"
+    ]
+  },
+  "review_fingerprint": "a378c5321673dbcc556edb70c501392c28b53464012e8b64b31d74813a68e667",
+  "review_rationale": "Source registration for compatibility subclauses 4.3.5-4.4.3 and the 7.5.6.4 and 7.5.11 leftovers (batch247). Compatibility statements cross-reference their exact normative owners; the portable residue (deferred-length internal files, LZP negative-zero output, finalization on error termination) carries concrete plans. Source accounting only."
+}

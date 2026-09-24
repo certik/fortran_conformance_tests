@@ -1,0 +1,114 @@
+{
+  "schema_version": 1,
+  "section": "7.5.11",
+  "review_state": "reviewed",
+  "subunits": {
+    "p1": [
+      "p1.intrinsic-assignment-cross-reference",
+      "p1.no-intrinsic-derived-type-operations",
+      "p1.operations-explicit-function",
+      "p1.operations-generic-interface",
+      "p1.defined-assignment-explicit-subroutine",
+      "p1.defined-assignment-generic-interface"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S7.5.11-001",
+      "title": "Derived-type operations require explicit generic function definitions",
+      "source": "7.5.11 p1, second and third sentences; J3/24-007, 18 December 2023, physical PDF 109.",
+      "source_units": [
+        "p1.no-intrinsic-derived-type-operations",
+        "p1.operations-explicit-function",
+        "p1.operations-generic-interface"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "The document specifies no intrinsic operations on derived-type entities. Any operation on derived-type entities must be explicitly defined by a function and a generic interface.",
+      "facets": [
+        "no-intrinsic-derived-operation-fallback",
+        "explicit-generic-function-operation"
+      ],
+      "pending": {
+        "no-intrinsic-derived-operation-fallback": "PENDING source-control plan: type box has integer component x. The conforming program adds only a generic OPERATOR(+) interface and function before evaluating a+b; the source-control variant removes that generic and is nonconforming without assigning a diagnostic obligation to this prose unit.",
+        "explicit-generic-function-operation": "PENDING runtime plan: module interface OPERATOR(+) maps to add_box(left,right). For left%x=2 and right%x=3, add_box returns result%x = left%x*10 + right%x, so a+b must produce 23. A plain function call add_box(a,b) is a companion control and does not by itself define the operator."
+      },
+      "oracle": "The operator plan uses exact integer component values and a sentinel result 23 that intrinsic assignment, component copying, or reversed operands would not produce. The nonconforming source-control variant is retained only to document the boundary; no rejection facet is claimed here.",
+      "oracle_limitation": "This prose shall constrains programs but is not a numbered constraint, so this catalogue does not create a mandatory diagnostic facet. Generic resolution, operator syntax, and procedure interface details remain owned by clauses 10 and 15.",
+      "dependencies": "Confirmed existing owner catalogues opened: doc/catalogues/defined_operations_15_4_3_4_2.json, doc/catalogues/generic_interfaces_15_4_3_4.json, doc/catalogues/generic_identifiers_15_4_3_4_1.json, and doc/catalogues/derived_types_7_5_10.json. Expression/operator interpretation in clause 10 remains a dependency."
+    },
+    {
+      "id": "S7.5.11-002",
+      "title": "Derived-type defined assignment requires an explicit generic subroutine definition",
+      "source": "7.5.11 p1, third sentence; J3/24-007, 18 December 2023, physical PDF 109.",
+      "source_units": [
+        "p1.defined-assignment-explicit-subroutine",
+        "p1.defined-assignment-generic-interface"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "A defined assignment for derived-type entities must be explicitly defined by a subroutine and a generic assignment interface; intrinsic assignment remains governed by 10.2.1.",
+      "facets": [
+        "explicit-generic-subroutine-assignment"
+      ],
+      "pending": {
+        "explicit-generic-subroutine-assignment": "PENDING runtime plan: interface ASSIGNMENT(=) maps to assign_box(lhs,rhs). Starting lhs%x=-5 and rhs%x=7, execute lhs = rhs and expect lhs%x=107 because the subroutine stores rhs%x+100. The distinct -5 sentinel proves the left side changed through the explicit generic assignment path. A separate intrinsic-assignment control without the generic copies x=7 under 10.2.1."
+      },
+      "oracle": "The assignment plan uses exact integer values. The 107 sentinel distinguishes defined assignment from ordinary component copy of 7 and from an unchanged left side of -5. The intrinsic-assignment control keeps the cross-reference separate from the defined-assignment requirement.",
+      "oracle_limitation": "This source unit supplies no mandatory rejection oracle for a missing or malformed generic assignment interface. Detailed dummy-argument characteristics and assignment interpretation remain owned by clauses 10 and 15.",
+      "dependencies": "Confirmed existing owner catalogues opened: doc/catalogues/defined_assignment_statement_10_2_1_4.json, doc/catalogues/defined_assignments_15_4_3_4_3.json, doc/catalogues/generic_interfaces_15_4_3_4.json, and doc/catalogues/intrinsic_assignment_statement_10_2_1_2.json. Name resolution in clause 19 remains a dependency."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "structural",
+      "rationale": "J3/24-007 PDF 109: paragraph subdivided into the intrinsic-assignment cross-reference, operation requirement, and defined-assignment requirement."
+    },
+    {
+      "unit": "p1.intrinsic-assignment-cross-reference",
+      "disposition": "structural",
+      "rationale": "J3/24-007 PDF 109: cross-reference to 10.2.1 for intrinsic assignment of derived-type entities; the executable intrinsic-assignment semantics are owned by clause 10."
+    },
+    {
+      "unit": "p1.no-intrinsic-derived-type-operations",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.11-001"
+      ]
+    },
+    {
+      "unit": "p1.operations-explicit-function",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.11-001"
+      ]
+    },
+    {
+      "unit": "p1.operations-generic-interface",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.11-001"
+      ]
+    },
+    {
+      "unit": "p1.defined-assignment-explicit-subroutine",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.11-002"
+      ]
+    },
+    {
+      "unit": "p1.defined-assignment-generic-interface",
+      "disposition": "requirements",
+      "requirements": [
+        "S7.5.11-002"
+      ]
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_7_5_11.md"
+  },
+  "review_fingerprint": "d29fd923e60f1de3fc6d836ec8c64b966e0e0529f51e3988f091a4323ed4ba47",
+  "review_rationale": "Source registration for compatibility subclauses 4.3.5-4.4.3 and the 7.5.6.4 and 7.5.11 leftovers (batch247). Compatibility statements cross-reference their exact normative owners; the portable residue (deferred-length internal files, LZP negative-zero output, finalization on error termination) carries concrete plans. Source accounting only."
+}

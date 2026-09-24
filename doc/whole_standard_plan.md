@@ -6039,6 +6039,11 @@ See `doc/source_audits/batch_262.json`.
 Fifty informative units accepted in one round, covering the annex's notes on segments, atomics, collectives and C interoperability, each pointed at the normative catalogue that owns the rule.
 See `doc/source_audits/batch_264.json`.
 
+## Batch 247 — Compatibility 4.3.5-4.4.3 and Clause 7.5 leftovers
+
+Thirty units, four rounds. Two corrections were about output a conforming processor may legally vary: a leading zero is optional, and a deferred-length internal file is resized, not padded.
+See `doc/source_audits/batch_247.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
