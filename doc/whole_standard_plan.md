@@ -6224,6 +6224,11 @@ See `doc/source_audits/batch_294.json`.
 25 programs, 54 facets: -2**2 is -4, 2**3**2 is 512, and 1 < 2 < 3 is not Fortran, though LFortran accepts it.
 See `doc/source_audits/batch_295.json`.
 
+## Batch 296 — BIND, CONTIGUOUS and DIMENSION attribute fixtures 8.5.5-8.5.8.1
+
+5 programs, 15 facets. The review's lesson: a catalogue shared by several packets must keep every packet's account of its coverage.
+See `doc/source_audits/batch_296.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must

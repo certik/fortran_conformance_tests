@@ -73,6 +73,16 @@ LIMITATION_FALSE = (
     "them. No diagnostic, trap, address, hidden-copy or performance behavior is required."
 )
 
+BATCH296_ORACLE_PREFIX = "Batch296 S8.5.7-003 assumed-rank route: "
+BATCH296_LIMIT_PREFIX = "Batch296 S8.5.7-003 assumed-rank limits: "
+
+
+def carry_owned_paragraph(base, current, prefix):
+    paragraphs = [part for part in current.split("\n\n") if part.startswith(prefix)]
+    if len(paragraphs) > 1:
+        raise ValueError("duplicate carried contiguous-property paragraph: " + prefix)
+    return base if not paragraphs else base + "\n\n" + paragraphs[0]
+
 
 def sha(raw):
     return hashlib.sha256(raw).hexdigest()
@@ -394,8 +404,11 @@ def synced_catalogue(catalogue):
         for facet in facets:
             requirement["pending"].pop(facet, None)
         if rule == RULE_TRUE:
-            requirement["oracle"] = ORACLE_TRUE
-            requirement["oracle_limitation"] = LIMITATION_TRUE
+            requirement["oracle"] = carry_owned_paragraph(ORACLE_TRUE, requirement.get("oracle", ""),
+                                                           BATCH296_ORACLE_PREFIX)
+            requirement["oracle_limitation"] = carry_owned_paragraph(LIMITATION_TRUE,
+                                                                      requirement.get("oracle_limitation", ""),
+                                                                      BATCH296_LIMIT_PREFIX)
         else:
             requirement["oracle"] = ORACLE_FALSE
             requirement["oracle_limitation"] = LIMITATION_FALSE
