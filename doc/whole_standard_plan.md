@@ -5719,6 +5719,11 @@ See `doc/source_audits/batch_194.json`.
 Forty-one units, after three rounds. The recurring subtlety was precision of claim: EXTENDS_TYPE_OF's special case covers unlimited polymorphic arguments that are *either* disassociated pointers *or* unallocated allocatables — both branches, for both arguments — and FRACTION of a NaN returns "that NaN", which a program can only confirm to be *a* NaN.
 See `doc/source_audits/batch_191.json`.
 
+## Batch 197 — LLE through MASKL
+
+Forty-four units, after two rounds. LLE and LLT compare in *ASCII* order whatever the processor's own collating sequence is, and the first plans used pairs like A/B whose order is the same everywhere. They now use pairs such as '9' and 'A', or 'Z' and 'a', which an EBCDIC-like native order would reverse.
+See `doc/source_audits/batch_197.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must

@@ -1,0 +1,171 @@
+{
+  "schema_version": 1,
+  "section": "16.9.127",
+  "subunits": {
+    "p5": [
+      "p5.blank-padding",
+      "p5.ascii-result",
+      "p5.non-ascii-latitude"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S16.9.127-001",
+      "title": "LLT argument restrictions",
+      "source": "S16.9.127, J3/24-007, 18 December 2023, physical PDF428.",
+      "source_units": [
+        "p3"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "STRING_A shall be default character or ASCII character, and STRING_B shall be character with the same kind type parameter as STRING_A.",
+      "facets": [
+        "LLT-STRING_A-default-or-ASCII-character",
+        "LLT-STRING_B-same-character-kind"
+      ],
+      "pending": {
+        "LLT-STRING_A-default-or-ASCII-character": "Positive source controls call LLT with default CHARACTER STRING_A and same-kind character STRING_B; source-control mutations use a noncharacter actual and claim no diagnostic facet.",
+        "LLT-STRING_B-same-character-kind": "Positive source controls call LLT with same-kind default CHARACTER arguments; a source-control mutation uses different character kinds and claims no diagnostic facet."
+      },
+      "oracle": "Source registration only. Future fixtures initialize result variables to non-default or opposite sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact logical, integer, kind, character, shape, or bit-pattern observations. Processor-dependent approximations are separated from exact result obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for LLE, LLT, LOG, LOG_GAMMA, LOG10, LOGICAL, and MASKL found no existing 16.9.126-16.9.132 fixture binding in this worktree; LOGICAL appears only in unrelated logical-literal, logical-operator, and I/O fixture names or output strings.",
+      "dependencies": "Registered dependencies: existing source-form, type, declaration, expression, assignment, execution, array, and I/O foundations from clauses 6 through 13 where already catalogued. Unregistered dependencies retained: 7.7 BOZ literal context where future bit helpers use BOZ controls, 16.3 integer bit model and bit manipulation context, 16.4 numeric model terminology, sibling 16.9 intrinsics used by pending plans such as AIMAG, ACOS, BIT_SIZE, BTEST, POPCNT, and SELECTED_*_KIND, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, deleted-feature, or scope terms."
+    },
+    {
+      "id": "S16.9.127-002",
+      "title": "LLT result has default logical characteristics",
+      "source": "S16.9.127, J3/24-007, 18 December 2023, physical PDF428.",
+      "source_units": [
+        "p4"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The LLT result is default logical.",
+      "facets": [
+        "LLT-result-default-logical"
+      ],
+      "pending": {
+        "LLT-result-default-logical": "Initialize a default logical sentinel to .false., assign LLT(\"A\",\"B\"), and assert KIND(result)==KIND(.true.) plus the exact true value from the ASCII result facet."
+      },
+      "oracle": "Source registration only. Future fixtures initialize result variables to non-default or opposite sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact logical, integer, kind, character, shape, or bit-pattern observations. Processor-dependent approximations are separated from exact result obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for LLE, LLT, LOG, LOG_GAMMA, LOG10, LOGICAL, and MASKL found no existing 16.9.126-16.9.132 fixture binding in this worktree; LOGICAL appears only in unrelated logical-literal, logical-operator, and I/O fixture names or output strings.",
+      "dependencies": "Registered dependencies: existing source-form, type, declaration, expression, assignment, execution, array, and I/O foundations from clauses 6 through 13 where already catalogued. Unregistered dependencies retained: 7.7 BOZ literal context where future bit helpers use BOZ controls, 16.3 integer bit model and bit manipulation context, 16.4 numeric model terminology, sibling 16.9 intrinsics used by pending plans such as AIMAG, ACOS, BIT_SIZE, BTEST, POPCNT, and SELECTED_*_KIND, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, deleted-feature, or scope terms."
+    },
+    {
+      "id": "S16.9.127-003",
+      "title": "LLT uses blank padding and ASCII less-than result semantics",
+      "source": "S16.9.127, J3/24-007, 18 December 2023, physical PDF428.",
+      "source_units": [
+        "p5.blank-padding",
+        "p5.ascii-result"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For ASCII strings, unequal lengths are compared after right blank padding of the shorter string; LLT is true exactly for STRING_A preceding STRING_B in the ASCII collating sequence, and false otherwise.",
+      "facets": [
+        "LLT-unequal-length-blank-padding",
+        "LLT-ascii-precedes-true",
+        "LLT-equal-strings-false",
+        "LLT-ascii-follows-false"
+      ],
+      "pending": {
+        "LLT-unequal-length-blank-padding": "Initialize logical results to opposite sentinels and assert LLT(\"A\",\"A!\") is true while LLT(\"A\",\"A \") is false, proving right blank padding and ASCII order are both load-bearing; mutate the second operand punctuation or intrinsic name to LLE so one assertion fails.",
+        "LLT-ascii-precedes-true": "Assert ASCII-table discriminators with .false. sentinels: LLT(\"9\",\"A\") is true because ASCII 57 precedes 65, LLT(\"A\",\"a\") is true because ASCII 65 precedes 97, LLT(\"Z\",\"a\") is true because ASCII 90 precedes 97, and LLT(\"Z\",\"_\") is true because ASCII 90 precedes 95. Also retain LLT(\"ONE\",\"TWO\") as the example-derived same-case control. Reverse each discriminator in companion false checks so ASCII collating sequence, not native character order, is load-bearing.",
+        "LLT-equal-strings-false": "Assert LLT(\"AZ\",\"AZ\") and LLT(\"\",\"\") are false with .true. sentinels; mutate LLT to LLE so equality becomes true.",
+        "LLT-ascii-follows-false": "Assert reversed ASCII-table discriminators with .true. sentinels: LLT(\"A\",\"9\") is false because ASCII 65 follows 57, LLT(\"a\",\"A\") is false because ASCII 97 follows 65, LLT(\"a\",\"Z\") is false because ASCII 97 follows 90, and LLT(\"_\",\"Z\") is false because ASCII 95 follows 90. Also assert LLT(\"B\",\"A\") is false as a same-case control; swap operands so each false case becomes true."
+      },
+      "oracle": "Source registration only. Future fixtures initialize result variables to non-default or opposite sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact logical, integer, kind, character, shape, or bit-pattern observations. Processor-dependent approximations are separated from exact result obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for LLE, LLT, LOG, LOG_GAMMA, LOG10, LOGICAL, and MASKL found no existing 16.9.126-16.9.132 fixture binding in this worktree; LOGICAL appears only in unrelated logical-literal, logical-operator, and I/O fixture names or output strings.",
+      "dependencies": "Registered dependencies: existing source-form, type, declaration, expression, assignment, execution, array, and I/O foundations from clauses 6 through 13 where already catalogued. Unregistered dependencies retained: 7.7 BOZ literal context where future bit helpers use BOZ controls, 16.3 integer bit model and bit manipulation context, 16.4 numeric model terminology, sibling 16.9 intrinsics used by pending plans such as AIMAG, ACOS, BIT_SIZE, BTEST, POPCNT, and SELECTED_*_KIND, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, deleted-feature, or scope terms."
+    },
+    {
+      "id": "S16.9.127-004",
+      "title": "LLT non-ASCII comparison result is processor dependent",
+      "source": "S16.9.127, J3/24-007, 18 December 2023, physical PDF428.",
+      "source_units": [
+        "p5.non-ascii-latitude"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A LLT comparison result is processor dependent once either string contains a character outside the ASCII character set.",
+      "facets": [
+        "LLT-non-ASCII-result-processor-dependent"
+      ],
+      "pending": {
+        "LLT-non-ASCII-result-processor-dependent": "No portable oracle for a fixed truth value: p5 makes any result processor dependent once either string contains a non-ASCII character; future exact LLT fixtures restrict operands to ASCII characters."
+      },
+      "oracle": "Source registration only. Future fixtures initialize result variables to non-default or opposite sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact logical, integer, kind, character, shape, or bit-pattern observations. Processor-dependent approximations are separated from exact result obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for LLE, LLT, LOG, LOG_GAMMA, LOG10, LOGICAL, and MASKL found no existing 16.9.126-16.9.132 fixture binding in this worktree; LOGICAL appears only in unrelated logical-literal, logical-operator, and I/O fixture names or output strings.",
+      "dependencies": "Registered dependencies: existing source-form, type, declaration, expression, assignment, execution, array, and I/O foundations from clauses 6 through 13 where already catalogued. Unregistered dependencies retained: 7.7 BOZ literal context where future bit helpers use BOZ controls, 16.3 integer bit model and bit manipulation context, 16.4 numeric model terminology, sibling 16.9 intrinsics used by pending plans such as AIMAG, ACOS, BIT_SIZE, BTEST, POPCNT, and SELECTED_*_KIND, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, deleted-feature, or scope terms."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "definition",
+      "rationale": "Description names LLT as ASCII less than; p5 owns result semantics."
+    },
+    {
+      "unit": "p2",
+      "disposition": "definition",
+      "rationale": "Classifies LLT as elemental; general elemental semantics are owned outside this section."
+    },
+    {
+      "unit": "p3",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.127-001"
+      ]
+    },
+    {
+      "unit": "p4",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.127-002"
+      ]
+    },
+    {
+      "unit": "p5",
+      "disposition": "structural",
+      "rationale": "Result Value mixes exact blank-padded ASCII comparison obligations with non-ASCII processor latitude."
+    },
+    {
+      "unit": "p5.blank-padding",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.127-003"
+      ]
+    },
+    {
+      "unit": "p5.ascii-result",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.127-003"
+      ]
+    },
+    {
+      "unit": "p5.non-ascii-latitude",
+      "disposition": "permission",
+      "requirements": [
+        "S16.9.127-004"
+      ],
+      "rationale": "Processor-dependent non-ASCII result latitude."
+    },
+    {
+      "unit": "note-unnumbered",
+      "disposition": "informative",
+      "rationale": "NOTE text is illustrative and not an independent requirement."
+    },
+    {
+      "unit": "p6",
+      "disposition": "informative",
+      "rationale": "Example paragraph is illustrative."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_16_9_127.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "14e70aca5d1d9ef65a04b972a1a2e08ec92b6154151bcd949d615394a80e51bf",
+  "review_rationale": "Source registration for 16.9.126-16.9.132: LLE, LLT, LOG, LOG_GAMMA, LOG10, LOGICAL and MASKL (batch197). Every unit hash-verified by an independent reviewer across two rounds; LLE and LLT plans use character pairs whose ASCII order differs from plausible native collations, so only an ASCII comparison passes. Source accounting only."
+}

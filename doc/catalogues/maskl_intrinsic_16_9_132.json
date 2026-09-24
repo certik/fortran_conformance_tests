@@ -1,0 +1,166 @@
+{
+  "schema_version": 1,
+  "section": "16.9.132",
+  "subunits": {
+    "p4": [
+      "p4.integer-type",
+      "p4.kind-present",
+      "p4.kind-absent"
+    ],
+    "p5": [
+      "p5.bit-result",
+      "p5.model-cross-reference"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S16.9.132-001",
+      "title": "MASKL argument restrictions",
+      "source": "S16.9.132, J3/24-007, 18 December 2023, physical PDF429.",
+      "source_units": [
+        "p3"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "I shall be integer, nonnegative, and no greater than the number of bits z of the integer bit model for the result kind; optional KIND shall be a scalar integer constant expression.",
+      "facets": [
+        "MASKL-I-integer",
+        "MASKL-I-nonnegative-and-at-most-z",
+        "MASKL-KIND-scalar-integer-constant-expression"
+      ],
+      "pending": {
+        "MASKL-I-integer": "Positive source control calls MASKL with integer I values 0, 1, 3, and BIT_SIZE(0); a source-control mutation uses a noninteger I and claims no diagnostic facet.",
+        "MASKL-I-nonnegative-and-at-most-z": "Positive source controls call MASKL with I=0, I=1, and I=BIT_SIZE(0); source-control mutations use I=-1 and I=BIT_SIZE(0)+1 and claim no diagnostic facet.",
+        "MASKL-KIND-scalar-integer-constant-expression": "Positive source control calls MASKL with KIND=KIND(0); source-control mutations use a noninteger or nonconstant KIND expression and claim no diagnostic facet."
+      },
+      "oracle": "Source registration only. Future fixtures initialize result variables to non-default or opposite sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact logical, integer, kind, character, shape, or bit-pattern observations. Processor-dependent approximations are separated from exact result obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for LLE, LLT, LOG, LOG_GAMMA, LOG10, LOGICAL, and MASKL found no existing 16.9.126-16.9.132 fixture binding in this worktree; LOGICAL appears only in unrelated logical-literal, logical-operator, and I/O fixture names or output strings.",
+      "dependencies": "Registered dependencies: existing source-form, type, declaration, expression, assignment, execution, array, and I/O foundations from clauses 6 through 13 where already catalogued. Unregistered dependencies retained: 7.7 BOZ literal context where future bit helpers use BOZ controls, 16.3 integer bit model and bit manipulation context, 16.4 numeric model terminology, sibling 16.9 intrinsics used by pending plans such as AIMAG, ACOS, BIT_SIZE, BTEST, POPCNT, and SELECTED_*_KIND, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, deleted-feature, or scope terms."
+    },
+    {
+      "id": "S16.9.132-002",
+      "title": "MASKL result type and kind follow KIND presence or default integer",
+      "source": "S16.9.132, J3/24-007, 18 December 2023, physical PDF429.",
+      "source_units": [
+        "p4.integer-type",
+        "p4.kind-present",
+        "p4.kind-absent"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The MASKL result is integer; with KIND present its kind type parameter is the value of KIND, and with KIND absent its kind type parameter is default integer.",
+      "facets": [
+        "MASKL-result-integer-type",
+        "MASKL-result-kind-from-KIND",
+        "MASKL-result-default-kind-absent"
+      ],
+      "pending": {
+        "MASKL-result-integer-type": "Assign MASKL(1) to an integer variable and assert POPCNT plus BTEST bit observations from the bit-result facet; mutate the intrinsic to a logical-valued control in source review, not as a diagnostic facet.",
+        "MASKL-result-kind-from-KIND": "Guarded plan probes for a nondefault integer kind via SELECTED_INT_KIND; after availability is established, evaluate MASKL(1,KIND=that_kind), assert KIND(...) equals that kind, and mutate KIND to KIND(0) so the kind check fails. The default-kind control exercises KIND presence without claiming nondefault coverage on processors lacking another kind.",
+        "MASKL-result-default-kind-absent": "Evaluate MASKL(1) and assert KIND(...) equals KIND(0); companion MASKL(1,KIND=KIND(0)) guards against an absent-call parser special case."
+      },
+      "oracle": "Source registration only. Future fixtures initialize result variables to non-default or opposite sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact logical, integer, kind, character, shape, or bit-pattern observations. Processor-dependent approximations are separated from exact result obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for LLE, LLT, LOG, LOG_GAMMA, LOG10, LOGICAL, and MASKL found no existing 16.9.126-16.9.132 fixture binding in this worktree; LOGICAL appears only in unrelated logical-literal, logical-operator, and I/O fixture names or output strings.",
+      "dependencies": "Registered dependencies: existing source-form, type, declaration, expression, assignment, execution, array, and I/O foundations from clauses 6 through 13 where already catalogued. Unregistered dependencies retained: 7.7 BOZ literal context where future bit helpers use BOZ controls, 16.3 integer bit model and bit manipulation context, 16.4 numeric model terminology, sibling 16.9 intrinsics used by pending plans such as AIMAG, ACOS, BIT_SIZE, BTEST, POPCNT, and SELECTED_*_KIND, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, deleted-feature, or scope terms."
+    },
+    {
+      "id": "S16.9.132-003",
+      "title": "MASKL sets the leftmost I bits in bit context",
+      "source": "S16.9.132, J3/24-007, 18 December 2023, physical PDF430.",
+      "source_units": [
+        "p5.bit-result"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The MASKL result has its leftmost I bits set to 1 and all remaining bits set to 0 under the 16.3 integer bit model.",
+      "facets": [
+        "MASKL-zero-left-bits-all-zero",
+        "MASKL-leftmost-I-bits-set",
+        "MASKL-remaining-bits-zero",
+        "MASKL-full-width-all-bits-set"
+      ],
+      "pending": {
+        "MASKL-zero-left-bits-all-zero": "Use I=0 with a nonvacuous I=1 companion; assert POPCNT(MASKL(0))==0 and POPCNT(MASKL(1))==1, never the numeric value of a sign-bit result. Mutate I=0 to I=1 so the zero-width case fails.",
+        "MASKL-leftmost-I-bits-set": "For z=BIT_SIZE(0), compute R=MASKL(3), assert BTEST(R,z-1), BTEST(R,z-2), and BTEST(R,z-3) are true and POPCNT(R)==3; mutate MASKL to MASKR so the leftmost-bit checks fail.",
+        "MASKL-remaining-bits-zero": "For R=MASKL(3), assert BTEST(R,0) and BTEST(R,z-4) are false for z greater than 3, paired with the three true leftmost checks; mutate I to z so the remaining-bit checks fail.",
+        "MASKL-full-width-all-bits-set": "Use I=BIT_SIZE(0), assert POPCNT(MASKL(I))==I plus BTEST at positions 0 and I-1 are true, and compare only bit-context observations; mutate I to I-1 so one selected bit or count check fails."
+      },
+      "oracle": "Source registration only. Future fixtures initialize result variables to non-default or opposite sentinels before invoking the intrinsic and assert only properties fixed by 16.9: exact logical, integer, kind, character, shape, or bit-pattern observations. Processor-dependent approximations are separated from exact result obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json for LLE, LLT, LOG, LOG_GAMMA, LOG10, LOGICAL, and MASKL found no existing 16.9.126-16.9.132 fixture binding in this worktree; LOGICAL appears only in unrelated logical-literal, logical-operator, and I/O fixture names or output strings.",
+      "dependencies": "Registered dependencies: existing source-form, type, declaration, expression, assignment, execution, array, and I/O foundations from clauses 6 through 13 where already catalogued. Unregistered dependencies retained: 7.7 BOZ literal context where future bit helpers use BOZ controls, 16.3 integer bit model and bit manipulation context, 16.4 numeric model terminology, sibling 16.9 intrinsics used by pending plans such as AIMAG, ACOS, BIT_SIZE, BTEST, POPCNT, and SELECTED_*_KIND, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, deleted-feature, or scope terms."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "definition",
+      "rationale": "Description names MASKL as a left justified mask; p5 owns bit result semantics."
+    },
+    {
+      "unit": "p2",
+      "disposition": "definition",
+      "rationale": "Classifies MASKL as elemental."
+    },
+    {
+      "unit": "p3",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.132-001"
+      ]
+    },
+    {
+      "unit": "p4",
+      "disposition": "structural",
+      "rationale": "Result Characteristics combines integer result type with present-KIND and absent-KIND kind rules."
+    },
+    {
+      "unit": "p4.integer-type",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.132-002"
+      ]
+    },
+    {
+      "unit": "p4.kind-present",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.132-002"
+      ]
+    },
+    {
+      "unit": "p4.kind-absent",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.132-002"
+      ]
+    },
+    {
+      "unit": "p5",
+      "disposition": "structural",
+      "rationale": "Result Value combines exact bit-result semantics with a cross-reference to the 16.3 model."
+    },
+    {
+      "unit": "p5.bit-result",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.132-003"
+      ]
+    },
+    {
+      "unit": "p5.model-cross-reference",
+      "disposition": "definition",
+      "rationale": "Cross-reference to 16.3 integer bit-sequence interpretation; 16.3 owns the model definition."
+    },
+    {
+      "unit": "p6",
+      "disposition": "informative",
+      "rationale": "Example paragraph is illustrative and uses sibling intrinsics."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_16_9_132.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "0ae29cca62f2b4242e7cc7d97d90dd38384c96ed4db1e367e09606486a072037",
+  "review_rationale": "Source registration for 16.9.126-16.9.132: LLE, LLT, LOG, LOG_GAMMA, LOG10, LOGICAL and MASKL (batch197). Every unit hash-verified by an independent reviewer across two rounds; LLE and LLT plans use character pairs whose ASCII order differs from plausible native collations, so only an ASCII comparison passes. Source accounting only."
+}
