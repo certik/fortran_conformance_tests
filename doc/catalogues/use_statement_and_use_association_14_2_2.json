@@ -1,0 +1,1061 @@
+{
+  "schema_version": 1,
+  "section": "14.2.2",
+  "subunits": {
+    "p1": [
+      "p1.use-specifies-use-association",
+      "p1.use-references-module",
+      "p1.public-portions-available",
+      "p1.no-self-reference"
+    ],
+    "p2": [
+      "p2.accessible-entity-kinds",
+      "p2.entity-association-identity",
+      "p2.accessed-module-attributes-required",
+      "p2.different-accessibility-permitted",
+      "p2.asynchronous-attribute-permitted",
+      "p2.volatile-attribute-permitted",
+      "p2.module-identifiers-used",
+      "p2.default-same-identifiers",
+      "p2.renamed-identifiers",
+      "p2.variable-previously-declared",
+      "p2.other-entity-previously-defined"
+    ],
+    "p8": [
+      "p8.ultimate-entity-definition",
+      "p8.multiple-ultimate-entity-restriction",
+      "p8.unused-identifier-exception",
+      "p8.generic-interface-exception"
+    ],
+    "p9": [
+      "p9.attribute-respecification-restriction",
+      "p9.public-private-exception",
+      "p9.async-volatile-exception"
+    ],
+    "p6": [
+      "p6.multiple-use-same-module-permitted",
+      "p6.non-only-use-all-public-effect",
+      "p6.all-only-uses-union-effect"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S14.2.2-001",
+      "title": "USE statements specify use association and reference available modules without self-reference",
+      "source": "S14.2.2, J3/24-007, 18 December 2023, physical PDF318.",
+      "source_units": [
+        "p1.use-specifies-use-association",
+        "p1.use-references-module",
+        "p1.public-portions-available",
+        "p1.no-self-reference"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "A USE statement specifies use association, references the named module, requires the public portions of that module to be available at processing time, and a module shall not reference itself directly or indirectly.",
+      "facets": [
+        "use-stmt-specifies-use-association",
+        "use-stmt-references-module",
+        "module-public-portions-available",
+        "module-self-reference-prohibited"
+      ],
+      "pending": {
+        "use-stmt-specifies-use-association": "Define module use_assoc_provider with public integer answer=42; a client USEs it, initializes observed to -777, assigns answer, and expects exact 42.",
+        "use-stmt-references-module": "Compile provider module before a client containing USE use_assoc_provider; changing only the module name to a different existing module returning -999 changes observed to -999.",
+        "module-public-portions-available": "Source-control plan builds the provider before the client and records that only public entities are imported; missing-module diagnostics are build-environment evidence, not a portable source oracle here.",
+        "module-self-reference-prohibited": "Positive source-control uses two acyclic modules with one USE edge. Direct and indirect self-reference mutations change only the USE graph; no diagnostic is required by this unnumbered restriction."
+      },
+      "oracle": "Source registration only. Future fixtures establish a distinguished non-default state first, then observe only portable single-image properties: exact integer, logical, character, accessibility, identity, or required syntax/constraint diagnostics. A negative diagnostic plan changes one property from a conforming control and does not rely on diagnostic wording, a particular exit status, or a printed rule number. Unnumbered program restrictions are source-control restrictions only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostics are not claimed unless a numbered syntax rule or constraint requires rejection. Notes and examples are informative and do not supply normative requirements.",
+      "dependencies": "Registered dependencies: clauses 6 through 13 already catalogued for source form, names, declarations, expressions, execution constructs, data transfer, and exact observation helpers. Unregistered dependencies retained for future fixtures: later clause 14 submodules and block data; clause 15 procedure, interface, generic, and procedure-reference rules; clause 16 intrinsic modules and exact intrinsic helpers; clause 18 C interoperability for mixed-language controls; clause 19 scope, association, accessibility, and lifetime rules."
+    },
+    {
+      "id": "S14.2.2-002",
+      "title": "Use association accesses module entities with module attributes and declared or defined status",
+      "source": "S14.2.2, J3/24-007, 18 December 2023, physical PDF318.",
+      "source_units": [
+        "p2.accessible-entity-kinds",
+        "p2.entity-association-identity",
+        "p2.accessed-module-attributes-required",
+        "p2.variable-previously-declared",
+        "p2.other-entity-previously-defined"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A USE statement accesses named data objects, nonintrinsic types, procedures, abstract interfaces, generic identifiers, and namelist groups from a module; the local entities are associated with module entities, have the attributes specified in the module except for separately registered permission exceptions, and variables are previously declared while other entities are previously defined.",
+      "facets": [
+        "use-accesses-named-data-object",
+        "use-accesses-nonintrinsic-type",
+        "use-accesses-procedure",
+        "use-accesses-abstract-interface",
+        "use-accesses-generic-identifier",
+        "use-accesses-namelist-group",
+        "use-associated-entity-identity",
+        "use-associated-attributes-preserved",
+        "use-associated-variable-previously-declared",
+        "use-associated-nonvariable-previously-defined"
+      ],
+      "pending": {
+        "use-accesses-named-data-object": "Module m exports public integer counter=1; two client modules USE it through separate paths, one subroutine sets counter=42 and the other reads counter into observed initialized to -777, expecting exact 42 to prove same storage.",
+        "use-accesses-nonintrinsic-type": "Module m exports public type box with integer component; client USEs ONLY box, constructs box(42), and expects component 42 from sentinel -777.",
+        "use-accesses-procedure": "Module m exports function answer() returning 42; client USEs ONLY answer and expects exact 42 while an external answer sentinel returning -999 would expose wrong resolution.",
+        "use-accesses-abstract-interface": "Source-control plan exports an abstract interface for a procedure pointer declaration in a client; executable procedure-pointer calls are deferred to Clause 15 procedure-pointer rules.",
+        "use-accesses-generic-identifier": "Module m exports generic g with integer and real specifics returning exact 31 and 32; client USEs ONLY g and observes g(3)=31 and g(2.0)=32 from sentinels -31 and -32.",
+        "use-accesses-namelist-group": "Source-control plan exports a public namelist group and a client USEs ONLY the group name; data-transfer execution belongs to Clause 12/13 namelist owners.",
+        "use-associated-entity-identity": "Module m exports integer shared=5; client USEs m twice through modules a and b, calls set_a(42), then get_b into observed initialized to -777 and expects exact 42, proving both paths designate the same module variable.",
+        "use-associated-attributes-preserved": "Module m exports PARAMETER p=42 and type box; client USEs p in array bound `integer :: a(p-p+1)` and box in a declaration, proving parameter and type attributes specified in the module survive use association without local redeclaration. Separate accessibility, ASYNCHRONOUS, and VOLATILE permission exceptions are not asserted by this facet.",
+        "use-associated-variable-previously-declared": "Client USEs module variable shared and assigns it before any local declaration; observed initialized to -777 later reads exact 42. A companion local declaration of shared is a source-control negative owned by p9.",
+        "use-associated-nonvariable-previously-defined": "Client USEs module type box and function answer before local definitions, constructs box(answer()), and expects component 42; external answer sentinel returning -999 exposes wrong resolution."
+      },
+      "oracle": "Source registration only. Future fixtures establish a distinguished non-default state first, then observe only portable single-image properties: exact integer, logical, character, accessibility, identity, or required syntax/constraint diagnostics. A negative diagnostic plan changes one property from a conforming control and does not rely on diagnostic wording, a particular exit status, or a printed rule number. Unnumbered program restrictions are source-control restrictions only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostics are not claimed unless a numbered syntax rule or constraint requires rejection. Notes and examples are informative and do not supply normative requirements.",
+      "dependencies": "Registered dependencies: clauses 6 through 13 already catalogued for source form, names, declarations, expressions, execution constructs, data transfer, and exact observation helpers. Unregistered dependencies retained for future fixtures: later clause 14 submodules and block data; clause 15 procedure, interface, generic, and procedure-reference rules; clause 16 intrinsic modules and exact intrinsic helpers; clause 18 C interoperability for mixed-language controls; clause 19 scope, association, accessibility, and lifetime rules."
+    },
+    {
+      "id": "S14.2.2-012",
+      "title": "Use-associated entities may have local accessibility, ASYNCHRONOUS, and VOLATILE attribute exceptions",
+      "source": "S14.2.2, J3/24-007, 18 December 2023, physical PDF318.",
+      "source_units": [
+        "p2.different-accessibility-permitted",
+        "p2.asynchronous-attribute-permitted",
+        "p2.volatile-attribute-permitted"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "An accessed entity may have a different accessibility attribute, may have the ASYNCHRONOUS attribute even without that attribute on the associated module entity, and may have the VOLATILE attribute for a noncoarray entity even without that attribute on the associated module entity.",
+      "facets": [
+        "use-associated-different-accessibility-permitted",
+        "use-associated-asynchronous-permitted",
+        "use-associated-volatile-permitted"
+      ],
+      "pending": {
+        "use-associated-different-accessibility-permitted": "Module provider exports public integer shared=42. Module reexporter USEs provider, ONLY: shared, declares PRIVATE :: shared and PUBLIC :: read_shared, and read_shared returns shared. Client USEs provider directly as original_shared and USEs reexporter ONLY read_shared; observed initialized to -777 expects original_shared + read_shared() == 84. A source-control companion attempts USE reexporter, ONLY: shared and is owned by C1409/private accessibility.",
+        "use-associated-asynchronous-permitted": "Module provider exports public integer shared=42. Client USEs provider, ONLY: shared, then specifies ASYNCHRONOUS :: shared before executable statements, initializes observed=-777, assigns observed=shared, and expects exact 42; no asynchronous runtime behavior is asserted.",
+        "use-associated-volatile-permitted": "Module provider exports public noncoarray integer shared=42. Client USEs provider, ONLY: shared, then specifies VOLATILE :: shared before executable statements, initializes observed=-777, assigns observed=shared, and expects exact 42; no optimization-dependent volatile behavior is asserted."
+      },
+      "oracle": "Source registration only. Future fixtures establish a distinguished non-default state first, then observe only portable single-image properties: exact integer, logical, character, accessibility, identity, or required syntax/constraint diagnostics. A negative diagnostic plan changes one property from a conforming control and does not rely on diagnostic wording, a particular exit status, or a printed rule number. Unnumbered program restrictions are source-control restrictions only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostics are not claimed unless a numbered syntax rule or constraint requires rejection. Notes and examples are informative and do not supply normative requirements.",
+      "dependencies": "Registered dependencies: clauses 6 through 13 already catalogued for source form, names, declarations, expressions, execution constructs, data transfer, and exact observation helpers. Unregistered dependencies retained for future fixtures: later clause 14 submodules and block data; clause 15 procedure, interface, generic, and procedure-reference rules; clause 16 intrinsic modules and exact intrinsic helpers; clause 18 C interoperability for mixed-language controls; clause 19 scope, association, accessibility, and lifetime rules."
+    },
+    {
+      "id": "S14.2.2-003",
+      "title": "Use association identifies entities by module identifiers by default or explicit local renames",
+      "source": "S14.2.2, J3/24-007, 18 December 2023, physical PDF318.",
+      "source_units": [
+        "p2.module-identifiers-used",
+        "p2.default-same-identifiers",
+        "p2.renamed-identifiers"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Use-associated entities are identified by names or generic identifiers used in the module; default local identifiers are the same, and USE can specify different local identifiers.",
+      "facets": [
+        "module-identifiers-identify-accessed-entities",
+        "default-use-keeps-same-identifier",
+        "rename-local-identifier-refers-to-module-entity"
+      ],
+      "pending": {
+        "module-identifiers-identify-accessed-entities": "Module m exports public integer module_value=42; client USEs ONLY module_value, initializes observed=-777, assigns observed=module_value, and expects exact 42.",
+        "default-use-keeps-same-identifier": "Client USEs m without a rename and reads module_value=42; companion with local variable module_value=-999 but no USE demonstrates the wrong non-use resolution.",
+        "rename-local-identifier-refers-to-module-entity": "Module m exports public integer hidden=42 and other=-999. Client USEs ONLY local_hidden=>hidden, declares local integer hidden=-7, and expects local_hidden=42 and local hidden=-7; this sentinel proves the rename designates the module entity and ONLY hides other."
+      },
+      "oracle": "Source registration only. Future fixtures establish a distinguished non-default state first, then observe only portable single-image properties: exact integer, logical, character, accessibility, identity, or required syntax/constraint diagnostics. A negative diagnostic plan changes one property from a conforming control and does not rely on diagnostic wording, a particular exit status, or a printed rule number. Unnumbered program restrictions are source-control restrictions only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostics are not claimed unless a numbered syntax rule or constraint requires rejection. Notes and examples are informative and do not supply normative requirements.",
+      "dependencies": "Registered dependencies: clauses 6 through 13 already catalogued for source form, names, declarations, expressions, execution constructs, data transfer, and exact observation helpers. Unregistered dependencies retained for future fixtures: later clause 14 submodules and block data; clause 15 procedure, interface, generic, and procedure-reference rules; clause 16 intrinsic modules and exact intrinsic helpers; clause 18 C interoperability for mixed-language controls; clause 19 scope, association, accessibility, and lifetime rules."
+    },
+    {
+      "id": "R1409",
+      "title": "use-stmt syntax admits optional module nature, rename lists, and ONLY lists",
+      "source": "S14.2.2, J3/24-007, 18 December 2023, physical PDF319.",
+      "source_units": [
+        "R1409"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "A use-stmt has USE with optional module-nature, a module-name, and either a rename-list or ONLY with an optional only-list.",
+      "facets": [
+        "use-stmt-rename-list-form",
+        "use-stmt-only-list-form",
+        "use-stmt-module-nature-form",
+        "malformed-use-stmt-rejected"
+      ],
+      "pending": {
+        "use-stmt-rename-list-form": "Compile `use r1409_m, local_answer => answer`; module answer is 42, local observed starts -777, and observed becomes exact 42.",
+        "use-stmt-only-list-form": "Compile `use r1409_m, only: answer`; module also exports noise=-999, client declares local noise=-7, and expects answer=42 plus local noise=-7.",
+        "use-stmt-module-nature-form": "Compile `use, intrinsic :: iso_fortran_env, only: input_unit`; assert only successful access to the named intrinsic module entity, not its processor-dependent value.",
+        "malformed-use-stmt-rejected": "Diagnostic/control pair deletes only the module-name from `use r1409_m, only: answer`; the repair restores the same module-name and ONLY list."
+      },
+      "oracle": "Source registration only. Future fixtures establish a distinguished non-default state first, then observe only portable single-image properties: exact integer, logical, character, accessibility, identity, or required syntax/constraint diagnostics. A negative diagnostic plan changes one property from a conforming control and does not rely on diagnostic wording, a particular exit status, or a printed rule number. Unnumbered program restrictions are source-control restrictions only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostics are not claimed unless a numbered syntax rule or constraint requires rejection. Notes and examples are informative and do not supply normative requirements.",
+      "dependencies": "Registered dependencies: clauses 6 through 13 already catalogued for source form, names, declarations, expressions, execution constructs, data transfer, and exact observation helpers. Unregistered dependencies retained for future fixtures: later clause 14 submodules and block data; clause 15 procedure, interface, generic, and procedure-reference rules; clause 16 intrinsic modules and exact intrinsic helpers; clause 18 C interoperability for mixed-language controls; clause 19 scope, association, accessibility, and lifetime rules."
+    },
+    {
+      "id": "R1410",
+      "title": "module-nature syntax is INTRINSIC or NON_INTRINSIC",
+      "source": "S14.2.2, J3/24-007, 18 December 2023, physical PDF319.",
+      "source_units": [
+        "R1410"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "A module-nature is INTRINSIC or NON_INTRINSIC.",
+      "facets": [
+        "module-nature-intrinsic",
+        "module-nature-nonintrinsic",
+        "invalid-module-nature-rejected"
+      ],
+      "pending": {
+        "module-nature-intrinsic": "Compile `use, intrinsic :: iso_fortran_env, only: input_unit`; assert successful compilation and access only.",
+        "module-nature-nonintrinsic": "Compile Fortran module r1410_m exporting answer=42 and client `use, non_intrinsic :: r1410_m, only: answer`; expect exact 42.",
+        "invalid-module-nature-rejected": "Diagnostic/control pair changes only INTRINSIC to EXTRINSIC in a USE of ISO_FORTRAN_ENV; the repair restores INTRINSIC."
+      },
+      "oracle": "Source registration only. Future fixtures establish a distinguished non-default state first, then observe only portable single-image properties: exact integer, logical, character, accessibility, identity, or required syntax/constraint diagnostics. A negative diagnostic plan changes one property from a conforming control and does not rely on diagnostic wording, a particular exit status, or a printed rule number. Unnumbered program restrictions are source-control restrictions only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostics are not claimed unless a numbered syntax rule or constraint requires rejection. Notes and examples are informative and do not supply normative requirements.",
+      "dependencies": "Registered dependencies: clauses 6 through 13 already catalogued for source form, names, declarations, expressions, execution constructs, data transfer, and exact observation helpers. Unregistered dependencies retained for future fixtures: later clause 14 submodules and block data; clause 15 procedure, interface, generic, and procedure-reference rules; clause 16 intrinsic modules and exact intrinsic helpers; clause 18 C interoperability for mixed-language controls; clause 19 scope, association, accessibility, and lifetime rules."
+    },
+    {
+      "id": "R1411",
+      "title": "rename syntax maps local names or local defined operators to module names or operators",
+      "source": "S14.2.2, J3/24-007, 18 December 2023, physical PDF319.",
+      "source_units": [
+        "R1411"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "A rename is local-name => use-name or OPERATOR(local-defined-operator) => OPERATOR(use-defined-operator).",
+      "facets": [
+        "rename-local-name-form",
+        "rename-defined-operator-form",
+        "malformed-rename-rejected"
+      ],
+      "pending": {
+        "rename-local-name-form": "Module m exports integer original=42; client USEs local_name=>original, also declares integer original=-7, and expects local_name=42 plus local original=-7.",
+        "rename-defined-operator-form": "Module m exports OPERATOR(.y.) for type box returning component+100. Client USEs OPERATOR(.x.)=>OPERATOR(.y.) and expects box(5) .x. box(0) to produce exact 105; absence of .y. locally exposes the rename.",
+        "malformed-rename-rejected": "Diagnostic/control pair changes only the rename arrow `=>` to `=` in local_name=>original; the repair restores the arrow."
+      },
+      "oracle": "Source registration only. Future fixtures establish a distinguished non-default state first, then observe only portable single-image properties: exact integer, logical, character, accessibility, identity, or required syntax/constraint diagnostics. A negative diagnostic plan changes one property from a conforming control and does not rely on diagnostic wording, a particular exit status, or a printed rule number. Unnumbered program restrictions are source-control restrictions only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostics are not claimed unless a numbered syntax rule or constraint requires rejection. Notes and examples are informative and do not supply normative requirements.",
+      "dependencies": "Registered dependencies: clauses 6 through 13 already catalogued for source form, names, declarations, expressions, execution constructs, data transfer, and exact observation helpers. Unregistered dependencies retained for future fixtures: later clause 14 submodules and block data; clause 15 procedure, interface, generic, and procedure-reference rules; clause 16 intrinsic modules and exact intrinsic helpers; clause 18 C interoperability for mixed-language controls; clause 19 scope, association, accessibility, and lifetime rules."
+    },
+    {
+      "id": "R1412",
+      "title": "only syntax admits generic specs, nongeneric use names, and renames",
+      "source": "S14.2.2, J3/24-007, 18 December 2023, physical PDF319.",
+      "source_units": [
+        "R1412"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "An only item is a generic-spec, an only-use-name, or a rename.",
+      "facets": [
+        "only-generic-spec-form",
+        "only-use-name-form",
+        "only-rename-form",
+        "malformed-only-item-rejected"
+      ],
+      "pending": {
+        "only-generic-spec-form": "Module m exports generic g returning exact 31 for integer; client USEs ONLY: g and expects g(3)=31.",
+        "only-use-name-form": "Module m exports integer answer=42; client USEs ONLY: answer and expects exact 42.",
+        "only-rename-form": "Module m exports integer answer=42; client USEs ONLY: local_answer=>answer and expects exact 42 through local_answer.",
+        "malformed-only-item-rejected": "Diagnostic/control pair leaves only `=> answer` in an ONLY list; the repair adds the missing local name only."
+      },
+      "oracle": "Source registration only. Future fixtures establish a distinguished non-default state first, then observe only portable single-image properties: exact integer, logical, character, accessibility, identity, or required syntax/constraint diagnostics. A negative diagnostic plan changes one property from a conforming control and does not rely on diagnostic wording, a particular exit status, or a printed rule number. Unnumbered program restrictions are source-control restrictions only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostics are not claimed unless a numbered syntax rule or constraint requires rejection. Notes and examples are informative and do not supply normative requirements.",
+      "dependencies": "Registered dependencies: clauses 6 through 13 already catalogued for source form, names, declarations, expressions, execution constructs, data transfer, and exact observation helpers. Unregistered dependencies retained for future fixtures: later clause 14 submodules and block data; clause 15 procedure, interface, generic, and procedure-reference rules; clause 16 intrinsic modules and exact intrinsic helpers; clause 18 C interoperability for mixed-language controls; clause 19 scope, association, accessibility, and lifetime rules."
+    },
+    {
+      "id": "R1413",
+      "title": "only-use-name syntax is a use name",
+      "source": "S14.2.2, J3/24-007, 18 December 2023, physical PDF319.",
+      "source_units": [
+        "R1413"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "An only-use-name is a use-name.",
+      "facets": [
+        "only-use-name-designates-module-name",
+        "invalid-only-use-name-rejected"
+      ],
+      "pending": {
+        "only-use-name-designates-module-name": "Module m exports public integer answer=42; client USEs ONLY: answer and expects exact 42.",
+        "invalid-only-use-name-rejected": "Diagnostic/control pair changes ONLY: answer to ONLY: 123; the repair restores the use name answer."
+      },
+      "oracle": "Source registration only. Future fixtures establish a distinguished non-default state first, then observe only portable single-image properties: exact integer, logical, character, accessibility, identity, or required syntax/constraint diagnostics. A negative diagnostic plan changes one property from a conforming control and does not rely on diagnostic wording, a particular exit status, or a printed rule number. Unnumbered program restrictions are source-control restrictions only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostics are not claimed unless a numbered syntax rule or constraint requires rejection. Notes and examples are informative and do not supply normative requirements.",
+      "dependencies": "Registered dependencies: clauses 6 through 13 already catalogued for source form, names, declarations, expressions, execution constructs, data transfer, and exact observation helpers. Unregistered dependencies retained for future fixtures: later clause 14 submodules and block data; clause 15 procedure, interface, generic, and procedure-reference rules; clause 16 intrinsic modules and exact intrinsic helpers; clause 18 C interoperability for mixed-language controls; clause 19 scope, association, accessibility, and lifetime rules."
+    },
+    {
+      "id": "C1404",
+      "title": "INTRINSIC module nature requires an intrinsic module name",
+      "source": "S14.2.2, J3/24-007, 18 December 2023, physical PDF319.",
+      "source_units": [
+        "C1404"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "With module-nature INTRINSIC, the module-name shall name an intrinsic module.",
+      "facets": [
+        "intrinsic-nature-intrinsic-module-control",
+        "intrinsic-nature-nonintrinsic-module-rejected"
+      ],
+      "pending": {
+        "intrinsic-nature-intrinsic-module-control": "Compile `use, intrinsic :: iso_fortran_env, only: input_unit`; assert successful access only, not the processor-dependent constant value.",
+        "intrinsic-nature-nonintrinsic-module-rejected": "Diagnostic/control pair has a Fortran module local_env but client writes `use, intrinsic :: local_env`; the repair changes only INTRINSIC to NON_INTRINSIC."
+      },
+      "oracle": "Source registration only. Future fixtures establish a distinguished non-default state first, then observe only portable single-image properties: exact integer, logical, character, accessibility, identity, or required syntax/constraint diagnostics. A negative diagnostic plan changes one property from a conforming control and does not rely on diagnostic wording, a particular exit status, or a printed rule number. Unnumbered program restrictions are source-control restrictions only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostics are not claimed unless a numbered syntax rule or constraint requires rejection. Notes and examples are informative and do not supply normative requirements.",
+      "dependencies": "Registered dependencies: clauses 6 through 13 already catalogued for source form, names, declarations, expressions, execution constructs, data transfer, and exact observation helpers. Unregistered dependencies retained for future fixtures: later clause 14 submodules and block data; clause 15 procedure, interface, generic, and procedure-reference rules; clause 16 intrinsic modules and exact intrinsic helpers; clause 18 C interoperability for mixed-language controls; clause 19 scope, association, accessibility, and lifetime rules."
+    },
+    {
+      "id": "C1405",
+      "title": "NON_INTRINSIC module nature requires a nonintrinsic module name",
+      "source": "S14.2.2, J3/24-007, 18 December 2023, physical PDF319.",
+      "source_units": [
+        "C1405"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "With module-nature NON_INTRINSIC, the module-name shall name a nonintrinsic module.",
+      "facets": [
+        "nonintrinsic-nature-nonintrinsic-module-control",
+        "nonintrinsic-nature-intrinsic-module-rejected"
+      ],
+      "pending": {
+        "nonintrinsic-nature-nonintrinsic-module-control": "Compile Fortran module c1405_m exporting answer=42 and client `use, non_intrinsic :: c1405_m, only: answer`; expect exact 42.",
+        "nonintrinsic-nature-intrinsic-module-rejected": "Diagnostic/control pair writes `use, non_intrinsic :: iso_fortran_env`; the repair changes only NON_INTRINSIC to INTRINSIC."
+      },
+      "oracle": "Source registration only. Future fixtures establish a distinguished non-default state first, then observe only portable single-image properties: exact integer, logical, character, accessibility, identity, or required syntax/constraint diagnostics. A negative diagnostic plan changes one property from a conforming control and does not rely on diagnostic wording, a particular exit status, or a printed rule number. Unnumbered program restrictions are source-control restrictions only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostics are not claimed unless a numbered syntax rule or constraint requires rejection. Notes and examples are informative and do not supply normative requirements.",
+      "dependencies": "Registered dependencies: clauses 6 through 13 already catalogued for source form, names, declarations, expressions, execution constructs, data transfer, and exact observation helpers. Unregistered dependencies retained for future fixtures: later clause 14 submodules and block data; clause 15 procedure, interface, generic, and procedure-reference rules; clause 16 intrinsic modules and exact intrinsic helpers; clause 18 C interoperability for mixed-language controls; clause 19 scope, association, accessibility, and lifetime rules."
+    },
+    {
+      "id": "C1406",
+      "title": "A scoping unit cannot directly reference intrinsic and nonintrinsic modules of the same name",
+      "source": "S14.2.2, J3/24-007, 18 December 2023, physical PDF319.",
+      "source_units": [
+        "C1406"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "A scoping unit shall not directly reference an intrinsic module and a nonintrinsic module of the same name.",
+      "facets": [
+        "single-nature-module-reference-control",
+        "dual-nature-same-name-reference-rejected"
+      ],
+      "pending": {
+        "single-nature-module-reference-control": "Control uses either `use, intrinsic :: iso_fortran_env` or one nonintrinsic module of a distinct name; no same-name dual reference appears.",
+        "dual-nature-same-name-reference-rejected": "Diagnostic/control pair supplies a nonintrinsic module named iso_fortran_env and a client with both `use, intrinsic :: iso_fortran_env` and `use, non_intrinsic :: iso_fortran_env`; the repair removes only one USE statement."
+      },
+      "oracle": "Source registration only. Future fixtures establish a distinguished non-default state first, then observe only portable single-image properties: exact integer, logical, character, accessibility, identity, or required syntax/constraint diagnostics. A negative diagnostic plan changes one property from a conforming control and does not rely on diagnostic wording, a particular exit status, or a printed rule number. Unnumbered program restrictions are source-control restrictions only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostics are not claimed unless a numbered syntax rule or constraint requires rejection. Notes and examples are informative and do not supply normative requirements.",
+      "dependencies": "Registered dependencies: clauses 6 through 13 already catalogued for source form, names, declarations, expressions, execution constructs, data transfer, and exact observation helpers. Unregistered dependencies retained for future fixtures: later clause 14 submodules and block data; clause 15 procedure, interface, generic, and procedure-reference rules; clause 16 intrinsic modules and exact intrinsic helpers; clause 18 C interoperability for mixed-language controls; clause 19 scope, association, accessibility, and lifetime rules."
+    },
+    {
+      "id": "C1407",
+      "title": "Renamed use-defined operators cannot identify type-bound generic interfaces",
+      "source": "S14.2.2, J3/24-007, 18 December 2023, physical PDF319.",
+      "source_units": [
+        "C1407"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "OPERATOR(use-defined-operator) in a rename shall not identify a type-bound generic interface.",
+      "facets": [
+        "rename-operator-nontype-bound-control",
+        "rename-type-bound-generic-operator-rejected"
+      ],
+      "pending": {
+        "rename-operator-nontype-bound-control": "Module m declares an interface-block OPERATOR(.y.) for type box and exports it; client USEs OPERATOR(.x.)=>OPERATOR(.y.) and expects exact component result 105.",
+        "rename-type-bound-generic-operator-rejected": "Diagnostic/control pair changes only the provider of OPERATOR(.y.) from an interface-block generic to a type-bound generic interface of the same operator and result behavior; the USE rename is otherwise identical."
+      },
+      "oracle": "Source registration only. Future fixtures establish a distinguished non-default state first, then observe only portable single-image properties: exact integer, logical, character, accessibility, identity, or required syntax/constraint diagnostics. A negative diagnostic plan changes one property from a conforming control and does not rely on diagnostic wording, a particular exit status, or a printed rule number. Unnumbered program restrictions are source-control restrictions only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostics are not claimed unless a numbered syntax rule or constraint requires rejection. Notes and examples are informative and do not supply normative requirements.",
+      "dependencies": "Registered dependencies: clauses 6 through 13 already catalogued for source form, names, declarations, expressions, execution constructs, data transfer, and exact observation helpers. Unregistered dependencies retained for future fixtures: later clause 14 submodules and block data; clause 15 procedure, interface, generic, and procedure-reference rules; clause 16 intrinsic modules and exact intrinsic helpers; clause 18 C interoperability for mixed-language controls; clause 19 scope, association, accessibility, and lifetime rules."
+    },
+    {
+      "id": "C1408",
+      "title": "ONLY generic specs cannot identify type-bound generic interfaces",
+      "source": "S14.2.2, J3/24-007, 18 December 2023, physical PDF319.",
+      "source_units": [
+        "C1408"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "A generic-spec in an ONLY list shall not identify a type-bound generic interface.",
+      "facets": [
+        "only-generic-nontype-bound-control",
+        "only-type-bound-generic-rejected"
+      ],
+      "pending": {
+        "only-generic-nontype-bound-control": "Module m declares interface-block generic OPERATOR(.y.) and client USEs ONLY: OPERATOR(.y.); exact operation result 105 proves access.",
+        "only-type-bound-generic-rejected": "Diagnostic/control pair changes only the provider of OPERATOR(.y.) to a type-bound generic interface of the same operator; the ONLY list stays `OPERATOR(.y.)`."
+      },
+      "oracle": "Source registration only. Future fixtures establish a distinguished non-default state first, then observe only portable single-image properties: exact integer, logical, character, accessibility, identity, or required syntax/constraint diagnostics. A negative diagnostic plan changes one property from a conforming control and does not rely on diagnostic wording, a particular exit status, or a printed rule number. Unnumbered program restrictions are source-control restrictions only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostics are not claimed unless a numbered syntax rule or constraint requires rejection. Notes and examples are informative and do not supply normative requirements.",
+      "dependencies": "Registered dependencies: clauses 6 through 13 already catalogued for source form, names, declarations, expressions, execution constructs, data transfer, and exact observation helpers. Unregistered dependencies retained for future fixtures: later clause 14 submodules and block data; clause 15 procedure, interface, generic, and procedure-reference rules; clause 16 intrinsic modules and exact intrinsic helpers; clause 18 C interoperability for mixed-language controls; clause 19 scope, association, accessibility, and lifetime rules."
+    },
+    {
+      "id": "C1410",
+      "title": "An only-use-name denotes a nongeneric name; generic names in ONLY are generic-specs",
+      "source": "S14.2.2, J3/24-007, 18 December 2023, physical PDF319.",
+      "source_units": [
+        "C1410"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "context-dependent",
+      "definition": "An only-use-name shall be a nongeneric name; a generic name appearing as an ONLY item is covered by the generic-spec alternative rather than by only-use-name.",
+      "facets": [
+        "only-use-name-nongeneric-control",
+        "generic-name-only-item-is-generic-spec"
+      ],
+      "pending": {
+        "only-use-name-nongeneric-control": "Module m exports nongeneric integer answer=42; client USEs ONLY: answer and expects exact 42 from observed initialized to -777.",
+        "generic-name-only-item-is-generic-spec": "Module m exports generic g with integer and real specifics returning exact 31 and 32; client USEs ONLY: g and observes g(3)=31 plus g(2.0)=32, recording that the generic-name item is handled as generic-spec rather than only-use-name."
+      },
+      "oracle": "Source registration only. Future fixtures establish a distinguished non-default state first, then observe only portable single-image properties: exact integer, logical, character, accessibility, identity, or required syntax/constraint diagnostics. A negative diagnostic plan changes one property from a conforming control and does not rely on diagnostic wording, a particular exit status, or a printed rule number. Unnumbered program restrictions are source-control restrictions only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostics are not claimed unless a numbered syntax rule or constraint requires rejection. Notes and examples are informative and do not supply normative requirements.",
+      "dependencies": "Registered dependencies: clauses 6 through 13 already catalogued for source form, names, declarations, expressions, execution constructs, data transfer, and exact observation helpers. Unregistered dependencies retained for future fixtures: later clause 14 submodules and block data; clause 15 procedure, interface, generic, and procedure-reference rules; clause 16 intrinsic modules and exact intrinsic helpers; clause 18 C interoperability for mixed-language controls; clause 19 scope, association, accessibility, and lifetime rules."
+    },
+    {
+      "id": "R1414",
+      "title": "local-defined-operator syntax admits defined unary or binary operators",
+      "source": "S14.2.2, J3/24-007, 18 December 2023, physical PDF319.",
+      "source_units": [
+        "R1414"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "A local-defined-operator is a defined-unary-op or defined-binary-op.",
+      "facets": [
+        "local-defined-unary-operator",
+        "local-defined-binary-operator",
+        "invalid-local-defined-operator-rejected"
+      ],
+      "pending": {
+        "local-defined-unary-operator": "Client renames module unary OPERATOR(.negbox.) to local OPERATOR(.localneg.) and expects exact negated component -5 from sentinel 999.",
+        "local-defined-binary-operator": "Client renames module binary OPERATOR(.addbox.) to local OPERATOR(.localadd.) and expects exact component 207 for operands 2 and 7.",
+        "invalid-local-defined-operator-rejected": "Diagnostic/control pair changes only local operator spelling to `OPERATOR(+)` in a defined-operator rename; the repair restores `.localadd.`."
+      },
+      "oracle": "Source registration only. Future fixtures establish a distinguished non-default state first, then observe only portable single-image properties: exact integer, logical, character, accessibility, identity, or required syntax/constraint diagnostics. A negative diagnostic plan changes one property from a conforming control and does not rely on diagnostic wording, a particular exit status, or a printed rule number. Unnumbered program restrictions are source-control restrictions only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostics are not claimed unless a numbered syntax rule or constraint requires rejection. Notes and examples are informative and do not supply normative requirements.",
+      "dependencies": "Registered dependencies: clauses 6 through 13 already catalogued for source form, names, declarations, expressions, execution constructs, data transfer, and exact observation helpers. Unregistered dependencies retained for future fixtures: later clause 14 submodules and block data; clause 15 procedure, interface, generic, and procedure-reference rules; clause 16 intrinsic modules and exact intrinsic helpers; clause 18 C interoperability for mixed-language controls; clause 19 scope, association, accessibility, and lifetime rules."
+    },
+    {
+      "id": "R1415",
+      "title": "use-defined-operator syntax admits defined unary or binary operators",
+      "source": "S14.2.2, J3/24-007, 18 December 2023, physical PDF319.",
+      "source_units": [
+        "R1415"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "A use-defined-operator is a defined-unary-op or defined-binary-op.",
+      "facets": [
+        "use-defined-unary-operator",
+        "use-defined-binary-operator",
+        "invalid-use-defined-operator-rejected"
+      ],
+      "pending": {
+        "use-defined-unary-operator": "Module exports unary OPERATOR(.negbox.); client USEs local OPERATOR(.localneg.)=>OPERATOR(.negbox.) and expects exact -5.",
+        "use-defined-binary-operator": "Module exports binary OPERATOR(.addbox.); client USEs OPERATOR(.localadd.)=>OPERATOR(.addbox.) and expects exact 207.",
+        "invalid-use-defined-operator-rejected": "Diagnostic/control pair changes only the module-side operator spelling to intrinsic `OPERATOR(+)` in a defined-operator rename; the repair restores `.addbox.`."
+      },
+      "oracle": "Source registration only. Future fixtures establish a distinguished non-default state first, then observe only portable single-image properties: exact integer, logical, character, accessibility, identity, or required syntax/constraint diagnostics. A negative diagnostic plan changes one property from a conforming control and does not rely on diagnostic wording, a particular exit status, or a printed rule number. Unnumbered program restrictions are source-control restrictions only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostics are not claimed unless a numbered syntax rule or constraint requires rejection. Notes and examples are informative and do not supply normative requirements.",
+      "dependencies": "Registered dependencies: clauses 6 through 13 already catalogued for source form, names, declarations, expressions, execution constructs, data transfer, and exact observation helpers. Unregistered dependencies retained for future fixtures: later clause 14 submodules and block data; clause 15 procedure, interface, generic, and procedure-reference rules; clause 16 intrinsic modules and exact intrinsic helpers; clause 18 C interoperability for mixed-language controls; clause 19 scope, association, accessibility, and lifetime rules."
+    },
+    {
+      "id": "S14.2.2-004",
+      "title": "A USE without module nature selects an intrinsic or nonintrinsic module, preferring nonintrinsic on name collision",
+      "source": "S14.2.2, J3/24-007, 18 December 2023, physical PDF319.",
+      "source_units": [
+        "p3"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A USE statement without module-nature accesses either an intrinsic or nonintrinsic module; a same-name intrinsic/nonintrinsic collision selects the nonintrinsic module.",
+      "facets": [
+        "use-without-nature-accesses-module",
+        "nonintrinsic-module-preferred-over-intrinsic"
+      ],
+      "pending": {
+        "use-without-nature-accesses-module": "Compile nonintrinsic module plain_m exporting answer=42 and client `use plain_m, only: answer`; expect exact 42.",
+        "nonintrinsic-module-preferred-over-intrinsic": "Source-control plan provides a nonintrinsic module with the same name as an intrinsic module and a distinct public answer=42; a bare USE expects the nonintrinsic entity, while `USE, INTRINSIC ::` names the intrinsic module explicitly."
+      },
+      "oracle": "Source registration only. Future fixtures establish a distinguished non-default state first, then observe only portable single-image properties: exact integer, logical, character, accessibility, identity, or required syntax/constraint diagnostics. A negative diagnostic plan changes one property from a conforming control and does not rely on diagnostic wording, a particular exit status, or a printed rule number. Unnumbered program restrictions are source-control restrictions only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostics are not claimed unless a numbered syntax rule or constraint requires rejection. Notes and examples are informative and do not supply normative requirements.",
+      "dependencies": "Registered dependencies: clauses 6 through 13 already catalogued for source form, names, declarations, expressions, execution constructs, data transfer, and exact observation helpers. Unregistered dependencies retained for future fixtures: later clause 14 submodules and block data; clause 15 procedure, interface, generic, and procedure-reference rules; clause 16 intrinsic modules and exact intrinsic helpers; clause 18 C interoperability for mixed-language controls; clause 19 scope, association, accessibility, and lifetime rules."
+    },
+    {
+      "id": "S14.2.2-005",
+      "title": "USE without ONLY accesses all public entities in the module",
+      "source": "S14.2.2, J3/24-007, 18 December 2023, physical PDF319.",
+      "source_units": [
+        "p4"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A USE statement without the ONLY option provides access to all public entities in the specified module.",
+      "facets": [
+        "use-without-only-accesses-all-public-entities"
+      ],
+      "pending": {
+        "use-without-only-accesses-all-public-entities": "Module m exports public integers first=41 and second=42 plus private hidden=-999; client USEs m without ONLY, reads first+second into observed initialized -777, and expects exact 83. A hidden-name source-control negative is owned by C1409/accessibility rules."
+      },
+      "oracle": "Source registration only. Future fixtures establish a distinguished non-default state first, then observe only portable single-image properties: exact integer, logical, character, accessibility, identity, or required syntax/constraint diagnostics. A negative diagnostic plan changes one property from a conforming control and does not rely on diagnostic wording, a particular exit status, or a printed rule number. Unnumbered program restrictions are source-control restrictions only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostics are not claimed unless a numbered syntax rule or constraint requires rejection. Notes and examples are informative and do not supply normative requirements.",
+      "dependencies": "Registered dependencies: clauses 6 through 13 already catalogued for source form, names, declarations, expressions, execution constructs, data transfer, and exact observation helpers. Unregistered dependencies retained for future fixtures: later clause 14 submodules and block data; clause 15 procedure, interface, generic, and procedure-reference rules; clause 16 intrinsic modules and exact intrinsic helpers; clause 18 C interoperability for mixed-language controls; clause 19 scope, association, accessibility, and lifetime rules."
+    },
+    {
+      "id": "S14.2.2-006",
+      "title": "USE with ONLY accesses only listed entities and hides other public entities",
+      "source": "S14.2.2, J3/24-007, 18 December 2023, physical PDF319.",
+      "source_units": [
+        "p5"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A USE statement with ONLY provides access only to entities appearing as generic-specs, use-names, or use-defined-operators in the only-list.",
+      "facets": [
+        "only-list-accesses-listed-entities",
+        "only-list-hides-unlisted-public-entities"
+      ],
+      "pending": {
+        "only-list-accesses-listed-entities": "Module m exports answer=42 and noise=-999; client USEs ONLY: answer, initializes observed=-777, and expects exact 42.",
+        "only-list-hides-unlisted-public-entities": "Same client declares local integer noise=-7 after USE ONLY: answer and expects local noise remains -7, proving unlisted public module noise is not use associated."
+      },
+      "oracle": "Source registration only. Future fixtures establish a distinguished non-default state first, then observe only portable single-image properties: exact integer, logical, character, accessibility, identity, or required syntax/constraint diagnostics. A negative diagnostic plan changes one property from a conforming control and does not rely on diagnostic wording, a particular exit status, or a printed rule number. Unnumbered program restrictions are source-control restrictions only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostics are not claimed unless a numbered syntax rule or constraint requires rejection. Notes and examples are informative and do not supply normative requirements.",
+      "dependencies": "Registered dependencies: clauses 6 through 13 already catalogued for source form, names, declarations, expressions, execution constructs, data transfer, and exact observation helpers. Unregistered dependencies retained for future fixtures: later clause 14 submodules and block data; clause 15 procedure, interface, generic, and procedure-reference rules; clause 16 intrinsic modules and exact intrinsic helpers; clause 18 C interoperability for mixed-language controls; clause 19 scope, association, accessibility, and lifetime rules."
+    },
+    {
+      "id": "S14.2.2-007",
+      "title": "USE combinations determine all-public or ONLY-list union access",
+      "source": "S14.2.2, J3/24-007, 18 December 2023, physical PDF320.",
+      "source_units": [
+        "p6.non-only-use-all-public-effect",
+        "p6.all-only-uses-union-effect"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For multiple USE statements for a given module, one USE statement without ONLY makes all public entities in the module accessible; an all-ONLY set of USE statements makes entities appearing in one or more only-lists accessible.",
+      "facets": [
+        "one-non-only-use-makes-all-public-accessible",
+        "all-only-uses-union-only-lists"
+      ],
+      "pending": {
+        "one-non-only-use-makes-all-public-accessible": "Client has `use m, only: answer` plus `use m`; module exports answer=42 and bonus=1, and observed initialized to -777 expects exact 43.",
+        "all-only-uses-union-only-lists": "Client has `use m, only: answer` and `use m, only: bonus`; local noise=-7 shadows unlisted public noise while observed initialized to -777 expects answer+bonus=43."
+      },
+      "oracle": "Source registration only. Future fixtures establish a distinguished non-default state first, then observe only portable single-image properties: exact integer, logical, character, accessibility, identity, or required syntax/constraint diagnostics. A negative diagnostic plan changes one property from a conforming control and does not rely on diagnostic wording, a particular exit status, or a printed rule number. Unnumbered program restrictions are source-control restrictions only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostics are not claimed unless a numbered syntax rule or constraint requires rejection. Notes and examples are informative and do not supply normative requirements.",
+      "dependencies": "Registered dependencies: clauses 6 through 13 already catalogued for source form, names, declarations, expressions, execution constructs, data transfer, and exact observation helpers. Unregistered dependencies retained for future fixtures: later clause 14 submodules and block data; clause 15 procedure, interface, generic, and procedure-reference rules; clause 16 intrinsic modules and exact intrinsic helpers; clause 18 C interoperability for mixed-language controls; clause 19 scope, association, accessibility, and lifetime rules."
+    },
+    {
+      "id": "S14.2.2-013",
+      "title": "More than one USE statement for a given module may appear",
+      "source": "S14.2.2, J3/24-007, 18 December 2023, physical PDF320.",
+      "source_units": [
+        "p6.multiple-use-same-module-permitted"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "More than one USE statement for a given module may appear in a specification part.",
+      "facets": [
+        "multiple-use-same-module-permitted"
+      ],
+      "pending": {
+        "multiple-use-same-module-permitted": "Client has two USE statements for module m, one importing a=>answer and one importing b=>bonus; answer=42, bonus=41, observed starts -777, and execution expects a+b=83."
+      },
+      "oracle": "Source registration only. Future fixtures establish a distinguished non-default state first, then observe only portable single-image properties: exact integer, logical, character, accessibility, identity, or required syntax/constraint diagnostics. A negative diagnostic plan changes one property from a conforming control and does not rely on diagnostic wording, a particular exit status, or a printed rule number. Unnumbered program restrictions are source-control restrictions only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostics are not claimed unless a numbered syntax rule or constraint requires rejection. Notes and examples are informative and do not supply normative requirements.",
+      "dependencies": "Registered dependencies: clauses 6 through 13 already catalogued for source form, names, declarations, expressions, execution constructs, data transfer, and exact observation helpers. Unregistered dependencies retained for future fixtures: later clause 14 submodules and block data; clause 15 procedure, interface, generic, and procedure-reference rules; clause 16 intrinsic modules and exact intrinsic helpers; clause 18 C interoperability for mixed-language controls; clause 19 scope, association, accessibility, and lifetime rules."
+    },
+    {
+      "id": "S14.2.2-008",
+      "title": "USE association assigns identifiers from ONLY items, renames, and unrenamed module identifiers",
+      "source": "S14.2.2, J3/24-007, 18 December 2023, physical PDF320.",
+      "source_units": [
+        "p7"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "An accessible module entity is associated with accessed entities identified by listed only-use-names or generic-spec operators, by each local rename, and by the original module identifier absent a rename for that module identifier.",
+      "facets": [
+        "only-use-name-retains-module-identifier",
+        "rename-creates-local-identifier",
+        "unrenamed-entity-keeps-module-identifier",
+        "multiple-local-identifiers-same-entity"
+      ],
+      "pending": {
+        "only-use-name-retains-module-identifier": "Module m exports answer=42; client USEs ONLY: answer and expects answer gives exact 42.",
+        "rename-creates-local-identifier": "Module m exports answer=42; client USEs local_answer=>answer, declares local integer answer=-7, and expects local_answer=42 plus local answer=-7.",
+        "unrenamed-entity-keeps-module-identifier": "Module m exports answer=42 and bonus=1; client USEs m, local_bonus=>bonus. Since answer is unrenamed, observed expects answer+local_bonus=43.",
+        "multiple-local-identifiers-same-entity": "Client USEs m twice with a=>shared and b=>shared; assigns a=42, then reads b into observed initialized -777 and expects exact 42, proving both identifiers denote the same module variable."
+      },
+      "oracle": "Source registration only. Future fixtures establish a distinguished non-default state first, then observe only portable single-image properties: exact integer, logical, character, accessibility, identity, or required syntax/constraint diagnostics. A negative diagnostic plan changes one property from a conforming control and does not rely on diagnostic wording, a particular exit status, or a printed rule number. Unnumbered program restrictions are source-control restrictions only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostics are not claimed unless a numbered syntax rule or constraint requires rejection. Notes and examples are informative and do not supply normative requirements.",
+      "dependencies": "Registered dependencies: clauses 6 through 13 already catalogued for source form, names, declarations, expressions, execution constructs, data transfer, and exact observation helpers. Unregistered dependencies retained for future fixtures: later clause 14 submodules and block data; clause 15 procedure, interface, generic, and procedure-reference rules; clause 16 intrinsic modules and exact intrinsic helpers; clause 18 C interoperability for mixed-language controls; clause 19 scope, association, accessibility, and lifetime rules."
+    },
+    {
+      "id": "S14.2.2-009",
+      "title": "Ultimate-entity conflict rules allow unused identifiers and generic-interface merging",
+      "source": "S14.2.2, J3/24-007, 18 December 2023, physical PDF320.",
+      "source_units": [
+        "p8.ultimate-entity-definition",
+        "p8.multiple-ultimate-entity-restriction",
+        "p8.unused-identifier-exception",
+        "p8.generic-interface-exception"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "An ultimate entity is a module entity not accessed by use association. An accessed entity shall not be associated with two or more ultimate entities except for an unused identifier or generic interfaces, with generic interfaces handled by 15.4.3.4.",
+      "facets": [
+        "ultimate-entity-definition",
+        "multiple-ultimate-entity-conflict-prohibited",
+        "unused-conflicting-identifier-not-prohibited",
+        "generic-interfaces-merge-across-use"
+      ],
+      "pending": {
+        "ultimate-entity-definition": "Source-control plan records module m defining integer shared as the ultimate entity and client aliases a=>shared and b=>shared; assignment through a then read through b expects exact 42.",
+        "multiple-ultimate-entity-conflict-prohibited": "Positive control renames colliding data objects from two modules to distinct local names a and b, expecting exact a+b=83. Source-control mutation imports both as x; no diagnostic is required by this unnumbered restriction.",
+        "unused-conflicting-identifier-not-prohibited": "Source-control control imports two modules that each export x but never uses x, while also importing distinct answer=42; observed expects exact 42 and no claim is made about a used ambiguous x.",
+        "generic-interfaces-merge-across-use": "Module ma exports generic g for integer returning 31; module mb exports generic g for real returning 32. Client USEs both, initializes results to -777, and expects g(3)=31 plus g(2.0)=32."
+      },
+      "oracle": "Source registration only. Future fixtures establish a distinguished non-default state first, then observe only portable single-image properties: exact integer, logical, character, accessibility, identity, or required syntax/constraint diagnostics. A negative diagnostic plan changes one property from a conforming control and does not rely on diagnostic wording, a particular exit status, or a printed rule number. Unnumbered program restrictions are source-control restrictions only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostics are not claimed unless a numbered syntax rule or constraint requires rejection. Notes and examples are informative and do not supply normative requirements.",
+      "dependencies": "Registered dependencies: clauses 6 through 13 already catalogued for source form, names, declarations, expressions, execution constructs, data transfer, and exact observation helpers. Unregistered dependencies retained for future fixtures: later clause 14 submodules and block data; clause 15 procedure, interface, generic, and procedure-reference rules; clause 16 intrinsic modules and exact intrinsic helpers; clause 18 C interoperability for mixed-language controls; clause 19 scope, association, accessibility, and lifetime rules."
+    },
+    {
+      "id": "S14.2.2-010",
+      "title": "Use-associated local identifiers cannot be respecified except allowed accessibility, ASYNCHRONOUS, or VOLATILE attributes",
+      "source": "S14.2.2, J3/24-007, 18 December 2023, physical PDF320.",
+      "source_units": [
+        "p9.attribute-respecification-restriction",
+        "p9.public-private-exception",
+        "p9.async-volatile-exception"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "The local identifier of a use-associated entity shall not appear in another nonexecutable statement that specifies an attribute in the scoping unit, except PUBLIC or PRIVATE in a module and ASYNCHRONOUS or VOLATILE.",
+      "facets": [
+        "use-associated-attribute-respecification-prohibited",
+        "use-associated-public-private-exception",
+        "use-associated-asynchronous-volatile-exception"
+      ],
+      "pending": {
+        "use-associated-attribute-respecification-prohibited": "Positive control USEs module integer shared=42 and reads it without local declaration. Source-control mutation adds `integer :: shared` in the client; no diagnostic is required by this unnumbered restriction.",
+        "use-associated-public-private-exception": "Module reexporter USEs provider, ONLY: shared and declares PRIVATE :: shared; downstream client cannot import shared from reexporter, while a public alias still returns exact 42.",
+        "use-associated-asynchronous-volatile-exception": "Source-control plan USEs module variable shared and specifies VOLATILE :: shared in the client module while reading exact value 42; runtime volatility effects are not asserted."
+      },
+      "oracle": "Source registration only. Future fixtures establish a distinguished non-default state first, then observe only portable single-image properties: exact integer, logical, character, accessibility, identity, or required syntax/constraint diagnostics. A negative diagnostic plan changes one property from a conforming control and does not rely on diagnostic wording, a particular exit status, or a printed rule number. Unnumbered program restrictions are source-control restrictions only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostics are not claimed unless a numbered syntax rule or constraint requires rejection. Notes and examples are informative and do not supply normative requirements.",
+      "dependencies": "Registered dependencies: clauses 6 through 13 already catalogued for source form, names, declarations, expressions, execution constructs, data transfer, and exact observation helpers. Unregistered dependencies retained for future fixtures: later clause 14 submodules and block data; clause 15 procedure, interface, generic, and procedure-reference rules; clause 16 intrinsic modules and exact intrinsic helpers; clause 18 C interoperability for mixed-language controls; clause 19 scope, association, accessibility, and lifetime rules."
+    },
+    {
+      "id": "S14.2.2-011",
+      "title": "ASYNCHRONOUS or VOLATILE attributes must be consistent across multiple use paths",
+      "source": "S14.2.2, J3/24-007, 18 December 2023, physical PDF320.",
+      "source_units": [
+        "p10"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "A use-associated entity reached through multiple use paths has ASYNCHRONOUS or VOLATILE in all paths whenever any path has the attribute and the local scoping unit does not give that attribute.",
+      "facets": [
+        "asynchronous-attribute-all-use-paths",
+        "volatile-attribute-all-use-paths"
+      ],
+      "pending": {
+        "asynchronous-attribute-all-use-paths": "Source-control plan constructs two modules reexporting the same variable, one with ASYNCHRONOUS; a client imports through both paths and does not assert runtime behavior because asynchronous effects are processor interaction dependent.",
+        "volatile-attribute-all-use-paths": "Source-control plan constructs two modules reexporting the same variable, one with VOLATILE; a client imports through both paths and only records the required attribute consistency, not optimization-dependent runtime behavior."
+      },
+      "oracle": "Source registration only. Future fixtures establish a distinguished non-default state first, then observe only portable single-image properties: exact integer, logical, character, accessibility, identity, or required syntax/constraint diagnostics. A negative diagnostic plan changes one property from a conforming control and does not rely on diagnostic wording, a particular exit status, or a printed rule number. Unnumbered program restrictions are source-control restrictions only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostics are not claimed unless a numbered syntax rule or constraint requires rejection. Notes and examples are informative and do not supply normative requirements.",
+      "dependencies": "Registered dependencies: clauses 6 through 13 already catalogued for source form, names, declarations, expressions, execution constructs, data transfer, and exact observation helpers. Unregistered dependencies retained for future fixtures: later clause 14 submodules and block data; clause 15 procedure, interface, generic, and procedure-reference rules; clause 16 intrinsic modules and exact intrinsic helpers; clause 18 C interoperability for mixed-language controls; clause 19 scope, association, accessibility, and lifetime rules."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "structural",
+      "rationale": "USE association, module reference, availability, and self-reference restriction are split."
+    },
+    {
+      "unit": "p1.use-specifies-use-association",
+      "disposition": "requirements",
+      "requirements": [
+        "S14.2.2-001"
+      ]
+    },
+    {
+      "unit": "p1.use-references-module",
+      "disposition": "requirements",
+      "requirements": [
+        "S14.2.2-001"
+      ]
+    },
+    {
+      "unit": "p1.public-portions-available",
+      "disposition": "requirements",
+      "requirements": [
+        "S14.2.2-001"
+      ]
+    },
+    {
+      "unit": "p1.no-self-reference",
+      "disposition": "requirements",
+      "requirements": [
+        "S14.2.2-001"
+      ]
+    },
+    {
+      "unit": "p2",
+      "disposition": "structural",
+      "rationale": "Dense use-association entity categories, identity, required attributes, attribute permissions, renaming, and declaration/definition status are split."
+    },
+    {
+      "unit": "p2.accessible-entity-kinds",
+      "disposition": "requirements",
+      "requirements": [
+        "S14.2.2-002"
+      ]
+    },
+    {
+      "unit": "p2.entity-association-identity",
+      "disposition": "requirements",
+      "requirements": [
+        "S14.2.2-002"
+      ]
+    },
+    {
+      "unit": "p2.accessed-module-attributes-required",
+      "disposition": "requirements",
+      "requirements": [
+        "S14.2.2-002"
+      ]
+    },
+    {
+      "unit": "p2.different-accessibility-permitted",
+      "disposition": "permission",
+      "requirements": [
+        "S14.2.2-012"
+      ],
+      "rationale": "Records the permission for a different local accessibility attribute."
+    },
+    {
+      "unit": "p2.asynchronous-attribute-permitted",
+      "disposition": "permission",
+      "requirements": [
+        "S14.2.2-012"
+      ],
+      "rationale": "Records the permission to add ASYNCHRONOUS to the accessed entity."
+    },
+    {
+      "unit": "p2.volatile-attribute-permitted",
+      "disposition": "permission",
+      "requirements": [
+        "S14.2.2-012"
+      ],
+      "rationale": "Records the permission to add VOLATILE for a noncoarray accessed entity."
+    },
+    {
+      "unit": "p2.module-identifiers-used",
+      "disposition": "requirements",
+      "requirements": [
+        "S14.2.2-003"
+      ]
+    },
+    {
+      "unit": "p2.default-same-identifiers",
+      "disposition": "requirements",
+      "requirements": [
+        "S14.2.2-003"
+      ]
+    },
+    {
+      "unit": "p2.renamed-identifiers",
+      "disposition": "requirements",
+      "requirements": [
+        "S14.2.2-003"
+      ]
+    },
+    {
+      "unit": "p2.variable-previously-declared",
+      "disposition": "requirements",
+      "requirements": [
+        "S14.2.2-002"
+      ]
+    },
+    {
+      "unit": "p2.other-entity-previously-defined",
+      "disposition": "requirements",
+      "requirements": [
+        "S14.2.2-002"
+      ]
+    },
+    {
+      "unit": "note1",
+      "disposition": "informative",
+      "rationale": "Note points to accessibility and PROTECTED controls; p2 and later accessibility rules own normative effects."
+    },
+    {
+      "unit": "R1409",
+      "disposition": "requirements",
+      "requirements": [
+        "R1409"
+      ]
+    },
+    {
+      "unit": "R1410",
+      "disposition": "requirements",
+      "requirements": [
+        "R1410"
+      ]
+    },
+    {
+      "unit": "R1411",
+      "disposition": "requirements",
+      "requirements": [
+        "R1411"
+      ]
+    },
+    {
+      "unit": "R1412",
+      "disposition": "requirements",
+      "requirements": [
+        "R1412"
+      ]
+    },
+    {
+      "unit": "R1413",
+      "disposition": "requirements",
+      "requirements": [
+        "R1413"
+      ]
+    },
+    {
+      "unit": "C1404",
+      "disposition": "requirements",
+      "requirements": [
+        "C1404"
+      ]
+    },
+    {
+      "unit": "C1405",
+      "disposition": "requirements",
+      "requirements": [
+        "C1405"
+      ]
+    },
+    {
+      "unit": "C1406",
+      "disposition": "requirements",
+      "requirements": [
+        "C1406"
+      ]
+    },
+    {
+      "unit": "C1407",
+      "disposition": "requirements",
+      "requirements": [
+        "C1407"
+      ]
+    },
+    {
+      "unit": "C1408",
+      "disposition": "requirements",
+      "requirements": [
+        "C1408"
+      ]
+    },
+    {
+      "unit": "note2",
+      "disposition": "informative",
+      "rationale": "Note explains C1407/C1408 do not bar interface-block generics; C1407/C1408 own the normative exclusions."
+    },
+    {
+      "unit": "C1409",
+      "disposition": "unresolved",
+      "rationale": "Deferred fixture migration: grep found existing discriminating SOURCE coverage in tests/fixtures/derived_definition_c1409_invalid__private_derived_name, its repair fixture, and tests/reviews.json."
+    },
+    {
+      "unit": "C1410",
+      "disposition": "requirements",
+      "requirements": [
+        "C1410"
+      ]
+    },
+    {
+      "unit": "R1414",
+      "disposition": "requirements",
+      "requirements": [
+        "R1414"
+      ]
+    },
+    {
+      "unit": "R1415",
+      "disposition": "requirements",
+      "requirements": [
+        "R1415"
+      ]
+    },
+    {
+      "unit": "p3",
+      "disposition": "requirements",
+      "requirements": [
+        "S14.2.2-004"
+      ]
+    },
+    {
+      "unit": "p4",
+      "disposition": "requirements",
+      "requirements": [
+        "S14.2.2-005"
+      ]
+    },
+    {
+      "unit": "p5",
+      "disposition": "requirements",
+      "requirements": [
+        "S14.2.2-006"
+      ]
+    },
+    {
+      "unit": "p6",
+      "disposition": "structural",
+      "rationale": "Multiple-USE permission is split from the all-public and all-ONLY union access effects."
+    },
+    {
+      "unit": "p6.multiple-use-same-module-permitted",
+      "disposition": "permission",
+      "requirements": [
+        "S14.2.2-013"
+      ],
+      "rationale": "Records the permission for more than one USE statement for a given module."
+    },
+    {
+      "unit": "p6.non-only-use-all-public-effect",
+      "disposition": "requirements",
+      "requirements": [
+        "S14.2.2-007"
+      ]
+    },
+    {
+      "unit": "p6.all-only-uses-union-effect",
+      "disposition": "requirements",
+      "requirements": [
+        "S14.2.2-007"
+      ]
+    },
+    {
+      "unit": "p7",
+      "disposition": "requirements",
+      "requirements": [
+        "S14.2.2-008"
+      ]
+    },
+    {
+      "unit": "p8",
+      "disposition": "structural",
+      "rationale": "Ultimate entity definition, conflict restriction, unused-name exception, and generic-interface exception are split."
+    },
+    {
+      "unit": "p8.ultimate-entity-definition",
+      "disposition": "definition",
+      "requirements": [
+        "S14.2.2-009"
+      ],
+      "rationale": "Defines ultimate entity for use-association conflict analysis."
+    },
+    {
+      "unit": "p8.multiple-ultimate-entity-restriction",
+      "disposition": "requirements",
+      "requirements": [
+        "S14.2.2-009"
+      ]
+    },
+    {
+      "unit": "p8.unused-identifier-exception",
+      "disposition": "permission",
+      "requirements": [
+        "S14.2.2-009"
+      ],
+      "rationale": "Records the explicit exception for unused identifiers."
+    },
+    {
+      "unit": "p8.generic-interface-exception",
+      "disposition": "permission",
+      "requirements": [
+        "S14.2.2-009"
+      ],
+      "rationale": "Records the explicit exception for generic interfaces and points to 15.4.3.4."
+    },
+    {
+      "unit": "note3",
+      "disposition": "informative",
+      "rationale": "Note illustrates multiple use-name appearances; p7 owns the normative multiple-identifier effect."
+    },
+    {
+      "unit": "p9",
+      "disposition": "structural",
+      "rationale": "Attribute respecification restriction and explicit exceptions are split."
+    },
+    {
+      "unit": "p9.attribute-respecification-restriction",
+      "disposition": "requirements",
+      "requirements": [
+        "S14.2.2-010"
+      ]
+    },
+    {
+      "unit": "p9.public-private-exception",
+      "disposition": "permission",
+      "requirements": [
+        "S14.2.2-010"
+      ],
+      "rationale": "Records the PUBLIC/PRIVATE exception in a module scoping unit."
+    },
+    {
+      "unit": "p9.async-volatile-exception",
+      "disposition": "permission",
+      "requirements": [
+        "S14.2.2-010"
+      ],
+      "rationale": "Records the ASYNCHRONOUS/VOLATILE exception."
+    },
+    {
+      "unit": "p10",
+      "disposition": "requirements",
+      "requirements": [
+        "S14.2.2-011"
+      ]
+    },
+    {
+      "unit": "note4",
+      "disposition": "informative",
+      "rationale": "Note points to COMMON, EQUIVALENCE, and NAMELIST constraints; those owners carry the prohibitions."
+    },
+    {
+      "unit": "note5",
+      "disposition": "informative",
+      "rationale": "Note only points to annex discussion of dependent compilation."
+    },
+    {
+      "unit": "note6",
+      "disposition": "informative",
+      "rationale": "Examples only; p4-p7 own the normative access and rename effects."
+    },
+    {
+      "unit": "note6.2",
+      "disposition": "informative",
+      "rationale": "Continuation of examples only; p6 owns the all-public result of a USE without ONLY."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_14_2_2.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "a27eac0bd0f2a6d48886ad105468f5cb04dd89f761382d9ba0966fbfb9eb8caf",
+  "review_rationale": "Source registration for the Clause 14 heading, 14.1 (main program), 14.2, 14.2.1 (modules) and 14.2.2 (USE statement and use association) (batch238). Every unit hash-verified by an independent reviewer across two rounds; three numbered rules are deferred to their existing tests, and USE renaming, ONLY lists and shared storage are observed through exact sentinels. Source accounting only; completes Clause 14 with batch239."
+}

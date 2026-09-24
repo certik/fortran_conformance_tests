@@ -5949,6 +5949,11 @@ See `doc/source_audits/batch_244.json`.
 Twenty-two units, thirteen numbered, after two rounds. C1412 shows a limit of one-feature controls: 'a nonintrinsic module that declares a separate module procedure' cannot be split, because no intrinsic module declares one; the pair that remains changes only the declaration.
 See `doc/source_audits/batch_239.json`.
 
+## Batch 238 — Main program, modules and USE (14-14.2.2)
+
+Fifty-five units after two rounds, and with batch239 **Clause 14 is fully registered**. Both findings were the same miss: a 'may' inside a paragraph of requirements is a permission of its own, even when it sits between two 'shall's.
+See `doc/source_audits/batch_238.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
