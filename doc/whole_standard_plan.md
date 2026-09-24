@@ -5979,6 +5979,11 @@ See `doc/source_audits/batch_242.json`.
 Forty units after two rounds, the first overview packet reviewed. Overview text mostly restates rules registered elsewhere, so its value is in the cross-references; the rules this produced (cite an existing owner, else plan it here; processor dependent means latitude) went to every remaining overview packet.
 See `doc/source_audits/batch_250.json`.
 
+## Batch 226 — IEEE_SET_HALTING_MODE through IEEE_SIGNALING_GE (17.11.40-17.11.46)
+
+Thirty-seven units after two rounds, and with them **Clause 17 is fully registered** — 491 units in eighteen batches (213-230). The packet was authored before most of the twelve calibration rules existed and absorbed them one follow-up commit at a time; its review then held it to the standard its already-accepted siblings had set.
+See `doc/source_audits/batch_226.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
