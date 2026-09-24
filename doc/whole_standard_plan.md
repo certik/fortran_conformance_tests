@@ -5799,6 +5799,11 @@ See `doc/source_audits/batch_207.json`.
 Forty units, accepted on the first round: the first half of ISO_FORTRAN_ENV. Most of the module is named constants whose values are the processor's choice, so the work is in separating what *is* fixed (type, kind, rank, negative-value branches, relations such as a positive INTnn naming a kind of that storage size) from what is latitude.
 See `doc/source_audits/batch_211.json`.
 
+## Batch 209 — TANH through TRAILZ
+
+Forty-three units after two rounds. TOKENIZE, new in Fortran 2023, has the most interesting edge: an empty string is not zero tokens but one — a zero-length token delimited by the beginning and the end of STRING, with FIRST = [1] and LAST = [0].
+See `doc/source_audits/batch_209.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must

@@ -1,0 +1,234 @@
+{
+  "schema_version": 1,
+  "section": "16.9.210",
+  "review_state": "reviewed",
+  "subunits": {
+    "p3": [
+      "p3.argument-restrictions",
+      "p3.token-definition",
+      "p3.tokens-allocation-assignment",
+      "p3.separator-allocation-assignment",
+      "p3.first-last-allocation-assignment",
+      "p3.zero-length-position-rules"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S16.9.210-001",
+      "title": "TOKENIZE argument restrictions",
+      "source": "S16.9.210, J3/24-007, 18 December 2023, physical PDF466.",
+      "source_units": [
+        "p3.argument-restrictions"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "STRING shall be scalar character INTENT(IN); SET shall be scalar character with the same kind as STRING and INTENT(IN); TOKENS and SEPARATOR shall be character allocatable rank-one deferred-length INTENT(OUT) arrays of the same kind as STRING and not coarrays or coindexed objects; FIRST and LAST shall be integer allocatable rank-one INTENT(OUT) arrays and not coarrays or coindexed objects.",
+      "facets": [
+        "TOKENIZE-STRING-scalar-character",
+        "TOKENIZE-SET-scalar-character-same-kind",
+        "TOKENIZE-TOKENS-character-allocatable-rank-one",
+        "TOKENIZE-SEPARATOR-character-allocatable-rank-one",
+        "TOKENIZE-FIRST-LAST-integer-allocatable-rank-one",
+        "TOKENIZE-output-arguments-not-coarray-or-coindexed"
+      ],
+      "pending": {
+        "TOKENIZE-STRING-scalar-character": "Positive source controls call TOKENIZE with scalar default-character STRING; source-control mutation uses a rank-one character array and claims no diagnostic facet.",
+        "TOKENIZE-SET-scalar-character-same-kind": "Positive source controls call TOKENIZE with scalar SET of the same kind as STRING; source-control mutation uses a rank-one SET or different character kind and claims no diagnostic facet.",
+        "TOKENIZE-TOKENS-character-allocatable-rank-one": "Positive source control passes an unallocated deferred-length rank-one character TOKENS array and observes allocation in the S16.9.210-003 plan; source-control mutation uses a nonallocatable target and claims no diagnostic facet.",
+        "TOKENIZE-SEPARATOR-character-allocatable-rank-one": "Positive source control passes an unallocated deferred-length rank-one character SEPARATOR array and observes allocation in the S16.9.210-004 plan; source-control mutation uses a scalar target and claims no diagnostic facet.",
+        "TOKENIZE-FIRST-LAST-integer-allocatable-rank-one": "Positive source control passes unallocated rank-one integer FIRST and LAST arrays and observes allocation in the S16.9.210-005 plan; source-control mutation uses real arrays and claims no diagnostic facet.",
+        "TOKENIZE-output-arguments-not-coarray-or-coindexed": "Source-control plan records ordinary local allocatable arrays as positive controls and coarray or coindexed variants only as unnumbered restrictions with no diagnostic facet."
+      },
+      "oracle": "Source registration only. Future fixtures initialize observed variables to non-default sentinels before invoking the intrinsic and assert only exact properties fixed by 16.9: type, kind, rank, shape, allocation bounds, integer counts, token positions, sequence contents, model-inquiry relations, or bit-context observations. Processor-dependent approximations, processor-dependent model values, and image/team-dependent behavior are separated from exact result obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Case-insensitive grep of tests/ and tests/fixtures/*/fixture.json for TANH, TANPI, TEAM_NUMBER, THIS_IMAGE, TINY, TOKENIZE, TRAILZ, and S16.9.205 through S16.9.211 found no fixture-manifest binding for these sections in this worktree. Existing clause 10 source files mention TEAM_NUMBER and THIS_IMAGE, and one Python test helper excludes THIS_IMAGE text; those incidental uses are recorded as existing coverage and are not rebound by this source packet. Image, team, and coarray-dependent runtime facets are out of scope for this single-image suite by user decision.",
+      "dependencies": "Registered dependencies: existing source-form, intrinsic type, kind, declaration, expression, assignment, array, character, allocation, execution, and I/O foundations from clauses 6 through 13 where already catalogued. Unregistered dependencies retained: clause 5 image and team execution terminology, clause 7 type and kind rules, clause 10 expression and intrinsic-assignment semantics, clause 16.3 integer bit model, clause 16.4 real model parameters, ISO_FORTRAN_ENV TEAM_TYPE, sibling 16.9 intrinsics named by pending plans such as BIT_SIZE, BTEST, EXPONENT, IBSET, KIND, LEN, MAXEXPONENT, MINEXPONENT, RADIX, RANK, SELECTED_*_KIND, and SIZE, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, module, deleted-feature, or scope terms."
+    },
+    {
+      "id": "S16.9.210-002",
+      "title": "TOKENIZE token delimiter and zero-length token rules",
+      "source": "S16.9.210, J3/24-007, 18 December 2023, physical PDF466.",
+      "source_units": [
+        "p3.token-definition"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Each character in SET is a token delimiter; sequences delimited by token delimiters or string boundaries comprise tokens, and consecutive or boundary delimiters indicate zero-length tokens.",
+      "facets": [
+        "TOKENIZE-SET-characters-are-delimiters",
+        "TOKENIZE-boundary-delimiters-create-zero-length-tokens",
+        "TOKENIZE-consecutive-delimiters-create-zero-length-token",
+        "TOKENIZE-empty-STRING-one-zero-length-token"
+      ],
+      "pending": {
+        "TOKENIZE-SET-characters-are-delimiters": "Call TOKENIZE on STRING=\",a,,bc;\" with SET=\",;\" and assert the finite token count is five; mutate SET to \";\" so comma characters no longer delimit and the count differs.",
+        "TOKENIZE-boundary-delimiters-create-zero-length-tokens": "For STRING=\",a,,bc;\" and SET=\",;\", assert the first and fifth tokens have LEN_TRIM zero while the second and fourth tokens contain \"a\" and \"bc\" after intrinsic-assignment padding.",
+        "TOKENIZE-consecutive-delimiters-create-zero-length-token": "For STRING=\",a,,bc;\" and SET=\",;\", assert the third token has LEN_TRIM zero and is between the \"a\" and \"bc\" tokens; mutate STRING to remove one comma so the finite token sequence differs.",
+        "TOKENIZE-empty-STRING-one-zero-length-token": "Hand-verified derivation from p3: a sequence of zero or more characters delimited by the beginning and end of STRING comprises a token. For STRING=\"\" and SET=\",;\", the beginning and end delimit one zero-length token, so a TOKENIZE call observes exactly one token; pair with STRING=\",a,,bc;\" for non-vacuous multiple-token coverage."
+      },
+      "oracle": "Source registration only. Future fixtures initialize observed variables to non-default sentinels before invoking the intrinsic and assert only exact properties fixed by 16.9: type, kind, rank, shape, allocation bounds, integer counts, token positions, sequence contents, model-inquiry relations, or bit-context observations. Processor-dependent approximations, processor-dependent model values, and image/team-dependent behavior are separated from exact result obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Case-insensitive grep of tests/ and tests/fixtures/*/fixture.json for TANH, TANPI, TEAM_NUMBER, THIS_IMAGE, TINY, TOKENIZE, TRAILZ, and S16.9.205 through S16.9.211 found no fixture-manifest binding for these sections in this worktree. Existing clause 10 source files mention TEAM_NUMBER and THIS_IMAGE, and one Python test helper excludes THIS_IMAGE text; those incidental uses are recorded as existing coverage and are not rebound by this source packet. Image, team, and coarray-dependent runtime facets are out of scope for this single-image suite by user decision.",
+      "dependencies": "Registered dependencies: existing source-form, intrinsic type, kind, declaration, expression, assignment, array, character, allocation, execution, and I/O foundations from clauses 6 through 13 where already catalogued. Unregistered dependencies retained: clause 5 image and team execution terminology, clause 7 type and kind rules, clause 10 expression and intrinsic-assignment semantics, clause 16.3 integer bit model, clause 16.4 real model parameters, ISO_FORTRAN_ENV TEAM_TYPE, sibling 16.9 intrinsics named by pending plans such as BIT_SIZE, BTEST, EXPONENT, IBSET, KIND, LEN, MAXEXPONENT, MINEXPONENT, RADIX, RANK, SELECTED_*_KIND, and SIZE, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, module, deleted-feature, or scope terms."
+    },
+    {
+      "id": "S16.9.210-003",
+      "title": "TOKENIZE TOKENS allocation and assignment",
+      "source": "S16.9.210, J3/24-007, 18 December 2023, physical PDF466.",
+      "source_units": [
+        "p3.tokens-allocation-assignment"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "TOKENS is allocated with lower bound one, upper bound equal to the number of tokens, character length equal to the longest token, and elements assigned the tokens in order by intrinsic assignment.",
+      "facets": [
+        "TOKENIZE-TOKENS-lower-upper-bounds",
+        "TOKENIZE-TOKENS-length-longest-token",
+        "TOKENIZE-TOKENS-assigned-in-order",
+        "TOKENIZE-TOKENS-empty-STRING-size-one-length-zero"
+      ],
+      "pending": {
+        "TOKENIZE-TOKENS-lower-upper-bounds": "Call the TOKENS form on STRING=\",a,,bc;\" and SET=\",;\" with TOKENS unallocated; assert ALLOCATED(TOKENS), LBOUND(TOKENS,1)==1, UBOUND(TOKENS,1)==5, and SIZE(TOKENS)==5. Mutate SET to \";\".",
+        "TOKENIZE-TOKENS-length-longest-token": "For the same call, assert LEN(TOKENS)==2 because \"bc\" is the longest token and pair with STRING=\"a,b\" to observe LEN 1. Mutate STRING to replace \"bc\" by \"b\".",
+        "TOKENIZE-TOKENS-assigned-in-order": "For the same call, assert TOKENS equals [\"  \", \"a \", \"  \", \"bc\", \"  \"] after intrinsic-assignment padding. Mutate the expected order by swapping \"a\" and \"bc\".",
+        "TOKENIZE-TOKENS-empty-STRING-size-one-length-zero": "For STRING=\"\" and SET=\",;\", p3 gives exactly one zero-length token; TOKENS is allocated with lower bound 1, upper bound equal to the token count, and length equal to the longest token, so assert SIZE(TOKENS)==1 and LEN(TOKENS)==0. Pair with STRING=\"a,b\" to observe nonzero token length."
+      },
+      "oracle": "Source registration only. Future fixtures initialize observed variables to non-default sentinels before invoking the intrinsic and assert only exact properties fixed by 16.9: type, kind, rank, shape, allocation bounds, integer counts, token positions, sequence contents, model-inquiry relations, or bit-context observations. Processor-dependent approximations, processor-dependent model values, and image/team-dependent behavior are separated from exact result obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Case-insensitive grep of tests/ and tests/fixtures/*/fixture.json for TANH, TANPI, TEAM_NUMBER, THIS_IMAGE, TINY, TOKENIZE, TRAILZ, and S16.9.205 through S16.9.211 found no fixture-manifest binding for these sections in this worktree. Existing clause 10 source files mention TEAM_NUMBER and THIS_IMAGE, and one Python test helper excludes THIS_IMAGE text; those incidental uses are recorded as existing coverage and are not rebound by this source packet. Image, team, and coarray-dependent runtime facets are out of scope for this single-image suite by user decision.",
+      "dependencies": "Registered dependencies: existing source-form, intrinsic type, kind, declaration, expression, assignment, array, character, allocation, execution, and I/O foundations from clauses 6 through 13 where already catalogued. Unregistered dependencies retained: clause 5 image and team execution terminology, clause 7 type and kind rules, clause 10 expression and intrinsic-assignment semantics, clause 16.3 integer bit model, clause 16.4 real model parameters, ISO_FORTRAN_ENV TEAM_TYPE, sibling 16.9 intrinsics named by pending plans such as BIT_SIZE, BTEST, EXPONENT, IBSET, KIND, LEN, MAXEXPONENT, MINEXPONENT, RADIX, RANK, SELECTED_*_KIND, and SIZE, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, module, deleted-feature, or scope terms."
+    },
+    {
+      "id": "S16.9.210-004",
+      "title": "TOKENIZE SEPARATOR allocation and assignment",
+      "source": "S16.9.210, J3/24-007, 18 December 2023, physical PDF466.",
+      "source_units": [
+        "p3.separator-allocation-assignment"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "SEPARATOR is allocated with lower bound one, upper bound one less than the number of tokens, character length one, and element i assigned the i-th token delimiter in STRING.",
+      "facets": [
+        "TOKENIZE-SEPARATOR-bounds-and-length",
+        "TOKENIZE-SEPARATOR-assigned-delimiters",
+        "TOKENIZE-SEPARATOR-zero-size-no-delimiter",
+        "TOKENIZE-SEPARATOR-empty-STRING-zero-size"
+      ],
+      "pending": {
+        "TOKENIZE-SEPARATOR-bounds-and-length": "Call the TOKENS and SEPARATOR form on STRING=\",a,,bc;\" and SET=\",;\"; assert ALLOCATED(SEPARATOR), LBOUND(SEPARATOR,1)==1, UBOUND(SEPARATOR,1)==4, SIZE(SEPARATOR)==4, and LEN(SEPARATOR)==1. Mutate SET to \";\".",
+        "TOKENIZE-SEPARATOR-assigned-delimiters": "For the same call, assert SEPARATOR equals [\",\", \",\", \",\", \";\"] in source order. Mutate the final delimiter in STRING from semicolon to comma so the finite sequence differs.",
+        "TOKENIZE-SEPARATOR-zero-size-no-delimiter": "Call the TOKENS and SEPARATOR form on STRING=\"abc\" and SET=\",\"; assert TOKENS has one element, SEPARATOR is allocated with SIZE zero, and the companion delimiter case has SIZE four.",
+        "TOKENIZE-SEPARATOR-empty-STRING-zero-size": "For STRING=\"\" and SET=\",;\", p3 gives exactly one zero-length token and no token delimiter in STRING; SEPARATOR is allocated with upper bound one less than the token count, so assert SIZE(SEPARATOR)==0. Pair with a delimiter-containing string whose SEPARATOR size is nonzero."
+      },
+      "oracle": "Source registration only. Future fixtures initialize observed variables to non-default sentinels before invoking the intrinsic and assert only exact properties fixed by 16.9: type, kind, rank, shape, allocation bounds, integer counts, token positions, sequence contents, model-inquiry relations, or bit-context observations. Processor-dependent approximations, processor-dependent model values, and image/team-dependent behavior are separated from exact result obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Case-insensitive grep of tests/ and tests/fixtures/*/fixture.json for TANH, TANPI, TEAM_NUMBER, THIS_IMAGE, TINY, TOKENIZE, TRAILZ, and S16.9.205 through S16.9.211 found no fixture-manifest binding for these sections in this worktree. Existing clause 10 source files mention TEAM_NUMBER and THIS_IMAGE, and one Python test helper excludes THIS_IMAGE text; those incidental uses are recorded as existing coverage and are not rebound by this source packet. Image, team, and coarray-dependent runtime facets are out of scope for this single-image suite by user decision.",
+      "dependencies": "Registered dependencies: existing source-form, intrinsic type, kind, declaration, expression, assignment, array, character, allocation, execution, and I/O foundations from clauses 6 through 13 where already catalogued. Unregistered dependencies retained: clause 5 image and team execution terminology, clause 7 type and kind rules, clause 10 expression and intrinsic-assignment semantics, clause 16.3 integer bit model, clause 16.4 real model parameters, ISO_FORTRAN_ENV TEAM_TYPE, sibling 16.9 intrinsics named by pending plans such as BIT_SIZE, BTEST, EXPONENT, IBSET, KIND, LEN, MAXEXPONENT, MINEXPONENT, RADIX, RANK, SELECTED_*_KIND, and SIZE, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, module, deleted-feature, or scope terms."
+    },
+    {
+      "id": "S16.9.210-005",
+      "title": "TOKENIZE FIRST and LAST allocation and position assignment",
+      "source": "S16.9.210, J3/24-007, 18 December 2023, physical PDF466.",
+      "source_units": [
+        "p3.first-last-allocation-assignment",
+        "p3.zero-length-position-rules"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "FIRST and LAST are allocated with bounds one through the number of tokens; FIRST receives token starting positions in order, and LAST receives ending positions, with zero-length tokens starting at one at the beginning or one greater than the preceding delimiter otherwise and ending one less than the starting position.",
+      "facets": [
+        "TOKENIZE-FIRST-LAST-bounds",
+        "TOKENIZE-FIRST-starting-positions",
+        "TOKENIZE-LAST-ending-positions",
+        "TOKENIZE-zero-length-FIRST-LAST-rules",
+        "TOKENIZE-FIRST-LAST-empty-STRING-positions"
+      ],
+      "pending": {
+        "TOKENIZE-FIRST-LAST-bounds": "Call the FIRST/LAST form on STRING=\",a,,bc;\" and SET=\",;\" with FIRST and LAST unallocated; assert both arrays are allocated with LBOUND 1, UBOUND 5, and SIZE 5. Mutate SET to \";\".",
+        "TOKENIZE-FIRST-starting-positions": "For the same call, assert FIRST equals [1, 2, 4, 5, 8]. Mutate STRING by deleting the leading comma so the finite positions differ.",
+        "TOKENIZE-LAST-ending-positions": "For the same call, assert LAST equals [0, 2, 3, 6, 7]. Mutate STRING by deleting the trailing semicolon so the finite positions differ.",
+        "TOKENIZE-zero-length-FIRST-LAST-rules": "For the same call, assert the leading zero-length token has FIRST 1 and LAST 0, the consecutive-delimiter zero-length token has FIRST 4 and LAST 3, and the trailing zero-length token has FIRST 8 and LAST 7; pair with nonzero tokens at positions 2 and 5.",
+        "TOKENIZE-FIRST-LAST-empty-STRING-positions": "For STRING=\"\" and SET=\",;\", p3 gives exactly one zero-length token at the beginning of STRING; the zero-length rule sets FIRST to 1 and LAST to one less than FIRST, so assert FIRST==[1] and LAST==[0]. Pair with STRING=\",a,,bc;\" to exercise nonempty and delimiter-created zero-length tokens."
+      },
+      "oracle": "Source registration only. Future fixtures initialize observed variables to non-default sentinels before invoking the intrinsic and assert only exact properties fixed by 16.9: type, kind, rank, shape, allocation bounds, integer counts, token positions, sequence contents, model-inquiry relations, or bit-context observations. Processor-dependent approximations, processor-dependent model values, and image/team-dependent behavior are separated from exact result obligations. Unnumbered argument shall-restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Case-insensitive grep of tests/ and tests/fixtures/*/fixture.json for TANH, TANPI, TEAM_NUMBER, THIS_IMAGE, TINY, TOKENIZE, TRAILZ, and S16.9.205 through S16.9.211 found no fixture-manifest binding for these sections in this worktree. Existing clause 10 source files mention TEAM_NUMBER and THIS_IMAGE, and one Python test helper excludes THIS_IMAGE text; those incidental uses are recorded as existing coverage and are not rebound by this source packet. Image, team, and coarray-dependent runtime facets are out of scope for this single-image suite by user decision.",
+      "dependencies": "Registered dependencies: existing source-form, intrinsic type, kind, declaration, expression, assignment, array, character, allocation, execution, and I/O foundations from clauses 6 through 13 where already catalogued. Unregistered dependencies retained: clause 5 image and team execution terminology, clause 7 type and kind rules, clause 10 expression and intrinsic-assignment semantics, clause 16.3 integer bit model, clause 16.4 real model parameters, ISO_FORTRAN_ENV TEAM_TYPE, sibling 16.9 intrinsics named by pending plans such as BIT_SIZE, BTEST, EXPONENT, IBSET, KIND, LEN, MAXEXPONENT, MINEXPONENT, RADIX, RANK, SELECTED_*_KIND, and SIZE, and clauses 14 through 19 where future fixtures need program, procedure, IEEE, module, deleted-feature, or scope terms."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "body",
+      "disposition": "structural",
+      "rationale": "Procedure signature line names one TOKENIZE argument form; detailed argument and effect obligations are accounted in p3."
+    },
+    {
+      "unit": "p1",
+      "disposition": "definition",
+      "rationale": "Description defines TOKENIZE as string token parsing."
+    },
+    {
+      "unit": "p2",
+      "disposition": "definition",
+      "rationale": "Classifies TOKENIZE as a simple subroutine."
+    },
+    {
+      "unit": "p3",
+      "disposition": "structural",
+      "rationale": "Arguments unit combines argument restrictions, token definitions, allocation effects, assignment effects, and zero-length token position rules."
+    },
+    {
+      "unit": "p3.argument-restrictions",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.210-001"
+      ],
+      "rationale": "Argument shall-restrictions and INTENT attributes."
+    },
+    {
+      "unit": "p3.token-definition",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.210-002"
+      ],
+      "rationale": "Delimiter and token-definition semantics."
+    },
+    {
+      "unit": "p3.tokens-allocation-assignment",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.210-003"
+      ],
+      "rationale": "TOKENS allocation and assignment effects."
+    },
+    {
+      "unit": "p3.separator-allocation-assignment",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.210-004"
+      ],
+      "rationale": "SEPARATOR allocation and assignment effects."
+    },
+    {
+      "unit": "p3.first-last-allocation-assignment",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.210-005"
+      ],
+      "rationale": "FIRST and LAST allocation plus nonzero-token position effects."
+    },
+    {
+      "unit": "p3.zero-length-position-rules",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.9.210-005"
+      ],
+      "rationale": "FIRST and LAST position rules for zero-length tokens."
+    },
+    {
+      "unit": "p4",
+      "disposition": "informative",
+      "rationale": "Examples paragraph is illustrative."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_16_9_210.md"
+  },
+  "review_fingerprint": "b21e02bdf0d2c420112f9414a6e4156bbfb0705978717117b56cb4eddd0fa2a0",
+  "review_rationale": "Source registration for 16.9.205-16.9.211: TANH, TANPI, TEAM_NUMBER, THIS_IMAGE, TINY, TOKENIZE and TRAILZ (batch209). Every unit hash-verified by an independent reviewer across two rounds; TOKENIZE and TRAILZ carry exact edge-case plans, TINY is planned through model relations, and all team/image runtime facets are out of scope. Source accounting only."
+}
