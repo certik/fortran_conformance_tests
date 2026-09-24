@@ -6214,6 +6214,11 @@ See `doc/source_audits/batch_293.json`.
 7 programs, 20 facets, three LFortran defects: GET_COMMAND reports failure while returning the command, and argument -1 is reported as found.
 See `doc/source_audits/batch_292.json`.
 
+## Batch 294 — OPEN statement fixtures 12.5.5-12.5.6.2
+
+37 programs, 46 facets and two LFortran defects in OPEN: reopening a connected unit without FILE= must mean the same file, and a bare unit number must come first.
+See `doc/source_audits/batch_294.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
