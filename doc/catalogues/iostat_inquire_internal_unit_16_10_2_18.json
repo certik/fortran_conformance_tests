@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "section": "16.10.2.18",
+  "review_state": "reviewed",
+  "requirements": [
+    {
+      "id": "S16.10.2.18-001",
+      "title": "IOSTAT_INQUIRE_INTERNAL_UNIT is assigned for internal-unit INQUIRE status",
+      "source": "S16.10.2.18, J3/24-007, 18 December 2023, physical PDF475.",
+      "source_units": [
+        "p1"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "IOSTAT_INQUIRE_INTERNAL_UNIT is a default integer scalar constant assigned to an INQUIRE IOSTAT variable upon use of a file-unit-number that identifies an internal unit.",
+      "facets": [
+        "IOSTAT_INQUIRE_INTERNAL_UNIT-default-integer-scalar",
+        "IOSTAT_INQUIRE_INTERNAL_UNIT-internal-unit-inquire-status"
+      ],
+      "pending": {
+        "IOSTAT_INQUIRE_INTERNAL_UNIT-default-integer-scalar": "Use USE ISO_FORTRAN_ENV, ONLY: IOSTAT_INQUIRE_INTERNAL_UNIT; assign it to an integer initialized to 777, assert KIND(value)==KIND(0), RANK(value)==0, and mutate the imported name to IOSTAT_END.",
+        "IOSTAT_INQUIRE_INTERNAL_UNIT-internal-unit-inquire-status": "Use a defined formatted output procedure invoked by WRITE(character_buffer,*) on a derived-type value; inside the procedure initialize stat=777, execute INQUIRE(UNIT=unit, IOSTAT=stat), store stat in module state, and assert stat==IOSTAT_INQUIRE_INTERNAL_UNIT after the parent internal WRITE. Mutate the parent transfer to WRITE(OUTPUT_UNIT,*) and require the stored status to differ."
+      },
+      "oracle": "Source registration only. Future fixtures use exact integer, logical, kind, shape, standard I/O status, and preconnected-unit observations. Processor-dependent unit numbers, kind ordering, storage-unit sizes, image failure capability, lock state from other images, team identity, IOMSG text, and processor-dependent STAT or IOSTAT numeric values are not hard-coded. Positive plans initialize observed variables to distinguished sentinels, exercise the named ISO_FORTRAN_ENV entity with concrete values, and name a feature mutation such as replacing the named constant, changing the requested bit-size table, or substituting a different preconnected unit.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Coarray, image-control, failed-image, lock, notify, team, and atomic observations, including local single-image coarrays, are out of scope by user decision. Clause 16 unnumbered argument and module-entity restrictions are not promoted to diagnostic facets; numbered constraints remain source-registered without fixture binding in this packet. Grep coverage: IOSTAT_INQUIRE_INTERNAL_UNIT appears in zero tests/ files and zero fixture manifests.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, and 13 where already catalogued for source form, intrinsic types and kinds, declarations, expressions, arrays, execution, data transfer, IOSTAT handling, preconnection, and exact formatting helpers. Unregistered dependencies retained: clause 5 image and team execution model; clause 11 image-control, lock, notify, and team constructs; clause 16.5 atomic subroutines; sibling ISO_FORTRAN_ENV sections 16.10-16.10.2.17; clause 17 IEEE support; and clause 19 storage association and storage-unit terminology."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.10.2.18-001"
+      ]
+    },
+    {
+      "unit": "note-unnumbered",
+      "disposition": "informative",
+      "rationale": "Unnumbered NOTE explains the defined-I/O circumstance for the internal-unit status."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_16_10_2_18.md"
+  },
+  "review_fingerprint": "7b1e85b096f9d4a27f50a4fa9bcb96721c59fac06da8a239bd43e3d2a0870fbc",
+  "review_rationale": "Source registration for 16.10.2.18-16.10.2.35 of the intrinsic module ISO_FORTRAN_ENV (batch212), completing Clause 16. Every unit hash-verified by an independent reviewer across two rounds; C1607-C1614 were pre-accounted numbered rules with no existing tests and, as coarray-typed variable constraints, are out of scope by user decision; storage-size and preconnected-unit facts are planned exactly. Source accounting only."
+}

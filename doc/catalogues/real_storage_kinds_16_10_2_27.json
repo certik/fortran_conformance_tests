@@ -1,0 +1,84 @@
+{
+  "schema_version": 1,
+  "section": "16.10.2.27",
+  "review_state": "reviewed",
+  "requirements": [
+    {
+      "id": "S16.10.2.27-001",
+      "title": "REAL storage-size named constants select matching kinds or required negative codes",
+      "source": "S16.10.2.27, J3/24-007, 18 December 2023, physical PDF477.",
+      "source_units": [
+        "p1.kind-size-or-negative-code"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "REAL16, REAL32, REAL64, and REAL128 are default integer scalar constants for real kinds with storage sizes 16, 32, 64, and 128 bits respectively, or the required negative code -2 or -1 based on larger-kind availability.",
+      "facets": [
+        "REAL-storage-constants-default-integer-scalars",
+        "REAL-storage-positive-kind-size",
+        "REAL-storage-negative-code-branches"
+      ],
+      "pending": {
+        "REAL-storage-constants-default-integer-scalars": "Assign REAL16, REAL32, REAL64, and REAL128 to default integer variables initialized to -777; assert each KIND equals KIND(0) and each RANK equals 0. Mutate REAL64 to LOGICAL64.",
+        "REAL-storage-positive-kind-size": "Use requested bit table 16,32,64,128. Generated branch-partition fixtures declare REAL(KIND=constant) values 0.0_constant for positive constants and assert STORAGE_SIZE(value) equals the requested bit count. Mutate the bit table by swapping 64 and 128.",
+        "REAL-storage-negative-code-branches": "Generated branch-partition fixtures compare REAL_KINDS storage sizes against requested bit table 16,32,64,128 and assert -2 exactly for absence with larger supported size and -1 exactly for absence without larger supported size. Mutate the -2 and -1 expected codes."
+      },
+      "oracle": "Source registration only. Future fixtures use exact integer, logical, kind, shape, standard I/O status, and preconnected-unit observations. Processor-dependent unit numbers, kind ordering, storage-unit sizes, image failure capability, lock state from other images, team identity, IOMSG text, and processor-dependent STAT or IOSTAT numeric values are not hard-coded. Positive plans initialize observed variables to distinguished sentinels, exercise the named ISO_FORTRAN_ENV entity with concrete values, and name a feature mutation such as replacing the named constant, changing the requested bit-size table, or substituting a different preconnected unit.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Coarray, image-control, failed-image, lock, notify, team, and atomic observations, including local single-image coarrays, are out of scope by user decision. Clause 16 unnumbered argument and module-entity restrictions are not promoted to diagnostic facets; numbered constraints remain source-registered without fixture binding in this packet. Grep coverage: REAL16 and REAL32 appear in zero tests/ files and zero fixture manifests; REAL64 and REAL128 appear only in tests/profiles/numeric_literal_legacy_real_kinds.f90 and zero fixture manifests.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, and 13 where already catalogued for source form, intrinsic types and kinds, declarations, expressions, arrays, execution, data transfer, IOSTAT handling, preconnection, and exact formatting helpers. Unregistered dependencies retained: clause 5 image and team execution model; clause 11 image-control, lock, notify, and team constructs; clause 16.5 atomic subroutines; sibling ISO_FORTRAN_ENV sections 16.10-16.10.2.17; clause 17 IEEE support; and clause 19 storage association and storage-unit terminology."
+    },
+    {
+      "id": "S16.10.2.27-002",
+      "title": "Same-size REAL kind selection is processor dependent",
+      "source": "S16.10.2.27, J3/24-007, 18 December 2023, physical PDF477.",
+      "source_units": [
+        "p1.same-size-choice-latitude"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For a supported real storage size with more than one kind, the selected kind value is processor dependent.",
+      "facets": [
+        "REAL-storage-same-size-choice-processor-dependent"
+      ],
+      "pending": {
+        "REAL-storage-same-size-choice-processor-dependent": "No portable oracle hard-codes this processor-dependent choice; future fixtures compare only portable properties of the selected kind or array shape."
+      },
+      "oracle": "Source registration only. Future fixtures use exact integer, logical, kind, shape, standard I/O status, and preconnected-unit observations. Processor-dependent unit numbers, kind ordering, storage-unit sizes, image failure capability, lock state from other images, team identity, IOMSG text, and processor-dependent STAT or IOSTAT numeric values are not hard-coded. Positive plans initialize observed variables to distinguished sentinels, exercise the named ISO_FORTRAN_ENV entity with concrete values, and name a feature mutation such as replacing the named constant, changing the requested bit-size table, or substituting a different preconnected unit.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Coarray, image-control, failed-image, lock, notify, team, and atomic observations, including local single-image coarrays, are out of scope by user decision. Clause 16 unnumbered argument and module-entity restrictions are not promoted to diagnostic facets; numbered constraints remain source-registered without fixture binding in this packet. Grep coverage: REAL16 and REAL32 appear in zero tests/ files and zero fixture manifests; REAL64 and REAL128 appear only in tests/profiles/numeric_literal_legacy_real_kinds.f90 and zero fixture manifests.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, and 13 where already catalogued for source form, intrinsic types and kinds, declarations, expressions, arrays, execution, data transfer, IOSTAT handling, preconnection, and exact formatting helpers. Unregistered dependencies retained: clause 5 image and team execution model; clause 11 image-control, lock, notify, and team constructs; clause 16.5 atomic subroutines; sibling ISO_FORTRAN_ENV sections 16.10-16.10.2.17; clause 17 IEEE support; and clause 19 storage association and storage-unit terminology."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "structural",
+      "rationale": "Paragraph mixes required storage-size mappings and negative codes with processor-dependent same-size kind choice."
+    },
+    {
+      "unit": "p1.kind-size-or-negative-code",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.10.2.27-001"
+      ]
+    },
+    {
+      "unit": "p1.same-size-choice-latitude",
+      "disposition": "permission",
+      "rationale": "The paragraph explicitly makes the choice among multiple same-size kinds processor dependent.",
+      "requirements": [
+        "S16.10.2.27-002"
+      ]
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_16_10_2_27.md"
+  },
+  "subunits": {
+    "p1": [
+      "p1.kind-size-or-negative-code",
+      "p1.same-size-choice-latitude"
+    ]
+  },
+  "review_fingerprint": "2233d191d58f86658a3ee4d84b98a887c4e779022f9a7518a2bc783bc6de7aef",
+  "review_rationale": "Source registration for 16.10.2.18-16.10.2.35 of the intrinsic module ISO_FORTRAN_ENV (batch212), completing Clause 16. Every unit hash-verified by an independent reviewer across two rounds; C1607-C1614 were pre-accounted numbered rules with no existing tests and, as coarray-typed variable constraints, are out of scope by user decision; storage-size and preconnected-unit facts are planned exactly. Source accounting only."
+}

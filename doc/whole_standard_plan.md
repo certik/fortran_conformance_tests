@@ -5809,6 +5809,11 @@ See `doc/source_audits/batch_209.json`.
 Forty-three units after two rounds, closing 16.9: every intrinsic procedure is now registered. The UBOUND finding is a small classic — a zero-extent dimension declared 1:0 has upper bound 0 *and* UBOUND 0, so the test could not tell the rule from the declaration; 5:4 can.
 See `doc/source_audits/batch_210.json`.
 
+## Batch 212 — ISO_FORTRAN_ENV, 16.10.2.18-16.10.2.35
+
+Thirty-three units after two rounds, and with them **Clause 16 is fully registered** — all 1,476 base units, 16 through 16.10.2.35, in 35 batches (178-212). One finding was overruled: the numbered LOCK_TYPE/NOTIFY_TYPE constraints do require diagnostics, but they are constraints on coarray variables, which the user placed out of scope; the reason is now recorded on each so the decision is reversible.
+See `doc/source_audits/batch_212.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
