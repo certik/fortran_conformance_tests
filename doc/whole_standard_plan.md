@@ -5974,6 +5974,11 @@ See `doc/source_audits/batch_245.json`.
 Thirty units after two rounds, and with them every Clause 18 section except the long-standing 18.3.7 draft is registered. The array finding is the classic one: Fortran a(3,2) and C int a[2][3] describe the same storage, but with the subscripts reversed and shifted by one.
 See `doc/source_audits/batch_242.json`.
 
+## Batch 250 — Fortran concepts: arrays through companion processors (5.4.7-5.5.7)
+
+Forty units after two rounds, the first overview packet reviewed. Overview text mostly restates rules registered elsewhere, so its value is in the cross-references; the rules this produced (cite an existing owner, else plan it here; processor dependent means latitude) went to every remaining overview packet.
+See `doc/source_audits/batch_250.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
