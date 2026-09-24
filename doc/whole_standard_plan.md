@@ -5889,6 +5889,11 @@ See `doc/source_audits/batch_231.json`.
 Thirty-four units after two rounds. 'For all real X' sounds uncheckable until one remembers that ISO_FORTRAN_ENV lists every supported real kind; the all-kinds inquiry then becomes a finite conjunction.
 See `doc/source_audits/batch_229.json`.
 
+## Batch 234 — Procedure definition and subprograms, general (15.6-15.6.2.1)
+
+Twenty-seven units, twenty numbered, after two rounds. RECURSIVE is 'advisory only' since Fortran 2018, which makes it testable rather than untestable: a function that calls itself without the prefix must still work.
+See `doc/source_audits/batch_234.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
