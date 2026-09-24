@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "section": "15.2.1",
+  "requirements": [
+    {
+      "id": "S15.2.1-001",
+      "title": "Procedure definitions classify procedures as functions or subroutines and define their references",
+      "source": "S15.2.1, J3/24-007, 18 December 2023, physical PDF323.",
+      "source_units": [
+        "p1"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A procedure definition specifies a function or subroutine; function references appear as expression primaries or defined operations, and subroutine references are CALL statements, defined assignments, defined I/O processing, or finalization.",
+      "facets": [
+        "function-definition-and-explicit-reference",
+        "function-reference-implied-by-defined-operation",
+        "subroutine-reference-call",
+        "subroutine-reference-defined-assignment",
+        "subroutine-reference-defined-io",
+        "subroutine-reference-finalization"
+      ],
+      "pending": {
+        "function-definition-and-explicit-reference": "Define function answer() returning integer 42 and use answer() as a primary in expression answer()+0; expect 42.",
+        "function-reference-implied-by-defined-operation": "After defined-operator rules are registered, define operator(.plusone.) backed by a function and evaluate .plusone. 41; expect 42.",
+        "subroutine-reference-call": "Define subroutine set_answer(x) assigning 42 to an INTENT(OUT) dummy initialized to -9 by the caller; execute CALL and expect 42.",
+        "subroutine-reference-defined-assignment": "After defined-assignment rules are registered, define assignment(=) for a derived type that stores 42 from source 21; initialize target component to -7 and expect 42.",
+        "subroutine-reference-defined-io": "After defined-I/O rules are registered, define formatted WRITE for a derived type with component 42 into a character record prefilled with # sentinels; expect the exact record.",
+        "subroutine-reference-finalization": "After finalization rules are registered, define a FINAL subroutine that records value 42 in a module counter initialized to -1; leave a block containing the object and expect counter == 42."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish distinguished non-default state first, then observe portable single-image properties such as exact integer values, exact character results, successful execution, or source-use attribution. Unnumbered program restrictions do not create a required processor diagnostic; negative examples for those facets are retained only as source-control material.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostics are not claimed unless a numbered constraint or syntax rule requires them; this scope contains no numbered R/C unit.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, 12, and 13 for source form, declarations, expressions, execution constructs, data transfer, and formatting foundations already present in this suite. Unregistered dependencies retained for future fixtures: later clause 15 procedure reference, argument association, interface block, generic resolution, pure/simple/elemental, procedure pointer, and finalization rules; clauses 16, 17, and 18 for intrinsic and intrinsic-module procedures; clause 14 for modules and submodules; clause 3 terminology and clause 19 scoping/lifetime details."
+    },
+    {
+      "id": "S15.2.1-002",
+      "title": "Elemental procedures are procedures that can be referenced elementally",
+      "source": "S15.2.1, J3/24-007, 18 December 2023, physical PDF323.",
+      "source_units": [
+        "p2"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A procedure is classified as elemental by its ability to be referenced elementally.",
+      "facets": [
+        "elemental-procedure-referenced-elementally"
+      ],
+      "pending": {
+        "elemental-procedure-referenced-elementally": "Define elemental integer function inc(x) returning x+1; apply it to array [1, 41] initialized in source and expect result [2, 42]."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish distinguished non-default state first, then observe portable single-image properties such as exact integer values, exact character results, successful execution, or source-use attribution. Unnumbered program restrictions do not create a required processor diagnostic; negative examples for those facets are retained only as source-control material.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostics are not claimed unless a numbered constraint or syntax rule requires them; this scope contains no numbered R/C unit.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, 12, and 13 for source form, declarations, expressions, execution constructs, data transfer, and formatting foundations already present in this suite. Unregistered dependencies retained for future fixtures: later clause 15 procedure reference, argument association, interface block, generic resolution, pure/simple/elemental, procedure pointer, and finalization rules; clauses 16, 17, and 18 for intrinsic and intrinsic-module procedures; clause 14 for modules and submodules; clause 3 terminology and clause 19 scoping/lifetime details."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "definition",
+      "requirements": [
+        "S15.2.1-001"
+      ],
+      "rationale": "Defines function/subroutine classification and forms of procedure reference."
+    },
+    {
+      "unit": "p2",
+      "disposition": "definition",
+      "requirements": [
+        "S15.2.1-002"
+      ],
+      "rationale": "Defines elemental procedure classification."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_15_2_1.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "5765579bb3809fae60c0e14e0ae084911d8fc97a9fe909f75189e9b37cd2bec5",
+  "review_rationale": "Source registration for Clause 15 from its heading through 15.4.3.1: procedure concepts and classification, characteristics of procedures, dummy arguments and function results, and implicit and explicit interfaces (batch220). Every unit hash-verified by an independent reviewer across two rounds; characteristic definitions are cross-referenced to the rules that act on them, and each explicit-interface requirement has a positive plan. Source accounting only."
+}

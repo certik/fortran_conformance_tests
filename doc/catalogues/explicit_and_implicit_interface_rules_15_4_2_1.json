@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "section": "15.4.2.1",
+  "requirements": [
+    {
+      "id": "S15.4.2.1-001",
+      "title": "Procedure interfaces are explicit in the listed cases and implicit otherwise; statement functions are always implicit",
+      "source": "S15.4.2.1, J3/24-007, 18 December 2023, physical PDF325.",
+      "source_units": [
+        "p1"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A procedure interface is explicit for internal, module, and intrinsic procedures; for a subroutine or separate-result-name function inside its defining scoping unit; for a procedure declaration statement specifying an explicit interface; and for an interface body. Otherwise the identifier interface is implicit, and a statement function interface is always implicit.",
+      "facets": [
+        "interface-explicit-internal-procedure",
+        "interface-explicit-module-procedure",
+        "interface-explicit-intrinsic-procedure",
+        "interface-explicit-defining-scoping-unit-subroutine-or-separate-result-function",
+        "interface-explicit-procedure-declaration-statement",
+        "interface-explicit-interface-body",
+        "interface-implicit-otherwise",
+        "statement-function-interface-always-implicit"
+      ],
+      "pending": {
+        "interface-explicit-internal-procedure": "Define internal function answer() returning 42 and call it with keyword-free expression into sentinel -18; source-use records explicit internal interface.",
+        "interface-explicit-module-procedure": "Define module function answer() returning 42, USE it, assign result to sentinel -18, and expect 42.",
+        "interface-explicit-intrinsic-procedure": "Default companion calls intrinsic ABS(-42) with result sentinel -777 and expects 42. Wrong-resolution sentinel companion supplies a user external named abs returning -999; declaring that external makes the result -999, proving the intrinsic explicit-interface resolution is load-bearing.",
+        "interface-explicit-defining-scoping-unit-subroutine-or-separate-result-function": "Inside a procedure definition, call its sibling contained subroutine or function with separate result name and expect a sentinel actual to become 42.",
+        "interface-explicit-procedure-declaration-statement": "Declare PROCEDURE(integer_fun) :: proc with explicit interface, pass plus_one, call with 41, and expect 42.",
+        "interface-explicit-interface-body": "Write an interface body for external function answer() returning integer; call answer() into sentinel -18 and expect 42.",
+        "interface-implicit-otherwise": "Call an external function answer declared only by type in the caller; it returns 42 into sentinel -777 and source-use records implicit interface. Wrong-resolution sentinel companion USEs a module procedure answer returning -999, making accidental module resolution observable.",
+        "statement-function-interface-always-implicit": "Define statement function f(i)=i+1 and evaluate f(41) into sentinel -18; source-use records implicit statement-function interface."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish distinguished non-default state first, then observe portable single-image properties such as exact integer values, exact character results, successful execution, or source-use attribution. Unnumbered program restrictions do not create a required processor diagnostic; negative examples for those facets are retained only as source-control material.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostics are not claimed unless a numbered constraint or syntax rule requires them; this scope contains no numbered R/C unit.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, 12, and 13 for source form, declarations, expressions, execution constructs, data transfer, and formatting foundations already present in this suite. Unregistered dependencies retained for future fixtures: later clause 15 procedure reference, argument association, interface block, generic resolution, pure/simple/elemental, procedure pointer, and finalization rules; clauses 16, 17, and 18 for intrinsic and intrinsic-module procedures; clause 14 for modules and submodules; clause 3 terminology and clause 19 scoping/lifetime details."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "definition",
+      "requirements": [
+        "S15.4.2.1-001"
+      ],
+      "rationale": "Defines explicit and implicit interface cases."
+    },
+    {
+      "unit": "note-unnumbered",
+      "disposition": "informative",
+      "rationale": "The note gives an example and is not normative."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_15_4_2_1.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "f4a170d163cc8c63e94ad3ebe8c91806a778b4bf36ec6d0c9773cce1241179da",
+  "review_rationale": "Source registration for Clause 15 from its heading through 15.4.3.1: procedure concepts and classification, characteristics of procedures, dummy arguments and function results, and implicit and explicit interfaces (batch220). Every unit hash-verified by an independent reviewer across two rounds; characteristic definitions are cross-referenced to the rules that act on them, and each explicit-interface requirement has a positive plan. Source accounting only."
+}

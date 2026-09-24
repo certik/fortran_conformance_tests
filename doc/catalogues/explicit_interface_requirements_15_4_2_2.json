@@ -1,0 +1,79 @@
+{
+  "schema_version": 1,
+  "section": "15.4.2.2",
+  "requirements": [
+    {
+      "id": "S15.4.2.2-001",
+      "title": "Non-statement-function procedure identifiers require explicit interfaces in the listed contexts",
+      "source": "S15.4.2.2, J3/24-007, 18 December 2023, physical PDF325.",
+      "source_units": [
+        "p1"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "Within the scope of a procedure identifier, a non-statement-function procedure is required to have an explicit interface for keyword arguments, pure or simple required contexts, the listed dummy argument properties, the listed result properties, elemental procedures, and BIND procedures.",
+      "facets": [
+        "explicit-interface-required-keyword-argument",
+        "explicit-interface-required-pure-context",
+        "explicit-interface-required-simple-context",
+        "explicit-interface-required-allocatable-dummy",
+        "explicit-interface-required-asynchronous-dummy",
+        "explicit-interface-required-optional-dummy",
+        "explicit-interface-required-pointer-dummy",
+        "explicit-interface-required-target-dummy",
+        "explicit-interface-required-value-dummy",
+        "explicit-interface-required-volatile-dummy",
+        "explicit-interface-required-assumed-shape-dummy",
+        "explicit-interface-required-assumed-rank-dummy",
+        "explicit-interface-required-coarray-dummy",
+        "explicit-interface-required-parameterized-derived-type-dummy",
+        "explicit-interface-required-polymorphic-dummy",
+        "explicit-interface-required-array-result",
+        "explicit-interface-required-pointer-or-allocatable-result",
+        "explicit-interface-required-nonconstant-nonassumed-type-parameter-result",
+        "explicit-interface-required-elemental-procedure",
+        "explicit-interface-required-bind-procedure"
+      ],
+      "pending": {
+        "explicit-interface-required-keyword-argument": "Positive source-control declares an explicit interface for external subroutine set_answer(value) and executes CALL set_answer(value=actual) with actual initialized to -19; expect 42. Omission companion is nonconforming with no required diagnosis claimed here.",
+        "explicit-interface-required-pure-context": "Positive source-control provides an explicit interface for pure function answer() used inside a pure procedure; sentinel result -19 becomes 42. Omission companion is nonconforming with no required diagnosis claimed here.",
+        "explicit-interface-required-simple-context": "Positive source-control provides an explicit interface for simple function answer() used in a simple-required context; sentinel result -19 becomes 42. Omission companion is nonconforming with no required diagnosis claimed here.",
+        "explicit-interface-required-allocatable-dummy": "Positive source-control declares an explicit interface for subroutine s(x) with allocatable integer dummy x; allocated actual holds 42 and procedure observes 42. Omission companion is nonconforming with no required diagnosis claimed here.",
+        "explicit-interface-required-asynchronous-dummy": "Positive source-control declares an explicit interface for subroutine s(x) with ASYNCHRONOUS integer dummy x and actual value 42; procedure copies 42 to an output sentinel. Omission companion is nonconforming with no required diagnosis claimed here.",
+        "explicit-interface-required-optional-dummy": "Positive source-control declares an explicit interface for subroutine s(x) with OPTIONAL integer dummy x; call s(42) and PRESENT(x) path returns 42. Omission companion is nonconforming with no required diagnosis claimed here.",
+        "explicit-interface-required-pointer-dummy": "Positive source-control declares an explicit interface for subroutine s(x) with integer POINTER dummy associated with target 42; procedure reads 42. Omission companion is nonconforming with no required diagnosis claimed here.",
+        "explicit-interface-required-target-dummy": "Positive source-control declares an explicit interface for subroutine s(x) with TARGET dummy x and actual initialized to 42; procedure pointer-associates to x and reads 42. Omission companion is nonconforming with no required diagnosis claimed here.",
+        "explicit-interface-required-value-dummy": "Positive source-control declares an explicit interface for subroutine s(x) with VALUE integer dummy x; actual starts 42 and remains 42 after procedure local mutation. Omission companion is nonconforming with no required diagnosis claimed here.",
+        "explicit-interface-required-volatile-dummy": "Positive source-control declares an explicit interface for subroutine s(x) with VOLATILE integer dummy x and actual value 42; procedure copies 42 to output. Omission companion is nonconforming with no required diagnosis claimed here.",
+        "explicit-interface-required-assumed-shape-dummy": "Positive source-control declares an explicit interface for subroutine s(a) with integer a(:); pass [41,42], copy a(2), and expect 42. Omission companion is nonconforming with no required diagnosis claimed here.",
+        "explicit-interface-required-assumed-rank-dummy": "Positive source-control declares an explicit interface for subroutine s(a) with integer a(..); pass scalar 42 and SELECT RANK scalar branch returns 42. Omission companion is nonconforming with no required diagnosis claimed here.",
+        "explicit-interface-required-coarray-dummy": "Out of scope by user decision: coarray, image, and team facets are not exercised by this single-image source packet.",
+        "explicit-interface-required-parameterized-derived-type-dummy": "Positive source-control declares an explicit interface for subroutine s(x) with parameterized derived-type dummy carrying component 42; procedure reads 42. Omission companion is nonconforming with no required diagnosis claimed here.",
+        "explicit-interface-required-polymorphic-dummy": "Positive source-control declares an explicit interface for subroutine s(x) with CLASS(base) dummy; pass extended object with component 42 and SELECT TYPE returns 42. Omission companion is nonconforming with no required diagnosis claimed here.",
+        "explicit-interface-required-array-result": "Positive source-control declares an explicit interface for external function answer() result integer array [41,42]; caller checks result(2)==42. Omission companion is nonconforming with no required diagnosis claimed here.",
+        "explicit-interface-required-pointer-or-allocatable-result": "Positive source-control declares explicit interfaces for pointer and allocatable function results, each producing integer 42 from sentinels. Omission companions are nonconforming with no required diagnosis claimed here.",
+        "explicit-interface-required-nonconstant-nonassumed-type-parameter-result": "Positive source-control declares an explicit interface for function answer(n) returning character(len=n+1); call with n=1 and expect \"42\" length 2. Omission companion is nonconforming with no required diagnosis claimed here.",
+        "explicit-interface-required-elemental-procedure": "Positive source-control declares an explicit interface for elemental function inc(x); call with array [40,41] and expect [41,42]. Omission companion is nonconforming with no required diagnosis claimed here.",
+        "explicit-interface-required-bind-procedure": "Positive source-control declares external subroutine s(n) BIND(C, NAME=\"cf_s\") with INTEGER(C_INT), VALUE :: n; its body USEs a module state variable seen initialized to -777 and assigns seen = n + 1. The caller provides an explicit interface with the same BIND(C) and VALUE attributes, calls s(41_C_INT), and expects seen == 42. Omission companion is nonconforming with no required diagnosis claimed here."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish distinguished non-default state first, then observe portable single-image properties such as exact integer values, exact character results, successful execution, or source-use attribution. Unnumbered program restrictions do not create a required processor diagnostic; negative examples for those facets are retained only as source-control material.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostics are not claimed unless a numbered constraint or syntax rule requires them; this scope contains no numbered R/C unit.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, 12, and 13 for source form, declarations, expressions, execution constructs, data transfer, and formatting foundations already present in this suite. Unregistered dependencies retained for future fixtures: later clause 15 procedure reference, argument association, interface block, generic resolution, pure/simple/elemental, procedure pointer, and finalization rules; clauses 16, 17, and 18 for intrinsic and intrinsic-module procedures; clause 14 for modules and submodules; clause 3 terminology and clause 19 scoping/lifetime details."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.4.2.2-001"
+      ]
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_15_4_2_2.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "3a3138b0ef9b0b253b13c7d5f6f0589485dd2e6171139429e8edbdb1cf1af77c",
+  "review_rationale": "Source registration for Clause 15 from its heading through 15.4.3.1: procedure concepts and classification, characteristics of procedures, dummy arguments and function results, and implicit and explicit interfaces (batch220). Every unit hash-verified by an independent reviewer across two rounds; characteristic definitions are cross-referenced to the rules that act on them, and each explicit-interface requirement has a positive plan. Source accounting only."
+}

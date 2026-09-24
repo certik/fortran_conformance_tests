@@ -1,0 +1,188 @@
+{
+  "schema_version": 1,
+  "section": "15.4.1",
+  "subunits": {
+    "p1": [
+      "p1.interface-determines-references",
+      "p1.interface-components",
+      "p1.fixed-components",
+      "p1.contextual-components",
+      "p1.separate-module-body-match"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S15.4.1-001",
+      "title": "A procedure interface determines invocation reference forms",
+      "source": "S15.4.1, J3/24-007, 18 December 2023, physical PDF325.",
+      "source_units": [
+        "p1.interface-determines-references"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The interface of a procedure determines the forms of reference through which it can be invoked.",
+      "facets": [
+        "interface-determines-invocation-reference-forms"
+      ],
+      "pending": {
+        "interface-determines-invocation-reference-forms": "Define explicit interface for subroutine set_answer(x) and function answer(); use CALL for the subroutine and expression reference for the function, with sentinels -17 and expected values 42."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish distinguished non-default state first, then observe portable single-image properties such as exact integer values, exact character results, successful execution, or source-use attribution. Unnumbered program restrictions do not create a required processor diagnostic; negative examples for those facets are retained only as source-control material.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostics are not claimed unless a numbered constraint or syntax rule requires them; this scope contains no numbered R/C unit.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, 12, and 13 for source form, declarations, expressions, execution constructs, data transfer, and formatting foundations already present in this suite. Unregistered dependencies retained for future fixtures: later clause 15 procedure reference, argument association, interface block, generic resolution, pure/simple/elemental, procedure pointer, and finalization rules; clauses 16, 17, and 18 for intrinsic and intrinsic-module procedures; clause 14 for modules and submodules; clause 3 terminology and clause 19 scoping/lifetime details."
+    },
+    {
+      "id": "S15.4.1-002",
+      "title": "A procedure interface consists of name, binding label, generic identifiers, characteristics, and dummy names",
+      "source": "S15.4.1, J3/24-007, 18 December 2023, physical PDF325.",
+      "source_units": [
+        "p1.interface-components"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A procedure interface consists of its name, binding label, generic identifiers, characteristics, and dummy argument names.",
+      "facets": [
+        "interface-name-component",
+        "interface-binding-label-component",
+        "interface-generic-identifiers-component",
+        "interface-characteristics-component",
+        "interface-dummy-argument-names-component"
+      ],
+      "pending": {
+        "interface-name-component": "Declare interface for external function answer and call answer() into sentinel -17; expect 42.",
+        "interface-binding-label-component": "Fortran-only positive plan: external subroutine s(n) BIND(C, NAME=\"cf_s\") has INTEGER(C_INT), VALUE :: n and assigns module variable seen = n + 1; caller explicit interface repeats BIND(C, NAME=\"cf_s\") and VALUE, initializes seen to -777, calls s(41_C_INT), and expects seen == 42, recording the binding label as an interface component.",
+        "interface-generic-identifiers-component": "Create generic interface gen binding function answer; call gen() into sentinel -777 and expect 42. Wrong-resolution sentinel companion also has a specific gen returning -999; removing the generic binding changes the result to -999, making generic resolution observable.",
+        "interface-characteristics-component": "Create generic interface with integer and real dummy specifics returning 41 and 42; real actual selects 42 from sentinel -777. Wrong-specific sentinel makes the integer specific return -999, so selection by the wrong characteristic is observable.",
+        "interface-dummy-argument-names-component": "Use explicit interface subroutine set_answer(value) and keyword CALL set_answer(value=actual) with actual initialized to -17; expect 42."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish distinguished non-default state first, then observe portable single-image properties such as exact integer values, exact character results, successful execution, or source-use attribution. Unnumbered program restrictions do not create a required processor diagnostic; negative examples for those facets are retained only as source-control material.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostics are not claimed unless a numbered constraint or syntax rule requires them; this scope contains no numbered R/C unit.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, 12, and 13 for source form, declarations, expressions, execution constructs, data transfer, and formatting foundations already present in this suite. Unregistered dependencies retained for future fixtures: later clause 15 procedure reference, argument association, interface block, generic resolution, pure/simple/elemental, procedure pointer, and finalization rules; clauses 16, 17, and 18 for intrinsic and intrinsic-module procedures; clause 14 for modules and submodules; clause 3 terminology and clause 19 scoping/lifetime details."
+    },
+    {
+      "id": "S15.4.1-003",
+      "title": "Procedure characteristics and binding label are fixed, while other interface components may vary by context",
+      "source": "S15.4.1, J3/24-007, 18 December 2023, physical PDF325.",
+      "source_units": [
+        "p1.fixed-components",
+        "p1.contextual-components"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A procedure's characteristics and binding label are fixed; the name, generic identifiers, and dummy argument names may differ in different contexts outside the stated separate-module exception.",
+      "facets": [
+        "procedure-characteristics-fixed",
+        "procedure-binding-label-fixed",
+        "procedure-names-generic-identifiers-dummy-names-contextual"
+      ],
+      "pending": {
+        "procedure-characteristics-fixed": "Define a module function with integer dummy characteristic and call it through two interfaces that preserve that characteristic; actual 41 produces 42 in both calls.",
+        "procedure-binding-label-fixed": "Fortran-only positive plan: declare the external procedure and its explicit interface with the same BIND(C, NAME=\"cf_s\") label and VALUE integer dummy; after seen is initialized to -777, CALL s(41_C_INT) sets seen to 42. A source-control mismatch companion is nonconforming, but no diagnostic facet is claimed for this unnumbered program requirement.",
+        "procedure-names-generic-identifiers-dummy-names-contextual": "Expose the same module function answer through generic identifiers gen1 and gen2; both calls initialize results to -777 and expect 42. Wrong-resolution sentinel companion binds gen2 to a different specific returning -999, so contextual generic identifier mapping is observable."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish distinguished non-default state first, then observe portable single-image properties such as exact integer values, exact character results, successful execution, or source-use attribution. Unnumbered program restrictions do not create a required processor diagnostic; negative examples for those facets are retained only as source-control material.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostics are not claimed unless a numbered constraint or syntax rule requires them; this scope contains no numbered R/C unit.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, 12, and 13 for source form, declarations, expressions, execution constructs, data transfer, and formatting foundations already present in this suite. Unregistered dependencies retained for future fixtures: later clause 15 procedure reference, argument association, interface block, generic resolution, pure/simple/elemental, procedure pointer, and finalization rules; clauses 16, 17, and 18 for intrinsic and intrinsic-module procedures; clause 14 for modules and submodules; clause 3 terminology and clause 19 scoping/lifetime details."
+    },
+    {
+      "id": "S15.4.1-004",
+      "title": "Separate module procedure bodies shall match dummy names and NON_RECURSIVE status from their interface body",
+      "source": "S15.4.1, J3/24-007, 18 December 2023, physical PDF325.",
+      "source_units": [
+        "p1.separate-module-body-match"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "For a separate module procedure body, dummy argument names and NON_RECURSIVE attribute status are required to match the corresponding module procedure interface body.",
+      "facets": [
+        "separate-module-body-dummy-names-match-interface",
+        "separate-module-body-non-recursive-match-interface"
+      ],
+      "pending": {
+        "separate-module-body-dummy-names-match-interface": "Positive source-control declares a module procedure interface subroutine set_answer(value) and matching separate body set_answer(value) assigning 42; mismatch companion is nonconforming with no diagnostic claimed here.",
+        "separate-module-body-non-recursive-match-interface": "Positive source-control uses matching NON_RECURSIVE status between module procedure interface body and separate body returning 42; mismatch companion is nonconforming with no diagnostic claimed here."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish distinguished non-default state first, then observe portable single-image properties such as exact integer values, exact character results, successful execution, or source-use attribution. Unnumbered program restrictions do not create a required processor diagnostic; negative examples for those facets are retained only as source-control material.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostics are not claimed unless a numbered constraint or syntax rule requires them; this scope contains no numbered R/C unit.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, 12, and 13 for source form, declarations, expressions, execution constructs, data transfer, and formatting foundations already present in this suite. Unregistered dependencies retained for future fixtures: later clause 15 procedure reference, argument association, interface block, generic resolution, pure/simple/elemental, procedure pointer, and finalization rules; clauses 16, 17, and 18 for intrinsic and intrinsic-module procedures; clause 14 for modules and submodules; clause 3 terminology and clause 19 scoping/lifetime details."
+    },
+    {
+      "id": "S15.4.1-005",
+      "title": "An abstract interface is procedure characteristics plus dummy argument names",
+      "source": "S15.4.1, J3/24-007, 18 December 2023, physical PDF325.",
+      "source_units": [
+        "p2"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "An abstract interface is a set of procedure characteristics together with the dummy argument names.",
+      "facets": [
+        "abstract-interface-characteristics-and-dummy-names"
+      ],
+      "pending": {
+        "abstract-interface-characteristics-and-dummy-names": "Declare abstract interface integer function f(x) with dummy name x; use PROCEDURE(f) actual plus_one in apply, call with 41, and expect 42."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish distinguished non-default state first, then observe portable single-image properties such as exact integer values, exact character results, successful execution, or source-use attribution. Unnumbered program restrictions do not create a required processor diagnostic; negative examples for those facets are retained only as source-control material.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostics are not claimed unless a numbered constraint or syntax rule requires them; this scope contains no numbered R/C unit.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, 12, and 13 for source form, declarations, expressions, execution constructs, data transfer, and formatting foundations already present in this suite. Unregistered dependencies retained for future fixtures: later clause 15 procedure reference, argument association, interface block, generic resolution, pure/simple/elemental, procedure pointer, and finalization rules; clauses 16, 17, and 18 for intrinsic and intrinsic-module procedures; clause 14 for modules and submodules; clause 3 terminology and clause 19 scoping/lifetime details."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "structural",
+      "rationale": "The paragraph mixes interface effects, component definitions, fixed requirements, contextual latitude, and a separate-module restriction."
+    },
+    {
+      "unit": "p1.interface-determines-references",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.4.1-001"
+      ]
+    },
+    {
+      "unit": "p1.interface-components",
+      "disposition": "definition",
+      "requirements": [
+        "S15.4.1-002"
+      ],
+      "rationale": "Defines the components of a procedure interface."
+    },
+    {
+      "unit": "p1.fixed-components",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.4.1-003"
+      ]
+    },
+    {
+      "unit": "p1.contextual-components",
+      "disposition": "permission",
+      "requirements": [
+        "S15.4.1-003"
+      ],
+      "rationale": "Permits nonfixed interface components to differ by context outside the exception."
+    },
+    {
+      "unit": "p1.separate-module-body-match",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.4.1-004"
+      ]
+    },
+    {
+      "unit": "p2",
+      "disposition": "definition",
+      "requirements": [
+        "S15.4.1-005"
+      ],
+      "rationale": "Defines abstract interfaces."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_15_4_1.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "cc3f61e825a36b87efb0d3dc0b6d15437085bdcb84410901991a8547880f2f1b",
+  "review_rationale": "Source registration for Clause 15 from its heading through 15.4.3.1: procedure concepts and classification, characteristics of procedures, dummy arguments and function results, and implicit and explicit interfaces (batch220). Every unit hash-verified by an independent reviewer across two rounds; characteristic definitions are cross-referenced to the rules that act on them, and each explicit-interface requirement has a positive plan. Source accounting only."
+}

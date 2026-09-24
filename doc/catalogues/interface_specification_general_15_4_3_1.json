@@ -1,0 +1,96 @@
+{
+  "schema_version": 1,
+  "section": "15.4.3.1",
+  "subunits": {
+    "p1": [
+      "p1.interface-specification-sources",
+      "p1.entry-interface-body-restriction"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S15.4.3.1-001",
+      "title": "Procedure interfaces are specified by procedure statements and specification statements in definitions, interface bodies, or both",
+      "source": "S15.4.3.1, J3/24-007, 18 December 2023, physical PDF326.",
+      "source_units": [
+        "p1.interface-specification-sources"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The interface for an internal, external, module, or dummy procedure is specified by FUNCTION, SUBROUTINE, or ENTRY statements and by specification statements for dummy arguments and function results; these statements may appear in the procedure definition, in an interface body, or both.",
+      "facets": [
+        "function-statement-specifies-interface",
+        "subroutine-statement-specifies-interface",
+        "entry-statement-specifies-interface",
+        "specification-statements-specify-dummy-and-result-interface",
+        "interface-statements-in-procedure-definition",
+        "interface-statements-in-interface-body",
+        "interface-statements-in-definition-and-interface-body"
+      ],
+      "pending": {
+        "function-statement-specifies-interface": "Define integer function answer() result(r) with r initialized to -20 then assigned 42; call answer() and expect 42.",
+        "subroutine-statement-specifies-interface": "Define subroutine set_answer(x) with integer dummy x; actual starts -20 and after CALL expects 42.",
+        "entry-statement-specifies-interface": "After ENTRY rules are registered, define ENTRY alternate(x) with integer dummy x assigning 42; call alternate with actual -20 and expect 42.",
+        "specification-statements-specify-dummy-and-result-interface": "Use interface body declaring integer dummy and integer result for function plus_one; call plus_one(41) and expect 42.",
+        "interface-statements-in-procedure-definition": "Use declarations inside the procedure definition of subroutine set_answer(x) to specify integer x; actual starts -20 and expects 42.",
+        "interface-statements-in-interface-body": "Use an interface body for external function answer() specifying integer result; call answer() and expect 42.",
+        "interface-statements-in-definition-and-interface-body": "Provide matching interface body and external function definition for plus_one(integer); call plus_one(41) and expect 42."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish distinguished non-default state first, then observe portable single-image properties such as exact integer values, exact character results, successful execution, or source-use attribution. Unnumbered program restrictions do not create a required processor diagnostic; negative examples for those facets are retained only as source-control material.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostics are not claimed unless a numbered constraint or syntax rule requires them; this scope contains no numbered R/C unit.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, 12, and 13 for source form, declarations, expressions, execution constructs, data transfer, and formatting foundations already present in this suite. Unregistered dependencies retained for future fixtures: later clause 15 procedure reference, argument association, interface block, generic resolution, pure/simple/elemental, procedure pointer, and finalization rules; clauses 16, 17, and 18 for intrinsic and intrinsic-module procedures; clause 14 for modules and submodules; clause 3 terminology and clause 19 scoping/lifetime details."
+    },
+    {
+      "id": "S15.4.3.1-002",
+      "title": "ENTRY statements shall not appear in interface bodies",
+      "source": "S15.4.3.1, J3/24-007, 18 December 2023, physical PDF326.",
+      "source_units": [
+        "p1.entry-interface-body-restriction"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "An ENTRY statement is not permitted to appear in an interface body.",
+      "facets": [
+        "entry-statement-in-interface-body-prohibited"
+      ],
+      "pending": {
+        "entry-statement-in-interface-body-prohibited": "Positive source-control uses an interface body with only a FUNCTION statement, integer specification, and END FUNCTION, then calls a matching function returning 42. A companion adding ENTRY inside the interface body is nonconforming; no processor diagnostic is required by this unnumbered rule."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish distinguished non-default state first, then observe portable single-image properties such as exact integer values, exact character results, successful execution, or source-use attribution. Unnumbered program restrictions do not create a required processor diagnostic; negative examples for those facets are retained only as source-control material.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostics are not claimed unless a numbered constraint or syntax rule requires them; this scope contains no numbered R/C unit.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, 12, and 13 for source form, declarations, expressions, execution constructs, data transfer, and formatting foundations already present in this suite. Unregistered dependencies retained for future fixtures: later clause 15 procedure reference, argument association, interface block, generic resolution, pure/simple/elemental, procedure pointer, and finalization rules; clauses 16, 17, and 18 for intrinsic and intrinsic-module procedures; clause 14 for modules and submodules; clause 3 terminology and clause 19 scoping/lifetime details."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "structural",
+      "rationale": "The paragraph mixes interface-specification effects with an unnumbered ENTRY-in-interface-body restriction."
+    },
+    {
+      "unit": "p1.interface-specification-sources",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.4.3.1-001"
+      ]
+    },
+    {
+      "unit": "p1.entry-interface-body-restriction",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.4.3.1-002"
+      ]
+    },
+    {
+      "unit": "note-unnumbered",
+      "disposition": "informative",
+      "rationale": "The note explains examples of procedures already having explicit interfaces and is not normative."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_15_4_3_1.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "75e6161ac2b0ff3023f041d86e508be8fb32eab1f3b343cdff0e915aba0d4759",
+  "review_rationale": "Source registration for Clause 15 from its heading through 15.4.3.1: procedure concepts and classification, characteristics of procedures, dummy arguments and function results, and implicit and explicit interfaces (batch220). Every unit hash-verified by an independent reviewer across two rounds; characteristic definitions are cross-referenced to the rules that act on them, and each explicit-interface requirement has a positive plan. Source accounting only."
+}

@@ -5839,6 +5839,11 @@ See `doc/source_audits/batch_215.json`.
 Forty units after two rounds. Two details worth remembering: IEEE_AWAY is round-to-nearest with ties away from zero, not directed rounding away from zero, so only a non-tie row separates it from IEEE_UP/IEEE_DOWN on the right sign; and Fortran's IEEE_IS_NORMAL is true for zeros, because its Result Value lists the zero classes explicitly.
 See `doc/source_audits/batch_216.json`.
 
+## Batch 220 — Procedure concepts through interface specification (15-15.4.3.1)
+
+Twenty-five units over thirty catalogues, after two rounds. The characteristics paragraphs are pure vocabulary — 'the characteristics of a procedure are ...' — so they now point to the rules that use them rather than carrying tests of their own. The explicit-interface list is an obligation on the program; what is observable is that each listed feature works when the interface is present, including BIND(C) without any C code.
+See `doc/source_audits/batch_220.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must

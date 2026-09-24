@@ -1,0 +1,243 @@
+{
+  "schema_version": 1,
+  "section": "15.2.2.2",
+  "subunits": {
+    "p2": [
+      "p2.internal-definition",
+      "p2.internal-placement-permission",
+      "p2.internal-nesting-restriction",
+      "p2.internal-entry-restriction",
+      "p2.internal-scope-and-host-association"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S15.2.2.2-001",
+      "title": "External procedures are defined externally or by non-Fortran means",
+      "source": "S15.2.2.2, J3/24-007, 18 December 2023, physical PDF323.",
+      "source_units": [
+        "p1"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "An external procedure is defined by an external subprogram or by a means other than Fortran.",
+      "facets": [
+        "external-subprogram-defines-external-procedure",
+        "non-fortran-means-defines-external-procedure"
+      ],
+      "pending": {
+        "external-subprogram-defines-external-procedure": "Compile a main program calling external function ext_answer() defined in a separate external function returning 42; initialize result variable to -777 and expect 42. Wrong-resolution companion also imports a module function ext_answer returning -999; using the module name instead changes the result to -999, while the external declaration companion preserves 42.",
+        "non-fortran-means-defines-external-procedure": "Source-use entry only: records a procedure defined by means other than Fortran through a BIND(C) interface; executable evidence belongs to the Clause 18 interoperability owner rules, not this external-procedure definition."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish distinguished non-default state first, then observe portable single-image properties such as exact integer values, exact character results, successful execution, or source-use attribution. Unnumbered program restrictions do not create a required processor diagnostic; negative examples for those facets are retained only as source-control material.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostics are not claimed unless a numbered constraint or syntax rule requires them; this scope contains no numbered R/C unit.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, 12, and 13 for source form, declarations, expressions, execution constructs, data transfer, and formatting foundations already present in this suite. Unregistered dependencies retained for future fixtures: later clause 15 procedure reference, argument association, interface block, generic resolution, pure/simple/elemental, procedure pointer, and finalization rules; clauses 16, 17, and 18 for intrinsic and intrinsic-module procedures; clause 14 for modules and submodules; clause 3 terminology and clause 19 scoping/lifetime details."
+    },
+    {
+      "id": "S15.2.2.2-002",
+      "title": "Internal procedures are internal subprogram procedures with host association and local names",
+      "source": "S15.2.2.2, J3/24-007, 18 December 2023, physical PDF323.",
+      "source_units": [
+        "p2.internal-definition",
+        "p2.internal-scope-and-host-association"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "An internal procedure is defined by an internal subprogram; its name is not a global identifier and it has access to host entities by host association.",
+      "facets": [
+        "internal-subprogram-defines-internal-procedure",
+        "internal-procedure-name-not-global",
+        "internal-procedure-host-association"
+      ],
+      "pending": {
+        "internal-subprogram-defines-internal-procedure": "Place internal subroutine set_answer inside a main program; initialize actual to -1, call set_answer, and expect 42.",
+        "internal-procedure-name-not-global": "Create two separate host procedures, each with an internal function named local_answer; the default host-local companion returns 41 from the first host and 42 from the second, while a wrong global-resolution sentinel external local_answer returns -999 and would make either host result -999.",
+        "internal-procedure-host-association": "In a host procedure initialize host integer base to 40; internal function add_two reads base and returns base+2, producing 42. Wrong-resolution sentinel companion provides an external add_two returning -999; resolving away from the internal host-associated procedure changes the result to -999."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish distinguished non-default state first, then observe portable single-image properties such as exact integer values, exact character results, successful execution, or source-use attribution. Unnumbered program restrictions do not create a required processor diagnostic; negative examples for those facets are retained only as source-control material.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostics are not claimed unless a numbered constraint or syntax rule requires them; this scope contains no numbered R/C unit.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, 12, and 13 for source form, declarations, expressions, execution constructs, data transfer, and formatting foundations already present in this suite. Unregistered dependencies retained for future fixtures: later clause 15 procedure reference, argument association, interface block, generic resolution, pure/simple/elemental, procedure pointer, and finalization rules; clauses 16, 17, and 18 for intrinsic and intrinsic-module procedures; clause 14 for modules and submodules; clause 3 terminology and clause 19 scoping/lifetime details."
+    },
+    {
+      "id": "S15.2.2.2-003",
+      "title": "Internal subprograms may appear in main, external, or module subprogram hosts",
+      "source": "S15.2.2.2, J3/24-007, 18 December 2023, physical PDF323.",
+      "source_units": [
+        "p2.internal-placement-permission"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Internal subprograms are permitted in a main program, an external subprogram, or a module subprogram.",
+      "facets": [
+        "internal-subprogram-in-main-program",
+        "internal-subprogram-in-external-subprogram",
+        "internal-subprogram-in-module-subprogram"
+      ],
+      "pending": {
+        "internal-subprogram-in-main-program": "Use a main program CONTAINS internal function answer() returning 42 and assign its result to a variable initialized to -4; expect 42.",
+        "internal-subprogram-in-external-subprogram": "Use an external subroutine wrapper containing internal function answer() returning 42; main calls wrapper and expects an INTENT(OUT) actual to become 42.",
+        "internal-subprogram-in-module-subprogram": "Use a module subroutine wrapper containing internal function answer() returning 42; main USEs the module, calls wrapper, and expects 42."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish distinguished non-default state first, then observe portable single-image properties such as exact integer values, exact character results, successful execution, or source-use attribution. Unnumbered program restrictions do not create a required processor diagnostic; negative examples for those facets are retained only as source-control material.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostics are not claimed unless a numbered constraint or syntax rule requires them; this scope contains no numbered R/C unit.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, 12, and 13 for source form, declarations, expressions, execution constructs, data transfer, and formatting foundations already present in this suite. Unregistered dependencies retained for future fixtures: later clause 15 procedure reference, argument association, interface block, generic resolution, pure/simple/elemental, procedure pointer, and finalization rules; clauses 16, 17, and 18 for intrinsic and intrinsic-module procedures; clause 14 for modules and submodules; clause 3 terminology and clause 19 scoping/lifetime details."
+    },
+    {
+      "id": "S15.2.2.2-004",
+      "title": "Internal subprograms shall not appear in other internal subprograms",
+      "source": "S15.2.2.2, J3/24-007, 18 December 2023, physical PDF323.",
+      "source_units": [
+        "p2.internal-nesting-restriction"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "An internal subprogram is not permitted to appear within another internal subprogram.",
+      "facets": [
+        "nested-internal-subprogram-prohibited"
+      ],
+      "pending": {
+        "nested-internal-subprogram-prohibited": "Positive source-control uses one internal subroutine inside a main program and returns 42. A companion with an internal subprogram nested inside that internal subprogram is nonconforming; no processor diagnostic is required by this unnumbered rule."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish distinguished non-default state first, then observe portable single-image properties such as exact integer values, exact character results, successful execution, or source-use attribution. Unnumbered program restrictions do not create a required processor diagnostic; negative examples for those facets are retained only as source-control material.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostics are not claimed unless a numbered constraint or syntax rule requires them; this scope contains no numbered R/C unit.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, 12, and 13 for source form, declarations, expressions, execution constructs, data transfer, and formatting foundations already present in this suite. Unregistered dependencies retained for future fixtures: later clause 15 procedure reference, argument association, interface block, generic resolution, pure/simple/elemental, procedure pointer, and finalization rules; clauses 16, 17, and 18 for intrinsic and intrinsic-module procedures; clause 14 for modules and submodules; clause 3 terminology and clause 19 scoping/lifetime details."
+    },
+    {
+      "id": "S15.2.2.2-005",
+      "title": "Internal subprograms shall not contain ENTRY statements",
+      "source": "S15.2.2.2, J3/24-007, 18 December 2023, physical PDF323.",
+      "source_units": [
+        "p2.internal-entry-restriction"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "An internal subprogram is not permitted to contain an ENTRY statement.",
+      "facets": [
+        "entry-in-internal-subprogram-prohibited"
+      ],
+      "pending": {
+        "entry-in-internal-subprogram-prohibited": "Positive source-control uses an internal subroutine without ENTRY and returns 42. A companion that inserts ENTRY alt() in the internal subprogram is nonconforming; no processor diagnostic is required by this unnumbered rule."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish distinguished non-default state first, then observe portable single-image properties such as exact integer values, exact character results, successful execution, or source-use attribution. Unnumbered program restrictions do not create a required processor diagnostic; negative examples for those facets are retained only as source-control material.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostics are not claimed unless a numbered constraint or syntax rule requires them; this scope contains no numbered R/C unit.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, 12, and 13 for source form, declarations, expressions, execution constructs, data transfer, and formatting foundations already present in this suite. Unregistered dependencies retained for future fixtures: later clause 15 procedure reference, argument association, interface block, generic resolution, pure/simple/elemental, procedure pointer, and finalization rules; clauses 16, 17, and 18 for intrinsic and intrinsic-module procedures; clause 14 for modules and submodules; clause 3 terminology and clause 19 scoping/lifetime details."
+    },
+    {
+      "id": "S15.2.2.2-006",
+      "title": "Module procedures are defined by module subprograms or supplied by intrinsic modules",
+      "source": "S15.2.2.2, J3/24-007, 18 December 2023, physical PDF323.",
+      "source_units": [
+        "p3"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A module procedure is defined by a module subprogram, or is a specific procedure supplied by an intrinsic module.",
+      "facets": [
+        "module-subprogram-defines-module-procedure",
+        "intrinsic-module-specific-procedure-is-module-procedure"
+      ],
+      "pending": {
+        "module-subprogram-defines-module-procedure": "Define module m containing function answer() returning 42; USE m in a program, call answer(), and expect 42. Wrong-resolution sentinel companion defines an external answer returning -999; omitting USE m selects the external and makes the mismatch observable.",
+        "intrinsic-module-specific-procedure-is-module-procedure": "Source-use inventory records one specific procedure from ISO_FORTRAN_ENV or an IEEE intrinsic module as a module procedure. A future default companion USEs the intrinsic module specific and observes its required value; wrong-resolution sentinel supplies an external of the same local name returning -999 so accidental non-module resolution is observable."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish distinguished non-default state first, then observe portable single-image properties such as exact integer values, exact character results, successful execution, or source-use attribution. Unnumbered program restrictions do not create a required processor diagnostic; negative examples for those facets are retained only as source-control material.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostics are not claimed unless a numbered constraint or syntax rule requires them; this scope contains no numbered R/C unit.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, 12, and 13 for source form, declarations, expressions, execution constructs, data transfer, and formatting foundations already present in this suite. Unregistered dependencies retained for future fixtures: later clause 15 procedure reference, argument association, interface block, generic resolution, pure/simple/elemental, procedure pointer, and finalization rules; clauses 16, 17, and 18 for intrinsic and intrinsic-module procedures; clause 14 for modules and submodules; clause 3 terminology and clause 19 scoping/lifetime details."
+    },
+    {
+      "id": "S15.2.2.2-007",
+      "title": "Subprograms define procedures for FUNCTION, SUBROUTINE, and ENTRY statements",
+      "source": "S15.2.2.2, J3/24-007, 18 December 2023, physical PDF323.",
+      "source_units": [
+        "p4"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A subprogram defines a procedure for its SUBROUTINE or FUNCTION statement and also one procedure for each ENTRY statement it contains.",
+      "facets": [
+        "subprogram-defines-procedure-for-function-or-subroutine",
+        "entry-statement-defines-additional-procedure"
+      ],
+      "pending": {
+        "subprogram-defines-procedure-for-function-or-subroutine": "Compile external subroutine primary(x) that assigns 42; main initializes actual to -6, calls primary, and expects 42.",
+        "entry-statement-defines-additional-procedure": "After ENTRY execution rules are registered, compile an external subroutine with ENTRY alternate(x) assigning 42; call alternate from main with actual initialized to -6 and expect 42."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish distinguished non-default state first, then observe portable single-image properties such as exact integer values, exact character results, successful execution, or source-use attribution. Unnumbered program restrictions do not create a required processor diagnostic; negative examples for those facets are retained only as source-control material.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostics are not claimed unless a numbered constraint or syntax rule requires them; this scope contains no numbered R/C unit.",
+      "dependencies": "Registered dependencies: clauses 6, 8, 9, 10, 11, 12, and 13 for source form, declarations, expressions, execution constructs, data transfer, and formatting foundations already present in this suite. Unregistered dependencies retained for future fixtures: later clause 15 procedure reference, argument association, interface block, generic resolution, pure/simple/elemental, procedure pointer, and finalization rules; clauses 16, 17, and 18 for intrinsic and intrinsic-module procedures; clause 14 for modules and submodules; clause 3 terminology and clause 19 scoping/lifetime details."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "definition",
+      "requirements": [
+        "S15.2.2.2-001"
+      ],
+      "rationale": "Defines external procedures."
+    },
+    {
+      "unit": "p2",
+      "disposition": "structural",
+      "rationale": "The paragraph mixes internal-procedure definition, placement permission, unnumbered restrictions, and host/name effects."
+    },
+    {
+      "unit": "p2.internal-definition",
+      "disposition": "definition",
+      "requirements": [
+        "S15.2.2.2-002"
+      ],
+      "rationale": "Defines internal procedures."
+    },
+    {
+      "unit": "p2.internal-placement-permission",
+      "disposition": "permission",
+      "requirements": [
+        "S15.2.2.2-003"
+      ],
+      "rationale": "Permits the listed host contexts for internal subprograms."
+    },
+    {
+      "unit": "p2.internal-nesting-restriction",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.2.2.2-004"
+      ]
+    },
+    {
+      "unit": "p2.internal-entry-restriction",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.2.2.2-005"
+      ]
+    },
+    {
+      "unit": "p2.internal-scope-and-host-association",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.2.2.2-002"
+      ]
+    },
+    {
+      "unit": "p3",
+      "disposition": "definition",
+      "requirements": [
+        "S15.2.2.2-006"
+      ],
+      "rationale": "Defines module procedures."
+    },
+    {
+      "unit": "p4",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.2.2.2-007"
+      ]
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_15_2_2_2.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "74dad11f2b1cbb33624de0b73c9d2e8e4531f1691900547fb58e17ffa86a29a3",
+  "review_rationale": "Source registration for Clause 15 from its heading through 15.4.3.1: procedure concepts and classification, characteristics of procedures, dummy arguments and function results, and implicit and explicit interfaces (batch220). Every unit hash-verified by an independent reviewer across two rounds; characteristic definitions are cross-referenced to the rules that act on them, and each explicit-interface requirement has a positive plan. Source accounting only."
+}
