@@ -6134,6 +6134,11 @@ See `doc/source_audits/batch_283.json`.
 Twelve programs, twenty-one facets, one LFortran defect: after rewinding and writing, the record just written must be the last in the file, and LFortran still reads the old one behind it.
 See `doc/source_audits/batch_284.json`.
 
+## Batch 272 — I/O concept, record and file existence fixtures 12.1-12.3.2
+
+Twenty-two programs, thirty-one facets, four rounds: what a record is, when an endfile record is written implicitly, and when a file exists. Each mutant now runs in a directory of its own so no test can see another's files.
+See `doc/source_audits/batch_272.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
