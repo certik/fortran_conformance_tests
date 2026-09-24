@@ -5984,6 +5984,11 @@ See `doc/source_audits/batch_250.json`.
 Thirty-seven units after two rounds, and with them **Clause 17 is fully registered** — 491 units in eighteen batches (213-230). The packet was authored before most of the twelve calibration rules existed and absorbed them one follow-up commit at a time; its review then held it to the standard its already-accepted siblings had set.
 See `doc/source_audits/batch_226.json`.
 
+## Batch 249 — Fortran concepts: data concepts (5.4-5.4.6)
+
+Thirty-three units, fourteen catalogues, two new requirement IDs — an overview almost entirely made of pointers to the rules that own each statement. The single finding was a pointer to the wrong owner; the right ones are the SHAPE, SIZE and RANK intrinsic facets, which test exactly those definitions.
+See `doc/source_audits/batch_249.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must

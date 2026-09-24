@@ -1,0 +1,81 @@
+{
+  "schema_version": 1,
+  "section": "5.4.5",
+  "subunits": {
+    "p1": [
+      "p1.data-object-reference",
+      "p1.procedure-reference"
+    ],
+    "p2": [
+      "p2.data-object-actual-reference-boundary",
+      "p2.procedure-actual-not-executed"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S5.4.5-001",
+      "title": "Passing a procedure designator as an actual argument does not execute it unless execution is needed",
+      "source": "5.4.5 p2, J3/24-007, 18 December 2023, physical PDF63.",
+      "source_units": [
+        "p2.procedure-actual-not-executed"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The appearance of a procedure designator as an actual argument does not constitute a reference to that procedure unless such a reference is necessary to complete the specification of the actual argument.",
+      "facets": [
+        "procedure-actual-not-executed-by-passing",
+        "procedure-actual-executed-by-call-control"
+      ],
+      "pending": {
+        "procedure-actual-not-executed-by-passing": "Pass a module function bomb as an actual procedure to a subroutine whose dummy procedure is never called; initialize a module marker to -3 before the call and assert it remains -3 afterward, while bomb would set it to 99 before returning 5.",
+        "procedure-actual-executed-by-call-control": "Use the same actual function bomb with a companion subroutine that calls its dummy procedure once; assert the marker changes from -3 to 99 and the returned integer is 5, making the noncall facet load-bearing."
+      },
+      "oracle": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Future fixtures must establish non-default sentinels before observing exact integer, logical, character, shape, value, association, or name-resolution effects, and must not infer representation, storage layout, diagnostic text, or processor choices from these concept definitions.",
+      "oracle_limitation": "Definition and overview units in 5.4 primarily identify terminology and route executable obligations to their detailed owners. This catalogue records source-use boundaries so later fixture packets do not duplicate Clause 7 type/value rules, Clause 8 declaration rules, Clause 9 designator/array rules, Clause 10 expression and operation rules, Clause 15 procedure-reference rules, or Clause 19 definition/association-status rules.",
+      "dependencies": "15.5.2 actual argument association and 15.5.3 procedure invocation supply the detailed call mechanics. This requirement records only the 5.4.5 reference boundary; no diagnostic facet is claimed."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "structural",
+      "rationale": "The paragraph defines data-object and procedure reference events separately."
+    },
+    {
+      "unit": "p1.data-object-reference",
+      "disposition": "definition",
+      "rationale": "A data object is referenced when its value is required during execution. 9.2, 10.1.4, 10.1.11, 10.1.12, and specific statement owners govern contexts requiring values."
+    },
+    {
+      "unit": "p1.procedure-reference",
+      "disposition": "definition",
+      "requirements": [
+        "S15.5.3-001"
+      ],
+      "rationale": "A procedure is referenced when executed. Function/subroutine reference and invocation plans are registered in Clause 15."
+    },
+    {
+      "unit": "p2",
+      "disposition": "structural",
+      "rationale": "The actual-argument exception separates data-object value reference from procedure execution as an actual argument."
+    },
+    {
+      "unit": "p2.data-object-actual-reference-boundary",
+      "disposition": "definition",
+      "rationale": "A data object designator appearing as an actual argument is not automatically a value reference; actual-argument association and specification needs are owned by Clause 15 and expression/specification-expression catalogues."
+    },
+    {
+      "unit": "p2.procedure-actual-not-executed",
+      "disposition": "requirements",
+      "requirements": [
+        "S5.4.5-001"
+      ]
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_5_4_5.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "c2f91569e1c71675a7d9b0725506bf88a0349d61b99a19f756438aebc3455e38",
+  "review_rationale": "Source registration for 5.4 and 5.4.1-5.4.6 of the Clause 5 overview: type, data value, data entity, data object, definition of objects and pointers, reference and array (batch249). Every unit hash-verified by an independent reviewer across two rounds; overview definitions are cross-referenced to specific owning facets in Clauses 7-19. Source accounting only."
+}

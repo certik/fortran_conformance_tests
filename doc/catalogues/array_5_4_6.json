@@ -1,0 +1,126 @@
+{
+  "schema_version": 1,
+  "section": "5.4.6",
+  "subunits": {
+    "p1": [
+      "p1.dimension-and-extent-permission",
+      "p1.size-definition",
+      "p1.zero-size-permission",
+      "p1.shape-definition",
+      "p1.named-array-declaration",
+      "p1.rank-specified-and-constant"
+    ],
+    "p2": [
+      "p2.scalar-intrinsic-operation-permission",
+      "p2.elemental-result",
+      "p2.pure-element-order-latitude"
+    ]
+  },
+  "requirements": [],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "structural",
+      "rationale": "The paragraph mixes array rank/extent/size/shape definitions, zero-size and dimension permissions, a named-array declaration requirement, declaration-time rank specification, and rank constancy."
+    },
+    {
+      "unit": "p1.dimension-and-extent-permission",
+      "disposition": "permission",
+      "rationale": "Arrays may have up to fifteen dimensions minus corank and any extent in each dimension. 8.5.8 R814 owns array-spec declaration forms, 8.5.6 owns corank/coshape declaration restrictions, and 9.5.3.3 S9.5.3.3-002 records the rank-through-fifteen subscript-order formula. Coarray/image facets and corank-dependent execution are outside this packet."
+    },
+    {
+      "unit": "p1.size-definition",
+      "disposition": "definition",
+      "requirements": [
+        "S16.9.194-005",
+        "S16.9.194-006"
+      ],
+      "rationale": "Array size is the product of extents. SIZE owns the observable definition: S16.9.194-005 facet SIZE-DIM-extent records individual extents, and S16.9.194-006 facets SIZE-no-DIM-total-elements and SIZE-zero-size-total-elements record total element counts including zero-size arrays."
+    },
+    {
+      "unit": "p1.zero-size-permission",
+      "disposition": "permission",
+      "rationale": "An array may have zero size. Zero-extent declaration/allocation owners remain 8.5.8 and 9.7; observable inquiry facets include SHAPE-dimension-extents in S16.9.185-004 and SIZE-zero-size-total-elements in S16.9.194-006."
+    },
+    {
+      "unit": "p1.shape-definition",
+      "disposition": "definition",
+      "requirements": [
+        "S16.9.185-003",
+        "S16.9.185-004"
+      ],
+      "rationale": "Shape is determined by rank and extents and represented as a rank-one array of extents. SHAPE owns the observable definition: S16.9.185-003 facet SHAPE-result-rank-one-size-source-rank records the rank-one result size, and S16.9.185-004 facets SHAPE-dimension-extents and SHAPE-scalar-rank-zero-result record extent values including scalar rank zero."
+    },
+    {
+      "unit": "p1.named-array-declaration",
+      "disposition": "requirements",
+      "requirements": [
+        "R801",
+        "R803",
+        "R814"
+      ],
+      "rationale": "All named arrays shall be declared; declaration syntax and array-spec alternatives are owned by 8.2 and 8.5.8 rather than a new 5.4 diagnostic."
+    },
+    {
+      "unit": "p1.rank-specified-and-constant",
+      "disposition": "definition",
+      "requirements": [
+        "R814",
+        "S16.9.171-003"
+      ],
+      "rationale": "A named array's rank is specified in its declaration and, except for assumed-rank, remains constant. R814 owns declaration-time array-spec forms; RANK owns observable rank values through S16.9.171-003 facets RANK-scalar-zero, RANK-vector-one, RANK-matrix-two, and RANK-assumed-rank-effective-rank. No legal operation changes an already declared non-assumed-rank named array's rank, so no duplicate local execution plan is added."
+    },
+    {
+      "unit": "p2",
+      "disposition": "structural",
+      "rationale": "The paragraph combines permission to apply scalar intrinsic operations to conformable objects, elemental result semantics, and execution-order latitude for pure elemental operations."
+    },
+    {
+      "unit": "p2.scalar-intrinsic-operation-permission",
+      "disposition": "permission",
+      "requirements": [
+        "S10.1.5.1-002"
+      ],
+      "rationale": "Scalar intrinsic operations may be applied to conformable objects. 10.1.5.1 owns conformability and operation-family restrictions."
+    },
+    {
+      "unit": "p2.elemental-result",
+      "disposition": "requirements",
+      "requirements": [
+        "S10.1.4-004",
+        "S10.1.4-005",
+        "S10.1.5.1-007"
+      ],
+      "rationale": "Such operations produce conformable resultant arrays elementally. Clause 10 operation-evaluation catalogues own the executable array-operation plans."
+    },
+    {
+      "unit": "p2.pure-element-order-latitude",
+      "disposition": "permission",
+      "requirements": [
+        "S10.1.4-005"
+      ],
+      "rationale": "Pure elemental element operations can be simultaneous or in any order. Clause 10 owns the order-insensitivity/source-use plans; no fixture may require a particular evaluation order."
+    },
+    {
+      "unit": "p3",
+      "disposition": "permission",
+      "requirements": [
+        "S7.8-001",
+        "S16.9.175-001",
+        "S16.9.175-003"
+      ],
+      "rationale": "Rank-one arrays can be constructed from scalars and arrays and reshaped into allowable shapes. Array constructors are owned by S7.8-001 facets rank-one-and-scalar-sequence, higher-rank-flattening, and mixed-shapes-and-empty-source. RESHAPE is owned by 16.9.175: S16.9.175-001 facet RESHAPE-SHAPE-rank-one-integer-positive-size-less-than-16 owns allowable shape restrictions and S16.9.175-003 facet RESHAPE-result-shape-is-SHAPE owns the result shape. No duplicate construction fixture is added here."
+    },
+    {
+      "unit": "p4",
+      "disposition": "definition",
+      "rationale": "Explicit cross-reference: arrays are described further in 9.5 and associated Clause 9 catalogues."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_5_4_6.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "7776b09c80ec6e777beeca9cdc4951d4284b6ab5b762a78245bcc9ab734dd11b",
+  "review_rationale": "Source registration for 5.4 and 5.4.1-5.4.6 of the Clause 5 overview: type, data value, data entity, data object, definition of objects and pointers, reference and array (batch249). Every unit hash-verified by an independent reviewer across two rounds; overview definitions are cross-referenced to specific owning facets in Clauses 7-19. Source accounting only."
+}

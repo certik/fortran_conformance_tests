@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "section": "5.4.3.2.2",
+  "requirements": [
+    {
+      "id": "S5.4.3.2.2-001",
+      "title": "Local variables are accessible only in their scoping unit and contained scopes",
+      "source": "5.4.3.2.2 p2, J3/24-007, 18 December 2023, physical PDF62.",
+      "source_units": [
+        "p2"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A local variable of a module, submodule, main program, subprogram, or BLOCK construct is accessible only in that scoping unit or construct and in contained scoping units and constructs.",
+      "facets": [
+        "contained-scope-access",
+        "block-local-does-not-escape"
+      ],
+      "pending": {
+        "contained-scope-access": "Declare a host subprogram local integer x initialized to 37 and an internal subroutine with no local x that copies x to y initialized to -11; call it and assert y=37, with a mutation adding an internal local x=-5 to make wrong resolution observable.",
+        "block-local-does-not-escape": "Use an outer integer x=-9, inside BLOCK declare local integer x=44 and assign x=45, then after END BLOCK assert outer x remains -9; mutation removes the BLOCK declaration so the assignment changes the outer sentinel."
+      },
+      "oracle": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Future fixtures must establish non-default sentinels before observing exact integer, logical, character, shape, value, association, or name-resolution effects, and must not infer representation, storage layout, diagnostic text, or processor choices from these concept definitions.",
+      "oracle_limitation": "Definition and overview units in 5.4 primarily identify terminology and route executable obligations to their detailed owners. This catalogue records source-use boundaries so later fixture packets do not duplicate Clause 7 type/value rules, Clause 8 declaration rules, Clause 9 designator/array rules, Clause 10 expression and operation rules, Clause 15 procedure-reference rules, or Clause 19 definition/association-status rules.",
+      "dependencies": "11.1.4 BLOCK construct scoping, 14.x module/submodule scopes, 15.x subprogram scopes, 8.7 implicit mapping controls, and future Clause 19 scope/lifetime catalogues. No diagnostic facet is claimed for an unnumbered program restriction."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "definition",
+      "rationale": "Defines variable value/undefined status and notes that execution can define, redefine, or undefine variables. Concrete definition/undefinition events are owned by assignment, input, allocation/deallocation, procedure, and Clause 19 status rules."
+    },
+    {
+      "unit": "p2",
+      "disposition": "requirements",
+      "requirements": [
+        "S5.4.3.2.2-001"
+      ],
+      "rationale": "Local-variable accessibility has an observable scoping effect not otherwise registered as a single Clause 7-9 owner in this worktree."
+    },
+    {
+      "unit": "note-unnumbered",
+      "disposition": "informative",
+      "rationale": "The NOTE explains consequences for subobjects, COMMON, and BIND; notes are not normative and the COMMON/BIND restrictions are owned by their attribute/statement catalogues."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_5_4_3_2_2.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "3046e99d764ead7001448f95b371017366aa0939a01ad05d286397f5ce6df878",
+  "review_rationale": "Source registration for 5.4 and 5.4.1-5.4.6 of the Clause 5 overview: type, data value, data entity, data object, definition of objects and pointers, reference and array (batch249). Every unit hash-verified by an independent reviewer across two rounds; overview definitions are cross-referenced to specific owning facets in Clauses 7-19. Source accounting only."
+}
