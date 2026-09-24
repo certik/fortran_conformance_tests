@@ -1,0 +1,188 @@
+{
+  "schema_version": 1,
+  "section": "17.11.22",
+  "review_state": "reviewed",
+  "subunits": {
+    "p7": [
+      "p7.magnitude-selection",
+      "p7.exception-signaling"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S17.11.22-001",
+      "title": "IEEE_MIN_MAG argument restrictions",
+      "source": "S17.11.22, J3/24-007, 18 December 2023, physical PDF496.",
+      "source_units": [
+        "p3"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "X shall be real, and Y shall have the same type and kind type parameter as X.",
+      "facets": [
+        "IEEE_MIN_MAG-X-real",
+        "IEEE_MIN_MAG-Y-same-type-kind-as-X"
+      ],
+      "pending": {
+        "IEEE_MIN_MAG-X-real": "Positive source control declares real X values 1.5 and -2.5 before calling IEEE_MIN_MAG; a source-control mutation replaces X with an integer expression and claims no diagnostic facet.",
+        "IEEE_MIN_MAG-Y-same-type-kind-as-X": "Positive source control calls IEEE_MIN_MAG with same-kind real X and Y; a source-control mutation changes only Y kind and claims no diagnostic facet."
+      },
+      "oracle": "Source registration only. Future fixtures guard the restricted IEEE procedure under test and every restricted IEEE observer invoked in the plan with that procedure's own IEEE_SUPPORT_DATATYPE or more specific IEEE_SUPPORT_* inquiry before invocation, initialize observed results and flags to non-default or opposite sentinels, and assert only portable properties: exact kind/rank/type, exact finite results, IEEE_IS_NAN or IEEE_CLASS observations for NaNs, IEEE_IS_NEGATIVE observations for signs, and named exception flags. Signed zeros are constructed with IEEE_COPY_SIGN or IEEE_VALUE and pre-verified with IEEE_IS_NEGATIVE under its observer guard; bare negative-zero literals are not used. Exception flag observations are keyed to IEEE_SUPPORT_FLAG(flag,X). Named preamble HALTING-OFF-PREAMBLE(flag): the IEEE_SUPPORT_HALTING(flag)-true branch calls IEEE_SET_HALTING_MODE(flag,.FALSE.); the IEEE_SUPPORT_HALTING(flag)-false branch reads IEEE_GET_HALTING_MODE(flag,h) under that inquiry's guard and proceeds only for h=.FALSE., otherwise skips. Every flag row that can signal runs HALTING-OFF-PREAMBLE for each observed flag, clears all flags before the row, and no-other-exception plans assert the other four flags quiet under their own IEEE_SUPPORT_FLAG guards. Unsupported inquiry branches are skips, not passes; unnumbered argument and invocation restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json found no existing fixture binding for IEEE_MIN_MAG, IEEE_MIN_NUM, IEEE_MIN_NUM_MAG, IEEE_NEXT_AFTER, IEEE_NEXT_DOWN, IEEE_NEXT_UP, or S17.11.22-S17.11.27. NaN payloads, choice of NaN operand, signaling-NaN payload preservation, exact halting behavior, and support for optional IEEE features are not portable oracles.",
+      "dependencies": "Registered dependencies: existing source-form, type, declaration, expression, assignment, execution, procedure, intrinsic-operation, and intrinsic-procedure foundations from clauses 6 through 16 where already catalogued. Unregistered dependencies retained: Clause 17 IEEE module constants, flags, class and rounding types, IEEE_VALUE, IEEE_IS_NAN, IEEE_IS_NEGATIVE, IEEE_SUPPORT_DATATYPE, IEEE_SUPPORT_FLAG, IEEE_SUPPORT_INF, IEEE_SUPPORT_NAN, IEEE_SUPPORT_SUBNORMAL, IEEE_GET_FLAG, IEEE_SET_FLAG, IEEE_MIN, IEEE_NEXT_AFTER, IEEE_NEXT_UP, IEEE_NEXT_DOWN, HUGE, EPSILON, TINY, RADIX, and ISO/IEC 60559 operation terminology used by future guarded fixtures."
+    },
+    {
+      "id": "S17.11.22-002",
+      "title": "IEEE_MIN_MAG invocation requires IEEE datatype support",
+      "source": "S17.11.22, J3/24-007, 18 December 2023, physical PDF496.",
+      "source_units": [
+        "p4"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "IEEE_MIN_MAG shall not be invoked for X with IEEE_SUPPORT_DATATYPE(X) false.",
+      "facets": [
+        "IEEE_MIN_MAG-requires-supported-datatype"
+      ],
+      "pending": {
+        "IEEE_MIN_MAG-requires-supported-datatype": "Guarded source-control plan: probe IEEE_SUPPORT_DATATYPE(X); supported branch invokes IEEE_MIN_MAG(1.5,-2.5) and reaches the value facets; unsupported branch records skip without invocation; mutation removes the guard and is nonconforming source control only."
+      },
+      "oracle": "Source registration only. Future fixtures guard the restricted IEEE procedure under test and every restricted IEEE observer invoked in the plan with that procedure's own IEEE_SUPPORT_DATATYPE or more specific IEEE_SUPPORT_* inquiry before invocation, initialize observed results and flags to non-default or opposite sentinels, and assert only portable properties: exact kind/rank/type, exact finite results, IEEE_IS_NAN or IEEE_CLASS observations for NaNs, IEEE_IS_NEGATIVE observations for signs, and named exception flags. Signed zeros are constructed with IEEE_COPY_SIGN or IEEE_VALUE and pre-verified with IEEE_IS_NEGATIVE under its observer guard; bare negative-zero literals are not used. Exception flag observations are keyed to IEEE_SUPPORT_FLAG(flag,X). Named preamble HALTING-OFF-PREAMBLE(flag): the IEEE_SUPPORT_HALTING(flag)-true branch calls IEEE_SET_HALTING_MODE(flag,.FALSE.); the IEEE_SUPPORT_HALTING(flag)-false branch reads IEEE_GET_HALTING_MODE(flag,h) under that inquiry's guard and proceeds only for h=.FALSE., otherwise skips. Every flag row that can signal runs HALTING-OFF-PREAMBLE for each observed flag, clears all flags before the row, and no-other-exception plans assert the other four flags quiet under their own IEEE_SUPPORT_FLAG guards. Unsupported inquiry branches are skips, not passes; unnumbered argument and invocation restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json found no existing fixture binding for IEEE_MIN_MAG, IEEE_MIN_NUM, IEEE_MIN_NUM_MAG, IEEE_NEXT_AFTER, IEEE_NEXT_DOWN, IEEE_NEXT_UP, or S17.11.22-S17.11.27. NaN payloads, choice of NaN operand, signaling-NaN payload preservation, exact halting behavior, and support for optional IEEE features are not portable oracles.",
+      "dependencies": "Registered dependencies: existing source-form, type, declaration, expression, assignment, execution, procedure, intrinsic-operation, and intrinsic-procedure foundations from clauses 6 through 16 where already catalogued. Unregistered dependencies retained: Clause 17 IEEE module constants, flags, class and rounding types, IEEE_VALUE, IEEE_IS_NAN, IEEE_IS_NEGATIVE, IEEE_SUPPORT_DATATYPE, IEEE_SUPPORT_FLAG, IEEE_SUPPORT_INF, IEEE_SUPPORT_NAN, IEEE_SUPPORT_SUBNORMAL, IEEE_GET_FLAG, IEEE_SET_FLAG, IEEE_MIN, IEEE_NEXT_AFTER, IEEE_NEXT_UP, IEEE_NEXT_DOWN, HUGE, EPSILON, TINY, RADIX, and ISO/IEC 60559 operation terminology used by future guarded fixtures."
+    },
+    {
+      "id": "S17.11.22-003",
+      "title": "IEEE_MIN_MAG result characteristics match X",
+      "source": "S17.11.22, J3/24-007, 18 December 2023, physical PDF496.",
+      "source_units": [
+        "p5"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The IEEE_MIN_MAG result has the same type and kind type parameter as X.",
+      "facets": [
+        "IEEE_MIN_MAG-result-same-type-kind-as-X"
+      ],
+      "pending": {
+        "IEEE_MIN_MAG-result-same-type-kind-as-X": "Guarded plan probes IEEE_SUPPORT_DATATYPE(X); datatype-supported branch assigns IEEE_MIN_MAG(1.5_real32,-2.5_real32) and IEEE_MIN_MAG(1.5_real64,-2.5_real64) to sentinel result variables and asserts KIND(result)==KIND(X) for each available kind; unsupported branch skips; mutation swaps the result kind declaration."
+      },
+      "oracle": "Source registration only. Future fixtures guard the restricted IEEE procedure under test and every restricted IEEE observer invoked in the plan with that procedure's own IEEE_SUPPORT_DATATYPE or more specific IEEE_SUPPORT_* inquiry before invocation, initialize observed results and flags to non-default or opposite sentinels, and assert only portable properties: exact kind/rank/type, exact finite results, IEEE_IS_NAN or IEEE_CLASS observations for NaNs, IEEE_IS_NEGATIVE observations for signs, and named exception flags. Signed zeros are constructed with IEEE_COPY_SIGN or IEEE_VALUE and pre-verified with IEEE_IS_NEGATIVE under its observer guard; bare negative-zero literals are not used. Exception flag observations are keyed to IEEE_SUPPORT_FLAG(flag,X). Named preamble HALTING-OFF-PREAMBLE(flag): the IEEE_SUPPORT_HALTING(flag)-true branch calls IEEE_SET_HALTING_MODE(flag,.FALSE.); the IEEE_SUPPORT_HALTING(flag)-false branch reads IEEE_GET_HALTING_MODE(flag,h) under that inquiry's guard and proceeds only for h=.FALSE., otherwise skips. Every flag row that can signal runs HALTING-OFF-PREAMBLE for each observed flag, clears all flags before the row, and no-other-exception plans assert the other four flags quiet under their own IEEE_SUPPORT_FLAG guards. Unsupported inquiry branches are skips, not passes; unnumbered argument and invocation restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json found no existing fixture binding for IEEE_MIN_MAG, IEEE_MIN_NUM, IEEE_MIN_NUM_MAG, IEEE_NEXT_AFTER, IEEE_NEXT_DOWN, IEEE_NEXT_UP, or S17.11.22-S17.11.27. NaN payloads, choice of NaN operand, signaling-NaN payload preservation, exact halting behavior, and support for optional IEEE features are not portable oracles.",
+      "dependencies": "Registered dependencies: existing source-form, type, declaration, expression, assignment, execution, procedure, intrinsic-operation, and intrinsic-procedure foundations from clauses 6 through 16 where already catalogued. Unregistered dependencies retained: Clause 17 IEEE module constants, flags, class and rounding types, IEEE_VALUE, IEEE_IS_NAN, IEEE_IS_NEGATIVE, IEEE_SUPPORT_DATATYPE, IEEE_SUPPORT_FLAG, IEEE_SUPPORT_INF, IEEE_SUPPORT_NAN, IEEE_SUPPORT_SUBNORMAL, IEEE_GET_FLAG, IEEE_SET_FLAG, IEEE_MIN, IEEE_NEXT_AFTER, IEEE_NEXT_UP, IEEE_NEXT_DOWN, HUGE, EPSILON, TINY, RADIX, and ISO/IEC 60559 operation terminology used by future guarded fixtures."
+    },
+    {
+      "id": "S17.11.22-004",
+      "title": "IEEE_MIN_MAG returns the minimum-magnitude operand or IEEE_MIN tie result",
+      "source": "S17.11.22, J3/24-007, 18 December 2023, physical PDF496.",
+      "source_units": [
+        "p7.magnitude-selection"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The result is X for |X|<|Y|, Y for |Y|<|X|, and otherwise the IEEE_MIN(X,Y) value.",
+      "facets": [
+        "IEEE_MIN_MAG-X-smaller-magnitude",
+        "IEEE_MIN_MAG-Y-smaller-magnitude",
+        "IEEE_MIN_MAG-equal-magnitude-delegates-to-IEEE_MIN"
+      ],
+      "pending": {
+        "IEEE_MIN_MAG-X-smaller-magnitude": "Guarded plan probes IEEE_SUPPORT_DATATYPE(X); datatype-supported branch uses X=1.5 and Y=-2.5, initializes result to -9.0, and asserts result==1.5; unsupported branch skips. Mutate argument order or expected value so the magnitude choice is load-bearing.",
+        "IEEE_MIN_MAG-Y-smaller-magnitude": "Guarded plan probes IEEE_SUPPORT_DATATYPE(X); datatype-supported branch uses X=-3.0 and Y=2.0, initializes result to 9.0, and asserts result==2.0; unsupported branch skips. Mutate Y to 4.0 so the selected operand changes.",
+        "IEEE_MIN_MAG-equal-magnitude-delegates-to-IEEE_MIN": "Guarded plan probes IEEE_SUPPORT_DATATYPE(X) for IEEE_MIN_MAG and IEEE_MIN; datatype-supported branch uses X=-2.0 and Y=2.0, asserts result equals IEEE_MIN(X,Y) and equals -2.0 for this finite tie; unsupported branch skips. Mutate X to -1.0 so the tie path is not reached."
+      },
+      "oracle": "Source registration only. Future fixtures guard the restricted IEEE procedure under test and every restricted IEEE observer invoked in the plan with that procedure's own IEEE_SUPPORT_DATATYPE or more specific IEEE_SUPPORT_* inquiry before invocation, initialize observed results and flags to non-default or opposite sentinels, and assert only portable properties: exact kind/rank/type, exact finite results, IEEE_IS_NAN or IEEE_CLASS observations for NaNs, IEEE_IS_NEGATIVE observations for signs, and named exception flags. Signed zeros are constructed with IEEE_COPY_SIGN or IEEE_VALUE and pre-verified with IEEE_IS_NEGATIVE under its observer guard; bare negative-zero literals are not used. Exception flag observations are keyed to IEEE_SUPPORT_FLAG(flag,X). Named preamble HALTING-OFF-PREAMBLE(flag): the IEEE_SUPPORT_HALTING(flag)-true branch calls IEEE_SET_HALTING_MODE(flag,.FALSE.); the IEEE_SUPPORT_HALTING(flag)-false branch reads IEEE_GET_HALTING_MODE(flag,h) under that inquiry's guard and proceeds only for h=.FALSE., otherwise skips. Every flag row that can signal runs HALTING-OFF-PREAMBLE for each observed flag, clears all flags before the row, and no-other-exception plans assert the other four flags quiet under their own IEEE_SUPPORT_FLAG guards. Unsupported inquiry branches are skips, not passes; unnumbered argument and invocation restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json found no existing fixture binding for IEEE_MIN_MAG, IEEE_MIN_NUM, IEEE_MIN_NUM_MAG, IEEE_NEXT_AFTER, IEEE_NEXT_DOWN, IEEE_NEXT_UP, or S17.11.22-S17.11.27. NaN payloads, choice of NaN operand, signaling-NaN payload preservation, exact halting behavior, and support for optional IEEE features are not portable oracles.",
+      "dependencies": "Registered dependencies: existing source-form, type, declaration, expression, assignment, execution, procedure, intrinsic-operation, and intrinsic-procedure foundations from clauses 6 through 16 where already catalogued. Unregistered dependencies retained: Clause 17 IEEE module constants, flags, class and rounding types, IEEE_VALUE, IEEE_IS_NAN, IEEE_IS_NEGATIVE, IEEE_SUPPORT_DATATYPE, IEEE_SUPPORT_FLAG, IEEE_SUPPORT_INF, IEEE_SUPPORT_NAN, IEEE_SUPPORT_SUBNORMAL, IEEE_GET_FLAG, IEEE_SET_FLAG, IEEE_MIN, IEEE_NEXT_AFTER, IEEE_NEXT_UP, IEEE_NEXT_DOWN, HUGE, EPSILON, TINY, RADIX, and ISO/IEC 60559 operation terminology used by future guarded fixtures."
+    },
+    {
+      "id": "S17.11.22-005",
+      "title": "IEEE_MIN_MAG exception signaling",
+      "source": "S17.11.22, J3/24-007, 18 December 2023, physical PDF496.",
+      "source_units": [
+        "p7.exception-signaling"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A signaling NaN argument signals IEEE_INVALID; otherwise IEEE_MIN_MAG signals no exception.",
+      "facets": [
+        "IEEE_MIN_MAG-signaling-NaN-signals-invalid",
+        "IEEE_MIN_MAG-quiet-finite-inputs-signal-no-exception"
+      ],
+      "pending": {
+        "IEEE_MIN_MAG-signaling-NaN-signals-invalid": "Guarded plan probes IEEE_SUPPORT_DATATYPE(X) for IEEE_MIN_MAG and IEEE_VALUE, IEEE_SUPPORT_NAN(X), and IEEE_SUPPORT_FLAG(IEEE_INVALID,X); flag-supported branch runs HALTING-OFF-PREAMBLE(IEEE_INVALID), clears all flags, calls IEEE_MIN_MAG with one signaling NaN in the first operand, one signaling NaN in the second operand, and two signaling NaNs, and asserts IEEE_GET_FLAG reports IEEE_INVALID true for each row; unsupported branches skip.",
+        "IEEE_MIN_MAG-quiet-finite-inputs-signal-no-exception": "Guarded plan probes IEEE_SUPPORT_DATATYPE(X) for IEEE_MIN_MAG, IEEE_VALUE, and IEEE_IS_NAN plus IEEE_SUPPORT_NAN(X) and IEEE_SUPPORT_FLAG(flag,X) for each exception flag; each flag-supported branch runs HALTING-OFF-PREAMBLE(flag), clears all flags before each row, exercises finite/finite, quiet-NaN/finite, finite/quiet-NaN, and quiet-NaN/quiet-NaN rows, asserts NaN rows with IEEE_IS_NAN rather than equality, and asserts the probed flag remains false, paired with the signaling-NaN control to prove flag observation."
+      },
+      "oracle": "Source registration only. Future fixtures guard the restricted IEEE procedure under test and every restricted IEEE observer invoked in the plan with that procedure's own IEEE_SUPPORT_DATATYPE or more specific IEEE_SUPPORT_* inquiry before invocation, initialize observed results and flags to non-default or opposite sentinels, and assert only portable properties: exact kind/rank/type, exact finite results, IEEE_IS_NAN or IEEE_CLASS observations for NaNs, IEEE_IS_NEGATIVE observations for signs, and named exception flags. Signed zeros are constructed with IEEE_COPY_SIGN or IEEE_VALUE and pre-verified with IEEE_IS_NEGATIVE under its observer guard; bare negative-zero literals are not used. Exception flag observations are keyed to IEEE_SUPPORT_FLAG(flag,X). Named preamble HALTING-OFF-PREAMBLE(flag): the IEEE_SUPPORT_HALTING(flag)-true branch calls IEEE_SET_HALTING_MODE(flag,.FALSE.); the IEEE_SUPPORT_HALTING(flag)-false branch reads IEEE_GET_HALTING_MODE(flag,h) under that inquiry's guard and proceeds only for h=.FALSE., otherwise skips. Every flag row that can signal runs HALTING-OFF-PREAMBLE for each observed flag, clears all flags before the row, and no-other-exception plans assert the other four flags quiet under their own IEEE_SUPPORT_FLAG guards. Unsupported inquiry branches are skips, not passes; unnumbered argument and invocation restrictions are source-control restrictions only and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ and tests/fixtures/*/fixture.json found no existing fixture binding for IEEE_MIN_MAG, IEEE_MIN_NUM, IEEE_MIN_NUM_MAG, IEEE_NEXT_AFTER, IEEE_NEXT_DOWN, IEEE_NEXT_UP, or S17.11.22-S17.11.27. NaN payloads, choice of NaN operand, signaling-NaN payload preservation, exact halting behavior, and support for optional IEEE features are not portable oracles.",
+      "dependencies": "Registered dependencies: existing source-form, type, declaration, expression, assignment, execution, procedure, intrinsic-operation, and intrinsic-procedure foundations from clauses 6 through 16 where already catalogued. Unregistered dependencies retained: Clause 17 IEEE module constants, flags, class and rounding types, IEEE_VALUE, IEEE_IS_NAN, IEEE_IS_NEGATIVE, IEEE_SUPPORT_DATATYPE, IEEE_SUPPORT_FLAG, IEEE_SUPPORT_INF, IEEE_SUPPORT_NAN, IEEE_SUPPORT_SUBNORMAL, IEEE_GET_FLAG, IEEE_SET_FLAG, IEEE_MIN, IEEE_NEXT_AFTER, IEEE_NEXT_UP, IEEE_NEXT_DOWN, HUGE, EPSILON, TINY, RADIX, and ISO/IEC 60559 operation terminology used by future guarded fixtures."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "definition",
+      "rationale": "Description names IEEE_MIN_MAG as the minimum magnitude value function."
+    },
+    {
+      "unit": "p2",
+      "disposition": "definition",
+      "rationale": "Classifies IEEE_MIN_MAG as elemental."
+    },
+    {
+      "unit": "p3",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.11.22-001"
+      ]
+    },
+    {
+      "unit": "p4",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.11.22-002"
+      ]
+    },
+    {
+      "unit": "p5",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.11.22-003"
+      ]
+    },
+    {
+      "unit": "p6",
+      "disposition": "structural",
+      "rationale": "Result Value heading; p7 owns the normative value and exception text."
+    },
+    {
+      "unit": "p7",
+      "disposition": "structural",
+      "rationale": "Result Value combines selection semantics and exception effects."
+    },
+    {
+      "unit": "p7.magnitude-selection",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.11.22-004"
+      ]
+    },
+    {
+      "unit": "p7.exception-signaling",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.11.22-005"
+      ]
+    },
+    {
+      "unit": "p8",
+      "disposition": "informative",
+      "rationale": "Example paragraph is illustrative; the exact example value is already forced by p7."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_17_11_22.md"
+  },
+  "review_fingerprint": "3c2394f03e5c60168d5e9ebaf49595cda7648cd34413bef426c6b4a21c4e1d67",
+  "review_rationale": "Source registration for 17.11.22-17.11.27: IEEE_MIN_MAG, IEEE_MIN_NUM, IEEE_MIN_NUM_MAG, IEEE_NEXT_AFTER, IEEE_NEXT_DOWN and IEEE_NEXT_UP (batch218). Every unit hash-verified by an independent reviewer across two rounds; NaN and extreme-value rows are exact under guards, and every exception row is halting-safe and checks the other flags. Source accounting only."
+}

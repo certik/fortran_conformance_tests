@@ -5849,6 +5849,11 @@ See `doc/source_audits/batch_220.json`.
 Thirty-four units after four rounds, the general IEEE semantics that every later Clause 17 procedure relies on. Most of the rounds were about one discipline applied uniformly: the halting mode must be known to be off before any flag is raised, and a restore test must see the value change first. Spelling that out once, as a named preamble every row cites, is what finally closed it.
 See `doc/source_audits/batch_213.json`.
 
+## Batch 218 — IEEE_MIN_MAG through IEEE_NEXT_UP (17.11.22-17.11.27)
+
+Forty-three units after two rounds. IEEE_NEXT_UP(HUGE(x)) is +infinity with *no* exception signaled, unlike an arithmetic overflow; the plan now asserts exactly that, including IEEE_OVERFLOW quiet.
+See `doc/source_audits/batch_218.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
