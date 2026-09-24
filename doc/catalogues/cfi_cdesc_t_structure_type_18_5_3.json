@@ -1,0 +1,427 @@
+{
+  "schema_version": 1,
+  "section": "18.5.3",
+  "subunits": {
+    "p1": [
+      "p1.typedef-flexible-array",
+      "p1.descriptor-value-scope"
+    ],
+    "p2": [
+      "p2.fixed-member-order-and-types",
+      "p2.intermediate-member-order-latitude",
+      "p2.base-addr-required-values",
+      "p2.base-addr-zero-size-latitude",
+      "p2.elem-len-value",
+      "p2.version-rank-type-attribute-values",
+      "p2.dim-array-values"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S18.5.3-001",
+      "title": "CFI_cdesc_t is a C structure typedef with a flexible array member",
+      "source": "S18.5.3 p1 type form; J3/24-007, 18 December 2023, physical PDF532.",
+      "source_units": [
+        "p1.typedef-flexible-array"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "CFI_cdesc_t is a typedef name for a C structure that contains a flexible array member and at least the members described in 18.5.3.",
+      "facets": [
+        "cfi-cdesc-t-typedef-structure",
+        "cfi-cdesc-t-flexible-array-member",
+        "cfi-cdesc-t-at-least-described-members"
+      ],
+      "pending": {
+        "cfi-cdesc-t-typedef-structure": "Compile a C unit declaring a CFI_cdesc_t * parameter and a CFI_CDESC_T(2) object cast to that pointer; mutation changes the parameter to CFI_dim_t *.",
+        "cfi-cdesc-t-flexible-array-member": "Compile a C unit using offsetof(CFI_cdesc_t, dim) and CFI_CDESC_T(2) storage for two dimensions, then access descriptor->dim[1]; mutation declares only rank-one storage.",
+        "cfi-cdesc-t-at-least-described-members": "Compile member-name probes for base_addr, elem_len, version, rank, type, attribute, and dim in one C helper; mutation removes one member probe."
+      },
+      "oracle": "Source registration only. Future mixed C/Fortran fixtures compile a C translation unit with the processor ISO_Fortran_binding.h supplied by the harness and assert only portable properties: required type and member presence, required member ordering, macro availability, integer-constant expression usability, sign and distinctness relations fixed by the text, CFI_VERSION equality inside processor-created descriptors, descriptor rank/extent/lower-bound/stride relations, and named error-code results. Numeric macro values, descriptor storage addresses, unsupported C type availability, extra processor extension codes, line-number effects, IOMSG text, and allocation-failure occurrence are not hard-coded.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. The existing C-interoperability harness supports separate Fortran and C build steps, processor-header staging via fortran_binding_header, and compiler-header provenance checks; existing descriptor-related fixtures exercise that harness for other catalogues but are not rebound here. Unnumbered program restrictions are recorded without diagnostic facets.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 15, and 16 where already catalogued for source form, declarations, intrinsic types and kinds, arrays, execution, mixed-language harnesses, procedure interfaces, ISO_C_BINDING constants, and exact inquiry helpers. Unregistered dependencies retained: earlier Clause 18 interoperability rules, later 18.5.5 descriptor functions, clause 19 storage and association terms, and the C standard library headers named or included by ISO_Fortran_binding.h."
+    },
+    {
+      "id": "S18.5.3-002",
+      "title": "Processor-created and Fortran-received CFI_cdesc_t descriptors obey the 18.5.3 member properties",
+      "source": "S18.5.3 p1 descriptor value scope; J3/24-007, 18 December 2023, physical PDF532.",
+      "source_units": [
+        "p1.descriptor-value-scope"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The member values described in 18.5.3 apply to CFI_cdesc_t descriptors produced by the specified functions and macros or received by a C function invoked by a Fortran procedure.",
+      "facets": [
+        "descriptor-produced-by-cfi-functions-has-properties",
+        "descriptor-received-from-fortran-has-properties"
+      ],
+      "pending": {
+        "descriptor-produced-by-cfi-functions-has-properties": "After 18.5.5 is registered, use CFI_establish on CFI_CDESC_T(1) storage with a three-element C array and assert version, rank, elem_len, attribute, type, and dim[0].extent properties; mutation changes the requested rank.",
+        "descriptor-received-from-fortran-has-properties": "Use a Fortran caller passing a rank-two actual with extents two and three to C; C initializes sentinels to -99 and asserts descriptor rank two, elem_len positive, nonnull base_addr, and dim extents [2,3]; mutation expects reversed extents."
+      },
+      "oracle": "Source registration only. Future mixed C/Fortran fixtures compile a C translation unit with the processor ISO_Fortran_binding.h supplied by the harness and assert only portable properties: required type and member presence, required member ordering, macro availability, integer-constant expression usability, sign and distinctness relations fixed by the text, CFI_VERSION equality inside processor-created descriptors, descriptor rank/extent/lower-bound/stride relations, and named error-code results. Numeric macro values, descriptor storage addresses, unsupported C type availability, extra processor extension codes, line-number effects, IOMSG text, and allocation-failure occurrence are not hard-coded.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. The existing C-interoperability harness supports separate Fortran and C build steps, processor-header staging via fortran_binding_header, and compiler-header provenance checks; existing descriptor-related fixtures exercise that harness for other catalogues but are not rebound here. Unnumbered program restrictions are recorded without diagnostic facets.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 15, and 16 where already catalogued for source form, declarations, intrinsic types and kinds, arrays, execution, mixed-language harnesses, procedure interfaces, ISO_C_BINDING constants, and exact inquiry helpers. Unregistered dependencies retained: earlier Clause 18 interoperability rules, later 18.5.5 descriptor functions, clause 19 storage and association terms, and the C standard library headers named or included by ISO_Fortran_binding.h."
+    },
+    {
+      "id": "S18.5.3-003",
+      "title": "CFI_cdesc_t fixed member order, intermediate placement, and member types are constrained",
+      "source": "S18.5.3 p2 member order and types; J3/24-007, 18 December 2023, physical PDF532.",
+      "source_units": [
+        "p2.fixed-member-order-and-types"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The first three CFI_cdesc_t members are base_addr, elem_len, and version in that order; dim is the final member; all other members are between version and dim; the required members have the types named in 18.5.3.",
+      "facets": [
+        "cfi-cdesc-first-three-members-order",
+        "cfi-cdesc-dim-final-member",
+        "cfi-cdesc-other-members-between-version-and-dim",
+        "cfi-cdesc-required-member-types"
+      ],
+      "pending": {
+        "cfi-cdesc-first-three-members-order": "Use _Static_assert with offsetof to check base_addr precedes elem_len and elem_len precedes version, and check base_addr offset zero; mutation swaps the asserted order.",
+        "cfi-cdesc-dim-final-member": "Use CFI_CDESC_T(1) storage and offsetof(CFI_cdesc_t, dim) to confirm dim storage follows version, rank, type, and attribute member offsets; no exact padding value is asserted.",
+        "cfi-cdesc-other-members-between-version-and-dim": "Use offsetof checks proving each required intermediate member rank, type, and attribute has offset greater than version and less than dim; no relative order among those intermediate members is asserted.",
+        "cfi-cdesc-required-member-types": "Compile assignment probes requiring void * for base_addr, size_t for elem_len, int for version, CFI_rank_t for rank, CFI_type_t for type, CFI_attribute_t for attribute, and CFI_dim_t elements for dim; mutation assigns through an incompatible pointer helper."
+      },
+      "oracle": "Source registration only. Future mixed C/Fortran fixtures compile a C translation unit with the processor ISO_Fortran_binding.h supplied by the harness and assert only portable properties: required type and member presence, required member ordering, macro availability, integer-constant expression usability, sign and distinctness relations fixed by the text, CFI_VERSION equality inside processor-created descriptors, descriptor rank/extent/lower-bound/stride relations, and named error-code results. Numeric macro values, descriptor storage addresses, unsupported C type availability, extra processor extension codes, line-number effects, IOMSG text, and allocation-failure occurrence are not hard-coded.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. The existing C-interoperability harness supports separate Fortran and C build steps, processor-header staging via fortran_binding_header, and compiler-header provenance checks; existing descriptor-related fixtures exercise that harness for other catalogues but are not rebound here. Unnumbered program restrictions are recorded without diagnostic facets.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 15, and 16 where already catalogued for source form, declarations, intrinsic types and kinds, arrays, execution, mixed-language harnesses, procedure interfaces, ISO_C_BINDING constants, and exact inquiry helpers. Unregistered dependencies retained: earlier Clause 18 interoperability rules, later 18.5.5 descriptor functions, clause 19 storage and association terms, and the C standard library headers named or included by ISO_Fortran_binding.h."
+    },
+    {
+      "id": "S18.5.3-004",
+      "title": "CFI_cdesc_t base_addr has required nullness and base-address values",
+      "source": "S18.5.3 p2 base_addr required values; J3/24-007, 18 December 2023, physical PDF532.",
+      "source_units": [
+        "p2.base-addr-required-values"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "base_addr is null for an unallocated allocatable or disassociated pointer, is nonnull for a zero-size object, and otherwise is the base address of the described scalar or the first array element in Fortran array element order.",
+      "facets": [
+        "base-addr-null-for-unallocated-allocatable",
+        "base-addr-null-for-disassociated-pointer",
+        "base-addr-nonnull-for-zero-size-object",
+        "base-addr-scalar-c-address",
+        "base-addr-array-first-element-c-address"
+      ],
+      "pending": {
+        "base-addr-null-for-unallocated-allocatable": "Pass an unallocated allocatable dummy descriptor to C, initialize an integer sentinel to -77, and set it to one only after desc->base_addr == NULL; mutation allocates before the call.",
+        "base-addr-null-for-disassociated-pointer": "Pass a disassociated pointer dummy descriptor to C, initialize an integer sentinel to -77, and set it to one only after desc->base_addr == NULL; mutation associates the pointer to a target before the call.",
+        "base-addr-nonnull-for-zero-size-object": "Pass an allocated zero-size allocatable array descriptor to C and assert base_addr is not NULL while extent is zero; mutation expects NULL.",
+        "base-addr-scalar-c-address": "Pass a scalar interoperable actual with value 37 through a descriptor-producing interface and assert desc->base_addr is the C address whose dereferenced value is 37; mutation compares against a separate scalar address.",
+        "base-addr-array-first-element-c-address": "Pass a rank-one array [41,43,47] and assert dereferencing base_addr yields 41 and dim[0].extent equals 3; mutation expects the second element value 43."
+      },
+      "oracle": "Source registration only. Future mixed C/Fortran fixtures compile a C translation unit with the processor ISO_Fortran_binding.h supplied by the harness and assert only portable properties: required type and member presence, required member ordering, macro availability, integer-constant expression usability, sign and distinctness relations fixed by the text, CFI_VERSION equality inside processor-created descriptors, descriptor rank/extent/lower-bound/stride relations, and named error-code results. Numeric macro values, descriptor storage addresses, unsupported C type availability, extra processor extension codes, line-number effects, IOMSG text, and allocation-failure occurrence are not hard-coded.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. The existing C-interoperability harness supports separate Fortran and C build steps, processor-header staging via fortran_binding_header, and compiler-header provenance checks; existing descriptor-related fixtures exercise that harness for other catalogues but are not rebound here. Unnumbered program restrictions are recorded without diagnostic facets.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 15, and 16 where already catalogued for source form, declarations, intrinsic types and kinds, arrays, execution, mixed-language harnesses, procedure interfaces, ISO_C_BINDING constants, and exact inquiry helpers. Unregistered dependencies retained: earlier Clause 18 interoperability rules, later 18.5.5 descriptor functions, clause 19 storage and association terms, and the C standard library headers named or included by ISO_Fortran_binding.h."
+    },
+    {
+      "id": "S18.5.3-005",
+      "title": "Zero-size descriptor base_addr address value beyond nullness is processor dependent",
+      "source": "S18.5.3 p2 zero-size base_addr latitude; J3/24-007, 18 December 2023, physical PDF532.",
+      "source_units": [
+        "p2.base-addr-zero-size-latitude"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For a zero-size object, base_addr is not a null pointer but its nonnull address value is otherwise processor dependent.",
+      "facets": [
+        "zero-size-base-addr-processor-dependent-address"
+      ],
+      "pending": {
+        "zero-size-base-addr-processor-dependent-address": "No portable oracle may compare the nonnull base_addr of a zero-size object with a fixed address or with another descriptor address; future fixtures assert only nonnull."
+      },
+      "oracle": "Source registration only. Future mixed C/Fortran fixtures compile a C translation unit with the processor ISO_Fortran_binding.h supplied by the harness and assert only portable properties: required type and member presence, required member ordering, macro availability, integer-constant expression usability, sign and distinctness relations fixed by the text, CFI_VERSION equality inside processor-created descriptors, descriptor rank/extent/lower-bound/stride relations, and named error-code results. Numeric macro values, descriptor storage addresses, unsupported C type availability, extra processor extension codes, line-number effects, IOMSG text, and allocation-failure occurrence are not hard-coded.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. The existing C-interoperability harness supports separate Fortran and C build steps, processor-header staging via fortran_binding_header, and compiler-header provenance checks; existing descriptor-related fixtures exercise that harness for other catalogues but are not rebound here. Unnumbered program restrictions are recorded without diagnostic facets.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 15, and 16 where already catalogued for source form, declarations, intrinsic types and kinds, arrays, execution, mixed-language harnesses, procedure interfaces, ISO_C_BINDING constants, and exact inquiry helpers. Unregistered dependencies retained: earlier Clause 18 interoperability rules, later 18.5.5 descriptor functions, clause 19 storage and association terms, and the C standard library headers named or included by ISO_Fortran_binding.h."
+    },
+    {
+      "id": "S18.5.3-006",
+      "title": "CFI_cdesc_t elem_len records scalar or element storage size in bytes",
+      "source": "S18.5.3 p2 elem_len; J3/24-007, 18 December 2023, physical PDF532.",
+      "source_units": [
+        "p2.elem-len-value"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "elem_len equals the storage size in bytes of a scalar object or of one element of an array object.",
+      "facets": [
+        "elem-len-scalar-storage-bytes",
+        "elem-len-array-element-storage-bytes"
+      ],
+      "pending": {
+        "elem-len-scalar-storage-bytes": "Pass a scalar C_INT actual through a descriptor and assert elem_len equals sizeof(int) in the C companion, with the scalar initialized to 53 so dereferencing also proves the descriptor is live; mutation expects sizeof(double).",
+        "elem-len-array-element-storage-bytes": "Pass a rank-one C_DOUBLE actual [2.0, 4.0, 8.0] through a descriptor and assert elem_len equals sizeof(double), not the total array byte size; mutation expects 3*sizeof(double)."
+      },
+      "oracle": "Source registration only. Future mixed C/Fortran fixtures compile a C translation unit with the processor ISO_Fortran_binding.h supplied by the harness and assert only portable properties: required type and member presence, required member ordering, macro availability, integer-constant expression usability, sign and distinctness relations fixed by the text, CFI_VERSION equality inside processor-created descriptors, descriptor rank/extent/lower-bound/stride relations, and named error-code results. Numeric macro values, descriptor storage addresses, unsupported C type availability, extra processor extension codes, line-number effects, IOMSG text, and allocation-failure occurrence are not hard-coded.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. The existing C-interoperability harness supports separate Fortran and C build steps, processor-header staging via fortran_binding_header, and compiler-header provenance checks; existing descriptor-related fixtures exercise that harness for other catalogues but are not rebound here. Unnumbered program restrictions are recorded without diagnostic facets.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 15, and 16 where already catalogued for source form, declarations, intrinsic types and kinds, arrays, execution, mixed-language harnesses, procedure interfaces, ISO_C_BINDING constants, and exact inquiry helpers. Unregistered dependencies retained: earlier Clause 18 interoperability rules, later 18.5.5 descriptor functions, clause 19 storage and association terms, and the C standard library headers named or included by ISO_Fortran_binding.h."
+    },
+    {
+      "id": "S18.5.3-007",
+      "title": "CFI_cdesc_t version, rank, type, and attribute record descriptor metadata",
+      "source": "S18.5.3 p2 version/rank/type/attribute; J3/24-007, 18 December 2023, physical PDF532.",
+      "source_units": [
+        "p2.version-rank-type-attribute-values"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "version equals CFI_VERSION from the header that defines the descriptor format, rank equals the number of dimensions with zero for scalars, type equals the object type specifier, and attribute equals the allocatable, pointer, or other attribute code.",
+      "facets": [
+        "descriptor-version-equals-cfi-version",
+        "descriptor-rank-dimension-count",
+        "descriptor-rank-zero-for-scalar",
+        "descriptor-type-specifier",
+        "descriptor-attribute-code"
+      ],
+      "pending": {
+        "descriptor-version-equals-cfi-version": "In a C descriptor received from Fortran, initialize a comparison sentinel to -77 and set it to one only after desc->version == CFI_VERSION; mutation compares against CFI_VERSION+1.",
+        "descriptor-rank-dimension-count": "Pass a rank-two array with extents [2,3] and assert desc->rank equals 2 before reading dim[1]; mutation expects rank one.",
+        "descriptor-rank-zero-for-scalar": "Pass a scalar C_INT actual through a descriptor and assert desc->rank equals 0 with base_addr dereferencing to sentinel value 59; mutation expects rank one.",
+        "descriptor-type-specifier": "Pass C_INT, C_DOUBLE, C_CHAR character, and interoperable derived-type cases under ISO_C_BINDING availability guards, then assert desc->type equals one positive compatible CFI_type_* macro or CFI_type_struct; mutation removes the matching macro from the accepted set.",
+        "descriptor-attribute-code": "Pass allocatable, pointer, and nonallocatable nonpointer descriptors and assert desc->attribute equals CFI_attribute_allocatable, CFI_attribute_pointer, and CFI_attribute_other respectively; mutation swaps pointer and allocatable expected codes."
+      },
+      "oracle": "Source registration only. Future mixed C/Fortran fixtures compile a C translation unit with the processor ISO_Fortran_binding.h supplied by the harness and assert only portable properties: required type and member presence, required member ordering, macro availability, integer-constant expression usability, sign and distinctness relations fixed by the text, CFI_VERSION equality inside processor-created descriptors, descriptor rank/extent/lower-bound/stride relations, and named error-code results. Numeric macro values, descriptor storage addresses, unsupported C type availability, extra processor extension codes, line-number effects, IOMSG text, and allocation-failure occurrence are not hard-coded.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. The existing C-interoperability harness supports separate Fortran and C build steps, processor-header staging via fortran_binding_header, and compiler-header provenance checks; existing descriptor-related fixtures exercise that harness for other catalogues but are not rebound here. Unnumbered program restrictions are recorded without diagnostic facets.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 15, and 16 where already catalogued for source form, declarations, intrinsic types and kinds, arrays, execution, mixed-language harnesses, procedure interfaces, ISO_C_BINDING constants, and exact inquiry helpers. Unregistered dependencies retained: earlier Clause 18 interoperability rules, later 18.5.5 descriptor functions, clause 19 storage and association terms, and the C standard library headers named or included by ISO_Fortran_binding.h."
+    },
+    {
+      "id": "S18.5.3-008",
+      "title": "CFI_cdesc_t dim has one CFI_dim_t element per rank dimension with corresponding bounds, extents, and strides",
+      "source": "S18.5.3 p2 dim member; J3/24-007, 18 December 2023, physical PDF532.",
+      "source_units": [
+        "p2.dim-array-values"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The dim array has one element for each dimension of the described object, and each element contains lower bound, extent, and memory stride information for the corresponding Fortran dimension.",
+      "facets": [
+        "descriptor-dim-element-count-equals-rank",
+        "descriptor-dim-elements-correspond-to-dimensions",
+        "descriptor-dim-elements-contain-bound-extent-stride"
+      ],
+      "pending": {
+        "descriptor-dim-element-count-equals-rank": "Use CFI_establish to create a rank-two descriptor with extents [2,3] and assert rank == 2 plus dim[0].extent == 2 and dim[1].extent == 3; also create a rank-zero descriptor and assert rank == 0 without indexing dim. Mutation changes the established rank or one extent.",
+        "descriptor-dim-elements-correspond-to-dimensions": "Pass a rank-two array whose first and second extents are two and three; C asserts dim[0].extent == 2 and dim[1].extent == 3, then mutation expects [3,2].",
+        "descriptor-dim-elements-contain-bound-extent-stride": "For the same descriptor, initialize C sentinels to -99 and assert each dim element supplies lower_bound, extent, and sm values satisfying the 18.5.2 and 18.5.3 lower-bound and stride rules; mutation zeroes the stride expectation."
+      },
+      "oracle": "Source registration only. Future mixed C/Fortran fixtures compile a C translation unit with the processor ISO_Fortran_binding.h supplied by the harness and assert only portable properties: required type and member presence, required member ordering, macro availability, integer-constant expression usability, sign and distinctness relations fixed by the text, CFI_VERSION equality inside processor-created descriptors, descriptor rank/extent/lower-bound/stride relations, and named error-code results. Numeric macro values, descriptor storage addresses, unsupported C type availability, extra processor extension codes, line-number effects, IOMSG text, and allocation-failure occurrence are not hard-coded.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. The existing C-interoperability harness supports separate Fortran and C build steps, processor-header staging via fortran_binding_header, and compiler-header provenance checks; existing descriptor-related fixtures exercise that harness for other catalogues but are not rebound here. Unnumbered program restrictions are recorded without diagnostic facets.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 15, and 16 where already catalogued for source form, declarations, intrinsic types and kinds, arrays, execution, mixed-language harnesses, procedure interfaces, ISO_C_BINDING constants, and exact inquiry helpers. Unregistered dependencies retained: earlier Clause 18 interoperability rules, later 18.5.5 descriptor functions, clause 19 storage and association terms, and the C standard library headers named or included by ISO_Fortran_binding.h."
+    },
+    {
+      "id": "S18.5.3-009",
+      "title": "Descriptor lower bounds differ for pointer/allocatable arrays and ordinary arrays",
+      "source": "S18.5.3 p3; J3/24-007, 18 December 2023, physical PDF532.",
+      "source_units": [
+        "p3"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For array pointer or allocatable descriptors, each dim lower_bound is determined by association or allocation; for nonallocatable nonpointer object descriptors, each dim lower_bound is zero.",
+      "facets": [
+        "allocatable-array-lower-bound-from-allocation",
+        "pointer-array-lower-bound-from-association",
+        "ordinary-array-lower-bound-zero"
+      ],
+      "pending": {
+        "allocatable-array-lower-bound-from-allocation": "Allocate a rank-one allocatable with bounds 4:6 and values [61,67,71], pass its descriptor to C, and assert dim[0].lower_bound equals 4; mutation expects zero.",
+        "pointer-array-lower-bound-from-association": "Associate a pointer with bounds -2:0 to a target slice containing [73,79,83], pass its descriptor to C, and assert dim[0].lower_bound equals -2; mutation expects one.",
+        "ordinary-array-lower-bound-zero": "Pass a nonallocatable nonpointer rank-one dummy with declared lower bound 5 and values [89,97,101], then assert the C descriptor dim[0].lower_bound equals 0; mutation expects 5."
+      },
+      "oracle": "Source registration only. Future mixed C/Fortran fixtures compile a C translation unit with the processor ISO_Fortran_binding.h supplied by the harness and assert only portable properties: required type and member presence, required member ordering, macro availability, integer-constant expression usability, sign and distinctness relations fixed by the text, CFI_VERSION equality inside processor-created descriptors, descriptor rank/extent/lower-bound/stride relations, and named error-code results. Numeric macro values, descriptor storage addresses, unsupported C type availability, extra processor extension codes, line-number effects, IOMSG text, and allocation-failure occurrence are not hard-coded.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. The existing C-interoperability harness supports separate Fortran and C build steps, processor-header staging via fortran_binding_header, and compiler-header provenance checks; existing descriptor-related fixtures exercise that harness for other catalogues but are not rebound here. Unnumbered program restrictions are recorded without diagnostic facets.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 15, and 16 where already catalogued for source form, declarations, intrinsic types and kinds, arrays, execution, mixed-language harnesses, procedure interfaces, ISO_C_BINDING constants, and exact inquiry helpers. Unregistered dependencies retained: earlier Clause 18 interoperability rules, later 18.5.5 descriptor functions, clause 19 storage and association terms, and the C standard library headers named or included by ISO_Fortran_binding.h."
+    },
+    {
+      "id": "S18.5.3-010",
+      "title": "Descriptor memory strides satisfy the required absolute-value ordering",
+      "source": "S18.5.3 p4; J3/24-007, 18 December 2023, physical PDF532.",
+      "source_units": [
+        "p4"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "There is an ordering of descriptor dimensions such that abs(sm) for the first dimension is at least elem_len and abs(sm) for each subsequent dimension is at least abs(previous sm) times the previous extent.",
+      "facets": [
+        "descriptor-first-stride-at-least-elem-len",
+        "descriptor-subsequent-stride-at-least-previous-stride-times-extent",
+        "descriptor-stride-order-allows-dimension-reordering"
+      ],
+      "pending": {
+        "descriptor-first-stride-at-least-elem-len": "Pass a rank-two array with extents [2,3] and elem_len from C_DOUBLE; C computes absolute sm values and asserts abs(sm[0]) >= elem_len; mutation reverses the comparison.",
+        "descriptor-subsequent-stride-at-least-previous-stride-times-extent": "Using the same descriptor, assert abs(sm[1]) >= abs(sm[0]) * dim[0].extent with extents initialized to nonzero values; mutation drops the multiplication by extent.",
+        "descriptor-stride-order-allows-dimension-reordering": "Use a transposed or ordered rank-two actual that remains descriptor-representable and assert only the existence of the required inequality order, not a fixed dimension permutation or exact stride value."
+      },
+      "oracle": "Source registration only. Future mixed C/Fortran fixtures compile a C translation unit with the processor ISO_Fortran_binding.h supplied by the harness and assert only portable properties: required type and member presence, required member ordering, macro availability, integer-constant expression usability, sign and distinctness relations fixed by the text, CFI_VERSION equality inside processor-created descriptors, descriptor rank/extent/lower-bound/stride relations, and named error-code results. Numeric macro values, descriptor storage addresses, unsupported C type availability, extra processor extension codes, line-number effects, IOMSG text, and allocation-failure occurrence are not hard-coded.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. The existing C-interoperability harness supports separate Fortran and C build steps, processor-header staging via fortran_binding_header, and compiler-header provenance checks; existing descriptor-related fixtures exercise that harness for other catalogues but are not rebound here. Unnumbered program restrictions are recorded without diagnostic facets.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 15, and 16 where already catalogued for source form, declarations, intrinsic types and kinds, arrays, execution, mixed-language harnesses, procedure interfaces, ISO_C_BINDING constants, and exact inquiry helpers. Unregistered dependencies retained: earlier Clause 18 interoperability rules, later 18.5.5 descriptor functions, clause 19 storage and association terms, and the C standard library headers named or included by ISO_Fortran_binding.h."
+    },
+    {
+      "id": "S18.5.3-011",
+      "title": "Assumed-size array descriptors use -1 for the final extent",
+      "source": "S18.5.3 p5; J3/24-007, 18 December 2023, physical PDF532.",
+      "source_units": [
+        "p5"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "In a C descriptor of an assumed-size array, the extent member of the last dim element has value -1.",
+      "facets": [
+        "assumed-size-final-dim-extent-minus-one"
+      ],
+      "pending": {
+        "assumed-size-final-dim-extent-minus-one": "Use a Fortran assumed-size dummy with a known first dimension extent two and a C descriptor formal; C initializes a sentinel to -99 and asserts the final dim extent is -1 after confirming the descriptor rank, with mutation expecting a positive extent."
+      },
+      "oracle": "Source registration only. Future mixed C/Fortran fixtures compile a C translation unit with the processor ISO_Fortran_binding.h supplied by the harness and assert only portable properties: required type and member presence, required member ordering, macro availability, integer-constant expression usability, sign and distinctness relations fixed by the text, CFI_VERSION equality inside processor-created descriptors, descriptor rank/extent/lower-bound/stride relations, and named error-code results. Numeric macro values, descriptor storage addresses, unsupported C type availability, extra processor extension codes, line-number effects, IOMSG text, and allocation-failure occurrence are not hard-coded.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. The existing C-interoperability harness supports separate Fortran and C build steps, processor-header staging via fortran_binding_header, and compiler-header provenance checks; existing descriptor-related fixtures exercise that harness for other catalogues but are not rebound here. Unnumbered program restrictions are recorded without diagnostic facets.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 15, and 16 where already catalogued for source form, declarations, intrinsic types and kinds, arrays, execution, mixed-language harnesses, procedure interfaces, ISO_C_BINDING constants, and exact inquiry helpers. Unregistered dependencies retained: earlier Clause 18 interoperability rules, later 18.5.5 descriptor functions, clause 19 storage and association terms, and the C standard library headers named or included by ISO_Fortran_binding.h."
+    },
+    {
+      "id": "S18.5.3-012",
+      "title": "Intermediate CFI_cdesc_t members may appear in any order between version and dim",
+      "source": "S18.5.3 p2 intermediate member order latitude; J3/24-007, 18 December 2023, physical PDF532.",
+      "source_units": [
+        "p2.intermediate-member-order-latitude"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "CFI_cdesc_t members other than base_addr, elem_len, version, and dim appear between version and dim, and their order within that interval is not fixed by this subclause.",
+      "facets": [
+        "cfi-cdesc-intermediate-member-order-latitude"
+      ],
+      "pending": {
+        "cfi-cdesc-intermediate-member-order-latitude": "No portable oracle may require a particular relative order among rank, type, attribute, or any processor-specific intermediate CFI_cdesc_t members; future offsetof checks assert only version-before-each-before-dim placement."
+      },
+      "oracle": "Source registration only. Future mixed C/Fortran fixtures compile a C translation unit with the processor ISO_Fortran_binding.h supplied by the harness and assert only portable properties: required type and member presence, required member ordering, macro availability, integer-constant expression usability, sign and distinctness relations fixed by the text, CFI_VERSION equality inside processor-created descriptors, descriptor rank/extent/lower-bound/stride relations, and named error-code results. Numeric macro values, descriptor storage addresses, unsupported C type availability, extra processor extension codes, line-number effects, IOMSG text, and allocation-failure occurrence are not hard-coded.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. The existing C-interoperability harness supports separate Fortran and C build steps, processor-header staging via fortran_binding_header, and compiler-header provenance checks; existing descriptor-related fixtures exercise that harness for other catalogues but are not rebound here. Unnumbered program restrictions are recorded without diagnostic facets.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 15, and 16 where already catalogued for source form, declarations, intrinsic types and kinds, arrays, execution, mixed-language harnesses, procedure interfaces, ISO_C_BINDING constants, and exact inquiry helpers. Unregistered dependencies retained: earlier Clause 18 interoperability rules, later 18.5.5 descriptor functions, clause 19 storage and association terms, and the C standard library headers named or included by ISO_Fortran_binding.h."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "structural",
+      "rationale": "Mixed CFI_cdesc_t type form and descriptor value scope are split."
+    },
+    {
+      "unit": "p1.typedef-flexible-array",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.5.3-001"
+      ],
+      "rationale": "Required CFI_cdesc_t typedef structure with flexible array member and described members."
+    },
+    {
+      "unit": "p1.descriptor-value-scope",
+      "disposition": "definition",
+      "requirements": [
+        "S18.5.3-002"
+      ],
+      "rationale": "Defines the descriptors whose member values have the listed properties."
+    },
+    {
+      "unit": "p2",
+      "disposition": "structural",
+      "rationale": "Member fixed order, intermediate placement, intermediate order latitude, member types, member value obligations, and zero-size base-address latitude are split."
+    },
+    {
+      "unit": "p2.fixed-member-order-and-types",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.5.3-003"
+      ],
+      "rationale": "Required first-three order, dim final placement, intermediate-member placement between version and dim, and required member types."
+    },
+    {
+      "unit": "p2.intermediate-member-order-latitude",
+      "disposition": "permission",
+      "requirements": [
+        "S18.5.3-012"
+      ],
+      "rationale": "Permission for arbitrary relative order among members placed between version and dim."
+    },
+    {
+      "unit": "p2.base-addr-required-values",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.5.3-004"
+      ],
+      "rationale": "Required nullness and base-address values for base_addr."
+    },
+    {
+      "unit": "p2.base-addr-zero-size-latitude",
+      "disposition": "permission",
+      "requirements": [
+        "S18.5.3-005"
+      ],
+      "rationale": "Processor latitude for the particular nonnull address of a zero-size object."
+    },
+    {
+      "unit": "p2.elem-len-value",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.5.3-006"
+      ],
+      "rationale": "Required scalar and element storage-size values for elem_len."
+    },
+    {
+      "unit": "p2.version-rank-type-attribute-values",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.5.3-007"
+      ],
+      "rationale": "Required version, rank, type, and attribute metadata values."
+    },
+    {
+      "unit": "p2.dim-array-values",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.5.3-008"
+      ],
+      "rationale": "Required dim array cardinality and per-dimension information."
+    },
+    {
+      "unit": "p3",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.5.3-009"
+      ],
+      "rationale": "Required lower-bound values by descriptor category."
+    },
+    {
+      "unit": "p4",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.5.3-010"
+      ],
+      "rationale": "Required absolute-value memory-stride ordering."
+    },
+    {
+      "unit": "p5",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.5.3-011"
+      ],
+      "rationale": "Required final extent value for assumed-size descriptors."
+    },
+    {
+      "unit": "note1",
+      "disposition": "informative",
+      "rationale": "NOTE explains the no-overlap motivation and possible descriptor construction; it is not normative."
+    },
+    {
+      "unit": "note2",
+      "disposition": "informative",
+      "rationale": "NOTE explains CHARACTER elem_len consequences from other rules; it is not normative."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_18_5_3.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "aae077a1f7261ccc5e4d0fec145cb19933475311f887762babf00e13e8f79ad8",
+  "review_rationale": "Source registration for 18.4 (C descriptors) and 18.5-18.5.4 (the source file ISO_Fortran_binding.h: summary, CFI_dim_t, CFI_cdesc_t, macros and typedefs) (batch243). Every unit hash-verified by an independent reviewer across two rounds; header contents are observable by a C translation unit compiled against the processor's header, with member order and additional members recorded as latitude. Source accounting only."
+}

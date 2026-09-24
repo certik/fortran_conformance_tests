@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "section": "18.4",
+  "requirements": [
+    {
+      "id": "S18.4-001",
+      "title": "A C descriptor is a CFI_cdesc_t structure for describing Fortran data objects from C",
+      "source": "S18.4, J3/24-007, 18 December 2023, physical PDF531.",
+      "source_units": [
+        "p1"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A C descriptor is a C structure of type CFI_cdesc_t, defined in ISO_Fortran_binding.h, that together with the standard library-function prototypes provides a means for describing and manipulating Fortran data objects from within a C function.",
+      "facets": [
+        "c-descriptor-cfi-cdesc-t-structure",
+        "c-descriptor-describes-fortran-data-from-c",
+        "c-descriptor-defined-in-iso-fortran-binding-header"
+      ],
+      "pending": {
+        "c-descriptor-cfi-cdesc-t-structure": "Compile a C companion including ISO_Fortran_binding.h, declare a CFI_cdesc_t pointer initialized to a nonnull CFI_CDESC_T(1) object cast, and call a helper that accepts only CFI_cdesc_t *; mutate the helper parameter to an unrelated struct pointer.",
+        "c-descriptor-describes-fortran-data-from-c": "Use a Fortran caller passing a rank-one noninteroperable dummy to a C function with a CFI_cdesc_t * formal; the C function checks rank one, nonnull base_addr, positive elem_len, and dim[0].extent three for a three-element actual initialized to distinct values, then mutates the expected rank.",
+        "c-descriptor-defined-in-iso-fortran-binding-header": "Build the same C companion without any local declaration of CFI_cdesc_t; the include alone supplies the type and CFI_CDESC_T macro, with mutation removing the include."
+      },
+      "oracle": "Source registration only. Future mixed C/Fortran fixtures compile a C translation unit with the processor ISO_Fortran_binding.h supplied by the harness and assert only portable properties: required type and member presence, required member ordering, macro availability, integer-constant expression usability, sign and distinctness relations fixed by the text, CFI_VERSION equality inside processor-created descriptors, descriptor rank/extent/lower-bound/stride relations, and named error-code results. Numeric macro values, descriptor storage addresses, unsupported C type availability, extra processor extension codes, line-number effects, IOMSG text, and allocation-failure occurrence are not hard-coded.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. The existing C-interoperability harness supports separate Fortran and C build steps, processor-header staging via fortran_binding_header, and compiler-header provenance checks; existing descriptor-related fixtures exercise that harness for other catalogues but are not rebound here. Unnumbered program restrictions are recorded without diagnostic facets.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 15, and 16 where already catalogued for source form, declarations, intrinsic types and kinds, arrays, execution, mixed-language harnesses, procedure interfaces, ISO_C_BINDING constants, and exact inquiry helpers. Unregistered dependencies retained: earlier Clause 18 interoperability rules, later 18.5.5 descriptor functions, clause 19 storage and association terms, and the C standard library headers named or included by ISO_Fortran_binding.h."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "definition",
+      "requirements": [
+        "S18.4-001"
+      ],
+      "rationale": "Defines C descriptor, its CFI_cdesc_t structure type, header source, and role for C manipulation of Fortran data objects."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_18_4.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "9a0df7bcdd8241d03e5dd917d4b867d7e5c96cd7b63f66fbf72d07fc76102767",
+  "review_rationale": "Source registration for 18.4 (C descriptors) and 18.5-18.5.4 (the source file ISO_Fortran_binding.h: summary, CFI_dim_t, CFI_cdesc_t, macros and typedefs) (batch243). Every unit hash-verified by an independent reviewer across two rounds; header contents are observable by a C translation unit compiled against the processor's header, with member order and additional members recorded as latitude. Source accounting only."
+}

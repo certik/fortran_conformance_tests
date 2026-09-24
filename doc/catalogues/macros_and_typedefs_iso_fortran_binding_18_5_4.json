@@ -1,0 +1,748 @@
+{
+  "schema_version": 1,
+  "section": "18.5.4",
+  "subunits": {
+    "p2": [
+      "p2.cdesc-t-storage",
+      "p2.cdesc-t-argument-restrictions",
+      "p2.cdesc-t-no-initializer-restriction"
+    ],
+    "p4": [
+      "p4.max-rank-lower-bound",
+      "p4.max-rank-latitude",
+      "p4.rank-typedef"
+    ],
+    "p5": [
+      "p5.version-value-latitude",
+      "p5.version-increase-recommendation"
+    ],
+    "p8": [
+      "p8.other-struct-required-values",
+      "p8.listed-type-support-signs",
+      "p8.type-code-latitude"
+    ],
+    "p9": [
+      "p9.extra-type-support-latitude",
+      "p9.extra-type-positive-distinct"
+    ],
+    "p11": [
+      "p11.error-code-values",
+      "p11.other-error-recommendation"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S18.5.4-001",
+      "title": "Non-CFI_CDESC_T macros are preprocessing-suitable integer constant expressions",
+      "source": "S18.5.4 p1; J3/24-007, 18 December 2023, physical PDF533.",
+      "source_units": [
+        "p1"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Except for CFI_CDESC_T, each macro defined in ISO_Fortran_binding.h expands to an integer constant expression that is a single token or a parenthesized expression suitable for preprocessing conditional directives.",
+      "facets": [
+        "binding-macros-integer-constant-expressions",
+        "binding-macros-preprocessing-suitable",
+        "binding-macros-single-token-or-parenthesized"
+      ],
+      "pending": {
+        "binding-macros-integer-constant-expressions": "Compile a C unit with _Static_assert expressions using CFI_VERSION, CFI_MAX_RANK, every Table 18.3 attribute macro, every Table 18.4 type macro, and every Table 18.5 error macro in integer contexts; mutation changes one macro use to a nonconstant variable.",
+        "binding-macros-preprocessing-suitable": "Compile a generated C unit whose preprocessing conditional directives reference each non-CFI_CDESC_T macro and select a declaration of a sentinel object; mutation removes one required macro from the generated list.",
+        "binding-macros-single-token-or-parenthesized": "Use macro stringization after expansion for each required macro and a C helper that accepts either one token with no whitespace or a parenthesized expression; mutation inserts a generated multi-token unparenthesized expression in a control header."
+      },
+      "oracle": "Source registration only. Future mixed C/Fortran fixtures compile a C translation unit with the processor ISO_Fortran_binding.h supplied by the harness and assert only portable properties: required type and member presence, required member ordering, macro availability, integer-constant expression usability, sign and distinctness relations fixed by the text, CFI_VERSION equality inside processor-created descriptors, descriptor rank/extent/lower-bound/stride relations, and named error-code results. Numeric macro values, descriptor storage addresses, unsupported C type availability, extra processor extension codes, line-number effects, IOMSG text, and allocation-failure occurrence are not hard-coded.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. The existing C-interoperability harness supports separate Fortran and C build steps, processor-header staging via fortran_binding_header, and compiler-header provenance checks; existing descriptor-related fixtures exercise that harness for other catalogues but are not rebound here. Unnumbered program restrictions are recorded without diagnostic facets.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 15, and 16 where already catalogued for source form, declarations, intrinsic types and kinds, arrays, execution, mixed-language harnesses, procedure interfaces, ISO_C_BINDING constants, and exact inquiry helpers. Unregistered dependencies retained: earlier Clause 18 interoperability rules, later 18.5.5 descriptor functions, clause 19 storage and association terms, and the C standard library headers named or included by ISO_Fortran_binding.h."
+    },
+    {
+      "id": "S18.5.4-002",
+      "title": "CFI_CDESC_T creates suitably sized and aligned descriptor storage castable to CFI_cdesc_t *",
+      "source": "S18.5.4 p2 CFI_CDESC_T storage; J3/24-007, 18 December 2023, physical PDF533.",
+      "source_units": [
+        "p2.cdesc-t-storage"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "CFI_CDESC_T is a function-like macro whose rank argument selects an unqualified type of suitable size and alignment for a C descriptor variable of that rank, and a pointer to such a variable can be cast to CFI_cdesc_t *.",
+      "facets": [
+        "cfi-cdesc-t-function-like-macro",
+        "cfi-cdesc-t-rank-sized-storage",
+        "cfi-cdesc-t-suitable-alignment",
+        "cfi-cdesc-t-pointer-cast-to-cfi-cdesc-pointer"
+      ],
+      "pending": {
+        "cfi-cdesc-t-function-like-macro": "Compile declarations CFI_CDESC_T(0) d0; and CFI_CDESC_T(2) d2; in block scope, then mutate the macro spelling to an object-like use without parentheses.",
+        "cfi-cdesc-t-rank-sized-storage": "Declare CFI_CDESC_T(0), CFI_CDESC_T(1), and CFI_CDESC_T(CFI_MAX_RANK) objects and assert sizeof rank-one storage is at least offsetof(CFI_cdesc_t, dim) plus one CFI_dim_t element; mutation expects rank-zero storage to contain one dim element.",
+        "cfi-cdesc-t-suitable-alignment": "Cast the address of CFI_CDESC_T(2) storage to CFI_cdesc_t * and pass it to a helper that writes only version and rank after CFI_establish is registered; mutation uses deliberately under-aligned char storage in a control source.",
+        "cfi-cdesc-t-pointer-cast-to-cfi-cdesc-pointer": "Assign (CFI_cdesc_t *)&storage to a CFI_cdesc_t * initialized to a nonnull sentinel and compare the cast result with the original storage address; mutation casts an unrelated int object."
+      },
+      "oracle": "Source registration only. Future mixed C/Fortran fixtures compile a C translation unit with the processor ISO_Fortran_binding.h supplied by the harness and assert only portable properties: required type and member presence, required member ordering, macro availability, integer-constant expression usability, sign and distinctness relations fixed by the text, CFI_VERSION equality inside processor-created descriptors, descriptor rank/extent/lower-bound/stride relations, and named error-code results. Numeric macro values, descriptor storage addresses, unsupported C type availability, extra processor extension codes, line-number effects, IOMSG text, and allocation-failure occurrence are not hard-coded.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. The existing C-interoperability harness supports separate Fortran and C build steps, processor-header staging via fortran_binding_header, and compiler-header provenance checks; existing descriptor-related fixtures exercise that harness for other catalogues but are not rebound here. Unnumbered program restrictions are recorded without diagnostic facets.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 15, and 16 where already catalogued for source form, declarations, intrinsic types and kinds, arrays, execution, mixed-language harnesses, procedure interfaces, ISO_C_BINDING constants, and exact inquiry helpers. Unregistered dependencies retained: earlier Clause 18 interoperability rules, later 18.5.5 descriptor functions, clause 19 storage and association terms, and the C standard library headers named or included by ISO_Fortran_binding.h."
+    },
+    {
+      "id": "S18.5.4-003",
+      "title": "CFI_CDESC_T rank argument is a bounded integer constant expression",
+      "source": "S18.5.4 p2 rank argument restriction; J3/24-007, 18 December 2023, physical PDF533.",
+      "source_units": [
+        "p2.cdesc-t-argument-restrictions"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "The argument to CFI_CDESC_T shall be an integer constant expression whose value is at least zero and at most CFI_MAX_RANK.",
+      "facets": [
+        "cfi-cdesc-t-rank-argument-integer-constant-expression",
+        "cfi-cdesc-t-rank-argument-nonnegative",
+        "cfi-cdesc-t-rank-argument-at-most-cfi-max-rank"
+      ],
+      "pending": {
+        "cfi-cdesc-t-rank-argument-integer-constant-expression": "Positive source control declares CFI_CDESC_T(0) and CFI_CDESC_T(CFI_MAX_RANK) objects; source-control mutation uses a runtime int variable as the argument without claiming a required diagnostic.",
+        "cfi-cdesc-t-rank-argument-nonnegative": "Positive source control uses rank 0; source-control mutation uses -1 as the rank argument without claiming a required diagnostic.",
+        "cfi-cdesc-t-rank-argument-at-most-cfi-max-rank": "Positive source control uses CFI_MAX_RANK; source-control mutation uses CFI_MAX_RANK+1 without claiming a required diagnostic."
+      },
+      "oracle": "Source registration only. Future mixed C/Fortran fixtures compile a C translation unit with the processor ISO_Fortran_binding.h supplied by the harness and assert only portable properties: required type and member presence, required member ordering, macro availability, integer-constant expression usability, sign and distinctness relations fixed by the text, CFI_VERSION equality inside processor-created descriptors, descriptor rank/extent/lower-bound/stride relations, and named error-code results. Numeric macro values, descriptor storage addresses, unsupported C type availability, extra processor extension codes, line-number effects, IOMSG text, and allocation-failure occurrence are not hard-coded.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. The existing C-interoperability harness supports separate Fortran and C build steps, processor-header staging via fortran_binding_header, and compiler-header provenance checks; existing descriptor-related fixtures exercise that harness for other catalogues but are not rebound here. Unnumbered program restrictions are recorded without diagnostic facets.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 15, and 16 where already catalogued for source form, declarations, intrinsic types and kinds, arrays, execution, mixed-language harnesses, procedure interfaces, ISO_C_BINDING constants, and exact inquiry helpers. Unregistered dependencies retained: earlier Clause 18 interoperability rules, later 18.5.5 descriptor functions, clause 19 storage and association terms, and the C standard library headers named or included by ISO_Fortran_binding.h."
+    },
+    {
+      "id": "S18.5.4-004",
+      "title": "A CFI_CDESC_T variable shall not have an initializer",
+      "source": "S18.5.4 p2 initializer restriction; J3/24-007, 18 December 2023, physical PDF533.",
+      "source_units": [
+        "p2.cdesc-t-no-initializer-restriction"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "A variable declared using CFI_CDESC_T shall not have an initializer.",
+      "facets": [
+        "cfi-cdesc-t-variable-no-initializer"
+      ],
+      "pending": {
+        "cfi-cdesc-t-variable-no-initializer": "Positive source control declares CFI_CDESC_T(1) object; as a standalone declaration and initializes its fields only through CFI_establish after 18.5.5 registration; source-control mutation adds = {0} to the declaration without claiming a required diagnostic."
+      },
+      "oracle": "Source registration only. Future mixed C/Fortran fixtures compile a C translation unit with the processor ISO_Fortran_binding.h supplied by the harness and assert only portable properties: required type and member presence, required member ordering, macro availability, integer-constant expression usability, sign and distinctness relations fixed by the text, CFI_VERSION equality inside processor-created descriptors, descriptor rank/extent/lower-bound/stride relations, and named error-code results. Numeric macro values, descriptor storage addresses, unsupported C type availability, extra processor extension codes, line-number effects, IOMSG text, and allocation-failure occurrence are not hard-coded.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. The existing C-interoperability harness supports separate Fortran and C build steps, processor-header staging via fortran_binding_header, and compiler-header provenance checks; existing descriptor-related fixtures exercise that harness for other catalogues but are not rebound here. Unnumbered program restrictions are recorded without diagnostic facets.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 15, and 16 where already catalogued for source form, declarations, intrinsic types and kinds, arrays, execution, mixed-language harnesses, procedure interfaces, ISO_C_BINDING constants, and exact inquiry helpers. Unregistered dependencies retained: earlier Clause 18 interoperability rules, later 18.5.5 descriptor functions, clause 19 storage and association terms, and the C standard library headers named or included by ISO_Fortran_binding.h."
+    },
+    {
+      "id": "S18.5.4-005",
+      "title": "CFI_index_t is a signed integer type capable of representing pointer differences",
+      "source": "S18.5.4 p3; J3/24-007, 18 December 2023, physical PDF533.",
+      "source_units": [
+        "p3"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "CFI_index_t is a typedef name for a standard signed integer type capable of representing the result of subtracting two pointers.",
+      "facets": [
+        "cfi-index-t-standard-signed-integer",
+        "cfi-index-t-represents-pointer-difference"
+      ],
+      "pending": {
+        "cfi-index-t-standard-signed-integer": "Compile _Static_assert((CFI_index_t)-1 < (CFI_index_t)0) and assign -7, 0, and 7 to volatile CFI_index_t sinks initialized to 99; mutation changes the typedef use to an unsigned helper typedef in a control header.",
+        "cfi-index-t-represents-pointer-difference": "Create a C array of five int objects, compute ptrdiff_t delta = &a[4] - &a[1], assign it to a CFI_index_t sentinel initialized to -99, and assert the sentinel equals 3; mutation expects the byte difference instead of element difference."
+      },
+      "oracle": "Source registration only. Future mixed C/Fortran fixtures compile a C translation unit with the processor ISO_Fortran_binding.h supplied by the harness and assert only portable properties: required type and member presence, required member ordering, macro availability, integer-constant expression usability, sign and distinctness relations fixed by the text, CFI_VERSION equality inside processor-created descriptors, descriptor rank/extent/lower-bound/stride relations, and named error-code results. Numeric macro values, descriptor storage addresses, unsupported C type availability, extra processor extension codes, line-number effects, IOMSG text, and allocation-failure occurrence are not hard-coded.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. The existing C-interoperability harness supports separate Fortran and C build steps, processor-header staging via fortran_binding_header, and compiler-header provenance checks; existing descriptor-related fixtures exercise that harness for other catalogues but are not rebound here. Unnumbered program restrictions are recorded without diagnostic facets.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 15, and 16 where already catalogued for source form, declarations, intrinsic types and kinds, arrays, execution, mixed-language harnesses, procedure interfaces, ISO_C_BINDING constants, and exact inquiry helpers. Unregistered dependencies retained: earlier Clause 18 interoperability rules, later 18.5.5 descriptor functions, clause 19 storage and association terms, and the C standard library headers named or included by ISO_Fortran_binding.h."
+    },
+    {
+      "id": "S18.5.4-006",
+      "title": "CFI_MAX_RANK is at least 15 and CFI_rank_t represents supported ranks",
+      "source": "S18.5.4 p4 required rank properties; J3/24-007, 18 December 2023, physical PDF533.",
+      "source_units": [
+        "p4.max-rank-lower-bound",
+        "p4.rank-typedef"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "CFI_MAX_RANK is the largest supported rank with value at least 15, and CFI_rank_t is a standard integer type capable of representing the largest supported rank.",
+      "facets": [
+        "cfi-max-rank-at-least-fifteen",
+        "cfi-rank-t-represents-cfi-max-rank",
+        "cfi-rank-t-standard-integer-type"
+      ],
+      "pending": {
+        "cfi-max-rank-at-least-fifteen": "Compile _Static_assert(CFI_MAX_RANK >= 15) and declare CFI_CDESC_T(15) storage; mutation changes the assertion to CFI_MAX_RANK < 15.",
+        "cfi-rank-t-represents-cfi-max-rank": "Assign CFI_MAX_RANK to a volatile CFI_rank_t initialized to -1 and assert the stored value compares equal to CFI_MAX_RANK; mutation truncates through signed char in a control helper.",
+        "cfi-rank-t-standard-integer-type": "Compile arithmetic and comparison probes on CFI_rank_t values 0, 1, and CFI_MAX_RANK, passing their addresses to a CFI_rank_t helper; mutation passes a pointer to double."
+      },
+      "oracle": "Source registration only. Future mixed C/Fortran fixtures compile a C translation unit with the processor ISO_Fortran_binding.h supplied by the harness and assert only portable properties: required type and member presence, required member ordering, macro availability, integer-constant expression usability, sign and distinctness relations fixed by the text, CFI_VERSION equality inside processor-created descriptors, descriptor rank/extent/lower-bound/stride relations, and named error-code results. Numeric macro values, descriptor storage addresses, unsupported C type availability, extra processor extension codes, line-number effects, IOMSG text, and allocation-failure occurrence are not hard-coded.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. The existing C-interoperability harness supports separate Fortran and C build steps, processor-header staging via fortran_binding_header, and compiler-header provenance checks; existing descriptor-related fixtures exercise that harness for other catalogues but are not rebound here. Unnumbered program restrictions are recorded without diagnostic facets.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 15, and 16 where already catalogued for source form, declarations, intrinsic types and kinds, arrays, execution, mixed-language harnesses, procedure interfaces, ISO_C_BINDING constants, and exact inquiry helpers. Unregistered dependencies retained: earlier Clause 18 interoperability rules, later 18.5.5 descriptor functions, clause 19 storage and association terms, and the C standard library headers named or included by ISO_Fortran_binding.h."
+    },
+    {
+      "id": "S18.5.4-007",
+      "title": "The exact CFI_MAX_RANK value above the lower bound is processor dependent",
+      "source": "S18.5.4 p4 rank latitude; J3/24-007, 18 December 2023, physical PDF533.",
+      "source_units": [
+        "p4.max-rank-latitude"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The CFI_MAX_RANK macro has a processor-dependent value equal to the largest rank supported, subject to the required lower bound of 15.",
+      "facets": [
+        "cfi-max-rank-exact-value-processor-dependent"
+      ],
+      "pending": {
+        "cfi-max-rank-exact-value-processor-dependent": "No portable oracle may require a particular CFI_MAX_RANK value above 15; future fixtures use CFI_MAX_RANK itself for upper-bound cases and never hard-code a larger exact rank."
+      },
+      "oracle": "Source registration only. Future mixed C/Fortran fixtures compile a C translation unit with the processor ISO_Fortran_binding.h supplied by the harness and assert only portable properties: required type and member presence, required member ordering, macro availability, integer-constant expression usability, sign and distinctness relations fixed by the text, CFI_VERSION equality inside processor-created descriptors, descriptor rank/extent/lower-bound/stride relations, and named error-code results. Numeric macro values, descriptor storage addresses, unsupported C type availability, extra processor extension codes, line-number effects, IOMSG text, and allocation-failure occurrence are not hard-coded.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. The existing C-interoperability harness supports separate Fortran and C build steps, processor-header staging via fortran_binding_header, and compiler-header provenance checks; existing descriptor-related fixtures exercise that harness for other catalogues but are not rebound here. Unnumbered program restrictions are recorded without diagnostic facets.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 15, and 16 where already catalogued for source form, declarations, intrinsic types and kinds, arrays, execution, mixed-language harnesses, procedure interfaces, ISO_C_BINDING constants, and exact inquiry helpers. Unregistered dependencies retained: earlier Clause 18 interoperability rules, later 18.5.5 descriptor functions, clause 19 storage and association terms, and the C standard library headers named or included by ISO_Fortran_binding.h."
+    },
+    {
+      "id": "S18.5.4-008",
+      "title": "CFI_VERSION has a processor-dependent header-version value",
+      "source": "S18.5.4 p5 version value; J3/24-007, 18 December 2023, physical PDF533.",
+      "source_units": [
+        "p5.version-value-latitude"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "CFI_VERSION has a processor-dependent value that encodes the version of the ISO_Fortran_binding.h source file containing the macro.",
+      "facets": [
+        "cfi-version-macro-defined",
+        "cfi-version-exact-value-processor-dependent",
+        "descriptor-version-compares-to-header-cfi-version"
+      ],
+      "pending": {
+        "cfi-version-macro-defined": "Compile a C unit assigning CFI_VERSION to an int sentinel initialized to -77 and using it in a static assertion context; mutation removes the macro from a control header.",
+        "cfi-version-exact-value-processor-dependent": "No portable oracle may require a particular numeric CFI_VERSION value; future fixtures compare descriptor version members only with the header macro from the same processor.",
+        "descriptor-version-compares-to-header-cfi-version": "Receive a descriptor from Fortran and assert desc->version == CFI_VERSION from the staged header, with the comparison result stored in a sentinel initialized to -77; mutation compares against CFI_VERSION+1."
+      },
+      "oracle": "Source registration only. Future mixed C/Fortran fixtures compile a C translation unit with the processor ISO_Fortran_binding.h supplied by the harness and assert only portable properties: required type and member presence, required member ordering, macro availability, integer-constant expression usability, sign and distinctness relations fixed by the text, CFI_VERSION equality inside processor-created descriptors, descriptor rank/extent/lower-bound/stride relations, and named error-code results. Numeric macro values, descriptor storage addresses, unsupported C type availability, extra processor extension codes, line-number effects, IOMSG text, and allocation-failure occurrence are not hard-coded.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. The existing C-interoperability harness supports separate Fortran and C build steps, processor-header staging via fortran_binding_header, and compiler-header provenance checks; existing descriptor-related fixtures exercise that harness for other catalogues but are not rebound here. Unnumbered program restrictions are recorded without diagnostic facets.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 15, and 16 where already catalogued for source form, declarations, intrinsic types and kinds, arrays, execution, mixed-language harnesses, procedure interfaces, ISO_C_BINDING constants, and exact inquiry helpers. Unregistered dependencies retained: earlier Clause 18 interoperability rules, later 18.5.5 descriptor functions, clause 19 storage and association terms, and the C standard library headers named or included by ISO_Fortran_binding.h."
+    },
+    {
+      "id": "S18.5.4-009",
+      "title": "CFI_VERSION should increase for incompatible header revisions",
+      "source": "S18.5.4 p5 recommendation; J3/24-007, 18 December 2023, physical PDF533.",
+      "source_units": [
+        "p5.version-increase-recommendation"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "CFI_VERSION should be increased for a new ISO_Fortran_binding.h version that is incompatible with the previous version.",
+      "facets": [
+        "cfi-version-increase-recommendation"
+      ],
+      "pending": {
+        "cfi-version-increase-recommendation": "No portable conformance oracle is attached to this recommendation; future provenance checks record the observed header hash and CFI_VERSION but do not require knowledge of previous incompatible versions."
+      },
+      "oracle": "Source registration only. Future mixed C/Fortran fixtures compile a C translation unit with the processor ISO_Fortran_binding.h supplied by the harness and assert only portable properties: required type and member presence, required member ordering, macro availability, integer-constant expression usability, sign and distinctness relations fixed by the text, CFI_VERSION equality inside processor-created descriptors, descriptor rank/extent/lower-bound/stride relations, and named error-code results. Numeric macro values, descriptor storage addresses, unsupported C type availability, extra processor extension codes, line-number effects, IOMSG text, and allocation-failure occurrence are not hard-coded.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. The existing C-interoperability harness supports separate Fortran and C build steps, processor-header staging via fortran_binding_header, and compiler-header provenance checks; existing descriptor-related fixtures exercise that harness for other catalogues but are not rebound here. Unnumbered program restrictions are recorded without diagnostic facets.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 15, and 16 where already catalogued for source form, declarations, intrinsic types and kinds, arrays, execution, mixed-language harnesses, procedure interfaces, ISO_C_BINDING constants, and exact inquiry helpers. Unregistered dependencies retained: earlier Clause 18 interoperability rules, later 18.5.5 descriptor functions, clause 19 storage and association terms, and the C standard library headers named or included by ISO_Fortran_binding.h."
+    },
+    {
+      "id": "S18.5.4-010",
+      "title": "Attribute code macros are nonnegative, distinct, and representable by CFI_attribute_t",
+      "source": "S18.5.4 p6 and Table 18.3; J3/24-007, 18 December 2023, physical PDF533.",
+      "source_units": [
+        "p6",
+        "table18.3"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "CFI_attribute_pointer, CFI_attribute_allocatable, and CFI_attribute_other are attribute-code macros whose values are nonnegative and distinct, and CFI_attribute_t is a standard integer type capable of representing those values.",
+      "facets": [
+        "attribute-code-macros-present",
+        "attribute-code-values-nonnegative",
+        "attribute-code-values-pairwise-distinct",
+        "cfi-attribute-t-represents-attribute-codes"
+      ],
+      "pending": {
+        "attribute-code-macros-present": "Compile a C unit naming CFI_attribute_pointer, CFI_attribute_allocatable, and CFI_attribute_other in declarations and static assertions; mutation removes one macro reference from the generated list.",
+        "attribute-code-values-nonnegative": "Use _Static_assert checks that each attribute macro is >= 0; mutation reverses one comparison.",
+        "attribute-code-values-pairwise-distinct": "Use _Static_assert checks for all three pairwise inequalities among attribute macros; mutation compares a macro with itself.",
+        "cfi-attribute-t-represents-attribute-codes": "Assign all three attribute macros to volatile CFI_attribute_t variables initialized to -77 and compare the stored values back to the macros; mutation stores through signed char in a control helper."
+      },
+      "oracle": "Source registration only. Future mixed C/Fortran fixtures compile a C translation unit with the processor ISO_Fortran_binding.h supplied by the harness and assert only portable properties: required type and member presence, required member ordering, macro availability, integer-constant expression usability, sign and distinctness relations fixed by the text, CFI_VERSION equality inside processor-created descriptors, descriptor rank/extent/lower-bound/stride relations, and named error-code results. Numeric macro values, descriptor storage addresses, unsupported C type availability, extra processor extension codes, line-number effects, IOMSG text, and allocation-failure occurrence are not hard-coded.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. The existing C-interoperability harness supports separate Fortran and C build steps, processor-header staging via fortran_binding_header, and compiler-header provenance checks; existing descriptor-related fixtures exercise that harness for other catalogues but are not rebound here. Unnumbered program restrictions are recorded without diagnostic facets.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 15, and 16 where already catalogued for source form, declarations, intrinsic types and kinds, arrays, execution, mixed-language harnesses, procedure interfaces, ISO_C_BINDING constants, and exact inquiry helpers. Unregistered dependencies retained: earlier Clause 18 interoperability rules, later 18.5.5 descriptor functions, clause 19 storage and association terms, and the C standard library headers named or included by ISO_Fortran_binding.h."
+    },
+    {
+      "id": "S18.5.4-011",
+      "title": "Attribute code macros identify pointer, allocatable, and other data objects",
+      "source": "S18.5.4 p7 and Table 18.3; J3/24-007, 18 December 2023, physical PDF533-534.",
+      "source_units": [
+        "table18.3",
+        "p7"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "CFI_attribute_pointer specifies a data object with the Fortran POINTER attribute, CFI_attribute_allocatable specifies an object with the Fortran ALLOCATABLE attribute, and CFI_attribute_other specifies a nonallocatable nonpointer object.",
+      "facets": [
+        "attribute-pointer-specifies-data-pointer",
+        "attribute-allocatable-specifies-allocatable",
+        "attribute-other-specifies-nonallocatable-nonpointer"
+      ],
+      "pending": {
+        "attribute-pointer-specifies-data-pointer": "Pass a Fortran pointer associated with a target containing [3,5,7] to C and assert desc->attribute equals CFI_attribute_pointer after confirming base_addr is nonnull; mutation expects CFI_attribute_allocatable.",
+        "attribute-allocatable-specifies-allocatable": "Pass an allocated allocatable array [11,13,17] to C and assert desc->attribute equals CFI_attribute_allocatable after confirming extent three; mutation expects CFI_attribute_other.",
+        "attribute-other-specifies-nonallocatable-nonpointer": "Pass a nonallocatable nonpointer explicit array [19,23,29] to C and assert desc->attribute equals CFI_attribute_other after confirming lower_bound zero; mutation expects CFI_attribute_pointer."
+      },
+      "oracle": "Source registration only. Future mixed C/Fortran fixtures compile a C translation unit with the processor ISO_Fortran_binding.h supplied by the harness and assert only portable properties: required type and member presence, required member ordering, macro availability, integer-constant expression usability, sign and distinctness relations fixed by the text, CFI_VERSION equality inside processor-created descriptors, descriptor rank/extent/lower-bound/stride relations, and named error-code results. Numeric macro values, descriptor storage addresses, unsupported C type availability, extra processor extension codes, line-number effects, IOMSG text, and allocation-failure occurrence are not hard-coded.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. The existing C-interoperability harness supports separate Fortran and C build steps, processor-header staging via fortran_binding_header, and compiler-header provenance checks; existing descriptor-related fixtures exercise that harness for other catalogues but are not rebound here. Unnumbered program restrictions are recorded without diagnostic facets.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 15, and 16 where already catalogued for source form, declarations, intrinsic types and kinds, arrays, execution, mixed-language harnesses, procedure interfaces, ISO_C_BINDING constants, and exact inquiry helpers. Unregistered dependencies retained: earlier Clause 18 interoperability rules, later 18.5.5 descriptor functions, clause 19 storage and association terms, and the C standard library headers named or included by ISO_Fortran_binding.h."
+    },
+    {
+      "id": "S18.5.4-012",
+      "title": "CFI_type_other and CFI_type_struct have fixed sign and distinctness requirements",
+      "source": "S18.5.4 p8 other and struct values; J3/24-007, 18 December 2023, physical PDF534.",
+      "source_units": [
+        "p8.other-struct-required-values",
+        "table18.4"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "CFI_type_other has a negative value distinct from all other type specifiers, and CFI_type_struct has a positive value distinct from all other type specifiers and specifies an interoperable C structure.",
+      "facets": [
+        "cfi-type-other-negative",
+        "cfi-type-other-distinct",
+        "cfi-type-struct-positive",
+        "cfi-type-struct-distinct",
+        "cfi-type-struct-interoperable-structure"
+      ],
+      "pending": {
+        "cfi-type-other-negative": "Compile _Static_assert(CFI_type_other < 0); mutation reverses the sign test.",
+        "cfi-type-other-distinct": "Generate static assertions comparing CFI_type_other with every other Table 18.4 macro and CFI_type_struct for inequality; mutation compares CFI_type_other with itself.",
+        "cfi-type-struct-positive": "Compile _Static_assert(CFI_type_struct > 0); mutation changes the assertion to nonpositive.",
+        "cfi-type-struct-distinct": "Generate static assertions comparing CFI_type_struct with every other Table 18.4 macro and CFI_type_other for inequality; mutation compares CFI_type_struct with itself.",
+        "cfi-type-struct-interoperable-structure": "Pass an interoperable BIND(C) derived-type scalar with sentinel components to C and assert desc->type equals CFI_type_struct while elem_len equals sizeof the matching C struct; mutation expects CFI_type_other."
+      },
+      "oracle": "Source registration only. Future mixed C/Fortran fixtures compile a C translation unit with the processor ISO_Fortran_binding.h supplied by the harness and assert only portable properties: required type and member presence, required member ordering, macro availability, integer-constant expression usability, sign and distinctness relations fixed by the text, CFI_VERSION equality inside processor-created descriptors, descriptor rank/extent/lower-bound/stride relations, and named error-code results. Numeric macro values, descriptor storage addresses, unsupported C type availability, extra processor extension codes, line-number effects, IOMSG text, and allocation-failure occurrence are not hard-coded.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. The existing C-interoperability harness supports separate Fortran and C build steps, processor-header staging via fortran_binding_header, and compiler-header provenance checks; existing descriptor-related fixtures exercise that harness for other catalogues but are not rebound here. Unnumbered program restrictions are recorded without diagnostic facets.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 15, and 16 where already catalogued for source form, declarations, intrinsic types and kinds, arrays, execution, mixed-language harnesses, procedure interfaces, ISO_C_BINDING constants, and exact inquiry helpers. Unregistered dependencies retained: earlier Clause 18 interoperability rules, later 18.5.5 descriptor functions, clause 19 storage and association terms, and the C standard library headers named or included by ISO_Fortran_binding.h."
+    },
+    {
+      "id": "S18.5.4-013",
+      "title": "Listed CFI_type_* macros identify listed C types with support-dependent signs",
+      "source": "S18.5.4 p8 and Table 18.4 listed C types; J3/24-007, 18 December 2023, physical PDF534.",
+      "source_units": [
+        "p8.listed-type-support-signs",
+        "table18.4"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Each Table 18.4 macro is a type specifier for the listed C type; its value is positive for a C type interoperable with a Fortran type and kind supported by the processor and negative for a listed C type not interoperable with any supported Fortran type and kind.",
+      "facets": [
+        "listed-type-macros-present",
+        "listed-type-macros-map-to-c-types",
+        "supported-listed-type-macros-positive",
+        "unsupported-listed-type-macros-negative"
+      ],
+      "pending": {
+        "listed-type-macros-present": "Compile a C unit naming every Table 18.4 macro from CFI_type_signed_char through CFI_type_cptr, plus CFI_type_struct and CFI_type_other, in static assertion contexts; mutation deletes one macro from the generated list.",
+        "listed-type-macros-map-to-c-types": "Build mixed probes passing Fortran actuals of available ISO_C_BINDING kinds to C descriptors and assert the descriptor type matches the corresponding positive CFI_type_* macro set for signed integers, reals, complexes, logical C_BOOL, C_CHAR, and C_PTR; mutation removes the matching C type from the set.",
+        "supported-listed-type-macros-positive": "A Fortran profile writes availability of ISO_C_BINDING named constants for signed char, short, int, long, long long, size_t, fixed-width integers, least-width integers, fast-width integers, intmax_t, intptr_t, ptrdiff_t, float, double, long double, C complex kinds, C_BOOL, C_CHAR, and C_PTR; the C companion asserts positive CFI_type_* values for available constants.",
+        "unsupported-listed-type-macros-negative": "Using the same profile data, the C companion asserts negative CFI_type_* values for unavailable listed C type/kind mappings and records skips rather than failures for implementation extensions outside Table 18.4."
+      },
+      "oracle": "Source registration only. Future mixed C/Fortran fixtures compile a C translation unit with the processor ISO_Fortran_binding.h supplied by the harness and assert only portable properties: required type and member presence, required member ordering, macro availability, integer-constant expression usability, sign and distinctness relations fixed by the text, CFI_VERSION equality inside processor-created descriptors, descriptor rank/extent/lower-bound/stride relations, and named error-code results. Numeric macro values, descriptor storage addresses, unsupported C type availability, extra processor extension codes, line-number effects, IOMSG text, and allocation-failure occurrence are not hard-coded.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. The existing C-interoperability harness supports separate Fortran and C build steps, processor-header staging via fortran_binding_header, and compiler-header provenance checks; existing descriptor-related fixtures exercise that harness for other catalogues but are not rebound here. Unnumbered program restrictions are recorded without diagnostic facets.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 15, and 16 where already catalogued for source form, declarations, intrinsic types and kinds, arrays, execution, mixed-language harnesses, procedure interfaces, ISO_C_BINDING constants, and exact inquiry helpers. Unregistered dependencies retained: earlier Clause 18 interoperability rules, later 18.5.5 descriptor functions, clause 19 storage and association terms, and the C standard library headers named or included by ISO_Fortran_binding.h."
+    },
+    {
+      "id": "S18.5.4-014",
+      "title": "Exact listed CFI_type_* numeric values and aliases are processor latitude except where constrained",
+      "source": "S18.5.4 p8 type-code latitude; J3/24-007, 18 December 2023, physical PDF534.",
+      "source_units": [
+        "p8.type-code-latitude"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For listed C type specifiers other than the stated sign rules and the distinctness of CFI_type_other and CFI_type_struct, the exact numeric values and possible aliases among different listed C types are not fixed by this subclause.",
+      "facets": [
+        "listed-type-code-exact-values-not-fixed",
+        "listed-type-code-aliases-not-forbidden"
+      ],
+      "pending": {
+        "listed-type-code-exact-values-not-fixed": "No portable oracle may require a specific positive or negative numeric value for a listed CFI_type_* macro; future fixtures assert only sign, required distinctness, and descriptor equality to compatible macros.",
+        "listed-type-code-aliases-not-forbidden": "No portable oracle may require all listed CFI_type_* macros for C integer or real aliases to be pairwise distinct; future fixtures accept any matching positive macro for a supported interoperable kind."
+      },
+      "oracle": "Source registration only. Future mixed C/Fortran fixtures compile a C translation unit with the processor ISO_Fortran_binding.h supplied by the harness and assert only portable properties: required type and member presence, required member ordering, macro availability, integer-constant expression usability, sign and distinctness relations fixed by the text, CFI_VERSION equality inside processor-created descriptors, descriptor rank/extent/lower-bound/stride relations, and named error-code results. Numeric macro values, descriptor storage addresses, unsupported C type availability, extra processor extension codes, line-number effects, IOMSG text, and allocation-failure occurrence are not hard-coded.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. The existing C-interoperability harness supports separate Fortran and C build steps, processor-header staging via fortran_binding_header, and compiler-header provenance checks; existing descriptor-related fixtures exercise that harness for other catalogues but are not rebound here. Unnumbered program restrictions are recorded without diagnostic facets.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 15, and 16 where already catalogued for source form, declarations, intrinsic types and kinds, arrays, execution, mixed-language harnesses, procedure interfaces, ISO_C_BINDING constants, and exact inquiry helpers. Unregistered dependencies retained: earlier Clause 18 interoperability rules, later 18.5.5 descriptor functions, clause 19 storage and association terms, and the C standard library headers named or included by ISO_Fortran_binding.h."
+    },
+    {
+      "id": "S18.5.4-015",
+      "title": "Processor-supported extra interoperable C types require positive distinct specifiers",
+      "source": "S18.5.4 p9; J3/24-007, 18 December 2023, physical PDF534.",
+      "source_units": [
+        "p9.extra-type-support-latitude",
+        "p9.extra-type-positive-distinct"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Processor support for an interoperable C type not listed in Table 18.4 is extension latitude, and such a supported extra C type shall have a positive type specifier value distinct from all other type specifiers.",
+      "facets": [
+        "extra-c-type-support-processor-latitude",
+        "extra-c-type-specifier-positive",
+        "extra-c-type-specifier-distinct"
+      ],
+      "pending": {
+        "extra-c-type-support-processor-latitude": "No portable oracle requires any processor-specific interoperable C type beyond Table 18.4 to exist; future profiles may record discovered extension codes without turning absence into failure.",
+        "extra-c-type-specifier-positive": "For a processor profile that documents an extension C type and its advertised CFI type-specifier macro, compile a C assertion that the extension macro is positive; mutation changes the profile macro to CFI_type_other.",
+        "extra-c-type-specifier-distinct": "For the same documented extension macro, generate comparisons against every standard Table 18.4 macro and every other documented extension macro; mutation aliases it to CFI_type_int."
+      },
+      "oracle": "Source registration only. Future mixed C/Fortran fixtures compile a C translation unit with the processor ISO_Fortran_binding.h supplied by the harness and assert only portable properties: required type and member presence, required member ordering, macro availability, integer-constant expression usability, sign and distinctness relations fixed by the text, CFI_VERSION equality inside processor-created descriptors, descriptor rank/extent/lower-bound/stride relations, and named error-code results. Numeric macro values, descriptor storage addresses, unsupported C type availability, extra processor extension codes, line-number effects, IOMSG text, and allocation-failure occurrence are not hard-coded.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. The existing C-interoperability harness supports separate Fortran and C build steps, processor-header staging via fortran_binding_header, and compiler-header provenance checks; existing descriptor-related fixtures exercise that harness for other catalogues but are not rebound here. Unnumbered program restrictions are recorded without diagnostic facets.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 15, and 16 where already catalogued for source form, declarations, intrinsic types and kinds, arrays, execution, mixed-language harnesses, procedure interfaces, ISO_C_BINDING constants, and exact inquiry helpers. Unregistered dependencies retained: earlier Clause 18 interoperability rules, later 18.5.5 descriptor functions, clause 19 storage and association terms, and the C standard library headers named or included by ISO_Fortran_binding.h."
+    },
+    {
+      "id": "S18.5.4-016",
+      "title": "CFI_type_t represents supported type specifier values",
+      "source": "S18.5.4 p10; J3/24-007, 18 December 2023, physical PDF534.",
+      "source_units": [
+        "p10"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "CFI_type_t is a typedef name for a standard integer type capable of representing the values for supported type specifiers.",
+      "facets": [
+        "cfi-type-t-standard-integer-type",
+        "cfi-type-t-represents-supported-type-specifiers"
+      ],
+      "pending": {
+        "cfi-type-t-standard-integer-type": "Compile arithmetic and comparison probes on CFI_type_t values including CFI_type_other and CFI_type_struct, passing addresses to a CFI_type_t helper; mutation passes a pointer to double.",
+        "cfi-type-t-represents-supported-type-specifiers": "Assign every supported positive Table 18.4 macro and CFI_type_other to volatile CFI_type_t variables initialized to -77, then compare stored values back to the macros; mutation stores through signed char in a control helper."
+      },
+      "oracle": "Source registration only. Future mixed C/Fortran fixtures compile a C translation unit with the processor ISO_Fortran_binding.h supplied by the harness and assert only portable properties: required type and member presence, required member ordering, macro availability, integer-constant expression usability, sign and distinctness relations fixed by the text, CFI_VERSION equality inside processor-created descriptors, descriptor rank/extent/lower-bound/stride relations, and named error-code results. Numeric macro values, descriptor storage addresses, unsupported C type availability, extra processor extension codes, line-number effects, IOMSG text, and allocation-failure occurrence are not hard-coded.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. The existing C-interoperability harness supports separate Fortran and C build steps, processor-header staging via fortran_binding_header, and compiler-header provenance checks; existing descriptor-related fixtures exercise that harness for other catalogues but are not rebound here. Unnumbered program restrictions are recorded without diagnostic facets.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 15, and 16 where already catalogued for source form, declarations, intrinsic types and kinds, arrays, execution, mixed-language harnesses, procedure interfaces, ISO_C_BINDING constants, and exact inquiry helpers. Unregistered dependencies retained: earlier Clause 18 interoperability rules, later 18.5.5 descriptor functions, clause 19 storage and association terms, and the C standard library headers named or included by ISO_Fortran_binding.h."
+    },
+    {
+      "id": "S18.5.4-017",
+      "title": "Standard error code macros have fixed zero, nonzero, and distinctness relations",
+      "source": "S18.5.4 p11 error-code values and Table 18.5 names; J3/24-007, 18 December 2023, physical PDF535.",
+      "source_units": [
+        "p11.error-code-values",
+        "table18.5"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "CFI_SUCCESS is zero, and every Table 18.5 error macro other than CFI_SUCCESS is nonzero and has a value different from the other macros specified in 18.5.4.",
+      "facets": [
+        "cfi-success-zero",
+        "standard-error-codes-nonzero",
+        "standard-error-codes-pairwise-distinct",
+        "standard-error-code-macros-present"
+      ],
+      "pending": {
+        "cfi-success-zero": "Compile _Static_assert(CFI_SUCCESS == 0); mutation changes the expected value to one.",
+        "standard-error-codes-nonzero": "Generate _Static_assert checks that CFI_ERROR_BASE_ADDR_NULL, CFI_ERROR_BASE_ADDR_NOT_NULL, CFI_INVALID_ELEM_LEN, CFI_INVALID_RANK, CFI_INVALID_TYPE, CFI_INVALID_ATTRIBUTE, CFI_INVALID_EXTENT, CFI_INVALID_DESCRIPTOR, CFI_ERROR_MEM_ALLOCATION, and CFI_ERROR_OUT_OF_BOUNDS are all nonzero; mutation compares one to zero.",
+        "standard-error-codes-pairwise-distinct": "Generate all pairwise inequality assertions among the non-success Table 18.5 error macros and against CFI_SUCCESS; mutation compares one macro with itself.",
+        "standard-error-code-macros-present": "Compile a C unit naming every Table 18.5 error macro in an integer constant expression and assigning each to an int sentinel; mutation deletes one macro from the generated list."
+      },
+      "oracle": "Source registration only. Future mixed C/Fortran fixtures compile a C translation unit with the processor ISO_Fortran_binding.h supplied by the harness and assert only portable properties: required type and member presence, required member ordering, macro availability, integer-constant expression usability, sign and distinctness relations fixed by the text, CFI_VERSION equality inside processor-created descriptors, descriptor rank/extent/lower-bound/stride relations, and named error-code results. Numeric macro values, descriptor storage addresses, unsupported C type availability, extra processor extension codes, line-number effects, IOMSG text, and allocation-failure occurrence are not hard-coded.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. The existing C-interoperability harness supports separate Fortran and C build steps, processor-header staging via fortran_binding_header, and compiler-header provenance checks; existing descriptor-related fixtures exercise that harness for other catalogues but are not rebound here. Unnumbered program restrictions are recorded without diagnostic facets.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 15, and 16 where already catalogued for source form, declarations, intrinsic types and kinds, arrays, execution, mixed-language harnesses, procedure interfaces, ISO_C_BINDING constants, and exact inquiry helpers. Unregistered dependencies retained: earlier Clause 18 interoperability rules, later 18.5.5 descriptor functions, clause 19 storage and association terms, and the C standard library headers named or included by ISO_Fortran_binding.h."
+    },
+    {
+      "id": "S18.5.4-018",
+      "title": "Nonstandard descriptor-function errors should use codes distinct from standard Table 18.5 codes",
+      "source": "S18.5.4 p11 recommendation; J3/24-007, 18 December 2023, physical PDF535.",
+      "source_units": [
+        "p11.other-error-recommendation"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Error conditions other than those listed in 18.5.4 should be indicated by error codes different from the standard Table 18.5 macro values.",
+      "facets": [
+        "nonstandard-error-codes-distinct-recommendation"
+      ],
+      "pending": {
+        "nonstandard-error-codes-distinct-recommendation": "No portable conformance oracle is attached to this recommendation; future tests of standard functions compare only named standard error conditions and do not require a processor to expose any nonstandard condition."
+      },
+      "oracle": "Source registration only. Future mixed C/Fortran fixtures compile a C translation unit with the processor ISO_Fortran_binding.h supplied by the harness and assert only portable properties: required type and member presence, required member ordering, macro availability, integer-constant expression usability, sign and distinctness relations fixed by the text, CFI_VERSION equality inside processor-created descriptors, descriptor rank/extent/lower-bound/stride relations, and named error-code results. Numeric macro values, descriptor storage addresses, unsupported C type availability, extra processor extension codes, line-number effects, IOMSG text, and allocation-failure occurrence are not hard-coded.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. The existing C-interoperability harness supports separate Fortran and C build steps, processor-header staging via fortran_binding_header, and compiler-header provenance checks; existing descriptor-related fixtures exercise that harness for other catalogues but are not rebound here. Unnumbered program restrictions are recorded without diagnostic facets.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 15, and 16 where already catalogued for source form, declarations, intrinsic types and kinds, arrays, execution, mixed-language harnesses, procedure interfaces, ISO_C_BINDING constants, and exact inquiry helpers. Unregistered dependencies retained: earlier Clause 18 interoperability rules, later 18.5.5 descriptor functions, clause 19 storage and association terms, and the C standard library headers named or included by ISO_Fortran_binding.h."
+    },
+    {
+      "id": "S18.5.4-019",
+      "title": "Table 18.5 error code values indicate the described error conditions",
+      "source": "S18.5.4 p12 and Table 18.5 error conditions; J3/24-007, 18 December 2023, physical PDF535.",
+      "source_units": [
+        "p12",
+        "table18.5"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The Table 18.5 macro values indicate the named conditions: success, null or nonnull base address errors, invalid element length, rank, type, attribute, extent, or descriptor, memory allocation failure, and out-of-bounds reference.",
+      "facets": [
+        "cfi-success-means-no-error",
+        "error-base-addr-null-condition",
+        "error-base-addr-not-null-condition",
+        "invalid-elem-len-condition",
+        "invalid-rank-condition",
+        "invalid-type-condition",
+        "invalid-attribute-condition",
+        "invalid-extent-condition",
+        "invalid-descriptor-condition",
+        "error-mem-allocation-condition",
+        "error-out-of-bounds-condition"
+      ],
+      "pending": {
+        "cfi-success-means-no-error": "After 18.5.5 registration, call CFI_establish with valid CFI_CDESC_T(1) storage, a three-element int array, elem_len sizeof(int), rank one, valid extent three, CFI_attribute_other, and CFI_type_int under availability guards; assert the result is CFI_SUCCESS, with mutation changing rank to two.",
+        "error-base-addr-null-condition": "Call a descriptor function context requiring nonnull base_addr with a descriptor whose base_addr is NULL and assert the named result CFI_ERROR_BASE_ADDR_NULL; mutation supplies a nonnull three-element array.",
+        "error-base-addr-not-null-condition": "Call a descriptor function context requiring null base_addr with a descriptor whose base_addr points at a sentinel object and assert CFI_ERROR_BASE_ADDR_NOT_NULL; mutation supplies NULL.",
+        "invalid-elem-len-condition": "Call CFI_establish or another registered function with elem_len zero for a scalar int descriptor requiring positive storage and assert CFI_INVALID_ELEM_LEN; mutation uses sizeof(int).",
+        "invalid-rank-condition": "Call a registered descriptor function with rank CFI_MAX_RANK+1 in a generated source-control path and assert CFI_INVALID_RANK rather than any numeric value; mutation uses rank one.",
+        "invalid-type-condition": "Call a registered descriptor function with a type code not accepted for the operation, using CFI_type_other as the invalid value and asserting CFI_INVALID_TYPE; mutation uses CFI_type_int under availability guards.",
+        "invalid-attribute-condition": "Call a registered descriptor function with an attribute code not among the three standard attribute macros, using a generated value distinct from them, and assert CFI_INVALID_ATTRIBUTE; mutation uses CFI_attribute_other.",
+        "invalid-extent-condition": "Call a registered descriptor function with a negative non-assumed-size extent in a nonfinal dimension and assert CFI_INVALID_EXTENT; mutation uses extent three.",
+        "invalid-descriptor-condition": "No single portable corruption pattern is guaranteed to be diagnosed as the generic invalid descriptor rather than a more specific Table 18.5 condition; future fixtures prefer the specific named errors and leave this facet pending absent a standard function context that isolates it.",
+        "error-mem-allocation-condition": "No portable oracle can force memory allocation failure without relying on resource exhaustion or processor limits; future fixtures do not attempt to require CFI_ERROR_MEM_ALLOCATION.",
+        "error-out-of-bounds-condition": "After CFI_address or CFI_section behavior is registered, establish a rank-one descriptor with extent three and request subscript four; assert CFI_ERROR_OUT_OF_BOUNDS or a null result exactly as the function text specifies, with mutation requesting subscript two."
+      },
+      "oracle": "Source registration only. Future mixed C/Fortran fixtures compile a C translation unit with the processor ISO_Fortran_binding.h supplied by the harness and assert only portable properties: required type and member presence, required member ordering, macro availability, integer-constant expression usability, sign and distinctness relations fixed by the text, CFI_VERSION equality inside processor-created descriptors, descriptor rank/extent/lower-bound/stride relations, and named error-code results. Numeric macro values, descriptor storage addresses, unsupported C type availability, extra processor extension codes, line-number effects, IOMSG text, and allocation-failure occurrence are not hard-coded.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. The existing C-interoperability harness supports separate Fortran and C build steps, processor-header staging via fortran_binding_header, and compiler-header provenance checks; existing descriptor-related fixtures exercise that harness for other catalogues but are not rebound here. Unnumbered program restrictions are recorded without diagnostic facets.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 15, and 16 where already catalogued for source form, declarations, intrinsic types and kinds, arrays, execution, mixed-language harnesses, procedure interfaces, ISO_C_BINDING constants, and exact inquiry helpers. Unregistered dependencies retained: earlier Clause 18 interoperability rules, later 18.5.5 descriptor functions, clause 19 storage and association terms, and the C standard library headers named or included by ISO_Fortran_binding.h."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.5.4-001"
+      ],
+      "rationale": "Required integer-constant-expression and preprocessing suitability for every macro except CFI_CDESC_T."
+    },
+    {
+      "unit": "p2",
+      "disposition": "structural",
+      "rationale": "CFI_CDESC_T storage effects and unnumbered program restrictions are split."
+    },
+    {
+      "unit": "p2.cdesc-t-storage",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.5.4-002"
+      ],
+      "rationale": "Required descriptor storage type, size, alignment, and castability."
+    },
+    {
+      "unit": "p2.cdesc-t-argument-restrictions",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.5.4-003"
+      ],
+      "rationale": "Unnumbered rank-argument restrictions; no diagnostic facet is claimed."
+    },
+    {
+      "unit": "p2.cdesc-t-no-initializer-restriction",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.5.4-004"
+      ],
+      "rationale": "Unnumbered initializer restriction; no diagnostic facet is claimed."
+    },
+    {
+      "unit": "note1",
+      "disposition": "informative",
+      "rationale": "NOTE illustrates CFI_CDESC_T usage and explicit cast; it is not normative."
+    },
+    {
+      "unit": "p3",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.5.4-005"
+      ],
+      "rationale": "Required CFI_index_t signed integer typedef capable of representing pointer differences."
+    },
+    {
+      "unit": "p4",
+      "disposition": "structural",
+      "rationale": "Mixed CFI_MAX_RANK lower bound, exact value latitude, and CFI_rank_t typedef are split."
+    },
+    {
+      "unit": "p4.max-rank-lower-bound",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.5.4-006"
+      ],
+      "rationale": "Required CFI_MAX_RANK lower bound and largest-supported-rank meaning."
+    },
+    {
+      "unit": "p4.max-rank-latitude",
+      "disposition": "permission",
+      "requirements": [
+        "S18.5.4-007"
+      ],
+      "rationale": "Processor latitude for exact CFI_MAX_RANK above the lower bound."
+    },
+    {
+      "unit": "p4.rank-typedef",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.5.4-006"
+      ],
+      "rationale": "Required CFI_rank_t integer typedef capable of representing supported ranks."
+    },
+    {
+      "unit": "p5",
+      "disposition": "structural",
+      "rationale": "Mixed processor-dependent CFI_VERSION value and version-increase recommendation are split."
+    },
+    {
+      "unit": "p5.version-value-latitude",
+      "disposition": "permission",
+      "requirements": [
+        "S18.5.4-008"
+      ],
+      "rationale": "Processor-dependent CFI_VERSION value and descriptor-version comparison basis."
+    },
+    {
+      "unit": "p5.version-increase-recommendation",
+      "disposition": "recommendation",
+      "requirements": [
+        "S18.5.4-009"
+      ],
+      "rationale": "Recommended CFI_VERSION increase for incompatible header revisions."
+    },
+    {
+      "unit": "p6",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.5.4-010"
+      ],
+      "rationale": "Required nonnegative distinct attribute-code values and CFI_attribute_t representation."
+    },
+    {
+      "unit": "table18.3",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.5.4-010",
+        "S18.5.4-011"
+      ],
+      "rationale": "Normative attribute-code macro names and attribute meanings."
+    },
+    {
+      "unit": "p7",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.5.4-011"
+      ],
+      "rationale": "Required meaning of the three standard attribute-code macros."
+    },
+    {
+      "unit": "p8",
+      "disposition": "structural",
+      "rationale": "Mixed fixed sign/distinctness rules, support-dependent signs, and unconstrained exact type-code values are split."
+    },
+    {
+      "unit": "p8.other-struct-required-values",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.5.4-012"
+      ],
+      "rationale": "Required CFI_type_other and CFI_type_struct signs and distinctness."
+    },
+    {
+      "unit": "p8.listed-type-support-signs",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.5.4-013"
+      ],
+      "rationale": "Required support-dependent signs for listed type-specifier macros."
+    },
+    {
+      "unit": "p8.type-code-latitude",
+      "disposition": "permission",
+      "requirements": [
+        "S18.5.4-014"
+      ],
+      "rationale": "Exact listed type-code values and aliases are not fixed beyond stated constraints."
+    },
+    {
+      "unit": "p9",
+      "disposition": "structural",
+      "rationale": "Mixed extension-type support latitude and required positive distinct extension specifiers are split."
+    },
+    {
+      "unit": "p9.extra-type-support-latitude",
+      "disposition": "permission",
+      "requirements": [
+        "S18.5.4-015"
+      ],
+      "rationale": "Processor latitude to support unlisted interoperable C types."
+    },
+    {
+      "unit": "p9.extra-type-positive-distinct",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.5.4-015"
+      ],
+      "rationale": "Required positive distinct type specifier for each supported unlisted interoperable C type."
+    },
+    {
+      "unit": "p10",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.5.4-016"
+      ],
+      "rationale": "Required CFI_type_t integer typedef capable of representing supported type specifiers."
+    },
+    {
+      "unit": "table18.4",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.5.4-012",
+        "S18.5.4-013"
+      ],
+      "rationale": "Normative type-code macro names and their corresponding C types."
+    },
+    {
+      "unit": "note2",
+      "disposition": "informative",
+      "rationale": "NOTE illustrates possible aliases among type codes; no requirement is based on it."
+    },
+    {
+      "unit": "p11",
+      "disposition": "structural",
+      "rationale": "Mixed standard error-code value requirements and recommendation for nonstandard errors are split."
+    },
+    {
+      "unit": "p11.error-code-values",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.5.4-017"
+      ],
+      "rationale": "Required CFI_SUCCESS zero value and nonzero distinct values for standard error macros."
+    },
+    {
+      "unit": "p11.other-error-recommendation",
+      "disposition": "recommendation",
+      "requirements": [
+        "S18.5.4-018"
+      ],
+      "rationale": "Recommended distinct codes for nonstandard error conditions."
+    },
+    {
+      "unit": "p12",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.5.4-019"
+      ],
+      "rationale": "Required meaning of Table 18.5 error code macro values."
+    },
+    {
+      "unit": "table18.5",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.5.4-017",
+        "S18.5.4-019"
+      ],
+      "rationale": "Normative standard error-code macro names, value relations, and error-condition descriptions."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_18_5_4.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "2575b004bc6bb74913ee9eac0e75eea517712af699ad920df11516611f83cf0f",
+  "review_rationale": "Source registration for 18.4 (C descriptors) and 18.5-18.5.4 (the source file ISO_Fortran_binding.h: summary, CFI_dim_t, CFI_cdesc_t, macros and typedefs) (batch243). Every unit hash-verified by an independent reviewer across two rounds; header contents are observable by a C translation unit compiled against the processor's header, with member order and additional members recorded as latitude. Source accounting only."
+}

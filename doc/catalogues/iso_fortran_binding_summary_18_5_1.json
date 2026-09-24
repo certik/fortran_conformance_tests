@@ -1,0 +1,188 @@
+{
+  "schema_version": 1,
+  "section": "18.5.1",
+  "subunits": {
+    "p1": [
+      "p1.required-header-contents",
+      "p1.c-descriptor-use"
+    ],
+    "p3": [
+      "p3.user-name-restrictions",
+      "p3.header-name-namespace"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S18.5.1-001",
+      "title": "ISO_Fortran_binding.h contains the specified structures, typedefs, macros, and prototypes",
+      "source": "S18.5.1 p1 required contents; J3/24-007, 18 December 2023, physical PDF531.",
+      "source_units": [
+        "p1.required-header-contents"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "ISO_Fortran_binding.h shall contain the C structure definitions, typedef declarations, macro definitions, and function prototypes specified in 18.5.2 through 18.5.5.",
+      "facets": [
+        "iso-fortran-binding-required-structures",
+        "iso-fortran-binding-required-typedefs",
+        "iso-fortran-binding-required-macros",
+        "iso-fortran-binding-required-function-prototypes"
+      ],
+      "pending": {
+        "iso-fortran-binding-required-structures": "Compile a C translation unit that includes ISO_Fortran_binding.h and declares CFI_dim_t, CFI_cdesc_t *, and CFI_CDESC_T(0) objects; mutate one required structure type name to a local undeclared spelling.",
+        "iso-fortran-binding-required-typedefs": "In the same C translation unit, assign sentinel values through CFI_index_t, CFI_rank_t, CFI_type_t, and CFI_attribute_t variables and pass their addresses to helpers with matching parameter types; mutate one helper parameter to int * only for a typedef-specific mismatch.",
+        "iso-fortran-binding-required-macros": "Use preprocessing conditional directives or _Static_assert expressions naming CFI_VERSION, CFI_MAX_RANK, every Table 18.3 attribute macro, every Table 18.4 type macro, and every Table 18.5 error macro; mutate by deleting one macro reference through a generated source variant.",
+        "iso-fortran-binding-required-function-prototypes": "After 18.5.5 is registered, compile a C unit taking addresses of CFI_address, CFI_allocate, CFI_deallocate, CFI_establish, CFI_is_contiguous, CFI_section, CFI_select_part, and CFI_setpointer with standard prototype-compatible function pointers; mutate one pointer signature."
+      },
+      "oracle": "Source registration only. Future mixed C/Fortran fixtures compile a C translation unit with the processor ISO_Fortran_binding.h supplied by the harness and assert only portable properties: required type and member presence, required member ordering, macro availability, integer-constant expression usability, sign and distinctness relations fixed by the text, CFI_VERSION equality inside processor-created descriptors, descriptor rank/extent/lower-bound/stride relations, and named error-code results. Numeric macro values, descriptor storage addresses, unsupported C type availability, extra processor extension codes, line-number effects, IOMSG text, and allocation-failure occurrence are not hard-coded.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. The existing C-interoperability harness supports separate Fortran and C build steps, processor-header staging via fortran_binding_header, and compiler-header provenance checks; existing descriptor-related fixtures exercise that harness for other catalogues but are not rebound here. Unnumbered program restrictions are recorded without diagnostic facets.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 15, and 16 where already catalogued for source form, declarations, intrinsic types and kinds, arrays, execution, mixed-language harnesses, procedure interfaces, ISO_C_BINDING constants, and exact inquiry helpers. Unregistered dependencies retained: earlier Clause 18 interoperability rules, later 18.5.5 descriptor functions, clause 19 storage and association terms, and the C standard library headers named or included by ISO_Fortran_binding.h."
+    },
+    {
+      "id": "S18.5.1-002",
+      "title": "ISO_Fortran_binding.h declarations let C functions interpret descriptors for non-interoperable dummies",
+      "source": "S18.5.1 p1 C descriptor use; J3/24-007, 18 December 2023, physical PDF531.",
+      "source_units": [
+        "p1.c-descriptor-use"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The definitions and declarations in ISO_Fortran_binding.h can be used by a C function to interpret and manipulate a C descriptor and to specify a C prototype interoperating with a Fortran interface that has a non-interoperable dummy variable.",
+      "facets": [
+        "c-function-interprets-c-descriptor",
+        "c-prototype-for-noninteroperable-dummy"
+      ],
+      "pending": {
+        "c-function-interprets-c-descriptor": "Use a Fortran procedure with an assumed-shape integer dummy and a C companion taking CFI_cdesc_t *; initialize actual values [11, 13, 17], have C read elem_len, rank, type, dim extent, and base_addr, then mutate the C formal to void * to lose descriptor interpretation.",
+        "c-prototype-for-noninteroperable-dummy": "Declare the Fortran BIND(C) interface for a noninteroperable assumed-shape dummy and the matching C prototype with CFI_cdesc_t *; the positive control links and checks descriptor rank, while the mutation changes the C formal to int *."
+      },
+      "oracle": "Source registration only. Future mixed C/Fortran fixtures compile a C translation unit with the processor ISO_Fortran_binding.h supplied by the harness and assert only portable properties: required type and member presence, required member ordering, macro availability, integer-constant expression usability, sign and distinctness relations fixed by the text, CFI_VERSION equality inside processor-created descriptors, descriptor rank/extent/lower-bound/stride relations, and named error-code results. Numeric macro values, descriptor storage addresses, unsupported C type availability, extra processor extension codes, line-number effects, IOMSG text, and allocation-failure occurrence are not hard-coded.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. The existing C-interoperability harness supports separate Fortran and C build steps, processor-header staging via fortran_binding_header, and compiler-header provenance checks; existing descriptor-related fixtures exercise that harness for other catalogues but are not rebound here. Unnumbered program restrictions are recorded without diagnostic facets.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 15, and 16 where already catalogued for source form, declarations, intrinsic types and kinds, arrays, execution, mixed-language harnesses, procedure interfaces, ISO_C_BINDING constants, and exact inquiry helpers. Unregistered dependencies retained: earlier Clause 18 interoperability rules, later 18.5.5 descriptor functions, clause 19 storage and association terms, and the C standard library headers named or included by ISO_Fortran_binding.h."
+    },
+    {
+      "id": "S18.5.1-003",
+      "title": "ISO_Fortran_binding.h inclusion is order-independent and idempotent apart from line numbers",
+      "source": "S18.5.1 p2; J3/24-007, 18 December 2023, physical PDF531.",
+      "source_units": [
+        "p2"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "ISO_Fortran_binding.h may be included in any order relative to standard C headers and may be included more than once in a scope with no effect different from a single inclusion other than line numbers.",
+      "facets": [
+        "include-before-standard-c-headers",
+        "include-after-standard-c-headers",
+        "include-multiple-times-idempotent"
+      ],
+      "pending": {
+        "include-before-standard-c-headers": "Compile a C unit including ISO_Fortran_binding.h before <stddef.h>, <stdint.h>, <stdbool.h>, and <complex.h>, then use size_t, int32_t, bool, _Complex, CFI_cdesc_t, and CFI_VERSION in one static assertion block; mutation reverses a required macro expectation.",
+        "include-after-standard-c-headers": "Compile a sibling C unit including the same standard C headers before ISO_Fortran_binding.h and assert the same CFI_MAX_RANK lower bound and attribute-code distinctness; mutation removes the second include.",
+        "include-multiple-times-idempotent": "Compile a C unit including ISO_Fortran_binding.h twice in one scope and once through a helper header, then declare CFI_CDESC_T(1) storage and compare CFI_VERSION to itself; mutation injects a local conflicting CFI_VERSION macro between includes."
+      },
+      "oracle": "Source registration only. Future mixed C/Fortran fixtures compile a C translation unit with the processor ISO_Fortran_binding.h supplied by the harness and assert only portable properties: required type and member presence, required member ordering, macro availability, integer-constant expression usability, sign and distinctness relations fixed by the text, CFI_VERSION equality inside processor-created descriptors, descriptor rank/extent/lower-bound/stride relations, and named error-code results. Numeric macro values, descriptor storage addresses, unsupported C type availability, extra processor extension codes, line-number effects, IOMSG text, and allocation-failure occurrence are not hard-coded.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. The existing C-interoperability harness supports separate Fortran and C build steps, processor-header staging via fortran_binding_header, and compiler-header provenance checks; existing descriptor-related fixtures exercise that harness for other catalogues but are not rebound here. Unnumbered program restrictions are recorded without diagnostic facets.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 15, and 16 where already catalogued for source form, declarations, intrinsic types and kinds, arrays, execution, mixed-language harnesses, procedure interfaces, ISO_C_BINDING constants, and exact inquiry helpers. Unregistered dependencies retained: earlier Clause 18 interoperability rules, later 18.5.5 descriptor functions, clause 19 storage and association terms, and the C standard library headers named or included by ISO_Fortran_binding.h."
+    },
+    {
+      "id": "S18.5.1-004",
+      "title": "C sources including ISO_Fortran_binding.h shall not use reserved CFI names or macro-redefine header structures",
+      "source": "S18.5.1 p3 restrictions; J3/24-007, 18 December 2023, physical PDF531.",
+      "source_units": [
+        "p3.user-name-restrictions"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "A C source file that includes ISO_Fortran_binding.h shall not use CFI_-prefixed names not defined in the header and shall not define the header-defined structure names as macro names.",
+      "facets": [
+        "no-undefined-cfi-prefixed-user-names",
+        "no-macro-redefinition-of-header-structure-names"
+      ],
+      "pending": {
+        "no-undefined-cfi-prefixed-user-names": "Positive source control uses only header-defined CFI_* identifiers and a user helper named local_descriptor_probe; source-control mutations introduce CFI_local_probe as a user function without claiming a required diagnostic.",
+        "no-macro-redefinition-of-header-structure-names": "Positive source control defines an unrelated macro LOCAL_CDESC_ALIAS before the include; source-control mutations define CFI_cdesc_t or CFI_dim_t as a macro name before the include without claiming a required diagnostic."
+      },
+      "oracle": "Source registration only. Future mixed C/Fortran fixtures compile a C translation unit with the processor ISO_Fortran_binding.h supplied by the harness and assert only portable properties: required type and member presence, required member ordering, macro availability, integer-constant expression usability, sign and distinctness relations fixed by the text, CFI_VERSION equality inside processor-created descriptors, descriptor rank/extent/lower-bound/stride relations, and named error-code results. Numeric macro values, descriptor storage addresses, unsupported C type availability, extra processor extension codes, line-number effects, IOMSG text, and allocation-failure occurrence are not hard-coded.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. The existing C-interoperability harness supports separate Fortran and C build steps, processor-header staging via fortran_binding_header, and compiler-header provenance checks; existing descriptor-related fixtures exercise that harness for other catalogues but are not rebound here. Unnumbered program restrictions are recorded without diagnostic facets.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 15, and 16 where already catalogued for source form, declarations, intrinsic types and kinds, arrays, execution, mixed-language harnesses, procedure interfaces, ISO_C_BINDING constants, and exact inquiry helpers. Unregistered dependencies retained: earlier Clause 18 interoperability rules, later 18.5.5 descriptor functions, clause 19 storage and association terms, and the C standard library headers named or included by ISO_Fortran_binding.h."
+    },
+    {
+      "id": "S18.5.1-005",
+      "title": "ISO_Fortran_binding.h exposes only CFI, underscore, member, or standard-header names",
+      "source": "S18.5.1 p3 header namespace; J3/24-007, 18 December 2023, physical PDF531.",
+      "source_units": [
+        "p3.header-name-namespace"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "All names other than structure member names defined in ISO_Fortran_binding.h begin with CFI_ or an underscore character, or are names defined by a standard C header that ISO_Fortran_binding.h includes.",
+      "facets": [
+        "header-nonmember-name-namespace"
+      ],
+      "pending": {
+        "header-nonmember-name-namespace": "No portable C translation-unit oracle enumerates all identifiers introduced by a header; future fixtures assert required CFI_* names and avoid depending on non-CFI extension names."
+      },
+      "oracle": "Source registration only. Future mixed C/Fortran fixtures compile a C translation unit with the processor ISO_Fortran_binding.h supplied by the harness and assert only portable properties: required type and member presence, required member ordering, macro availability, integer-constant expression usability, sign and distinctness relations fixed by the text, CFI_VERSION equality inside processor-created descriptors, descriptor rank/extent/lower-bound/stride relations, and named error-code results. Numeric macro values, descriptor storage addresses, unsupported C type availability, extra processor extension codes, line-number effects, IOMSG text, and allocation-failure occurrence are not hard-coded.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. The existing C-interoperability harness supports separate Fortran and C build steps, processor-header staging via fortran_binding_header, and compiler-header provenance checks; existing descriptor-related fixtures exercise that harness for other catalogues but are not rebound here. Unnumbered program restrictions are recorded without diagnostic facets.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 15, and 16 where already catalogued for source form, declarations, intrinsic types and kinds, arrays, execution, mixed-language harnesses, procedure interfaces, ISO_C_BINDING constants, and exact inquiry helpers. Unregistered dependencies retained: earlier Clause 18 interoperability rules, later 18.5.5 descriptor functions, clause 19 storage and association terms, and the C standard library headers named or included by ISO_Fortran_binding.h."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "structural",
+      "rationale": "Mixed required header contents and C descriptor use are split."
+    },
+    {
+      "unit": "p1.required-header-contents",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.5.1-001"
+      ],
+      "rationale": "Required header structures, typedefs, macros, and prototypes."
+    },
+    {
+      "unit": "p1.c-descriptor-use",
+      "disposition": "definition",
+      "requirements": [
+        "S18.5.1-002"
+      ],
+      "rationale": "Defines the descriptor-interpretation and noninteroperable-dummy prototype use of the header."
+    },
+    {
+      "unit": "p2",
+      "disposition": "permission",
+      "requirements": [
+        "S18.5.1-003"
+      ],
+      "rationale": "Permits any order of inclusion and repeated inclusion, with fixed idempotent effect except line numbers."
+    },
+    {
+      "unit": "p3",
+      "disposition": "structural",
+      "rationale": "Mixed user-name restrictions and header namespace guarantees are split."
+    },
+    {
+      "unit": "p3.user-name-restrictions",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.5.1-004"
+      ],
+      "rationale": "Unnumbered C-source restrictions on undefined CFI_ names and macro definitions of header structure names."
+    },
+    {
+      "unit": "p3.header-name-namespace",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.5.1-005"
+      ],
+      "rationale": "Guarantee on nonmember names defined by the header."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_18_5_1.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "41d6e7c5679d9012ec1a194fa750506d6c7831042ce64bc8fd9a6e7e0cff2e03",
+  "review_rationale": "Source registration for 18.4 (C descriptors) and 18.5-18.5.4 (the source file ISO_Fortran_binding.h: summary, CFI_dim_t, CFI_cdesc_t, macros and typedefs) (batch243). Every unit hash-verified by an independent reviewer across two rounds; header contents are observable by a C translation unit compiled against the processor's header, with member order and additional members recorded as latitude. Source accounting only."
+}

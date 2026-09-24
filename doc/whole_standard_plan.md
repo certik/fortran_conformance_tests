@@ -5934,6 +5934,11 @@ See `doc/source_audits/batch_237.json`.
 Forty-five units after three rounds, and with them **Clause 15 is fully registered** — 438 units in eighteen batches (220-237). The last finding was verified at the assembly level: a PROCEDURE declaration without a binding label calls a symbol named after the procedure pointer, not the C function it was meant to reach.
 See `doc/source_audits/batch_236.json`.
 
+## Batch 243 — C descriptors and ISO_Fortran_binding.h types and macros (18.4-18.5.4)
+
+Twenty-nine units after two rounds. A header specification written as 'at least these members, in any order' is two statements: the named members must exist (checkable with offsetof and sizeof), and anything else about the layout is the processor's choice.
+See `doc/source_audits/batch_243.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must

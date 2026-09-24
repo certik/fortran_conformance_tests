@@ -1,0 +1,124 @@
+{
+  "schema_version": 1,
+  "section": "18.5.2",
+  "subunits": {
+    "p1": [
+      "p1.required-members",
+      "p1.member-latitude",
+      "p1.member-values"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S18.5.2-001",
+      "title": "CFI_dim_t is a C structure typedef with required lower_bound, extent, and sm members",
+      "source": "S18.5.2 p1 type and members; J3/24-007, 18 December 2023, physical PDF531.",
+      "source_units": [
+        "p1.required-members"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "CFI_dim_t is a typedef name for a C structure that contains CFI_index_t lower_bound, CFI_index_t extent, and CFI_index_t sm members.",
+      "facets": [
+        "cfi-dim-t-typedef-structure",
+        "cfi-dim-t-lower-bound-member",
+        "cfi-dim-t-extent-member",
+        "cfi-dim-t-sm-member"
+      ],
+      "pending": {
+        "cfi-dim-t-typedef-structure": "Compile a C unit including ISO_Fortran_binding.h, declare CFI_dim_t dim initialized by separate assignments, and pass &dim to a helper taking CFI_dim_t *; mutation changes the helper type to CFI_cdesc_t *.",
+        "cfi-dim-t-lower-bound-member": "Assign (CFI_index_t)7 to dim.lower_bound and read it back through a volatile CFI_index_t sink initialized to -99; mutation reads dim.extent instead.",
+        "cfi-dim-t-extent-member": "Assign (CFI_index_t)3 to dim.extent and read it back through a volatile CFI_index_t sink initialized to -99; mutation reads dim.sm instead.",
+        "cfi-dim-t-sm-member": "Assign (CFI_index_t)sizeof(double) to dim.sm and read it back through a volatile CFI_index_t sink initialized to -99; mutation reads dim.lower_bound instead."
+      },
+      "oracle": "Source registration only. Future mixed C/Fortran fixtures compile a C translation unit with the processor ISO_Fortran_binding.h supplied by the harness and assert only portable properties: required type and member presence, required member ordering, macro availability, integer-constant expression usability, sign and distinctness relations fixed by the text, CFI_VERSION equality inside processor-created descriptors, descriptor rank/extent/lower-bound/stride relations, and named error-code results. Numeric macro values, descriptor storage addresses, unsupported C type availability, extra processor extension codes, line-number effects, IOMSG text, and allocation-failure occurrence are not hard-coded.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. The existing C-interoperability harness supports separate Fortran and C build steps, processor-header staging via fortran_binding_header, and compiler-header provenance checks; existing descriptor-related fixtures exercise that harness for other catalogues but are not rebound here. Unnumbered program restrictions are recorded without diagnostic facets.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 15, and 16 where already catalogued for source form, declarations, intrinsic types and kinds, arrays, execution, mixed-language harnesses, procedure interfaces, ISO_C_BINDING constants, and exact inquiry helpers. Unregistered dependencies retained: earlier Clause 18 interoperability rules, later 18.5.5 descriptor functions, clause 19 storage and association terms, and the C standard library headers named or included by ISO_Fortran_binding.h."
+    },
+    {
+      "id": "S18.5.2-002",
+      "title": "CFI_dim_t member values describe lower bounds, extents, and byte strides",
+      "source": "S18.5.2 p1 member values; J3/24-007, 18 December 2023, physical PDF531.",
+      "source_units": [
+        "p1.member-values"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For a dimension being described, lower_bound equals the dimension lower bound, extent equals the number of elements or -1 for the final dimension of an assumed-size array, and sm equals the byte stride between addresses of successive elements in that dimension.",
+      "facets": [
+        "cfi-dim-lower-bound-value",
+        "cfi-dim-extent-value",
+        "cfi-dim-assumed-size-final-extent-minus-one",
+        "cfi-dim-byte-stride-value"
+      ],
+      "pending": {
+        "cfi-dim-lower-bound-value": "Use a Fortran allocatable rank-one actual allocated with lower bound 4 and values [21, 22, 23], pass its descriptor to C, initialize a C sentinel to -99, and assert dim[0].lower_bound changes to 4; mutation expects zero.",
+        "cfi-dim-extent-value": "Using the same descriptor, initialize a C sentinel to -99 and assert dim[0].extent changes to 3; mutation expects 4.",
+        "cfi-dim-assumed-size-final-extent-minus-one": "Use a future assumed-size descriptor case with an earlier dimension extent two and a final assumed-size dimension; initialize a C sentinel to -99 and assert the final dim extent is -1; mutation expects a positive bound.",
+        "cfi-dim-byte-stride-value": "Pass a contiguous rank-one double precision actual with elements [2.0, 5.0, 11.0]; C asserts dim[0].sm equals the byte difference between the addresses of elements two and one computed from base_addr and elem_len, with mutation comparing against element count one."
+      },
+      "oracle": "Source registration only. Future mixed C/Fortran fixtures compile a C translation unit with the processor ISO_Fortran_binding.h supplied by the harness and assert only portable properties: required type and member presence, required member ordering, macro availability, integer-constant expression usability, sign and distinctness relations fixed by the text, CFI_VERSION equality inside processor-created descriptors, descriptor rank/extent/lower-bound/stride relations, and named error-code results. Numeric macro values, descriptor storage addresses, unsupported C type availability, extra processor extension codes, line-number effects, IOMSG text, and allocation-failure occurrence are not hard-coded.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. The existing C-interoperability harness supports separate Fortran and C build steps, processor-header staging via fortran_binding_header, and compiler-header provenance checks; existing descriptor-related fixtures exercise that harness for other catalogues but are not rebound here. Unnumbered program restrictions are recorded without diagnostic facets.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 15, and 16 where already catalogued for source form, declarations, intrinsic types and kinds, arrays, execution, mixed-language harnesses, procedure interfaces, ISO_C_BINDING constants, and exact inquiry helpers. Unregistered dependencies retained: earlier Clause 18 interoperability rules, later 18.5.5 descriptor functions, clause 19 storage and association terms, and the C standard library headers named or included by ISO_Fortran_binding.h."
+    },
+    {
+      "id": "S18.5.2-003",
+      "title": "CFI_dim_t may have additional members and any member order",
+      "source": "S18.5.2 p1 at-least and order latitude; J3/24-007, 18 December 2023, physical PDF531.",
+      "source_units": [
+        "p1.member-latitude"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "CFI_dim_t contains at least the required lower_bound, extent, and sm members, and those members may appear in any order.",
+      "facets": [
+        "cfi-dim-t-additional-members-latitude",
+        "cfi-dim-t-member-order-latitude"
+      ],
+      "pending": {
+        "cfi-dim-t-additional-members-latitude": "No portable oracle may require the absence of processor-specific additional CFI_dim_t members; future fixtures use only the standard member names.",
+        "cfi-dim-t-member-order-latitude": "No portable oracle may require a particular order among CFI_dim_t members; future static checks use member names and types only."
+      },
+      "oracle": "Source registration only. Future mixed C/Fortran fixtures compile a C translation unit with the processor ISO_Fortran_binding.h supplied by the harness and assert only portable properties: required type and member presence, required member ordering, macro availability, integer-constant expression usability, sign and distinctness relations fixed by the text, CFI_VERSION equality inside processor-created descriptors, descriptor rank/extent/lower-bound/stride relations, and named error-code results. Numeric macro values, descriptor storage addresses, unsupported C type availability, extra processor extension codes, line-number effects, IOMSG text, and allocation-failure occurrence are not hard-coded.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. The existing C-interoperability harness supports separate Fortran and C build steps, processor-header staging via fortran_binding_header, and compiler-header provenance checks; existing descriptor-related fixtures exercise that harness for other catalogues but are not rebound here. Unnumbered program restrictions are recorded without diagnostic facets.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 15, and 16 where already catalogued for source form, declarations, intrinsic types and kinds, arrays, execution, mixed-language harnesses, procedure interfaces, ISO_C_BINDING constants, and exact inquiry helpers. Unregistered dependencies retained: earlier Clause 18 interoperability rules, later 18.5.5 descriptor functions, clause 19 storage and association terms, and the C standard library headers named or included by ISO_Fortran_binding.h."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "structural",
+      "rationale": "Mixed CFI_dim_t required members, member-count/order latitude, and descriptor member value semantics are split."
+    },
+    {
+      "unit": "p1.required-members",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.5.2-001"
+      ],
+      "rationale": "Required typedef structure and standard named members."
+    },
+    {
+      "unit": "p1.member-latitude",
+      "disposition": "permission",
+      "requirements": [
+        "S18.5.2-003"
+      ],
+      "rationale": "Permission for additional CFI_dim_t members and arbitrary member order."
+    },
+    {
+      "unit": "p1.member-values",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.5.2-002"
+      ],
+      "rationale": "Required lower-bound, extent, assumed-size extent, and memory-stride meanings."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_18_5_2.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "339516cd4b84ed0f7fb784aa71c70091616cef09bcc0d15fc2473900c3589f7e",
+  "review_rationale": "Source registration for 18.4 (C descriptors) and 18.5-18.5.4 (the source file ISO_Fortran_binding.h: summary, CFI_dim_t, CFI_cdesc_t, macros and typedefs) (batch243). Every unit hash-verified by an independent reviewer across two rounds; header contents are observable by a C translation unit compiled against the processor's header, with member order and additional members recorded as latitude. Source accounting only."
+}
