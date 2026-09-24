@@ -1,0 +1,466 @@
+{
+  "schema_version": 1,
+  "section": "15.6.4",
+  "subunits": {
+    "p5": [
+      "p5.expression-evaluation",
+      "p5.result-conversion"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S15.6.4-001",
+      "title": "A statement function is a function defined by one statement",
+      "source": "15.6.4 p1; J3/24-007, 18 December 2023 PDF p358.",
+      "source_units": [
+        "p1"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A statement function is a function defined by a single statement.",
+      "facets": [
+        "single-statement-function-definition"
+      ],
+      "pending": {
+        "single-statement-function-definition": "Define integer statement function twice(x)=2*x in a specification part, initialize result sentinel -6, evaluate twice(3), and expect exact 6."
+      },
+      "oracle": "Source registration only. Future evidence must establish a distinguished non-default positive state before observation, use one-property diagnostic controls for numbered syntax rules and constraints, and compare only exact scalar values, exact control-flow targets, source admission, or required rejection. Diagnostic wording, exit status details, linker symbols, addresses, storage representation, undefined argument or result state, and processor-dependent C interoperation details are not portable oracles.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim.",
+      "dependencies": "Registered dependencies: clauses 6-13 for source form, declarations, expressions, execution constructs, data transfer, and formatting foundations already present in this suite. Clause 15 procedure characteristics, interfaces, procedure references, argument association, purity, elemental behavior, and recursion rules remain dependencies except where this section owns the stated ENTRY, RETURN, CONTAINS, non-Fortran procedure, or statement-function rule. Clauses 16, 18, and 19 remain dependencies for intrinsic functions, C interoperability, and association or scoping terminology."
+    },
+    {
+      "id": "R1547",
+      "title": "A statement function statement has a function name, optional dummy names, and a scalar expression",
+      "source": "15.6.4 R1547; J3/24-007, 18 December 2023 PDF p358.",
+      "source_units": [
+        "R1547"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "The statement function statement syntax is function-name with an optional dummy-arg-name list followed by equals and a scalar expression.",
+      "facets": [
+        "statement-function-with-dummy-list-form",
+        "statement-function-empty-dummy-list-form",
+        "malformed-statement-function-rejected"
+      ],
+      "pending": {
+        "statement-function-with-dummy-list-form": "Positive parse/evaluation control uses f(x)=x+2 and expects f(5)==7.",
+        "statement-function-empty-dummy-list-form": "Positive parse/evaluation control uses g()=19 and expects g()==19 from result sentinel -19.",
+        "malformed-statement-function-rejected": "Diagnostic/control pair changes only f(x)=x+2 to f[x]=x+2 in the same specification part; the control restores parentheses."
+      },
+      "oracle": "Grammar diagnostics are required for malformed R1547 forms.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim.",
+      "dependencies": "Registered dependencies: clauses 6-13 for source form, declarations, expressions, execution constructs, data transfer, and formatting foundations already present in this suite. Clause 15 procedure characteristics, interfaces, procedure references, argument association, purity, elemental behavior, and recursion rules remain dependencies except where this section owns the stated ENTRY, RETURN, CONTAINS, non-Fortran procedure, or statement-function rule. Clauses 16, 18, and 19 remain dependencies for intrinsic functions, C interoperability, and association or scoping terminology."
+    },
+    {
+      "id": "C1586",
+      "title": "Statement-function expressions use only permitted primaries, intrinsic operations, and eligible scalar function references",
+      "source": "15.6.4 C1586; J3/24-007, 18 December 2023 PDF p358.",
+      "source_units": [
+        "C1586"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "In a statement-function scalar expression, each primary is a constant, variable reference, function reference, or parenthesized expression; operations are intrinsic; function references meet the explicit-interface, transformational-intrinsic, scalar-result, array-argument, and prior statement-function-definition restrictions.",
+      "facets": [
+        "constant-primary-control",
+        "variable-primary-control",
+        "function-reference-control",
+        "parenthesized-expression-control",
+        "defined-operation-rejected",
+        "explicit-interface-function-reference-rejected",
+        "transformational-intrinsic-rejected",
+        "nonscalar-function-result-rejected",
+        "array-section-function-argument-rejected",
+        "later-statement-function-reference-rejected",
+        "recursive-statement-function-reference-rejected"
+      ],
+      "pending": {
+        "constant-primary-control": "Conforming control f()=17 uses a literal constant and expects exact 17.",
+        "variable-primary-control": "Conforming control has INTEGER :: k=5; f(x)=x+k and expects f(3)==8.",
+        "function-reference-control": "Conforming control f(x)=ABS(x) uses intrinsic ABS and expects f(-4)==4.",
+        "parenthesized-expression-control": "Conforming control f(x)=(x+2)*3 expects f(4)==18.",
+        "defined-operation-rejected": "Diagnostic/control pair changes only f(x)=x+1 to f(x)=x .op. 1 after defining operator .op.; control restores intrinsic +.",
+        "explicit-interface-function-reference-rejected": "Diagnostic/control pair changes only the referenced scalar function from an external implicit-interface helper to a module procedure requiring explicit interface; control restores the external helper name.",
+        "transformational-intrinsic-rejected": "Diagnostic/control pair changes only ABS(x) to SUM(a) in the expression with array name a; control restores ABS(x).",
+        "nonscalar-function-result-rejected": "Diagnostic/control pair changes only the helper function result from scalar integer to integer array result; control restores scalar result.",
+        "array-section-function-argument-rejected": "Diagnostic/control pair changes only helper(a) to helper(a(1:2)) in the statement-function expression; control passes array name a.",
+        "later-statement-function-reference-rejected": "Diagnostic/control pair places f(x)=g(x)+1 before g(x)=x; control swaps only the order so g is defined earlier.",
+        "recursive-statement-function-reference-rejected": "Diagnostic/control pair changes only f(x)=x+1 to f(x)=f(x); control restores x+1."
+      },
+      "oracle": "Source registration only. Future evidence must establish a distinguished non-default positive state before observation, use one-property diagnostic controls for numbered syntax rules and constraints, and compare only exact scalar values, exact control-flow targets, source admission, or required rejection. Diagnostic wording, exit status details, linker symbols, addresses, storage representation, undefined argument or result state, and processor-dependent C interoperation details are not portable oracles.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim.",
+      "dependencies": "Registered dependencies: clauses 6-13 for source form, declarations, expressions, execution constructs, data transfer, and formatting foundations already present in this suite. Clause 15 procedure characteristics, interfaces, procedure references, argument association, purity, elemental behavior, and recursion rules remain dependencies except where this section owns the stated ENTRY, RETURN, CONTAINS, non-Fortran procedure, or statement-function rule. Clauses 16, 18, and 19 remain dependencies for intrinsic functions, C interoperability, and association or scoping terminology."
+    },
+    {
+      "id": "C1587",
+      "title": "Statement-function named constants and arrays are declared or accessible before use",
+      "source": "15.6.4 C1587; J3/24-007, 18 December 2023 PDF p359.",
+      "source_units": [
+        "C1587"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "Named constants in a statement-function expression are declared earlier or accessible by use or host association, and arrays with array elements in the expression are declared earlier as arrays or accessible by use or host association.",
+      "facets": [
+        "earlier-named-constant-control",
+        "host-associated-named-constant-control",
+        "earlier-array-element-control",
+        "late-named-constant-rejected",
+        "late-array-declaration-rejected"
+      ],
+      "pending": {
+        "earlier-named-constant-control": "Conforming control INTEGER, PARAMETER :: k=4 before f(x)=x+k expects f(3)==7.",
+        "host-associated-named-constant-control": "Conforming internal subprogram statement function f(x)=x+k uses host PARAMETER k=5 and expects f(3)==8.",
+        "earlier-array-element-control": "Conforming control declares INTEGER :: a(2) before f(x)=x+a(2), initializes a=[1,6], and expects f(3)==9.",
+        "late-named-constant-rejected": "Diagnostic/control pair moves only INTEGER, PARAMETER :: k=4 from after f(x)=x+k to before it.",
+        "late-array-declaration-rejected": "Diagnostic/control pair moves only INTEGER :: a(2) from after f(x)=a(1) to before it."
+      },
+      "oracle": "Source registration only. Future evidence must establish a distinguished non-default positive state before observation, use one-property diagnostic controls for numbered syntax rules and constraints, and compare only exact scalar values, exact control-flow targets, source admission, or required rejection. Diagnostic wording, exit status details, linker symbols, addresses, storage representation, undefined argument or result state, and processor-dependent C interoperation details are not portable oracles.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim.",
+      "dependencies": "Registered dependencies: clauses 6-13 for source form, declarations, expressions, execution constructs, data transfer, and formatting foundations already present in this suite. Clause 15 procedure characteristics, interfaces, procedure references, argument association, purity, elemental behavior, and recursion rules remain dependencies except where this section owns the stated ENTRY, RETURN, CONTAINS, non-Fortran procedure, or statement-function rule. Clauses 16, 18, and 19 remain dependencies for intrinsic functions, C interoperability, and association or scoping terminology."
+    },
+    {
+      "id": "C1588",
+      "title": "Implicit statement-function names later declared must confirm implied type and type parameters",
+      "source": "15.6.4 C1588; J3/24-007, 18 December 2023 PDF p359.",
+      "source_units": [
+        "C1588"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "A dummy-arg-name, variable, function reference, or dummy function reference implicitly typed by a statement function has any later type declaration confirm that implied type and implied type parameter values.",
+      "facets": [
+        "confirm-implied-dummy-type-control",
+        "confirm-implied-function-type-control",
+        "conflicting-later-dummy-type-rejected",
+        "conflicting-later-function-type-rejected"
+      ],
+      "pending": {
+        "confirm-implied-dummy-type-control": "Conforming control f(i)=i+1 uses implicitly integer i and later INTEGER :: i, expecting f(6)==7.",
+        "confirm-implied-function-type-control": "Conforming control f(x)=g(x) uses implicitly real g and later REAL :: g with external scalar real helper returning 2.0, expecting exact 2.0.",
+        "conflicting-later-dummy-type-rejected": "Diagnostic/control pair changes only later INTEGER :: i to REAL :: i after f(i)=i+1; control restores INTEGER.",
+        "conflicting-later-function-type-rejected": "Diagnostic/control pair changes only later REAL :: g to INTEGER :: g after f(x)=g(x); control restores REAL."
+      },
+      "oracle": "Source registration only. Future evidence must establish a distinguished non-default positive state before observation, use one-property diagnostic controls for numbered syntax rules and constraints, and compare only exact scalar values, exact control-flow targets, source admission, or required rejection. Diagnostic wording, exit status details, linker symbols, addresses, storage representation, undefined argument or result state, and processor-dependent C interoperation details are not portable oracles.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim.",
+      "dependencies": "Registered dependencies: clauses 6-13 for source form, declarations, expressions, execution constructs, data transfer, and formatting foundations already present in this suite. Clause 15 procedure characteristics, interfaces, procedure references, argument association, purity, elemental behavior, and recursion rules remain dependencies except where this section owns the stated ENTRY, RETURN, CONTAINS, non-Fortran procedure, or statement-function rule. Clauses 16, 18, and 19 remain dependencies for intrinsic functions, C interoperability, and association or scoping terminology."
+    },
+    {
+      "id": "C1589",
+      "title": "Statement-function names and dummy names are scalar",
+      "source": "15.6.4 C1589; J3/24-007, 18 December 2023 PDF p359.",
+      "source_units": [
+        "C1589"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "The statement-function function-name and each dummy-arg-name are explicitly or implicitly scalar.",
+      "facets": [
+        "scalar-function-name-control",
+        "scalar-dummy-name-control",
+        "array-function-name-rejected",
+        "array-dummy-name-rejected"
+      ],
+      "pending": {
+        "scalar-function-name-control": "Conforming control declares INTEGER :: f and statement function f(x)=x+1, expecting f(4)==5.",
+        "scalar-dummy-name-control": "Conforming control uses scalar dummy x in sf(x)=3 and expects exact sf(4)==3.",
+        "array-function-name-rejected": "Diagnostic/control pair changes only INTEGER :: f to INTEGER :: f(2) before f(x)=x+1; control restores scalar f.",
+        "array-dummy-name-rejected": "Diagnostic/control pair keeps statement-function name sf, dummy name x, and expression sf(x)=3; the negative changes only INTEGER :: x to INTEGER :: x(2) before the statement function, and the control restores scalar x."
+      },
+      "oracle": "Source registration only. Future evidence must establish a distinguished non-default positive state before observation, use one-property diagnostic controls for numbered syntax rules and constraints, and compare only exact scalar values, exact control-flow targets, source admission, or required rejection. Diagnostic wording, exit status details, linker symbols, addresses, storage representation, undefined argument or result state, and processor-dependent C interoperation details are not portable oracles.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim.",
+      "dependencies": "Registered dependencies: clauses 6-13 for source form, declarations, expressions, execution constructs, data transfer, and formatting foundations already present in this suite. Clause 15 procedure characteristics, interfaces, procedure references, argument association, purity, elemental behavior, and recursion rules remain dependencies except where this section owns the stated ENTRY, RETURN, CONTAINS, non-Fortran procedure, or statement-function rule. Clauses 16, 18, and 19 remain dependencies for intrinsic functions, C interoperability, and association or scoping terminology."
+    },
+    {
+      "id": "C1590",
+      "title": "Statement-function dummy names are unique within the dummy list",
+      "source": "15.6.4 C1590; J3/24-007, 18 December 2023 PDF p359.",
+      "source_units": [
+        "C1590"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "A given dummy-arg-name does not appear more than once in one statement-function dummy-arg-name list.",
+      "facets": [
+        "unique-dummy-name-list-control",
+        "duplicate-dummy-name-rejected"
+      ],
+      "pending": {
+        "unique-dummy-name-list-control": "Conforming control f(x,y)=10*x+y expects f(4,5)==45.",
+        "duplicate-dummy-name-rejected": "Diagnostic/control pair changes only f(x,y)=10*x+y to f(x,x)=10*x+x; control restores second dummy name y."
+      },
+      "oracle": "Source registration only. Future evidence must establish a distinguished non-default positive state before observation, use one-property diagnostic controls for numbered syntax rules and constraints, and compare only exact scalar values, exact control-flow targets, source admission, or required rejection. Diagnostic wording, exit status details, linker symbols, addresses, storage representation, undefined argument or result state, and processor-dependent C interoperation details are not portable oracles.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim.",
+      "dependencies": "Registered dependencies: clauses 6-13 for source form, declarations, expressions, execution constructs, data transfer, and formatting foundations already present in this suite. Clause 15 procedure characteristics, interfaces, procedure references, argument association, purity, elemental behavior, and recursion rules remain dependencies except where this section owns the stated ENTRY, RETURN, CONTAINS, non-Fortran procedure, or statement-function rule. Clauses 16, 18, and 19 remain dependencies for intrinsic functions, C interoperability, and association or scoping terminology."
+    },
+    {
+      "id": "C1591",
+      "title": "A statement function is not of parameterized derived type",
+      "source": "15.6.4 C1591; J3/24-007, 18 December 2023 PDF p359.",
+      "source_units": [
+        "C1591"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "A statement function shall not have a parameterized derived type.",
+      "facets": [
+        "nonparameterized-statement-function-control",
+        "parameterized-derived-type-statement-function-rejected"
+      ],
+      "pending": {
+        "nonparameterized-statement-function-control": "Conforming control declares nonparameterized derived type t with integer component v, TYPE(t) statement function f()=t(1), and observes f()%v==1.",
+        "parameterized-derived-type-statement-function-rejected": "Diagnostic/control pair keeps statement-function name f, empty dummy list, component value 1, and constructor-style result; the negative declares f as TYPE(pdt(3)) with a length parameter, while the control changes only the result type family to a nonparameterized derived type t with the same integer component value."
+      },
+      "oracle": "Source registration only. Future evidence must establish a distinguished non-default positive state before observation, use one-property diagnostic controls for numbered syntax rules and constraints, and compare only exact scalar values, exact control-flow targets, source admission, or required rejection. Diagnostic wording, exit status details, linker symbols, addresses, storage representation, undefined argument or result state, and processor-dependent C interoperation details are not portable oracles.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim.",
+      "dependencies": "Registered dependencies: clauses 6-13 for source form, declarations, expressions, execution constructs, data transfer, and formatting foundations already present in this suite. Clause 15 procedure characteristics, interfaces, procedure references, argument association, purity, elemental behavior, and recursion rules remain dependencies except where this section owns the stated ENTRY, RETURN, CONTAINS, non-Fortran procedure, or statement-function rule. Clauses 16, 18, and 19 remain dependencies for intrinsic functions, C interoperability, and association or scoping terminology."
+    },
+    {
+      "id": "S15.6.4-002",
+      "title": "Statement functions shadowing host entities require a preceding type declaration",
+      "source": "15.6.4 p2; J3/24-007, 18 December 2023 PDF p359.",
+      "source_units": [
+        "p2"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "A statement function with the same name as an accessible host entity has a preceding type declaration statement for its type.",
+      "facets": [
+        "host-name-statement-function-type-declaration-control",
+        "host-name-statement-function-missing-declaration-source-control"
+      ],
+      "pending": {
+        "host-name-statement-function-type-declaration-control": "Internal subprogram has host integer entity f; local INTEGER :: f precedes f(x)=x+1, and call f(6) expects exact 7.",
+        "host-name-statement-function-missing-declaration-source-control": "Source-control negative deletes only the local INTEGER :: f before f(x)=x+1 with host entity f accessible; no diagnostic is claimed for this unnumbered rule."
+      },
+      "oracle": "Source registration only. Future evidence must establish a distinguished non-default positive state before observation, use one-property diagnostic controls for numbered syntax rules and constraints, and compare only exact scalar values, exact control-flow targets, source admission, or required rejection. Diagnostic wording, exit status details, linker symbols, addresses, storage representation, undefined argument or result state, and processor-dependent C interoperation details are not portable oracles.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim.",
+      "dependencies": "Registered dependencies: clauses 6-13 for source form, declarations, expressions, execution constructs, data transfer, and formatting foundations already present in this suite. Clause 15 procedure characteristics, interfaces, procedure references, argument association, purity, elemental behavior, and recursion rules remain dependencies except where this section owns the stated ENTRY, RETURN, CONTAINS, non-Fortran procedure, or statement-function rule. Clauses 16, 18, and 19 remain dependencies for intrinsic functions, C interoperability, and association or scoping terminology."
+    },
+    {
+      "id": "S15.6.4-003",
+      "title": "Statement-function dummy arguments have statement scope and inherit matching entity type parameters",
+      "source": "15.6.4 p3; J3/24-007, 18 December 2023 PDF p359.",
+      "source_units": [
+        "p3"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A statement-function dummy argument has the scope of the statement-function statement and has the same type and type parameters as the same-named entity in the containing scoping unit.",
+      "facets": [
+        "statement-function-dummy-statement-scope",
+        "statement-function-dummy-type-from-containing-entity",
+        "statement-function-dummy-type-parameter-from-containing-entity"
+      ],
+      "pending": {
+        "statement-function-dummy-statement-scope": "Containing integer variable x is initialized to 100; statement function f(x)=x+1 evaluated as f(6) returns 7 and leaves containing x exact 100, proving dummy scope is local to the statement.",
+        "statement-function-dummy-type-from-containing-entity": "Containing INTEGER :: i makes dummy i integer in f(i)=i/2; f(5) expects exact integer result 2.",
+        "statement-function-dummy-type-parameter-from-containing-entity": "Containing CHARACTER(3) :: s makes dummy s length 3 in f(s)=LEN(s); f('ABCDE') expects exact 3 after character argument association."
+      },
+      "oracle": "Source registration only. Future evidence must establish a distinguished non-default positive state before observation, use one-property diagnostic controls for numbered syntax rules and constraints, and compare only exact scalar values, exact control-flow targets, source admission, or required rejection. Diagnostic wording, exit status details, linker symbols, addresses, storage representation, undefined argument or result state, and processor-dependent C interoperation details are not portable oracles.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim.",
+      "dependencies": "Registered dependencies: clauses 6-13 for source form, declarations, expressions, execution constructs, data transfer, and formatting foundations already present in this suite. Clause 15 procedure characteristics, interfaces, procedure references, argument association, purity, elemental behavior, and recursion rules remain dependencies except where this section owns the stated ENTRY, RETURN, CONTAINS, non-Fortran procedure, or statement-function rule. Clauses 16, 18, and 19 remain dependencies for intrinsic functions, C interoperability, and association or scoping terminology."
+    },
+    {
+      "id": "S15.6.4-004",
+      "title": "Statement functions are not supplied as actual arguments",
+      "source": "15.6.4 p4; J3/24-007, 18 December 2023 PDF p359.",
+      "source_units": [
+        "p4"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "A statement function is not supplied as an actual argument.",
+      "facets": [
+        "ordinary-procedure-actual-control",
+        "statement-function-actual-source-control"
+      ],
+      "pending": {
+        "ordinary-procedure-actual-control": "Conforming control passes an external integer function helper as actual to apply(helper,4) and expects exact 5.",
+        "statement-function-actual-source-control": "Source-control negative changes only the actual procedure from external helper to statement function f in CALL apply(f,4); no diagnostic is claimed for this unnumbered rule."
+      },
+      "oracle": "Source registration only. Future evidence must establish a distinguished non-default positive state before observation, use one-property diagnostic controls for numbered syntax rules and constraints, and compare only exact scalar values, exact control-flow targets, source admission, or required rejection. Diagnostic wording, exit status details, linker symbols, addresses, storage representation, undefined argument or result state, and processor-dependent C interoperation details are not portable oracles.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim.",
+      "dependencies": "Registered dependencies: clauses 6-13 for source form, declarations, expressions, execution constructs, data transfer, and formatting foundations already present in this suite. Clause 15 procedure characteristics, interfaces, procedure references, argument association, purity, elemental behavior, and recursion rules remain dependencies except where this section owns the stated ENTRY, RETURN, CONTAINS, non-Fortran procedure, or statement-function rule. Clauses 16, 18, and 19 remain dependencies for intrinsic functions, C interoperability, and association or scoping terminology."
+    },
+    {
+      "id": "S15.6.4-005",
+      "title": "Statement-function execution evaluates the expression with actual argument values",
+      "source": "15.6.4 p5; J3/24-007, 18 December 2023 PDF p359.",
+      "source_units": [
+        "p5.expression-evaluation"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Executing a statement function evaluates its expression using the values of actual arguments for the corresponding dummy arguments.",
+      "facets": [
+        "statement-function-actual-value-substitution",
+        "statement-function-corresponding-dummy-order"
+      ],
+      "pending": {
+        "statement-function-actual-value-substitution": "Statement function f(x)=3*x+1 evaluated with actual 5 initializes result sentinel -16 and expects exact 16.",
+        "statement-function-corresponding-dummy-order": "Statement function f(x,y)=10*x+y evaluated as f(4,5) expects exact 45, proving positional correspondence of actual values to dummies."
+      },
+      "oracle": "Source registration only. Future evidence must establish a distinguished non-default positive state before observation, use one-property diagnostic controls for numbered syntax rules and constraints, and compare only exact scalar values, exact control-flow targets, source admission, or required rejection. Diagnostic wording, exit status details, linker symbols, addresses, storage representation, undefined argument or result state, and processor-dependent C interoperation details are not portable oracles.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim.",
+      "dependencies": "Registered dependencies: clauses 6-13 for source form, declarations, expressions, execution constructs, data transfer, and formatting foundations already present in this suite. Clause 15 procedure characteristics, interfaces, procedure references, argument association, purity, elemental behavior, and recursion rules remain dependencies except where this section owns the stated ENTRY, RETURN, CONTAINS, non-Fortran procedure, or statement-function rule. Clauses 16, 18, and 19 remain dependencies for intrinsic functions, C interoperability, and association or scoping terminology."
+    },
+    {
+      "id": "S15.6.4-006",
+      "title": "Statement-function results are converted to the declared type and type parameters as needed",
+      "source": "15.6.4 p5; J3/24-007, 18 December 2023 PDF p359.",
+      "source_units": [
+        "p5.result-conversion"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The result of executing a statement function is converted to the declared type and type parameters of the function as needed.",
+      "facets": [
+        "statement-function-result-type-conversion",
+        "statement-function-character-length-conversion"
+      ],
+      "pending": {
+        "statement-function-result-type-conversion": "Declare REAL :: rf; rf(i)=i+2 with integer expression and evaluate rf(5); result sentinel -7.0 changes to exact 7.0.",
+        "statement-function-character-length-conversion": "Declare CHARACTER(3) :: cf; cf(s)=s and evaluate cf('ABCDE'); check LEN(result)==3 before equality with exact 'ABC'."
+      },
+      "oracle": "Source registration only. Future evidence must establish a distinguished non-default positive state before observation, use one-property diagnostic controls for numbered syntax rules and constraints, and compare only exact scalar values, exact control-flow targets, source admission, or required rejection. Diagnostic wording, exit status details, linker symbols, addresses, storage representation, undefined argument or result state, and processor-dependent C interoperation details are not portable oracles.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim.",
+      "dependencies": "Registered dependencies: clauses 6-13 for source form, declarations, expressions, execution constructs, data transfer, and formatting foundations already present in this suite. Clause 15 procedure characteristics, interfaces, procedure references, argument association, purity, elemental behavior, and recursion rules remain dependencies except where this section owns the stated ENTRY, RETURN, CONTAINS, non-Fortran procedure, or statement-function rule. Clauses 16, 18, and 19 remain dependencies for intrinsic functions, C interoperability, and association or scoping terminology."
+    },
+    {
+      "id": "S15.6.4-007",
+      "title": "Function references in statement functions do not redefine or undefine dummy arguments",
+      "source": "15.6.4 p6; J3/24-007, 18 December 2023 PDF p359.",
+      "source_units": [
+        "p6"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "A function reference in the scalar expression of a statement function does not cause a dummy argument of that statement function to become redefined or undefined.",
+      "facets": [
+        "nonmodifying-function-reference-control",
+        "dummy-redefining-function-reference-source-control"
+      ],
+      "pending": {
+        "nonmodifying-function-reference-control": "Conforming control uses f(x)=ABS(x) and expects f(-6)==6 with x unchanged by intrinsic ABS.",
+        "dummy-redefining-function-reference-source-control": "Source-control negative changes only ABS(x) to external function bump(x) whose body increments its dummy argument before returning; no diagnostic is claimed for this unnumbered rule."
+      },
+      "oracle": "Source registration only. Future evidence must establish a distinguished non-default positive state before observation, use one-property diagnostic controls for numbered syntax rules and constraints, and compare only exact scalar values, exact control-flow targets, source admission, or required rejection. Diagnostic wording, exit status details, linker symbols, addresses, storage representation, undefined argument or result state, and processor-dependent C interoperation details are not portable oracles.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim.",
+      "dependencies": "Registered dependencies: clauses 6-13 for source form, declarations, expressions, execution constructs, data transfer, and formatting foundations already present in this suite. Clause 15 procedure characteristics, interfaces, procedure references, argument association, purity, elemental behavior, and recursion rules remain dependencies except where this section owns the stated ENTRY, RETURN, CONTAINS, non-Fortran procedure, or statement-function rule. Clauses 16, 18, and 19 remain dependencies for intrinsic functions, C interoperability, and association or scoping terminology."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "definition",
+      "requirements": [
+        "S15.6.4-001"
+      ],
+      "rationale": "Defines statement functions as single-statement functions."
+    },
+    {
+      "unit": "R1547",
+      "disposition": "requirements",
+      "requirements": [
+        "R1547"
+      ]
+    },
+    {
+      "unit": "C1586",
+      "disposition": "requirements",
+      "requirements": [
+        "C1586"
+      ]
+    },
+    {
+      "unit": "C1587",
+      "disposition": "requirements",
+      "requirements": [
+        "C1587"
+      ]
+    },
+    {
+      "unit": "C1588",
+      "disposition": "requirements",
+      "requirements": [
+        "C1588"
+      ]
+    },
+    {
+      "unit": "C1589",
+      "disposition": "requirements",
+      "requirements": [
+        "C1589"
+      ]
+    },
+    {
+      "unit": "C1590",
+      "disposition": "requirements",
+      "requirements": [
+        "C1590"
+      ]
+    },
+    {
+      "unit": "C1591",
+      "disposition": "requirements",
+      "requirements": [
+        "C1591"
+      ]
+    },
+    {
+      "unit": "p2",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.6.4-002"
+      ]
+    },
+    {
+      "unit": "p3",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.6.4-003"
+      ]
+    },
+    {
+      "unit": "p4",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.6.4-004"
+      ]
+    },
+    {
+      "unit": "p5",
+      "disposition": "structural",
+      "rationale": "Expression evaluation and result conversion effects split."
+    },
+    {
+      "unit": "p5.expression-evaluation",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.6.4-005"
+      ]
+    },
+    {
+      "unit": "p5.result-conversion",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.6.4-006"
+      ]
+    },
+    {
+      "unit": "p6",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.6.4-007"
+      ]
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_15_6_4.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "5d840f17f9da24bfe6fd01b133865e4bd793c3ffe1cdb8dcfbf33fdef205fe17",
+  "review_rationale": "Source registration for 15.6.2.6 (ENTRY), 15.6.2.7 (RETURN), 15.6.2.8 (CONTAINS), 15.6.3 (procedures defined by means other than Fortran) and 15.6.4 (statement functions) (batch236). Every unit hash-verified by an independent reviewer across three rounds; R1544-R1547 and C1579-C1591 had no existing tests and carry conforming one-feature controls, and non-Fortran procedures are observed through mixed Fortran/C builds. Source accounting only; completes Clause 15."
+}

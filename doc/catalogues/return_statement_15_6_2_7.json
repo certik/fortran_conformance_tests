@@ -1,0 +1,237 @@
+{
+  "schema_version": 1,
+  "section": "15.6.2.7",
+  "subunits": {
+    "p1": [
+      "p1.complete-execution",
+      "p1.alternate-return-branch",
+      "p1.no-alternate-transfer"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "R1545",
+      "title": "A RETURN statement has RETURN and an optional scalar integer expression",
+      "source": "15.6.2.7 R1545; J3/24-007, 18 December 2023 PDF p358.",
+      "source_units": [
+        "R1545"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "The RETURN statement syntax is RETURN followed optionally by a scalar integer expression.",
+      "facets": [
+        "return-without-expression-form",
+        "return-with-scalar-integer-expression-form",
+        "malformed-return-expression-rejected"
+      ],
+      "pending": {
+        "return-without-expression-form": "Positive control SUBROUTINE s(x); x=5; RETURN; x=-5; END changes caller sentinel -1 to exact 5.",
+        "return-with-scalar-integer-expression-form": "Positive control subroutine with alternate-return dummy uses RETURN 1 and caller observes the first alternate label sentinel.",
+        "malformed-return-expression-rejected": "Diagnostic/control pair changes only RETURN 1 to RETURN 'A'; the control restores integer expression 1."
+      },
+      "oracle": "Grammar diagnostics are required for malformed R1545 forms.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim.",
+      "dependencies": "Registered dependencies: clauses 6-13 for source form, declarations, expressions, execution constructs, data transfer, and formatting foundations already present in this suite. Clause 15 procedure characteristics, interfaces, procedure references, argument association, purity, elemental behavior, and recursion rules remain dependencies except where this section owns the stated ENTRY, RETURN, CONTAINS, non-Fortran procedure, or statement-function rule. Clauses 16, 18, and 19 remain dependencies for intrinsic functions, C interoperability, and association or scoping terminology."
+    },
+    {
+      "id": "C1584",
+      "title": "RETURN appears inside a function or subroutine inclusive scope",
+      "source": "15.6.2.7 C1584; J3/24-007, 18 December 2023 PDF p358.",
+      "source_units": [
+        "C1584"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "A RETURN statement appears in the inclusive scope of a function or subroutine subprogram.",
+      "facets": [
+        "return-in-subroutine-control",
+        "return-in-function-control",
+        "return-outside-subprogram-rejected"
+      ],
+      "pending": {
+        "return-in-subroutine-control": "Conforming control subroutine assigns x=6 then RETURN and caller observes exact 6.",
+        "return-in-function-control": "Conforming control integer function assigns result=7 then RETURN and caller observes exact 7.",
+        "return-outside-subprogram-rejected": "Diagnostic/control pair places RETURN as the only executable statement of a main program; the control wraps the same RETURN in SUBROUTINE s()."
+      },
+      "oracle": "Source registration only. Future evidence must establish a distinguished non-default positive state before observation, use one-property diagnostic controls for numbered syntax rules and constraints, and compare only exact scalar values, exact control-flow targets, source admission, or required rejection. Diagnostic wording, exit status details, linker symbols, addresses, storage representation, undefined argument or result state, and processor-dependent C interoperation details are not portable oracles.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim.",
+      "dependencies": "Registered dependencies: clauses 6-13 for source form, declarations, expressions, execution constructs, data transfer, and formatting foundations already present in this suite. Clause 15 procedure characteristics, interfaces, procedure references, argument association, purity, elemental behavior, and recursion rules remain dependencies except where this section owns the stated ENTRY, RETURN, CONTAINS, non-Fortran procedure, or statement-function rule. Clauses 16, 18, and 19 remain dependencies for intrinsic functions, C interoperability, and association or scoping terminology."
+    },
+    {
+      "id": "C1585",
+      "title": "RETURN alternate-return expressions are limited to subroutine inclusive scopes",
+      "source": "15.6.2.7 C1585; J3/24-007, 18 December 2023 PDF p358.",
+      "source_units": [
+        "C1585"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "A scalar integer expression on RETURN is allowed only in the inclusive scope of a subroutine subprogram.",
+      "facets": [
+        "return-expression-in-subroutine-control",
+        "return-expression-in-function-rejected"
+      ],
+      "pending": {
+        "return-expression-in-subroutine-control": "Conforming control subroutine s(*) executes RETURN 1 and caller observes exact branch to alternate label 100.",
+        "return-expression-in-function-rejected": "Diagnostic/control pair changes only the enclosing unit from SUBROUTINE s(*) to INTEGER FUNCTION f() while keeping RETURN 1 as the constrained feature; control restores the subroutine."
+      },
+      "oracle": "Source registration only. Future evidence must establish a distinguished non-default positive state before observation, use one-property diagnostic controls for numbered syntax rules and constraints, and compare only exact scalar values, exact control-flow targets, source admission, or required rejection. Diagnostic wording, exit status details, linker symbols, addresses, storage representation, undefined argument or result state, and processor-dependent C interoperation details are not portable oracles.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim.",
+      "dependencies": "Registered dependencies: clauses 6-13 for source form, declarations, expressions, execution constructs, data transfer, and formatting foundations already present in this suite. Clause 15 procedure characteristics, interfaces, procedure references, argument association, purity, elemental behavior, and recursion rules remain dependencies except where this section owns the stated ENTRY, RETURN, CONTAINS, non-Fortran procedure, or statement-function rule. Clauses 16, 18, and 19 remain dependencies for intrinsic functions, C interoperability, and association or scoping terminology."
+    },
+    {
+      "id": "S15.6.2.7-001",
+      "title": "RETURN completes execution of the current subprogram instance",
+      "source": "15.6.2.7 p1; J3/24-007, 18 December 2023 PDF p358.",
+      "source_units": [
+        "p1.complete-execution"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Execution of RETURN completes execution of the instance of the subprogram in which it appears.",
+      "facets": [
+        "return-skips-following-executable-statements"
+      ],
+      "pending": {
+        "return-skips-following-executable-statements": "Subroutine sets x=11, executes RETURN, then has x=-11 after RETURN; caller initializes x=-99 and expects exact 11."
+      },
+      "oracle": "Source registration only. Future evidence must establish a distinguished non-default positive state before observation, use one-property diagnostic controls for numbered syntax rules and constraints, and compare only exact scalar values, exact control-flow targets, source admission, or required rejection. Diagnostic wording, exit status details, linker symbols, addresses, storage representation, undefined argument or result state, and processor-dependent C interoperation details are not portable oracles.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim.",
+      "dependencies": "Registered dependencies: clauses 6-13 for source form, declarations, expressions, execution constructs, data transfer, and formatting foundations already present in this suite. Clause 15 procedure characteristics, interfaces, procedure references, argument association, purity, elemental behavior, and recursion rules remain dependencies except where this section owns the stated ENTRY, RETURN, CONTAINS, non-Fortran procedure, or statement-function rule. Clauses 16, 18, and 19 remain dependencies for intrinsic functions, C interoperability, and association or scoping terminology."
+    },
+    {
+      "id": "S15.6.2.7-002",
+      "title": "RETURN alternate-return expression selects the nth alternate branch target",
+      "source": "15.6.2.7 p1; J3/24-007, 18 December 2023 PDF p358.",
+      "source_units": [
+        "p1.alternate-return-branch"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For RETURN with expression value n in range 1 through the number of asterisks, the invoking CALL branches to the nth alternate return specifier target.",
+      "facets": [
+        "return-selects-first-alternate",
+        "return-selects-second-alternate"
+      ],
+      "pending": {
+        "return-selects-first-alternate": "Subroutine s(*,*) executes RETURN 1; caller initializes token=-9, CALL s(*100,*200), label 100 sets token=101, label 200 sets 202, and expected token is exact 101.",
+        "return-selects-second-alternate": "Same source shape with RETURN 2 expects exact token 202, proving index selection rather than any alternate branch."
+      },
+      "oracle": "Source registration only. Future evidence must establish a distinguished non-default positive state before observation, use one-property diagnostic controls for numbered syntax rules and constraints, and compare only exact scalar values, exact control-flow targets, source admission, or required rejection. Diagnostic wording, exit status details, linker symbols, addresses, storage representation, undefined argument or result state, and processor-dependent C interoperation details are not portable oracles.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim.",
+      "dependencies": "Registered dependencies: clauses 6-13 for source form, declarations, expressions, execution constructs, data transfer, and formatting foundations already present in this suite. Clause 15 procedure characteristics, interfaces, procedure references, argument association, purity, elemental behavior, and recursion rules remain dependencies except where this section owns the stated ENTRY, RETURN, CONTAINS, non-Fortran procedure, or statement-function rule. Clauses 16, 18, and 19 remain dependencies for intrinsic functions, C interoperability, and association or scoping terminology."
+    },
+    {
+      "id": "S15.6.2.7-003",
+      "title": "RETURN without an in-range alternate value performs no alternate transfer",
+      "source": "15.6.2.7 p1; J3/24-007, 18 December 2023 PDF p358.",
+      "source_units": [
+        "p1.no-alternate-transfer"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "RETURN with no expression, or with an expression outside the valid alternate-return range, performs no transfer of control to an alternate return.",
+      "facets": [
+        "return-omitted-no-alternate-transfer",
+        "return-zero-no-alternate-transfer",
+        "return-too-large-no-alternate-transfer"
+      ],
+      "pending": {
+        "return-omitted-no-alternate-transfer": "Subroutine s(*,*) executes RETURN; caller sets token=-3 before CALL and sets token=30 immediately after normal return; expected token is exact 30.",
+        "return-zero-no-alternate-transfer": "Subroutine s(*,*) executes RETURN 0; caller falls through to token=31, while alternate labels would set 301 or 302.",
+        "return-too-large-no-alternate-transfer": "Subroutine s(*,*) executes RETURN 3 with two alternate actuals; caller falls through to token=32, while alternate labels would set 301 or 302."
+      },
+      "oracle": "Source registration only. Future evidence must establish a distinguished non-default positive state before observation, use one-property diagnostic controls for numbered syntax rules and constraints, and compare only exact scalar values, exact control-flow targets, source admission, or required rejection. Diagnostic wording, exit status details, linker symbols, addresses, storage representation, undefined argument or result state, and processor-dependent C interoperation details are not portable oracles.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim.",
+      "dependencies": "Registered dependencies: clauses 6-13 for source form, declarations, expressions, execution constructs, data transfer, and formatting foundations already present in this suite. Clause 15 procedure characteristics, interfaces, procedure references, argument association, purity, elemental behavior, and recursion rules remain dependencies except where this section owns the stated ENTRY, RETURN, CONTAINS, non-Fortran procedure, or statement-function rule. Clauses 16, 18, and 19 remain dependencies for intrinsic functions, C interoperability, and association or scoping terminology."
+    },
+    {
+      "id": "S15.6.2.7-004",
+      "title": "END statements execute as RETURN without an expression",
+      "source": "15.6.2.7 p2; J3/24-007, 18 December 2023 PDF p358.",
+      "source_units": [
+        "p2"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Execution of an end-function-stmt, end-mp-subprogram-stmt, or end-subroutine-stmt is equivalent to execution of RETURN without an expression.",
+      "facets": [
+        "end-subroutine-normal-return",
+        "end-function-normal-return",
+        "end-module-procedure-normal-return",
+        "end-mp-subprogram-normal-return"
+      ],
+      "pending": {
+        "end-subroutine-normal-return": "Subroutine reaches END SUBROUTINE after assigning x=41; caller observes exact 41 and no alternate branch.",
+        "end-function-normal-return": "Integer function reaches END FUNCTION after result=42; caller observes exact 42.",
+        "end-module-procedure-normal-return": "Module subroutine reaches END SUBROUTINE after assigning x=43; caller USEs the module and observes exact 43.",
+        "end-mp-subprogram-normal-return": "Separate module procedure plan: ancestor module declares MODULE SUBROUTINE fill(x) with INTEGER, INTENT(OUT) :: x; submodule body MODULE PROCEDURE fill assigns x=44 and reaches END PROCEDURE. Caller initializes x=-44 and token=-99, CALL fill(x), then the next Fortran statement sets token=99; expect x==44 and token==99."
+      },
+      "oracle": "Source registration only. Future evidence must establish a distinguished non-default positive state before observation, use one-property diagnostic controls for numbered syntax rules and constraints, and compare only exact scalar values, exact control-flow targets, source admission, or required rejection. Diagnostic wording, exit status details, linker symbols, addresses, storage representation, undefined argument or result state, and processor-dependent C interoperation details are not portable oracles.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim.",
+      "dependencies": "Registered dependencies: clauses 6-13 for source form, declarations, expressions, execution constructs, data transfer, and formatting foundations already present in this suite. Clause 15 procedure characteristics, interfaces, procedure references, argument association, purity, elemental behavior, and recursion rules remain dependencies except where this section owns the stated ENTRY, RETURN, CONTAINS, non-Fortran procedure, or statement-function rule. Clauses 16, 18, and 19 remain dependencies for intrinsic functions, C interoperability, and association or scoping terminology."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "R1545",
+      "disposition": "requirements",
+      "requirements": [
+        "R1545"
+      ]
+    },
+    {
+      "unit": "C1584",
+      "disposition": "requirements",
+      "requirements": [
+        "C1584"
+      ]
+    },
+    {
+      "unit": "C1585",
+      "disposition": "requirements",
+      "requirements": [
+        "C1585"
+      ]
+    },
+    {
+      "unit": "p1",
+      "disposition": "structural",
+      "rationale": "RETURN completion, alternate-branch selection, and no-transfer cases split."
+    },
+    {
+      "unit": "p1.complete-execution",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.6.2.7-001"
+      ]
+    },
+    {
+      "unit": "p1.alternate-return-branch",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.6.2.7-002"
+      ]
+    },
+    {
+      "unit": "p1.no-alternate-transfer",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.6.2.7-003"
+      ]
+    },
+    {
+      "unit": "p2",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.6.2.7-004"
+      ]
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_15_6_2_7.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "0916cdad4b05d1943298ef76ab39223ec0584c9b6946f8cec09d91d3753cb5ab",
+  "review_rationale": "Source registration for 15.6.2.6 (ENTRY), 15.6.2.7 (RETURN), 15.6.2.8 (CONTAINS), 15.6.3 (procedures defined by means other than Fortran) and 15.6.4 (statement functions) (batch236). Every unit hash-verified by an independent reviewer across three rounds; R1544-R1547 and C1579-C1591 had no existing tests and carry conforming one-feature controls, and non-Fortran procedures are observed through mixed Fortran/C builds. Source accounting only; completes Clause 15."
+}

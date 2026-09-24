@@ -5929,6 +5929,11 @@ See `doc/source_audits/batch_235.json`.
 Forty-seven units, thirty numbered, after two rounds. Pure and simple procedures are defined almost entirely by constraints, so the packet is mostly rejected-program/control pairs; the review found two controls that changed more than the constrained feature, and one exception control that never exercised the exception.
 See `doc/source_audits/batch_237.json`.
 
+## Batch 236 — ENTRY, RETURN, CONTAINS, non-Fortran procedures and statement functions (15.6.2.6-15.6.4)
+
+Forty-five units after three rounds, and with them **Clause 15 is fully registered** — 438 units in eighteen batches (220-237). The last finding was verified at the assembly level: a PROCEDURE declaration without a binding label calls a symbol named after the procedure pointer, not the C function it was meant to reach.
+See `doc/source_audits/batch_236.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must

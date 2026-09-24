@@ -1,0 +1,140 @@
+{
+  "schema_version": 1,
+  "section": "15.6.2.8",
+  "subunits": {
+    "p1": [
+      "p1.separates-contained-subprograms",
+      "p1.type-bound-procedure-part",
+      "p1.not-executable"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "R1546",
+      "title": "A CONTAINS statement is the keyword CONTAINS",
+      "source": "15.6.2.8 R1546; J3/24-007, 18 December 2023 PDF p358.",
+      "source_units": [
+        "R1546"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "The CONTAINS statement syntax is the single keyword CONTAINS.",
+      "facets": [
+        "contains-keyword-form",
+        "malformed-contains-statement-rejected"
+      ],
+      "pending": {
+        "contains-keyword-form": "Positive parse control uses a main program with CONTAINS followed by internal subroutine touch(x) changing x from -8 to 8.",
+        "malformed-contains-statement-rejected": "Diagnostic/control pair changes only CONTAINS to CONTAIN in the same main program; the control restores CONTAINS."
+      },
+      "oracle": "Source registration only. Future evidence must establish a distinguished non-default positive state before observation, use one-property diagnostic controls for numbered syntax rules and constraints, and compare only exact scalar values, exact control-flow targets, source admission, or required rejection. Diagnostic wording, exit status details, linker symbols, addresses, storage representation, undefined argument or result state, and processor-dependent C interoperation details are not portable oracles.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim.",
+      "dependencies": "Registered dependencies: clauses 6-13 for source form, declarations, expressions, execution constructs, data transfer, and formatting foundations already present in this suite. Clause 15 procedure characteristics, interfaces, procedure references, argument association, purity, elemental behavior, and recursion rules remain dependencies except where this section owns the stated ENTRY, RETURN, CONTAINS, non-Fortran procedure, or statement-function rule. Clauses 16, 18, and 19 remain dependencies for intrinsic functions, C interoperability, and association or scoping terminology."
+    },
+    {
+      "id": "S15.6.2.8-001",
+      "title": "CONTAINS separates a program-unit body from contained subprograms",
+      "source": "15.6.2.8 p1; J3/24-007, 18 December 2023 PDF p358.",
+      "source_units": [
+        "p1.separates-contained-subprograms"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The CONTAINS statement separates the body of a main program, module, submodule, or subprogram from internal or module subprograms it contains.",
+      "facets": [
+        "main-program-internal-subprogram-after-contains",
+        "module-subprogram-after-contains",
+        "host-subprogram-internal-subprogram-after-contains"
+      ],
+      "pending": {
+        "main-program-internal-subprogram-after-contains": "Main program initializes x=-8, CALL touch(x), and internal subroutine touch after CONTAINS sets x=8.",
+        "module-subprogram-after-contains": "Module has CONTAINS followed by subroutine touch(x); a USEing program observes x changes from -9 to 9.",
+        "host-subprogram-internal-subprogram-after-contains": "External subroutine host contains internal subroutine inner after CONTAINS; CALL host changes caller sentinel -10 to 10 via inner."
+      },
+      "oracle": "Source registration only. Future evidence must establish a distinguished non-default positive state before observation, use one-property diagnostic controls for numbered syntax rules and constraints, and compare only exact scalar values, exact control-flow targets, source admission, or required rejection. Diagnostic wording, exit status details, linker symbols, addresses, storage representation, undefined argument or result state, and processor-dependent C interoperation details are not portable oracles.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim.",
+      "dependencies": "Registered dependencies: clauses 6-13 for source form, declarations, expressions, execution constructs, data transfer, and formatting foundations already present in this suite. Clause 15 procedure characteristics, interfaces, procedure references, argument association, purity, elemental behavior, and recursion rules remain dependencies except where this section owns the stated ENTRY, RETURN, CONTAINS, non-Fortran procedure, or statement-function rule. Clauses 16, 18, and 19 remain dependencies for intrinsic functions, C interoperability, and association or scoping terminology."
+    },
+    {
+      "id": "S15.6.2.8-002",
+      "title": "CONTAINS introduces the type-bound procedure part of a derived-type definition",
+      "source": "15.6.2.8 p1; J3/24-007, 18 December 2023 PDF p358.",
+      "source_units": [
+        "p1.type-bound-procedure-part"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Within a derived-type definition, CONTAINS introduces the type-bound procedure part.",
+      "facets": [
+        "derived-type-contains-type-bound-procedure"
+      ],
+      "pending": {
+        "derived-type-contains-type-bound-procedure": "Type t has integer component v and CONTAINS procedure value; calling obj%value() with obj%v=13 initializes result sentinel -13 and expects exact 13."
+      },
+      "oracle": "Source registration only. Future evidence must establish a distinguished non-default positive state before observation, use one-property diagnostic controls for numbered syntax rules and constraints, and compare only exact scalar values, exact control-flow targets, source admission, or required rejection. Diagnostic wording, exit status details, linker symbols, addresses, storage representation, undefined argument or result state, and processor-dependent C interoperation details are not portable oracles.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim.",
+      "dependencies": "Registered dependencies: clauses 6-13 for source form, declarations, expressions, execution constructs, data transfer, and formatting foundations already present in this suite. Clause 15 procedure characteristics, interfaces, procedure references, argument association, purity, elemental behavior, and recursion rules remain dependencies except where this section owns the stated ENTRY, RETURN, CONTAINS, non-Fortran procedure, or statement-function rule. Clauses 16, 18, and 19 remain dependencies for intrinsic functions, C interoperability, and association or scoping terminology."
+    },
+    {
+      "id": "S15.6.2.8-003",
+      "title": "CONTAINS is not executable",
+      "source": "15.6.2.8 p1; J3/24-007, 18 December 2023 PDF p358.",
+      "source_units": [
+        "p1.not-executable"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The CONTAINS statement is not executable.",
+      "facets": [
+        "contains-has-no-fallthrough-execution-effect"
+      ],
+      "pending": {
+        "contains-has-no-fallthrough-execution-effect": "Main program sets x=14 before CONTAINS and internal subroutine after CONTAINS would change x only on explicit CALL; without the call, final x remains exact 14, proving no execution falls through CONTAINS."
+      },
+      "oracle": "Source registration only. Future evidence must establish a distinguished non-default positive state before observation, use one-property diagnostic controls for numbered syntax rules and constraints, and compare only exact scalar values, exact control-flow targets, source admission, or required rejection. Diagnostic wording, exit status details, linker symbols, addresses, storage representation, undefined argument or result state, and processor-dependent C interoperation details are not portable oracles.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim.",
+      "dependencies": "Registered dependencies: clauses 6-13 for source form, declarations, expressions, execution constructs, data transfer, and formatting foundations already present in this suite. Clause 15 procedure characteristics, interfaces, procedure references, argument association, purity, elemental behavior, and recursion rules remain dependencies except where this section owns the stated ENTRY, RETURN, CONTAINS, non-Fortran procedure, or statement-function rule. Clauses 16, 18, and 19 remain dependencies for intrinsic functions, C interoperability, and association or scoping terminology."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "R1546",
+      "disposition": "requirements",
+      "requirements": [
+        "R1546"
+      ]
+    },
+    {
+      "unit": "p1",
+      "disposition": "structural",
+      "rationale": "Program-unit separation, type-bound-procedure introduction, and nonexecutable status split."
+    },
+    {
+      "unit": "p1.separates-contained-subprograms",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.6.2.8-001"
+      ]
+    },
+    {
+      "unit": "p1.type-bound-procedure-part",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.6.2.8-002"
+      ]
+    },
+    {
+      "unit": "p1.not-executable",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.6.2.8-003"
+      ]
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_15_6_2_8.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "689b6783d3b326798012209c9ddcde3bd2a1662c18a62ef18494a42c134f9c18",
+  "review_rationale": "Source registration for 15.6.2.6 (ENTRY), 15.6.2.7 (RETURN), 15.6.2.8 (CONTAINS), 15.6.3 (procedures defined by means other than Fortran) and 15.6.4 (statement functions) (batch236). Every unit hash-verified by an independent reviewer across three rounds; R1544-R1547 and C1579-C1591 had no existing tests and carry conforming one-feature controls, and non-Fortran procedures are observed through mixed Fortran/C builds. Source accounting only; completes Clause 15."
+}

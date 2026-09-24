@@ -1,0 +1,180 @@
+{
+  "schema_version": 1,
+  "section": "15.6.3",
+  "subunits": {
+    "p1": [
+      "p1.non-fortran-definition-permission",
+      "p1.interface-specification-routes",
+      "p1.external-reference-semantics"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S15.6.3-001",
+      "title": "Procedures may be defined by means other than Fortran",
+      "source": "15.6.3 p1; J3/24-007, 18 December 2023 PDF p358.",
+      "source_units": [
+        "p1.non-fortran-definition-permission"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A procedure may be defined by means other than Fortran.",
+      "facets": [
+        "non-fortran-procedure-definition-permitted"
+      ],
+      "pending": {
+        "non-fortran-procedure-definition-permitted": "Mixed Fortran/C plan: provide a C file defining int cf_add1(int x){return x+1;} and a Fortran interface FUNCTION cf_add1(x) BIND(C, NAME='cf_add1') RESULT(r) using ISO_C_BINDING with INTEGER(C_INT), VALUE :: x and INTEGER(C_INT) :: r; initialize result sentinel to -42_C_INT, evaluate cf_add1(41_C_INT), and expect exact 42_C_INT."
+      },
+      "oracle": "Source registration only. Future mixed-language evidence may use the existing fixture support for Fortran/C builds and must establish a distinguished non-default positive state before observation. Portable observations are limited to exact Fortran-visible results and control-flow after a C procedure returns; linker-level symbol spelling, object addresses, diagnostics, C ABI details beyond BIND(C), and procedures defined by non-C languages remain outside the oracle.",
+      "oracle_limitation": "This source registration creates no fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Future fixture packets may use the suite's mixed Fortran/C fixture support; only linker-level name spelling, object representation, address identity, and non-C-language behavior remain no-oracle here.",
+      "dependencies": "Registered dependencies: clauses 6-13 for source form, declarations, expressions, execution constructs, data transfer, and formatting foundations already present in this suite. Clause 15 procedure characteristics, interfaces, procedure references, argument association, purity, elemental behavior, and recursion rules remain dependencies except where this section owns the stated ENTRY, RETURN, CONTAINS, non-Fortran procedure, or statement-function rule. Clauses 16, 18, and 19 remain dependencies for intrinsic functions, C interoperability, and association or scoping terminology."
+    },
+    {
+      "id": "S15.6.3-002",
+      "title": "Non-Fortran procedure interfaces may be specified by interface bodies or procedure declarations",
+      "source": "15.6.3 p1; J3/24-007, 18 December 2023 PDF p358.",
+      "source_units": [
+        "p1.interface-specification-routes"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The interface of a procedure defined by means other than Fortran may be specified by an interface body or by a procedure declaration statement.",
+      "facets": [
+        "interface-body-route-for-nonfortran-procedure",
+        "procedure-declaration-route-for-nonfortran-procedure"
+      ],
+      "pending": {
+        "interface-body-route-for-nonfortran-procedure": "Mixed Fortran/C plan uses an interface body for FUNCTION cf_add1(x) BIND(C, NAME='cf_add1') RESULT(r) with INTEGER(C_INT), VALUE :: x and INTEGER(C_INT) :: r, linked to C int cf_add1(int x){return x+1;}; cf_add1(41_C_INT) changes result sentinel -42_C_INT to exact 42_C_INT.",
+        "procedure-declaration-route-for-nonfortran-procedure": "Mixed Fortran/C plan declares ABSTRACT INTERFACE; FUNCTION iface(x) BIND(C) RESULT(r) with IMPORT C_INT, INTEGER(C_INT), VALUE :: x, and INTEGER(C_INT) :: r; END, then declares PROCEDURE(iface), BIND(C, NAME='cf_add1') :: p and links to C int cf_add1(int x){return x+1;}. This procedure declaration form is admitted by R1512-R1514 because BIND(C, NAME=...) is a proc-attr-spec, satisfies C1515 by using a previously declared abstract interface, satisfies C1520 by having exactly one nonpointer nondummy proc-decl with NAME=, satisfies C1521 because iface has a proc-language-binding-spec, and relies on 18.10 for C interoperability; p(41_C_INT) changes result sentinel -42_C_INT to exact 42_C_INT."
+      },
+      "oracle": "Source registration only. Future mixed-language evidence may use the existing fixture support for Fortran/C builds and must establish a distinguished non-default positive state before observation. Portable observations are limited to exact Fortran-visible results and control-flow after a C procedure returns; linker-level symbol spelling, object addresses, diagnostics, C ABI details beyond BIND(C), and procedures defined by non-C languages remain outside the oracle.",
+      "oracle_limitation": "This source registration creates no fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Future fixture packets may use the suite's mixed Fortran/C fixture support; only linker-level name spelling, object representation, address identity, and non-C-language behavior remain no-oracle here.",
+      "dependencies": "Registered dependencies: clauses 6-13 for source form, declarations, expressions, execution constructs, data transfer, and formatting foundations already present in this suite. Clause 15 procedure characteristics, interfaces, procedure references, argument association, purity, elemental behavior, and recursion rules remain dependencies except where this section owns the stated ENTRY, RETURN, CONTAINS, non-Fortran procedure, or statement-function rule. Clauses 16, 18, and 19 remain dependencies for intrinsic functions, C interoperability, and association or scoping terminology."
+    },
+    {
+      "id": "S15.6.3-003",
+      "title": "References to non-Fortran procedures use external-subprogram reference semantics",
+      "source": "15.6.3 p1; J3/24-007, 18 December 2023 PDF p358.",
+      "source_units": [
+        "p1.external-reference-semantics"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A reference to a procedure defined by means other than Fortran is made as though it were defined by an external subprogram.",
+      "facets": [
+        "nonfortran-reference-external-subprogram-form"
+      ],
+      "pending": {
+        "nonfortran-reference-external-subprogram-form": "Mixed Fortran/C plan references C int cf_add1(int x){return x+1;} from Fortran exactly as an external function through an interface FUNCTION cf_add1(x) BIND(C, NAME='cf_add1') RESULT(r); INTEGER(C_INT), VALUE :: x; INTEGER(C_INT) :: r. Calling cf_add1(41_C_INT) must yield exact 42_C_INT, proving the as-though-external reference semantics in Fortran-visible behavior."
+      },
+      "oracle": "Source registration only. Future mixed-language evidence may use the existing fixture support for Fortran/C builds and must establish a distinguished non-default positive state before observation. Portable observations are limited to exact Fortran-visible results and control-flow after a C procedure returns; linker-level symbol spelling, object addresses, diagnostics, C ABI details beyond BIND(C), and procedures defined by non-C languages remain outside the oracle.",
+      "oracle_limitation": "This source registration creates no fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Future fixture packets may use the suite's mixed Fortran/C fixture support; only linker-level name spelling, object representation, address identity, and non-C-language behavior remain no-oracle here.",
+      "dependencies": "Registered dependencies: clauses 6-13 for source form, declarations, expressions, execution constructs, data transfer, and formatting foundations already present in this suite. Clause 15 procedure characteristics, interfaces, procedure references, argument association, purity, elemental behavior, and recursion rules remain dependencies except where this section owns the stated ENTRY, RETURN, CONTAINS, non-Fortran procedure, or statement-function rule. Clauses 16, 18, and 19 remain dependencies for intrinsic functions, C interoperability, and association or scoping terminology."
+    },
+    {
+      "id": "S15.6.3-004",
+      "title": "Invoked non-Fortran procedures that continue execution return to their Fortran caller",
+      "source": "15.6.3 p2; J3/24-007, 18 December 2023 PDF p358.",
+      "source_units": [
+        "p2"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A non-Fortran procedure invoked by a Fortran procedure and not terminating execution returns to its caller.",
+      "facets": [
+        "nonfortran-normal-return-to-caller"
+      ],
+      "pending": {
+        "nonfortran-normal-return-to-caller": "Mixed Fortran/C plan provides C void cf_touch(int *x){*x = 17;} and Fortran interface SUBROUTINE cf_touch(x) BIND(C, NAME='cf_touch') with INTEGER(C_INT) :: x. The Fortran caller initializes x=-17_C_INT and after CALL cf_touch(x) executes the next Fortran statement token=99_C_INT; expect x==17_C_INT and token==99_C_INT, proving the C procedure returned to its caller."
+      },
+      "oracle": "Source registration only. Future mixed-language evidence may use the existing fixture support for Fortran/C builds and must establish a distinguished non-default positive state before observation. Portable observations are limited to exact Fortran-visible results and control-flow after a C procedure returns; linker-level symbol spelling, object addresses, diagnostics, C ABI details beyond BIND(C), and procedures defined by non-C languages remain outside the oracle.",
+      "oracle_limitation": "This source registration creates no fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Future fixture packets may use the suite's mixed Fortran/C fixture support; only linker-level name spelling, object representation, address identity, and non-C-language behavior remain no-oracle here.",
+      "dependencies": "Registered dependencies: clauses 6-13 for source form, declarations, expressions, execution constructs, data transfer, and formatting foundations already present in this suite. Clause 15 procedure characteristics, interfaces, procedure references, argument association, purity, elemental behavior, and recursion rules remain dependencies except where this section owns the stated ENTRY, RETURN, CONTAINS, non-Fortran procedure, or statement-function rule. Clauses 16, 18, and 19 remain dependencies for intrinsic functions, C interoperability, and association or scoping terminology."
+    },
+    {
+      "id": "S15.6.3-005",
+      "title": "A proc-language-binding-spec makes the procedure interoperable",
+      "source": "15.6.3 p3; J3/24-007, 18 December 2023 PDF p358.",
+      "source_units": [
+        "p3"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A procedure whose interface has a proc-language-binding-spec is interoperable as described in 18.10.",
+      "facets": [
+        "bind-c-interface-interoperable-source"
+      ],
+      "pending": {
+        "bind-c-interface-interoperable-source": "Mixed Fortran/C plan declares INTERFACE; FUNCTION cf_add1(x) BIND(C, NAME='cf_add1') RESULT(r); USE ISO_C_BINDING; INTEGER(C_INT), VALUE :: x; INTEGER(C_INT) :: r; END; END INTERFACE and links to C int cf_add1(int x){return x+1;}; cf_add1(41_C_INT) returns exact 42_C_INT, with detailed interoperability constraints still owned by 18.10."
+      },
+      "oracle": "Source registration only. Future mixed-language evidence may use the existing fixture support for Fortran/C builds and must establish a distinguished non-default positive state before observation. Portable observations are limited to exact Fortran-visible results and control-flow after a C procedure returns; linker-level symbol spelling, object addresses, diagnostics, C ABI details beyond BIND(C), and procedures defined by non-C languages remain outside the oracle.",
+      "oracle_limitation": "This source registration creates no fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Future fixture packets may use the suite's mixed Fortran/C fixture support; only linker-level name spelling, object representation, address identity, and non-C-language behavior remain no-oracle here.",
+      "dependencies": "Registered dependencies: clauses 6-13 for source form, declarations, expressions, execution constructs, data transfer, and formatting foundations already present in this suite. Clause 15 procedure characteristics, interfaces, procedure references, argument association, purity, elemental behavior, and recursion rules remain dependencies except where this section owns the stated ENTRY, RETURN, CONTAINS, non-Fortran procedure, or statement-function rule. Clauses 16, 18, and 19 remain dependencies for intrinsic functions, C interoperability, and association or scoping terminology."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "structural",
+      "rationale": "Non-Fortran definition permission, interface-specification routes, and external-reference semantics split."
+    },
+    {
+      "unit": "p1.non-fortran-definition-permission",
+      "disposition": "permission",
+      "requirements": [
+        "S15.6.3-001"
+      ],
+      "rationale": "Classified as permission source text and mapped to S15.6.3-001."
+    },
+    {
+      "unit": "p1.interface-specification-routes",
+      "disposition": "permission",
+      "requirements": [
+        "S15.6.3-002"
+      ],
+      "rationale": "Classified as permission source text and mapped to S15.6.3-002."
+    },
+    {
+      "unit": "p1.external-reference-semantics",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.6.3-003"
+      ]
+    },
+    {
+      "unit": "p2",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.6.3-004"
+      ]
+    },
+    {
+      "unit": "note1",
+      "disposition": "informative",
+      "rationale": "NOTE gives nonnormative examples of non-returning control transfer."
+    },
+    {
+      "unit": "p3",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.6.3-005"
+      ]
+    },
+    {
+      "unit": "p4",
+      "disposition": "structural",
+      "rationale": "Cross-reference to 18.10 for C function interoperation; no independent testable requirement is added here."
+    },
+    {
+      "unit": "note2",
+      "disposition": "informative",
+      "rationale": "NOTE points to Annex C explanatory information and is not normative."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_15_6_3.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "b43c8bad61722bd4e76b8f2adb3014882064b2ffdafddf31414cb7f2f42e5b0a",
+  "review_rationale": "Source registration for 15.6.2.6 (ENTRY), 15.6.2.7 (RETURN), 15.6.2.8 (CONTAINS), 15.6.3 (procedures defined by means other than Fortran) and 15.6.4 (statement functions) (batch236). Every unit hash-verified by an independent reviewer across three rounds; R1544-R1547 and C1579-C1591 had no existing tests and carry conforming one-feature controls, and non-Fortran procedures are observed through mixed Fortran/C builds. Source accounting only; completes Clause 15."
+}
