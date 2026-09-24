@@ -1,0 +1,85 @@
+{
+ "schema_version": 1,
+ "review_type": "independent-clause17-real-set-flag-source-225-review",
+ "review_date": "2026-09-23",
+ "baseline_commit": "28badfb",
+ "state": "source-registered",
+ "packet_kind": "SOURCE",
+ "scope": {
+  "sections": [
+   "17.11.34-17.11.39"
+  ],
+  "pdf_pages": "500-503",
+  "base_units": 42,
+  "numbered_rules_preaccounted": 0,
+  "accounted_base_units_delta": 42
+ },
+ "review_rounds": [
+  {
+   "round": 1,
+   "commit": "457ff1c",
+   "decision": "BLOCKED",
+   "findings": [
+    {
+     "id": "C17HR-001",
+     "issue": "positive IEEE_SELECTED_REAL_KIND results did not assert IEEE datatype support for the returned kind",
+     "resolution": "k > 0 implies IEEE_SUPPORT_DATATYPE(REAL(0,KIND=k))"
+    },
+    {
+     "id": "C17HR-002",
+     "issue": "IEEE_REM and IEEE_SCALB invocations lacked per-operand datatype guards",
+     "resolution": "per-operand guards on every call"
+    },
+    {
+     "id": "C17HR-003",
+     "issue": "IEEE_RINT lacked nearest-tie and inexact rows",
+     "resolution": "ties to even with and without ROUND; IEEE_INEXACT signals for roundToIntegralExact on a non-integral value and stays quiet with ROUND present or an integral value"
+    },
+    {
+     "id": "C17HR-004",
+     "issue": "invalid IEEE_REM NaN result was planned only for a zero divisor",
+     "resolution": "infinite-X invalid rows with NaN result under IEEE_SUPPORT_NAN"
+    }
+   ]
+  },
+  {
+   "round": 2,
+   "commit": "620b9f4",
+   "decision": "BLOCKED",
+   "findings": [
+    {
+     "id": "C17HR-002",
+     "issue": "reopened: positive-control IEEE_REM/IEEE_SCALB plans were still unguarded",
+     "resolution": "guards added there too"
+    },
+    {
+     "id": "C17HR-004",
+     "issue": "reopened: the zero-divisor NaN row had been lost",
+     "resolution": "IEEE_REM(+-1.0, 0.0) NaN rows restored"
+    }
+   ]
+  },
+  {
+   "round": 3,
+   "commit": "b513531",
+   "decision": "BLOCKED",
+   "findings": [
+    {
+     "id": "C17HR-002",
+     "issue": "reopened: IEEE_REAL rows used generic 'result-kind guard' shorthand",
+     "resolution": "every call names its concrete IEEE_SUPPORT_DATATYPE inquiry; a sweep found 0 unguarded restricted calls"
+    }
+   ]
+  },
+  {
+   "round": 4,
+   "commit": "15960cc",
+   "decision": "VERIFIED",
+   "findings": []
+  }
+ ],
+ "separation": {
+  "authored_facets_unchanged": true,
+  "tests_untouched": true
+ }
+}

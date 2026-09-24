@@ -1,0 +1,177 @@
+{
+  "schema_version": 1,
+  "section": "17.11.39",
+  "subunits": {
+    "p2": [
+      "p2.FLAG-type-shape",
+      "p2.FLAG-named-exceptions",
+      "p2.FLAG-no-duplicates",
+      "p2.FLAG_VALUE-logical-conformable",
+      "p2.true-signaling",
+      "p2.false-quiet"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S17.11.39-001",
+      "title": "IEEE_SET_FLAG FLAG argument restrictions",
+      "source": "S17.11.39, J3/24-007, 18 December 2023, physical PDF503.",
+      "source_units": [
+        "p2.FLAG-type-shape",
+        "p2.FLAG-named-exceptions",
+        "p2.FLAG-no-duplicates"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "FLAG shall be a scalar or array of type IEEE_FLAG_TYPE; the named exception flag values assign corresponding exception flags; no two FLAG elements shall have the same value.",
+      "facets": [
+        "IEEE_SET_FLAG-FLAG-ieee-flag-type",
+        "IEEE_SET_FLAG-FLAG-named-exception-values",
+        "IEEE_SET_FLAG-FLAG-no-duplicates"
+      ],
+      "pending": {
+        "IEEE_SET_FLAG-FLAG-ieee-flag-type": "Positive source controls probe IEEE_SUPPORT_FLAG(IEEE_OVERFLOW,1.0), use FLAG-HALTING-OFF(IEEE_OVERFLOW,1.0), then call IEEE_SET_FLAG(IEEE_OVERFLOW,.TRUE.); array control additionally probes IEEE_SUPPORT_FLAG(IEEE_UNDERFLOW,1.0), uses FLAG-HALTING-OFF(IEEE_UNDERFLOW,1.0), and calls IEEE_SET_FLAG([IEEE_OVERFLOW,IEEE_UNDERFLOW],[.TRUE.,.FALSE.]) with IEEE_FLAG_TYPE actuals. Source-control mutation uses a logical FLAG actual and claims no diagnostic facet.",
+        "IEEE_SET_FLAG-FLAG-named-exception-values": "Guarded branch probes IEEE_SUPPORT_FLAG(flag,1.0) separately for IEEE_INVALID, IEEE_OVERFLOW, IEEE_DIVIDE_BY_ZERO, IEEE_UNDERFLOW, and IEEE_INEXACT; supported branch applies FLAG-HALTING-OFF(flag,1.0), then uses that named value in a scalar IEEE_SET_FLAG call. Unsupported flags skip.",
+        "IEEE_SET_FLAG-FLAG-no-duplicates": "Positive source control probes IEEE_SUPPORT_FLAG(IEEE_OVERFLOW,1.0) and IEEE_SUPPORT_FLAG(IEEE_UNDERFLOW,1.0), applies FLAG-HALTING-OFF to both flags, then uses array [IEEE_OVERFLOW, IEEE_UNDERFLOW] with distinct values. Source-control mutation duplicates IEEE_OVERFLOW and claims no diagnostic facet."
+      },
+      "oracle": "Source registration only. Future Clause 17 fixtures use guarded branch plans: first probe the named IEEE_SUPPORT_DATATYPE, IEEE_SUPPORT_FLAG(flag,X), IEEE_SUPPORT_HALTING, IEEE_SUPPORT_ROUNDING, IEEE_SUPPORT_INF, IEEE_SUPPORT_NAN, and subnormal-support inquiries, exercise only the supported branch, and treat the unsupported branch as a skip. Flag plans use named shared preamble FLAG-HALTING-OFF(flag,X): after IEEE_SUPPORT_FLAG(flag,X) succeeds, probe IEEE_SUPPORT_HALTING(flag); the halting-supported branch calls IEEE_SET_HALTING_MODE(flag,.FALSE.); the no-halting-support branch calls IEEE_GET_HALTING_MODE(flag,h) under its own guard and proceeds only for h .FALSE., with h .TRUE. skipping that row. Exception rows then clear all supported flags before the operation and assert every text-required quiet flag under its own IEEE_SUPPORT_FLAG(flag,X) probe. Plans invoke restricted IEEE observer procedures only after their own support probes. Exact assertions use representable binary inputs, named IEEE constants, quiet and signaling NaN operands where applicable, MINEXPONENT/DIGITS subnormal constructions, kind/rank/type checks, and IEEE_IS_NEGATIVE, IEEE_CLASS, or IEEE_IS_NAN observers rather than processor-dependent encodings.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Case-insensitive grep of tests/ and tests/fixtures/*/fixture.json found no existing hits for IEEE_REAL, IEEE_REM, IEEE_RINT, IEEE_SCALB, IEEE_SELECTED_REAL_KIND, or IEEE_SET_FLAG in this worktree; those procedure names remain unbound here. The existing tests/profiles/ieee_binary.f90 profile can guard future binary32/binary64 IEEE arithmetic cases.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 13, and 16 where already catalogued for source form, intrinsic types and kinds, declarations, expressions, arrays, execution, I/O observation helpers, and intrinsic inquiry functions. Unregistered dependencies retained: surrounding Clause 17 IEEE module procedures, named IEEE constants and derived types, ISO/IEC 60559 operation terminology, and later Clause 17 support inquiries named by guarded plans."
+    },
+    {
+      "id": "S17.11.39-002",
+      "title": "IEEE_SET_FLAG FLAG_VALUE restrictions",
+      "source": "S17.11.39, J3/24-007, 18 December 2023, physical PDF503.",
+      "source_units": [
+        "p2.FLAG_VALUE-logical-conformable"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "FLAG_VALUE shall be a logical scalar or array conformable with FLAG.",
+      "facets": [
+        "IEEE_SET_FLAG-FLAG_VALUE-logical",
+        "IEEE_SET_FLAG-FLAG_VALUE-conformable"
+      ],
+      "pending": {
+        "IEEE_SET_FLAG-FLAG_VALUE-logical": "Positive source controls probe IEEE_SUPPORT_FLAG(IEEE_OVERFLOW,1.0), apply FLAG-HALTING-OFF(IEEE_OVERFLOW,1.0), then call IEEE_SET_FLAG(IEEE_OVERFLOW,.TRUE.) and IEEE_SET_FLAG(IEEE_OVERFLOW,.FALSE.) with logical FLAG_VALUE. Source-control mutation uses integer FLAG_VALUE and claims no diagnostic facet.",
+        "IEEE_SET_FLAG-FLAG_VALUE-conformable": "Positive source control probes IEEE_SUPPORT_FLAG(IEEE_OVERFLOW,1.0) and IEEE_SUPPORT_FLAG(IEEE_UNDERFLOW,1.0), applies FLAG-HALTING-OFF to both flags, then passes a two-element FLAG array and a two-element logical FLAG_VALUE array. Mutation passes a one-element FLAG_VALUE array and claims no diagnostic facet."
+      },
+      "oracle": "Source registration only. Future Clause 17 fixtures use guarded branch plans: first probe the named IEEE_SUPPORT_DATATYPE, IEEE_SUPPORT_FLAG(flag,X), IEEE_SUPPORT_HALTING, IEEE_SUPPORT_ROUNDING, IEEE_SUPPORT_INF, IEEE_SUPPORT_NAN, and subnormal-support inquiries, exercise only the supported branch, and treat the unsupported branch as a skip. Flag plans use named shared preamble FLAG-HALTING-OFF(flag,X): after IEEE_SUPPORT_FLAG(flag,X) succeeds, probe IEEE_SUPPORT_HALTING(flag); the halting-supported branch calls IEEE_SET_HALTING_MODE(flag,.FALSE.); the no-halting-support branch calls IEEE_GET_HALTING_MODE(flag,h) under its own guard and proceeds only for h .FALSE., with h .TRUE. skipping that row. Exception rows then clear all supported flags before the operation and assert every text-required quiet flag under its own IEEE_SUPPORT_FLAG(flag,X) probe. Plans invoke restricted IEEE observer procedures only after their own support probes. Exact assertions use representable binary inputs, named IEEE constants, quiet and signaling NaN operands where applicable, MINEXPONENT/DIGITS subnormal constructions, kind/rank/type checks, and IEEE_IS_NEGATIVE, IEEE_CLASS, or IEEE_IS_NAN observers rather than processor-dependent encodings.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Case-insensitive grep of tests/ and tests/fixtures/*/fixture.json found no existing hits for IEEE_REAL, IEEE_REM, IEEE_RINT, IEEE_SCALB, IEEE_SELECTED_REAL_KIND, or IEEE_SET_FLAG in this worktree; those procedure names remain unbound here. The existing tests/profiles/ieee_binary.f90 profile can guard future binary32/binary64 IEEE arithmetic cases.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 13, and 16 where already catalogued for source form, intrinsic types and kinds, declarations, expressions, arrays, execution, I/O observation helpers, and intrinsic inquiry functions. Unregistered dependencies retained: surrounding Clause 17 IEEE module procedures, named IEEE constants and derived types, ISO/IEC 60559 operation terminology, and later Clause 17 support inquiries named by guarded plans."
+    },
+    {
+      "id": "S17.11.39-003",
+      "title": "IEEE_SET_FLAG sets scalar exception flags signaling or quiet",
+      "source": "S17.11.39, J3/24-007, 18 December 2023, physical PDF503.",
+      "source_units": [
+        "p2.true-signaling",
+        "p2.false-quiet"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A true FLAG_VALUE sets the corresponding exception flag to signaling; a false FLAG_VALUE sets it to quiet.",
+      "facets": [
+        "IEEE_SET_FLAG-true-sets-signaling",
+        "IEEE_SET_FLAG-false-sets-quiet"
+      ],
+      "pending": {
+        "IEEE_SET_FLAG-true-sets-signaling": "Guarded branch probes IEEE_SUPPORT_FLAG(IEEE_OVERFLOW,1.0), applies FLAG-HALTING-OFF(IEEE_OVERFLOW,1.0), and probes IEEE_GET_FLAG observer support; supported branch calls IEEE_SET_FLAG(IEEE_OVERFLOW,.FALSE.), verifies quiet, then IEEE_SET_FLAG(IEEE_OVERFLOW,.TRUE.) and verifies signaling. Mutation reverses the logical value.",
+        "IEEE_SET_FLAG-false-sets-quiet": "Guarded branch probes IEEE_SUPPORT_FLAG(IEEE_OVERFLOW,1.0), applies FLAG-HALTING-OFF(IEEE_OVERFLOW,1.0), and probes IEEE_GET_FLAG observer support; supported branch calls IEEE_SET_FLAG(IEEE_OVERFLOW,.TRUE.), verifies signaling, then IEEE_SET_FLAG(IEEE_OVERFLOW,.FALSE.) and verifies quiet. Mutation omits the false set."
+      },
+      "oracle": "Source registration only. Future Clause 17 fixtures use guarded branch plans: first probe the named IEEE_SUPPORT_DATATYPE, IEEE_SUPPORT_FLAG(flag,X), IEEE_SUPPORT_HALTING, IEEE_SUPPORT_ROUNDING, IEEE_SUPPORT_INF, IEEE_SUPPORT_NAN, and subnormal-support inquiries, exercise only the supported branch, and treat the unsupported branch as a skip. Flag plans use named shared preamble FLAG-HALTING-OFF(flag,X): after IEEE_SUPPORT_FLAG(flag,X) succeeds, probe IEEE_SUPPORT_HALTING(flag); the halting-supported branch calls IEEE_SET_HALTING_MODE(flag,.FALSE.); the no-halting-support branch calls IEEE_GET_HALTING_MODE(flag,h) under its own guard and proceeds only for h .FALSE., with h .TRUE. skipping that row. Exception rows then clear all supported flags before the operation and assert every text-required quiet flag under its own IEEE_SUPPORT_FLAG(flag,X) probe. Plans invoke restricted IEEE observer procedures only after their own support probes. Exact assertions use representable binary inputs, named IEEE constants, quiet and signaling NaN operands where applicable, MINEXPONENT/DIGITS subnormal constructions, kind/rank/type checks, and IEEE_IS_NEGATIVE, IEEE_CLASS, or IEEE_IS_NAN observers rather than processor-dependent encodings.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Case-insensitive grep of tests/ and tests/fixtures/*/fixture.json found no existing hits for IEEE_REAL, IEEE_REM, IEEE_RINT, IEEE_SCALB, IEEE_SELECTED_REAL_KIND, or IEEE_SET_FLAG in this worktree; those procedure names remain unbound here. The existing tests/profiles/ieee_binary.f90 profile can guard future binary32/binary64 IEEE arithmetic cases.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 13, and 16 where already catalogued for source form, intrinsic types and kinds, declarations, expressions, arrays, execution, I/O observation helpers, and intrinsic inquiry functions. Unregistered dependencies retained: surrounding Clause 17 IEEE module procedures, named IEEE constants and derived types, ISO/IEC 60559 operation terminology, and later Clause 17 support inquiries named by guarded plans."
+    },
+    {
+      "id": "S17.11.39-004",
+      "title": "IEEE_SET_FLAG array arguments assign corresponding exception flags",
+      "source": "S17.11.39, J3/24-007, 18 December 2023, physical PDF503.",
+      "source_units": [
+        "p2.FLAG-named-exceptions",
+        "p2.true-signaling",
+        "p2.false-quiet"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For conformable FLAG and FLAG_VALUE arrays, each logical element assigns the corresponding named exception flag.",
+      "facets": [
+        "IEEE_SET_FLAG-array-corresponding-elements"
+      ],
+      "pending": {
+        "IEEE_SET_FLAG-array-corresponding-elements": "Guarded branch probes IEEE_SUPPORT_FLAG(flag,1.0) for IEEE_OVERFLOW and IEEE_UNDERFLOW, applies FLAG-HALTING-OFF to both flags, and probes IEEE_GET_FLAG observer support for both; supported branch calls IEEE_SET_FLAG([IEEE_OVERFLOW,IEEE_UNDERFLOW],[.TRUE.,.FALSE.]) and verifies overflow signaling and underflow quiet. Mutation swaps the logical array elements."
+      },
+      "oracle": "Source registration only. Future Clause 17 fixtures use guarded branch plans: first probe the named IEEE_SUPPORT_DATATYPE, IEEE_SUPPORT_FLAG(flag,X), IEEE_SUPPORT_HALTING, IEEE_SUPPORT_ROUNDING, IEEE_SUPPORT_INF, IEEE_SUPPORT_NAN, and subnormal-support inquiries, exercise only the supported branch, and treat the unsupported branch as a skip. Flag plans use named shared preamble FLAG-HALTING-OFF(flag,X): after IEEE_SUPPORT_FLAG(flag,X) succeeds, probe IEEE_SUPPORT_HALTING(flag); the halting-supported branch calls IEEE_SET_HALTING_MODE(flag,.FALSE.); the no-halting-support branch calls IEEE_GET_HALTING_MODE(flag,h) under its own guard and proceeds only for h .FALSE., with h .TRUE. skipping that row. Exception rows then clear all supported flags before the operation and assert every text-required quiet flag under its own IEEE_SUPPORT_FLAG(flag,X) probe. Plans invoke restricted IEEE observer procedures only after their own support probes. Exact assertions use representable binary inputs, named IEEE constants, quiet and signaling NaN operands where applicable, MINEXPONENT/DIGITS subnormal constructions, kind/rank/type checks, and IEEE_IS_NEGATIVE, IEEE_CLASS, or IEEE_IS_NAN observers rather than processor-dependent encodings.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Case-insensitive grep of tests/ and tests/fixtures/*/fixture.json found no existing hits for IEEE_REAL, IEEE_REM, IEEE_RINT, IEEE_SCALB, IEEE_SELECTED_REAL_KIND, or IEEE_SET_FLAG in this worktree; those procedure names remain unbound here. The existing tests/profiles/ieee_binary.f90 profile can guard future binary32/binary64 IEEE arithmetic cases.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 13, and 16 where already catalogued for source form, intrinsic types and kinds, declarations, expressions, arrays, execution, I/O observation helpers, and intrinsic inquiry functions. Unregistered dependencies retained: surrounding Clause 17 IEEE module procedures, named IEEE constants and derived types, ISO/IEC 60559 operation terminology, and later Clause 17 support inquiries named by guarded plans."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "definition",
+      "rationale": "Classifies IEEE_SET_FLAG as a simple subroutine."
+    },
+    {
+      "unit": "p2",
+      "disposition": "structural",
+      "rationale": "Argument paragraph mixes restrictions, corresponding-flag effects, and true/false flag state effects."
+    },
+    {
+      "unit": "p2.FLAG-type-shape",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.11.39-001"
+      ]
+    },
+    {
+      "unit": "p2.FLAG-named-exceptions",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.11.39-001",
+        "S17.11.39-004"
+      ]
+    },
+    {
+      "unit": "p2.FLAG-no-duplicates",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.11.39-001"
+      ]
+    },
+    {
+      "unit": "p2.FLAG_VALUE-logical-conformable",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.11.39-002"
+      ]
+    },
+    {
+      "unit": "p2.true-signaling",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.11.39-003",
+        "S17.11.39-004"
+      ]
+    },
+    {
+      "unit": "p2.false-quiet",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.11.39-003",
+        "S17.11.39-004"
+      ]
+    },
+    {
+      "unit": "p3",
+      "disposition": "informative",
+      "rationale": "Example paragraph is illustrative; scalar true assignment is already planned from p2."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_17_11_39.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "b252054c461815295377bb36b11bff050bea216d3344dbb2a74477577046c560",
+  "review_rationale": "Source registration for 17.11.34-17.11.39: IEEE_REAL, IEEE_REM, IEEE_RINT, IEEE_SCALB, IEEE_SELECTED_REAL_KIND and IEEE_SET_FLAG (batch225). Every unit hash-verified by an independent reviewer across four rounds; every restricted invocation names its concrete support inquiry, and IEEE_RINT's inexact behaviour follows the two 60559 operations the text cites. Source accounting only."
+}

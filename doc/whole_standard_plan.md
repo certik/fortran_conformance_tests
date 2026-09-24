@@ -5869,6 +5869,11 @@ See `doc/source_audits/batch_228.json`.
 Forty-two units after two rounds, planned against the suite's oldest recurring defect — operator tests whose inputs never reach the rows where two operators differ. The reviewer's table separates all fifteen pairs of the six comparisons; +0 vs -0 matters because the six must treat them as equal, and a NaN operand makes every comparison false except NE.
 See `doc/source_audits/batch_219.json`.
 
+## Batch 225 — IEEE_REAL through IEEE_SET_FLAG (17.11.34-17.11.39)
+
+Forty-two units after four rounds, three of them on one rule: every call to a restricted IEEE procedure names the concrete inquiry that permits it. 'Guarded by the result-kind datatype check' reads fine in prose but does not say which kind, and a fixture generated from it could guard the wrong one.
+See `doc/source_audits/batch_225.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must

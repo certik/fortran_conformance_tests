@@ -1,0 +1,341 @@
+{
+  "schema_version": 1,
+  "section": "17.11.35",
+  "subunits": {
+    "p3": [
+      "p3.real-arguments",
+      "p3.same-radix"
+    ],
+    "p8": [
+      "p8.finite-infinite-result",
+      "p8.invalid-exception",
+      "p8.nan-result",
+      "p8.subnormal-underflow",
+      "p8.normal-infinite-no-exception"
+    ],
+    "p6": [
+      "p6.nan-operands"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S17.11.35-001",
+      "title": "IEEE_REM argument restrictions",
+      "source": "S17.11.35, J3/24-007, 18 December 2023, physical PDF501.",
+      "source_units": [
+        "p3.real-arguments",
+        "p3.same-radix"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "The IEEE_REM arguments shall be real and have the same radix.",
+      "facets": [
+        "IEEE_REM-arguments-real",
+        "IEEE_REM-arguments-same-radix"
+      ],
+      "pending": {
+        "IEEE_REM-arguments-real": "Positive source controls probe IEEE_SUPPORT_DATATYPE(4.0), IEEE_SUPPORT_DATATYPE(3.0), and IEEE_SUPPORT_DATATYPE(2.0) before invoking IEEE_REM(4.0,3.0) and IEEE_REM(3.0,2.0) with real X and Y. Source-control mutation uses integer or complex actuals and claims no diagnostic facet.",
+        "IEEE_REM-arguments-same-radix": "Positive source control probes IEEE_SUPPORT_DATATYPE(4.0) and IEEE_SUPPORT_DATATYPE(3.0), verifies RADIX(4.0)==RADIX(3.0), then invokes IEEE_REM(4.0,3.0). Mutation changes one actual to a different-radix kind only under a profile that provides one and claims no diagnostic facet."
+      },
+      "oracle": "Source registration only. Future Clause 17 fixtures use guarded branch plans: first probe the named IEEE_SUPPORT_DATATYPE, IEEE_SUPPORT_FLAG(flag,X), IEEE_SUPPORT_HALTING, IEEE_SUPPORT_ROUNDING, IEEE_SUPPORT_INF, IEEE_SUPPORT_NAN, and subnormal-support inquiries, exercise only the supported branch, and treat the unsupported branch as a skip. Flag plans use named shared preamble FLAG-HALTING-OFF(flag,X): after IEEE_SUPPORT_FLAG(flag,X) succeeds, probe IEEE_SUPPORT_HALTING(flag); the halting-supported branch calls IEEE_SET_HALTING_MODE(flag,.FALSE.); the no-halting-support branch calls IEEE_GET_HALTING_MODE(flag,h) under its own guard and proceeds only for h .FALSE., with h .TRUE. skipping that row. Exception rows then clear all supported flags before the operation and assert every text-required quiet flag under its own IEEE_SUPPORT_FLAG(flag,X) probe. Plans invoke restricted IEEE observer procedures only after their own support probes. Exact assertions use representable binary inputs, named IEEE constants, quiet and signaling NaN operands where applicable, MINEXPONENT/DIGITS subnormal constructions, kind/rank/type checks, and IEEE_IS_NEGATIVE, IEEE_CLASS, or IEEE_IS_NAN observers rather than processor-dependent encodings.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Case-insensitive grep of tests/ and tests/fixtures/*/fixture.json found no existing hits for IEEE_REAL, IEEE_REM, IEEE_RINT, IEEE_SCALB, IEEE_SELECTED_REAL_KIND, or IEEE_SET_FLAG in this worktree; those procedure names remain unbound here. The existing tests/profiles/ieee_binary.f90 profile can guard future binary32/binary64 IEEE arithmetic cases.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 13, and 16 where already catalogued for source form, intrinsic types and kinds, declarations, expressions, arrays, execution, I/O observation helpers, and intrinsic inquiry functions. Unregistered dependencies retained: surrounding Clause 17 IEEE module procedures, named IEEE constants and derived types, ISO/IEC 60559 operation terminology, and later Clause 17 support inquiries named by guarded plans."
+    },
+    {
+      "id": "S17.11.35-002",
+      "title": "IEEE_REM invocations require supported datatypes",
+      "source": "S17.11.35, J3/24-007, 18 December 2023, physical PDF501.",
+      "source_units": [
+        "p4"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "IEEE_REM shall not be invoked unless IEEE_SUPPORT_DATATYPE is true for both X and Y.",
+      "facets": [
+        "IEEE_REM-X-support-guard",
+        "IEEE_REM-Y-support-guard"
+      ],
+      "pending": {
+        "IEEE_REM-X-support-guard": "Guarded source-control plan probes IEEE_SUPPORT_DATATYPE(4.0) before invoking IEEE_REM(4.0,3.0); supported branch calls IEEE_REM and unsupported branch skips. Mutation removes the X probe and claims no diagnostic facet.",
+        "IEEE_REM-Y-support-guard": "Guarded source-control plan probes IEEE_SUPPORT_DATATYPE(3.0) before invoking IEEE_REM(4.0,3.0); supported branch calls IEEE_REM and unsupported branch skips. Mutation removes the Y probe and claims no diagnostic facet."
+      },
+      "oracle": "Source registration only. Future Clause 17 fixtures use guarded branch plans: first probe the named IEEE_SUPPORT_DATATYPE, IEEE_SUPPORT_FLAG(flag,X), IEEE_SUPPORT_HALTING, IEEE_SUPPORT_ROUNDING, IEEE_SUPPORT_INF, IEEE_SUPPORT_NAN, and subnormal-support inquiries, exercise only the supported branch, and treat the unsupported branch as a skip. Flag plans use named shared preamble FLAG-HALTING-OFF(flag,X): after IEEE_SUPPORT_FLAG(flag,X) succeeds, probe IEEE_SUPPORT_HALTING(flag); the halting-supported branch calls IEEE_SET_HALTING_MODE(flag,.FALSE.); the no-halting-support branch calls IEEE_GET_HALTING_MODE(flag,h) under its own guard and proceeds only for h .FALSE., with h .TRUE. skipping that row. Exception rows then clear all supported flags before the operation and assert every text-required quiet flag under its own IEEE_SUPPORT_FLAG(flag,X) probe. Plans invoke restricted IEEE observer procedures only after their own support probes. Exact assertions use representable binary inputs, named IEEE constants, quiet and signaling NaN operands where applicable, MINEXPONENT/DIGITS subnormal constructions, kind/rank/type checks, and IEEE_IS_NEGATIVE, IEEE_CLASS, or IEEE_IS_NAN observers rather than processor-dependent encodings.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Case-insensitive grep of tests/ and tests/fixtures/*/fixture.json found no existing hits for IEEE_REAL, IEEE_REM, IEEE_RINT, IEEE_SCALB, IEEE_SELECTED_REAL_KIND, or IEEE_SET_FLAG in this worktree; those procedure names remain unbound here. The existing tests/profiles/ieee_binary.f90 profile can guard future binary32/binary64 IEEE arithmetic cases.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 13, and 16 where already catalogued for source form, intrinsic types and kinds, declarations, expressions, arrays, execution, I/O observation helpers, and intrinsic inquiry functions. Unregistered dependencies retained: surrounding Clause 17 IEEE module procedures, named IEEE constants and derived types, ISO/IEC 60559 operation terminology, and later Clause 17 support inquiries named by guarded plans."
+    },
+    {
+      "id": "S17.11.35-003",
+      "title": "IEEE_REM result kind uses the greater-precision argument",
+      "source": "S17.11.35, J3/24-007, 18 December 2023, physical PDF501.",
+      "source_units": [
+        "p5"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The IEEE_REM result is real with the kind type parameter of whichever argument has greater precision.",
+      "facets": [
+        "IEEE_REM-greater-precision-result-kind"
+      ],
+      "pending": {
+        "IEEE_REM-greater-precision-result-kind": "Guarded branch probes IEEE_SUPPORT_DATATYPE(5.0), IEEE_SUPPORT_DATATYPE(2.0d0), and RADIX(5.0)==RADIX(2.0d0); supported branch asserts KIND(IEEE_REM(5.0,2.0d0)) equals KIND(0.0d0) and pairs the reversed argument order. Mutation expects the lower-precision kind."
+      },
+      "oracle": "Source registration only. Future Clause 17 fixtures use guarded branch plans: first probe the named IEEE_SUPPORT_DATATYPE, IEEE_SUPPORT_FLAG(flag,X), IEEE_SUPPORT_HALTING, IEEE_SUPPORT_ROUNDING, IEEE_SUPPORT_INF, IEEE_SUPPORT_NAN, and subnormal-support inquiries, exercise only the supported branch, and treat the unsupported branch as a skip. Flag plans use named shared preamble FLAG-HALTING-OFF(flag,X): after IEEE_SUPPORT_FLAG(flag,X) succeeds, probe IEEE_SUPPORT_HALTING(flag); the halting-supported branch calls IEEE_SET_HALTING_MODE(flag,.FALSE.); the no-halting-support branch calls IEEE_GET_HALTING_MODE(flag,h) under its own guard and proceeds only for h .FALSE., with h .TRUE. skipping that row. Exception rows then clear all supported flags before the operation and assert every text-required quiet flag under its own IEEE_SUPPORT_FLAG(flag,X) probe. Plans invoke restricted IEEE observer procedures only after their own support probes. Exact assertions use representable binary inputs, named IEEE constants, quiet and signaling NaN operands where applicable, MINEXPONENT/DIGITS subnormal constructions, kind/rank/type checks, and IEEE_IS_NEGATIVE, IEEE_CLASS, or IEEE_IS_NAN observers rather than processor-dependent encodings.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Case-insensitive grep of tests/ and tests/fixtures/*/fixture.json found no existing hits for IEEE_REAL, IEEE_REM, IEEE_RINT, IEEE_SCALB, IEEE_SELECTED_REAL_KIND, or IEEE_SET_FLAG in this worktree; those procedure names remain unbound here. The existing tests/profiles/ieee_binary.f90 profile can guard future binary32/binary64 IEEE arithmetic cases.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 13, and 16 where already catalogued for source form, intrinsic types and kinds, declarations, expressions, arrays, execution, I/O observation helpers, and intrinsic inquiry functions. Unregistered dependencies retained: surrounding Clause 17 IEEE module procedures, named IEEE constants and derived types, ISO/IEC 60559 operation terminology, and later Clause 17 support inquiries named by guarded plans."
+    },
+    {
+      "id": "S17.11.35-004",
+      "title": "IEEE_REM finite nonzero operands use exact nearest-even remainder",
+      "source": "S17.11.35, J3/24-007, 18 December 2023, physical PDF501.",
+      "source_units": [
+        "p6",
+        "p7"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For finite X and nonzero finite Y, IEEE_REM returns exactly X - Y*N with N nearest to X/Y and ties choosing even N; zero results have the sign of X.",
+      "facets": [
+        "IEEE_REM-finite-nearest-even-formula",
+        "IEEE_REM-tie-chooses-even-N",
+        "IEEE_REM-zero-result-sign-of-X",
+        "IEEE_REM-binary-argument-order-discriminates"
+      ],
+      "pending": {
+        "IEEE_REM-finite-nearest-even-formula": "Guarded branch probes IEEE_SUPPORT_DATATYPE(4.0), IEEE_SUPPORT_DATATYPE(3.0), IEEE_SUPPORT_DATATYPE(5.0), and IEEE_SUPPORT_DATATYPE(2.0) before the calls; supported branch asserts IEEE_REM(4.0,3.0)==1.0 and IEEE_REM(5.0,2.0)==1.0 with result sentinels initialized to 99.0. Mutations swap X and Y or change N.",
+        "IEEE_REM-tie-chooses-even-N": "Guarded branch probes IEEE_SUPPORT_DATATYPE(3.0) and IEEE_SUPPORT_DATATYPE(2.0) before the call; supported branch asserts IEEE_REM(3.0,2.0)==-1.0 because X/Y=1.5 selects even N=2. Mutation expects +1.0.",
+        "IEEE_REM-zero-result-sign-of-X": "Guarded branch probes IEEE_SUPPORT_DATATYPE(-4.0), IEEE_SUPPORT_DATATYPE(2.0), IEEE_SUPPORT_DATATYPE(0.0) for the result, and IEEE_IS_NEGATIVE observer support before the call; supported branch computes IEEE_REM(-4.0,2.0), asserts equality to zero and IEEE_IS_NEGATIVE true. Mutation uses positive X.",
+        "IEEE_REM-binary-argument-order-discriminates": "Guarded branch probes IEEE_SUPPORT_DATATYPE(4.0) and IEEE_SUPPORT_DATATYPE(3.0) before both calls; supported branch asserts IEEE_REM(4.0,3.0)==1.0 and IEEE_REM(3.0,4.0)==-1.0 so both argument orders are load-bearing. Mutation swaps only the oracle."
+      },
+      "oracle": "Source registration only. Future Clause 17 fixtures use guarded branch plans: first probe the named IEEE_SUPPORT_DATATYPE, IEEE_SUPPORT_FLAG(flag,X), IEEE_SUPPORT_HALTING, IEEE_SUPPORT_ROUNDING, IEEE_SUPPORT_INF, IEEE_SUPPORT_NAN, and subnormal-support inquiries, exercise only the supported branch, and treat the unsupported branch as a skip. Flag plans use named shared preamble FLAG-HALTING-OFF(flag,X): after IEEE_SUPPORT_FLAG(flag,X) succeeds, probe IEEE_SUPPORT_HALTING(flag); the halting-supported branch calls IEEE_SET_HALTING_MODE(flag,.FALSE.); the no-halting-support branch calls IEEE_GET_HALTING_MODE(flag,h) under its own guard and proceeds only for h .FALSE., with h .TRUE. skipping that row. Exception rows then clear all supported flags before the operation and assert every text-required quiet flag under its own IEEE_SUPPORT_FLAG(flag,X) probe. Plans invoke restricted IEEE observer procedures only after their own support probes. Exact assertions use representable binary inputs, named IEEE constants, quiet and signaling NaN operands where applicable, MINEXPONENT/DIGITS subnormal constructions, kind/rank/type checks, and IEEE_IS_NEGATIVE, IEEE_CLASS, or IEEE_IS_NAN observers rather than processor-dependent encodings.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Case-insensitive grep of tests/ and tests/fixtures/*/fixture.json found no existing hits for IEEE_REAL, IEEE_REM, IEEE_RINT, IEEE_SCALB, IEEE_SELECTED_REAL_KIND, or IEEE_SET_FLAG in this worktree; those procedure names remain unbound here. The existing tests/profiles/ieee_binary.f90 profile can guard future binary32/binary64 IEEE arithmetic cases.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 13, and 16 where already catalogued for source form, intrinsic types and kinds, declarations, expressions, arrays, execution, I/O observation helpers, and intrinsic inquiry functions. Unregistered dependencies retained: surrounding Clause 17 IEEE module procedures, named IEEE constants and derived types, ISO/IEC 60559 operation terminology, and later Clause 17 support inquiries named by guarded plans."
+    },
+    {
+      "id": "S17.11.35-008",
+      "title": "IEEE_REM NaN operand rows follow the IEEE remainder operation",
+      "source": "S17.11.35, J3/24-007, 18 December 2023, physical PDF501.",
+      "source_units": [
+        "p6.nan-operands"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "NaN operand rows of the ISO/IEC 60559 remainder operation return a NaN result, with signaling NaN operands quieted and invalid signaled as specified by that operation.",
+      "facets": [
+        "IEEE_REM-quiet-NaN-left-result-NaN",
+        "IEEE_REM-quiet-NaN-right-result-NaN",
+        "IEEE_REM-two-quiet-NaNs-result-NaN",
+        "IEEE_REM-signaling-NaN-left-invalid-quiet-NaN",
+        "IEEE_REM-signaling-NaN-right-invalid-quiet-NaN",
+        "IEEE_REM-two-signaling-NaNs-invalid-quiet-NaN"
+      ],
+      "pending": {
+        "IEEE_REM-quiet-NaN-left-result-NaN": "Guarded branch probes IEEE_SUPPORT_NAN(1.0), IEEE_SUPPORT_DATATYPE(qnan), IEEE_SUPPORT_DATATYPE(1.0), IEEE_VALUE construction support, and IEEE_IS_NAN observer support and IEEE_CLASS observer support before the call; supported branch evaluates IEEE_REM(qnan,1.0) and asserts a NaN result. Mutation replaces qnan with 1.0.",
+        "IEEE_REM-quiet-NaN-right-result-NaN": "Guarded branch probes IEEE_SUPPORT_NAN(1.0), IEEE_SUPPORT_DATATYPE(1.0), IEEE_SUPPORT_DATATYPE(qnan), IEEE_VALUE construction support, and IEEE_IS_NAN observer support and IEEE_CLASS observer support before the call; supported branch evaluates IEEE_REM(1.0,qnan) and asserts a NaN result. Mutation replaces qnan with 1.0.",
+        "IEEE_REM-two-quiet-NaNs-result-NaN": "Guarded branch probes IEEE_SUPPORT_NAN(1.0), IEEE_SUPPORT_DATATYPE(qnan_a), IEEE_SUPPORT_DATATYPE(qnan_b), IEEE_VALUE construction support, and IEEE_IS_NAN observer support and IEEE_CLASS observer support before the call; supported branch evaluates IEEE_REM(qnan_a,qnan_b) and asserts a NaN result without comparing payloads. Mutation replaces one qnan with 1.0.",
+        "IEEE_REM-signaling-NaN-left-invalid-quiet-NaN": "Guarded branch probes IEEE_SUPPORT_NAN(1.0), IEEE_SUPPORT_DATATYPE(snan), IEEE_SUPPORT_DATATYPE(1.0), IEEE_SUPPORT_FLAG(IEEE_INVALID,1.0), FLAG-HALTING-OFF(IEEE_INVALID,1.0), IEEE_VALUE signaling-NaN construction support, and IEEE_CLASS observer support before the call; supported branch clears all supported flags, evaluates IEEE_REM(snan,1.0), asserts IEEE_INVALID signaling and IEEE_CLASS(result)==IEEE_QUIET_NAN. Mutation uses qnan.",
+        "IEEE_REM-signaling-NaN-right-invalid-quiet-NaN": "Guarded branch probes IEEE_SUPPORT_NAN(1.0), IEEE_SUPPORT_DATATYPE(1.0), IEEE_SUPPORT_DATATYPE(snan), IEEE_SUPPORT_FLAG(IEEE_INVALID,1.0), FLAG-HALTING-OFF(IEEE_INVALID,1.0), IEEE_VALUE signaling-NaN construction support, and IEEE_CLASS observer support before the call; supported branch clears all supported flags, evaluates IEEE_REM(1.0,snan), asserts IEEE_INVALID signaling and IEEE_CLASS(result)==IEEE_QUIET_NAN. Mutation uses qnan.",
+        "IEEE_REM-two-signaling-NaNs-invalid-quiet-NaN": "Guarded branch probes IEEE_SUPPORT_NAN(1.0), IEEE_SUPPORT_DATATYPE(snan_a), IEEE_SUPPORT_DATATYPE(snan_b), IEEE_SUPPORT_FLAG(IEEE_INVALID,1.0), FLAG-HALTING-OFF(IEEE_INVALID,1.0), IEEE_VALUE signaling-NaN construction support, and IEEE_CLASS observer support before the call; supported branch clears all supported flags, evaluates IEEE_REM(snan_a,snan_b), asserts IEEE_INVALID signaling and IEEE_CLASS(result)==IEEE_QUIET_NAN. Mutation changes both operands to qnan."
+      },
+      "oracle": "Source registration only. Future Clause 17 fixtures use guarded branch plans: first probe the named IEEE_SUPPORT_DATATYPE, IEEE_SUPPORT_FLAG(flag,X), IEEE_SUPPORT_HALTING, IEEE_SUPPORT_ROUNDING, IEEE_SUPPORT_INF, IEEE_SUPPORT_NAN, and subnormal-support inquiries, exercise only the supported branch, and treat the unsupported branch as a skip. Flag plans use named shared preamble FLAG-HALTING-OFF(flag,X): after IEEE_SUPPORT_FLAG(flag,X) succeeds, probe IEEE_SUPPORT_HALTING(flag); the halting-supported branch calls IEEE_SET_HALTING_MODE(flag,.FALSE.); the no-halting-support branch calls IEEE_GET_HALTING_MODE(flag,h) under its own guard and proceeds only for h .FALSE., with h .TRUE. skipping that row. Exception rows then clear all supported flags before the operation and assert every text-required quiet flag under its own IEEE_SUPPORT_FLAG(flag,X) probe. Plans invoke restricted IEEE observer procedures only after their own support probes. Exact assertions use representable binary inputs, named IEEE constants, quiet and signaling NaN operands where applicable, MINEXPONENT/DIGITS subnormal constructions, kind/rank/type checks, and IEEE_IS_NEGATIVE, IEEE_CLASS, or IEEE_IS_NAN observers rather than processor-dependent encodings.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Case-insensitive grep of tests/ and tests/fixtures/*/fixture.json found no existing hits for IEEE_REAL, IEEE_REM, IEEE_RINT, IEEE_SCALB, IEEE_SELECTED_REAL_KIND, or IEEE_SET_FLAG in this worktree; those procedure names remain unbound here. The existing tests/profiles/ieee_binary.f90 profile can guard future binary32/binary64 IEEE arithmetic cases.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 13, and 16 where already catalogued for source form, intrinsic types and kinds, declarations, expressions, arrays, execution, I/O observation helpers, and intrinsic inquiry functions. Unregistered dependencies retained: surrounding Clause 17 IEEE module procedures, named IEEE constants and derived types, ISO/IEC 60559 operation terminology, and later Clause 17 support inquiries named by guarded plans."
+    },
+    {
+      "id": "S17.11.35-005",
+      "title": "IEEE_REM finite X and infinite Y returns X without exceptions for normal X",
+      "source": "S17.11.35, J3/24-007, 18 December 2023, physical PDF501.",
+      "source_units": [
+        "p8.finite-infinite-result",
+        "p8.normal-infinite-no-exception"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For finite X and infinite Y, the result is X; for finite normal X and infinite Y, no exception signals.",
+      "facets": [
+        "IEEE_REM-finite-X-infinite-Y-result-X",
+        "IEEE_REM-normal-X-infinite-Y-no-exception"
+      ],
+      "pending": {
+        "IEEE_REM-finite-X-infinite-Y-result-X": "Guarded branch probes IEEE_SUPPORT_DATATYPE(1.5), IEEE_SUPPORT_INF(1.0), IEEE_VALUE construction support, and IEEE_SUPPORT_DATATYPE(+infinity) before the call; supported branch forms positive infinity for Y, computes IEEE_REM(1.5,Y), and asserts the exact result 1.5. Mutation uses finite Y=1.0.",
+        "IEEE_REM-normal-X-infinite-Y-no-exception": "Guarded branch probes IEEE_SUPPORT_DATATYPE(1.5), IEEE_SUPPORT_INF(1.0), IEEE_VALUE construction support, IEEE_SUPPORT_DATATYPE(+infinity), and IEEE_SUPPORT_FLAG(flag,1.0) separately for IEEE_INVALID, IEEE_OVERFLOW, IEEE_DIVIDE_BY_ZERO, IEEE_UNDERFLOW, and IEEE_INEXACT; supported branch applies FLAG-HALTING-OFF(flag,1.0) for each supported flag, clears all supported flags, evaluates IEEE_REM(1.5,+infinity), and asserts all five supported flags remain quiet. Mutation expects IEEE_INVALID or IEEE_UNDERFLOW to signal."
+      },
+      "oracle": "Source registration only. Future Clause 17 fixtures use guarded branch plans: first probe the named IEEE_SUPPORT_DATATYPE, IEEE_SUPPORT_FLAG(flag,X), IEEE_SUPPORT_HALTING, IEEE_SUPPORT_ROUNDING, IEEE_SUPPORT_INF, IEEE_SUPPORT_NAN, and subnormal-support inquiries, exercise only the supported branch, and treat the unsupported branch as a skip. Flag plans use named shared preamble FLAG-HALTING-OFF(flag,X): after IEEE_SUPPORT_FLAG(flag,X) succeeds, probe IEEE_SUPPORT_HALTING(flag); the halting-supported branch calls IEEE_SET_HALTING_MODE(flag,.FALSE.); the no-halting-support branch calls IEEE_GET_HALTING_MODE(flag,h) under its own guard and proceeds only for h .FALSE., with h .TRUE. skipping that row. Exception rows then clear all supported flags before the operation and assert every text-required quiet flag under its own IEEE_SUPPORT_FLAG(flag,X) probe. Plans invoke restricted IEEE observer procedures only after their own support probes. Exact assertions use representable binary inputs, named IEEE constants, quiet and signaling NaN operands where applicable, MINEXPONENT/DIGITS subnormal constructions, kind/rank/type checks, and IEEE_IS_NEGATIVE, IEEE_CLASS, or IEEE_IS_NAN observers rather than processor-dependent encodings.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Case-insensitive grep of tests/ and tests/fixtures/*/fixture.json found no existing hits for IEEE_REAL, IEEE_REM, IEEE_RINT, IEEE_SCALB, IEEE_SELECTED_REAL_KIND, or IEEE_SET_FLAG in this worktree; those procedure names remain unbound here. The existing tests/profiles/ieee_binary.f90 profile can guard future binary32/binary64 IEEE arithmetic cases.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 13, and 16 where already catalogued for source form, intrinsic types and kinds, declarations, expressions, arrays, execution, I/O observation helpers, and intrinsic inquiry functions. Unregistered dependencies retained: surrounding Clause 17 IEEE module procedures, named IEEE constants and derived types, ISO/IEC 60559 operation terminology, and later Clause 17 support inquiries named by guarded plans."
+    },
+    {
+      "id": "S17.11.35-006",
+      "title": "IEEE_REM invalid cases signal invalid and produce NaN where supported",
+      "source": "S17.11.35, J3/24-007, 18 December 2023, physical PDF501.",
+      "source_units": [
+        "p8.invalid-exception",
+        "p8.nan-result"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For zero Y or infinite X with neither operand NaN, IEEE_INVALID occurs; with NaN support for X+Y, the result is a NaN.",
+      "facets": [
+        "IEEE_REM-zero-Y-invalid",
+        "IEEE_REM-positive-infinite-X-invalid",
+        "IEEE_REM-negative-infinite-X-invalid",
+        "IEEE_REM-positive-infinite-X-invalid-result-NaN-where-supported",
+        "IEEE_REM-negative-infinite-X-invalid-result-NaN-where-supported",
+        "IEEE_REM-negative-X-zero-Y-invalid",
+        "IEEE_REM-positive-X-zero-Y-invalid-result-NaN-where-supported",
+        "IEEE_REM-negative-X-zero-Y-invalid-result-NaN-where-supported"
+      ],
+      "pending": {
+        "IEEE_REM-zero-Y-invalid": "Guarded branch probes IEEE_SUPPORT_DATATYPE(1.0), IEEE_SUPPORT_DATATYPE(0.0), and IEEE_SUPPORT_FLAG(IEEE_INVALID,1.0), then applies FLAG-HALTING-OFF(IEEE_INVALID,1.0); supported branch clears all supported flags, evaluates IEEE_REM(1.0,0.0), and asserts IEEE_INVALID signaling. Mutation uses Y=2.0.",
+        "IEEE_REM-positive-infinite-X-invalid": "Guarded branch probes IEEE_SUPPORT_INF(1.0), IEEE_VALUE construction support, IEEE_SUPPORT_DATATYPE(+infinity), IEEE_SUPPORT_DATATYPE(1.0), and IEEE_SUPPORT_FLAG(IEEE_INVALID,1.0), then applies FLAG-HALTING-OFF(IEEE_INVALID,1.0); supported branch clears all supported flags, evaluates IEEE_REM(+infinity,1.0), and asserts IEEE_INVALID signaling. Mutation uses finite X=1.0.",
+        "IEEE_REM-negative-infinite-X-invalid": "Guarded branch probes IEEE_SUPPORT_INF(1.0), IEEE_VALUE construction support, IEEE_SUPPORT_DATATYPE(-infinity), IEEE_SUPPORT_DATATYPE(1.0), and IEEE_SUPPORT_FLAG(IEEE_INVALID,1.0), then applies FLAG-HALTING-OFF(IEEE_INVALID,1.0); supported branch clears all supported flags, evaluates IEEE_REM(-infinity,1.0), and asserts IEEE_INVALID signaling. Mutation uses finite X=-1.0.",
+        "IEEE_REM-positive-infinite-X-invalid-result-NaN-where-supported": "Guarded branch probes IEEE_SUPPORT_NAN(+infinity+1.0), IEEE_SUPPORT_INF(1.0), IEEE_VALUE construction support, IEEE_SUPPORT_DATATYPE(+infinity), IEEE_SUPPORT_DATATYPE(1.0), IEEE_SUPPORT_FLAG(IEEE_INVALID,1.0), FLAG-HALTING-OFF(IEEE_INVALID,1.0), and IEEE_IS_NAN observer support; supported branch evaluates IEEE_REM(+infinity,1.0) and asserts IEEE_IS_NAN of the result. Unsupported NaN branch skips. Mutation expects a finite result.",
+        "IEEE_REM-negative-infinite-X-invalid-result-NaN-where-supported": "Guarded branch probes IEEE_SUPPORT_NAN(-infinity+1.0), IEEE_SUPPORT_INF(1.0), IEEE_VALUE construction support, IEEE_SUPPORT_DATATYPE(-infinity), IEEE_SUPPORT_DATATYPE(1.0), IEEE_SUPPORT_FLAG(IEEE_INVALID,1.0), FLAG-HALTING-OFF(IEEE_INVALID,1.0), and IEEE_IS_NAN observer support; supported branch evaluates IEEE_REM(-infinity,1.0) and asserts IEEE_IS_NAN of the result. Unsupported NaN branch skips. Mutation expects a finite result.",
+        "IEEE_REM-negative-X-zero-Y-invalid": "Guarded branch probes IEEE_SUPPORT_DATATYPE(-1.0), IEEE_SUPPORT_DATATYPE(0.0), and IEEE_SUPPORT_FLAG(IEEE_INVALID,-1.0), then applies FLAG-HALTING-OFF(IEEE_INVALID,-1.0); supported branch clears all supported flags, evaluates IEEE_REM(-1.0,0.0), and asserts IEEE_INVALID signaling. Mutation uses Y=2.0.",
+        "IEEE_REM-positive-X-zero-Y-invalid-result-NaN-where-supported": "Guarded branch probes IEEE_SUPPORT_NAN(1.0+0.0), IEEE_SUPPORT_DATATYPE(1.0), IEEE_SUPPORT_DATATYPE(0.0), IEEE_SUPPORT_FLAG(IEEE_INVALID,1.0), FLAG-HALTING-OFF(IEEE_INVALID,1.0), and IEEE_IS_NAN observer support; supported branch clears all supported flags, evaluates IEEE_REM(1.0,0.0), and asserts IEEE_IS_NAN of the result. Unsupported NaN branch skips. Mutation expects a finite result.",
+        "IEEE_REM-negative-X-zero-Y-invalid-result-NaN-where-supported": "Guarded branch probes IEEE_SUPPORT_NAN(-1.0+0.0), IEEE_SUPPORT_DATATYPE(-1.0), IEEE_SUPPORT_DATATYPE(0.0), IEEE_SUPPORT_FLAG(IEEE_INVALID,-1.0), FLAG-HALTING-OFF(IEEE_INVALID,-1.0), and IEEE_IS_NAN observer support; supported branch clears all supported flags, evaluates IEEE_REM(-1.0,0.0), and asserts IEEE_IS_NAN of the result. Unsupported NaN branch skips. Mutation expects a finite result."
+      },
+      "oracle": "Source registration only. Future Clause 17 fixtures use guarded branch plans: first probe the named IEEE_SUPPORT_DATATYPE, IEEE_SUPPORT_FLAG(flag,X), IEEE_SUPPORT_HALTING, IEEE_SUPPORT_ROUNDING, IEEE_SUPPORT_INF, IEEE_SUPPORT_NAN, and subnormal-support inquiries, exercise only the supported branch, and treat the unsupported branch as a skip. Flag plans use named shared preamble FLAG-HALTING-OFF(flag,X): after IEEE_SUPPORT_FLAG(flag,X) succeeds, probe IEEE_SUPPORT_HALTING(flag); the halting-supported branch calls IEEE_SET_HALTING_MODE(flag,.FALSE.); the no-halting-support branch calls IEEE_GET_HALTING_MODE(flag,h) under its own guard and proceeds only for h .FALSE., with h .TRUE. skipping that row. Exception rows then clear all supported flags before the operation and assert every text-required quiet flag under its own IEEE_SUPPORT_FLAG(flag,X) probe. Plans invoke restricted IEEE observer procedures only after their own support probes. Exact assertions use representable binary inputs, named IEEE constants, quiet and signaling NaN operands where applicable, MINEXPONENT/DIGITS subnormal constructions, kind/rank/type checks, and IEEE_IS_NEGATIVE, IEEE_CLASS, or IEEE_IS_NAN observers rather than processor-dependent encodings.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Case-insensitive grep of tests/ and tests/fixtures/*/fixture.json found no existing hits for IEEE_REAL, IEEE_REM, IEEE_RINT, IEEE_SCALB, IEEE_SELECTED_REAL_KIND, or IEEE_SET_FLAG in this worktree; those procedure names remain unbound here. The existing tests/profiles/ieee_binary.f90 profile can guard future binary32/binary64 IEEE arithmetic cases.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 13, and 16 where already catalogued for source form, intrinsic types and kinds, declarations, expressions, arrays, execution, I/O observation helpers, and intrinsic inquiry functions. Unregistered dependencies retained: surrounding Clause 17 IEEE module procedures, named IEEE constants and derived types, ISO/IEC 60559 operation terminology, and later Clause 17 support inquiries named by guarded plans."
+    },
+    {
+      "id": "S17.11.35-007",
+      "title": "IEEE_REM subnormal finite X and infinite Y signals underflow",
+      "source": "S17.11.35, J3/24-007, 18 December 2023, physical PDF501.",
+      "source_units": [
+        "p8.subnormal-underflow"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For subnormal X and infinite Y, IEEE_UNDERFLOW occurs.",
+      "facets": [
+        "IEEE_REM-subnormal-X-infinite-Y-underflow"
+      ],
+      "pending": {
+        "IEEE_REM-subnormal-X-infinite-Y-underflow": "Guarded branch probes IEEE_SUPPORT_DATATYPE(1.0), IEEE_SUPPORT_INF(1.0), IEEE_VALUE construction support, IEEE_SUPPORT_DATATYPE(+infinity), IEEE_SUPPORT_DATATYPE(x), IEEE_SUPPORT_FLAG(IEEE_UNDERFLOW,1.0), FLAG-HALTING-OFF(IEEE_UNDERFLOW,1.0), and the Clause 17 subnormal-support inquiry; supported branch builds x=SCALE(TINY(1.0),1-DIGITS(1.0)) as the smallest positive subnormal from MINEXPONENT/DIGITS relations, clears all supported flags, evaluates IEEE_REM(x,+infinity), and asserts result==x plus IEEE_UNDERFLOW signaling. Mutation uses normal X=1.0."
+      },
+      "oracle": "Source registration only. Future Clause 17 fixtures use guarded branch plans: first probe the named IEEE_SUPPORT_DATATYPE, IEEE_SUPPORT_FLAG(flag,X), IEEE_SUPPORT_HALTING, IEEE_SUPPORT_ROUNDING, IEEE_SUPPORT_INF, IEEE_SUPPORT_NAN, and subnormal-support inquiries, exercise only the supported branch, and treat the unsupported branch as a skip. Flag plans use named shared preamble FLAG-HALTING-OFF(flag,X): after IEEE_SUPPORT_FLAG(flag,X) succeeds, probe IEEE_SUPPORT_HALTING(flag); the halting-supported branch calls IEEE_SET_HALTING_MODE(flag,.FALSE.); the no-halting-support branch calls IEEE_GET_HALTING_MODE(flag,h) under its own guard and proceeds only for h .FALSE., with h .TRUE. skipping that row. Exception rows then clear all supported flags before the operation and assert every text-required quiet flag under its own IEEE_SUPPORT_FLAG(flag,X) probe. Plans invoke restricted IEEE observer procedures only after their own support probes. Exact assertions use representable binary inputs, named IEEE constants, quiet and signaling NaN operands where applicable, MINEXPONENT/DIGITS subnormal constructions, kind/rank/type checks, and IEEE_IS_NEGATIVE, IEEE_CLASS, or IEEE_IS_NAN observers rather than processor-dependent encodings.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Case-insensitive grep of tests/ and tests/fixtures/*/fixture.json found no existing hits for IEEE_REAL, IEEE_REM, IEEE_RINT, IEEE_SCALB, IEEE_SELECTED_REAL_KIND, or IEEE_SET_FLAG in this worktree; those procedure names remain unbound here. The existing tests/profiles/ieee_binary.f90 profile can guard future binary32/binary64 IEEE arithmetic cases.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 13, and 16 where already catalogued for source form, intrinsic types and kinds, declarations, expressions, arrays, execution, I/O observation helpers, and intrinsic inquiry functions. Unregistered dependencies retained: surrounding Clause 17 IEEE module procedures, named IEEE constants and derived types, ISO/IEC 60559 operation terminology, and later Clause 17 support inquiries named by guarded plans."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "definition",
+      "rationale": "Description names IEEE_REM as exact remainder."
+    },
+    {
+      "unit": "p2",
+      "disposition": "definition",
+      "rationale": "Classifies IEEE_REM as elemental."
+    },
+    {
+      "unit": "p3",
+      "disposition": "structural",
+      "rationale": "Argument restrictions split type and radix requirements."
+    },
+    {
+      "unit": "p3.real-arguments",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.11.35-001"
+      ]
+    },
+    {
+      "unit": "p3.same-radix",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.11.35-001"
+      ]
+    },
+    {
+      "unit": "p4",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.11.35-002"
+      ]
+    },
+    {
+      "unit": "p5",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.11.35-003"
+      ]
+    },
+    {
+      "unit": "p6",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.11.35-004"
+      ],
+      "rationale": "The ISO remainder operation is concretized by finite, NaN, and special-case result-value paragraphs p7 and p8."
+    },
+    {
+      "unit": "p6.nan-operands",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.11.35-008"
+      ],
+      "rationale": "NaN operand rows are required by the referenced ISO/IEC 60559 remainder operation."
+    },
+    {
+      "unit": "p7",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.11.35-004"
+      ]
+    },
+    {
+      "unit": "p8",
+      "disposition": "structural",
+      "rationale": "Special values, exceptions, NaN support, subnormal underflow, and no-exception branch are split."
+    },
+    {
+      "unit": "p8.finite-infinite-result",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.11.35-005"
+      ]
+    },
+    {
+      "unit": "p8.normal-infinite-no-exception",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.11.35-005"
+      ]
+    },
+    {
+      "unit": "p8.invalid-exception",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.11.35-006"
+      ]
+    },
+    {
+      "unit": "p8.nan-result",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.11.35-006"
+      ]
+    },
+    {
+      "unit": "p8.subnormal-underflow",
+      "disposition": "requirements",
+      "requirements": [
+        "S17.11.35-007"
+      ]
+    },
+    {
+      "unit": "p9",
+      "disposition": "informative",
+      "rationale": "Examples are illustrative and duplicate exact cases already planned from p7."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_17_11_35.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "c09573698944964b8fb6f22181b5aed8dab2f2d986da12775cb134ef09baf934",
+  "review_rationale": "Source registration for 17.11.34-17.11.39: IEEE_REAL, IEEE_REM, IEEE_RINT, IEEE_SCALB, IEEE_SELECTED_REAL_KIND and IEEE_SET_FLAG (batch225). Every unit hash-verified by an independent reviewer across four rounds; every restricted invocation names its concrete support inquiry, and IEEE_RINT's inexact behaviour follows the two 60559 operations the text cites. Source accounting only."
+}
