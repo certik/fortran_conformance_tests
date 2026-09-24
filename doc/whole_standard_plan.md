@@ -6199,6 +6199,11 @@ See `doc/source_audits/batch_288.json`.
 32 programs, 48 facets and three LFortran defects: FINDLOC ignores its MASK.
 See `doc/source_audits/batch_289.json`.
 
+## Batch 291 — Expression, primary, conditional and level-1 fixtures 10.1.1-10.1.2.4
+
+28 programs, 61 facets, including the new conditional expression: only the chosen branch is evaluated, and both branches must agree in type, kind and rank.
+See `doc/source_audits/batch_291.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
