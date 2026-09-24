@@ -5879,6 +5879,11 @@ See `doc/source_audits/batch_225.json`.
 Forty units, thirty-two numbered, after three rounds. The instructive one: C1544 reads like a prohibition but no program can break it, because the grammar already routes a bare variable to the variable alternative, and a parenthesised (x) is an expression, not a variable. A diagnostic test for it would have tested nothing; what it *does* determine is observable — whether the actual argument is associated as a variable or as a value.
 See `doc/source_audits/batch_224.json`.
 
+## Batch 231 — Argument association through ordinary dummy variables (15.5.2-15.5.2.5)
+
+Forty-nine units after two rounds. The first finding is a recurring kind: a control program meant to show what the constraint permits was itself illegal under a neighbouring paragraph. A vector-subscripted actual and a strided one are both discontiguous, but only the first makes the dummy non-definable.
+See `doc/source_audits/batch_231.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must

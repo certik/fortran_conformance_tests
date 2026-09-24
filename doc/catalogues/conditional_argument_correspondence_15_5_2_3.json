@@ -1,0 +1,149 @@
+{
+  "schema_version": 1,
+  "section": "15.5.2.3",
+  "requirements": [
+    {
+      "id": "S15.5.2.3-001",
+      "title": "Conditional-argument guards are evaluated in order until the selected consequent is known",
+      "source": "S15.5.2.3, J3/24-007, 18 December 2023, physical PDF338.",
+      "source_units": [
+        "p1"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For a conditional actual argument, scalar logical expressions are evaluated in order until one is true or the guard list is exhausted; the subsequent consequent of the first true guard is chosen, otherwise the last consequent is chosen.",
+      "facets": [
+        "guard-evaluation-order",
+        "first-true-consequent",
+        "last-consequent-default"
+      ],
+      "pending": {
+        "guard-evaluation-order": "Use guard functions g1 and g2 that append digits to integer trace initialized to 5. With g1 false and g2 true, call a subroutine receiving a conditional argument and expect trace 512 plus value from the second consequent.",
+        "first-true-consequent": "Use g1 true and g2 as a side-effect trap sentinel; expect first consequent value 101 and trace showing g2 was not evaluated.",
+        "last-consequent-default": "Use all guards false with consequents 11, 22, and final 33; initialize received value to -4 and expect 33 plus trace showing both guards evaluated in order."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish distinguished non-default state first, then observe portable single-image properties such as exact integer values, exact character values, PRESENT status, defined pointer-association inquiries, rank and bound inquiry results, and caller-side sentinels after procedure return. Unnumbered program restrictions do not create a required processor diagnostic; negative examples for those facets are source-control material only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostics are not claimed unless a numbered constraint or syntax rule requires them. Undefined association status, undefined definition status, processor-dependent argument-passing mechanisms, storage addresses, descriptor layouts, and coarray/image behavior are not executable oracles here. Future characteristic-boundary plans must treat dummy shape, type, kind, rank, attributes, and intent as characteristics; a non-characteristic illustration must use an entity outside that set.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, and 13 for source form, type compatibility, declaration attributes, designators, array element order, expressions, execution constructs, data transfer, and formatting foundations already present in this suite. Unregistered dependencies retained for future fixtures: later clause 15 optional, pointer, allocatable, procedure, elemental, generic, pure/simple, sequence association, and finalization rules; clause 16 inquiry intrinsics and ISO_FORTRAN_ENV support; clauses 14, 17, 18, and 19 for modules, IEEE support, C interoperability, and association/lifetime state."
+    },
+    {
+      "id": "S15.5.2.3-002",
+      "title": "The chosen conditional consequent supplies the actual argument or absence",
+      "source": "S15.5.2.3, J3/24-007, 18 December 2023, physical PDF338.",
+      "source_units": [
+        "p2"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The chosen consequent-arg supplies its expression or variable as the actual argument, and an expression consequent is evaluated. A chosen .NIL. consequent means the actual argument for that dummy argument is not present.",
+      "facets": [
+        "chosen-variable-actual",
+        "chosen-expression-evaluated",
+        "chosen-nil-actual-absent"
+      ],
+      "pending": {
+        "chosen-variable-actual": "Pass a variable consequent initialized to 57 through a conditional argument to an INTENT(IN) dummy; initialize callee result to -8 and expect 57.",
+        "chosen-expression-evaluated": "Use expression consequent f(20) where f returns 61 and records a trace sentinel; expect value 61 and trace changed from -3 to 20.",
+        "chosen-nil-actual-absent": "Choose .NIL. for an OPTIONAL dummy and have the callee store MERGE(1,0,PRESENT(x)) into a sentinel initialized to -9; expect 0 and no dummy value access."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish distinguished non-default state first, then observe portable single-image properties such as exact integer values, exact character values, PRESENT status, defined pointer-association inquiries, rank and bound inquiry results, and caller-side sentinels after procedure return. Unnumbered program restrictions do not create a required processor diagnostic; negative examples for those facets are source-control material only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostics are not claimed unless a numbered constraint or syntax rule requires them. Undefined association status, undefined definition status, processor-dependent argument-passing mechanisms, storage addresses, descriptor layouts, and coarray/image behavior are not executable oracles here.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, and 13 for source form, type compatibility, declaration attributes, designators, array element order, expressions, execution constructs, data transfer, and formatting foundations already present in this suite. Unregistered dependencies retained for future fixtures: later clause 15 optional, pointer, allocatable, procedure, elemental, generic, pure/simple, sequence association, and finalization rules; clause 16 inquiry intrinsics and ISO_FORTRAN_ENV support; clauses 14, 17, 18, and 19 for modules, IEEE support, C interoperability, and association/lifetime state."
+    },
+    {
+      "id": "S15.5.2.3-003",
+      "title": "Each conditional consequent must satisfy non-evaluation-dependent dummy requirements",
+      "source": "S15.5.2.3, J3/24-007, 18 December 2023, physical PDF338.",
+      "source_units": [
+        "p3"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "Every consequent-arg in a conditional-arg satisfies dummy-argument requirements on declared type, kind type parameters, attributes, and properties that do not depend on evaluating the consequent or contained expressions.",
+      "facets": [
+        "conditional-consequent-type-requirements",
+        "conditional-consequent-kind-requirements",
+        "conditional-consequent-attribute-requirements",
+        "conditional-consequent-property-requirements"
+      ],
+      "pending": {
+        "conditional-consequent-type-requirements": "Source-control negative uses one integer and one real consequent for an integer dummy; positive control uses two distinct integer consequents and observes selected value 7. No required diagnostic claim.",
+        "conditional-consequent-kind-requirements": "Source-control negative uses different integer kinds for consequents of a fixed-kind dummy; positive control uses two same-kind integers and observes selected value 13.",
+        "conditional-consequent-attribute-requirements": "Source-control negative mixes pointer and nonpointer consequents for a pointer-required context; positive control uses two associated pointer consequents targeting 17 and 19 and observes the selected target value.",
+        "conditional-consequent-property-requirements": "Source-control negative mixes ranks for a fixed-rank dummy; positive control uses two rank-one arrays with values [2,4] and [6,8] and observes selected array values."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish distinguished non-default state first, then observe portable single-image properties such as exact integer values, exact character values, PRESENT status, defined pointer-association inquiries, rank and bound inquiry results, and caller-side sentinels after procedure return. Unnumbered program restrictions do not create a required processor diagnostic; negative examples for those facets are source-control material only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostics are not claimed unless a numbered constraint or syntax rule requires them. Undefined association status, undefined definition status, processor-dependent argument-passing mechanisms, storage addresses, descriptor layouts, and coarray/image behavior are not executable oracles here.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, and 13 for source form, type compatibility, declaration attributes, designators, array element order, expressions, execution constructs, data transfer, and formatting foundations already present in this suite. Unregistered dependencies retained for future fixtures: later clause 15 optional, pointer, allocatable, procedure, elemental, generic, pure/simple, sequence association, and finalization rules; clause 16 inquiry intrinsics and ISO_FORTRAN_ENV support; clauses 14, 17, 18, and 19 for modules, IEEE support, C interoperability, and association/lifetime state."
+    },
+    {
+      "id": "S15.5.2.3-004",
+      "title": "Conditional-argument properties derive from all consequent arguments",
+      "source": "S15.5.2.3, J3/24-007, 18 December 2023, physical PDF338.",
+      "source_units": [
+        "p4"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A conditional-arg has the declared type, kind type parameters, and rank of its consequent-args; it has ALLOCATABLE or POINTER only exactly across all consequents; it is polymorphic exactly with at least one polymorphic consequent; its corank is the common consequent corank or zero; and it is simply contiguous exactly across all consequents.",
+      "facets": [
+        "conditional-type-kind-rank",
+        "conditional-all-allocatable-or-pointer",
+        "conditional-polymorphic-any-consequent",
+        "conditional-corank-common-or-zero",
+        "conditional-simple-contiguous-all"
+      ],
+      "pending": {
+        "conditional-type-kind-rank": "Use an assumed-rank integer dummy receiving a conditional argument from two rank-two integer arrays of shape [2,3]; inside SELECT RANK expect rank 2, exact shape [2,3], and selected sentinel data.",
+        "conditional-all-allocatable-or-pointer": "Use two allocated allocatable consequents for an allocatable-required context and observe selected values; companion source-control mixes allocatable and nonallocatable consequents with the same value shape.",
+        "conditional-polymorphic-any-consequent": "Use one CLASS(parent) consequent whose dynamic type is child and one nonpolymorphic parent consequent; pass to CLASS(parent) dummy and use SELECT TYPE to distinguish selected child value.",
+        "conditional-corank-common-or-zero": "Coarray/corank observation is out of scope by user decision; retain only source-control material preserving the common-corank versus mixed-corank distinction.",
+        "conditional-simple-contiguous-all": "Use two simply contiguous rank-one sections as consequents and an IS_CONTIGUOUS check inside an assumed-shape dummy; companion source-control has one strided section so the all-consequents premise is load-bearing."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans establish distinguished non-default state first, then observe portable single-image properties such as exact integer values, exact character values, PRESENT status, defined pointer-association inquiries, rank and bound inquiry results, and caller-side sentinels after procedure return. Unnumbered program restrictions do not create a required processor diagnostic; negative examples for those facets are source-control material only.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostics are not claimed unless a numbered constraint or syntax rule requires them. Undefined association status, undefined definition status, processor-dependent argument-passing mechanisms, storage addresses, descriptor layouts, and coarray/image behavior are not executable oracles here.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, and 13 for source form, type compatibility, declaration attributes, designators, array element order, expressions, execution constructs, data transfer, and formatting foundations already present in this suite. Unregistered dependencies retained for future fixtures: later clause 15 optional, pointer, allocatable, procedure, elemental, generic, pure/simple, sequence association, and finalization rules; clause 16 inquiry intrinsics and ISO_FORTRAN_ENV support; clauses 14, 17, 18, and 19 for modules, IEEE support, C interoperability, and association/lifetime state."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.5.2.3-001"
+      ]
+    },
+    {
+      "unit": "p2",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.5.2.3-002"
+      ]
+    },
+    {
+      "unit": "p3",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.5.2.3-003"
+      ]
+    },
+    {
+      "unit": "p4",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.5.2.3-004"
+      ]
+    },
+    {
+      "unit": "note-unnumbered",
+      "disposition": "informative",
+      "rationale": "The note gives an example conditional argument and is not normative."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_15_5_2_3.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "af5ba397c3bae96f0c21074b7620792e4842e8681548943ba0e206f0fd7432d5",
+  "review_rationale": "Source registration for 15.5.2 and 15.5.2.1-15.5.2.5, argument association from the general rules through ordinary dummy variables (batch231). Every unit hash-verified by an independent reviewer across two rounds; C1546-C1549 had no existing tests and carry one-feature diagnostic plans, and sequence association is observed through element order in both directions. Source accounting only."
+}
