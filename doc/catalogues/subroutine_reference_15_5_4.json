@@ -1,0 +1,202 @@
+{
+  "schema_version": 1,
+  "section": "15.5.4",
+  "requirements": [
+    {
+      "id": "S15.5.4-001",
+      "title": "CALL, defined assignment, defined I/O, and finalization invoke subroutines",
+      "source": "S15.5.4, J3/24-007, 18 December 2023, physical PDF349.",
+      "source_units": [
+        "p1.invocation-mechanisms",
+        "p1.actual-expression-evaluation",
+        "p1.argument-association",
+        "p1.subroutine-execution"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A subroutine is invoked by a CALL statement, defined assignment, defined input/output, or finalization; actual argument expressions are evaluated, arguments are associated, and the subroutine executes.",
+      "facets": [
+        "call-statement-invokes-subroutine",
+        "defined-assignment-invokes-subroutine",
+        "defined-io-invokes-subroutine",
+        "finalization-invokes-subroutine",
+        "subroutine-actuals-evaluated-before-association",
+        "subroutine-arguments-associated-before-execution",
+        "subroutine-body-executes"
+      ],
+      "pending": {
+        "call-statement-invokes-subroutine": "CALL s(x) with x initialized to -7; s assigns 42 to its INTENT(OUT) dummy, and the caller verifies 42.",
+        "defined-assignment-invokes-subroutine": "Define assignment(=) for a derived type that stores rhs+30; assign value 12 into an object initialized to -1 and verify stored 42.",
+        "defined-io-invokes-subroutine": "Future defined-I/O fixture uses a dtv subroutine that writes exact marker text \"DIO42\" to an internal file; source registration records the invocation owner only.",
+        "finalization-invokes-subroutine": "Future finalization fixture uses a final subroutine that increments a module marker from -5 to 42 as the object finalizes; this packet records the invocation owner only.",
+        "subroutine-actuals-evaluated-before-association": "Use an actual expression in a CALL through an explicit interface where bump() sets a counter to 9 and s records the dummy value 9.",
+        "subroutine-arguments-associated-before-execution": "Pass an integer variable 14 to s(dummy) and have s assign marker dummy+28, yielding 42.",
+        "subroutine-body-executes": "Subroutine body sets a module marker from -8 to 42; caller verifies the exact marker after CALL."
+      },
+      "oracle": "Source registration only. Future fixtures establish distinguished non-default sentinels before each procedure reference or argument association, then observe only portable single-image properties: exact integer, logical, character, array-shape, branch-label, and dynamic-dispatch sentinels, successful execution, or source-use attribution. Program-only shall restrictions are source-control obligations and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostics are not claimed because this scope contains no numbered R/C unit; references to R1522 and R1525 are cross-references, not numbered units registered here.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 13, and earlier clause 15 catalogues already present for source form, types, declarations, expressions, execution, arrays, I/O, formats, procedure characteristics, explicit interfaces, GENERIC, EXTERNAL, INTRINSIC, and procedure declaration syntax. Unregistered dependencies retained for future fixtures: later clause 15 procedure definitions and final procedure details, clause 16 intrinsic procedure result rules, clause 17 IEEE procedures where used as sentinels, clause 18 interoperability for C character kind cases, clause 14 module/submodule details, and clause 19 association, scoping, and lifetime terms."
+    },
+    {
+      "id": "S15.5.4-002",
+      "title": "Subroutine completion completes the invoking action",
+      "source": "S15.5.4, J3/24-007, 18 December 2023, physical PDF349.",
+      "source_units": [
+        "p1.completion-effects"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "After the subroutine actions complete, the CALL statement, defined assignment statement, processing of an effective item, or finalization of an object is also completed.",
+      "facets": [
+        "call-completes-after-subroutine",
+        "defined-assignment-completes-after-subroutine",
+        "defined-io-effective-item-completes-after-subroutine",
+        "finalization-completes-after-subroutine"
+      ],
+      "pending": {
+        "call-completes-after-subroutine": "After CALL s(marker), execute a following assignment marker=marker+1; s sets 41, and the final value 42 proves the CALL completed before the next statement.",
+        "defined-assignment-completes-after-subroutine": "After defined assignment stores 41, execute a following increment and verify 42.",
+        "defined-io-effective-item-completes-after-subroutine": "Future defined-I/O fixture writes one effective item using a subroutine that emits \"41\" and then appends \"2\" after the WRITE completes; internal record \"412\" observes completion order.",
+        "finalization-completes-after-subroutine": "Future finalization fixture records final subroutine marker 41 and verifies a following statement changes it to 42 after finalization completes."
+      },
+      "oracle": "Source registration only. Future fixtures establish distinguished non-default sentinels before each procedure reference or argument association, then observe only portable single-image properties: exact integer, logical, character, array-shape, branch-label, and dynamic-dispatch sentinels, successful execution, or source-use attribution. Program-only shall restrictions are source-control obligations and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostics are not claimed because this scope contains no numbered R/C unit; references to R1522 and R1525 are cross-references, not numbered units registered here.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 13, and earlier clause 15 catalogues already present for source form, types, declarations, expressions, execution, arrays, I/O, formats, procedure characteristics, explicit interfaces, GENERIC, EXTERNAL, INTRINSIC, and procedure declaration syntax. Unregistered dependencies retained for future fixtures: later clause 15 procedure definitions and final procedure details, clause 16 intrinsic procedure result rules, clause 17 IEEE procedures where used as sentinels, clause 18 interoperability for C character kind cases, clause 14 module/submodule details, and clause 19 association, scoping, and lifetime terms."
+    },
+    {
+      "id": "S15.5.4-003",
+      "title": "Alternate return specifiers may branch to selected labels",
+      "source": "S15.5.4, J3/24-007, 18 December 2023, physical PDF349.",
+      "source_units": [
+        "p1.alternate-return-branch"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A CALL statement containing alternate return specifiers can branch to one of the indicated statements according to the subroutine action.",
+      "facets": [
+        "alternate-return-branch-to-indicated-label"
+      ],
+      "pending": {
+        "alternate-return-branch-to-indicated-label": "Call choose(*100,*200) with marker initialized to -1; choose returns 2, label 200 assigns 42, and label 100 would assign 17. Verify 42 to distinguish the selected alternate."
+      },
+      "oracle": "Source registration only. Future fixtures establish distinguished non-default sentinels before each procedure reference or argument association, then observe only portable single-image properties: exact integer, logical, character, array-shape, branch-label, and dynamic-dispatch sentinels, successful execution, or source-use attribution. Program-only shall restrictions are source-control obligations and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostics are not claimed because this scope contains no numbered R/C unit; references to R1522 and R1525 are cross-references, not numbered units registered here.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 13, and earlier clause 15 catalogues already present for source form, types, declarations, expressions, execution, arrays, I/O, formats, procedure characteristics, explicit interfaces, GENERIC, EXTERNAL, INTRINSIC, and procedure declaration syntax. Unregistered dependencies retained for future fixtures: later clause 15 procedure definitions and final procedure details, clause 16 intrinsic procedure result rules, clause 17 IEEE procedures where used as sentinels, clause 18 interoperability for C character kind cases, clause 14 module/submodule details, and clause 19 association, scoping, and lifetime terms."
+    },
+    {
+      "id": "S15.5.4-004",
+      "title": "Elemental subroutine elemental references require conformable array output arguments",
+      "source": "S15.5.4, J3/24-007, 18 December 2023, physical PDF349.",
+      "source_units": [
+        "p1.elemental-intent-output-restriction",
+        "p1.elemental-output-arrays",
+        "p1.elemental-conformable-arguments"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "For an elemental reference to an elemental subroutine, at least one actual argument corresponding to an INTENT(OUT) or INTENT(INOUT) dummy shall be an array, all such actual arguments shall be arrays, and all actual arguments shall be conformable.",
+      "facets": [
+        "elemental-subroutine-has-output-or-inout-array",
+        "elemental-subroutine-output-actuals-arrays",
+        "elemental-subroutine-actuals-conformable"
+      ],
+      "pending": {
+        "elemental-subroutine-has-output-or-inout-array": "Positive source control calls an elemental subroutine with an INTENT(OUT) array y initialized to -9 and input array x=[1,2]; verify y=[11,12]. Scalar-only output mutation is a source-control contrast without diagnostic facet.",
+        "elemental-subroutine-output-actuals-arrays": "Use two INTENT(OUT) arrays y and z initialized to [-1,-1] and [-2,-2], verify exact updated arrays. A mutation makes one output scalar only as nonconforming contrast.",
+        "elemental-subroutine-actuals-conformable": "Positive source control uses all arrays of shape [2] and verifies exact outputs; shape-mismatch mutation remains a program-restriction contrast with no diagnostic facet."
+      },
+      "oracle": "Source registration only. Future fixtures establish distinguished non-default sentinels before each procedure reference or argument association, then observe only portable single-image properties: exact integer, logical, character, array-shape, branch-label, and dynamic-dispatch sentinels, successful execution, or source-use attribution. Program-only shall restrictions are source-control obligations and are not promoted to diagnostic facets.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Diagnostics are not claimed because this scope contains no numbered R/C unit; references to R1522 and R1525 are cross-references, not numbered units registered here.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, 13, and earlier clause 15 catalogues already present for source form, types, declarations, expressions, execution, arrays, I/O, formats, procedure characteristics, explicit interfaces, GENERIC, EXTERNAL, INTRINSIC, and procedure declaration syntax. Unregistered dependencies retained for future fixtures: later clause 15 procedure definitions and final procedure details, clause 16 intrinsic procedure result rules, clause 17 IEEE procedures where used as sentinels, clause 18 interoperability for C character kind cases, clause 14 module/submodule details, and clause 19 association, scoping, and lifetime terms."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "structural",
+      "rationale": "Paragraph p1 is split into invocation order, completion, alternate-return permission, and elemental-reference restrictions."
+    },
+    {
+      "unit": "p1.invocation-mechanisms",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.5.4-001"
+      ]
+    },
+    {
+      "unit": "p1.actual-expression-evaluation",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.5.4-001"
+      ]
+    },
+    {
+      "unit": "p1.argument-association",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.5.4-001"
+      ]
+    },
+    {
+      "unit": "p1.subroutine-execution",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.5.4-001"
+      ]
+    },
+    {
+      "unit": "p1.completion-effects",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.5.4-002"
+      ]
+    },
+    {
+      "unit": "p1.alternate-return-branch",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.5.4-003"
+      ]
+    },
+    {
+      "unit": "p1.elemental-intent-output-restriction",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.5.4-004"
+      ]
+    },
+    {
+      "unit": "p1.elemental-output-arrays",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.5.4-004"
+      ]
+    },
+    {
+      "unit": "p1.elemental-conformable-arguments",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.5.4-004"
+      ]
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_15_5_4.md"
+  },
+  "review_state": "reviewed",
+  "subunits": {
+    "p1": [
+      "p1.invocation-mechanisms",
+      "p1.actual-expression-evaluation",
+      "p1.argument-association",
+      "p1.subroutine-execution",
+      "p1.completion-effects",
+      "p1.alternate-return-branch",
+      "p1.elemental-intent-output-restriction",
+      "p1.elemental-output-arrays",
+      "p1.elemental-conformable-arguments"
+    ]
+  },
+  "review_fingerprint": "248d645722501536445a5dc6a9e617f086227c5dc7d97505f5c1dd8921da7dc7",
+  "review_rationale": "Source registration for 15.5.2.11-15.5.2.14, 15.5.3, 15.5.4, 15.5.5.x and 15.5.6: alternate returns, sequence association, argument presence, aliasing restrictions, function and subroutine references, and resolution of named, generic, specific and type-bound references (batch233). Every unit hash-verified by an independent reviewer across two rounds; each resolution rule is observed through sentinel procedures with exact results. Source accounting only."
+}

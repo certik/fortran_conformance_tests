@@ -5909,6 +5909,11 @@ See `doc/source_audits/batch_221.json`.
 Thirty-one units after two rounds. The only finding was a scope slip: a coindexed actual argument is coarray material however it is phrased, so C1551 joins the other coarray constraints as a recorded, reversible out-of-scope decision.
 See `doc/source_audits/batch_232.json`.
 
+## Batch 233 — Argument presence through type-bound resolution (15.5.2.11-15.5.6)
+
+Forty-two units after two rounds, the heart of how Fortran decides what a name means. Each resolution rule becomes a pair of sentinel procedures that return different numbers, so the result shows which one the processor chose. KIND(x) on an absent optional argument is legal because the kind is a compile-time property of the declaration, not of the actual argument.
+See `doc/source_audits/batch_233.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
