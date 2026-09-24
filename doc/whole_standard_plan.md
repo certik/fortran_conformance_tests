@@ -5859,6 +5859,11 @@ See `doc/source_audits/batch_218.json`.
 Twenty-nine units, sixteen of them numbered rules, accepted on the first round — the first Clause 15 packet written after the calibration rules, and it shows: every constraint has a one-property rejected program and control, and the INTRINSIC sentinels use exactly-specified intrinsics.
 See `doc/source_audits/batch_223.json`.
 
+## Batch 228 — IEEE_SUPPORT_DENORMAL through IEEE_SUPPORT_IO (17.11.53-17.11.58)
+
+Thirty-nine units accepted on the first round. The support inquiries are the guards every other Clause 17 plan uses, so their own catalogues mostly record the relation: a true result obliges the processor to the corresponding behaviour, and that behaviour is what the guarded branch tests.
+See `doc/source_audits/batch_228.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
