@@ -1,0 +1,178 @@
+{
+  "schema_version": 1,
+  "section": "18.2.3.6",
+  "subunits": {
+    "p3": [
+      "p3.argument-restrictions",
+      "p3.coindexed-exclusion"
+    ],
+    "p5": [
+      "p5.result-procedure-pointer-model",
+      "p5.c-f-procpointer-roundtrip"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S18.2.3.6-001",
+      "title": "C_FUNLOC argument restrictions",
+      "source": "S18.2.3.6; J3/24-007, 18 December 2023, physical PDF522.",
+      "source_units": [
+        "p3.argument-restrictions",
+        "p3.coindexed-exclusion"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "X is a procedure; a procedure pointer X is associated, and X is not a coindexed object.",
+      "facets": [
+        "C_FUNLOC-X-procedure",
+        "C_FUNLOC-X-procedure-pointer-associated",
+        "C_FUNLOC-X-not-coindexed"
+      ],
+      "pending": {
+        "C_FUNLOC-X-procedure": "Positive source control passes a BIND(C) module function as X and pairs C_NULL_FUNPTR, a non-null C_FUNLOC result, same target, and distinct target observations; mutation passes a data object and claims no diagnostic facet.",
+        "C_FUNLOC-X-procedure-pointer-associated": "Positive source control pointer-assigns PROCEDURE(iface), POINTER :: proc => add_sentinel before C_FUNLOC(proc); mutation NULLIFYs proc before the reference and claims no diagnostic facet.",
+        "C_FUNLOC-X-not-coindexed": "OUT OF SCOPE: a coindexed procedure target requires coarray/image coverage, excluded by suite policy; source inventory records the restriction without a runtime fixture."
+      },
+      "oracle": "Source accounting only. Future fixtures initialize non-default sentinels before invoking the ISO_C_BINDING procedure and assert only portable single-image properties fixed by 18.2.3: pointer association status reached through the paired module procedure, exact integer kind and rank inquiries, exact character length and C_NULL_CHAR placement, exact sentinel values reached through an associated pointer, or equality with a companion C sizeof result. Argument shall-restrictions are source-control restrictions only and are not diagnostic facets unless a numbered constraint elsewhere requires rejection. Coindexed actual arguments remain out of scope for this single-image suite. Positive-control source controls are complete conforming fragments for their stated declarations and execution order; nonconforming source mutations are recorded only as load-bearing mutations, not as positive controls. Mixed Fortran/C plans rely on the suite's c_interop harness where companion C address or sizeof semantics are the portable oracle. Fixture plans first guard every ISO_C_BINDING kind constant with a positive availability test before declaring entities or writing literals of that kind; the unavailable branch performs no such declaration or literal write. C pointer association plans cover null, non-null, same-target, and distinct-target observations through C_ASSOCIATED or C helpers and never compare address values numerically. Array address plans use explicit nonzero lower bounds and hand-derived column-major expectations.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ for C_F_PROCPOINTER, C_F_STRPOINTER, C_FUNLOC, C_LOC, C_SIZEOF, and F_C_STRING found incidental C_LOC/C_FUNLOC/C_F_POINTER uses in clause07 and clause10 and no fixture.json binding for these 18.2.3 procedures; no existing case is rebound here. Mixed Fortran/C plans use the c_interop harness only for C address and sizeof facts that are not fully observable from Fortran alone. No plan requires an exact malloc or raw storage-sequence round trip where processor-dependent association requirements control; such requirements are catalogue latitude rather than a portable value oracle.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, and 13 for source form, intrinsic types, declarations, expressions, pointer assignment, execution, procedure interfaces, and character data. Unregistered dependencies retained: 15.3 procedure characteristics and interoperability of procedure interfaces, 15.5 argument association, 16.9 inquiry intrinsics such as KIND, LEN, RANK and SIZE, 18.2.1-18.2.2 C types and named constants, 18.2.3.3 C_F_POINTER, 18.3 interoperability rules, companion C semantics, and clause 19 storage sequence terminology."
+    },
+    {
+      "id": "S18.2.3.6-002",
+      "title": "C_FUNLOC returns a scalar C_FUNPTR",
+      "source": "S18.2.3.6; J3/24-007, 18 December 2023, physical PDF522.",
+      "source_units": [
+        "p4"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The C_FUNLOC result is a scalar of type C_FUNPTR.",
+      "facets": [
+        "C_FUNLOC-result-c-funptr-scalar"
+      ],
+      "pending": {
+        "C_FUNLOC-result-c-funptr-scalar": "Assign C_FUNLOC(add_sentinel) to TYPE(C_FUNPTR) :: raw initialized to C_NULL_FUNPTR, assert RANK(raw)==0, assert C_ASSOCIATED(C_NULL_FUNPTR) is false, assert C_ASSOCIATED(raw) is true, and distinguish same-target versus distinct-target procedure pointers by calls after C_F_PROCPOINTER; mutation uses C_LOC on data and fails the declared type control."
+      },
+      "oracle": "Source accounting only. Future fixtures initialize non-default sentinels before invoking the ISO_C_BINDING procedure and assert only portable single-image properties fixed by 18.2.3: pointer association status reached through the paired module procedure, exact integer kind and rank inquiries, exact character length and C_NULL_CHAR placement, exact sentinel values reached through an associated pointer, or equality with a companion C sizeof result. Argument shall-restrictions are source-control restrictions only and are not diagnostic facets unless a numbered constraint elsewhere requires rejection. Coindexed actual arguments remain out of scope for this single-image suite. Positive-control source controls are complete conforming fragments for their stated declarations and execution order; nonconforming source mutations are recorded only as load-bearing mutations, not as positive controls. Mixed Fortran/C plans rely on the suite's c_interop harness where companion C address or sizeof semantics are the portable oracle. Fixture plans first guard every ISO_C_BINDING kind constant with a positive availability test before declaring entities or writing literals of that kind; the unavailable branch performs no such declaration or literal write. C pointer association plans cover null, non-null, same-target, and distinct-target observations through C_ASSOCIATED or C helpers and never compare address values numerically. Array address plans use explicit nonzero lower bounds and hand-derived column-major expectations.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ for C_F_PROCPOINTER, C_F_STRPOINTER, C_FUNLOC, C_LOC, C_SIZEOF, and F_C_STRING found incidental C_LOC/C_FUNLOC/C_F_POINTER uses in clause07 and clause10 and no fixture.json binding for these 18.2.3 procedures; no existing case is rebound here. Mixed Fortran/C plans use the c_interop harness only for C address and sizeof facts that are not fully observable from Fortran alone. No plan requires an exact malloc or raw storage-sequence round trip where processor-dependent association requirements control; such requirements are catalogue latitude rather than a portable value oracle.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, and 13 for source form, intrinsic types, declarations, expressions, pointer assignment, execution, procedure interfaces, and character data. Unregistered dependencies retained: 15.3 procedure characteristics and interoperability of procedure interfaces, 15.5 argument association, 16.9 inquiry intrinsics such as KIND, LEN, RANK and SIZE, 18.2.1-18.2.2 C types and named constants, 18.2.3.3 C_F_POINTER, 18.3 interoperability rules, companion C semantics, and clause 19 storage sequence terminology."
+    },
+    {
+      "id": "S18.2.3.6-003",
+      "title": "C_FUNLOC models a procedure pointer assignment to X",
+      "source": "S18.2.3.6; J3/24-007, 18 December 2023, physical PDF522.",
+      "source_units": [
+        "p5.result-procedure-pointer-model"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The C_FUNLOC result is determined as though a C_FUNPTR derived object contained a procedure pointer component pointer-assigned to X.",
+      "facets": [
+        "C_FUNLOC-result-denotes-X-target",
+        "C_FUNLOC-procedure-pointer-actual-denotes-current-target"
+      ],
+      "pending": {
+        "C_FUNLOC-result-denotes-X-target": "Guarded Fortran-only plan first requires C_INT > 0; raw=C_FUNLOC(add_sentinel), C_F_PROCPOINTER(raw,fp), call fp(40_C_INT), and expect 57_C_INT; a second procedure returning -57_C_INT proves the target identity is load-bearing.",
+        "C_FUNLOC-procedure-pointer-actual-denotes-current-target": "Guarded plan first requires C_INT > 0; pointer-assign proc=>add_sentinel before raw=C_FUNLOC(proc), convert with C_F_PROCPOINTER, and expect proc target result 57_C_INT; companion proc=>other_sentinel expects -57_C_INT."
+      },
+      "oracle": "Source accounting only. Future fixtures initialize non-default sentinels before invoking the ISO_C_BINDING procedure and assert only portable single-image properties fixed by 18.2.3: pointer association status reached through the paired module procedure, exact integer kind and rank inquiries, exact character length and C_NULL_CHAR placement, exact sentinel values reached through an associated pointer, or equality with a companion C sizeof result. Argument shall-restrictions are source-control restrictions only and are not diagnostic facets unless a numbered constraint elsewhere requires rejection. Coindexed actual arguments remain out of scope for this single-image suite. Positive-control source controls are complete conforming fragments for their stated declarations and execution order; nonconforming source mutations are recorded only as load-bearing mutations, not as positive controls. Mixed Fortran/C plans rely on the suite's c_interop harness where companion C address or sizeof semantics are the portable oracle. Fixture plans first guard every ISO_C_BINDING kind constant with a positive availability test before declaring entities or writing literals of that kind; the unavailable branch performs no such declaration or literal write. C pointer association plans cover null, non-null, same-target, and distinct-target observations through C_ASSOCIATED or C helpers and never compare address values numerically. Array address plans use explicit nonzero lower bounds and hand-derived column-major expectations.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ for C_F_PROCPOINTER, C_F_STRPOINTER, C_FUNLOC, C_LOC, C_SIZEOF, and F_C_STRING found incidental C_LOC/C_FUNLOC/C_F_POINTER uses in clause07 and clause10 and no fixture.json binding for these 18.2.3 procedures; no existing case is rebound here. Mixed Fortran/C plans use the c_interop harness only for C address and sizeof facts that are not fully observable from Fortran alone. No plan requires an exact malloc or raw storage-sequence round trip where processor-dependent association requirements control; such requirements are catalogue latitude rather than a portable value oracle.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, and 13 for source form, intrinsic types, declarations, expressions, pointer assignment, execution, procedure interfaces, and character data. Unregistered dependencies retained: 15.3 procedure characteristics and interoperability of procedure interfaces, 15.5 argument association, 16.9 inquiry intrinsics such as KIND, LEN, RANK and SIZE, 18.2.1-18.2.2 C types and named constants, 18.2.3.3 C_F_POINTER, 18.3 interoperability rules, companion C semantics, and clause 19 storage sequence terminology."
+    },
+    {
+      "id": "S18.2.3.6-004",
+      "title": "C_FUNLOC round trip through C_F_PROCPOINTER has pointer-assignment effect",
+      "source": "S18.2.3.6; J3/24-007, 18 December 2023, physical PDF522.",
+      "source_units": [
+        "p5.c-f-procpointer-roundtrip"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A C_FUNLOC result used as CPTR in C_F_PROCPOINTER has the effect of the procedure pointer assignment FPTR => X, provided FPTR attributes allow that pointer assignment.",
+      "facets": [
+        "C_FUNLOC-C_F_PROCPOINTER-roundtrip-associated",
+        "C_FUNLOC-C_F_PROCPOINTER-roundtrip-characteristics"
+      ],
+      "pending": {
+        "C_FUNLOC-C_F_PROCPOINTER-roundtrip-associated": "Guarded plan first requires C_INT > 0; define abstract interface integer(C_INT) function iface(i) BIND(C); convert raw=C_FUNLOC(add_sentinel) through C_F_PROCPOINTER(raw,fp); assert ASSOCIATED(fp) and fp(25_C_INT)==42_C_INT with fp initially NULL().",
+        "C_FUNLOC-C_F_PROCPOINTER-roundtrip-characteristics": "Guarded plan first requires C_INT > 0 and uses a compatible FPTR interface with one VALUE integer(C_INT) dummy and integer(C_INT) result; source mutation changes only the dummy VALUE attribute in the FPTR interface and claims no diagnostic facet, isolating the attribute premise."
+      },
+      "oracle": "Source accounting only. Future fixtures initialize non-default sentinels before invoking the ISO_C_BINDING procedure and assert only portable single-image properties fixed by 18.2.3: pointer association status reached through the paired module procedure, exact integer kind and rank inquiries, exact character length and C_NULL_CHAR placement, exact sentinel values reached through an associated pointer, or equality with a companion C sizeof result. Argument shall-restrictions are source-control restrictions only and are not diagnostic facets unless a numbered constraint elsewhere requires rejection. Coindexed actual arguments remain out of scope for this single-image suite. Positive-control source controls are complete conforming fragments for their stated declarations and execution order; nonconforming source mutations are recorded only as load-bearing mutations, not as positive controls. Mixed Fortran/C plans rely on the suite's c_interop harness where companion C address or sizeof semantics are the portable oracle. Fixture plans first guard every ISO_C_BINDING kind constant with a positive availability test before declaring entities or writing literals of that kind; the unavailable branch performs no such declaration or literal write. C pointer association plans cover null, non-null, same-target, and distinct-target observations through C_ASSOCIATED or C helpers and never compare address values numerically. Array address plans use explicit nonzero lower bounds and hand-derived column-major expectations.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ for C_F_PROCPOINTER, C_F_STRPOINTER, C_FUNLOC, C_LOC, C_SIZEOF, and F_C_STRING found incidental C_LOC/C_FUNLOC/C_F_POINTER uses in clause07 and clause10 and no fixture.json binding for these 18.2.3 procedures; no existing case is rebound here. Mixed Fortran/C plans use the c_interop harness only for C address and sizeof facts that are not fully observable from Fortran alone. No plan requires an exact malloc or raw storage-sequence round trip where processor-dependent association requirements control; such requirements are catalogue latitude rather than a portable value oracle.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, and 13 for source form, intrinsic types, declarations, expressions, pointer assignment, execution, procedure interfaces, and character data. Unregistered dependencies retained: 15.3 procedure characteristics and interoperability of procedure interfaces, 15.5 argument association, 16.9 inquiry intrinsics such as KIND, LEN, RANK and SIZE, 18.2.1-18.2.2 C types and named constants, 18.2.3.3 C_F_POINTER, 18.3 interoperability rules, companion C semantics, and clause 19 storage sequence terminology."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "definition",
+      "rationale": "Description defines the purpose of C_FUNLOC."
+    },
+    {
+      "unit": "p2",
+      "disposition": "definition",
+      "rationale": "Classifies C_FUNLOC as transformational."
+    },
+    {
+      "unit": "p3",
+      "disposition": "structural",
+      "rationale": "Argument restrictions and the coindexed exclusion are split."
+    },
+    {
+      "unit": "p3.argument-restrictions",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.2.3.6-001"
+      ],
+      "rationale": "X procedure and associated procedure-pointer restrictions."
+    },
+    {
+      "unit": "p3.coindexed-exclusion",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.2.3.6-001"
+      ],
+      "rationale": "Coindexed actual exclusion for X."
+    },
+    {
+      "unit": "p4",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.2.3.6-002"
+      ],
+      "rationale": "Required scalar C_FUNPTR result."
+    },
+    {
+      "unit": "p5",
+      "disposition": "structural",
+      "rationale": "Result model and C_F_PROCPOINTER round-trip effect are split."
+    },
+    {
+      "unit": "p5.result-procedure-pointer-model",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.2.3.6-003"
+      ],
+      "rationale": "C_FUNPTR result denotes X through a procedure pointer model."
+    },
+    {
+      "unit": "p5.c-f-procpointer-roundtrip",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.2.3.6-004"
+      ],
+      "rationale": "Round trip through C_F_PROCPOINTER has pointer assignment effect."
+    },
+    {
+      "unit": "p6",
+      "disposition": "informative",
+      "rationale": "Example only; no normative requirement."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_18_2_3_6.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "83a354707e6ca82f1a43550017ba81d73e3bba3ffbc42d18ce2a7e5f18d6eb6b",
+  "review_rationale": "Source registration for 18.2.3.4-18.2.3.9: C_F_PROCPOINTER, C_F_STRPOINTER, C_FUNLOC, C_LOC, C_SIZEOF and F_C_STRING (batch241). Every unit hash-verified by an independent reviewer across two rounds; pointer conversions are round-tripped to the same target, and procedure pointers are exercised from both C_FUNLOC and C. Source accounting only."
+}

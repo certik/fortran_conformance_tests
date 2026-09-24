@@ -5959,6 +5959,11 @@ See `doc/source_audits/batch_238.json`.
 Twenty-nine units after two rounds, the opening of C interoperability. A C kind constant may be negative, so even writing REAL(C_DOUBLE) has to sit under a guard; the negative values themselves are exact and testable.
 See `doc/source_audits/batch_240.json`.
 
+## Batch 241 — C_F_PROCPOINTER through F_C_STRING (18.2.3.4-18.2.3.9)
+
+Thirty-six units after two rounds. ASSOCIATED(p) only says a pointer points somewhere; the conversion rules promise it points at the original target, which is what ASSOCIATED(p, x) checks.
+See `doc/source_audits/batch_241.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must

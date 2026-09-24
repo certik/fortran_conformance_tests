@@ -1,0 +1,188 @@
+{
+  "schema_version": 1,
+  "section": "18.2.3.8",
+  "subunits": {
+    "p3": [
+      "p3.type-and-rank-restrictions",
+      "p3.state-restrictions"
+    ],
+    "p5": [
+      "p5.scalar-sizeof",
+      "p5.array-sizeof-product"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S18.2.3.8-001",
+      "title": "C_SIZEOF argument restrictions",
+      "source": "S18.2.3.8; J3/24-007, 18 December 2023, physical PDF524.",
+      "source_units": [
+        "p3.type-and-rank-restrictions",
+        "p3.state-restrictions"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "X is a data entity with interoperable type and type parameters; it is not an assumed-size array, an assumed-rank array associated with an assumed-size array, an unallocated allocatable, or a disassociated pointer.",
+      "facets": [
+        "C_SIZEOF-X-interoperable-type-parameters",
+        "C_SIZEOF-X-not-assumed-size",
+        "C_SIZEOF-X-assumed-rank-not-associated-with-assumed-size",
+        "C_SIZEOF-X-allocatable-allocated",
+        "C_SIZEOF-X-pointer-associated"
+      ],
+      "pending": {
+        "C_SIZEOF-X-interoperable-type-parameters": "Guarded positive source controls first require C_INT > 0, C_DOUBLE > 0, or C_CHAR > 0 respectively before calling C_SIZEOF on INTEGER(C_INT), REAL(C_DOUBLE), and CHARACTER(KIND=C_CHAR,LEN=1) entities; mutation uses default derived type without BIND(C) and claims no diagnostic facet.",
+        "C_SIZEOF-X-not-assumed-size": "Positive source control uses an explicit-shape or assumed-shape interoperable array; mutation passes an assumed-size dummy and claims no diagnostic facet.",
+        "C_SIZEOF-X-assumed-rank-not-associated-with-assumed-size": "Positive source control forwards an explicit-shape actual to an assumed-rank dummy and calls C_SIZEOF; mutation forwards an assumed-size actual and claims no diagnostic facet.",
+        "C_SIZEOF-X-allocatable-allocated": "Guarded positive source control first requires C_INT > 0, allocates INTEGER(C_INT), ALLOCATABLE :: x before C_SIZEOF(x); mutation omits allocation and claims no diagnostic facet.",
+        "C_SIZEOF-X-pointer-associated": "Guarded positive source control first requires C_INT > 0, pointer-assigns INTEGER(C_INT), POINTER :: p => target before C_SIZEOF(p); mutation NULLIFYs p and claims no diagnostic facet."
+      },
+      "oracle": "Source accounting only. Future fixtures initialize non-default sentinels before invoking the ISO_C_BINDING procedure and assert only portable single-image properties fixed by 18.2.3: pointer association status reached through the paired module procedure, exact integer kind and rank inquiries, exact character length and C_NULL_CHAR placement, exact sentinel values reached through an associated pointer, or equality with a companion C sizeof result. Argument shall-restrictions are source-control restrictions only and are not diagnostic facets unless a numbered constraint elsewhere requires rejection. Coindexed actual arguments remain out of scope for this single-image suite. Positive-control source controls are complete conforming fragments for their stated declarations and execution order; nonconforming source mutations are recorded only as load-bearing mutations, not as positive controls. Mixed Fortran/C plans rely on the suite's c_interop harness where companion C address or sizeof semantics are the portable oracle. Fixture plans first guard every ISO_C_BINDING kind constant with a positive availability test before declaring entities or writing literals of that kind; the unavailable branch performs no such declaration or literal write. C pointer association plans cover null, non-null, same-target, and distinct-target observations through C_ASSOCIATED or C helpers and never compare address values numerically. Array address plans use explicit nonzero lower bounds and hand-derived column-major expectations.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ for C_F_PROCPOINTER, C_F_STRPOINTER, C_FUNLOC, C_LOC, C_SIZEOF, and F_C_STRING found incidental C_LOC/C_FUNLOC/C_F_POINTER uses in clause07 and clause10 and no fixture.json binding for these 18.2.3 procedures; no existing case is rebound here. Mixed Fortran/C plans use the c_interop harness only for C address and sizeof facts that are not fully observable from Fortran alone. No plan requires an exact malloc or raw storage-sequence round trip where processor-dependent association requirements control; such requirements are catalogue latitude rather than a portable value oracle.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, and 13 for source form, intrinsic types, declarations, expressions, pointer assignment, execution, procedure interfaces, and character data. Unregistered dependencies retained: 15.3 procedure characteristics and interoperability of procedure interfaces, 15.5 argument association, 16.9 inquiry intrinsics such as KIND, LEN, RANK and SIZE, 18.2.1-18.2.2 C types and named constants, 18.2.3.3 C_F_POINTER, 18.3 interoperability rules, companion C semantics, and clause 19 storage sequence terminology."
+    },
+    {
+      "id": "S18.2.3.8-002",
+      "title": "C_SIZEOF returns a scalar C_SIZE_T integer",
+      "source": "S18.2.3.8; J3/24-007, 18 December 2023, physical PDF524.",
+      "source_units": [
+        "p4"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The C_SIZEOF result is a scalar integer of kind C_SIZE_T.",
+      "facets": [
+        "C_SIZEOF-result-integer-scalar",
+        "C_SIZEOF-result-kind-c-size-t"
+      ],
+      "pending": {
+        "C_SIZEOF-result-integer-scalar": "Guarded plan first requires C_INT > 0, assigns RANK(C_SIZEOF(0_C_INT)) to a sentinel initialized to -777, and asserts 0, proving the result itself is scalar; mutation uses an array-valued expression.",
+        "C_SIZEOF-result-kind-c-size-t": "Guarded plan first requires C_INT > 0 and C_SIZE_T > 0, assigns KIND(C_SIZEOF(0_C_INT)) to a sentinel initialized to -777, and asserts C_SIZE_T; mutation compares with KIND(0) only as a negative oracle mutation, not as a source fact."
+      },
+      "oracle": "Source accounting only. Future fixtures initialize non-default sentinels before invoking the ISO_C_BINDING procedure and assert only portable single-image properties fixed by 18.2.3: pointer association status reached through the paired module procedure, exact integer kind and rank inquiries, exact character length and C_NULL_CHAR placement, exact sentinel values reached through an associated pointer, or equality with a companion C sizeof result. Argument shall-restrictions are source-control restrictions only and are not diagnostic facets unless a numbered constraint elsewhere requires rejection. Coindexed actual arguments remain out of scope for this single-image suite. Positive-control source controls are complete conforming fragments for their stated declarations and execution order; nonconforming source mutations are recorded only as load-bearing mutations, not as positive controls. Mixed Fortran/C plans rely on the suite's c_interop harness where companion C address or sizeof semantics are the portable oracle. Fixture plans first guard every ISO_C_BINDING kind constant with a positive availability test before declaring entities or writing literals of that kind; the unavailable branch performs no such declaration or literal write. C pointer association plans cover null, non-null, same-target, and distinct-target observations through C_ASSOCIATED or C helpers and never compare address values numerically. Array address plans use explicit nonzero lower bounds and hand-derived column-major expectations.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ for C_F_PROCPOINTER, C_F_STRPOINTER, C_FUNLOC, C_LOC, C_SIZEOF, and F_C_STRING found incidental C_LOC/C_FUNLOC/C_F_POINTER uses in clause07 and clause10 and no fixture.json binding for these 18.2.3 procedures; no existing case is rebound here. Mixed Fortran/C plans use the c_interop harness only for C address and sizeof facts that are not fully observable from Fortran alone. No plan requires an exact malloc or raw storage-sequence round trip where processor-dependent association requirements control; such requirements are catalogue latitude rather than a portable value oracle.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, and 13 for source form, intrinsic types, declarations, expressions, pointer assignment, execution, procedure interfaces, and character data. Unregistered dependencies retained: 15.3 procedure characteristics and interoperability of procedure interfaces, 15.5 argument association, 16.9 inquiry intrinsics such as KIND, LEN, RANK and SIZE, 18.2.1-18.2.2 C types and named constants, 18.2.3.3 C_F_POINTER, 18.3 interoperability rules, companion C semantics, and clause 19 storage sequence terminology."
+    },
+    {
+      "id": "S18.2.3.8-003",
+      "title": "C_SIZEOF scalar result matches companion C sizeof",
+      "source": "S18.2.3.8; J3/24-007, 18 December 2023, physical PDF524.",
+      "source_units": [
+        "p5.scalar-sizeof"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For scalar X, C_SIZEOF returns the companion C sizeof value for an object of a type interoperating with X.",
+      "facets": [
+        "C_SIZEOF-scalar-c-int-sizeof",
+        "C_SIZEOF-scalar-c-double-sizeof",
+        "C_SIZEOF-scalar-c-char-sizeof"
+      ],
+      "pending": {
+        "C_SIZEOF-scalar-c-int-sizeof": "Guarded mixed Fortran/C plan first requires C_INT > 0 and C_SIZE_T > 0: C helper returns sizeof(int) as size_t; Fortran INTEGER(C_INT) :: x=17 compares C_SIZEOF(x) to the helper result, with x initialized distinctly from any size value.",
+        "C_SIZEOF-scalar-c-double-sizeof": "Guarded mixed plan first requires C_DOUBLE > 0 and compares C_SIZEOF of REAL(C_DOUBLE) scalar 1.5_C_DOUBLE to C helper sizeof(double); mutation calls the int helper to make the type mapping load-bearing.",
+        "C_SIZEOF-scalar-c-char-sizeof": "Guarded mixed plan first requires C_CHAR > 0 and compares C_SIZEOF of CHARACTER(KIND=C_CHAR,LEN=1) scalar 'A' to C helper sizeof(char), not to STORAGE_SIZE or a hard-coded byte width."
+      },
+      "oracle": "Source accounting only. Future fixtures initialize non-default sentinels before invoking the ISO_C_BINDING procedure and assert only portable single-image properties fixed by 18.2.3: pointer association status reached through the paired module procedure, exact integer kind and rank inquiries, exact character length and C_NULL_CHAR placement, exact sentinel values reached through an associated pointer, or equality with a companion C sizeof result. Argument shall-restrictions are source-control restrictions only and are not diagnostic facets unless a numbered constraint elsewhere requires rejection. Coindexed actual arguments remain out of scope for this single-image suite. Positive-control source controls are complete conforming fragments for their stated declarations and execution order; nonconforming source mutations are recorded only as load-bearing mutations, not as positive controls. Mixed Fortran/C plans rely on the suite's c_interop harness where companion C address or sizeof semantics are the portable oracle. Fixture plans first guard every ISO_C_BINDING kind constant with a positive availability test before declaring entities or writing literals of that kind; the unavailable branch performs no such declaration or literal write. C pointer association plans cover null, non-null, same-target, and distinct-target observations through C_ASSOCIATED or C helpers and never compare address values numerically. Array address plans use explicit nonzero lower bounds and hand-derived column-major expectations.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ for C_F_PROCPOINTER, C_F_STRPOINTER, C_FUNLOC, C_LOC, C_SIZEOF, and F_C_STRING found incidental C_LOC/C_FUNLOC/C_F_POINTER uses in clause07 and clause10 and no fixture.json binding for these 18.2.3 procedures; no existing case is rebound here. Mixed Fortran/C plans use the c_interop harness only for C address and sizeof facts that are not fully observable from Fortran alone. No plan requires an exact malloc or raw storage-sequence round trip where processor-dependent association requirements control; such requirements are catalogue latitude rather than a portable value oracle.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, and 13 for source form, intrinsic types, declarations, expressions, pointer assignment, execution, procedure interfaces, and character data. Unregistered dependencies retained: 15.3 procedure characteristics and interoperability of procedure interfaces, 15.5 argument association, 16.9 inquiry intrinsics such as KIND, LEN, RANK and SIZE, 18.2.1-18.2.2 C types and named constants, 18.2.3.3 C_F_POINTER, 18.3 interoperability rules, companion C semantics, and clause 19 storage sequence terminology."
+    },
+    {
+      "id": "S18.2.3.8-004",
+      "title": "C_SIZEOF array result is element sizeof times element count",
+      "source": "S18.2.3.8; J3/24-007, 18 December 2023, physical PDF524.",
+      "source_units": [
+        "p5.array-sizeof-product"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For array X, C_SIZEOF returns the companion C sizeof value for one interoperating element type multiplied by the number of elements of X.",
+      "facets": [
+        "C_SIZEOF-array-product-three-c-int",
+        "C_SIZEOF-array-product-two-by-two-c-double",
+        "C_SIZEOF-array-zero-size-product"
+      ],
+      "pending": {
+        "C_SIZEOF-array-product-three-c-int": "Guarded plan first requires C_INT > 0 and C_SIZE_T > 0; use INTEGER(C_INT) :: a(0:2)=[1,2,3]; compare C_SIZEOF(a) to 3_C_SIZE_T*C_SIZEOF(a(0)) and to C helper 3*sizeof(int); mutation expects the scalar size only.",
+        "C_SIZEOF-array-product-two-by-two-c-double": "Guarded plan first requires C_DOUBLE > 0 and C_SIZE_T > 0; use REAL(C_DOUBLE) :: a(0:1,-1:0) with distinct exact values hand-derived in column-major order; compare C_SIZEOF(a) to 4_C_SIZE_T*C_SIZEOF(a(0,-1)); companion with rank-one two-element array asserts factor 2.",
+        "C_SIZEOF-array-zero-size-product": "Guarded plan first requires C_INT > 0 and C_SIZE_T > 0; use zero-size INTEGER(C_INT) array a(0), initialize a C_SIZE_T sentinel to 777_C_SIZE_T, and assert C_SIZEOF(a)==0_C_SIZE_T with a nonzero-size companion factor 3."
+      },
+      "oracle": "Source accounting only. Future fixtures initialize non-default sentinels before invoking the ISO_C_BINDING procedure and assert only portable single-image properties fixed by 18.2.3: pointer association status reached through the paired module procedure, exact integer kind and rank inquiries, exact character length and C_NULL_CHAR placement, exact sentinel values reached through an associated pointer, or equality with a companion C sizeof result. Argument shall-restrictions are source-control restrictions only and are not diagnostic facets unless a numbered constraint elsewhere requires rejection. Coindexed actual arguments remain out of scope for this single-image suite. Positive-control source controls are complete conforming fragments for their stated declarations and execution order; nonconforming source mutations are recorded only as load-bearing mutations, not as positive controls. Mixed Fortran/C plans rely on the suite's c_interop harness where companion C address or sizeof semantics are the portable oracle. Fixture plans first guard every ISO_C_BINDING kind constant with a positive availability test before declaring entities or writing literals of that kind; the unavailable branch performs no such declaration or literal write. C pointer association plans cover null, non-null, same-target, and distinct-target observations through C_ASSOCIATED or C helpers and never compare address values numerically. Array address plans use explicit nonzero lower bounds and hand-derived column-major expectations.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Grep of tests/ for C_F_PROCPOINTER, C_F_STRPOINTER, C_FUNLOC, C_LOC, C_SIZEOF, and F_C_STRING found incidental C_LOC/C_FUNLOC/C_F_POINTER uses in clause07 and clause10 and no fixture.json binding for these 18.2.3 procedures; no existing case is rebound here. Mixed Fortran/C plans use the c_interop harness only for C address and sizeof facts that are not fully observable from Fortran alone. No plan requires an exact malloc or raw storage-sequence round trip where processor-dependent association requirements control; such requirements are catalogue latitude rather than a portable value oracle.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, 12, and 13 for source form, intrinsic types, declarations, expressions, pointer assignment, execution, procedure interfaces, and character data. Unregistered dependencies retained: 15.3 procedure characteristics and interoperability of procedure interfaces, 15.5 argument association, 16.9 inquiry intrinsics such as KIND, LEN, RANK and SIZE, 18.2.1-18.2.2 C types and named constants, 18.2.3.3 C_F_POINTER, 18.3 interoperability rules, companion C semantics, and clause 19 storage sequence terminology."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "definition",
+      "rationale": "Description defines the purpose of C_SIZEOF."
+    },
+    {
+      "unit": "p2",
+      "disposition": "definition",
+      "rationale": "Classifies C_SIZEOF as inquiry."
+    },
+    {
+      "unit": "p3",
+      "disposition": "structural",
+      "rationale": "Argument restrictions split type/rank exclusions from allocation and pointer state restrictions."
+    },
+    {
+      "unit": "p3.type-and-rank-restrictions",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.2.3.8-001"
+      ],
+      "rationale": "Interoperable type and rank/assumed-size restrictions."
+    },
+    {
+      "unit": "p3.state-restrictions",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.2.3.8-001"
+      ],
+      "rationale": "Allocated and pointer-associated state restrictions."
+    },
+    {
+      "unit": "p4",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.2.3.8-002"
+      ],
+      "rationale": "Required scalar integer C_SIZE_T result."
+    },
+    {
+      "unit": "p5",
+      "disposition": "structural",
+      "rationale": "Scalar and array result-value cases are split."
+    },
+    {
+      "unit": "p5.scalar-sizeof",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.2.3.8-003"
+      ],
+      "rationale": "Scalar companion C sizeof result."
+    },
+    {
+      "unit": "p5.array-sizeof-product",
+      "disposition": "requirements",
+      "requirements": [
+        "S18.2.3.8-004"
+      ],
+      "rationale": "Array element-count product relation."
+    },
+    {
+      "unit": "p6",
+      "disposition": "informative",
+      "rationale": "Example only; illustrative numeric result is not normative by itself."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_18_2_3_8.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "39d70e7302dcb92b03ff244d924cfea1bcd41884ada89eba57dff05af62d00c6",
+  "review_rationale": "Source registration for 18.2.3.4-18.2.3.9: C_F_PROCPOINTER, C_F_STRPOINTER, C_FUNLOC, C_LOC, C_SIZEOF and F_C_STRING (batch241). Every unit hash-verified by an independent reviewer across two rounds; pointer conversions are round-tripped to the same target, and procedure pointers are exercised from both C_FUNLOC and C. Source accounting only."
+}
