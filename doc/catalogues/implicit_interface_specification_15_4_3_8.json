@@ -1,0 +1,89 @@
+{
+  "schema_version": 1,
+  "section": "15.4.3.8",
+  "review_state": "reviewed",
+  "subunits": {
+    "p1": [
+      "p1.function-result-type-specification",
+      "p1.dummy-argument-consistency-restriction"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S15.4.3.8-001",
+      "title": "An implicit-interface function result is typed by the function name",
+      "source": "15.4.3.8 p1 first sentence; J3/24-007 PDF p334.",
+      "source_units": [
+        "p1.function-result-type-specification"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "For a function with an implicit interface, the type and type parameters of the function result are specified by implicit or explicit type specification of the function name.",
+      "facets": [
+        "implicit-typing-result-type",
+        "explicit-typing-result-type",
+        "type-parameters-from-function-name"
+      ],
+      "pending": {
+        "implicit-typing-result-type": "PENDING external function i_calc with no explicit type in caller and implicit integer initial letter; caller initializes integer sentinel -404, assigns i_calc(4), and expects exact 14 from the external body.",
+        "explicit-typing-result-type": "PENDING caller declares REAL r_calc and external function r_calc returning exact 2.5; real sentinel -9.0 changes to exactly 2.5 using an exactly representable value.",
+        "type-parameters-from-function-name": "PENDING caller declares CHARACTER(3) cfun and external CHARACTER(3) FUNCTION cfun() returning 'abc'; caller checks LEN(cfun()) equals 3 before equality with 'abc'."
+      },
+      "oracle": "Plans use exact integer, exactly representable real, and character length/value observations. Character equality is checked only after LEN.",
+      "oracle_limitation": "This catalogue creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Future tests must not rely on compiler agreement, diagnostic wording, link-editor behaviour, addresses, emitted code, undefined pointer association status, undefined external procedure references, or processor-dependent intrinsic approximations.",
+      "dependencies": "Registered dependencies: clauses 6-11 for source form, declarations, expressions, pointer assignment foundations, and execution constructs. Clause 15 procedure characteristics, procedure references, dummy-procedure argument association, BIND(C), PURE/SIMPLE/ELEMENTAL procedure properties, and Clause 16 intrinsic procedure tables remain dependencies except where explicitly cited by this section.;8.7 implicit statement;7.4 type parameters;15.6.2.2 function definitions."
+    },
+    {
+      "id": "S15.4.3.8-002",
+      "title": "Actual arguments for implicit-interface invocations are consistent with dummy characteristics",
+      "source": "15.4.3.8 p1 second sentence; J3/24-007 PDF p334.",
+      "source_units": [
+        "p1.dummy-argument-consistency-restriction"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "For a procedure invoked from a context where its interface is implicit, dummy argument type, type parameters, and shape must make each actual argument consistent with the corresponding dummy argument characteristics.",
+      "facets": [
+        "dummy-type-consistency-control",
+        "dummy-type-parameter-consistency-control",
+        "dummy-shape-consistency-control",
+        "inconsistent-actual-source-control"
+      ],
+      "pending": {
+        "dummy-type-consistency-control": "PENDING external integer function f_int(n) with INTEGER dummy n; caller passes integer 5 initialized from sentinel -1 and expects result 15.",
+        "dummy-type-parameter-consistency-control": "PENDING external character function clen(s) with CHARACTER(3) dummy s; caller passes 'abc' and checks exact integer length result 3.",
+        "dummy-shape-consistency-control": "PENDING external function sum2(a) with explicit-shape INTEGER a(2); caller passes two-element array [4,6] and expects exact sum 10.",
+        "inconsistent-actual-source-control": "PENDING source-control negative changing only the actual argument from INTEGER scalar to REAL scalar in the f_int call; no required diagnostic is claimed without a separate numbered basis."
+      },
+      "oracle": "Positive controls use literal integer sums and character lengths; the source-control negative is not a diagnostic claim because this prose shall is unnumbered.",
+      "oracle_limitation": "This catalogue creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Future tests must not rely on compiler agreement, diagnostic wording, link-editor behaviour, addresses, emitted code, undefined pointer association status, undefined external procedure references, or processor-dependent intrinsic approximations.",
+      "dependencies": "Registered dependencies: clauses 6-11 for source form, declarations, expressions, pointer assignment foundations, and execution constructs. Clause 15 procedure characteristics, procedure references, dummy-procedure argument association, BIND(C), PURE/SIMPLE/ELEMENTAL procedure properties, and Clause 16 intrinsic procedure tables remain dependencies except where explicitly cited by this section.;15.5.2 argument association;8.5.8 shape;7.4 type parameters."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "structural",
+      "rationale": "The paragraph combines result typing effects with dummy-argument consistency restrictions."
+    },
+    {
+      "unit": "p1.function-result-type-specification",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.4.3.8-001"
+      ]
+    },
+    {
+      "unit": "p1.dummy-argument-consistency-restriction",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.4.3.8-002"
+      ]
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_15_4_3_8.md"
+  },
+  "review_fingerprint": "710dd82c3afb7026683432f1a7ddd6341f0eaa9609793786b7a7e830c940493f",
+  "review_rationale": "Source registration for 15.4.3.6-15.4.3.8: the procedure declaration statement, the INTRINSIC statement and the following statement (batch223). Every unit hash-verified by an independent reviewer with zero findings; R1512-R1519 and C1515-C1522 had no existing tests and carry diagnostic or syntax plans, and name resolution is observed through exact ABS/IABS sentinels. Source accounting only."
+}

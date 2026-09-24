@@ -5854,6 +5854,11 @@ See `doc/source_audits/batch_213.json`.
 Forty-three units after two rounds. IEEE_NEXT_UP(HUGE(x)) is +infinity with *no* exception signaled, unlike an arithmetic overflow; the plan now asserts exactly that, including IEEE_OVERFLOW quiet.
 See `doc/source_audits/batch_218.json`.
 
+## Batch 223 — Procedure declaration and INTRINSIC statements (15.4.3.6-15.4.3.8)
+
+Twenty-nine units, sixteen of them numbered rules, accepted on the first round — the first Clause 15 packet written after the calibration rules, and it shows: every constraint has a one-property rejected program and control, and the INTRINSIC sentinels use exactly-specified intrinsics.
+See `doc/source_audits/batch_223.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must

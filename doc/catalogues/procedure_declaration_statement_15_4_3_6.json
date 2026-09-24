@@ -1,0 +1,1029 @@
+{
+  "schema_version": 1,
+  "section": "15.4.3.6",
+  "review_state": "reviewed",
+  "subunits": {
+    "p2": [
+      "p2.interface-name-effect",
+      "p2.same-statement-dependence-restriction"
+    ],
+    "p3": [
+      "p3.declaration-type-spec-effect",
+      "p3.function-definition-result-restriction"
+    ],
+    "p5": [
+      "p5.attribute-specification-effect",
+      "p5.binding-label-effect",
+      "p5.bind-without-name-permission"
+    ],
+    "p6": [
+      "p6.initial-association-effect",
+      "p6.explicit-save-confirmation-permission"
+    ],
+    "p7": [
+      "p7.same-characteristics-restriction",
+      "p7.pure-target-permission",
+      "p7.simple-target-permission",
+      "p7.elemental-intrinsic-target-permission"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S15.4.3.6-001",
+      "title": "A procedure declaration statement declares procedure entities and supplies EXTERNAL",
+      "source": "15.4.3.6 p1; J3/24-007 PDF p332.",
+      "source_units": [
+        "p1"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A procedure declaration statement declares procedure pointers, dummy procedures, and external procedures, and specifies the EXTERNAL attribute for every entity in its proc-decl-list.",
+      "facets": [
+        "procedure-pointer-declaration",
+        "dummy-procedure-declaration",
+        "external-procedure-declaration",
+        "external-attribute-specified"
+      ],
+      "pending": {
+        "procedure-pointer-declaration": "PENDING source plan declaring PROCEDURE(integer_unary), POINTER :: p and later using p only after p6 or pointer assignment defines its association status.",
+        "dummy-procedure-declaration": "PENDING source plan inside subroutine driver(callback) declaring PROCEDURE(integer_unary) :: callback and invoking callback through a compatible explicit interface to produce literal 41 from input 40.",
+        "external-procedure-declaration": "PENDING sentinel source plan declaring PROCEDURE(INTEGER) :: ABS with a matching external integer function ABS(x) returning 42+x; calling ABS(-5) must yield 37, while the default companion with no EXTERNAL or PROCEDURE declaration calls the intrinsic ABS and yields exact 5.",
+        "external-attribute-specified": "PENDING declaration-mechanism inventory comparing PROCEDURE(INTEGER) :: ABS with an EXTERNAL ABS route under 8.5.9; both external routes use the 42+x sentinel result 37 for ABS(-5), and the undeclared companion shows default intrinsic ABS(-5)==5."
+      },
+      "oracle": "Source-only registration. Future evidence must establish each positive state before observation, use defined procedure-pointer association status before invocation or ASSOCIATED inquiry, and compare only literal results, reached-control-flow sentinels, or required diagnostics owned by the cited source unit.",
+      "oracle_limitation": "This catalogue creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Future tests must not rely on compiler agreement, diagnostic wording, link-editor behaviour, addresses, emitted code, undefined pointer association status, undefined external procedure references, or processor-dependent intrinsic approximations.",
+      "dependencies": "Registered dependencies: clauses 6-11 for source form, declarations, expressions, pointer assignment foundations, and execution constructs. Clause 15 procedure characteristics, procedure references, dummy-procedure argument association, BIND(C), PURE/SIMPLE/ELEMENTAL procedure properties, and Clause 16 intrinsic procedure tables remain dependencies except where explicitly cited by this section.;8.5.9 EXTERNAL;8.5.14 POINTER;15.5.1 procedure reference syntax."
+    },
+    {
+      "id": "R1512",
+      "title": "A procedure declaration statement has PROCEDURE, an optional interface, optional attributes, and a declaration list",
+      "source": "15.4.3.6 R1512; J3/24-007 PDF p332.",
+      "source_units": [
+        "R1512"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "The syntax is PROCEDURE with a parenthesized optional proc-interface, followed by optional proc-attr-spec entries before :: and a proc-decl-list.",
+      "facets": [
+        "empty-interface-form",
+        "explicit-interface-form",
+        "attribute-list-form",
+        "proc-decl-list-form"
+      ],
+      "pending": {
+        "empty-interface-form": "PENDING positive parse source PROCEDURE() :: ext in a specification part, with no claim about function versus subroutine category.",
+        "explicit-interface-form": "PENDING positive parse source with abstract interface integer_unary and PROCEDURE(integer_unary) :: f.",
+        "attribute-list-form": "PENDING positive parse source PROCEDURE(integer_unary), POINTER, SAVE :: p with no initialization, isolating attribute-list syntax.",
+        "proc-decl-list-form": "PENDING positive parse source PROCEDURE(integer_unary) :: f, g listing two external procedure entities."
+      },
+      "oracle": "Syntax evidence only proves admission of the source forms; interface characteristics and association effects are owned by neighbouring constraints and prose paragraphs.",
+      "oracle_limitation": "This catalogue creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Future tests must not rely on compiler agreement, diagnostic wording, link-editor behaviour, addresses, emitted code, undefined pointer association status, undefined external procedure references, or processor-dependent intrinsic approximations.",
+      "dependencies": "Registered dependencies: clauses 6-11 for source form, declarations, expressions, pointer assignment foundations, and execution constructs. Clause 15 procedure characteristics, procedure references, dummy-procedure argument association, BIND(C), PURE/SIMPLE/ELEMENTAL procedure properties, and Clause 16 intrinsic procedure tables remain dependencies except where explicitly cited by this section."
+    },
+    {
+      "id": "R1513",
+      "title": "A procedure interface is an interface name or a declaration type specifier",
+      "source": "15.4.3.6 R1513; J3/24-007 PDF p332.",
+      "source_units": [
+        "R1513"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "A proc-interface is either an interface-name or a declaration-type-spec.",
+      "facets": [
+        "interface-name-alternative",
+        "declaration-type-spec-alternative"
+      ],
+      "pending": {
+        "interface-name-alternative": "PENDING positive parse source declaring abstract interface integer_unary then PROCEDURE(integer_unary) :: f.",
+        "declaration-type-spec-alternative": "PENDING positive parse source PROCEDURE(INTEGER) :: f with a matching external integer function supplied separately."
+      },
+      "oracle": "Syntax evidence separates the two alternatives without assigning procedure characteristics beyond later rules.",
+      "oracle_limitation": "This catalogue creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Future tests must not rely on compiler agreement, diagnostic wording, link-editor behaviour, addresses, emitted code, undefined pointer association status, undefined external procedure references, or processor-dependent intrinsic approximations.",
+      "dependencies": "Registered dependencies: clauses 6-11 for source form, declarations, expressions, pointer assignment foundations, and execution constructs. Clause 15 procedure characteristics, procedure references, dummy-procedure argument association, BIND(C), PURE/SIMPLE/ELEMENTAL procedure properties, and Clause 16 intrinsic procedure tables remain dependencies except where explicitly cited by this section.;8.2 declaration type specification."
+    },
+    {
+      "id": "R1514",
+      "title": "Procedure attribute specifiers are the listed procedure attributes",
+      "source": "15.4.3.6 R1514; J3/24-007 PDF p332.",
+      "source_units": [
+        "R1514"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "A proc-attr-spec is an access-spec, proc-language-binding-spec, INTENT, OPTIONAL, POINTER, PROTECTED, or SAVE.",
+      "facets": [
+        "access-spec-form",
+        "language-binding-form",
+        "intent-form",
+        "optional-form",
+        "pointer-form",
+        "protected-form",
+        "save-form"
+      ],
+      "pending": {
+        "access-spec-form": "PENDING module specification source PROCEDURE(integer_unary), PRIVATE :: f paired with a PUBLIC control in the same module.",
+        "language-binding-form": "PENDING source with interface csub BIND(C) and PROCEDURE(csub), BIND(C) :: csub_alias.",
+        "intent-form": "PENDING dummy-procedure source PROCEDURE(integer_unary), INTENT(IN) :: callback in a dummy argument list.",
+        "optional-form": "PENDING dummy-procedure source PROCEDURE(integer_unary), OPTIONAL :: callback with PRESENT(callback) guarding invocation.",
+        "pointer-form": "PENDING source PROCEDURE(integer_unary), POINTER :: p followed by separate defined association before invocation.",
+        "protected-form": "PENDING module source PROCEDURE(integer_unary), POINTER, PROTECTED :: p with later association plans owned by pointer rules.",
+        "save-form": "PENDING source PROCEDURE(integer_unary), POINTER, SAVE :: p initialized or assigned before any observation."
+      },
+      "oracle": "Each plan admits one listed attribute spelling; semantic force is delegated to the owning attribute clauses.",
+      "oracle_limitation": "This catalogue creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Future tests must not rely on compiler agreement, diagnostic wording, link-editor behaviour, addresses, emitted code, undefined pointer association status, undefined external procedure references, or processor-dependent intrinsic approximations.",
+      "dependencies": "Registered dependencies: clauses 6-11 for source form, declarations, expressions, pointer assignment foundations, and execution constructs. Clause 15 procedure characteristics, procedure references, dummy-procedure argument association, BIND(C), PURE/SIMPLE/ELEMENTAL procedure properties, and Clause 16 intrinsic procedure tables remain dependencies except where explicitly cited by this section.;8.5 attribute clauses;18.10 BIND(C)."
+    },
+    {
+      "id": "R1515",
+      "title": "A procedure declaration item can include procedure pointer initialization",
+      "source": "15.4.3.6 R1515; J3/24-007 PDF p333.",
+      "source_units": [
+        "R1515"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "A proc-decl is a procedure-entity-name optionally followed by => proc-pointer-init.",
+      "facets": [
+        "bare-procedure-entity-name",
+        "procedure-pointer-init-form"
+      ],
+      "pending": {
+        "bare-procedure-entity-name": "PENDING positive parse source PROCEDURE(integer_unary) :: f with no initialization.",
+        "procedure-pointer-init-form": "PENDING positive parse source PROCEDURE(integer_unary), POINTER :: p => target_fun, with target eligibility credited to C1519 and association effects to p6."
+      },
+      "oracle": "Syntax admission does not by itself prove pointer status, target eligibility, or initial association.",
+      "oracle_limitation": "This catalogue creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Future tests must not rely on compiler agreement, diagnostic wording, link-editor behaviour, addresses, emitted code, undefined pointer association status, undefined external procedure references, or processor-dependent intrinsic approximations.",
+      "dependencies": "Registered dependencies: clauses 6-11 for source form, declarations, expressions, pointer assignment foundations, and execution constructs. Clause 15 procedure characteristics, procedure references, dummy-procedure argument association, BIND(C), PURE/SIMPLE/ELEMENTAL procedure properties, and Clause 16 intrinsic procedure tables remain dependencies except where explicitly cited by this section.;C1518;C1519;15.4.3.6 p6."
+    },
+    {
+      "id": "R1516",
+      "title": "An interface name is a name",
+      "source": "15.4.3.6 R1516; J3/24-007 PDF p333.",
+      "source_units": [
+        "R1516"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "An interface-name has the syntax of a name.",
+      "facets": [
+        "interface-name-token"
+      ],
+      "pending": {
+        "interface-name-token": "PENDING positive parse source using iface_1 as the interface-name in PROCEDURE(iface_1) :: f after an abstract interface declaration."
+      },
+      "oracle": "Lexical name admission is separated from C1515 and C1516 eligibility restrictions.",
+      "oracle_limitation": "This catalogue creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Future tests must not rely on compiler agreement, diagnostic wording, link-editor behaviour, addresses, emitted code, undefined pointer association status, undefined external procedure references, or processor-dependent intrinsic approximations.",
+      "dependencies": "Registered dependencies: clauses 6-11 for source form, declarations, expressions, pointer assignment foundations, and execution constructs. Clause 15 procedure characteristics, procedure references, dummy-procedure argument association, BIND(C), PURE/SIMPLE/ELEMENTAL procedure properties, and Clause 16 intrinsic procedure tables remain dependencies except where explicitly cited by this section.;6.2 names;C1515;C1516."
+    },
+    {
+      "id": "R1517",
+      "title": "Procedure pointer initialization is NULL initialization or an initial procedure target",
+      "source": "15.4.3.6 R1517; J3/24-007 PDF p333.",
+      "source_units": [
+        "R1517"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "A proc-pointer-init is either null-init or initial-proc-target.",
+      "facets": [
+        "null-init-form",
+        "initial-proc-target-form"
+      ],
+      "pending": {
+        "null-init-form": "PENDING positive source PROCEDURE(integer_unary), POINTER :: p => NULL() with ASSOCIATED(p) checked only under p6 and NULL/ASSOCIATED dependencies.",
+        "initial-proc-target-form": "PENDING positive source PROCEDURE(integer_unary), POINTER :: p => target_fun followed by invocation p(6) returning 61 under p6."
+      },
+      "oracle": "The production admits the two forms; p6 owns initial association status.",
+      "oracle_limitation": "This catalogue creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Future tests must not rely on compiler agreement, diagnostic wording, link-editor behaviour, addresses, emitted code, undefined pointer association status, undefined external procedure references, or processor-dependent intrinsic approximations.",
+      "dependencies": "Registered dependencies: clauses 6-11 for source form, declarations, expressions, pointer assignment foundations, and execution constructs. Clause 15 procedure characteristics, procedure references, dummy-procedure argument association, BIND(C), PURE/SIMPLE/ELEMENTAL procedure properties, and Clause 16 intrinsic procedure tables remain dependencies except where explicitly cited by this section.;16.9 NULL;16.9 ASSOCIATED;15.4.3.6 p6."
+    },
+    {
+      "id": "R1518",
+      "title": "An initial procedure target is a procedure name",
+      "source": "15.4.3.6 R1518; J3/24-007 PDF p333.",
+      "source_units": [
+        "R1518"
+      ],
+      "category": "syntax",
+      "diagnostic_obligation": "required",
+      "definition": "An initial-proc-target is a procedure-name.",
+      "facets": [
+        "procedure-name-target-token"
+      ],
+      "pending": {
+        "procedure-name-target-token": "PENDING positive source PROCEDURE(integer_unary), POINTER :: p => target_fun with target_fun supplied as a module procedure and C1519 credited separately."
+      },
+      "oracle": "This syntax does not establish target eligibility or result characteristics.",
+      "oracle_limitation": "This catalogue creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Future tests must not rely on compiler agreement, diagnostic wording, link-editor behaviour, addresses, emitted code, undefined pointer association status, undefined external procedure references, or processor-dependent intrinsic approximations.",
+      "dependencies": "Registered dependencies: clauses 6-11 for source form, declarations, expressions, pointer assignment foundations, and execution constructs. Clause 15 procedure characteristics, procedure references, dummy-procedure argument association, BIND(C), PURE/SIMPLE/ELEMENTAL procedure properties, and Clause 16 intrinsic procedure tables remain dependencies except where explicitly cited by this section.;C1519."
+    },
+    {
+      "id": "C1515",
+      "title": "A procedure interface name denotes an eligible explicit interface source",
+      "source": "15.4.3.6 C1515; J3/24-007 PDF p333.",
+      "source_units": [
+        "C1515"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "The interface name must name an abstract interface or a procedure with an explicit interface; a name declared by a procedure declaration statement must have been previously declared; an intrinsic procedure name must be one listed in Table 16.2.",
+      "facets": [
+        "abstract-interface-control",
+        "explicit-interface-required",
+        "previously-declared-required",
+        "table16-2-intrinsic-required"
+      ],
+      "pending": {
+        "abstract-interface-control": "PENDING conforming control with abstract interface integer_unary and PROCEDURE(integer_unary) :: f; invocation coverage is credited only after a matching function body is supplied.",
+        "explicit-interface-required": "PENDING diagnostic/control pair: negative declares EXTERNAL f then PROCEDURE(f) :: p with no explicit interface for f; control replaces the EXTERNAL line by an interface body for f and changes no PROCEDURE statement text.",
+        "previously-declared-required": "PENDING diagnostic/control pair: negative uses PROCEDURE(f) :: f_peer before any declaration of f; control inserts a preceding explicit interface body for f and keeps the procedure declaration unchanged.",
+        "table16-2-intrinsic-required": "PENDING diagnostic/control pair: negative uses a generic-only intrinsic spelling absent from Table 16.2 as PROCEDURE(name) :: p; control changes only that spelling to Table 16.2 specific intrinsic IABS with a compatible integer interface. Sentinel companions compare an external IABS(x)=42+x route returning 35 for -7 against intrinsic IABS(-7)==7."
+      },
+      "oracle": "Constraint diagnostics require one-property controls isolating interface eligibility, previous declaration, or Table 16.2 membership. Ordinary missing-definition link failures and generic intrinsic overload resolution are not evidence for this constraint.",
+      "oracle_limitation": "This catalogue creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Future tests must not rely on compiler agreement, diagnostic wording, link-editor behaviour, addresses, emitted code, undefined pointer association status, undefined external procedure references, or processor-dependent intrinsic approximations.",
+      "dependencies": "Registered dependencies: clauses 6-11 for source form, declarations, expressions, pointer assignment foundations, and execution constructs. Clause 15 procedure characteristics, procedure references, dummy-procedure argument association, BIND(C), PURE/SIMPLE/ELEMENTAL procedure properties, and Clause 16 intrinsic procedure tables remain dependencies except where explicitly cited by this section.;15.4.3.2 explicit interfaces;16.8 Table 16.2."
+    },
+    {
+      "id": "C1516",
+      "title": "An interface name is not an intrinsic type keyword",
+      "source": "15.4.3.6 C1516; J3/24-007 PDF p333.",
+      "source_units": [
+        "C1516"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "The interface name must not be the same as a keyword that specifies an intrinsic type.",
+      "facets": [
+        "intrinsic-type-keyword-interface-name-rejected",
+        "nonkeyword-interface-name-control"
+      ],
+      "pending": {
+        "intrinsic-type-keyword-interface-name-rejected": "PENDING diagnostic/control pair: negative declares an abstract interface named real and uses PROCEDURE(real) :: p in a context proven to select R1516 rather than declaration-type-spec; control renames only the interface to real_iface. Isolation is retained pending parser-source adjudication because PROCEDURE(real) also has a declaration-type-spec parse.",
+        "nonkeyword-interface-name-control": "PENDING conforming control with abstract interface real_iface and PROCEDURE(real_iface) :: p, paired with an implementation returning integer sentinel 19 through p after association is defined."
+      },
+      "oracle": "A valid diagnostic must reach R1516 interface-name, not merely parse PROCEDURE(real) as a declaration-type-spec or report an unrelated duplicate/type error.",
+      "oracle_limitation": "The intrinsic-type keyword spellings overlap the declaration-type-spec alternative in R1513, so source-only registration records the isolation hazard; no fixture should claim this C1516 facet without proving the R1516 branch is reached. This catalogue creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Future tests must not rely on compiler agreement, diagnostic wording, link-editor behaviour, addresses, emitted code, undefined pointer association status, undefined external procedure references, or processor-dependent intrinsic approximations.",
+      "dependencies": "Registered dependencies: clauses 6-11 for source form, declarations, expressions, pointer assignment foundations, and execution constructs. Clause 15 procedure characteristics, procedure references, dummy-procedure argument association, BIND(C), PURE/SIMPLE/ELEMENTAL procedure properties, and Clause 16 intrinsic procedure tables remain dependencies except where explicitly cited by this section.;R1513 declaration-type-spec alternative;6.2 names;7.4 intrinsic type keywords."
+    },
+    {
+      "id": "C1517",
+      "title": "An elemental procedure interface declares only external procedure entities",
+      "source": "15.4.3.6 C1517; J3/24-007 PDF p333.",
+      "source_units": [
+        "C1517"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "With an elemental procedure described by proc-interface, each procedure-entity-name must specify an external procedure.",
+      "facets": [
+        "elemental-interface-external-control",
+        "elemental-interface-pointer-rejected",
+        "elemental-interface-dummy-rejected"
+      ],
+      "pending": {
+        "elemental-interface-external-control": "PENDING conforming control declaring an elemental abstract interface elem_i and PROCEDURE(elem_i) :: f as an external procedure entity, with invocation deferred to a matching external definition.",
+        "elemental-interface-pointer-rejected": "PENDING diagnostic/control pair: negative changes only PROCEDURE(elem_i) :: f to PROCEDURE(elem_i), POINTER :: f; control has no POINTER attribute.",
+        "elemental-interface-dummy-rejected": "PENDING diagnostic/control pair inside subroutine driver(f): negative lists f as dummy and declares PROCEDURE(elem_i) :: f; control removes f from the dummy argument list and keeps the declaration external."
+      },
+      "oracle": "Diagnostics must be caused by the non-external entity role under an elemental interface, not by malformed elemental procedure definitions or characteristic mismatches.",
+      "oracle_limitation": "This catalogue creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Future tests must not rely on compiler agreement, diagnostic wording, link-editor behaviour, addresses, emitted code, undefined pointer association status, undefined external procedure references, or processor-dependent intrinsic approximations.",
+      "dependencies": "Registered dependencies: clauses 6-11 for source form, declarations, expressions, pointer assignment foundations, and execution constructs. Clause 15 procedure characteristics, procedure references, dummy-procedure argument association, BIND(C), PURE/SIMPLE/ELEMENTAL procedure properties, and Clause 16 intrinsic procedure tables remain dependencies except where explicitly cited by this section.;15.8 ELEMENTAL procedures;8.5.9 EXTERNAL."
+    },
+    {
+      "id": "C1518",
+      "title": "Initialized procedure declaration items require POINTER",
+      "source": "15.4.3.6 C1518; J3/24-007 PDF p333.",
+      "source_units": [
+        "C1518"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "A procedure entity with => in its proc-decl must have the POINTER attribute.",
+      "facets": [
+        "pointer-init-with-pointer-control",
+        "pointer-init-without-pointer-rejected"
+      ],
+      "pending": {
+        "pointer-init-with-pointer-control": "PENDING conforming control PROCEDURE(integer_unary), POINTER :: p => target_fun, followed by p(4) returning literal 44 under p6.",
+        "pointer-init-without-pointer-rejected": "PENDING diagnostic/control pair differing only by the POINTER attribute: negative PROCEDURE(integer_unary) :: p => target_fun; control PROCEDURE(integer_unary), POINTER :: p => target_fun."
+      },
+      "oracle": "The negative must otherwise satisfy C1519 target eligibility and interface compatibility so the missing POINTER attribute is the single defect.",
+      "oracle_limitation": "This catalogue creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Future tests must not rely on compiler agreement, diagnostic wording, link-editor behaviour, addresses, emitted code, undefined pointer association status, undefined external procedure references, or processor-dependent intrinsic approximations.",
+      "dependencies": "Registered dependencies: clauses 6-11 for source form, declarations, expressions, pointer assignment foundations, and execution constructs. Clause 15 procedure characteristics, procedure references, dummy-procedure argument association, BIND(C), PURE/SIMPLE/ELEMENTAL procedure properties, and Clause 16 intrinsic procedure tables remain dependencies except where explicitly cited by this section.;R1515;8.5.14 POINTER;C1519."
+    },
+    {
+      "id": "C1519",
+      "title": "An initial procedure target is a permitted nonelemental or specific intrinsic procedure",
+      "source": "15.4.3.6 C1519; J3/24-007 PDF p333.",
+      "source_units": [
+        "C1519"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "The initial procedure target must be a nonelemental external or module procedure, or a specific intrinsic function listed in Table 16.2.",
+      "facets": [
+        "nonelemental-external-target-control",
+        "nonelemental-module-target-control",
+        "specific-intrinsic-target-control",
+        "elemental-nonintrinsic-target-rejected",
+        "generic-intrinsic-target-rejected"
+      ],
+      "pending": {
+        "nonelemental-external-target-control": "PENDING conforming control PROCEDURE(integer_unary), POINTER :: p => ABS with ABS declared EXTERNAL and implemented as external ABS(x)=42+x, so p(-5) returns 37; companion omits EXTERNAL and uses intrinsic ABS(-5)==5 to make wrong resolution observable.",
+        "nonelemental-module-target-control": "PENDING conforming control using module procedure target_fun returning 72 through initially associated p(2).",
+        "specific-intrinsic-target-control": "PENDING conforming control using Table 16.2 specific intrinsic IABS as an initial target and checking p(-7) returns exact 7 for default integer; sentinel companion declares external IABS(x)=42+x and observes 35 through the external route.",
+        "elemental-nonintrinsic-target-rejected": "PENDING diagnostic/control pair where negative initializes p to an elemental module function elem_fun and control changes only elem_fun to a nonelemental module function with the same interface.",
+        "generic-intrinsic-target-rejected": "PENDING diagnostic/control pair where negative uses a generic intrinsic spelling not listed as a Table 16.2 specific function and control changes only the target spelling to IABS; companion calls exact intrinsic ABS(-5)==5 and external ABS(x)=42+x returning 37 to expose generic-versus-external resolution."
+      },
+      "oracle": "Initial-target diagnostics must not conflate C1519 with C1515 interface-name eligibility; controls keep pointer status and interface characteristics valid.",
+      "oracle_limitation": "This catalogue creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Future tests must not rely on compiler agreement, diagnostic wording, link-editor behaviour, addresses, emitted code, undefined pointer association status, undefined external procedure references, or processor-dependent intrinsic approximations.",
+      "dependencies": "Registered dependencies: clauses 6-11 for source form, declarations, expressions, pointer assignment foundations, and execution constructs. Clause 15 procedure characteristics, procedure references, dummy-procedure argument association, BIND(C), PURE/SIMPLE/ELEMENTAL procedure properties, and Clause 16 intrinsic procedure tables remain dependencies except where explicitly cited by this section.;16.8 Table 16.2;15.8 ELEMENTAL procedures."
+    },
+    {
+      "id": "C1520",
+      "title": "BIND(C, NAME=) procedure declarations have exactly one nonpointer nondummy declaration",
+      "source": "15.4.3.6 C1520; J3/24-007 PDF p333.",
+      "source_units": [
+        "C1520"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "With proc-language-binding-spec containing NAME=, the proc-decl-list must contain exactly one proc-decl, and that proc-decl must not have POINTER and must not be a dummy procedure.",
+      "facets": [
+        "single-proc-decl-control",
+        "multiple-proc-decls-rejected",
+        "pointer-with-bind-name-rejected",
+        "dummy-with-bind-name-rejected"
+      ],
+      "pending": {
+        "single-proc-decl-control": "PENDING conforming control with interface csub BIND(C) and PROCEDURE(csub), BIND(C, NAME='c_sub') :: csub_alias as a single external procedure declaration.",
+        "multiple-proc-decls-rejected": "PENDING diagnostic/control pair: negative PROCEDURE(csub), BIND(C, NAME='c_sub') :: a, b; control deletes only b.",
+        "pointer-with-bind-name-rejected": "PENDING diagnostic/control pair differing only by POINTER: negative PROCEDURE(csub), POINTER, BIND(C, NAME='c_sub') :: p; control removes POINTER.",
+        "dummy-with-bind-name-rejected": "PENDING diagnostic/control pair inside subroutine driver(dp): negative declares dummy PROCEDURE(csub), BIND(C, NAME='c_sub') :: dp; control removes dp from the dummy argument list and leaves the declaration local."
+      },
+      "oracle": "Each negative keeps C1521 satisfied through a BIND(C) interface-name, so the isolated failure is cardinality, POINTER, or dummy-procedure status under NAME=.",
+      "oracle_limitation": "This catalogue creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Future tests must not rely on compiler agreement, diagnostic wording, link-editor behaviour, addresses, emitted code, undefined pointer association status, undefined external procedure references, or processor-dependent intrinsic approximations.",
+      "dependencies": "Registered dependencies: clauses 6-11 for source form, declarations, expressions, pointer assignment foundations, and execution constructs. Clause 15 procedure characteristics, procedure references, dummy-procedure argument association, BIND(C), PURE/SIMPLE/ELEMENTAL procedure properties, and Clause 16 intrinsic procedure tables remain dependencies except where explicitly cited by this section.;18.10.2 binding labels;C1521."
+    },
+    {
+      "id": "C1521",
+      "title": "BIND(C) procedure declarations use a BIND(C) interface name",
+      "source": "15.4.3.6 C1521; J3/24-007 PDF p333.",
+      "source_units": [
+        "C1521"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "required",
+      "definition": "With proc-language-binding-spec present, proc-interface must appear, must be an interface-name, and that interface-name must be declared with a proc-language-binding-spec.",
+      "facets": [
+        "bind-interface-name-control",
+        "missing-proc-interface-rejected",
+        "declaration-type-spec-interface-rejected",
+        "interface-without-bind-rejected"
+      ],
+      "pending": {
+        "bind-interface-name-control": "PENDING conforming control with interface csub BIND(C) and PROCEDURE(csub), BIND(C) :: csub_alias.",
+        "missing-proc-interface-rejected": "PENDING diagnostic/control pair: negative PROCEDURE(), BIND(C) :: p; control fills the parentheses with previously declared BIND(C) interface name csub.",
+        "declaration-type-spec-interface-rejected": "PENDING diagnostic/control pair: negative PROCEDURE(INTEGER), BIND(C) :: f; control changes only INTEGER to BIND(C) interface name cfun with integer function characteristics.",
+        "interface-without-bind-rejected": "PENDING diagnostic/control pair: negative interface plain_sub lacks BIND(C) and is used in PROCEDURE(plain_sub), BIND(C) :: p; control adds BIND(C) to the interface body."
+      },
+      "oracle": "Diagnostics must be attributable to the BIND(C) interface requirements rather than C1520 NAME= restrictions or malformed C interoperability details.",
+      "oracle_limitation": "This catalogue creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Future tests must not rely on compiler agreement, diagnostic wording, link-editor behaviour, addresses, emitted code, undefined pointer association status, undefined external procedure references, or processor-dependent intrinsic approximations.",
+      "dependencies": "Registered dependencies: clauses 6-11 for source form, declarations, expressions, pointer assignment foundations, and execution constructs. Clause 15 procedure characteristics, procedure references, dummy-procedure argument association, BIND(C), PURE/SIMPLE/ELEMENTAL procedure properties, and Clause 16 intrinsic procedure tables remain dependencies except where explicitly cited by this section.;18.10 proc-language-binding-spec;C1520."
+    },
+    {
+      "id": "S15.4.3.6-002",
+      "title": "An interface name supplies an explicit specific interface and abstract interface source",
+      "source": "15.4.3.6 p2 effect sentences; J3/24-007 PDF p333.",
+      "source_units": [
+        "p2.interface-name-effect"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A proc-interface that consists of interface-name specifies an explicit specific interface for the declared procedure entities, and the abstract interface is the one specified by that interface name.",
+      "facets": [
+        "explicit-specific-interface-specified",
+        "abstract-interface-source-specified"
+      ],
+      "pending": {
+        "explicit-specific-interface-specified": "PENDING source with abstract interface integer_unary, PROCEDURE(integer_unary), POINTER :: p => target_fun, and p(5) returning literal 50 through the explicitly specified interface.",
+        "abstract-interface-source-specified": "PENDING paired declarations using integer_unary and real_unary abstract interfaces whose target functions return distinguishable literal integer 50 versus exact real 5.5, proving the named abstract interface drives compatibility."
+      },
+      "oracle": "Source-only registration. Future evidence must establish each positive state before observation, use defined procedure-pointer association status before invocation or ASSOCIATED inquiry, and compare only literal results, reached-control-flow sentinels, or required diagnostics owned by the cited source unit.",
+      "oracle_limitation": "This catalogue creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Future tests must not rely on compiler agreement, diagnostic wording, link-editor behaviour, addresses, emitted code, undefined pointer association status, undefined external procedure references, or processor-dependent intrinsic approximations.",
+      "dependencies": "Registered dependencies: clauses 6-11 for source form, declarations, expressions, pointer assignment foundations, and execution constructs. Clause 15 procedure characteristics, procedure references, dummy-procedure argument association, BIND(C), PURE/SIMPLE/ELEMENTAL procedure properties, and Clause 16 intrinsic procedure tables remain dependencies except where explicitly cited by this section.;15.4.3.2 explicit specific interfaces."
+    },
+    {
+      "id": "S15.4.3.6-003",
+      "title": "An interface named by a procedure declaration is independent of same-statement procedure entities",
+      "source": "15.4.3.6 p2 final sentence; J3/24-007 PDF p333.",
+      "source_units": [
+        "p2.same-statement-dependence-restriction"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "The interface specified by interface-name must not depend on any characteristic of a procedure identified by a procedure-entity-name in the same procedure declaration statement.",
+      "facets": [
+        "same-statement-characteristic-independence"
+      ],
+      "pending": {
+        "same-statement-characteristic-independence": "PENDING source-control plan using an interface whose characteristics are fully fixed before PROCEDURE(iface) :: f, g; a future negative must isolate dependence on f or g without a separate numbered constraint before claiming diagnostic evidence."
+      },
+      "oracle": "The portable positive property is absence of same-statement dependence; compulsory rejection is not supplied by this unnumbered shall alone.",
+      "oracle_limitation": "This catalogue creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Future tests must not rely on compiler agreement, diagnostic wording, link-editor behaviour, addresses, emitted code, undefined pointer association status, undefined external procedure references, or processor-dependent intrinsic approximations.",
+      "dependencies": "Registered dependencies: clauses 6-11 for source form, declarations, expressions, pointer assignment foundations, and execution constructs. Clause 15 procedure characteristics, procedure references, dummy-procedure argument association, BIND(C), PURE/SIMPLE/ELEMENTAL procedure properties, and Clause 16 intrinsic procedure tables remain dependencies except where explicitly cited by this section."
+    },
+    {
+      "id": "S15.4.3.6-004",
+      "title": "A declaration type specifier makes the declared procedures implicit-interface functions with that result type",
+      "source": "15.4.3.6 p3 first sentence; J3/24-007 PDF p333.",
+      "source_units": [
+        "p3.declaration-type-spec-effect"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A proc-interface that consists of declaration-type-spec declares the procedure entities to be functions with implicit interfaces and the specified result type.",
+      "facets": [
+        "implicit-interface-function-class",
+        "specified-result-type"
+      ],
+      "pending": {
+        "implicit-interface-function-class": "PENDING source PROCEDURE(INTEGER) :: f plus external integer function f(n) returning n+3; assign f(4) to integer sentinel -91 and expect 7.",
+        "specified-result-type": "PENDING two controls PROCEDURE(INTEGER) :: fi and PROCEDURE(REAL) :: fr with bodies returning literal 7 and exact 7.5; assignments to typed sentinels observe the result type route."
+      },
+      "oracle": "Source-only registration. Future evidence must establish each positive state before observation, use defined procedure-pointer association status before invocation or ASSOCIATED inquiry, and compare only literal results, reached-control-flow sentinels, or required diagnostics owned by the cited source unit.",
+      "oracle_limitation": "This catalogue creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Future tests must not rely on compiler agreement, diagnostic wording, link-editor behaviour, addresses, emitted code, undefined pointer association status, undefined external procedure references, or processor-dependent intrinsic approximations.",
+      "dependencies": "Registered dependencies: clauses 6-11 for source form, declarations, expressions, pointer assignment foundations, and execution constructs. Clause 15 procedure characteristics, procedure references, dummy-procedure argument association, BIND(C), PURE/SIMPLE/ELEMENTAL procedure properties, and Clause 16 intrinsic procedure tables remain dependencies except where explicitly cited by this section.;8.2 declaration type specification;15.4.2.2 implicit interfaces."
+    },
+    {
+      "id": "S15.4.3.6-005",
+      "title": "An explicitly typed external function definition has matching result characteristics",
+      "source": "15.4.3.6 p3 second sentence; J3/24-007 PDF p333.",
+      "source_units": [
+        "p3.function-definition-result-restriction"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "A function definition for an external function whose type is specified by a procedure declaration must specify the same result type and type parameters.",
+      "facets": [
+        "same-result-type-control",
+        "same-type-parameters-control",
+        "result-type-mismatch-source-control"
+      ],
+      "pending": {
+        "same-result-type-control": "PENDING source PROCEDURE(INTEGER) :: f with external INTEGER FUNCTION f(n) returning 33 and caller checking integer sentinel changes from -8 to 33.",
+        "same-type-parameters-control": "PENDING character-length source PROCEDURE(CHARACTER(3)) :: cf with external CHARACTER(3) FUNCTION cf() returning 'abc' and caller checking LEN(result)==3 and value 'abc'.",
+        "result-type-mismatch-source-control": "PENDING source-control negative changing only the external function result type from INTEGER to REAL; no required diagnostic is claimed without a separate numbered basis."
+      },
+      "oracle": "Positive controls observe exact integer or character results. Character cases check LEN before value equality.",
+      "oracle_limitation": "This catalogue creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Future tests must not rely on compiler agreement, diagnostic wording, link-editor behaviour, addresses, emitted code, undefined pointer association status, undefined external procedure references, or processor-dependent intrinsic approximations.",
+      "dependencies": "Registered dependencies: clauses 6-11 for source form, declarations, expressions, pointer assignment foundations, and execution constructs. Clause 15 procedure characteristics, procedure references, dummy-procedure argument association, BIND(C), PURE/SIMPLE/ELEMENTAL procedure properties, and Clause 16 intrinsic procedure tables remain dependencies except where explicitly cited by this section.;7.4 type parameters;15.6.2.2 function definitions."
+    },
+    {
+      "id": "S15.4.3.6-006",
+      "title": "Omitting proc-interface leaves procedure category unspecified",
+      "source": "15.4.3.6 p4; J3/24-007 PDF p333.",
+      "source_units": [
+        "p4"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Without proc-interface, the procedure declaration statement does not specify whether the declared procedure entities are subroutines or functions.",
+      "facets": [
+        "category-not-specified-by-declaration"
+      ],
+      "pending": {
+        "category-not-specified-by-declaration": "PENDING paired source-use plan declaring PROCEDURE() :: proc and later establishing category only by a conforming function reference or CALL context under 15.5.1, never by the declaration alone."
+      },
+      "oracle": "No executable result can prove absence of a specified category except by paired source attribution showing the category comes from a later reference rule.",
+      "oracle_limitation": "This catalogue creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Future tests must not rely on compiler agreement, diagnostic wording, link-editor behaviour, addresses, emitted code, undefined pointer association status, undefined external procedure references, or processor-dependent intrinsic approximations.",
+      "dependencies": "Registered dependencies: clauses 6-11 for source form, declarations, expressions, pointer assignment foundations, and execution constructs. Clause 15 procedure characteristics, procedure references, dummy-procedure argument association, BIND(C), PURE/SIMPLE/ELEMENTAL procedure properties, and Clause 16 intrinsic procedure tables remain dependencies except where explicitly cited by this section.;15.5.1 function references and CALL statements."
+    },
+    {
+      "id": "S15.4.3.6-007",
+      "title": "Procedure attribute specifiers and BIND(C, NAME=) specify attributes or binding labels",
+      "source": "15.4.3.6 p5 attribute and NAME= sentences; J3/24-007 PDF p333.",
+      "source_units": [
+        "p5.attribute-specification-effect",
+        "p5.binding-label-effect"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A proc-attr-spec other than proc-language-binding-spec gives the declared procedure entities the named attribute, and proc-language-binding-spec with NAME= specifies a binding label or its absence as described in 18.10.2.",
+      "facets": [
+        "nonbinding-attributes-specified",
+        "bind-name-label-specified",
+        "bind-name-absence-specified"
+      ],
+      "pending": {
+        "nonbinding-attributes-specified": "PENDING source inventory across POINTER, OPTIONAL, INTENT, SAVE, PROTECTED and access attributes, with each semantic assertion credited to the owning attribute clause rather than p5.",
+        "bind-name-label-specified": "PENDING BIND(C, NAME='c_proc') source whose interoperable label expectation is checked only by 18.10.2 evidence; p5 credits the route from PROCEDURE syntax to binding-label specification.",
+        "bind-name-absence-specified": "PENDING BIND(C, NAME='') source under 18.10.2 proving absence of a binding label; p5 owns only the specification mechanism."
+      },
+      "oracle": "Attribute meanings and C binding label details are dependencies; this section owns the fact that the procedure declaration statement specifies them.",
+      "oracle_limitation": "This catalogue creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Future tests must not rely on compiler agreement, diagnostic wording, link-editor behaviour, addresses, emitted code, undefined pointer association status, undefined external procedure references, or processor-dependent intrinsic approximations.",
+      "dependencies": "Registered dependencies: clauses 6-11 for source form, declarations, expressions, pointer assignment foundations, and execution constructs. Clause 15 procedure characteristics, procedure references, dummy-procedure argument association, BIND(C), PURE/SIMPLE/ELEMENTAL procedure properties, and Clause 16 intrinsic procedure tables remain dependencies except where explicitly cited by this section.;8.5 attributes;18.10.2 binding labels."
+    },
+    {
+      "id": "S15.4.3.6-008",
+      "title": "BIND(C) without NAME= is admitted but redundant with the required interface",
+      "source": "15.4.3.6 p5 final sentence; J3/24-007 PDF p333.",
+      "source_units": [
+        "p5.bind-without-name-permission"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A proc-language-binding-spec without NAME= is allowed in a procedure declaration statement, but is redundant with the proc-interface required by C1521.",
+      "facets": [
+        "bind-without-name-admitted",
+        "bind-without-name-redundant"
+      ],
+      "pending": {
+        "bind-without-name-admitted": "PENDING conforming source with interface csub BIND(C) and PROCEDURE(csub), BIND(C) :: p admitted alongside a control PROCEDURE(csub) :: p.",
+        "bind-without-name-redundant": "PENDING source comparison showing the BIND(C) interface-name already carries the C interoperability premise required by C1521; no distinct runtime result is asserted for the redundant spelling."
+      },
+      "oracle": "Admission is syntactic/source evidence; redundancy has no separate portable execution oracle beyond the C1521 relation.",
+      "oracle_limitation": "This catalogue creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Future tests must not rely on compiler agreement, diagnostic wording, link-editor behaviour, addresses, emitted code, undefined pointer association status, undefined external procedure references, or processor-dependent intrinsic approximations.",
+      "dependencies": "Registered dependencies: clauses 6-11 for source form, declarations, expressions, pointer assignment foundations, and execution constructs. Clause 15 procedure characteristics, procedure references, dummy-procedure argument association, BIND(C), PURE/SIMPLE/ELEMENTAL procedure properties, and Clause 16 intrinsic procedure tables remain dependencies except where explicitly cited by this section.;C1521;18.10."
+    },
+    {
+      "id": "S15.4.3.6-009",
+      "title": "Procedure pointer initialization defines initial association status and implies SAVE",
+      "source": "15.4.3.6 p6 association sentences; J3/24-007 PDF p333.",
+      "source_units": [
+        "p6.initial-association-effect"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "An initializer in proc-decl specifies initial association status for the procedure entity, implies SAVE, makes => NULL() initially disassociated, and makes => initial-proc-target initially associated with the target.",
+      "facets": [
+        "initializer-specifies-initial-association",
+        "initializer-implies-save",
+        "null-init-initially-disassociated",
+        "initial-target-associated",
+        "initial-target-invocation-observable"
+      ],
+      "pending": {
+        "initializer-specifies-initial-association": "PENDING module source with p_null => NULL() and p_target => target_fun; check ASSOCIATED(p_null) is false from a logical sentinel .true. and p_target(3) returns literal 30.",
+        "initializer-implies-save": "PENDING subroutine with local PROCEDURE(integer_unary), POINTER :: p => target_fun and a saved call counter; two calls invoke p(1) then p(2) and observe continued association plus counter values 1 and 2.",
+        "null-init-initially-disassociated": "PENDING source initializes logical seen=.true., evaluates ASSOCIATED(p_null) into seen for PROCEDURE(integer_unary), POINTER :: p_null => NULL(), and expects seen=.false. before any pointer assignment.",
+        "initial-target-associated": "PENDING source PROCEDURE(integer_unary), POINTER :: p => target_fun where target_fun returns n+100; calling p(8) changes integer sentinel -77 to 108.",
+        "initial-target-invocation-observable": "PENDING mutation plan changes only the initializer target from target_fun returning 108 to other_fun returning 208; oracle expects the call through p to distinguish the initialized target."
+      },
+      "oracle": "Association is observed only through ASSOCIATED for NULL() or by invoking a defined associated target that returns a literal sentinel. The SAVE plan uses two calls to the same subprogram instance sequence to avoid default-state vacuity.",
+      "oracle_limitation": "This catalogue creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Future tests must not rely on compiler agreement, diagnostic wording, link-editor behaviour, addresses, emitted code, undefined pointer association status, undefined external procedure references, or processor-dependent intrinsic approximations.",
+      "dependencies": "Registered dependencies: clauses 6-11 for source form, declarations, expressions, pointer assignment foundations, and execution constructs. Clause 15 procedure characteristics, procedure references, dummy-procedure argument association, BIND(C), PURE/SIMPLE/ELEMENTAL procedure properties, and Clause 16 intrinsic procedure tables remain dependencies except where explicitly cited by this section.;8.5.16 SAVE;16.9 ASSOCIATED;16.9 NULL;15.5.1 procedure references."
+    },
+    {
+      "id": "S15.4.3.6-010",
+      "title": "Explicit SAVE may confirm the SAVE implied by procedure pointer initialization",
+      "source": "15.4.3.6 p6 confirmation phrase; J3/24-007 PDF p333.",
+      "source_units": [
+        "p6.explicit-save-confirmation-permission"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The SAVE attribute implied by procedure pointer initialization may be confirmed by explicit SAVE specification.",
+      "facets": [
+        "explicit-save-confirmation-admitted"
+      ],
+      "pending": {
+        "explicit-save-confirmation-admitted": "PENDING source PROCEDURE(integer_unary), POINTER, SAVE :: p => target_fun admitted and invoked to return literal 65, paired with the same declaration omitting explicit SAVE."
+      },
+      "oracle": "The explicit SAVE spelling is an admission/confirmation facet; persistence is credited to S15.4.3.6-009 and 8.5.16.",
+      "oracle_limitation": "This catalogue creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Future tests must not rely on compiler agreement, diagnostic wording, link-editor behaviour, addresses, emitted code, undefined pointer association status, undefined external procedure references, or processor-dependent intrinsic approximations.",
+      "dependencies": "Registered dependencies: clauses 6-11 for source form, declarations, expressions, pointer assignment foundations, and execution constructs. Clause 15 procedure characteristics, procedure references, dummy-procedure argument association, BIND(C), PURE/SIMPLE/ELEMENTAL procedure properties, and Clause 16 intrinsic procedure tables remain dependencies except where explicitly cited by this section.;8.5.16 SAVE."
+    },
+    {
+      "id": "S15.4.3.6-011",
+      "title": "Explicit-interface procedure pointer initialization requires matching characteristics except listed target allowances",
+      "source": "15.4.3.6 p7 restriction clause; J3/24-007 PDF p333.",
+      "source_units": [
+        "p7.same-characteristics-restriction"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "With an explicit interface for procedure-entity-name, its characteristics must be the same as initial-proc-target except for the separately allowed pure, simple, and elemental intrinsic target differences.",
+      "facets": [
+        "same-characteristics-control",
+        "argument-characteristics-match",
+        "result-characteristics-match",
+        "characteristics-mismatch-source-control"
+      ],
+      "pending": {
+        "same-characteristics-control": "PENDING source with abstract interface integer_unary, target_fun matching one integer argument and integer result, and PROCEDURE(integer_unary), POINTER :: p => target_fun returning 109 from p(9).",
+        "argument-characteristics-match": "PENDING source varying one compatible INTEGER argument and checking target_fun receives 4 then 6 and returns 14 then 16 through p.",
+        "result-characteristics-match": "PENDING character result source with CHARACTER(3) abstract interface and target returning 'xyz'; caller checks LEN result equals 3 before equality.",
+        "characteristics-mismatch-source-control": "PENDING source-control negative changing only target_fun's dummy rank from scalar to rank-one while leaving the abstract interface scalar; no required diagnostic is claimed without a separate numbered basis."
+      },
+      "oracle": "Positive evidence invokes only an initialized procedure pointer with defined association. Character tests check LEN before value equality.",
+      "oracle_limitation": "This catalogue creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Future tests must not rely on compiler agreement, diagnostic wording, link-editor behaviour, addresses, emitted code, undefined pointer association status, undefined external procedure references, or processor-dependent intrinsic approximations.",
+      "dependencies": "Registered dependencies: clauses 6-11 for source form, declarations, expressions, pointer assignment foundations, and execution constructs. Clause 15 procedure characteristics, procedure references, dummy-procedure argument association, BIND(C), PURE/SIMPLE/ELEMENTAL procedure properties, and Clause 16 intrinsic procedure tables remain dependencies except where explicitly cited by this section.;15.3 procedure characteristics;15.4.3.2 explicit interfaces."
+    },
+    {
+      "id": "S15.4.3.6-012",
+      "title": "Pure initial targets are permitted for nonpure procedure entities",
+      "source": "15.4.3.6 p7 pure exception; J3/24-007 PDF p333.",
+      "source_units": [
+        "p7.pure-target-permission"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The initial procedure target may be pure even though the procedure entity is not pure.",
+      "facets": [
+        "pure-target-for-nonpure-entity-admitted"
+      ],
+      "pending": {
+        "pure-target-for-nonpure-entity-admitted": "PENDING source with nonpure abstract interface integer_unary, PURE module function pure_inc returning n+1, and PROCEDURE(integer_unary), POINTER :: p => pure_inc; p(10) changes sentinel -1 to 11."
+      },
+      "oracle": "The permission is observed by successful invocation through the initially associated pointer; pure semantics beyond admission belong to 15.7.",
+      "oracle_limitation": "This catalogue creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Future tests must not rely on compiler agreement, diagnostic wording, link-editor behaviour, addresses, emitted code, undefined pointer association status, undefined external procedure references, or processor-dependent intrinsic approximations.",
+      "dependencies": "Registered dependencies: clauses 6-11 for source form, declarations, expressions, pointer assignment foundations, and execution constructs. Clause 15 procedure characteristics, procedure references, dummy-procedure argument association, BIND(C), PURE/SIMPLE/ELEMENTAL procedure properties, and Clause 16 intrinsic procedure tables remain dependencies except where explicitly cited by this section.;15.7 PURE procedures."
+    },
+    {
+      "id": "S15.4.3.6-013",
+      "title": "Simple initial targets are permitted for nonsimple procedure entities",
+      "source": "15.4.3.6 p7 simple exception; J3/24-007 PDF p333.",
+      "source_units": [
+        "p7.simple-target-permission"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The initial procedure target may be simple even though the procedure entity is not simple.",
+      "facets": [
+        "simple-target-for-nonsimple-entity-admitted"
+      ],
+      "pending": {
+        "simple-target-for-nonsimple-entity-admitted": "PENDING source with nonsimple abstract interface integer_unary, SIMPLE module function simple_inc returning n+2, and PROCEDURE(integer_unary), POINTER :: p => simple_inc; p(10) changes sentinel -1 to 12."
+      },
+      "oracle": "The permission is admission plus invocation through a defined initial target; detailed SIMPLE restrictions remain dependencies.",
+      "oracle_limitation": "This catalogue creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Future tests must not rely on compiler agreement, diagnostic wording, link-editor behaviour, addresses, emitted code, undefined pointer association status, undefined external procedure references, or processor-dependent intrinsic approximations.",
+      "dependencies": "Registered dependencies: clauses 6-11 for source form, declarations, expressions, pointer assignment foundations, and execution constructs. Clause 15 procedure characteristics, procedure references, dummy-procedure argument association, BIND(C), PURE/SIMPLE/ELEMENTAL procedure properties, and Clause 16 intrinsic procedure tables remain dependencies except where explicitly cited by this section.;15.3.7 SIMPLE procedures."
+    },
+    {
+      "id": "S15.4.3.6-014",
+      "title": "Elemental intrinsic initial targets are permitted",
+      "source": "15.4.3.6 p7 elemental intrinsic exception; J3/24-007 PDF p333.",
+      "source_units": [
+        "p7.elemental-intrinsic-target-permission"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The initial procedure target may be an elemental intrinsic procedure.",
+      "facets": [
+        "elemental-intrinsic-initial-target-admitted",
+        "elemental-intrinsic-target-invoked"
+      ],
+      "pending": {
+        "elemental-intrinsic-initial-target-admitted": "PENDING source with interface integer_unary and PROCEDURE(integer_unary), POINTER :: p => IABS using the Table 16.2 specific intrinsic; companion external IABS(x)=42+x returns 35 for -7 so intrinsic target resolution is load-bearing.",
+        "elemental-intrinsic-target-invoked": "PENDING invocation p(-7) with integer sentinel -99 and exact expected result 7, paired with external IABS(x)=42+x returning 35 and a user function returning 17 to make target selection load-bearing."
+      },
+      "oracle": "Use exact integer IABS to avoid floating approximation latitude; intrinsic eligibility remains tied to Table 16.2.",
+      "oracle_limitation": "This catalogue creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Future tests must not rely on compiler agreement, diagnostic wording, link-editor behaviour, addresses, emitted code, undefined pointer association status, undefined external procedure references, or processor-dependent intrinsic approximations.",
+      "dependencies": "Registered dependencies: clauses 6-11 for source form, declarations, expressions, pointer assignment foundations, and execution constructs. Clause 15 procedure characteristics, procedure references, dummy-procedure argument association, BIND(C), PURE/SIMPLE/ELEMENTAL procedure properties, and Clause 16 intrinsic procedure tables remain dependencies except where explicitly cited by this section.;16.8 Table 16.2;16.9 ABS/IABS."
+    },
+    {
+      "id": "S15.4.3.6-015",
+      "title": "Explicit-interface-required characteristics require explicit interfaces on both initialized procedure pointer sides",
+      "source": "15.4.3.6 p8; J3/24-007 PDF p334.",
+      "source_units": [
+        "p8"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "Where the characteristics of procedure-entity-name or initial-proc-target require an explicit interface, both the procedure entity and the initial target must have an explicit interface.",
+      "facets": [
+        "both-explicit-control",
+        "entity-needs-explicit-target-explicit",
+        "target-needs-explicit-entity-explicit",
+        "missing-explicit-source-control"
+      ],
+      "pending": {
+        "both-explicit-control": "PENDING source using an assumed-shape dummy in the interface, providing explicit interfaces for both pointer entity and module target, then invoking p on a two-element array and checking literal sum 9.",
+        "entity-needs-explicit-target-explicit": "PENDING control where the procedure entity abstract interface has an assumed-shape dummy and target_fun is a module procedure with explicit interface.",
+        "target-needs-explicit-entity-explicit": "PENDING control where target_fun has an assumed-shape dummy and procedure entity uses the matching abstract interface before initialization.",
+        "missing-explicit-source-control": "PENDING source-control negative removing only the target explicit-interface route from a case with assumed-shape dummy; no required diagnostic is claimed without a separate numbered basis."
+      },
+      "oracle": "The runtime control invokes only an initialized pointer with matching explicit interfaces and exact integer array sums.",
+      "oracle_limitation": "This catalogue creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Future tests must not rely on compiler agreement, diagnostic wording, link-editor behaviour, addresses, emitted code, undefined pointer association status, undefined external procedure references, or processor-dependent intrinsic approximations.",
+      "dependencies": "Registered dependencies: clauses 6-11 for source form, declarations, expressions, pointer assignment foundations, and execution constructs. Clause 15 procedure characteristics, procedure references, dummy-procedure argument association, BIND(C), PURE/SIMPLE/ELEMENTAL procedure properties, and Clause 16 intrinsic procedure tables remain dependencies except where explicitly cited by this section.;15.4.2.2 explicit-interface requirements;8.5.8 assumed shape."
+    },
+    {
+      "id": "S15.4.3.6-016",
+      "title": "Implicit-interface initialized procedure pointers keep function and subroutine categories aligned",
+      "source": "15.4.3.6 p9; J3/24-007 PDF p334.",
+      "source_units": [
+        "p9"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "With an implicit interface, a procedure entity explicitly typed or referenced as a function must have a function initial target, and a procedure entity referenced as a subroutine must have a subroutine initial target.",
+      "facets": [
+        "implicit-function-target-function-control",
+        "implicit-subroutine-target-subroutine-control",
+        "function-subroutine-mismatch-source-control",
+        "subroutine-function-mismatch-source-control"
+      ],
+      "pending": {
+        "implicit-function-target-function-control": "PENDING source PROCEDURE(INTEGER), POINTER :: p => f_target with external integer function f_target returning 18; p(1) changes integer sentinel -5 to 18.",
+        "implicit-subroutine-target-subroutine-control": "PENDING source PROCEDURE(), POINTER :: p => s_target followed by CALL p(flag) where s_target changes logical sentinel .false. to .true.",
+        "function-subroutine-mismatch-source-control": "PENDING source-control negative changing only f_target from function to subroutine in the function-control case; no required diagnostic is claimed without a separate numbered basis.",
+        "subroutine-function-mismatch-source-control": "PENDING source-control negative changing only s_target from subroutine to function in the subroutine-control case; no required diagnostic is claimed without a separate numbered basis."
+      },
+      "oracle": "Function and subroutine controls use distinct nondefault sentinels so category mistakes are load-bearing.",
+      "oracle_limitation": "This catalogue creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Future tests must not rely on compiler agreement, diagnostic wording, link-editor behaviour, addresses, emitted code, undefined pointer association status, undefined external procedure references, or processor-dependent intrinsic approximations.",
+      "dependencies": "Registered dependencies: clauses 6-11 for source form, declarations, expressions, pointer assignment foundations, and execution constructs. Clause 15 procedure characteristics, procedure references, dummy-procedure argument association, BIND(C), PURE/SIMPLE/ELEMENTAL procedure properties, and Clause 16 intrinsic procedure tables remain dependencies except where explicitly cited by this section.;15.5.1 function references and CALL statements;15.6 procedure definitions."
+    },
+    {
+      "id": "S15.4.3.6-017",
+      "title": "Implicit-interface function initial targets have matching result characteristics",
+      "source": "15.4.3.6 p10; J3/24-007 PDF p334.",
+      "source_units": [
+        "p10"
+      ],
+      "category": "restriction",
+      "diagnostic_obligation": "not-required",
+      "definition": "Where initial-proc-target and procedure-entity-name are functions, their results must have the same characteristics.",
+      "facets": [
+        "same-result-characteristics-control",
+        "same-character-type-parameters-control",
+        "result-characteristics-mismatch-source-control"
+      ],
+      "pending": {
+        "same-result-characteristics-control": "PENDING source PROCEDURE(INTEGER), POINTER :: p => f_target with INTEGER FUNCTION f_target() returning 29; result sentinel -3 changes to 29.",
+        "same-character-type-parameters-control": "PENDING source PROCEDURE(CHARACTER(4)), POINTER :: p => c_target with CHARACTER(4) FUNCTION c_target() returning 'wxyz'; caller checks LEN result equals 4 and value 'wxyz'.",
+        "result-characteristics-mismatch-source-control": "PENDING source-control negative changing only c_target length from 4 to 5; no required diagnostic is claimed without a separate numbered basis."
+      },
+      "oracle": "Only exact integer and character results are planned; character controls check LEN before equality.",
+      "oracle_limitation": "This catalogue creates no Fortran fixture, compiler invocation, execution evidence, fixture approval, oracle approval, or coverage claim. Future tests must not rely on compiler agreement, diagnostic wording, link-editor behaviour, addresses, emitted code, undefined pointer association status, undefined external procedure references, or processor-dependent intrinsic approximations.",
+      "dependencies": "Registered dependencies: clauses 6-11 for source form, declarations, expressions, pointer assignment foundations, and execution constructs. Clause 15 procedure characteristics, procedure references, dummy-procedure argument association, BIND(C), PURE/SIMPLE/ELEMENTAL procedure properties, and Clause 16 intrinsic procedure tables remain dependencies except where explicitly cited by this section.;7.4 type parameters;15.6.2.2 function definitions."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.4.3.6-001"
+      ]
+    },
+    {
+      "unit": "R1512",
+      "disposition": "requirements",
+      "requirements": [
+        "R1512"
+      ]
+    },
+    {
+      "unit": "R1513",
+      "disposition": "requirements",
+      "requirements": [
+        "R1513"
+      ]
+    },
+    {
+      "unit": "R1514",
+      "disposition": "requirements",
+      "requirements": [
+        "R1514"
+      ]
+    },
+    {
+      "unit": "R1515",
+      "disposition": "requirements",
+      "requirements": [
+        "R1515"
+      ]
+    },
+    {
+      "unit": "R1516",
+      "disposition": "requirements",
+      "requirements": [
+        "R1516"
+      ]
+    },
+    {
+      "unit": "R1517",
+      "disposition": "requirements",
+      "requirements": [
+        "R1517"
+      ]
+    },
+    {
+      "unit": "R1518",
+      "disposition": "requirements",
+      "requirements": [
+        "R1518"
+      ]
+    },
+    {
+      "unit": "C1515",
+      "disposition": "requirements",
+      "requirements": [
+        "C1515"
+      ]
+    },
+    {
+      "unit": "C1516",
+      "disposition": "requirements",
+      "requirements": [
+        "C1516"
+      ]
+    },
+    {
+      "unit": "C1517",
+      "disposition": "requirements",
+      "requirements": [
+        "C1517"
+      ]
+    },
+    {
+      "unit": "C1518",
+      "disposition": "requirements",
+      "requirements": [
+        "C1518"
+      ]
+    },
+    {
+      "unit": "C1519",
+      "disposition": "requirements",
+      "requirements": [
+        "C1519"
+      ]
+    },
+    {
+      "unit": "C1520",
+      "disposition": "requirements",
+      "requirements": [
+        "C1520"
+      ]
+    },
+    {
+      "unit": "C1521",
+      "disposition": "requirements",
+      "requirements": [
+        "C1521"
+      ]
+    },
+    {
+      "unit": "p2",
+      "disposition": "structural",
+      "rationale": "Mixed source unit split into fine units so effects, restrictions, and permissions are classified separately."
+    },
+    {
+      "unit": "p2.interface-name-effect",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.4.3.6-002"
+      ]
+    },
+    {
+      "unit": "p2.same-statement-dependence-restriction",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.4.3.6-003"
+      ]
+    },
+    {
+      "unit": "p3",
+      "disposition": "structural",
+      "rationale": "Mixed source unit split into fine units so effects, restrictions, and permissions are classified separately."
+    },
+    {
+      "unit": "p3.declaration-type-spec-effect",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.4.3.6-004"
+      ]
+    },
+    {
+      "unit": "p3.function-definition-result-restriction",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.4.3.6-005"
+      ]
+    },
+    {
+      "unit": "p4",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.4.3.6-006"
+      ]
+    },
+    {
+      "unit": "p5",
+      "disposition": "structural",
+      "rationale": "Mixed source unit split into fine units so effects, restrictions, and permissions are classified separately."
+    },
+    {
+      "unit": "p5.attribute-specification-effect",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.4.3.6-007"
+      ]
+    },
+    {
+      "unit": "p5.binding-label-effect",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.4.3.6-007"
+      ]
+    },
+    {
+      "unit": "p5.bind-without-name-permission",
+      "disposition": "permission",
+      "requirements": [
+        "S15.4.3.6-008"
+      ],
+      "rationale": "Permission/admission text split from neighbouring mandatory or effect text."
+    },
+    {
+      "unit": "p6",
+      "disposition": "structural",
+      "rationale": "Mixed source unit split into fine units so effects, restrictions, and permissions are classified separately."
+    },
+    {
+      "unit": "p6.initial-association-effect",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.4.3.6-009"
+      ]
+    },
+    {
+      "unit": "p6.explicit-save-confirmation-permission",
+      "disposition": "permission",
+      "requirements": [
+        "S15.4.3.6-010"
+      ],
+      "rationale": "Permission/admission text split from neighbouring mandatory or effect text."
+    },
+    {
+      "unit": "p7",
+      "disposition": "structural",
+      "rationale": "Mixed source unit split into fine units so effects, restrictions, and permissions are classified separately."
+    },
+    {
+      "unit": "p7.same-characteristics-restriction",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.4.3.6-011"
+      ]
+    },
+    {
+      "unit": "p7.pure-target-permission",
+      "disposition": "permission",
+      "requirements": [
+        "S15.4.3.6-012"
+      ],
+      "rationale": "Permission/admission text split from neighbouring mandatory or effect text."
+    },
+    {
+      "unit": "p7.simple-target-permission",
+      "disposition": "permission",
+      "requirements": [
+        "S15.4.3.6-013"
+      ],
+      "rationale": "Permission/admission text split from neighbouring mandatory or effect text."
+    },
+    {
+      "unit": "p7.elemental-intrinsic-target-permission",
+      "disposition": "permission",
+      "requirements": [
+        "S15.4.3.6-014"
+      ],
+      "rationale": "Permission/admission text split from neighbouring mandatory or effect text."
+    },
+    {
+      "unit": "p8",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.4.3.6-015"
+      ]
+    },
+    {
+      "unit": "p9",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.4.3.6-016"
+      ]
+    },
+    {
+      "unit": "p10",
+      "disposition": "requirements",
+      "requirements": [
+        "S15.4.3.6-017"
+      ]
+    },
+    {
+      "unit": "note-unnumbered",
+      "disposition": "informative",
+      "rationale": "The note and examples illustrate procedure declaration statements, including procedure pointer components and NOPASS, but do not add normative requirements; PASS/NOPASS procedure component rules are outside this section."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_15_4_3_6.md"
+  },
+  "review_fingerprint": "8778df2e9ed56efa4a3156896c767b5b0701a3348a69cf701915d43e388b6f00",
+  "review_rationale": "Source registration for 15.4.3.6-15.4.3.8: the procedure declaration statement, the INTRINSIC statement and the following statement (batch223). Every unit hash-verified by an independent reviewer with zero findings; R1512-R1519 and C1515-C1522 had no existing tests and carry diagnostic or syntax plans, and name resolution is observed through exact ABS/IABS sentinels. Source accounting only."
+}
