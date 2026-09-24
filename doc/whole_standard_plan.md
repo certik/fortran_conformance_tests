@@ -6129,6 +6129,11 @@ See `doc/source_audits/batch_274.json`.
 Thirty-one programs, forty-three facets, four LFortran defects. Every name that host association could resolve has its own value, so a compiler that reaches the wrong scope prints the wrong one.
 See `doc/source_audits/batch_283.json`.
 
+## Batch 284 — Positioning, file storage unit and internal file fixtures 12.3.4.2-12.4
+
+Twelve programs, twenty-one facets, one LFortran defect: after rewinding and writing, the record just written must be the last in the file, and LFortran still reads the old one behind it.
+See `doc/source_audits/batch_284.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
