@@ -6004,6 +6004,11 @@ See `doc/source_audits/batch_253.json`.
 Thirty-three units after two rounds. A name-resolution plan has to make the wrong answer visible: nineteen ways to make a name local, and each needs a value the host entity could not have produced. A construct association runs both ways, so the plan must write through each side and read through the other.
 See `doc/source_audits/batch_252.json`.
 
+## Batch 258 — Terms and definitions 3.112-3.140.2
+
+Seventy-three units in one round. A definition names a thing; the rules about that thing live elsewhere, and every one of these forty-nine terms was traced to the catalogue that already tests them.
+See `doc/source_audits/batch_258.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
