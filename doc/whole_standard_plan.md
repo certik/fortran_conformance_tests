@@ -6059,6 +6059,11 @@ See `doc/source_audits/batch_271.json`.
 Seventy-three units, two rounds, opening Clause 3 alphabetically from 'actual argument' onward; every citation was checked by script against a populated catalogue on main.
 See `doc/source_audits/batch_254.json`.
 
+## Batch 255 — Terms and definitions 3.22-3.54
+
+Seventy-two units, two rounds. Headings that own no requirements were cited as owners four times; each was replaced by the subsection that actually tests the idea.
+See `doc/source_audits/batch_255.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
