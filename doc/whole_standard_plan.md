@@ -5704,6 +5704,11 @@ See `doc/source_audits/batch_193.json`.
 Forty-three units, after two rounds, with one old trap resurfacing: the EXPONENT result-kind plan assigned the result to a variable and checked KIND of the variable — which only reports how the variable was declared. The plan now checks KIND(EXPONENT(1.0)) on the expression itself. EXECUTE_COMMAND_LINE got the mixed-obligation treatment: its status arguments ARE assigned (a requirement) even though their values are the processor's (latitude), and CMDMSG staying unchanged when no error occurs is portably observable.
 See `doc/source_audits/batch_190.json`.
 
+## Batch 186 — CEILING through CO_REDUCE
+
+Forty units, after three rounds, and a lesson in honesty about what a plan proves. CMPLX accepts BOZ arguments, but what real value a bit pattern becomes depends on the representation, so the value is not portable. The first fix checked only the result's type and kind — which would pass even if the BOZ were ignored. The facet now says exactly that: admission and type/kind are observed; conversion is not.
+See `doc/source_audits/batch_186.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
