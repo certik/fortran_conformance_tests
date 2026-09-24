@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "section": "19.6.8",
+  "review_state": "reviewed",
+  "subunits": {
+    "p1": [
+      "p1.context-01-nullify-pointer-object",
+      "p1.context-02-pointer-assignment-data-or-proc-pointer-object",
+      "p1.context-03-allocate-or-deallocate-allocate-object",
+      "p1.context-04-actual-argument-to-pointer-intent-out-inout-dummy"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S19.6.8-001",
+      "title": "Pointer association contexts are the listed syntactic contexts",
+      "source": "S19.6.8 p1.context-01-nullify-pointer-object,p1.context-02-pointer-assignment-data-or-proc-pointer-object,p1.context-03-allocate-or-deallocate-allocate-object,p1.context-04-actual-argument-to-pointer-intent-out-inout-dummy, J3/24-007, 18 December 2023, physical PDF568.",
+      "source_units": [
+        "p1.context-01-nullify-pointer-object",
+        "p1.context-02-pointer-assignment-data-or-proc-pointer-object",
+        "p1.context-03-allocate-or-deallocate-allocate-object",
+        "p1.context-04-actual-argument-to-pointer-intent-out-inout-dummy"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A pointer appearing in any listed context implies alteration of its pointer association status, supporting prohibitions from pointer, INTENT, PROTECTED, and pure-procedure rules.",
+      "facets": [
+        "nullify-pointer-object",
+        "pointer-assignment-data-or-proc-pointer-object",
+        "allocate-or-deallocate-allocate-object",
+        "actual-argument-to-pointer-intent-out-inout-dummy"
+      ],
+      "pending": {
+        "nullify-pointer-object": "Use pointer p associated with target integer t, initialize logical sentinel to .false., execute NULLIFY(p), and assert .not.ASSOCIATED(p) sets the sentinel .true.; protected/INTENT source controls change only pointer eligibility.",
+        "pointer-assignment-data-or-proc-pointer-object": "Associate integer pointer p with target t initialized 77 via p=>t, initialize sentinel -777, and assert p==77; source controls for prohibited contexts are owned by 8.5.10, 8.5.15, or 15.7.",
+        "allocate-or-deallocate-allocate-object": "Allocate integer pointer p, assign p=88, assert ASSOCIATED(p) and p==88, then DEALLOCATE(p) and assert .not.ASSOCIATED(p); allocation failure details stay with STAT rules.",
+        "actual-argument-to-pointer-intent-out-inout-dummy": "Pass pointer actual p associated with target t to pointer dummy INTENT(INOUT), reassign dummy to target u=99, and assert after return p is associated with u and p==99."
+      },
+      "oracle": "Source registration only. This section defines pointer association contexts used by 19.5.2.2, 8.5.10, 8.5.15, and 15.7 restrictions. Runtime plans observe ASSOCIATED status and exact target values only for conforming positive controls.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Nonconforming source restrictions are source-control plans only unless a separately numbered diagnostic obligation is registered.",
+      "dependencies": "Registered dependencies include already catalogued clauses 6-18 for source form, intrinsic types, declarations, arrays, execution constructs, input/output, procedure association, ISO_FORTRAN_ENV constants, and interoperability. Clause 19 sibling storage-status sections are retained as cross-references; coarray and image facets remain out of scope by user decision. Cross-reference owners opened and confirmed on main for the rules named here: doc/catalogues/equivalence_statement_8_10_1_1.json, doc/catalogues/common_statement_8_10_2_2.json, and doc/catalogues/storage_association_8_10_3.json cover EQUIVALENCE/COMMON storage-association source rules; doc/catalogues/numeric_storage_size_16_10_2_23.json, doc/catalogues/character_storage_size_16_10_2_5.json, and doc/catalogues/file_storage_size_16_10_2_11.json cover ISO_FORTRAN_ENV storage-size constants and their processor-dependent bit-count latitude; doc/catalogues/size_specifier_12_6_2_16.json and doc/catalogues/waiting_for_pending_data_transfer_12_7_1.json cover SIZE= and asynchronous wait timing; doc/catalogues/stat_specifier_9_7_4.json and doc/catalogues/errmsg_specifier_9_7_5.json cover STAT= and ERRMSG= allocation specifiers; doc/catalogues/additional_semantics_for_do_concurrent_constructs_11_1_7_5.json covers DO CONCURRENT LOCAL_INIT and related processor-latitude splits; doc/catalogues/intent_attribute_8_5_10.json, doc/catalogues/protected_attribute_8_5_15.json, and doc/catalogues/pure_procedures_15_7.json cover constraints that consume variable-definition and pointer-association contexts. No doc/catalogues/19.5.2.2 owner exists on main in this worktree, so 19.6.8 carries its own concrete ASSOCIATED-status positive plans for pointer-association contexts rather than deferring to that missing owner."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "structural",
+      "rationale": "Four pointer-association contexts are split."
+    },
+    {
+      "unit": "p1.context-01-nullify-pointer-object",
+      "disposition": "definition",
+      "requirements": [
+        "S19.6.8-001"
+      ],
+      "rationale": "Defines a syntactic pointer association context used by other restrictions."
+    },
+    {
+      "unit": "p1.context-02-pointer-assignment-data-or-proc-pointer-object",
+      "disposition": "definition",
+      "requirements": [
+        "S19.6.8-001"
+      ],
+      "rationale": "Defines a syntactic pointer association context used by other restrictions."
+    },
+    {
+      "unit": "p1.context-03-allocate-or-deallocate-allocate-object",
+      "disposition": "definition",
+      "requirements": [
+        "S19.6.8-001"
+      ],
+      "rationale": "Defines a syntactic pointer association context used by other restrictions."
+    },
+    {
+      "unit": "p1.context-04-actual-argument-to-pointer-intent-out-inout-dummy",
+      "disposition": "definition",
+      "requirements": [
+        "S19.6.8-001"
+      ],
+      "rationale": "Defines a syntactic pointer association context used by other restrictions."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_19_6_8.md"
+  },
+  "review_fingerprint": "7f295a9f0e8f2042791b87f5b869b4a094abde1ac1200df0030589b49bc7330b",
+  "review_rationale": "Source registration for 19.5.3 through 19.6.8: storage association, sequences and units, definition and undefinition events, and variable definition context and pointer association context (batch253). Every unit hash-verified by an independent reviewer across two rounds; undefinition is observed only where the standard preserves a value. Source accounting only."
+}

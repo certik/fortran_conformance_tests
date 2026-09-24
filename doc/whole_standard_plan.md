@@ -5994,6 +5994,11 @@ See `doc/source_audits/batch_249.json`.
 Thirty-six units after four rounds, three of them on one plan. A kind parameter is a compile-time property: a declaration using a kind the processor does not support is rejected before any IF can protect it. The fix was to use a kind the standard guarantees — SELECTED_INT_KIND(18) — and to select, not guard, the fixtures that need it to differ from the default.
 See `doc/source_audits/batch_251.json`.
 
+## Batch 253 — Storage association through pointer association context (19.5.3-19.6.8)
+
+Thirty-nine units after two rounds. Becoming undefined is not observable, but the exceptions to it are: an INTENT(OUT) dummy keeps its default-initialized subcomponents, and that is an exact, portable oracle hiding inside a list of events that otherwise have none.
+See `doc/source_audits/batch_253.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must

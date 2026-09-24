@@ -1,0 +1,307 @@
+{
+  "schema_version": 1,
+  "section": "19.5.3.2",
+  "review_state": "reviewed",
+  "subunits": {
+    "p2": [
+      "p2.default-one-numeric-unit",
+      "p2.double-or-complex-two-units",
+      "p2.default-character-len-units",
+      "p2.c-character-unspecified-units",
+      "p2.sequence-type-components",
+      "p2.other-type-unspecified-unit",
+      "p2.array-element-order",
+      "p2.pointer-unspecified-unit"
+    ],
+    "p1": [
+      "p1.storage-sequence-and-unit-kinds",
+      "p1.iso-fortran-env-size-relations",
+      "p1.storage-unit-size-latitude"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S19.5.3.2-001",
+      "title": "Storage sequences have counted storage units whose sizes come from ISO_FORTRAN_ENV",
+      "source": "S19.5.3.2 p1, J3/24-007, 18 December 2023, physical PDF559.",
+      "source_units": [
+        "p1.storage-sequence-and-unit-kinds",
+        "p1.iso-fortran-env-size-relations"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A storage sequence is a sequence of character, numeric, file, or unspecified storage units; its size is its number of storage units, and the numeric, character, and file storage-unit sizes are related to the ISO_FORTRAN_ENV constants.",
+      "facets": [
+        "storage-sequence-counted-units",
+        "storage-unit-kinds",
+        "iso-fortran-env-storage-size-relation"
+      ],
+      "pending": {
+        "storage-sequence-counted-units": "Use a default integer pair in COMMON as two one-unit numeric objects, write distinct sentinels 101 and 202 through a two-element view, and assert a matching two-object view observes both values in order.",
+        "storage-unit-kinds": "Use separate plans for default integer, default character length three, and stream file POS inquiry catalogues; assert only the named numeric, character, and file-storage relations, not byte addresses.",
+        "iso-fortran-env-storage-size-relation": "Initialize integer sentinels to -777 and assert STORAGE_SIZE(0)==NUMERIC_STORAGE_SIZE, STORAGE_SIZE(0.0)==NUMERIC_STORAGE_SIZE, STORAGE_SIZE(.true.)==NUMERIC_STORAGE_SIZE, and STORAGE_SIZE(\"abc\")==3*CHARACTER_STORAGE_SIZE; do not hard-code the constants."
+      },
+      "oracle": "Source registration only. Future fixtures establish a distinguished positive state before the operation, use exact single-image observations, and avoid processor-dependent storage addresses, raw bytes, IOMSG text, absolute storage-unit sizes, or values of undefined variables.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Nonconforming source restrictions are source-control plans only unless a separately numbered diagnostic obligation is registered.",
+      "dependencies": "Registered dependencies include already catalogued clauses 6-18 for source form, intrinsic types, declarations, arrays, execution constructs, input/output, procedure association, ISO_FORTRAN_ENV constants, and interoperability. Clause 19 sibling storage-status sections are retained as cross-references; coarray and image facets remain out of scope by user decision. Cross-reference owners opened and confirmed on main for the rules named here: doc/catalogues/equivalence_statement_8_10_1_1.json, doc/catalogues/common_statement_8_10_2_2.json, and doc/catalogues/storage_association_8_10_3.json cover EQUIVALENCE/COMMON storage-association source rules; doc/catalogues/numeric_storage_size_16_10_2_23.json, doc/catalogues/character_storage_size_16_10_2_5.json, and doc/catalogues/file_storage_size_16_10_2_11.json cover ISO_FORTRAN_ENV storage-size constants and their processor-dependent bit-count latitude; doc/catalogues/size_specifier_12_6_2_16.json and doc/catalogues/waiting_for_pending_data_transfer_12_7_1.json cover SIZE= and asynchronous wait timing; doc/catalogues/stat_specifier_9_7_4.json and doc/catalogues/errmsg_specifier_9_7_5.json cover STAT= and ERRMSG= allocation specifiers; doc/catalogues/additional_semantics_for_do_concurrent_constructs_11_1_7_5.json covers DO CONCURRENT LOCAL_INIT and related processor-latitude splits; doc/catalogues/intent_attribute_8_5_10.json, doc/catalogues/protected_attribute_8_5_15.json, and doc/catalogues/pure_procedures_15_7.json cover constraints that consume variable-definition and pointer-association contexts. No doc/catalogues/19.5.2.2 owner exists on main in this worktree, so 19.6.8 carries its own concrete ASSOCIATED-status positive plans for pointer-association contexts rather than deferring to that missing owner."
+    },
+    {
+      "id": "S19.5.3.2-002",
+      "title": "Default intrinsic scalar storage-unit counts are exact",
+      "source": "S19.5.3.2 p2.default-one-numeric-unit,p2.double-or-complex-two-units,p2.default-character-len-units, J3/24-007, 18 December 2023, physical PDF559.",
+      "source_units": [
+        "p2.default-one-numeric-unit",
+        "p2.double-or-complex-two-units",
+        "p2.default-character-len-units"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "In a storage association context, default integer, real, and logical nonpointer scalars occupy one numeric storage unit; double precision real and default complex occupy two contiguous numeric storage units; default character length len occupies len contiguous character storage units.",
+      "facets": [
+        "default-integer-real-logical-one-numeric-unit",
+        "double-precision-and-default-complex-two-numeric-units",
+        "default-character-length-character-units"
+      ],
+      "pending": {
+        "default-integer-real-logical-one-numeric-unit": "Initialize integer result sentinels to -777 and assert STORAGE_SIZE(0)==NUMERIC_STORAGE_SIZE, STORAGE_SIZE(0.0)==NUMERIC_STORAGE_SIZE, and STORAGE_SIZE(.false.)==NUMERIC_STORAGE_SIZE; mutate one expected relation to 2*NUMERIC_STORAGE_SIZE.",
+        "double-precision-and-default-complex-two-numeric-units": "Initialize integer result sentinels to -777 and assert STORAGE_SIZE(0.0D0)==2*NUMERIC_STORAGE_SIZE and STORAGE_SIZE((1.0,2.0))==2*NUMERIC_STORAGE_SIZE; mutate one multiplier from 2 to 1.",
+        "default-character-length-character-units": "Use character(len=5) :: ch=\"abcde\", initialize the observed size to -777, and assert STORAGE_SIZE(ch)==5*CHARACTER_STORAGE_SIZE; companion len one asserts STORAGE_SIZE(\"Z\")==CHARACTER_STORAGE_SIZE."
+      },
+      "oracle": "Source registration only. Future fixtures establish a distinguished positive state before the operation, use exact single-image observations, and avoid processor-dependent storage addresses, raw bytes, IOMSG text, absolute storage-unit sizes, or values of undefined variables.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Nonconforming source restrictions are source-control plans only unless a separately numbered diagnostic obligation is registered.",
+      "dependencies": "Registered dependencies include already catalogued clauses 6-18 for source form, intrinsic types, declarations, arrays, execution constructs, input/output, procedure association, ISO_FORTRAN_ENV constants, and interoperability. Clause 19 sibling storage-status sections are retained as cross-references; coarray and image facets remain out of scope by user decision. Cross-reference owners opened and confirmed on main for the rules named here: doc/catalogues/equivalence_statement_8_10_1_1.json, doc/catalogues/common_statement_8_10_2_2.json, and doc/catalogues/storage_association_8_10_3.json cover EQUIVALENCE/COMMON storage-association source rules; doc/catalogues/numeric_storage_size_16_10_2_23.json, doc/catalogues/character_storage_size_16_10_2_5.json, and doc/catalogues/file_storage_size_16_10_2_11.json cover ISO_FORTRAN_ENV storage-size constants and their processor-dependent bit-count latitude; doc/catalogues/size_specifier_12_6_2_16.json and doc/catalogues/waiting_for_pending_data_transfer_12_7_1.json cover SIZE= and asynchronous wait timing; doc/catalogues/stat_specifier_9_7_4.json and doc/catalogues/errmsg_specifier_9_7_5.json cover STAT= and ERRMSG= allocation specifiers; doc/catalogues/additional_semantics_for_do_concurrent_constructs_11_1_7_5.json covers DO CONCURRENT LOCAL_INIT and related processor-latitude splits; doc/catalogues/intent_attribute_8_5_10.json, doc/catalogues/protected_attribute_8_5_15.json, and doc/catalogues/pure_procedures_15_7.json cover constraints that consume variable-definition and pointer-association contexts. No doc/catalogues/19.5.2.2 owner exists on main in this worktree, so 19.6.8 carries its own concrete ASSOCIATED-status positive plans for pointer-association contexts rather than deferring to that missing owner."
+    },
+    {
+      "id": "S19.5.3.2-003",
+      "title": "C character kind, other types, and data pointers use distinct unspecified storage units",
+      "source": "S19.5.3.2 p2.c-character-unspecified-units,p2.other-type-unspecified-unit,p2.pointer-unspecified-unit, J3/24-007, 18 December 2023, physical PDF559.",
+      "source_units": [
+        "p2.c-character-unspecified-units",
+        "p2.other-type-unspecified-unit",
+        "p2.pointer-unspecified-unit"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The listed nondefault character, other-type, and pointer cases occupy unspecified storage units with distinctions by case, type parameters, rank, and CONTIGUOUS attribute as stated by the storage model.",
+      "facets": [
+        "c-character-kind-unspecified-units",
+        "other-type-case-specific-unspecified-unit",
+        "data-pointer-distinct-unspecified-unit"
+      ],
+      "pending": {
+        "c-character-kind-unspecified-units": "Guard: C_CHAR /= KIND(\"A\"). In the guarded branch declare character(kind=C_CHAR,len=3), initialize a size sentinel to -777, and assert only STORAGE_SIZE(value)>0 plus nonuse of CHARACTER_STORAGE_SIZE equality as an oracle.",
+        "other-type-case-specific-unspecified-unit": "Use two distinct derived types with the same scalar integer component and source-review their separate storage association cases; no portable runtime oracle exposes the standard\u2019s unspecified-unit identity apart from same-type value transfer already owned by other facets.",
+        "data-pointer-distinct-unspecified-unit": "Source-control plan declares integer pointer scalars and rank-one pointers with and without CONTIGUOUS; no conforming EQUIVALENCE/COMMON runtime oracle can inspect the pointer storage unit itself, so fixture evidence must not compare addresses or raw representations."
+      },
+      "oracle": "Source registration only. Future fixtures establish a distinguished positive state before the operation, use exact single-image observations, and avoid processor-dependent storage addresses, raw bytes, IOMSG text, absolute storage-unit sizes, or values of undefined variables.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Nonconforming source restrictions are source-control plans only unless a separately numbered diagnostic obligation is registered.",
+      "dependencies": "Registered dependencies include already catalogued clauses 6-18 for source form, intrinsic types, declarations, arrays, execution constructs, input/output, procedure association, ISO_FORTRAN_ENV constants, and interoperability. Clause 19 sibling storage-status sections are retained as cross-references; coarray and image facets remain out of scope by user decision. Cross-reference owners opened and confirmed on main for the rules named here: doc/catalogues/equivalence_statement_8_10_1_1.json, doc/catalogues/common_statement_8_10_2_2.json, and doc/catalogues/storage_association_8_10_3.json cover EQUIVALENCE/COMMON storage-association source rules; doc/catalogues/numeric_storage_size_16_10_2_23.json, doc/catalogues/character_storage_size_16_10_2_5.json, and doc/catalogues/file_storage_size_16_10_2_11.json cover ISO_FORTRAN_ENV storage-size constants and their processor-dependent bit-count latitude; doc/catalogues/size_specifier_12_6_2_16.json and doc/catalogues/waiting_for_pending_data_transfer_12_7_1.json cover SIZE= and asynchronous wait timing; doc/catalogues/stat_specifier_9_7_4.json and doc/catalogues/errmsg_specifier_9_7_5.json cover STAT= and ERRMSG= allocation specifiers; doc/catalogues/additional_semantics_for_do_concurrent_constructs_11_1_7_5.json covers DO CONCURRENT LOCAL_INIT and related processor-latitude splits; doc/catalogues/intent_attribute_8_5_10.json, doc/catalogues/protected_attribute_8_5_15.json, and doc/catalogues/pure_procedures_15_7.json cover constraints that consume variable-definition and pointer-association contexts. No doc/catalogues/19.5.2.2 owner exists on main in this worktree, so 19.6.8 carries its own concrete ASSOCIATED-status positive plans for pointer-association contexts rather than deferring to that missing owner."
+    },
+    {
+      "id": "S19.5.3.2-004",
+      "title": "Sequence type and array storage sequences are component and element sequences",
+      "source": "S19.5.3.2 p2.sequence-type-components,p2.array-element-order, J3/24-007, 18 December 2023, physical PDF559.",
+      "source_units": [
+        "p2.sequence-type-components",
+        "p2.array-element-order"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A nonpointer scalar object of sequence type occupies the sequence of its ultimate components; a nonpointer array occupies contiguous element storage sequences in array element order.",
+      "facets": [
+        "sequence-type-ultimate-component-order",
+        "array-contiguous-element-order"
+      ],
+      "pending": {
+        "sequence-type-ultimate-component-order": "Define a SEQUENCE type with two default integer components, place one object in COMMON, seed both components to -777, write [11,22] through a two-integer associated view, and assert object%first==11 and object%second==22.",
+        "array-contiguous-element-order": "Place integer a(2,2) in COMMON and read through a four-integer view; assign a(1,1)=11, a(2,1)=22, a(1,2)=33, a(2,2)=44 and assert the view is [11,22,33,44], exposing column-major element order."
+      },
+      "oracle": "Source registration only. Future fixtures establish a distinguished positive state before the operation, use exact single-image observations, and avoid processor-dependent storage addresses, raw bytes, IOMSG text, absolute storage-unit sizes, or values of undefined variables.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Nonconforming source restrictions are source-control plans only unless a separately numbered diagnostic obligation is registered.",
+      "dependencies": "Registered dependencies include already catalogued clauses 6-18 for source form, intrinsic types, declarations, arrays, execution constructs, input/output, procedure association, ISO_FORTRAN_ENV constants, and interoperability. Clause 19 sibling storage-status sections are retained as cross-references; coarray and image facets remain out of scope by user decision. Cross-reference owners opened and confirmed on main for the rules named here: doc/catalogues/equivalence_statement_8_10_1_1.json, doc/catalogues/common_statement_8_10_2_2.json, and doc/catalogues/storage_association_8_10_3.json cover EQUIVALENCE/COMMON storage-association source rules; doc/catalogues/numeric_storage_size_16_10_2_23.json, doc/catalogues/character_storage_size_16_10_2_5.json, and doc/catalogues/file_storage_size_16_10_2_11.json cover ISO_FORTRAN_ENV storage-size constants and their processor-dependent bit-count latitude; doc/catalogues/size_specifier_12_6_2_16.json and doc/catalogues/waiting_for_pending_data_transfer_12_7_1.json cover SIZE= and asynchronous wait timing; doc/catalogues/stat_specifier_9_7_4.json and doc/catalogues/errmsg_specifier_9_7_5.json cover STAT= and ERRMSG= allocation specifiers; doc/catalogues/additional_semantics_for_do_concurrent_constructs_11_1_7_5.json covers DO CONCURRENT LOCAL_INIT and related processor-latitude splits; doc/catalogues/intent_attribute_8_5_10.json, doc/catalogues/protected_attribute_8_5_15.json, and doc/catalogues/pure_procedures_15_7.json cover constraints that consume variable-definition and pointer-association contexts. No doc/catalogues/19.5.2.2 owner exists on main in this worktree, so 19.6.8 carries its own concrete ASSOCIATED-status positive plans for pointer-association contexts rather than deferring to that missing owner."
+    },
+    {
+      "id": "S19.5.3.2-005",
+      "title": "Composite storage sequences concatenate constituent units and ignore zero-sized constituents",
+      "source": "S19.5.3.2 p3, J3/24-007, 18 December 2023, physical PDF559.",
+      "source_units": [
+        "p3"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A sequence of storage sequences forms a storage sequence ordered by each constituent sequence in succession, with zero-sized constituents ignored.",
+      "facets": [
+        "composite-storage-sequence-successive-order",
+        "zero-sized-constituents-no-payload"
+      ],
+      "pending": {
+        "composite-storage-sequence-successive-order": "Use a SEQUENCE type containing integer first, integer pair(2), and integer last; seed all four numeric units to -777 through a COMMON integer view, assign component values [1,2,3,4], and assert the view order [1,2,3,4].",
+        "zero-sized-constituents-no-payload": "Source-review a parameterized SEQUENCE component with zero extent between two integer components and pair it with a COMMON integer view of only the nonzero units; runtime observes the two neighbor sentinels, while the zero-sized constituent contributes no value slot."
+      },
+      "oracle": "Source registration only. Future fixtures establish a distinguished positive state before the operation, use exact single-image observations, and avoid processor-dependent storage addresses, raw bytes, IOMSG text, absolute storage-unit sizes, or values of undefined variables.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Nonconforming source restrictions are source-control plans only unless a separately numbered diagnostic obligation is registered.",
+      "dependencies": "Registered dependencies include already catalogued clauses 6-18 for source form, intrinsic types, declarations, arrays, execution constructs, input/output, procedure association, ISO_FORTRAN_ENV constants, and interoperability. Clause 19 sibling storage-status sections are retained as cross-references; coarray and image facets remain out of scope by user decision. Cross-reference owners opened and confirmed on main for the rules named here: doc/catalogues/equivalence_statement_8_10_1_1.json, doc/catalogues/common_statement_8_10_2_2.json, and doc/catalogues/storage_association_8_10_3.json cover EQUIVALENCE/COMMON storage-association source rules; doc/catalogues/numeric_storage_size_16_10_2_23.json, doc/catalogues/character_storage_size_16_10_2_5.json, and doc/catalogues/file_storage_size_16_10_2_11.json cover ISO_FORTRAN_ENV storage-size constants and their processor-dependent bit-count latitude; doc/catalogues/size_specifier_12_6_2_16.json and doc/catalogues/waiting_for_pending_data_transfer_12_7_1.json cover SIZE= and asynchronous wait timing; doc/catalogues/stat_specifier_9_7_4.json and doc/catalogues/errmsg_specifier_9_7_5.json cover STAT= and ERRMSG= allocation specifiers; doc/catalogues/additional_semantics_for_do_concurrent_constructs_11_1_7_5.json covers DO CONCURRENT LOCAL_INIT and related processor-latitude splits; doc/catalogues/intent_attribute_8_5_10.json, doc/catalogues/protected_attribute_8_5_15.json, and doc/catalogues/pure_procedures_15_7.json cover constraints that consume variable-definition and pointer-association contexts. No doc/catalogues/19.5.2.2 owner exists on main in this worktree, so 19.6.8 carries its own concrete ASSOCIATED-status positive plans for pointer-association contexts rather than deferring to that missing owner."
+    },
+    {
+      "id": "S19.5.3.2-006",
+      "title": "Each common block has a storage sequence",
+      "source": "S19.5.3.2 p4, J3/24-007, 18 December 2023, physical PDF559.",
+      "source_units": [
+        "p4"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Each common block has a storage sequence as specified by the COMMON block rules.",
+      "facets": [
+        "common-block-storage-sequence-exists"
+      ],
+      "pending": {
+        "common-block-storage-sequence-exists": "Define named COMMON /packet/ a,b in writer and reader scoping units, seed reader-visible values to -777, write a=808 and b=-909 in writer, and assert the reader observes [808,-909] after the call chain."
+      },
+      "oracle": "Source registration only. Future fixtures establish a distinguished positive state before the operation, use exact single-image observations, and avoid processor-dependent storage addresses, raw bytes, IOMSG text, absolute storage-unit sizes, or values of undefined variables.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Nonconforming source restrictions are source-control plans only unless a separately numbered diagnostic obligation is registered.",
+      "dependencies": "Registered dependencies include already catalogued clauses 6-18 for source form, intrinsic types, declarations, arrays, execution constructs, input/output, procedure association, ISO_FORTRAN_ENV constants, and interoperability. Clause 19 sibling storage-status sections are retained as cross-references; coarray and image facets remain out of scope by user decision. Cross-reference owners opened and confirmed on main for the rules named here: doc/catalogues/equivalence_statement_8_10_1_1.json, doc/catalogues/common_statement_8_10_2_2.json, and doc/catalogues/storage_association_8_10_3.json cover EQUIVALENCE/COMMON storage-association source rules; doc/catalogues/numeric_storage_size_16_10_2_23.json, doc/catalogues/character_storage_size_16_10_2_5.json, and doc/catalogues/file_storage_size_16_10_2_11.json cover ISO_FORTRAN_ENV storage-size constants and their processor-dependent bit-count latitude; doc/catalogues/size_specifier_12_6_2_16.json and doc/catalogues/waiting_for_pending_data_transfer_12_7_1.json cover SIZE= and asynchronous wait timing; doc/catalogues/stat_specifier_9_7_4.json and doc/catalogues/errmsg_specifier_9_7_5.json cover STAT= and ERRMSG= allocation specifiers; doc/catalogues/additional_semantics_for_do_concurrent_constructs_11_1_7_5.json covers DO CONCURRENT LOCAL_INIT and related processor-latitude splits; doc/catalogues/intent_attribute_8_5_10.json, doc/catalogues/protected_attribute_8_5_15.json, and doc/catalogues/pure_procedures_15_7.json cover constraints that consume variable-definition and pointer-association contexts. No doc/catalogues/19.5.2.2 owner exists on main in this worktree, so 19.6.8 carries its own concrete ASSOCIATED-status positive plans for pointer-association contexts rather than deferring to that missing owner."
+    },
+    {
+      "id": "S19.5.3.2-007",
+      "title": "Storage-unit bit counts are processor-dependent latitude exposed through ISO_FORTRAN_ENV constants",
+      "source": "S19.5.3.2 p1.storage-unit-size-latitude, J3/24-007, 18 December 2023, physical PDF559.",
+      "source_units": [
+        "p1.storage-unit-size-latitude"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The standard relates numeric, character, and file storage-unit sizes to ISO_FORTRAN_ENV constants, while the actual bit counts of those storage units are processor-dependent latitude owned by the existing ISO_FORTRAN_ENV catalogues.",
+      "facets": [
+        "storage-unit-bit-counts-processor-dependent"
+      ],
+      "pending": {
+        "storage-unit-bit-counts-processor-dependent": "No portable oracle hard-codes NUMERIC_STORAGE_SIZE, CHARACTER_STORAGE_SIZE, or FILE_STORAGE_SIZE. Future fixtures assert positivity and exact relations such as STORAGE_SIZE(default integer)==NUMERIC_STORAGE_SIZE and STORAGE_SIZE(default character len 3)==3*CHARACTER_STORAGE_SIZE."
+      },
+      "oracle": "Source registration only. Future fixtures establish a distinguished positive state before the operation, use exact single-image observations, and avoid processor-dependent storage addresses, raw bytes, IOMSG text, absolute storage-unit sizes, or values of undefined variables.",
+      "oracle_limitation": "The concrete numeric bit counts for storage units are processor dependent. This packet records the permission/latitude split and creates no fixture or coverage claim.",
+      "dependencies": "Registered dependencies include already catalogued clauses 6-18 for source form, intrinsic types, declarations, arrays, execution constructs, input/output, procedure association, ISO_FORTRAN_ENV constants, and interoperability. Clause 19 sibling storage-status sections are retained as cross-references; coarray and image facets remain out of scope by user decision. Cross-reference owners opened and confirmed on main for the rules named here: doc/catalogues/equivalence_statement_8_10_1_1.json, doc/catalogues/common_statement_8_10_2_2.json, and doc/catalogues/storage_association_8_10_3.json cover EQUIVALENCE/COMMON storage-association source rules; doc/catalogues/numeric_storage_size_16_10_2_23.json, doc/catalogues/character_storage_size_16_10_2_5.json, and doc/catalogues/file_storage_size_16_10_2_11.json cover ISO_FORTRAN_ENV storage-size constants and their processor-dependent bit-count latitude; doc/catalogues/size_specifier_12_6_2_16.json and doc/catalogues/waiting_for_pending_data_transfer_12_7_1.json cover SIZE= and asynchronous wait timing; doc/catalogues/stat_specifier_9_7_4.json and doc/catalogues/errmsg_specifier_9_7_5.json cover STAT= and ERRMSG= allocation specifiers; doc/catalogues/additional_semantics_for_do_concurrent_constructs_11_1_7_5.json covers DO CONCURRENT LOCAL_INIT and related processor-latitude splits; doc/catalogues/intent_attribute_8_5_10.json, doc/catalogues/protected_attribute_8_5_15.json, and doc/catalogues/pure_procedures_15_7.json cover constraints that consume variable-definition and pointer-association contexts. No doc/catalogues/19.5.2.2 owner exists on main in this worktree, so 19.6.8 carries its own concrete ASSOCIATED-status positive plans for pointer-association contexts rather than deferring to that missing owner."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "structural",
+      "rationale": "Storage-sequence definitions, ISO_FORTRAN_ENV relations, and processor-dependent storage-unit size latitude are split."
+    },
+    {
+      "unit": "p1.storage-sequence-and-unit-kinds",
+      "disposition": "definition",
+      "requirements": [
+        "S19.5.3.2-001"
+      ],
+      "rationale": "Defines storage sequences, size as storage-unit count, and storage-unit kinds."
+    },
+    {
+      "unit": "p1.iso-fortran-env-size-relations",
+      "disposition": "requirements",
+      "requirements": [
+        "S19.5.3.2-001"
+      ],
+      "rationale": "Relates numeric, character, and file storage-unit sizes to ISO_FORTRAN_ENV constants."
+    },
+    {
+      "unit": "p1.storage-unit-size-latitude",
+      "disposition": "permission",
+      "requirements": [
+        "S19.5.3.2-007"
+      ],
+      "rationale": "Actual storage-unit bit counts are processor-dependent latitude through the named constants."
+    },
+    {
+      "unit": "p2",
+      "disposition": "structural",
+      "rationale": "Eight storage-association-context cases are split into fine units."
+    },
+    {
+      "unit": "p2.default-one-numeric-unit",
+      "disposition": "requirements",
+      "requirements": [
+        "S19.5.3.2-002"
+      ],
+      "rationale": "Exact one numeric-unit relation for default integer, real and logical scalars."
+    },
+    {
+      "unit": "p2.double-or-complex-two-units",
+      "disposition": "requirements",
+      "requirements": [
+        "S19.5.3.2-002"
+      ],
+      "rationale": "Exact two contiguous numeric-unit relation."
+    },
+    {
+      "unit": "p2.default-character-len-units",
+      "disposition": "requirements",
+      "requirements": [
+        "S19.5.3.2-002"
+      ],
+      "rationale": "Exact len character-unit relation."
+    },
+    {
+      "unit": "p2.c-character-unspecified-units",
+      "disposition": "definition",
+      "requirements": [
+        "S19.5.3.2-003"
+      ],
+      "rationale": "Defines a guarded unspecified-unit case for nondefault C character kind."
+    },
+    {
+      "unit": "p2.sequence-type-components",
+      "disposition": "requirements",
+      "requirements": [
+        "S19.5.3.2-004"
+      ],
+      "rationale": "Exact sequence type component order."
+    },
+    {
+      "unit": "p2.other-type-unspecified-unit",
+      "disposition": "definition",
+      "requirements": [
+        "S19.5.3.2-003"
+      ],
+      "rationale": "Defines case-specific unspecified units without absolute representation oracle."
+    },
+    {
+      "unit": "p2.array-element-order",
+      "disposition": "requirements",
+      "requirements": [
+        "S19.5.3.2-004"
+      ],
+      "rationale": "Exact array element order storage relation."
+    },
+    {
+      "unit": "p2.pointer-unspecified-unit",
+      "disposition": "definition",
+      "requirements": [
+        "S19.5.3.2-003"
+      ],
+      "rationale": "Defines pointer unspecified storage-unit distinctions."
+    },
+    {
+      "unit": "p3",
+      "disposition": "definition",
+      "requirements": [
+        "S19.5.3.2-005"
+      ],
+      "rationale": "Defines composition and zero-sized omission in composite storage sequences."
+    },
+    {
+      "unit": "p4",
+      "disposition": "definition",
+      "requirements": [
+        "S19.5.3.2-006"
+      ],
+      "rationale": "Defines common-block storage sequence existence."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_19_5_3_2.md"
+  },
+  "review_fingerprint": "b8cc51d4e28c21e5726d0e8bb5ee6fe8460edd7f851bec2fe2ba1e177df9cfd9",
+  "review_rationale": "Source registration for 19.5.3 through 19.6.8: storage association, sequences and units, definition and undefinition events, and variable definition context and pointer association context (batch253). Every unit hash-verified by an independent reviewer across two rounds; undefinition is observed only where the standard preserves a value. Source accounting only."
+}

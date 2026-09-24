@@ -1,0 +1,196 @@
+{
+  "schema_version": 1,
+  "section": "19.6.1",
+  "review_state": "reviewed",
+  "requirements": [
+    {
+      "id": "S19.6.1-001",
+      "title": "Variables have definition status that changes by actions",
+      "source": "S19.6.1 p1, J3/24-007, 18 December 2023, physical PDF562.",
+      "source_units": [
+        "p1"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A variable may be defined or undefined, definition status may change during execution, and becoming defined or undefined does not imply the previous status.",
+      "facets": [
+        "variable-definition-status-changes",
+        "definition-event-no-prior-undefined-implication",
+        "undefinition-event-no-prior-defined-implication"
+      ],
+      "pending": {
+        "variable-definition-status-changes": "Initialize integer x to -777, execute x=42, and assert x==42; separate source-control plans for undefined status never read an undefined value.",
+        "definition-event-no-prior-undefined-implication": "Assign x=11 followed by x=22 with x initially defined, assert x==22, and mutate by deleting the second assignment.",
+        "undefinition-event-no-prior-defined-implication": "Source-control plan invokes a procedure with an INTENT(OUT) dummy actual that need not be read before the call; observe only a default-initialized subcomponent companion, never the undefined payload."
+      },
+      "oracle": "Source registration only. Future fixtures establish a distinguished positive state before the operation, use exact single-image observations, and avoid processor-dependent storage addresses, raw bytes, IOMSG text, absolute storage-unit sizes, or values of undefined variables.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Nonconforming source restrictions are source-control plans only unless a separately numbered diagnostic obligation is registered.",
+      "dependencies": "Registered dependencies include already catalogued clauses 6-18 for source form, intrinsic types, declarations, arrays, execution constructs, input/output, procedure association, ISO_FORTRAN_ENV constants, and interoperability. Clause 19 sibling storage-status sections are retained as cross-references; coarray and image facets remain out of scope by user decision. Cross-reference owners opened and confirmed on main for the rules named here: doc/catalogues/equivalence_statement_8_10_1_1.json, doc/catalogues/common_statement_8_10_2_2.json, and doc/catalogues/storage_association_8_10_3.json cover EQUIVALENCE/COMMON storage-association source rules; doc/catalogues/numeric_storage_size_16_10_2_23.json, doc/catalogues/character_storage_size_16_10_2_5.json, and doc/catalogues/file_storage_size_16_10_2_11.json cover ISO_FORTRAN_ENV storage-size constants and their processor-dependent bit-count latitude; doc/catalogues/size_specifier_12_6_2_16.json and doc/catalogues/waiting_for_pending_data_transfer_12_7_1.json cover SIZE= and asynchronous wait timing; doc/catalogues/stat_specifier_9_7_4.json and doc/catalogues/errmsg_specifier_9_7_5.json cover STAT= and ERRMSG= allocation specifiers; doc/catalogues/additional_semantics_for_do_concurrent_constructs_11_1_7_5.json covers DO CONCURRENT LOCAL_INIT and related processor-latitude splits; doc/catalogues/intent_attribute_8_5_10.json, doc/catalogues/protected_attribute_8_5_15.json, and doc/catalogues/pure_procedures_15_7.json cover constraints that consume variable-definition and pointer-association contexts. No doc/catalogues/19.5.2.2 owner exists on main in this worktree, so 19.6.8 carries its own concrete ASSOCIATED-status positive plans for pointer-association contexts rather than deferring to that missing owner."
+    },
+    {
+      "id": "S19.6.1-002",
+      "title": "Objects have subobjects whose definition status participates in associations",
+      "source": "S19.6.1 p2, J3/24-007, 18 December 2023, physical PDF562.",
+      "source_units": [
+        "p2"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "Arrays, array sections, and derived, character, or complex variables consist of subobjects; associations may be established among variables and subobjects, and those subobjects may become defined or undefined.",
+      "facets": [
+        "array-section-subobjects-can-be-defined",
+        "derived-character-complex-subobjects",
+        "associated-subobjects-status-effects"
+      ],
+      "pending": {
+        "array-section-subobjects-can-be-defined": "Initialize integer array a(3) to [-777,-778,-779], assign a(2:3)=[20,30], and assert the exact array value [-777,20,30] without reading an unassigned element as an oracle for definedness.",
+        "derived-character-complex-subobjects": "Assign derived component, character substring, and complex part sentinels to exact values 12, \"XY\", and real part 3.0, then assert each enclosing object or component path observes the assigned values.",
+        "associated-subobjects-status-effects": "Use EQUIVALENCE between character(len=4) whole and character(len=2) prefix, seed whole=\"abcd\", assign prefix=\"WX\", and assert whole==\"WXcd\"."
+      },
+      "oracle": "Source registration only. Future fixtures establish a distinguished positive state before the operation, use exact single-image observations, and avoid processor-dependent storage addresses, raw bytes, IOMSG text, absolute storage-unit sizes, or values of undefined variables.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Nonconforming source restrictions are source-control plans only unless a separately numbered diagnostic obligation is registered.",
+      "dependencies": "Registered dependencies include already catalogued clauses 6-18 for source form, intrinsic types, declarations, arrays, execution constructs, input/output, procedure association, ISO_FORTRAN_ENV constants, and interoperability. Clause 19 sibling storage-status sections are retained as cross-references; coarray and image facets remain out of scope by user decision. Cross-reference owners opened and confirmed on main for the rules named here: doc/catalogues/equivalence_statement_8_10_1_1.json, doc/catalogues/common_statement_8_10_2_2.json, and doc/catalogues/storage_association_8_10_3.json cover EQUIVALENCE/COMMON storage-association source rules; doc/catalogues/numeric_storage_size_16_10_2_23.json, doc/catalogues/character_storage_size_16_10_2_5.json, and doc/catalogues/file_storage_size_16_10_2_11.json cover ISO_FORTRAN_ENV storage-size constants and their processor-dependent bit-count latitude; doc/catalogues/size_specifier_12_6_2_16.json and doc/catalogues/waiting_for_pending_data_transfer_12_7_1.json cover SIZE= and asynchronous wait timing; doc/catalogues/stat_specifier_9_7_4.json and doc/catalogues/errmsg_specifier_9_7_5.json cover STAT= and ERRMSG= allocation specifiers; doc/catalogues/additional_semantics_for_do_concurrent_constructs_11_1_7_5.json covers DO CONCURRENT LOCAL_INIT and related processor-latitude splits; doc/catalogues/intent_attribute_8_5_10.json, doc/catalogues/protected_attribute_8_5_15.json, and doc/catalogues/pure_procedures_15_7.json cover constraints that consume variable-definition and pointer-association contexts. No doc/catalogues/19.5.2.2 owner exists on main in this worktree, so 19.6.8 carries its own concrete ASSOCIATED-status positive plans for pointer-association contexts rather than deferring to that missing owner."
+    },
+    {
+      "id": "S19.6.1-003",
+      "title": "Array definition requires all elements to be defined",
+      "source": "S19.6.1 p3, J3/24-007, 18 December 2023, physical PDF562.",
+      "source_units": [
+        "p3"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "An array is defined exactly in the case that all of its elements are defined.",
+      "facets": [
+        "array-defined-after-all-elements-defined",
+        "array-not-observable-with-undefined-element"
+      ],
+      "pending": {
+        "array-defined-after-all-elements-defined": "Initialize all elements of integer a(3) to [-1,-2,-3], assign every element [4,5,6], pass a to an INTENT(IN) checker, and assert SUM(a)==15 exactly.",
+        "array-not-observable-with-undefined-element": "No portable oracle reads an array containing an undefined element; future negative evidence must use source-status reasoning or a companion element later made defined."
+      },
+      "oracle": "Source registration only. Future fixtures establish a distinguished positive state before the operation, use exact single-image observations, and avoid processor-dependent storage addresses, raw bytes, IOMSG text, absolute storage-unit sizes, or values of undefined variables.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Nonconforming source restrictions are source-control plans only unless a separately numbered diagnostic obligation is registered.",
+      "dependencies": "Registered dependencies include already catalogued clauses 6-18 for source form, intrinsic types, declarations, arrays, execution constructs, input/output, procedure association, ISO_FORTRAN_ENV constants, and interoperability. Clause 19 sibling storage-status sections are retained as cross-references; coarray and image facets remain out of scope by user decision. Cross-reference owners opened and confirmed on main for the rules named here: doc/catalogues/equivalence_statement_8_10_1_1.json, doc/catalogues/common_statement_8_10_2_2.json, and doc/catalogues/storage_association_8_10_3.json cover EQUIVALENCE/COMMON storage-association source rules; doc/catalogues/numeric_storage_size_16_10_2_23.json, doc/catalogues/character_storage_size_16_10_2_5.json, and doc/catalogues/file_storage_size_16_10_2_11.json cover ISO_FORTRAN_ENV storage-size constants and their processor-dependent bit-count latitude; doc/catalogues/size_specifier_12_6_2_16.json and doc/catalogues/waiting_for_pending_data_transfer_12_7_1.json cover SIZE= and asynchronous wait timing; doc/catalogues/stat_specifier_9_7_4.json and doc/catalogues/errmsg_specifier_9_7_5.json cover STAT= and ERRMSG= allocation specifiers; doc/catalogues/additional_semantics_for_do_concurrent_constructs_11_1_7_5.json covers DO CONCURRENT LOCAL_INIT and related processor-latitude splits; doc/catalogues/intent_attribute_8_5_10.json, doc/catalogues/protected_attribute_8_5_15.json, and doc/catalogues/pure_procedures_15_7.json cover constraints that consume variable-definition and pointer-association contexts. No doc/catalogues/19.5.2.2 owner exists on main in this worktree, so 19.6.8 carries its own concrete ASSOCIATED-status positive plans for pointer-association contexts rather than deferring to that missing owner."
+    },
+    {
+      "id": "S19.6.1-004",
+      "title": "Derived-type scalar definition depends on all nonpointer components",
+      "source": "S19.6.1 p4, J3/24-007, 18 December 2023, physical PDF562.",
+      "source_units": [
+        "p4"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A derived-type scalar object is defined exactly in the case that all nonpointer components are defined.",
+      "facets": [
+        "derived-scalar-defined-after-nonpointer-components-defined",
+        "pointer-components-do-not-control-object-definition"
+      ],
+      "pending": {
+        "derived-scalar-defined-after-nonpointer-components-defined": "Define a type with integer and character nonpointer components plus a pointer component; assign integer=77 and character=\"Q\", leave pointer disassociated, and assert a checker using only nonpointer components succeeds.",
+        "pointer-components-do-not-control-object-definition": "Initialize nonpointer components to sentinels 8 and \"Z\", keep the pointer component NULL(), and assert assignment of the whole object to another variable preserves the nonpointer values."
+      },
+      "oracle": "Source registration only. Future fixtures establish a distinguished positive state before the operation, use exact single-image observations, and avoid processor-dependent storage addresses, raw bytes, IOMSG text, absolute storage-unit sizes, or values of undefined variables.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Nonconforming source restrictions are source-control plans only unless a separately numbered diagnostic obligation is registered.",
+      "dependencies": "Registered dependencies include already catalogued clauses 6-18 for source form, intrinsic types, declarations, arrays, execution constructs, input/output, procedure association, ISO_FORTRAN_ENV constants, and interoperability. Clause 19 sibling storage-status sections are retained as cross-references; coarray and image facets remain out of scope by user decision. Cross-reference owners opened and confirmed on main for the rules named here: doc/catalogues/equivalence_statement_8_10_1_1.json, doc/catalogues/common_statement_8_10_2_2.json, and doc/catalogues/storage_association_8_10_3.json cover EQUIVALENCE/COMMON storage-association source rules; doc/catalogues/numeric_storage_size_16_10_2_23.json, doc/catalogues/character_storage_size_16_10_2_5.json, and doc/catalogues/file_storage_size_16_10_2_11.json cover ISO_FORTRAN_ENV storage-size constants and their processor-dependent bit-count latitude; doc/catalogues/size_specifier_12_6_2_16.json and doc/catalogues/waiting_for_pending_data_transfer_12_7_1.json cover SIZE= and asynchronous wait timing; doc/catalogues/stat_specifier_9_7_4.json and doc/catalogues/errmsg_specifier_9_7_5.json cover STAT= and ERRMSG= allocation specifiers; doc/catalogues/additional_semantics_for_do_concurrent_constructs_11_1_7_5.json covers DO CONCURRENT LOCAL_INIT and related processor-latitude splits; doc/catalogues/intent_attribute_8_5_10.json, doc/catalogues/protected_attribute_8_5_15.json, and doc/catalogues/pure_procedures_15_7.json cover constraints that consume variable-definition and pointer-association contexts. No doc/catalogues/19.5.2.2 owner exists on main in this worktree, so 19.6.8 carries its own concrete ASSOCIATED-status positive plans for pointer-association contexts rather than deferring to that missing owner."
+    },
+    {
+      "id": "S19.6.1-005",
+      "title": "Complex and character scalar definition depends on all subobjects",
+      "source": "S19.6.1 p5, J3/24-007, 18 December 2023, physical PDF562.",
+      "source_units": [
+        "p5"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "A complex or character scalar object is defined exactly in the case that all of its subobjects are defined.",
+      "facets": [
+        "complex-defined-after-both-parts-defined",
+        "character-defined-after-all-characters-defined"
+      ],
+      "pending": {
+        "complex-defined-after-both-parts-defined": "Initialize complex z to (-777.0,-778.0), assign z=CMPLX(3.0,4.0), and assert REAL(z)==3.0 and AIMAG(z)==4.0 exactly representable.",
+        "character-defined-after-all-characters-defined": "Initialize character(len=4) c=\"zzzz\", assign c(1:2)=\"AB\" then c(3:4)=\"CD\", and assert c==\"ABCD\"."
+      },
+      "oracle": "Source registration only. Future fixtures establish a distinguished positive state before the operation, use exact single-image observations, and avoid processor-dependent storage addresses, raw bytes, IOMSG text, absolute storage-unit sizes, or values of undefined variables.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Nonconforming source restrictions are source-control plans only unless a separately numbered diagnostic obligation is registered.",
+      "dependencies": "Registered dependencies include already catalogued clauses 6-18 for source form, intrinsic types, declarations, arrays, execution constructs, input/output, procedure association, ISO_FORTRAN_ENV constants, and interoperability. Clause 19 sibling storage-status sections are retained as cross-references; coarray and image facets remain out of scope by user decision. Cross-reference owners opened and confirmed on main for the rules named here: doc/catalogues/equivalence_statement_8_10_1_1.json, doc/catalogues/common_statement_8_10_2_2.json, and doc/catalogues/storage_association_8_10_3.json cover EQUIVALENCE/COMMON storage-association source rules; doc/catalogues/numeric_storage_size_16_10_2_23.json, doc/catalogues/character_storage_size_16_10_2_5.json, and doc/catalogues/file_storage_size_16_10_2_11.json cover ISO_FORTRAN_ENV storage-size constants and their processor-dependent bit-count latitude; doc/catalogues/size_specifier_12_6_2_16.json and doc/catalogues/waiting_for_pending_data_transfer_12_7_1.json cover SIZE= and asynchronous wait timing; doc/catalogues/stat_specifier_9_7_4.json and doc/catalogues/errmsg_specifier_9_7_5.json cover STAT= and ERRMSG= allocation specifiers; doc/catalogues/additional_semantics_for_do_concurrent_constructs_11_1_7_5.json covers DO CONCURRENT LOCAL_INIT and related processor-latitude splits; doc/catalogues/intent_attribute_8_5_10.json, doc/catalogues/protected_attribute_8_5_15.json, and doc/catalogues/pure_procedures_15_7.json cover constraints that consume variable-definition and pointer-association contexts. No doc/catalogues/19.5.2.2 owner exists on main in this worktree, so 19.6.8 carries its own concrete ASSOCIATED-status positive plans for pointer-association contexts rather than deferring to that missing owner."
+    },
+    {
+      "id": "S19.6.1-006",
+      "title": "Undefined objects have at least one undefined subobject",
+      "source": "S19.6.1 p6, J3/24-007, 18 December 2023, physical PDF562.",
+      "source_units": [
+        "p6"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "An undefined object has at least one undefined subobject, not necessarily all subobjects.",
+      "facets": [
+        "undefined-object-has-some-undefined-subobject"
+      ],
+      "pending": {
+        "undefined-object-has-some-undefined-subobject": "No portable runtime oracle may read an undefined subobject; future evidence uses source-status reasoning and companion assignments to show defined subobjects separately."
+      },
+      "oracle": "Source registration only. Future fixtures establish a distinguished positive state before the operation, use exact single-image observations, and avoid processor-dependent storage addresses, raw bytes, IOMSG text, absolute storage-unit sizes, or values of undefined variables.",
+      "oracle_limitation": "This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Nonconforming source restrictions are source-control plans only unless a separately numbered diagnostic obligation is registered.",
+      "dependencies": "Registered dependencies include already catalogued clauses 6-18 for source form, intrinsic types, declarations, arrays, execution constructs, input/output, procedure association, ISO_FORTRAN_ENV constants, and interoperability. Clause 19 sibling storage-status sections are retained as cross-references; coarray and image facets remain out of scope by user decision. Cross-reference owners opened and confirmed on main for the rules named here: doc/catalogues/equivalence_statement_8_10_1_1.json, doc/catalogues/common_statement_8_10_2_2.json, and doc/catalogues/storage_association_8_10_3.json cover EQUIVALENCE/COMMON storage-association source rules; doc/catalogues/numeric_storage_size_16_10_2_23.json, doc/catalogues/character_storage_size_16_10_2_5.json, and doc/catalogues/file_storage_size_16_10_2_11.json cover ISO_FORTRAN_ENV storage-size constants and their processor-dependent bit-count latitude; doc/catalogues/size_specifier_12_6_2_16.json and doc/catalogues/waiting_for_pending_data_transfer_12_7_1.json cover SIZE= and asynchronous wait timing; doc/catalogues/stat_specifier_9_7_4.json and doc/catalogues/errmsg_specifier_9_7_5.json cover STAT= and ERRMSG= allocation specifiers; doc/catalogues/additional_semantics_for_do_concurrent_constructs_11_1_7_5.json covers DO CONCURRENT LOCAL_INIT and related processor-latitude splits; doc/catalogues/intent_attribute_8_5_10.json, doc/catalogues/protected_attribute_8_5_15.json, and doc/catalogues/pure_procedures_15_7.json cover constraints that consume variable-definition and pointer-association contexts. No doc/catalogues/19.5.2.2 owner exists on main in this worktree, so 19.6.8 carries its own concrete ASSOCIATED-status positive plans for pointer-association contexts rather than deferring to that missing owner."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "definition",
+      "requirements": [
+        "S19.6.1-001"
+      ],
+      "rationale": "Defines variable definition status and prior-status nonimplications."
+    },
+    {
+      "unit": "p2",
+      "disposition": "definition",
+      "requirements": [
+        "S19.6.1-002"
+      ],
+      "rationale": "Defines subobjects and status participation."
+    },
+    {
+      "unit": "p3",
+      "disposition": "requirements",
+      "requirements": [
+        "S19.6.1-003"
+      ],
+      "rationale": "Exact array definition iff relation."
+    },
+    {
+      "unit": "p4",
+      "disposition": "requirements",
+      "requirements": [
+        "S19.6.1-004"
+      ],
+      "rationale": "Exact derived scalar definition iff relation for nonpointer components."
+    },
+    {
+      "unit": "p5",
+      "disposition": "requirements",
+      "requirements": [
+        "S19.6.1-005"
+      ],
+      "rationale": "Exact complex/character scalar definition iff relation."
+    },
+    {
+      "unit": "p6",
+      "disposition": "definition",
+      "requirements": [
+        "S19.6.1-006"
+      ],
+      "rationale": "Defines existence of an undefined subobject without identifying all subobjects."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_19_6_1.md"
+  },
+  "review_fingerprint": "03b98eb528d04853e7a7502f1fd67b28d97026f4645733559db2082a798026ff",
+  "review_rationale": "Source registration for 19.5.3 through 19.6.8: storage association, sequences and units, definition and undefinition events, and variable definition context and pointer association context (batch253). Every unit hash-verified by an independent reviewer across two rounds; undefinition is observed only where the standard preserves a value. Source accounting only."
+}
