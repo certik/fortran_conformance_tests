@@ -6174,6 +6174,11 @@ See `doc/source_audits/batch_282.json`.
 11 programs, 33 facets, accepted in one round: every way the standard lists for a pointer to become associated or disassociated, each observed and each mutated away.
 See `doc/source_audits/batch_286.json`.
 
+## Batch 290 — Attribute specification and accessibility fixtures 8.5.1-8.5.2
+
+6 programs, 16 facets of accessibility: a PRIVATE name is simply not there for a user of the module, and the test proves it by finding a different entity of the same name instead.
+See `doc/source_audits/batch_290.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
