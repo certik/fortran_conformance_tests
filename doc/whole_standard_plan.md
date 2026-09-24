@@ -6029,6 +6029,11 @@ See `doc/source_audits/batch_246.json`.
 Fifty-five units after one blocked round. The lesson was plain: a positive control that is itself non-conforming proves nothing, so every one was put through a reference compiler before it was allowed to stand.
 See `doc/source_audits/batch_248.json`.
 
+## Batch 262 — Annex C notes C.8.1.5-C.10.2.2
+
+Fifty-one informative units after one blocked round. Annex prose explains; it does not legislate. The review's only demand was that each explanation point at the catalogue where the rule it explains is actually tested.
+See `doc/source_audits/batch_262.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
