@@ -6009,6 +6009,11 @@ See `doc/source_audits/batch_252.json`.
 Seventy-three units in one round. A definition names a thing; the rules about that thing live elsewhere, and every one of these forty-nine terms was traced to the catalogue that already tests them.
 See `doc/source_audits/batch_258.json`.
 
+## Batch 259 — Terms and definitions 3.141-3.153
+
+Seventy units in one round, closing Clause 3 at its alphabetical end: types, units, variables, and the vocabulary of teams, each traced to the catalogue that already tests it.
+See `doc/source_audits/batch_259.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
