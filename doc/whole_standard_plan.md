@@ -5884,6 +5884,11 @@ See `doc/source_audits/batch_224.json`.
 Forty-nine units after two rounds. The first finding is a recurring kind: a control program meant to show what the constraint permits was itself illegal under a neighbouring paragraph. A vector-subscripted actual and a strided one are both discontiguous, but only the first makes the dummy non-definable.
 See `doc/source_audits/batch_231.json`.
 
+## Batch 229 — IEEE_SUPPORT_NAN through IEEE_SUPPORT_SUBNORMAL (17.11.59-17.11.63)
+
+Thirty-four units after two rounds. 'For all real X' sounds uncheckable until one remembers that ISO_FORTRAN_ENV lists every supported real kind; the all-kinds inquiry then becomes a finite conjunction.
+See `doc/source_audits/batch_229.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
