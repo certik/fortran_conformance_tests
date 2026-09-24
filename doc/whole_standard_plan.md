@@ -6144,6 +6144,11 @@ See `doc/source_audits/batch_272.json`.
 36 programs, 61 facets and thirteen LFortran defects: double-width shifts and end-off shifts, where the standard specifies every bit and every boundary value.
 See `doc/source_audits/batch_285.json`.
 
+## Batch 273 — Intrinsic fixtures 16.9.22-16.9.27 (ATAN2-ATANPI)
+
+15 programs, 18 facets, five rounds. The arctangents keep only what the standard fixes: which quadrant, which sign, and that ATAND with two arguments is ATAN2D.
+See `doc/source_audits/batch_273.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
