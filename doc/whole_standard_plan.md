@@ -5714,6 +5714,11 @@ See `doc/source_audits/batch_186.json`.
 Forty-five units, after two rounds. The finding was a boundary case of INDEX: a zero-length SUBSTRING matches at every position from 1 to LEN(STRING)+1, so the result is 1 forwards and LEN(STRING)+1 backwards.
 See `doc/source_audits/batch_194.json`.
 
+## Batch 191 — EXTENDS_TYPE_OF through GAMMA
+
+Forty-one units, after three rounds. The recurring subtlety was precision of claim: EXTENDS_TYPE_OF's special case covers unlimited polymorphic arguments that are *either* disassociated pointers *or* unallocated allocatables — both branches, for both arguments — and FRACTION of a NaN returns "that NaN", which a program can only confirm to be *a* NaN.
+See `doc/source_audits/batch_191.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
