@@ -5794,6 +5794,11 @@ See `doc/source_audits/batch_208.json`.
 Forty-two units after two rounds, with the now-familiar finding: a model function recorded as untestable when its model definition makes it exactly comparable to another model function. SPACING(1.0) == EPSILON(1.0) holds on every processor, however its reals are built.
 See `doc/source_audits/batch_207.json`.
 
+## Batch 211 — ISO_FORTRAN_ENV, 16.10-16.10.2.17
+
+Forty units, accepted on the first round: the first half of ISO_FORTRAN_ENV. Most of the module is named constants whose values are the processor's choice, so the work is in separating what *is* fixed (type, kind, rank, negative-value branches, relations such as a positive INTnn naming a kind of that storage size) from what is latitude.
+See `doc/source_audits/batch_211.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must

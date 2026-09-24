@@ -1,0 +1,76 @@
+{
+  "schema_version": 1,
+  "section": "16.10.2.17",
+  "subunits": {
+    "p1": [
+      "p1.assignment",
+      "p1.negative-value",
+      "p1.distinct-from-iostat-end"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S16.10.2.17-001",
+      "title": "IOSTAT_EOR is assigned for end-of-record without EOF or error and is negative and distinct",
+      "source": "S16.10.2.17 p1; J3/24-007, 18 December 2023, physical PDF474.",
+      "source_units": [
+        "p1.assignment",
+        "p1.negative-value",
+        "p1.distinct-from-iostat-end"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "IOSTAT_EOR is the default integer scalar constant assigned to an IOSTAT= variable for an end-of-record condition during input without end-of-file or error, and its value is negative and different from IOSTAT_END.",
+      "facets": [
+        "iostat-eor-assigned-on-endrecord-no-eof-error",
+        "iostat-eor-negative",
+        "iostat-eor-distinct-from-iostat-end"
+      ],
+      "pending": {
+        "iostat-eor-assigned-on-endrecord-no-eof-error": "Open a scratch sequential formatted file, write record '12', rewind it, initialize status to 777 and size to -777, execute nonadvancing READ(unit,'(A)',ADVANCE='NO',SIZE=size,IOSTAT=status) into a longer character sentinel, and assert status == IOSTAT_EOR; mutate ADVANCE to default advancing input.",
+        "iostat-eor-negative": "Import IOSTAT_EOR and assert IOSTAT_EOR < 0 with a separate nonadvancing end-of-record read assigning the same named value; mutate the comparison to > 0.",
+        "iostat-eor-distinct-from-iostat-end": "Import IOSTAT_EOR and IOSTAT_END, assert IOSTAT_EOR /= IOSTAT_END after separately observing end-of-record and end-of-file assignments; mutate the comparison to equality."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans observe only portable single-image properties fixed by 16.10.2: named-constant type/kind/rank, exact relational properties among ISO_FORTRAN_ENV constants and intrinsic inquiries, successful use of preconnected units, or exact IOSTAT named-constant assignment. Processor-dependent numeric values, module extensions, compiler option/version text, team identity, atomic/event behavior, multi-image preconnection, and message text are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Fixture authors must re-derive every pending plan from the pinned source. Existing tests and profiles mention ISO_FORTRAN_ENV, CHARACTER_KINDS, INTEGER_KINDS, COMPILER_VERSION text in a test name, and unrelated INT8-style identifiers; this packet records that coverage without rebinding it. The numeric IOSTAT_EOR value beyond negativity and distinctness from IOSTAT_END is not asserted.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, and 12 for source form, declarations, expressions, execution, program units, intrinsic assignment, and I/O harnesses. Unregistered dependencies explicitly retained: remaining 16.10.2 ISO_FORTRAN_ENV entities, 16.9 inquiry procedures such as BIT_SIZE, KIND, RANK, SIZE, LBOUND, and STORAGE_SIZE, clause 17 atomic/IEEE terms, clause 18 interoperability context, and clause 19 storage units and image/team terminology."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "structural",
+      "rationale": "Mixed end-of-record assignment effect, negativity, and distinctness are split."
+    },
+    {
+      "unit": "p1.assignment",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.10.2.17-001"
+      ],
+      "rationale": "IOSTAT_EOR assignment for end-of-record without end-of-file or error."
+    },
+    {
+      "unit": "p1.negative-value",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.10.2.17-001"
+      ],
+      "rationale": "IOSTAT_EOR value is negative."
+    },
+    {
+      "unit": "p1.distinct-from-iostat-end",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.10.2.17-001"
+      ],
+      "rationale": "IOSTAT_EOR differs from IOSTAT_END."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_16_10_2_17.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "b7666b3dfb5e1d4f5507878a9649f851be602d6c4e88a090a469b5a4b6e290fd",
+  "review_rationale": "Source registration for 16.10, 16.10.1, 16.10.2 and 16.10.2.1-16.10.2.17 of the intrinsic module ISO_FORTRAN_ENV (batch211). Every unit hash-verified by an independent reviewer with zero findings (16.10.2.7 extraction drift verified visually on pages 472-473); C1603-C1606 were pre-accounted numbered rules with no existing test coverage; atomic, event and team facets are out of scope. Source accounting only."
+}

@@ -1,0 +1,83 @@
+{
+  "schema_version": 1,
+  "section": "16.10.2.11",
+  "subunits": {
+    "p1": [
+      "p1.constant-relation",
+      "p1.size-latitude"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S16.10.2.11-001",
+      "title": "FILE_STORAGE_SIZE gives the file storage unit size in bits",
+      "source": "S16.10.2.11 p1 value relation; J3/24-007, 18 December 2023, physical PDF474.",
+      "source_units": [
+        "p1.constant-relation"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "FILE_STORAGE_SIZE is a default integer scalar constant whose value is the size in bits of the file storage unit.",
+      "facets": [
+        "file-storage-size-default-integer-scalar",
+        "file-storage-size-positive-bit-count"
+      ],
+      "pending": {
+        "file-storage-size-default-integer-scalar": "Import FILE_STORAGE_SIZE, assert KIND(FILE_STORAGE_SIZE) equals KIND(0), RANK(FILE_STORAGE_SIZE) equals 0, and assignment changes a -777 sentinel; mutate the imported name to CHARACTER_STORAGE_SIZE.",
+        "file-storage-size-positive-bit-count": "Assert FILE_STORAGE_SIZE > 0 as a bit count and mutate the comparison to >= 0 so a zero-valued bug is load-bearing."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans observe only portable single-image properties fixed by 16.10.2: named-constant type/kind/rank, exact relational properties among ISO_FORTRAN_ENV constants and intrinsic inquiries, successful use of preconnected units, or exact IOSTAT named-constant assignment. Processor-dependent numeric values, module extensions, compiler option/version text, team identity, atomic/event behavior, multi-image preconnection, and message text are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Fixture authors must re-derive every pending plan from the pinned source. Existing tests and profiles mention ISO_FORTRAN_ENV, CHARACTER_KINDS, INTEGER_KINDS, COMPILER_VERSION text in a test name, and unrelated INT8-style identifiers; this packet records that coverage without rebinding it. The exact file storage-unit bit count is processor dependent and is not asserted.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, and 12 for source form, declarations, expressions, execution, program units, intrinsic assignment, and I/O harnesses. Unregistered dependencies explicitly retained: remaining 16.10.2 ISO_FORTRAN_ENV entities, 16.9 inquiry procedures such as BIT_SIZE, KIND, RANK, SIZE, LBOUND, and STORAGE_SIZE, clause 17 atomic/IEEE terms, clause 18 interoperability context, and clause 19 storage units and image/team terminology."
+    },
+    {
+      "id": "S16.10.2.11-002",
+      "title": "The file storage unit bit count is processor dependent",
+      "source": "S16.10.2.11 p1 cross-reference to 12.3.5; J3/24-007, 18 December 2023, physical PDF474.",
+      "source_units": [
+        "p1.size-latitude"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "The standard fixes FILE_STORAGE_SIZE as the bit count of the file storage unit, while the actual file storage-unit size is processor dependent.",
+      "facets": [
+        "file-storage-unit-size-processor-dependent"
+      ],
+      "pending": {
+        "file-storage-unit-size-processor-dependent": "No portable oracle may require a particular FILE_STORAGE_SIZE numeric value; future fixtures assert positivity and avoid byte-count assumptions."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans observe only portable single-image properties fixed by 16.10.2: named-constant type/kind/rank, exact relational properties among ISO_FORTRAN_ENV constants and intrinsic inquiries, successful use of preconnected units, or exact IOSTAT named-constant assignment. Processor-dependent numeric values, module extensions, compiler option/version text, team identity, atomic/event behavior, multi-image preconnection, and message text are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Fixture authors must re-derive every pending plan from the pinned source. Existing tests and profiles mention ISO_FORTRAN_ENV, CHARACTER_KINDS, INTEGER_KINDS, COMPILER_VERSION text in a test name, and unrelated INT8-style identifiers; this packet records that coverage without rebinding it.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, and 12 for source form, declarations, expressions, execution, program units, intrinsic assignment, and I/O harnesses. Unregistered dependencies explicitly retained: remaining 16.10.2 ISO_FORTRAN_ENV entities, 16.9 inquiry procedures such as BIT_SIZE, KIND, RANK, SIZE, LBOUND, and STORAGE_SIZE, clause 17 atomic/IEEE terms, clause 18 interoperability context, and clause 19 storage units and image/team terminology."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "structural",
+      "rationale": "Mixed relation to the file storage unit and processor latitude of the actual size are split."
+    },
+    {
+      "unit": "p1.constant-relation",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.10.2.11-001"
+      ],
+      "rationale": "Required relation between FILE_STORAGE_SIZE and the file storage unit bit size."
+    },
+    {
+      "unit": "p1.size-latitude",
+      "disposition": "permission",
+      "requirements": [
+        "S16.10.2.11-002"
+      ],
+      "rationale": "Processor latitude for the actual file storage unit size."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_16_10_2_11.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "510542093715a7cfe994001367528f3fab2fc1759e04e6b6d6b17ab3e95b781e",
+  "review_rationale": "Source registration for 16.10, 16.10.1, 16.10.2 and 16.10.2.1-16.10.2.17 of the intrinsic module ISO_FORTRAN_ENV (batch211). Every unit hash-verified by an independent reviewer with zero findings (16.10.2.7 extraction drift verified visually on pages 472-473); C1603-C1606 were pre-accounted numbered rules with no existing test coverage; atomic, event and team facets are out of scope. Source accounting only."
+}

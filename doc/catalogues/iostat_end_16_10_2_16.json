@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "section": "16.10.2.16",
+  "subunits": {
+    "p1": [
+      "p1.assignment",
+      "p1.negative-value"
+    ]
+  },
+  "requirements": [
+    {
+      "id": "S16.10.2.16-001",
+      "title": "IOSTAT_END is assigned for end-of-file without error and is negative",
+      "source": "S16.10.2.16 p1; J3/24-007, 18 December 2023, physical PDF474.",
+      "source_units": [
+        "p1.assignment",
+        "p1.negative-value"
+      ],
+      "category": "effect",
+      "diagnostic_obligation": "not-required",
+      "definition": "IOSTAT_END is the default integer scalar constant assigned to an IOSTAT= variable for an end-of-file condition during input without an error condition, and its value is negative.",
+      "facets": [
+        "iostat-end-assigned-on-endfile-no-error",
+        "iostat-end-negative"
+      ],
+      "pending": {
+        "iostat-end-assigned-on-endfile-no-error": "Open a scratch sequential formatted file, write no records, rewind it, initialize status to 777, execute READ(unit,*,IOSTAT=status) into an integer sentinel, and assert status == IOSTAT_END; mutate the file to contain one record.",
+        "iostat-end-negative": "Import IOSTAT_END and assert IOSTAT_END < 0 with a separate endfile READ assigning the same named value; mutate the comparison to > 0."
+      },
+      "oracle": "Plans are pending and source-derived. Positive plans observe only portable single-image properties fixed by 16.10.2: named-constant type/kind/rank, exact relational properties among ISO_FORTRAN_ENV constants and intrinsic inquiries, successful use of preconnected units, or exact IOSTAT named-constant assignment. Processor-dependent numeric values, module extensions, compiler option/version text, team identity, atomic/event behavior, multi-image preconnection, and message text are not asserted.",
+      "oracle_limitation": "Source accounting only. This packet creates no Fortran fixture, compiler invocation, execution evidence, evidence link, fixture approval, oracle approval, or coverage claim. Fixture authors must re-derive every pending plan from the pinned source. Existing tests and profiles mention ISO_FORTRAN_ENV, CHARACTER_KINDS, INTEGER_KINDS, COMPILER_VERSION text in a test name, and unrelated INT8-style identifiers; this packet records that coverage without rebinding it. The numeric IOSTAT_END value beyond negativity is not asserted.",
+      "dependencies": "Registered dependencies: clauses 6, 7, 8, 9, 10, 11, and 12 for source form, declarations, expressions, execution, program units, intrinsic assignment, and I/O harnesses. Unregistered dependencies explicitly retained: remaining 16.10.2 ISO_FORTRAN_ENV entities, 16.9 inquiry procedures such as BIT_SIZE, KIND, RANK, SIZE, LBOUND, and STORAGE_SIZE, clause 17 atomic/IEEE terms, clause 18 interoperability context, and clause 19 storage units and image/team terminology."
+    }
+  ],
+  "accounting": [
+    {
+      "unit": "p1",
+      "disposition": "structural",
+      "rationale": "Mixed end-of-file assignment effect and negativity requirement are split."
+    },
+    {
+      "unit": "p1.assignment",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.10.2.16-001"
+      ],
+      "rationale": "IOSTAT_END assignment for end-of-file without error."
+    },
+    {
+      "unit": "p1.negative-value",
+      "disposition": "requirements",
+      "requirements": [
+        "S16.10.2.16-001"
+      ],
+      "rationale": "IOSTAT_END value is negative."
+    }
+  ],
+  "render": {
+    "path": "doc/fortran_2023_16_10_2_16.md"
+  },
+  "review_state": "reviewed",
+  "review_fingerprint": "dcacc5a60183a8376348f87b18fe8469b74070b0951cc02b789ab83764a6448d",
+  "review_rationale": "Source registration for 16.10, 16.10.1, 16.10.2 and 16.10.2.1-16.10.2.17 of the intrinsic module ISO_FORTRAN_ENV (batch211). Every unit hash-verified by an independent reviewer with zero findings (16.10.2.7 extraction drift verified visually on pages 472-473); C1603-C1606 were pre-accounted numbered rules with no existing test coverage; atomic, event and team facets are out of scope. Source accounting only."
+}
