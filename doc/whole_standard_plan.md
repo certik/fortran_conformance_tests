@@ -6239,6 +6239,11 @@ See `doc/source_audits/batch_297.json`.
 17 programs, 37 facets and six LFortran defects.
 See `doc/source_audits/batch_298.json`.
 
+## Batch 299 — OPEN specifier fixtures 12.5.6.3-12.5.6.11
+
+16 programs, 16 facets: every OPEN specifier observed through what it changes. With DELIM='QUOTE' the value A"B must be written as "A""B", and LFortran writes something else.
+See `doc/source_audits/batch_299.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
