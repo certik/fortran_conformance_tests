@@ -6329,6 +6329,11 @@ See `doc/source_audits/batch_315.json`.
 29 programs, 41 facets, accepted in one round: every dummy gets a value no other dummy has, so a mis-associated argument is caught at once.
 See `doc/source_audits/batch_316.json`.
 
+## Batch 320 — POINTER, PROTECTED, SAVE, TARGET, VALUE and VOLATILE statement fixtures 8.6.12-8.6.17
+
+23 programs, 14 facets and seven LFortran defects in the attribute statements.
+See `doc/source_audits/batch_320.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
