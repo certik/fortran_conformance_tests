@@ -6284,6 +6284,11 @@ See `doc/source_audits/batch_306.json`.
 29 programs, 39 facets and twelve LFortran defects: constraints on what a BLOCK may declare go unenforced, and labelled END BLOCK statements fail to compile.
 See `doc/source_audits/batch_307.json`.
 
+## Batch 308 — Procedure reference syntax fixtures 15.5.1
+
+30 programs, 29 facets and four LFortran defects in the syntax of a procedure reference.
+See `doc/source_audits/batch_308.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
