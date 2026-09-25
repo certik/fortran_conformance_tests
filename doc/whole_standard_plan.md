@@ -6349,6 +6349,11 @@ See `doc/source_audits/batch_318.json`.
 5 programs, 6 facets: a PRIVATE generic, operator or assignment is invisible to a user of the module, and the test proves it by finding a different one.
 See `doc/source_audits/batch_319.json`.
 
+## Batch 321 — Data-transfer control information list fixtures 12.6.2.1
+
+144 programs, 73 facets and thirty-six LFortran defects: most of the rules on what may appear in a READ or WRITE control list are not enforced.
+See `doc/source_audits/batch_321.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
