@@ -6294,6 +6294,11 @@ See `doc/source_audits/batch_308.json`.
 22 programs, 50 facets; LFortran passes five. Setting the rounding mode must change the rounding, and in LFortran it does not.
 See `doc/source_audits/batch_309.json`.
 
+## Batch 310 — ISO_C_BINDING named constant and C_ASSOCIATED fixtures 18.1-18.2.3.2
+
+21 programs, 38 facets, each crossing into C and back: what ISO_C_BINDING promises is only true if the C side agrees.
+See `doc/source_audits/batch_310.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
