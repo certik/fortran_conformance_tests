@@ -6364,6 +6364,11 @@ See `doc/source_audits/batch_322.json`.
 17 programs, 62 facets: every inquiry target starts from a value INQUIRE could never assign.
 See `doc/source_audits/batch_323.json`.
 
+## Batch 324 — Ordinary dummy variable fixtures 15.5.2.5
+
+28 programs, 22 facets: an assumed-rank dummy's lower bounds are all one, whatever the actual's were.
+See `doc/source_audits/batch_324.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
