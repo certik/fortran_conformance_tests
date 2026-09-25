@@ -6289,6 +6289,11 @@ See `doc/source_audits/batch_307.json`.
 30 programs, 29 facets and four LFortran defects in the syntax of a procedure reference.
 See `doc/source_audits/batch_308.json`.
 
+## Batch 309 — IEEE rounding, underflow, halting, status and exceptional-value fixtures 17.4-17.9
+
+22 programs, 50 facets; LFortran passes five. Setting the rounding mode must change the rounding, and in LFortran it does not.
+See `doc/source_audits/batch_309.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
