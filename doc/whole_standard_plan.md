@@ -6229,6 +6229,11 @@ See `doc/source_audits/batch_295.json`.
 5 programs, 15 facets. The review's lesson: a catalogue shared by several packets must keep every packet's account of its coverage.
 See `doc/source_audits/batch_296.json`.
 
+## Batch 297 — Intrinsic fixtures 16.9.101-16.9.106 (IANY-IEOR)
+
+19 programs, 30 facets and five LFortran defects, accepted in one round.
+See `doc/source_audits/batch_297.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
