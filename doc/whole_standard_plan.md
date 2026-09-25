@@ -6324,6 +6324,11 @@ See `doc/source_audits/batch_314.json`.
 17 programs, 23 facets and eight LFortran defects: a saved local must still hold its value on the next call.
 See `doc/source_audits/batch_315.json`.
 
+## Batch 316 — Argument correspondence and association fixtures 15.5.2.1-15.5.2.8
+
+29 programs, 41 facets, accepted in one round: every dummy gets a value no other dummy has, so a mis-associated argument is caught at once.
+See `doc/source_audits/batch_316.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
