@@ -494,8 +494,8 @@ class ParameterValueEffectFixturesTests(unittest.TestCase):
                 path.write_bytes((ROOT / relative).read_bytes())
             catalogue = json.loads((root / generated.CATALOGUE).read_text())
             owner = next(row for row in catalogue["requirements"] if row["id"] == generated.RULE)
-            owner["pending"].pop("simple-derived-values")
-            owner["positive_control_facets"] = ["simple-derived-values"]
+            owner["pending"].pop("numeric-kind-and-BOZ-oracle-gates")
+            owner["positive_control_facets"] = ["numeric-kind-and-BOZ-oracle-gates"]
             write_json(root / generated.CATALOGUE, catalogue)
             view = root / generated.VIEW
             view.write_text(view.read_text().replace(

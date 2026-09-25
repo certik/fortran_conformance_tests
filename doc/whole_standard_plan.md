@@ -6344,6 +6344,11 @@ See `doc/source_audits/batch_317.json`.
 19 programs, 34 facets. A processor may do asynchronous I/O synchronously, so the only testable promise is what holds after WAIT.
 See `doc/source_audits/batch_318.json`.
 
+## Batch 319 — Accessibility, OPTIONAL, PARAMETER and ALLOCATABLE statement fixtures 8.6.1-8.6.11
+
+5 programs, 6 facets: a PRIVATE generic, operator or assignment is invisible to a user of the module, and the test proves it by finding a different one.
+See `doc/source_audits/batch_319.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
