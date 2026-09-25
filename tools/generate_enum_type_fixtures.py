@@ -43,6 +43,14 @@ SELECTED = {
     "C7111": {"no-initializer-controls"},
     "S7.6.1-004": {"named-constant-and-existing-context-graph"},
 }
+EXTERNAL_SELECTED = {
+    "R760": {"required-bind-c", "required-comma", "c-language-designator"},
+    "R761": {"list-separator"},
+    "R762": {"scalar-initializer", "integer-initializer"},
+    "R763": {"trailing-name"},
+    "C7111": {"first-initializer", "later-list-initializer", "later-statement-initializer"},
+}
+EXTERNAL_PREFIXES = ("enum_type_7_6_1_b_",)
 
 DIAGNOSTIC_CAUSE = "constant expression"
 DIAGNOSTIC_EXCLUSIONS = (
@@ -440,14 +448,18 @@ def union_coverage():
     result = {rule: set(facets) for rule, facets in ENUM_VALUE_SELECTED.items()}
     for rule, facets in SELECTED.items():
         result.setdefault(rule, set()).update(facets)
+    for rule, facets in EXTERNAL_SELECTED.items():
+        result.setdefault(rule, set()).update(facets)
     return result
 
 
 OBSOLETE_ORACLE_PREFIXES = {
-    "R759": ("R759 unnamed enum-def admission fixtures: ",),
+    "R759": ("R759 unnamed enum-def admission fixtures: ",
+             "R759 enum_type_7_6_1_b diagnostic fixtures: "),
     "R762": ("R762 initializer syntax fixtures: ",),
 }
 OBSOLETE_LIMIT_PREFIXES = {
+    "R759": ("R759 enum_type_7_6_1_b diagnostic boundaries: ",),
     "R762": ("R762 initializer fixture boundaries: ",),
 }
 
@@ -463,6 +475,7 @@ def replace_owned(text, prefix, replacement, obsolete=()):
 def synced_catalogue(catalogue):
     updated = copy.deepcopy(catalogue)
     coverage = union_coverage()
+    import generate_enum_type_7_6_1_b_fixtures as enum_type_b
     for requirement in updated["requirements"]:
         facets = coverage.get(requirement["id"], set())
         for facet in facets:
@@ -470,15 +483,21 @@ def synced_catalogue(catalogue):
         expected_pending = set(requirement["facets"]) - facets
         if set(requirement.get("pending", {})) != expected_pending:
             raise ValueError("enum_type shared pending partition mismatch for " + requirement["id"])
-        if requirement["id"] not in SELECTED:
-            continue
-        rule = requirement["id"]
-        requirement["oracle"] = replace_owned(
-            requirement.get("oracle", ""), ORACLE_PREFIXES[rule], ORACLES[rule],
-            OBSOLETE_ORACLE_PREFIXES.get(rule, ()))
-        requirement["oracle_limitation"] = replace_owned(
-            requirement.get("oracle_limitation", ""), LIMIT_PREFIXES[rule], LIMITATIONS[rule],
-            OBSOLETE_LIMIT_PREFIXES.get(rule, ()))
+        if requirement["id"] in SELECTED:
+            rule = requirement["id"]
+            requirement["oracle"] = replace_owned(
+                requirement.get("oracle", ""), ORACLE_PREFIXES[rule], ORACLES[rule],
+                OBSOLETE_ORACLE_PREFIXES.get(rule, ()))
+            requirement["oracle_limitation"] = replace_owned(
+                requirement.get("oracle_limitation", ""), LIMIT_PREFIXES[rule], LIMITATIONS[rule],
+                OBSOLETE_LIMIT_PREFIXES.get(rule, ()))
+        if requirement["id"] in enum_type_b.SELECTED:
+            rule = requirement["id"]
+            requirement["oracle"] = replace_owned(
+                requirement.get("oracle", ""), enum_type_b.ORACLE_PREFIXES[rule], enum_type_b.ORACLES[rule])
+            requirement["oracle_limitation"] = replace_owned(
+                requirement.get("oracle_limitation", ""), enum_type_b.LIMIT_PREFIXES[rule],
+                enum_type_b.LIMITATIONS[rule])
     return updated
 
 
@@ -520,6 +539,11 @@ def render_view(catalogue, root=ROOT):
         "source-use links remain outside this packet; only the R762 nonconstant-initializer\n"
         "diagnostic is newly executable.")
     before = before.replace(
+        "source-use links remain outside this packet; only the R762 nonconstant-initializer\n"
+        "diagnostic is newly executable.",
+        "source-use links remain outside this packet; enum_type diagnostics now add the R762\n"
+        "nonconstant-initializer pair and ten unnamed-header/list/initializer controls.")
+    before = before.replace(
         "All cases remain run-phase on implementation failure. Frozen LF411, GNU actual\n"
         "f2023 and Flang actual f2018 observations retain their original inputs, compiler\n"
         "identities, ordered compile/link/run traces and source_root. No f2018 observation\n"
@@ -528,21 +552,34 @@ def render_view(catalogue, root=ROOT):
         "positive run/compile controls and one R762 compile diagnostic whose GNU f2023\n"
         "acceptance and frozen-LFortran ICE are reported separately. No f2018 observation\n"
         "is relabelled as f2023 and no compiler consensus supplies an expected value.")
+    before = before.replace(
+        "Enum_value cases remain run-phase on implementation failure. Enum_type adds\n"
+        "positive run/compile controls and one R762 compile diagnostic whose GNU f2023\n"
+        "acceptance and frozen-LFortran ICE are reported separately. No f2018 observation\n"
+        "is relabelled as f2023 and no compiler consensus supplies an expected value.",
+        "Enum_value cases remain run-phase on implementation failure. Enum_type generators add\n"
+        "positive run/compile controls and compile diagnostics whose GNU f2023 acceptance and\n"
+        "frozen-LFortran divergences are reported separately. No f2018 observation is relabelled\n"
+        "as f2023 and no compiler consensus supplies an expected value.")
     before = re.sub(
         r"\*\*[^\n]*\*\* represent \*\*\d+ of64 facets\*\*; \*\*\d+ remain pending\*\*\."
         r"(?: There are no new diagnostic or compile-only cases\.)?",
-        f"**Nine run fixtures, one compile control and one diagnostic fixture** represent **{represented} of64 facets**; "
+        f"**Seven run fixtures, eleven compile controls and eleven diagnostic fixtures** represent **{represented} of64 facets**; "
         f"**{pending} remain pending**.",
         before,
         count=1)
     summary = (
         SUMMARY_BEGIN + "\n"
-        "## Unnamed ENUM syntax, constants and one R762 diagnostic\n\n"
+        "## Unnamed ENUM syntax, constants and diagnostics\n\n"
         "Seven generated `enum_type_` runtime fixtures use distinct sources/assertions for positive "
         "7.6.1 coverage, and one compile-control/diagnostic pair checks the R762 nonconstant "
         "initializer violation. The R762 invalid source differs from its conforming control only by "
         "removing `PARAMETER` from `integer, parameter :: seed = 4`; the enumerator statement still "
         "has `::` and an integer scalar initializer, so the isolated property is constancy.\n\n"
+        "The separate `enum_type_7_6_1_b_` diagnostics add ten one-property compile-control/"
+        "invalid pairs for remaining unnamed ENUM,BIND(C) syntax facets. GNU Fortran 16.1 accepts "
+        "unnamed `ENUM, BIND(C)` but rejects named enum-type syntax (`ENUM, BIND(C) :: name`) and "
+        "all probed `ENUMERATION TYPE` forms, so named type/constructor facets remain pending.\n\n"
         "The sources use only C-interoperable unnamed `ENUM, BIND(C)`, not 7.6.2 `ENUMERATION TYPE`, "
         "named enum types, enum constructors, BOZ operands, C companions, representation probes, or "
         "`KIND(enumerator)==C_INT`. The pinned text makes C_INT an evaluation route, not the required "
@@ -572,10 +609,12 @@ def render_view(catalogue, root=ROOT):
     tail += (
         "## Reproduction and separate gates\n\n"
         "`python3 -B tools/generate_enum_type_fixtures.py --check` and "
+        "`python3 -B tools/generate_enum_type_7_6_1_b_fixtures.py --check`, plus "
         "`python3 -B tools/generate_enum_value_fixtures.py --check` verify exact bytes and the "
         "shared 7.6.1 generated view. The enum_type mutation runner covers only distinct runtime "
-        "parents; the R762 diagnostic is checked by the compile-diagnostic runner. Named enum types, "
-        "constructors, BOZ, C companions and representation evidence remain pending.\n")
+        "parents; compile diagnostics are checked by the compile-diagnostic runner. Named enum types, "
+        "constructors, BOZ, C companions and representation evidence remain pending because the "
+        "reference rejects the named-type syntax needed to qualify them.\n")
     return (before + begin + "\n\n"
             + "\n".join(render_requirement(row) for row in catalogue["requirements"])
             + "\n" + end + tail)
@@ -591,7 +630,8 @@ def generate(root=ROOT, check=False, sync_catalogue=False):
     if check:
         stale = [path.relative_to(root).as_posix() for path, raw in files.items()
                  if not path.is_file() or path.read_bytes() != raw]
-        actual = {path for path in (root / "tests/fixtures").glob(PREFIX + "*/*") if path.is_file()}
+        actual = {path for path in (root / "tests/fixtures").glob(PREFIX + "*/*") if path.is_file()
+                  if not any(path.parent.name.startswith(prefix) for prefix in EXTERNAL_PREFIXES)}
         stale += [path.relative_to(root).as_posix() for path in sorted(actual - set(files))]
         if catalogue != updated:
             stale.append(CATALOGUE)

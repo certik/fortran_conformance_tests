@@ -181,9 +181,7 @@ def catalogue_review_status(catalogue):
 def synced_catalogue(catalogue, specs):
     import generate_enum_type_fixtures as enum_type
     result = copy.deepcopy(catalogue)
-    shared_coverage = {rule: set(facets) for rule, facets in enum_type.SELECTED.items()}
-    for rule, facets in ELIGIBLE.items():
-        shared_coverage.setdefault(rule, set()).update(facets)
+    shared_coverage = enum_type.union_coverage()
     for requirement in result["requirements"]:
         rows = [s for s in specs.values() if s["rule"] == requirement["id"]]
         coverage = {f for row in rows for f in row["facets"]}

@@ -6304,6 +6304,11 @@ See `doc/source_audits/batch_310.json`.
 49 programs, 49 facets: when the list outlives the format, control reverts to the last top-level parenthesis and starts a new record.
 See `doc/source_audits/batch_311.json`.
 
+## Batch 312 — Interoperable enumeration syntax fixtures 7.6.1
+
+20 programs, 10 facets, accepted in one round.
+See `doc/source_audits/batch_312.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must

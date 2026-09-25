@@ -56,7 +56,8 @@ class EnumTypeFixturesTests(unittest.TestCase):
                 self.assertEqual(case.fixture.expectation.stdout, [spec["completion"]])
 
     def test_generated_files_are_exact_ascii_and_prefix_isolated(self):
-        actual = {path for path in (ROOT / "tests/fixtures").glob(generated.PREFIX + "*/*") if path.is_file()}
+        actual = {path for path in (ROOT / "tests/fixtures").glob(generated.PREFIX + "*/*") if path.is_file()
+                  if not any(path.parent.name.startswith(prefix) for prefix in generated.EXTERNAL_PREFIXES)}
         self.assertEqual(actual, set(self.files))
         self.assertEqual(len(actual), 18)
         for path, raw in self.files.items():
@@ -121,9 +122,9 @@ class EnumTypeFixturesTests(unittest.TestCase):
             self.assertIn(generated.ORACLE_PREFIXES[rule], by_rule[rule]["oracle"])
             self.assertIn(generated.LIMIT_PREFIXES[rule], by_rule[rule]["oracle_limitation"])
         self.assertNotIn("constant-initializer", by_rule["R762"]["pending"])
-        self.assertIn("integer-initializer", by_rule["R762"]["pending"])
+        self.assertIn("constant-and-name-consumer-graph", by_rule["R762"]["pending"])
         broken = copy.deepcopy(self.catalogue)
-        next(row for row in broken["requirements"] if row["id"] == "R760")["pending"].pop("required-bind-c")
+        next(row for row in broken["requirements"] if row["id"] == "R760")["pending"].pop("named-bind-c")
         with self.assertRaisesRegex(ValueError, "shared pending partition mismatch"):
             generated.synced_catalogue(broken)
         with self.assertRaisesRegex(ValueError, "shared pending partition mismatch"):
@@ -134,8 +135,8 @@ class EnumTypeFixturesTests(unittest.TestCase):
         self.assertEqual(view, generated.render_view(self.catalogue))
         self.assertIn(generated.SUMMARY_BEGIN, view)
         self.assertIn("one compile-control/diagnostic pair checks the R762 nonconstant", view)
-        self.assertIn("**Nine run fixtures, one compile control and one diagnostic fixture** represent **19 of64 facets**; "
-                      "**45 remain pending**.", view)
+        self.assertIn("**Seven run fixtures, eleven compile controls and eleven diagnostic fixtures** represent **29 of64 facets**; "
+                      "**35 remain pending**.", view)
         self.assertEqual(view.count("<!-- BEGIN GENERATED 7.6.1 -->"), 1)
         self.assertEqual(view.count("<!-- END GENERATED 7.6.1 -->"), 1)
 
