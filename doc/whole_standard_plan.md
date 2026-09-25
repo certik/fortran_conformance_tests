@@ -6269,6 +6269,11 @@ See `doc/source_audits/batch_302.json`.
 42 programs, 35 facets and eight LFortran defects: six interface-block constraints are silently accepted and two crash the compiler.
 See `doc/source_audits/batch_305.json`.
 
+## Batch 304 — Level-5 expression, general form and precedence fixtures 10.1.2.8-10.1.3
+
+40 programs, 64 facets: the precedence table, observed one relation at a time by expressions whose value changes if the compiler groups them differently.
+See `doc/source_audits/batch_304.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
