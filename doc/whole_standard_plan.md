@@ -6319,6 +6319,11 @@ See `doc/source_audits/batch_313.json`.
 11 programs, 20 facets: an assumed-shape dummy starts at 1 unless told otherwise, and an empty dimension always reports lower bound 1.
 See `doc/source_audits/batch_314.json`.
 
+## Batch 315 — POINTER and SAVE attribute fixtures 8.5.14, 8.5.16
+
+17 programs, 23 facets and eight LFortran defects: a saved local must still hold its value on the next call.
+See `doc/source_audits/batch_315.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
