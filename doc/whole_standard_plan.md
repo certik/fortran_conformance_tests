@@ -6249,6 +6249,11 @@ See `doc/source_audits/batch_299.json`.
 20 programs, 32 facets, accepted in one round: what may be named, and what may be defined.
 See `doc/source_audits/batch_300.json`.
 
+## Batch 303 — OPEN specifier fixtures 12.5.6.12-12.5.6.18
+
+25 programs, 25 facets, accepted in one round.
+See `doc/source_audits/batch_303.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
