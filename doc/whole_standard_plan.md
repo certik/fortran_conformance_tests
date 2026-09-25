@@ -6254,6 +6254,11 @@ See `doc/source_audits/batch_300.json`.
 25 programs, 25 facets, accepted in one round.
 See `doc/source_audits/batch_303.json`.
 
+## Batch 301 — Intrinsic fixtures 16.9.114-16.9.119 (ISHFTC-LBOUND)
+
+22 programs, 44 facets, three LFortran defects with assumed-rank arguments.
+See `doc/source_audits/batch_301.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
