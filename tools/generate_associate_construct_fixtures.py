@@ -54,25 +54,20 @@ FACETS_BY_RULE = {
     "S11.1.3.3-005": ["definable-selector-assignment-control"],
 }
 REMAINING_PENDING = {
-    "S11.1.3.2-001": {"block-executes-after-selector-evaluation"},
+    "S11.1.3.2-001": set(),
     "S11.1.3.2-002": set(),
     "S11.1.3.2-003": {
-        "declared-type-control",
         "kind-type-parameter-source",
-        "polymorphic-selector-control",
         "nonpolymorphic-selector-control",
     },
     "S11.1.3.2-004": {"attribute-ownership-boundary"},
-    "S11.1.3.2-005": {"internal-end-associate-branch-control", "outside-end-associate-branch-rejected"},
+    "S11.1.3.2-005": {"outside-end-associate-branch-rejected"},
     "S11.1.3.3-001": {"no-allocatable-attribute-source", "no-pointer-attribute-source"},
     "S11.1.3.3-002": {"same-corank-as-selector-source", "coarray-cobounds-same-source"},
     "S11.1.3.3-003": {"change-team-associating-entity-coarray-source", "codimension-decl-corank-cobounds-source"},
     "S11.1.3.3-004": {
         "asynchronous-volatile-variable-selector",
-        "dynamic-type-and-parameters",
         "no-optional-attribute-source",
-        "optional-selector-present-control",
-        "contiguity-iff-selector",
     },
     "S11.1.3.3-005": {
         "nondefinable-selector-definition-rejected",
@@ -150,9 +145,8 @@ ORACLES = {
 LIMITATIONS = {
     "S11.1.3.2-001": LIMIT_PREFIXES["S11.1.3.2-001"] + (
         "only expression-selector-value-before-block and variable-designator-subexpressions-before-block "
-        "are represented. block-executes-after-selector-evaluation remains pending because this packet "
-        "does not try to separate ordinary block execution from the stronger association/assignment effects "
-        "covered elsewhere. The programs do not observe evaluation order among multiple selectors, function "
+        "are represented by this generator. block-executes-after-selector-evaluation is supplied by the "
+        "associate_blocks_11_1 generator. The programs do not observe evaluation order among multiple selectors, function "
         "side effects, call counts, undefined values, diagnostics, addresses or temporary storage."
     ),
     "S11.1.3.2-002": LIMIT_PREFIXES["S11.1.3.2-002"] + (
@@ -162,10 +156,11 @@ LIMITATIONS = {
         "diagnostic claim about using an associate name after the construct."
     ),
     "S11.1.3.2-003": LIMIT_PREFIXES["S11.1.3.2-003"] + (
-        "only character-length-type-parameter is represented. declared-type-control remains a source-usage "
-        "or type-operation plan, kind-type-parameter-source remains pending because this packet does not "
-        "assume a non-default kind exists on every processor, and both polymorphism facets remain pending "
-        "until their SELECT TYPE/dynamic-type dependencies are fixture-ready."
+        "only character-length-type-parameter is represented by this generator. declared-type-control and "
+        "polymorphic-selector-control are supplied by the associate_blocks_11_1 generator. "
+        "kind-type-parameter-source remains pending because this packet does not assume a non-default kind "
+        "exists on every processor, and nonpolymorphic-selector-control remains pending until a distinct "
+        "consumer rule requires nonpolymorphism."
     ),
     "S11.1.3.3-001": LIMIT_PREFIXES["S11.1.3.3-001"] + (
         "only same-rank-as-selector, nondefault-lower-bound and upper-bound-from-extent are represented. "
@@ -439,9 +434,10 @@ def render_view(section, catalogue, root=ROOT):
             "type parameter of a substring selector. Each source has exactly one `! rule:` and one "
             "`! covers:` header. Expected values are literal integers derived from 11.1.3.2, with `LEN` "
             "used explicitly for the character-length fixture.\n\n"
-            "`block-executes-after-selector-evaluation`, attribute ownership, branch-control, kind, "
-            "declared-type and polymorphism facets remain pending for the reasons recorded in the owning "
-            "catalogue entries.\n"
+            "The `associate_blocks_11_1` generator supplies the remaining selector/block sequencing, "
+            "declared-type, polymorphic-selector and internal end-branch controls. Attribute ownership, "
+            "outside-branch-control, kind and nonpolymorphism facets remain pending for the reasons recorded "
+            "in the owning catalogue entries.\n"
             + SUMMARY_END)
     else:
         summary = (
@@ -453,8 +449,9 @@ def render_view(section, catalogue, root=ROOT):
             "control catches an always-lower-bound-one implementation. Assignment through an associate "
             "name for a definable section is observed by reading the original selector afterwards.\n\n"
             "ALLOCATABLE/POINTER attribute negatives, coarray/corank rules, CHANGE TEAM, ASYNCHRONOUS, "
-            "VOLATILE, dynamic type, OPTIONAL, contiguity and nondefinable-context negatives remain "
-            "pending because they need source/diagnostic contexts or unregistered Clause 15/19 owners.\n"
+            "VOLATILE, no-OPTIONAL and nondefinable-context negatives remain pending because they need "
+            "source/diagnostic contexts or unregistered Clause 15/19 owners. Dynamic type, optional-present "
+            "and contiguity observations are supplied by the `associate_blocks_11_1` generator.\n"
             + SUMMARY_END)
     if SUMMARY_BEGIN in before or SUMMARY_END in before:
         if before.count(SUMMARY_BEGIN) != 1 or before.count(SUMMARY_END) != 1:

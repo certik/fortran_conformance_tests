@@ -6274,6 +6274,11 @@ See `doc/source_audits/batch_305.json`.
 40 programs, 64 facets: the precedence table, observed one relation at a time by expressions whose value changes if the compiler groups them differently.
 See `doc/source_audits/batch_304.json`.
 
+## Batch 306 — Block and ASSOCIATE construct fixtures 11.1.1-11.1.3.3
+
+29 programs, 42 facets and six LFortran defects: an associate name is another name for its selector, in both directions, and its selector is evaluated once, before the block.
+See `doc/source_audits/batch_306.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must

@@ -217,8 +217,10 @@ class AssociateConstructFixturesTests(unittest.TestCase):
             view = generated.render_view(section, synced)
             self.assertIn(generated.SUMMARY_BEGIN, view)
             self.assertIn(generated.SUMMARY_END, view)
-        self.assertIn("block-executes-after-selector-evaluation",
-                      self.registry.requirements["S11.1.3.2-001"]["pending"])
+        self.assertNotIn("block-executes-after-selector-evaluation",
+                         self.registry.requirements["S11.1.3.2-001"].get("pending", {}))
+        self.assertIn("outside-end-associate-branch-rejected",
+                      self.registry.requirements["S11.1.3.2-005"]["pending"])
         self.assertIn("nondefinable-selector-definition-rejected",
                       self.registry.requirements["S11.1.3.3-005"]["pending"])
 
