@@ -6299,6 +6299,11 @@ See `doc/source_audits/batch_309.json`.
 21 programs, 38 facets, each crossing into C and back: what ISO_C_BINDING promises is only true if the C side agrees.
 See `doc/source_audits/batch_310.json`.
 
+## Batch 311 — FORMAT statement, format item and list/format interaction fixtures 13.2-13.4
+
+49 programs, 49 facets: when the list outlives the format, control reverts to the last top-level parenthesis and starts a new record.
+See `doc/source_audits/batch_311.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
