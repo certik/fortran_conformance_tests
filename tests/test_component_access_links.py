@@ -1,11 +1,11 @@
 from collections import Counter
 from pathlib import Path
+import sys
 import unittest
 
-import run_tests as runner
-
-
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "tests"))
+import run_tests as runner
 
 
 class ComponentAccessLinksTests(unittest.TestCase):

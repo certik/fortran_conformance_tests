@@ -1,17 +1,19 @@
 """Runtime fixtures for Fortran 2023 structure constructors."""
 
 import json
+import copy
 from dataclasses import replace
 from pathlib import Path
 import re
 import sys
 import unittest
 
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "tests"))
 import run_tests as runner
 from suite_data import Registry, SuiteError, validate_case_requirement
 
 
-ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 import generate_structure_constructor_effect_fixtures as generated
 
@@ -151,6 +153,11 @@ class StructureConstructorEffectFixturesTests(unittest.TestCase):
             self.assertIn(generated.ORACLE_PREFIXES[rule], by_rule[rule]["oracle"])
             self.assertIn(generated.LIMIT_PREFIXES[rule], by_rule[rule]["oracle_limitation"])
         self.assertEqual(generated.synced_catalogue(catalogue), catalogue)
+        corrupted = copy.deepcopy(catalogue)
+        by_rule = {row["id"]: row for row in corrupted["requirements"]}
+        by_rule["R756"]["pending"].pop("required-parentheses")
+        with self.assertRaisesRegex(ValueError, "pending partition mismatch: R756"):
+            generated.synced_catalogue(corrupted)
         view = generated.render_view(catalogue)
         self.assertIn(generated.SUMMARY_BEGIN, view)
         self.assertIn("Fifteen complete run/effect/f2023 programs", view)

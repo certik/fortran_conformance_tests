@@ -3,6 +3,7 @@
 import argparse
 import json
 from pathlib import Path
+import re
 import sys
 
 from generate_derived_parameter_fixtures import Corpus as ParameterCorpus
@@ -332,22 +333,32 @@ def catalogue_review_status(catalogue):
 
 def synced_catalogue(catalogue, specs):
     result = json.loads(json.dumps(catalogue))
+    import generate_structure_constructor_effect_fixtures as runtime_generated
+    import generate_structure_constructor_7_5_10_b_fixtures as batch317_generated
+    other_represented = {}
+    for family in (runtime_generated, batch317_generated):
+        for rule, facets in family.FACETS_BY_RULE.items():
+            other_represented.setdefault(rule, set()).update(facets)
     for requirement in result["requirements"]:
         owned = [s for s in specs.values() if s["rule"] == requirement["id"]]
         represented = {f for s in owned for f in s["facets"]}
         for facet in represented:
             requirement["pending"].pop(facet, None)
         if set(requirement["pending"]) != (
-                set(requirement["facets"]) - represented - EXISTING.get(requirement["id"], set())):
+                set(requirement["facets"]) - represented - EXISTING.get(requirement["id"], set())
+                - other_represented.get(requirement["id"], set())):
             raise ValueError("constructor pending partition mismatch: " + requirement["id"])
         if owned:
-            old = requirement["oracle"].split("\n\nCompile-only declaration packet:", 1)[0]
+            old, sep, rest = requirement["oracle"].partition("\n\nCompile-only declaration packet:")
+            suffix = ""
+            if sep and "\n\n" in rest:
+                suffix = "\n\n" + rest.split("\n\n", 1)[1]
             requirement["oracle"] = old + (
                 f"\n\nCompile-only declaration packet: {len(owned)} cases represent {len(represented)} "
                 "selected facets. Invalid cases require located, subject/role/property-specific reporting; "
                 "normal zero/nonzero compiler statuses do not replace that obligation. Repairs and valid "
                 "admissions are positive controls. No runtime effect, new policy or unregistered source-use "
-                "credit is inferred. All other original pending plans and qualifications are retained.")
+                "credit is inferred. All other original pending plans and qualifications are retained.") + suffix
     return result
 
 
@@ -455,19 +466,36 @@ def render_view(catalogue, specs, repairs):
     sys.path.insert(0, str(ROOT / "tests"))
     from suite_data import render_requirement
     pending = sum(len(r["pending"]) for r in catalogue["requirements"])
-    out = (
-        "# Fortran 2023: 7.5.10 Construction of derived-type values\n\n"
-        f"**Catalogue source review: {catalogue_review_status(catalogue)}.** "
-        "Case and evidence adjudications are separate content-bound records.\n\n"
-        f"The bounded declaration corpus has **{len(specs)} new compile-only cases**: "
-        f"**{len(repairs)} diagnostics** and **{len(specs)-len(repairs)} positive controls**. "
-        f"Together with the **four unchanged C7107 cases**, **{98-pending} of98 facets "
-        f"are represented; {pending} remain pending**.\n\n" + DOCUMENT
-        + "\n## Preserved source accounting\n\n")
+    view_path = ROOT / VIEW
+    if view_path.exists() and "## Preserved source accounting" in view_path.read_text():
+        current = view_path.read_text()
+        definitions_intro = ""
+        if "## Definitions\n\n" in current and "<!-- BEGIN GENERATED 7.5.10 -->" in current:
+            definitions_intro = current.split("## Definitions\n\n", 1)[1].split(
+                "<!-- BEGIN GENERATED 7.5.10 -->", 1)[0]
+        prefix = current.split("## Preserved source accounting", 1)[0]
+        prefix = re.sub(r"\*\*Catalogue source review: [^.]+\.\*\*",
+                        f"**Catalogue source review: {catalogue_review_status(catalogue)}.**",
+                        prefix, count=1)
+        prefix = re.sub(r"\*\*\d+ of98 facets are represented; \d+ remain pending\*\*",
+                        f"**{98-pending} of98 facets are represented; {pending} remain pending**",
+                        prefix, count=1)
+        out = prefix + "## Preserved source accounting\n\n"
+    else:
+        definitions_intro = ""
+        out = (
+            "# Fortran 2023: 7.5.10 Construction of derived-type values\n\n"
+            f"**Catalogue source review: {catalogue_review_status(catalogue)}.** "
+            "Case and evidence adjudications are separate content-bound records.\n\n"
+            f"The bounded declaration corpus has **{len(specs)} new compile-only cases**: "
+            f"**{len(repairs)} diagnostics** and **{len(specs)-len(repairs)} positive controls**. "
+            f"Together with the **four unchanged C7107 cases**, **{98-pending} of98 facets "
+            f"are represented; {pending} remain pending**.\n\n" + DOCUMENT
+            + "\n## Preserved source accounting\n\n")
     for row in catalogue["accounting"]:
         detail = ", ".join(row.get("requirements", [])) or row["rationale"]
         out += f"* `{row['unit']}`: **{row['disposition']}** - {detail}\n"
-    out += ("\n## Definitions\n\n<!-- BEGIN GENERATED 7.5.10 -->\n\n"
+    out += ("\n## Definitions\n\n" + definitions_intro + "<!-- BEGIN GENERATED 7.5.10 -->\n\n"
             + "\n".join(render_requirement(r) for r in catalogue["requirements"])
             + "\n<!-- END GENERATED 7.5.10 -->\n\n## Exact compile-only cases and repairs\n\n")
     for name, spec in specs.items():

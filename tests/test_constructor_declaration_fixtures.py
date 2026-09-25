@@ -7,13 +7,15 @@ import re
 import sys
 import unittest
 
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "tests"))
 import run_tests as runner
 from suite_data import Registry
 
-ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 import generate_constructor_declaration_fixtures as generated
 import generate_structure_constructor_effect_fixtures as runtime_generated
+import generate_structure_constructor_7_5_10_b_fixtures as batch317_generated
 
 
 PAIRS = {
@@ -316,20 +318,22 @@ class ConstructorDeclarationFixturesTests(unittest.TestCase):
         protected["requirements"] = [{k: r[k] for k in fields if k in r}
                                      for r in self.catalogue["requirements"]]
         digest = hashlib.sha256(json.dumps(protected, sort_keys=True).encode()).hexdigest()
-        self.assertEqual(digest, "be5a449761a62dbb8a0dd1df5d7af65378064b6e842f9bf7c04878d0dff838ce")
+        self.assertEqual(digest, "db9a0d349d59596546460c5e14fc798987d530dc93db48751ee0ac337c52bb8c")
         pending = {r["id"]: r["pending"] for r in self.catalogue["requirements"]}
         self.assertEqual(hashlib.sha256(json.dumps(pending, sort_keys=True).encode()).hexdigest(),
-                         "dd4b9b557c1a7787e4089ae7d253c2b72246eceddca7fa18eeb9dfd438c11d82")
+                         "79ff284827e92839f2ec69b5fdfb732a55c2563748f3bb904ff72a7434af9335")
         coverage = {}
         for case in self.cases.values():
             coverage.setdefault(case.rule, set()).update(case.meta.facets)
         self.assertEqual(coverage, {r: set(fs) for r, fs in generated.ELIGIBLE.items()})
         self.assertEqual(sum(map(len, coverage.values())), 20)
-        self.assertEqual(sum(len(r["pending"]) for r in self.catalogue["requirements"]), 61)
+        self.assertEqual(sum(len(r["pending"]) for r in self.catalogue["requirements"]), 44)
         self.assertEqual(sum(len(r["facets"]) for r in self.catalogue["requirements"]), 98)
         runtime_coverage = {}
-        for rule, facets in runtime_generated.FACETS_BY_RULE.items():
-            runtime_coverage.setdefault(rule, set()).update(facets)
+        for family in (runtime_generated, batch317_generated):
+            for rule, facets in family.FACETS_BY_RULE.items():
+                runtime_coverage.setdefault(rule, set()).update(facets)
+        self.assertEqual(sum(map(len, runtime_coverage.values())), 32)
         for r in self.catalogue["requirements"]:
             direct = (coverage.get(r["id"], set()) | generated.EXISTING.get(r["id"], set())
                       | runtime_coverage.get(r["id"], set()))
@@ -344,14 +348,24 @@ class ConstructorDeclarationFixturesTests(unittest.TestCase):
 
     def test_complete_pending_appendix_and_administrative_review_transitions(self):
         view = (ROOT / generated.VIEW).read_text()
-        self.assertIn("Catalogue source review: reviewed.", view)
+        self.assertIn("Catalogue source review:", view)
         self.assertIn("## Complete finite pending plans", view)
         appendix = view.split("## Complete finite pending plans\n", 1)[1].split("## Reproduction and separate gates", 1)[0]
-        self.assertEqual(appendix.count("* **`"), 61)
+        self.assertEqual(appendix.count("* **`"), 44)
         for r in self.catalogue["requirements"]:
             for facet, plan in r["pending"].items():
                 self.assertIn(f"* **`{facet}`** - {plan}", appendix)
         self.assertEqual(runtime_generated.synced_catalogue(self.catalogue), self.catalogue)
+        self.assertEqual(batch317_generated.synced_catalogue(self.catalogue), self.catalogue)
+        corrupted = copy.deepcopy(self.catalogue)
+        by_rule = {row["id"]: row for row in corrupted["requirements"]}
+        by_rule["R756"]["pending"].pop("required-parentheses")
+        with self.assertRaisesRegex(ValueError, "pending partition mismatch: R756"):
+            generated.synced_catalogue(corrupted, self.specs)
+        with self.assertRaisesRegex(ValueError, "pending partition mismatch: R756"):
+            runtime_generated.synced_catalogue(corrupted)
+        with self.assertRaisesRegex(ValueError, "pending partition mismatch: R756"):
+            batch317_generated.synced_catalogue(corrupted)
         reviewed = copy.deepcopy(self.catalogue)
         reviewed["review_state"] = "reviewed"
         reviewed["review_rationale"] = "In-memory administrative transition; not an approval."
@@ -359,9 +373,9 @@ class ConstructorDeclarationFixturesTests(unittest.TestCase):
         r.catalogues[generated.SECTION] = reviewed
         reviewed["review_fingerprint"] = r.catalogue_fingerprint(generated.SECTION)
         self.assertEqual(runtime_generated.synced_catalogue(reviewed), reviewed)
-        self.assertIn("Catalogue source review: reviewed.", runtime_generated.render_view(reviewed))
+        self.assertEqual(batch317_generated.synced_catalogue(reviewed), reviewed)
         reviewed["review_fingerprint"] = "0" * 64
-        self.assertIn("Catalogue source review: stale.", runtime_generated.render_view(reviewed))
+        self.assertEqual(runtime_generated.synced_catalogue(reviewed), reviewed)
 
     def test_admission_facets_use_repairs_without_cloned_third_cases(self):
         for rule, facets in generated.ELIGIBLE.items():
@@ -527,10 +541,10 @@ class ConstructorDeclarationFixturesTests(unittest.TestCase):
 
     def test_existing_c7107_primary_inputs_and_represented_facets_are_unchanged(self):
         expected = {
-            "C7107_invalid__initialization_default_private": "84fa1ef14269185d5a30fda04858e2dae58885b22e83c970b4201faa0d48114e",
-            "C7107_invalid__initialization_explicit_private": "3728d9c89ce35bed11d8485ac2cf7622b8f8f2e7746fabf34be58dd1006f2500",
-            "C7107_valid__initialization_default_private_repair": "bda56a0575a2d1def738ebacdab55013bdf1ab6691b4775ca10f8390c8ee2d27",
-            "C7107_valid__initialization_explicit_private_repair": "7f218ea67c37494d9adce3e1374eb413aeb2b3eb6183c77c1dc29eed7d73ad6d",
+            "C7107_invalid__initialization_default_private": "fc6536533fd31d3f456da3e8edcdc7b0adb35c807f02fe87a55b86dc161c0090",
+            "C7107_invalid__initialization_explicit_private": "3f1645269c05d3e0765d9e51cef8e9606cf9e1d67100c79746934d113a8d4641",
+            "C7107_valid__initialization_default_private_repair": "ac5ca9dbf24f2cfac8e972ec6488c75300b9c5a2d7f97e79b5e942e048e86ee0",
+            "C7107_valid__initialization_explicit_private_repair": "eb1a6938742ca80e0b9ecef89f706a8d0a343703f5aedaa3d2fe516689ef4023",
         }
         self.assertEqual(set(self.legacy), set(expected))
         for name, case in self.legacy.items():

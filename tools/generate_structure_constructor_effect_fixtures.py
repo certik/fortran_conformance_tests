@@ -582,7 +582,17 @@ def catalogue_review_status(catalogue):
 def synced_catalogue(catalogue):
     updated = copy.deepcopy(catalogue)
     by_rule = {row["id"]: row for row in updated["requirements"]}
+    import generate_constructor_declaration_fixtures as declaration_generated
+    import generate_structure_constructor_7_5_10_b_fixtures as batch317_generated
+    represented_by_rule = {}
+    for rule, facets in declaration_generated.ELIGIBLE.items():
+        represented_by_rule.setdefault(rule, set()).update(facets)
+    for rule, facets in declaration_generated.EXISTING.items():
+        represented_by_rule.setdefault(rule, set()).update(facets)
+    for rule, facets in batch317_generated.FACETS_BY_RULE.items():
+        represented_by_rule.setdefault(rule, set()).update(facets)
     for rule, facets in FACETS_BY_RULE.items():
+        represented_by_rule.setdefault(rule, set()).update(facets)
         owner = by_rule[rule]
         if owner["category"] != "effect" or not set(facets) <= set(owner["facets"]):
             raise ValueError("selected structure-constructor facets changed")
@@ -591,6 +601,10 @@ def synced_catalogue(catalogue):
         owner["oracle"] = owned_paragraph(owner.get("oracle", ""), ORACLE_PREFIXES[rule], ORACLES[rule])
         owner["oracle_limitation"] = owned_paragraph(
             owner.get("oracle_limitation", ""), LIMIT_PREFIXES[rule], LIMITATIONS[rule])
+    for owner in updated["requirements"]:
+        expected = set(owner["facets"]) - represented_by_rule.get(owner["id"], set())
+        if set(owner.get("pending", {})) != expected:
+            raise ValueError("structure-constructor pending partition mismatch: " + owner["id"])
     return updated
 
 

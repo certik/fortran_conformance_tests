@@ -6334,6 +6334,11 @@ See `doc/source_audits/batch_316.json`.
 23 programs, 14 facets and seven LFortran defects in the attribute statements.
 See `doc/source_audits/batch_320.json`.
 
+## Batch 317 — Structure constructor fixtures 7.5.10 (second packet)
+
+10 programs, 17 facets: when a generic function has the type's name, a reference that matches it is a function call, not a constructor.
+See `doc/source_audits/batch_317.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
