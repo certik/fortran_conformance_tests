@@ -6339,6 +6339,11 @@ See `doc/source_audits/batch_320.json`.
 10 programs, 17 facets: when a generic function has the type's name, a reference that matches it is a function call, not a constructor.
 See `doc/source_audits/batch_317.json`.
 
+## Batch 318 — WAIT, file positioning and FLUSH fixtures 12.7-12.9
+
+19 programs, 34 facets. A processor may do asynchronous I/O synchronously, so the only testable promise is what holds after WAIT.
+See `doc/source_audits/batch_318.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
