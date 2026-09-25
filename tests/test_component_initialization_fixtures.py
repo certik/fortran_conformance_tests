@@ -14,6 +14,10 @@ SPEC = importlib.util.spec_from_file_location(
     "component_initialization_generator", ROOT / "tools/generate_component_initialization_fixtures.py")
 GENERATOR = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(GENERATOR)
+COMPONENTS_SPEC = importlib.util.spec_from_file_location(
+    "components_7_5_4_b_generator", ROOT / "tools/generate_components_7_5_4_b_fixtures.py")
+COMPONENTS = importlib.util.module_from_spec(COMPONENTS_SPEC)
+COMPONENTS_SPEC.loader.exec_module(COMPONENTS)
 
 
 class ComponentInitializationFixturesTests(unittest.TestCase):
@@ -78,7 +82,10 @@ class ComponentInitializationFixturesTests(unittest.TestCase):
             self.assertTrue(all(path.is_relative_to(root) for path in c.files))
 
     def test_pending_partition_and_nonexecuted_classifications(self):
-        covered = self.corpus.coverage()
+        sibling_covered = self.corpus.coverage()
+        covered = {rule: set(facets) for rule, facets in sibling_covered.items()}
+        for spec in COMPONENTS.build_corpus(ROOT)[1].values():
+            covered.setdefault(spec["rule"], set()).update(spec["facets"])
         linked = self.registry.evidence.validate_cases(self.all_cases)
         pending = direct = linked_count = 0
         for section in GENERATOR.SECTIONS:
@@ -90,9 +97,10 @@ class ComponentInitializationFixturesTests(unittest.TestCase):
                 pending += len(requirement["pending"])
                 direct += len(actual)
                 linked_count += len(linked_facets)
-        self.assertEqual((direct, pending + linked_count), (113, 35))
-        for rule in ("S7.5.4.6-002", "S7.5.4.6-011"):
-            self.assertNotIn(rule, covered)
+        self.assertEqual((direct, pending + linked_count), (124, 24))
+        self.assertNotIn("S7.5.4.6-002", covered)
+        self.assertNotIn("S7.5.4.6-011", sibling_covered)
+        self.assertIn("S7.5.4.6-011", covered)
         self.assertIn("inherited-original-default-graph",
                       self.registry.requirements["S7.5.4.8-001"]["pending"])
         self.assertIn("component-name-use-graph",

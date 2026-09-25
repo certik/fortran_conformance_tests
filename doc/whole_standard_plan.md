@@ -6369,6 +6369,11 @@ See `doc/source_audits/batch_323.json`.
 28 programs, 22 facets: an assumed-rank dummy's lower bounds are all one, whatever the actual's were.
 See `doc/source_audits/batch_324.json`.
 
+## Batch 325 — Component definition and default initialization fixtures 7.5.4.1, 7.5.4.6
+
+14 programs, 19 facets: a pointer component may be born pointing at a saved target, and LFortran refuses to compile it.
+See `doc/source_audits/batch_325.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
