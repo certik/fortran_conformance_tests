@@ -6314,6 +6314,11 @@ See `doc/source_audits/batch_312.json`.
 12 programs, 10 facets: with a type-spec, [character(len=3)::'ab','abcd'] pads one value and truncates the other.
 See `doc/source_audits/batch_313.json`.
 
+## Batch 314 — Explicit- and assumed-shape array fixtures 8.5.8.2-8.5.8.3
+
+11 programs, 20 facets: an assumed-shape dummy starts at 1 unless told otherwise, and an empty dimension always reports lower bound 1.
+See `doc/source_audits/batch_314.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
