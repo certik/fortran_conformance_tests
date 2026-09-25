@@ -6259,6 +6259,11 @@ See `doc/source_audits/batch_303.json`.
 22 programs, 44 facets, three LFortran defects with assumed-rank arguments.
 See `doc/source_audits/batch_301.json`.
 
+## Batch 302 — Intrinsic fixtures 16.9.121-16.9.127 (LEADZ-LLT)
+
+23 programs, 53 facets: ASCII order regardless of the machine's own, and equal strings precede nothing.
+See `doc/source_audits/batch_302.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
