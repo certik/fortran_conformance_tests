@@ -6264,6 +6264,11 @@ See `doc/source_audits/batch_301.json`.
 23 programs, 53 facets: ASCII order regardless of the machine's own, and equal strings precede nothing.
 See `doc/source_audits/batch_302.json`.
 
+## Batch 305 — Interface block fixtures 15.4.3.1-15.4.3.2
+
+42 programs, 35 facets and eight LFortran defects: six interface-block constraints are silently accepted and two crash the compiler.
+See `doc/source_audits/batch_305.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
