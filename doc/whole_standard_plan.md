@@ -6359,6 +6359,11 @@ See `doc/source_audits/batch_321.json`.
 27 programs, 34 facets: in READ n, a(1:n) the n that sizes the section is the one just read, and LFortran uses the old one.
 See `doc/source_audits/batch_322.json`.
 
+## Batch 323 — INQUIRE statement fixtures 12.10.1-12.10.2.1
+
+17 programs, 62 facets: every inquiry target starts from a value INQUIRE could never assign.
+See `doc/source_audits/batch_323.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
