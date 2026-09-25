@@ -6354,6 +6354,11 @@ See `doc/source_audits/batch_319.json`.
 144 programs, 73 facets and thirty-six LFortran defects: most of the rules on what may appear in a READ or WRITE control list are not enforced.
 See `doc/source_audits/batch_321.json`.
 
+## Batch 322 — Data-transfer input/output list fixtures 12.6.3
+
+27 programs, 34 facets: in READ n, a(1:n) the n that sizes the section is the one just read, and LFortran uses the old one.
+See `doc/source_audits/batch_322.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must
