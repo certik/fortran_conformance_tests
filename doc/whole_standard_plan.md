@@ -6309,6 +6309,11 @@ See `doc/source_audits/batch_311.json`.
 20 programs, 10 facets, accepted in one round.
 See `doc/source_audits/batch_312.json`.
 
+## Batch 313 — Array constructor fixtures 7.8 (second packet)
+
+12 programs, 10 facets: with a type-spec, [character(len=3)::'ab','abcd'] pads one value and truncates the other.
+See `doc/source_audits/batch_313.json`.
+
 The historical PARAMETER and IMPLICIT author contexts are
 batch076's2,056cases/129catalogues. DATA, IMPORT and NAMELIST were authored
 from batch078's2,056cases/133catalogues; their separate candidate counts must

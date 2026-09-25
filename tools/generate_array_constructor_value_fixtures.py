@@ -462,10 +462,15 @@ def build_corpus(root=ROOT):
 
 
 def externally_bound_facets(root=ROOT):
+    root = Path(root)
+    local_rules = {item["id"] for item in json.loads((root / CATALOGUE).read_text())["requirements"]}
     result = {}
-    for path in (Path(root) / "tests/fixtures").glob("array_constructor_form_*/fixture.json"):
+    for path in (root / "tests/fixtures").glob("*/fixture.json"):
+        if path.parent.name.startswith("array_constructor_value_"):
+            continue
         data = json.loads(path.read_text())
-        result.setdefault(data["rule"], set()).update(data["facets"])
+        if data.get("rule") in local_rules:
+            result.setdefault(data["rule"], set()).update(data.get("facets", []))
     return result
 
 

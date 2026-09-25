@@ -517,9 +517,9 @@ class ArrayConstructorValueFixturesTests(unittest.TestCase):
         self.assertEqual(sum(len(r["facets"]) for r in self.catalogue["requirements"]), 107)
         external = generated.externally_bound_facets()
         externally_bound = sum(len(facets) for facets in external.values())
-        self.assertEqual(externally_bound, 20)
+        self.assertEqual(externally_bound, 30)
         pending_count = sum(len(r["pending"]) for r in self.catalogue["requirements"])
-        self.assertEqual(pending_count, 70)
+        self.assertEqual(pending_count, 60)
         for requirement in self.catalogue["requirements"]:
             covered = set(generated.ELIGIBLE.get(requirement["id"], []))
             self.assertEqual(set(requirement["pending"]),
@@ -530,6 +530,10 @@ class ArrayConstructorValueFixturesTests(unittest.TestCase):
         self.assertEqual({k:v for k,v in generated.synced_catalogue(self.catalogue,self.specs).items()
                           if k.startswith("review_")}, admin)
         self.assertEqual(generated.synced_catalogue(self.catalogue,self.specs), self.catalogue)
+        tampered = copy.deepcopy(self.catalogue)
+        next(r for r in tampered["requirements"] if r["id"] == "R777")["pending"].pop("mismatched-closing-delimiter")
+        with self.assertRaisesRegex(ValueError, "missing unselected source plan"):
+            generated.synced_catalogue(tampered,self.specs)
         view = (ROOT/generated.VIEW).read_text()
         self.assertEqual(view,generated.render_view(self.catalogue,self.specs))
         native = Registry(ROOT)

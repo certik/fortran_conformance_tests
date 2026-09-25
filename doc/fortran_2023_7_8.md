@@ -2,7 +2,7 @@
 
 **Catalogue source review: reviewed.** Source and case/evidence adjudications remain separate content-bound records.
 
-The value corpus has **9 shared valid run/effect programs**, **129 primitive value/shape/length guards** and one completion guard per program. The shared catalogue now has **37 of 107 facets represented; 70 remain PENDING.** No source/case/link/inventory approval is implied.
+The value corpus has **9 shared valid run/effect programs**, **129 primitive value/shape/length guards** and one completion guard per program. The shared catalogue now has **47 of 107 facets represented; 60 remain PENDING.** No source/case/link/inventory approval is implied.
 
 ## Source and oracle qualifications
 
@@ -193,6 +193,20 @@ runtime scalar bounds are checked with literal element guards. CHARACTER witness
 LEN before value equality, and zero-size constructors also use type-specific operations
 (SUM for INTEGER, LEN for CHARACTER).
 
+Array constructors 7.8.b implementation: 12 generated fixtures discharge 10 additional
+7.8 facets. Six positive controls use complete constructors to observe typed-empty
+CHARACTER and derived-type forms, explicit intrinsic type admissions, limited
+polymorphic CLASS(base) values with an explicit concrete type-spec, concrete child
+values extending an abstract parent, disjoint reuse of an ac-do-variable spelling in
+separate nonnested implied DOs, and explicit CHARACTER length boundaries for zero-size
+and converted values. Two R784 positive controls check bare scalar INTEGER names and
+confirm the containing host variable is not the statement entity. Three focused syntax
+negatives are line-anchored diagnostics with real one-property controls: a missing
+implied-DO body/control comma, a missing implied-DO body list, and a literal used where
+the ac-do-variable name is required. Each valid case has source-generated feature
+mutations that compile and fail at run time on both qualifying toolchains; each
+diagnostic case records its conforming single-property repair.
+
 **Oracle limitation:** No diagnostic contract or test is authored. Wrong type/kind/rank/length/name properties,
 source echo, generic EOF/missing-END recovery, unsupported facilities, compiler
 internal/verifier/resource failures, crashes and timeouts cannot corroborate another
@@ -209,6 +223,15 @@ dynamic-type, abstract, PDT kind/LEN, character-kind, processor-representation,
 optional-evaluation or side-effect order claim is added. The batch130
 array_constructor_value fixtures and their catalogue paragraphs remain unmodified. The
 rendered 7.8 markdown is intentionally not generator-owned by this packet.
+
+Array constructors 7.8.b boundaries: only the named facets are discharged. Runtime
+CHARACTER(LEN=n) constructors remain pending because the frozen LFortran target rejects
+the direct standard-conforming expression. Inline integer-type-spec implied-DO controls,
+same-nested-name C7128 diagnostics, unlimited-polymorphic and declared-abstract negative
+contrasts, BOZ constructors, enumeration constructors, PDT kind/LEN matrices and
+optional distinct integer-kind negatives remain pending under their existing source-use
+or processor-support qualifications. Existing array_constructor_form and
+array_constructor_value bindings are not altered.
 
 **Dependencies:** R702/R703;R781/R401;7.2/C701/C702;7.4.4.2/C726;7.5.9/C795-C7100;C7120-C7127;7.8p2-p5/p8.
 
@@ -342,6 +365,20 @@ runtime scalar bounds are checked with literal element guards. CHARACTER witness
 LEN before value equality, and zero-size constructors also use type-specific operations
 (SUM for INTEGER, LEN for CHARACTER).
 
+Array constructors 7.8.b implementation: 12 generated fixtures discharge 10 additional
+7.8 facets. Six positive controls use complete constructors to observe typed-empty
+CHARACTER and derived-type forms, explicit intrinsic type admissions, limited
+polymorphic CLASS(base) values with an explicit concrete type-spec, concrete child
+values extending an abstract parent, disjoint reuse of an ac-do-variable spelling in
+separate nonnested implied DOs, and explicit CHARACTER length boundaries for zero-size
+and converted values. Two R784 positive controls check bare scalar INTEGER names and
+confirm the containing host variable is not the statement entity. Three focused syntax
+negatives are line-anchored diagnostics with real one-property controls: a missing
+implied-DO body/control comma, a missing implied-DO body list, and a literal used where
+the ac-do-variable name is required. Each valid case has source-generated feature
+mutations that compile and fail at run time on both qualifying toolchains; each
+diagnostic case records its conforming single-property repair.
+
 **Oracle limitation:** No diagnostic contract or test is authored. Wrong type/kind/rank/length/name properties,
 source echo, generic EOF/missing-END recovery, unsupported facilities, compiler
 internal/verifier/resource failures, crashes and timeouts cannot corroborate another
@@ -358,6 +395,15 @@ dynamic-type, abstract, PDT kind/LEN, character-kind, processor-representation,
 optional-evaluation or side-effect order claim is added. The batch130
 array_constructor_value fixtures and their catalogue paragraphs remain unmodified. The
 rendered 7.8 markdown is intentionally not generator-owned by this packet.
+
+Array constructors 7.8.b boundaries: only the named facets are discharged. Runtime
+CHARACTER(LEN=n) constructors remain pending because the frozen LFortran target rejects
+the direct standard-conforming expression. Inline integer-type-spec implied-DO controls,
+same-nested-name C7128 diagnostics, unlimited-polymorphic and declared-abstract negative
+contrasts, BOZ constructors, enumeration constructors, PDT kind/LEN matrices and
+optional distinct integer-kind negatives remain pending under their existing source-use
+or processor-support qualifications. Existing array_constructor_form and
+array_constructor_value bindings are not altered.
 
 **Dependencies:** R781/R783/R784;R401;C7128;19.4p1-p2/p5;4.2p2(3).
 
@@ -431,11 +477,34 @@ mandatory fatal rejection, a fixed severity or printed rule codes. Actual contra
 identify the intended source role/property, file, statement and causal relation after
 source review.
 
+Array constructors 7.8.b implementation: 12 generated fixtures discharge 10 additional
+7.8 facets. Six positive controls use complete constructors to observe typed-empty
+CHARACTER and derived-type forms, explicit intrinsic type admissions, limited
+polymorphic CLASS(base) values with an explicit concrete type-spec, concrete child
+values extending an abstract parent, disjoint reuse of an ac-do-variable spelling in
+separate nonnested implied DOs, and explicit CHARACTER length boundaries for zero-size
+and converted values. Two R784 positive controls check bare scalar INTEGER names and
+confirm the containing host variable is not the statement entity. Three focused syntax
+negatives are line-anchored diagnostics with real one-property controls: a missing
+implied-DO body/control comma, a missing implied-DO body list, and a literal used where
+the ac-do-variable name is required. Each valid case has source-generated feature
+mutations that compile and fail at run time on both qualifying toolchains; each
+diagnostic case records its conforming single-property repair.
+
 **Oracle limitation:** No diagnostic contract or test is authored. Wrong type/kind/rank/length/name properties,
 source echo, generic EOF/missing-END recovery, unsupported facilities, compiler
 internal/verifier/resource failures, crashes and timeouts cannot corroborate another
 condition. Scope-name reporting remains4.2p2(6); intrinsic-procedure misuse
 retains4.2p2(7).
+
+Array constructors 7.8.b boundaries: only the named facets are discharged. Runtime
+CHARACTER(LEN=n) constructors remain pending because the frozen LFortran target rejects
+the direct standard-conforming expression. Inline integer-type-spec implied-DO controls,
+same-nested-name C7128 diagnostics, unlimited-polymorphic and declared-abstract negative
+contrasts, BOZ constructors, enumeration constructors, PDT kind/LEN matrices and
+optional distinct integer-kind negatives remain pending under their existing source-use
+or processor-support qualifications. Existing array_constructor_form and
+array_constructor_value bindings are not altered.
 
 **Dependencies:** R1124/C1121, PDF210;19.4p1-p2/p5, PDF551;4.2p2(3)/(6).
 
@@ -510,11 +579,34 @@ mandatory fatal rejection, a fixed severity or printed rule codes. Actual contra
 identify the intended source role/property, file, statement and causal relation after
 source review.
 
+Array constructors 7.8.b implementation: 12 generated fixtures discharge 10 additional
+7.8 facets. Six positive controls use complete constructors to observe typed-empty
+CHARACTER and derived-type forms, explicit intrinsic type admissions, limited
+polymorphic CLASS(base) values with an explicit concrete type-spec, concrete child
+values extending an abstract parent, disjoint reuse of an ac-do-variable spelling in
+separate nonnested implied DOs, and explicit CHARACTER length boundaries for zero-size
+and converted values. Two R784 positive controls check bare scalar INTEGER names and
+confirm the containing host variable is not the statement entity. Three focused syntax
+negatives are line-anchored diagnostics with real one-property controls: a missing
+implied-DO body/control comma, a missing implied-DO body list, and a literal used where
+the ac-do-variable name is required. Each valid case has source-generated feature
+mutations that compile and fail at run time on both qualifying toolchains; each
+diagnostic case records its conforming single-property repair.
+
 **Oracle limitation:** No diagnostic contract or test is authored. Wrong type/kind/rank/length/name properties,
 source echo, generic EOF/missing-END recovery, unsupported facilities, compiler
 internal/verifier/resource failures, crashes and timeouts cannot corroborate another
 condition. Scope-name reporting remains4.2p2(6); intrinsic-procedure misuse
 retains4.2p2(7).
+
+Array constructors 7.8.b boundaries: only the named facets are discharged. Runtime
+CHARACTER(LEN=n) constructors remain pending because the frozen LFortran target rejects
+the direct standard-conforming expression. Inline integer-type-spec implied-DO controls,
+same-nested-name C7128 diagnostics, unlimited-polymorphic and declared-abstract negative
+contrasts, BOZ constructors, enumeration constructors, PDT kind/LEN matrices and
+optional distinct integer-kind negatives remain pending under their existing source-use
+or processor-support qualifications. Existing array_constructor_form and
+array_constructor_value bindings are not altered.
 
 **Dependencies:** 10.2.1.2/Table10.8, PDF189;7.3.3;7.6.1;7.8p3;C7126/C7127;7.7/C7119.
 
@@ -614,12 +706,35 @@ mandatory fatal rejection, a fixed severity or printed rule codes. Actual contra
 identify the intended source role/property, file, statement and causal relation after
 source review.
 
+Array constructors 7.8.b implementation: 12 generated fixtures discharge 10 additional
+7.8 facets. Six positive controls use complete constructors to observe typed-empty
+CHARACTER and derived-type forms, explicit intrinsic type admissions, limited
+polymorphic CLASS(base) values with an explicit concrete type-spec, concrete child
+values extending an abstract parent, disjoint reuse of an ac-do-variable spelling in
+separate nonnested implied DOs, and explicit CHARACTER length boundaries for zero-size
+and converted values. Two R784 positive controls check bare scalar INTEGER names and
+confirm the containing host variable is not the statement entity. Three focused syntax
+negatives are line-anchored diagnostics with real one-property controls: a missing
+implied-DO body/control comma, a missing implied-DO body list, and a literal used where
+the ac-do-variable name is required. Each valid case has source-generated feature
+mutations that compile and fail at run time on both qualifying toolchains; each
+diagnostic case records its conforming single-property repair.
+
 **Oracle limitation:** No diagnostic contract or test is authored. Wrong type/kind/rank/length/name properties,
 source echo, generic EOF/missing-END recovery, unsupported facilities, compiler
 internal/verifier/resource failures, crashes and timeouts cannot corroborate another
 condition. Scope-name reporting remains4.2p2(6); intrinsic-procedure misuse
 retains4.2p2(7). An explicit typed constructor can add a separate type-conformance
 defect for CLASS(*); keep that out of the proposed focused contrast.
+
+Array constructors 7.8.b boundaries: only the named facets are discharged. Runtime
+CHARACTER(LEN=n) constructors remain pending because the frozen LFortran target rejects
+the direct standard-conforming expression. Inline integer-type-spec implied-DO controls,
+same-nested-name C7128 diagnostics, unlimited-polymorphic and declared-abstract negative
+contrasts, BOZ constructors, enumeration constructors, PDT kind/LEN matrices and
+optional distinct integer-kind negatives remain pending under their existing source-use
+or processor-support qualifications. Existing array_constructor_form and
+array_constructor_value bindings are not altered.
 
 **Dependencies:** R781;7.3.2.3p4-p5;11.1.11.2p5, PDF226;19.4p12;15.5.2.4-.5;4.2p2(3).
 
@@ -641,11 +756,34 @@ mandatory fatal rejection, a fixed severity or printed rule codes. Actual contra
 identify the intended source role/property, file, statement and causal relation after
 source review.
 
+Array constructors 7.8.b implementation: 12 generated fixtures discharge 10 additional
+7.8 facets. Six positive controls use complete constructors to observe typed-empty
+CHARACTER and derived-type forms, explicit intrinsic type admissions, limited
+polymorphic CLASS(base) values with an explicit concrete type-spec, concrete child
+values extending an abstract parent, disjoint reuse of an ac-do-variable spelling in
+separate nonnested implied DOs, and explicit CHARACTER length boundaries for zero-size
+and converted values. Two R784 positive controls check bare scalar INTEGER names and
+confirm the containing host variable is not the statement entity. Three focused syntax
+negatives are line-anchored diagnostics with real one-property controls: a missing
+implied-DO body/control comma, a missing implied-DO body list, and a literal used where
+the ac-do-variable name is required. Each valid case has source-generated feature
+mutations that compile and fail at run time on both qualifying toolchains; each
+diagnostic case records its conforming single-property repair.
+
 **Oracle limitation:** No diagnostic contract or test is authored. Wrong type/kind/rank/length/name properties,
 source echo, generic EOF/missing-END recovery, unsupported facilities, compiler
 internal/verifier/resource failures, crashes and timeouts cannot corroborate another
 condition. Scope-name reporting remains4.2p2(6); intrinsic-procedure misuse
 retains4.2p2(7).
+
+Array constructors 7.8.b boundaries: only the named facets are discharged. Runtime
+CHARACTER(LEN=n) constructors remain pending because the frozen LFortran target rejects
+the direct standard-conforming expression. Inline integer-type-spec implied-DO controls,
+same-nested-name C7128 diagnostics, unlimited-polymorphic and declared-abstract negative
+contrasts, BOZ constructors, enumeration constructors, PDT kind/LEN matrices and
+optional distinct integer-kind negatives remain pending under their existing source-use
+or processor-support qualifications. Existing array_constructor_form and
+array_constructor_value bindings are not altered.
 
 **Dependencies:** R781;C703/C706;7.5.7.1/C738/C739;7.8p4;15.5.2.4-.5;4.2p2(3).
 
@@ -735,6 +873,20 @@ runtime scalar bounds are checked with literal element guards. CHARACTER witness
 LEN before value equality, and zero-size constructors also use type-specific operations
 (SUM for INTEGER, LEN for CHARACTER).
 
+Array constructors 7.8.b implementation: 12 generated fixtures discharge 10 additional
+7.8 facets. Six positive controls use complete constructors to observe typed-empty
+CHARACTER and derived-type forms, explicit intrinsic type admissions, limited
+polymorphic CLASS(base) values with an explicit concrete type-spec, concrete child
+values extending an abstract parent, disjoint reuse of an ac-do-variable spelling in
+separate nonnested implied DOs, and explicit CHARACTER length boundaries for zero-size
+and converted values. Two R784 positive controls check bare scalar INTEGER names and
+confirm the containing host variable is not the statement entity. Three focused syntax
+negatives are line-anchored diagnostics with real one-property controls: a missing
+implied-DO body/control comma, a missing implied-DO body list, and a literal used where
+the ac-do-variable name is required. Each valid case has source-generated feature
+mutations that compile and fail at run time on both qualifying toolchains; each
+diagnostic case records its conforming single-property repair.
+
 **Oracle limitation:** No diagnostic contract or test is authored. Wrong type/kind/rank/length/name properties,
 source echo, generic EOF/missing-END recovery, unsupported facilities, compiler
 internal/verifier/resource failures, crashes and timeouts cannot corroborate another
@@ -751,6 +903,15 @@ dynamic-type, abstract, PDT kind/LEN, character-kind, processor-representation,
 optional-evaluation or side-effect order claim is added. The batch130
 array_constructor_value fixtures and their catalogue paragraphs remain unmodified. The
 rendered 7.8 markdown is intentionally not generator-owned by this packet.
+
+Array constructors 7.8.b boundaries: only the named facets are discharged. Runtime
+CHARACTER(LEN=n) constructors remain pending because the frozen LFortran target rejects
+the direct standard-conforming expression. Inline integer-type-spec implied-DO controls,
+same-nested-name C7128 diagnostics, unlimited-polymorphic and declared-abstract negative
+contrasts, BOZ constructors, enumeration constructors, PDT kind/LEN matrices and
+optional distinct integer-kind negatives remain pending under their existing source-use
+or processor-support qualifications. Existing array_constructor_form and
+array_constructor_value bindings are not altered.
 
 **Dependencies:** R782-R784;19.4p1-p2/p5, PDF551;4.2p2(3)/(6).
 
@@ -829,6 +990,20 @@ runtime scalar bounds are checked with literal element guards. CHARACTER witness
 LEN before value equality, and zero-size constructors also use type-specific operations
 (SUM for INTEGER, LEN for CHARACTER).
 
+Array constructors 7.8.b implementation: 12 generated fixtures discharge 10 additional
+7.8 facets. Six positive controls use complete constructors to observe typed-empty
+CHARACTER and derived-type forms, explicit intrinsic type admissions, limited
+polymorphic CLASS(base) values with an explicit concrete type-spec, concrete child
+values extending an abstract parent, disjoint reuse of an ac-do-variable spelling in
+separate nonnested implied DOs, and explicit CHARACTER length boundaries for zero-size
+and converted values. Two R784 positive controls check bare scalar INTEGER names and
+confirm the containing host variable is not the statement entity. Three focused syntax
+negatives are line-anchored diagnostics with real one-property controls: a missing
+implied-DO body/control comma, a missing implied-DO body list, and a literal used where
+the ac-do-variable name is required. Each valid case has source-generated feature
+mutations that compile and fail at run time on both qualifying toolchains; each
+diagnostic case records its conforming single-property repair.
+
 **Oracle limitation:** No runtime witness is implemented. Use independently fixed small values, named element
 setup and direct constructor observations; a destination declaration or a second use of
 the same operation is not an independent oracle. Source sequence order is not an
@@ -846,6 +1021,15 @@ dynamic-type, abstract, PDT kind/LEN, character-kind, processor-representation,
 optional-evaluation or side-effect order claim is added. The batch130
 array_constructor_value fixtures and their catalogue paragraphs remain unmodified. The
 rendered 7.8 markdown is intentionally not generator-owned by this packet.
+
+Array constructors 7.8.b boundaries: only the named facets are discharged. Runtime
+CHARACTER(LEN=n) constructors remain pending because the frozen LFortran target rejects
+the direct standard-conforming expression. Inline integer-type-spec implied-DO controls,
+same-nested-name C7128 diagnostics, unlimited-polymorphic and declared-abstract negative
+contrasts, BOZ constructors, enumeration constructors, PDT kind/LEN matrices and
+optional distinct integer-kind negatives remain pending under their existing source-use
+or processor-support qualifications. Existing array_constructor_form and
+array_constructor_value bindings are not altered.
 
 **Dependencies:** C7120;7.8p2/p3/p5;7.2;7.4.4.2;7.5.3;9.7.1;16.9.122 LEN;4.1.2p3/4.2.
 
@@ -1264,7 +1448,6 @@ Every unselected map below is retained exactly from the canonical source; incide
 
 ### Pending R778
 
-* **`typed-empty-other-categories`** - PENDING - Compile admissions after their canonical context checks: fixed default CHARACTER(LEN=3), an accessible prior nonabstract derived type, a prior enum type and a prior enumeration type with no ac-values. An ordinary derived type's unsupplied components do not require scalar structure-constructor arguments when there are zero array elements.
 * **`type-spec-parameter-context-graph`** - PENDING - Source-use graph: R702, C701/C702, C726 and C795-C7100 govern allowed type parameters. A destination ALLOCATABLE attribute does not license CHARACTER(:) or a deferred PDT parameter inside this type-spec. Assumed * is not a general array-constructor length placeholder.
 
 ### Pending R779
@@ -1279,11 +1462,6 @@ Every unselected map below is retained exactly from the canonical source; incide
 
 * **`expression-category-and-state-graph`** - PENDING - Source-use graph: C7124/C7125 exclude the ac-value itself, not every component recursively. Pointer and allocatable expressions require live associated/allocated defined data when their values are used; they are not status-only or pointer-broadcast constructors.
 
-### Pending R782
-
-* **`missing-control-separator`** - PENDING - Diagnostic/control: omit only the comma between literal body value7 and a complete INTEGER :: i=1,2 control; restore that comma. Keep the enclosing constructor/program closed and require the implied-DO body/control separator cause.
-* **`missing-body-list`** - PENDING - Diagnostic/control: keep the complete parenthesized comma/control form but omit its ac-value-list; insert literal7 before the separating comma. Zero trip count would not waive the syntactic nonempty-list requirement.
-
 ### Pending R783
 
 * **`inline-default-integer`** - PENDING - Compile admission: [(i,INTEGER :: i=1,3)] needs no containing-scope declaration of i. Outside its ac-implied-do that spelling does not create a host variable.
@@ -1294,8 +1472,6 @@ Every unselected map below is retained exactly from the canonical source; incide
 
 ### Pending R784
 
-* **`bare-scalar-integer-name`** - PENDING - Compile admission: a declared scalar INTEGER name or an inline INTEGER-specified statement variable controls a complete implied DO.
-* **`literal-is-not-control-variable`** - PENDING - Diagnostic/control: [(7,1=1,2)] is used in a complete context with an INTEGER i available; replace only the literal control-left-side1 by i. The body does not depend on an undeclared or invalid designator.
 * **`scope-and-designator-consumer-graph`** - PENDING - Source-use graph: R1124/C1121 and19.4p1-p2/p5 own scalar/name/type and scope rules. Array elements, components, named constants, host-array name collisions and post-loop host uses need their actual canonical qualifications rather than one broad variable error.
 
 ### Pending C7120
@@ -1306,7 +1482,6 @@ Every unselected map below is retained exactly from the canonical source; incide
 
 ### Pending C7121
 
-* **`intrinsic-type-admissions`** - PENDING - Compile admissions: explicit INTEGER with known small INTEGER/REAL/COMPLEX values, explicit REAL with INTEGER/REAL/COMPLEX values, explicit COMPLEX with INTEGER/REAL/COMPLEX values, default CHARACTER with CHARACTER values, and LOGICAL with LOGICAL values. Conversion effects are separately planned; no blanket all-types coercion or character/logical numeric mixing is admitted.
 * **`intrinsic-type-mismatch`** - PENDING - Diagnostic/control plans: [INTEGER :: .true.] repaired only to [INTEGER :: 1], and [LOGICAL :: 1] repaired only to [LOGICAL :: .true.]. Type mismatch is not kind, rank, value-range or evaluation evidence.
 * **`enum-correct-primary-admission`** - PENDING - Compile admission/source-use: a prior named enum with INTEGER enumerators one=1 and two=2 supplies [enum_name :: one,one+1], using those known representable values and complete enum context. This is not an ENUMERATION TYPE or an arbitrary raw INTEGER conversion.
 * **`enum-wrong-integer-provenance`** - PENDING - Diagnostic/control: [enum_name :: 1] has a known-representable INTEGER value but lacks a primary from that enum; replace only1 by its enumerator one. A second small-value contrast replaces an INTEGER enumerator from another enum definition by one. Keep enum range and accessibility valid.
@@ -1327,14 +1502,12 @@ Every unselected map below is retained exactly from the canonical source; incide
 
 ### Pending C7124
 
-* **`limited-value-admissions`** - PENDING - Compile admissions: defined intrinsic values and declared concrete TYPE(base) or CLASS(base) values in otherwise conforming constructors; no CLASS(*) expression is supplied.
 * **`unlimited-value-focused-contrast`** - PENDING - Diagnostic/control design: a complete module procedure has CLASS(*),IN scalar x and SELECT TYPE(typed=>x), TYPE IS(INTEGER), reached with a defined INTEGER actual. In that branch pass the one-ac-value untyped [x] to a separate explicit CLASS(*),IN rank-one observer; repair only x inside the constructor to typed. The original dummy stays unlimited, the refined associate is INTEGER, and neither an explicit type-spec nor a fixed-type receiver adds a separate conformance defect. Require the unlimited-polymorphic ac-value cause, not vague inability to infer a type.
 * **`outer-value-versus-component-source-use`** - PENDING - Source-use gate: a TYPE(record) value is not CLASS(*) merely because a component is polymorphic. Any such component/allocated-state witness needs its actual7.5.10/assignment/lifetime qualifications; no unallocated payload or empty classifier is proposed.
 
 ### Pending C7125
 
 * **`declared-abstract-contrast`** - PENDING - Diagnostic/control design: an ordinary ABSTRACT base has scalar INTEGER payload and no deferred bindings; a concrete child actual with named payload11 reaches a CLASS(base),IN scalar dummy. Pass the untyped [arg] to a legal CLASS(base),IN rank-one observer. Remove only ABSTRACT and its comma from base. No TYPE(base) object/dummy or explicit [base ::] introduces C706/C703.
-* **`concrete-child-admission`** - PENDING - Compile admission: a TYPE(child) value from an ordinary concrete extension of that abstract base is initialized through its primitive inherited payload and used as an ac-value. No whole abstract-parent designator is read.
 * **`type-spec-and-temporary-source-use`** - PENDING - Source-use graph: C703, C706, C7101 and abstract allocation rules retain their owners. A compiler-created illegal temporary or ASR verifier complaint is not an adequate C7125 source diagnostic.
 
 ### Pending C7126
@@ -1354,7 +1527,6 @@ Every unselected map below is retained exactly from the canonical source; incide
 ### Pending C7128
 
 * **`nested-same-name`** - PENDING - Diagnostic/control: [((7,INTEGER :: i=1,2),INTEGER :: i=1,2)] has a constant body and repeated nested control name. Change only the inner control-left-side i to j; no body reference needs repair and both loops remain otherwise valid. Require nested ac-do-variable reuse, with19.4's statement-entity scope also preserved.
-* **`disjoint-reuse-admission`** - PENDING - Compile admission/source-use: two nonnested implied DOs use i in their separate scopes with bounds1:2 and3:4. A future value witness independently expects[1,2,3,4]; the nested prohibition must not reject this disjoint reuse.
 
 ### Pending S7.8-001
 
@@ -1364,7 +1536,6 @@ Every unselected map below is retained exactly from the canonical source; incide
 
 * **`character-length-source-contrast`** - PENDING - Optional-policy/source-contrast plan: in a complete untyped ['A','BC'] context, repair only 'A' to 'A ' so lengths agree while type/kind remain default CHARACTER. No diagnostic is newly mandated; no invalid result length or trap is observed.
 * **`derived-len-source-contrast`** - PENDING - Optional-policy/source-contrast matrix: one PDT has fixed common user KIND2, two LEN parameters n/m and a scalar INTEGER payload independent of n/m. left has LEN tuple(1,2); right differs in only n or only m. Repair only that declaration coordinate to(1,2). Both payloads are initialized by names; no kind, declared-type, component-shape or representation mismatch supplies the cause.
-* **`zero-size-and-explicit-spec-boundaries`** - PENDING - Source-use graph: zero produced elements do not turn syntactically present ac-values into no type/length constraints. Explicit CHARACTER length changes the p2 antecedent and permits qualified conversion, while p5 independently restricts character lengths in zero-trip implied DOs.
 
 ### Pending S7.8-003
 
