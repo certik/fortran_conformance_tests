@@ -13,6 +13,12 @@ All facets in this packet are pending source plans. No Fortran test program,
 compiler invocation, execution evidence, oracle approval, fixture approval or
 coverage claim is supplied here.
 
+<!-- BEGIN DATA OBJECTS 9.1-9.3 FIXTURES -->
+## Data object designator/variable/constant fixtures
+
+Batch300 adds runtime positive controls and selected diagnostics for non-coarray designators, variables, typed variable contexts, and constants in 9.1-9.3. Coindexed designators, logical-variable coarray synchronization contexts, and diagnostics that one retained toolchain does not locate remain pending in their owning requirements.
+<!-- END DATA OBJECTS 9.1-9.3 FIXTURES -->
+
 <!-- BEGIN GENERATED 9.1 -->
 
 ### R901: A designator is one of the seven designator forms
@@ -34,10 +40,23 @@ executable observation delegated to the owning semantic requirement. A literal e
 value or fixed inquiry result is stated only where the future program first establishes
 definedness and execution of the relevant path.
 
+R901 data-objects batch300 fixtures: one positive-control program references an object
+name, an array element, an array section, complex %RE/%IM designators, a structure
+component, and a substring after explicit definition. Each selected designator has its
+own exact assertion and a conforming feature mutation that selects a different object or
+subobject. Coindexed designators remain pending as coarray-only.
+
 **Oracle limitation:** This catalogue records source requirements and plans only. It does not approve a Fortran
 fixture, run a processor, create coverage, or transfer ownership from the cited
 subclauses. Any later reuse must re-check all prerequisites, repairs, modes and
 overlapping constraints.
+
+R901 data-objects batch300 boundaries: Only the listed batch300 facets are bound. The
+fixtures assert exact integer, logical, and character properties after explicit
+definition, or located diagnostics for numbered syntax/constraint cases that both
+retained toolchains report. They do not assert addresses, storage layout,
+processor-dependent IOMSG text, coarray behavior, undefined references, generic warning
+policy, source review state, or any facet left pending with a batch300 reason.
 
 **Dependencies:** 4.2;6.2.2;9.2R903/C903/p2;9.4.1R908-R910/C908/p2-p3;9.4.2R911-R913/C909-C920/p1-p6;9.4.3R914/C921/p1;9.4.4R915/C922/p1;9.5.3.1R917-R925/C924-C931/p1-p2;9.5.3.2;9.5.3.3;19.6.5;19.6.6.
 

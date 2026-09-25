@@ -34,10 +34,22 @@ executable observation delegated to the owning semantic requirement. A literal e
 value or fixed inquiry result is stated only where the future program first establishes
 definedness and execution of the relevant path.
 
+S9.3-001 data-objects batch300 fixtures: one positive-control program references literal
+constants, named constants from both PARAMETER forms, and constant array/character
+subobjects in value contexts only. All oracles are exact integer or character values
+with length checked before equality.
+
 **Oracle limitation:** The permission to reference a constant is not a claim that every occurrence is valid in
 every syntactic context, and the redefinition prohibition is not treated as an automatic
 numbered-constraint-style diagnostic duty here. All entries are PENDING plans only; no
 case, execution, oracle, source-use link, fixture approval or coverage claim is created.
+
+S9.3-001 data-objects batch300 boundaries: Only the listed batch300 facets are bound.
+The fixtures assert exact integer, logical, and character properties after explicit
+definition, or located diagnostics for numbered syntax/constraint cases that both
+retained toolchains report. They do not assert addresses, storage layout,
+processor-dependent IOMSG text, coarray behavior, undefined references, generic warning
+policy, source review state, or any facet left pending with a batch300 reason.
 
 **Dependencies:** 6.2.3R604-R607/C602;8.5.13p1-p2/C852-C853;8.6.11R854-R855/p1-p4;9.2C901;10.1.12;19.6.5.
 

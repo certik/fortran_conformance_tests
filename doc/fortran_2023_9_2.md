@@ -32,12 +32,24 @@ contrasts under a qualified F2023 profile. Resolve the actual grammar alternativ
 entity role, type, kind, rank, definition status and all overlapping constraints before
 assigning a diagnostic cause.
 
+R902 data-objects batch300 fixtures: one positive-control program assigns through an
+ordinary designator and through an INTEGER data-pointer function reference; one
+diagnostic pair rejects an expression and a type-parameter inquiry in
+assignment-variable position, with a runtime control that uses ordinary variables.
+
 **Oracle limitation:** The numbered syntax and constraint obligations require detection/reporting capability,
 not a fatal exit, rule number or fixed wording. Unsupported syntax, missing prerequisite
 declarations or interfaces, unrelated earlier errors, recovery-only messages, source
 echoes, crashes and resource failures are not evidence for the stated facet. All entries
 here are PENDING plans only; no case, execution, oracle, source-use link, fixture
 approval or coverage claim is created.
+
+R902 data-objects batch300 boundaries: Only the listed batch300 facets are bound. The
+fixtures assert exact integer, logical, and character properties after explicit
+definition, or located diagnostics for numbered syntax/constraint cases that both
+retained toolchains report. They do not assert addresses, storage layout,
+processor-dependent IOMSG text, coarray behavior, undefined references, generic warning
+policy, source review state, or any facet left pending with a batch300 reason.
 
 **Dependencies:** 4.2;9.1R901/p1;9.4.5R916/C923/note1;15.5.1R1520/C1523-C1524;15.5.3;19.6.5.
 
@@ -59,12 +71,23 @@ contrasts under a qualified F2023 profile. Resolve the actual grammar alternativ
 entity role, type, kind, rank, definition status and all overlapping constraints before
 assigning a diagnostic cause.
 
+C901 data-objects batch300 fixtures: one diagnostic/control pair attempts to assign to
+an INTEGER named constant and repairs only the PARAMETER attribute. The control mutates
+the assignment value and reads it back.
+
 **Oracle limitation:** The numbered syntax and constraint obligations require detection/reporting capability,
 not a fatal exit, rule number or fixed wording. Unsupported syntax, missing prerequisite
 declarations or interfaces, unrelated earlier errors, recovery-only messages, source
 echoes, crashes and resource failures are not evidence for the stated facet. All entries
 here are PENDING plans only; no case, execution, oracle, source-use link, fixture
 approval or coverage claim is created.
+
+C901 data-objects batch300 boundaries: Only the listed batch300 facets are bound. The
+fixtures assert exact integer, logical, and character properties after explicit
+definition, or located diagnostics for numbered syntax/constraint cases that both
+retained toolchains report. They do not assert addresses, storage layout,
+processor-dependent IOMSG text, coarray behavior, undefined references, generic warning
+policy, source review state, or any facet left pending with a batch300 reason.
 
 **Dependencies:** 4.2;6.2.3R604-R607/C602;8.5.13;8.6.11;9.1R901;9.4.1R908-R910/C908;9.4.2;9.5.3.1;19.6.5.
 
@@ -85,12 +108,24 @@ contrasts under a qualified F2023 profile. Resolve the actual grammar alternativ
 entity role, type, kind, rank, definition status and all overlapping constraints before
 assigning a diagnostic cause.
 
+C902 data-objects batch300 fixtures: one positive-control program assigns through three
+data-pointer function references serving as the admission case and the one-property
+controls for nonpointer and procedure-pointer results. Two negative modules change only
+the result category and require a located diagnostic.
+
 **Oracle limitation:** The numbered syntax and constraint obligations require detection/reporting capability,
 not a fatal exit, rule number or fixed wording. Unsupported syntax, missing prerequisite
 declarations or interfaces, unrelated earlier errors, recovery-only messages, source
 echoes, crashes and resource failures are not evidence for the stated facet. All entries
 here are PENDING plans only; no case, execution, oracle, source-use link, fixture
 approval or coverage claim is created.
+
+C902 data-objects batch300 boundaries: Only the listed batch300 facets are bound. The
+fixtures assert exact integer, logical, and character properties after explicit
+definition, or located diagnostics for numbered syntax/constraint cases that both
+retained toolchains report. They do not assert addresses, storage layout,
+processor-dependent IOMSG text, coarray behavior, undefined references, generic warning
+policy, source review state, or any facet left pending with a batch300 reason.
 
 **Dependencies:** 4.2;8.5.14;9.2p1;15.5.1R1520/C1523-C1524;15.5.3;15.6.2.2;19.5.2;19.6.5.
 
@@ -113,11 +148,23 @@ Every referenced variable or target value must be defined by an identified event
 the reference; no address arithmetic, TRANSFER, emitted assembly, compiler agreement or
 undefined-storage read is an oracle.
 
+S9.2-001 data-objects batch300 fixtures: one runtime program observes that a designator
+denotes its object, a function-reference variable defines the target of the evaluated
+associated pointer, and a selected associated pointer target is the variable. Mutants
+redirect values or the selected association path.
+
 **Oracle limitation:** These prose requirements are not numbered constraints and do not by themselves impose a
 static diagnostic duty. Positive controls show only the planned permitted shape; invalid
 undefined-reference executions are not proposed. All entries here are PENDING plans
 only; no case, execution, oracle, source-use link, fixture approval or coverage claim is
 created.
+
+S9.2-001 data-objects batch300 boundaries: Only the listed batch300 facets are bound.
+The fixtures assert exact integer, logical, and character properties after explicit
+definition, or located diagnostics for numbered syntax/constraint cases that both
+retained toolchains report. They do not assert addresses, storage layout,
+processor-dependent IOMSG text, coarray behavior, undefined references, generic warning
+policy, source review state, or any facet left pending with a batch300 reason.
 
 **Dependencies:** 9.1R901/p1;9.2R902/C902/p2;15.5.1R1520;15.5.3;19.5.2;19.6.5(1)/(22);19.6.6(16)/(27).
 
@@ -140,11 +187,23 @@ Every referenced variable or target value must be defined by an identified event
 the reference; no address arithmetic, TRANSFER, emitted assembly, compiler agreement or
 undefined-storage read is an oracle.
 
+S9.2-002 data-objects batch300 fixtures: one runtime program references only variables
+already defined by intrinsic assignment, a defined associated pointer target, and an
+internal WRITE definition event. Mutants change the defining events while preserving
+definedness.
+
 **Oracle limitation:** These prose requirements are not numbered constraints and do not by themselves impose a
 static diagnostic duty. Positive controls show only the planned permitted shape; invalid
 undefined-reference executions are not proposed. All entries here are PENDING plans
 only; no case, execution, oracle, source-use link, fixture approval or coverage claim is
 created.
+
+S9.2-002 data-objects batch300 boundaries: Only the listed batch300 facets are bound.
+The fixtures assert exact integer, logical, and character properties after explicit
+definition, or located diagnostics for numbered syntax/constraint cases that both
+retained toolchains report. They do not assert addresses, storage layout,
+processor-dependent IOMSG text, coarray behavior, undefined references, generic warning
+policy, source review state, or any facet left pending with a batch300 reason.
 
 **Dependencies:** 9.1p1;9.2R902/p1;15.5.3;19.6.5;19.6.6.
 
@@ -164,12 +223,24 @@ contrasts under a qualified F2023 profile. Resolve the actual grammar alternativ
 entity role, type, kind, rank, definition status and all overlapping constraints before
 assigning a diagnostic cause.
 
+R903 data-objects batch300 fixtures: one namelist positive control reads a scalar
+variable-name token and a second scalar name used as the one-property repair for an
+array-element namelist object. The invalid fixture supplies the x(1) designator
+contrast.
+
 **Oracle limitation:** The numbered syntax and constraint obligations require detection/reporting capability,
 not a fatal exit, rule number or fixed wording. Unsupported syntax, missing prerequisite
 declarations or interfaces, unrelated earlier errors, recovery-only messages, source
 echoes, crashes and resource failures are not evidence for the stated facet. All entries
 here are PENDING plans only; no case, execution, oracle, source-use link, fixture
 approval or coverage claim is created.
+
+R903 data-objects batch300 boundaries: Only the listed batch300 facets are bound. The
+fixtures assert exact integer, logical, and character properties after explicit
+definition, or located diagnostics for numbered syntax/constraint cases that both
+retained toolchains report. They do not assert addresses, storage layout,
+processor-dependent IOMSG text, coarray behavior, undefined references, generic warning
+policy, source review state, or any facet left pending with a batch300 reason.
 
 **Dependencies:** 4.2;6.2.2R603/C601;9.2C903;19.3.
 
@@ -190,12 +261,24 @@ contrasts under a qualified F2023 profile. Resolve the actual grammar alternativ
 entity role, type, kind, rank, definition status and all overlapping constraints before
 assigning a diagnostic cause.
 
+C903 data-objects batch300 fixtures: one namelist positive control reads an ordinary
+variable-name and observes the assigned value. Named-constant and procedure-name
+exclusions remain pending because the frozen LFortran build does not provide suitable
+located diagnostics for the planned contrasts.
+
 **Oracle limitation:** The numbered syntax and constraint obligations require detection/reporting capability,
 not a fatal exit, rule number or fixed wording. Unsupported syntax, missing prerequisite
 declarations or interfaces, unrelated earlier errors, recovery-only messages, source
 echoes, crashes and resource failures are not evidence for the stated facet. All entries
 here are PENDING plans only; no case, execution, oracle, source-use link, fixture
 approval or coverage claim is created.
+
+C903 data-objects batch300 boundaries: Only the listed batch300 facets are bound. The
+fixtures assert exact integer, logical, and character properties after explicit
+definition, or located diagnostics for numbered syntax/constraint cases that both
+retained toolchains report. They do not assert addresses, storage layout,
+processor-dependent IOMSG text, coarray behavior, undefined references, generic warning
+policy, source review state, or any facet left pending with a batch300 reason.
 
 **Dependencies:** 4.2;6.2.3R606;8.5.13;8.6.11;9.2R903;15.5.1;19.3.
 
@@ -268,12 +351,23 @@ contrasts under a qualified F2023 profile. Resolve the actual grammar alternativ
 entity role, type, kind, rank, definition status and all overlapping constraints before
 assigning a diagnostic cause.
 
+R905 data-objects batch300 fixtures: one positive-control internal WRITE uses a
+CHARACTER designator as the internal-file variable and checks the exact buffer contents
+after the write.
+
 **Oracle limitation:** The numbered syntax and constraint obligations require detection/reporting capability,
 not a fatal exit, rule number or fixed wording. Unsupported syntax, missing prerequisite
 declarations or interfaces, unrelated earlier errors, recovery-only messages, source
 echoes, crashes and resource failures are not evidence for the stated facet. All entries
 here are PENDING plans only; no case, execution, oracle, source-use link, fixture
 approval or coverage claim is created.
+
+R905 data-objects batch300 boundaries: Only the listed batch300 facets are bound. The
+fixtures assert exact integer, logical, and character properties after explicit
+definition, or located diagnostics for numbered syntax/constraint cases that both
+retained toolchains report. They do not assert addresses, storage layout,
+processor-dependent IOMSG text, coarray behavior, undefined references, generic warning
+policy, source review state, or any facet left pending with a batch300 reason.
 
 **Dependencies:** 4.2;9.2R902/p1;15.5.1;19.6.5
 
@@ -294,12 +388,23 @@ contrasts under a qualified F2023 profile. Resolve the actual grammar alternativ
 entity role, type, kind, rank, definition status and all overlapping constraints before
 assigning a diagnostic cause.
 
+C905 data-objects batch300 fixtures: one positive-control internal WRITE uses a
+CHARACTER variable and checks exact character length and contents, demonstrating the
+character-type admission route.
+
 **Oracle limitation:** The numbered syntax and constraint obligations require detection/reporting capability,
 not a fatal exit, rule number or fixed wording. Unsupported syntax, missing prerequisite
 declarations or interfaces, unrelated earlier errors, recovery-only messages, source
 echoes, crashes and resource failures are not evidence for the stated facet. All entries
 here are PENDING plans only; no case, execution, oracle, source-use link, fixture
 approval or coverage claim is created.
+
+C905 data-objects batch300 boundaries: Only the listed batch300 facets are bound. The
+fixtures assert exact integer, logical, and character properties after explicit
+definition, or located diagnostics for numbered syntax/constraint cases that both
+retained toolchains report. They do not assert addresses, storage layout,
+processor-dependent IOMSG text, coarray behavior, undefined references, generic warning
+policy, source review state, or any facet left pending with a batch300 reason.
 
 **Dependencies:** 4.2;7.4.4;9.2R905
 
@@ -372,12 +477,23 @@ contrasts under a qualified F2023 profile. Resolve the actual grammar alternativ
 entity role, type, kind, rank, definition status and all overlapping constraints before
 assigning a diagnostic cause.
 
+R907 data-objects batch300 fixtures: one ALLOCATE STAT= program uses both an INTEGER
+designator and an INTEGER data-pointer function reference as int-variables; exact zero
+STAT values are checked after successful allocation.
+
 **Oracle limitation:** The numbered syntax and constraint obligations require detection/reporting capability,
 not a fatal exit, rule number or fixed wording. Unsupported syntax, missing prerequisite
 declarations or interfaces, unrelated earlier errors, recovery-only messages, source
 echoes, crashes and resource failures are not evidence for the stated facet. All entries
 here are PENDING plans only; no case, execution, oracle, source-use link, fixture
 approval or coverage claim is created.
+
+R907 data-objects batch300 boundaries: Only the listed batch300 facets are bound. The
+fixtures assert exact integer, logical, and character properties after explicit
+definition, or located diagnostics for numbered syntax/constraint cases that both
+retained toolchains report. They do not assert addresses, storage layout,
+processor-dependent IOMSG text, coarray behavior, undefined references, generic warning
+policy, source review state, or any facet left pending with a batch300 reason.
 
 **Dependencies:** 4.2;9.2R902/p1;15.5.1;19.6.5
 
@@ -398,12 +514,22 @@ contrasts under a qualified F2023 profile. Resolve the actual grammar alternativ
 entity role, type, kind, rank, definition status and all overlapping constraints before
 assigning a diagnostic cause.
 
+C907 data-objects batch300 fixtures: one ALLOCATE STAT= positive control observes that
+an INTEGER variable is accepted and defined with zero on successful allocation.
+
 **Oracle limitation:** The numbered syntax and constraint obligations require detection/reporting capability,
 not a fatal exit, rule number or fixed wording. Unsupported syntax, missing prerequisite
 declarations or interfaces, unrelated earlier errors, recovery-only messages, source
 echoes, crashes and resource failures are not evidence for the stated facet. All entries
 here are PENDING plans only; no case, execution, oracle, source-use link, fixture
 approval or coverage claim is created.
+
+C907 data-objects batch300 boundaries: Only the listed batch300 facets are bound. The
+fixtures assert exact integer, logical, and character properties after explicit
+definition, or located diagnostics for numbered syntax/constraint cases that both
+retained toolchains report. They do not assert addresses, storage layout,
+processor-dependent IOMSG text, coarray behavior, undefined references, generic warning
+policy, source review state, or any facet left pending with a batch300 reason.
 
 **Dependencies:** 4.2;7.4.3.1;9.2R907
 
